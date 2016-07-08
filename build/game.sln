@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "game", "game.vcxproj", "{9F35977C-8B6C-980D-3459-7E10206F140F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nanovg", "nanovg.vcxproj", "{4EFC8F0F-3A9E-BAE5-2359-CE390F9A4136}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F35977C-8B6C-980D-3459-7E10206F140F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9F35977C-8B6C-980D-3459-7E10206F140F}.Debug|Win32.Build.0 = Debug|Win32
+		{9F35977C-8B6C-980D-3459-7E10206F140F}.Debug|x64.ActiveCfg = Debug|x64
+		{9F35977C-8B6C-980D-3459-7E10206F140F}.Debug|x64.Build.0 = Debug|x64
+		{9F35977C-8B6C-980D-3459-7E10206F140F}.Release|Win32.ActiveCfg = Release|Win32
+		{9F35977C-8B6C-980D-3459-7E10206F140F}.Release|Win32.Build.0 = Release|Win32
+		{9F35977C-8B6C-980D-3459-7E10206F140F}.Release|x64.ActiveCfg = Release|x64
+		{9F35977C-8B6C-980D-3459-7E10206F140F}.Release|x64.Build.0 = Release|x64
+		{4EFC8F0F-3A9E-BAE5-2359-CE390F9A4136}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4EFC8F0F-3A9E-BAE5-2359-CE390F9A4136}.Debug|Win32.Build.0 = Debug|Win32
+		{4EFC8F0F-3A9E-BAE5-2359-CE390F9A4136}.Debug|x64.ActiveCfg = Debug|x64
+		{4EFC8F0F-3A9E-BAE5-2359-CE390F9A4136}.Debug|x64.Build.0 = Debug|x64
+		{4EFC8F0F-3A9E-BAE5-2359-CE390F9A4136}.Release|Win32.ActiveCfg = Release|Win32
+		{4EFC8F0F-3A9E-BAE5-2359-CE390F9A4136}.Release|Win32.Build.0 = Release|Win32
+		{4EFC8F0F-3A9E-BAE5-2359-CE390F9A4136}.Release|x64.ActiveCfg = Release|x64
+		{4EFC8F0F-3A9E-BAE5-2359-CE390F9A4136}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

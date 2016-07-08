@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="perf">
+      <UniqueIdentifier>{B2369C7C-9E6D-9D0D-475A-83103370190F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sys">
+      <UniqueIdentifier>{24AC880B-90B5-887C-1931-9F7C8539947C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\entityx.hh" />
+    <ClInclude Include="..\src\local.h" />
+    <ClInclude Include="..\src\perf\perf.h">
+      <Filter>perf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\scene.h" />
+    <ClInclude Include="..\src\scene_main.h" />
+    <ClInclude Include="..\src\scene_perf.h" />
+    <ClInclude Include="..\src\sys\upd_rectmover.h">
+      <Filter>sys</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\perf\perf.c">
+      <Filter>perf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\scene_main.cpp" />
+    <ClCompile Include="..\src\scene_perf.cpp" />
+    <ClCompile Include="..\src\sys\upd_rectmover.cpp">
+      <Filter>sys</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

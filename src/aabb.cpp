@@ -128,6 +128,16 @@ double SweptAABB(Body b1, Body b2, double dx, double dy, double& normalx, double
 		normaly = 0.0;
 		return 1.0;
 	}
+	else if (xEntry < 0.0 && ( (b1.x+b1.w) < b2.x || b1.x > (b2.x+b2.w) )) {
+		normalx = 0.0;
+		normaly = 0.0;
+		return 1.0;
+	}
+	else if (yEntry < 0.0 && ((b1.y+b1.h) < b2.y || b1.y > (b2.y+b2.h))) {
+		normalx = 0.0;
+		normaly = 0.0;
+		return 1.0;
+	}
 	else // if there was a collision
 	{
 		// calculate normal of collided surface
@@ -201,7 +211,7 @@ const trace_t Move(EntityManager *es, Entity ent, double dx, double dy) {
 	result.normalX = normX;
 	result.normalY = normY;
 	result.x = body->x + dx * minTime;
-	result.y = body->y + dx * minTime;
+	result.y = body->y + dy * minTime;
 
 	return result;
 }

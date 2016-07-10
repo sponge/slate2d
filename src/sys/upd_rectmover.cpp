@@ -11,7 +11,7 @@ void RectMoverSystem::update(EntityManager &es, double dt) {
 		double dx = movable->dx * dt;
 		double dy = movable->dy * dt;
 
-		auto res = Move(&es, ent, dx, dy);
+		auto res = Move(&es, ent, dx, 0);
 
 		if (res.time < 1.0) {
 			body->x = res.x;
@@ -26,9 +26,6 @@ void RectMoverSystem::update(EntityManager &es, double dt) {
 
 		body->x = res.x;
 		body->y = res.y;
-
-		//body->x += dx;
-		//body->y += dy;
 
 		if (body->x + body->w > WORLD_WIDTH || body->x < 0) {
 			body->x = body->x < 0 ? 0 : WORLD_WIDTH - body->w;

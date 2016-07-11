@@ -1,7 +1,5 @@
 #pragma once
 #include <math.h>
-#include <stdio.h>
-#include <assert.h>
 
 static const double EPSILON = 1E-8;
 
@@ -38,6 +36,8 @@ typedef struct Box {
 	Box(double x, double y, double w, double h) : pos(x,y), size(w,h), half(w*0.5, h*0.5) {}
 	Vec2 pos, half, size;
 } box_t;
+
+#ifdef AABB_IMPLEMENTATION
 
 double Vec2_length(Vec2 vec) {
 	double len = vec.x * vec.x + vec.y * vec.y;
@@ -213,6 +213,9 @@ Sweep sweepAABB(Box box1, Box box2, Vec2 delta) {
 }
 
 #ifdef DEBUG
+#include <stdio.h>
+#include <assert.h>
+
 void testCollision() {
 	printf("intersectPoint should return not valid when not colliding\n");
 	{
@@ -562,4 +565,5 @@ void testCollision() {
 		assert(sweep.hit.delta.y == 0);
 	}
 }
-#endif;
+#endif
+#endif // AABB_IMPLEMENTATION

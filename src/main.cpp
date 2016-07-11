@@ -18,9 +18,15 @@
 #include "scene_main.h"
 #include "scene_perf.h"
 
+#include "sweep.h"
+
 ClientInfo i;
 
 int main(int argc, char *argv[]) {
+#ifdef DEBUG
+	testCollision();
+#endif
+
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		std::cerr << "There was an error initing SDL2: " << SDL_GetError() << std::endl;
 		return 1;

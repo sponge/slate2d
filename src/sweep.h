@@ -37,6 +37,13 @@ typedef struct Box {
 	Vec2 pos, half, size;
 } box_t;
 
+double Vec2_length(Vec2 vec);
+const Vec2 Vec2_normalize(Vec2 vec);
+Hit intersectVec2(Box box, Vec2 point);
+Hit intersectSegment(Box box, Vec2 pos, Vec2 delta, double paddingX = 0.0, double paddingY = 0.0);
+Hit intersectAABB(Box box1, Box box2);
+Sweep sweepAABB(Box box1, Box box2, Vec2 delta);
+
 #ifdef AABB_IMPLEMENTATION
 
 double Vec2_length(Vec2 vec) {
@@ -95,7 +102,7 @@ Hit intersectVec2(Box box, Vec2 point) {
 	return hit;
 }
 
-Hit intersectSegment(Box box, Vec2 pos, Vec2 delta, double paddingX = 0.0, double paddingY = 0.0) {
+Hit intersectSegment(Box box, Vec2 pos, Vec2 delta, double paddingX, double paddingY) {
 	Hit hit;
 
 	auto scale = Vec2(1.0 / delta.x, 1.0 / delta.y);

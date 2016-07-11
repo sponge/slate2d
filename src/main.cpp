@@ -11,14 +11,15 @@
 #define NANOVG_GL3_IMPLEMENTATION
 #include <nanovg_gl.h>
 
+#define AABB_IMPLEMENTATION
+#include "sweep.h"
+
 #include "perf/perf.h"
 #include "local.h"
 
 #include "scene.h"
 #include "scene_main.h"
 #include "scene_perf.h"
-
-#include "sweep.h"
 
 ClientInfo i;
 

@@ -8,7 +8,7 @@ void RectDrawSystem::render(EntityManager &es, ClientInfo *inf) {
 		auto r = ent.component<Renderable>();
 
 		nvgBeginPath(nvg);
-		nvgRect(nvg, body->x, body->y, body->w, body->h);
+		nvgRect(nvg, body->x - (body->w*0.5), body->y - (body->h*0.5), body->w, body->h);
 		nvgFillColor(nvg, nvgRGBA(r->r, r->g, r->b, r->a));
 		nvgFill(nvg);
 	}

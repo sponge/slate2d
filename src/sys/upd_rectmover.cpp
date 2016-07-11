@@ -11,7 +11,7 @@ void RectMoverSystem::update(EntityManager &es, double dt) {
 		double dx = movable->dx * dt;
 		double dy = movable->dy * dt;
 
-		auto res = Move(&es, ent, dx, 0);
+		auto res = Move(&es, ent, dx, dy);
 
 		if (res.time < 1.0) {
 			body->x = res.x;

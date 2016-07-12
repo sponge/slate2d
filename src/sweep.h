@@ -121,6 +121,14 @@ Hit intersectSegment(Box box, Vec2 pos, Vec2 delta, double paddingX, double padd
 	auto d_nearTime = nearTime.x > nearTime.y ? nearTime.x : nearTime.y;
 	auto d_farTime = farTime.x < farTime.y ? farTime.x : farTime.y;
 
+	// FIXME: this seems to happen, should it?
+	// ent.assign<Body>(200, 200, 50, 50); ent.assign<Movable>(0, 0);
+	// and 	ent.assign<Body>(475, 150, 50, 50); ent.assign<Movable>(-20, 0);
+	// results in near/farTime.y being infinite, and a nan here, resulting in a ghost collision.
+	if (isnan(d_nearTime) || isnan(d_farTime)) {
+		return hit;
+	}
+
 	if (d_nearTime >= 1 || d_farTime <= 0) {
 		return hit;
 	}

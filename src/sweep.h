@@ -41,6 +41,7 @@ Hit intersectVec2(Box box, Vec2 point);
 Hit intersectSegment(Box box, Vec2 pos, Vec2 delta, double paddingX = 0.0, double paddingY = 0.0);
 Hit intersectAABB(Box check, Box box2);
 Sweep sweepAABB(Box check, Box box, Vec2 delta);
+Box getBroadPhaseBox(Box b, Vec2 delta);
 
 #ifdef AABB_IMPLEMENTATION
 
@@ -214,6 +215,19 @@ Sweep sweepAABB(Box check, Box box, Vec2 delta) {
 		sweep.time = 1;
 	}
 	return sweep;
+}
+
+Box getBroadPhaseBox(Box b, Vec2 delta)
+{
+	auto x = delta.x > 0 ? b.pos.x - b.half.x : b.pos.x - b.half.x + delta.x;
+	auto y = delta.y > 0 ? b.pos.y - b.half.y : b.pos.y - b.half.y + delta.y;
+	auto w = delta.x > 0 ? delta.x + b.size.x : b.size.x - delta.x;
+	auto h = delta.y > 0 ? delta.y + b.size.y : b.size.y - delta.y;
+
+	x += w / 2;
+	y += h / 2;
+
+	return Box(x, y, w, h);
 }
 
 #ifdef DEBUG

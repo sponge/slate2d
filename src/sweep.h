@@ -1,8 +1,6 @@
 #pragma once
 #include <math.h>
 
-static const double EPSILON = 1E-8;
-
 template <typename T>
 T clamp(const T& n, const T& lower, const T& upper) {
 	return std::max(lower, std::min(n, upper));
@@ -203,8 +201,7 @@ Sweep sweepAABB(Box box1, Box box2, Vec2 delta) {
 	
 	sweep.hit = intersectSegment(box1, box2.pos, delta, box2.half.x, box2.half.y);
 	if (sweep.hit.valid) {
-		// FIXME: epsilon?
-		sweep.time = clamp(sweep.hit.time, 0.0, 1.0);
+		sweep.time = clamp(sweep.hit.time - std::numeric_limits<double>::epsilon(), 0.0, 1.0);
 		sweep.pos.x = box2.pos.x + delta.x * sweep.time;
 		sweep.pos.y = box2.pos.y + delta.y * sweep.time;
 		auto direction = Vec2_normalize(delta);
@@ -528,7 +525,7 @@ void testCollision() {
 		auto box2 = Box(0, -64, 16, 16);
 		auto delta = Vec2(0, 128);
 		auto sweep = sweepAABB(box1, box2, delta);
-		auto time = 0.3125; //- intersect.epsilon;
+		auto time = 0.3125 - std::numeric_limits<double>::epsilon();
 		assert(sweep.time == time);
 		assert(sweep.pos.x == box2.pos.x + delta.x * time);
 		assert(sweep.pos.y == box2.pos.y + delta.y * time);

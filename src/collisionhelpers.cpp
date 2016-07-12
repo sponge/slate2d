@@ -1,14 +1,16 @@
 #include "local.h"
 
-const Sweep Move(EntityManager * es, Entity ent, double dx, double dy)
+const Sweep Move(EntityManager * es, Entity ent, double dx, double dy, Entity &hitEnt)
 {
 	auto body = ent.component<Body>();
 	auto box = Box(body->x, body->y, body->w, body->h);
 
-	// FIXME: broadsweep box generation here?
+	auto broad = getBroadPhaseBox(box, Vec2(dx, dy));
 
-	double minTime = std::numeric_limits<double>::infinity();
 	Sweep sweep;
+	sweep.time = 1.0;
+	sweep.pos.x = body->x + dx;
+	sweep.pos.y = body->y + dy;
 
 	for (auto ent2 : es->entities_with_components<Body>()) {
 		if (ent == ent2) {
@@ -18,12 +20,14 @@ const Sweep Move(EntityManager * es, Entity ent, double dx, double dy)
 		auto body2 = ent2.component<Body>();
 		auto box2 = Box(body2->x, body2->y, body2->w, body2->h);
 
-		// FIXME: broadsweep here?
+		if (intersectAABB(broad, box2).valid == false) {
+			continue;
+		}
 
-		auto tempSweep = sweepAABB(box, box2, Vec2(dx, dy));
-		if (tempSweep.time < minTime) {
-			minTime = sweep.time;
+		auto tempSweep = sweepAABB(box2, box, Vec2(dx, dy));
+		if (tempSweep.time < sweep.time) {
 			sweep = tempSweep;
+			hitEnt = ent2;
 		}
 	}
 

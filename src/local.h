@@ -29,4 +29,4 @@ struct RenderSystem {
 	virtual void render(EntityManager &es, ClientInfo *inf) = 0;
 };
 
-const Sweep Move(EntityManager *es, Entity ent, double dx, double dy);
+const Sweep Move(EntityManager * es, Entity ent, double dx, double dy, Entity &hitEnt);

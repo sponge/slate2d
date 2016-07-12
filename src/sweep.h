@@ -39,8 +39,8 @@ double Vec2_length(Vec2 vec);
 const Vec2 Vec2_normalize(Vec2 vec);
 Hit intersectVec2(Box box, Vec2 point);
 Hit intersectSegment(Box box, Vec2 pos, Vec2 delta, double paddingX = 0.0, double paddingY = 0.0);
-Hit intersectAABB(Box box1, Box box2);
-Sweep sweepAABB(Box box1, Box box2, Vec2 delta);
+Hit intersectAABB(Box check, Box box2);
+Sweep sweepAABB(Box check, Box box, Vec2 delta);
 
 #ifdef AABB_IMPLEMENTATION
 
@@ -144,18 +144,18 @@ Hit intersectSegment(Box box, Vec2 pos, Vec2 delta, double paddingX, double padd
 	return hit;
 }
 
-Hit intersectAABB(Box box1, Box box2) {
+Hit intersectAABB(Box check, Box box) {
 	Hit hit;
 
-	auto dx = box2.pos.x - box1.pos.x;
-	auto px = (box2.half.x + box1.half.x) - abs(dx);
+	auto dx = box.pos.x - check.pos.x;
+	auto px = (box.half.x + check.half.x) - abs(dx);
 
 	if (px <= 0) {
 		return hit;
 	}
 
-	auto dy = box2.pos.y - box1.pos.y;
-	auto py = (box2.half.y + box1.half.y) - abs(dy);
+	auto dy = box.pos.y - check.pos.y;
+	auto py = (box.half.y + check.half.y) - abs(dy);
 	
 	if (py <= 0) {
 		return hit;
@@ -168,27 +168,27 @@ Hit intersectAABB(Box box1, Box box2) {
 		auto sx = sign(dx);
 		hit.delta.x = px * sx;
 		hit.normal.x = sx;
-		hit.pos.x = box1.pos.x + (box1.half.x * sx);
-		hit.pos.y = box2.pos.y;
+		hit.pos.x = check.pos.x + (check.half.x * sx);
+		hit.pos.y = box.pos.y;
 	}
 	else {
 		auto sy = sign(dy);
 		hit.delta.y = py * sy;
 		hit.normal.y = sy;
-		hit.pos.x = box2.pos.x;
-		hit.pos.y = box1.pos.y + (box1.half.y * sy);
+		hit.pos.x = box.pos.x;
+		hit.pos.y = check.pos.y + (check.half.y * sy);
 	}
 
 	return hit;
 }
 
-Sweep sweepAABB(Box box1, Box box2, Vec2 delta) {
+Sweep sweepAABB(Box check, Box box, Vec2 delta) {
 	Sweep sweep;
 
 	if (delta.x == 0 && delta.y == 0) {
-		sweep.pos.x = box2.pos.x;
-		sweep.pos.y = box2.pos.y;
-		sweep.hit = intersectAABB(box1, box2);
+		sweep.pos.x = box.pos.x;
+		sweep.pos.y = box.pos.y;
+		sweep.hit = intersectAABB(check, box);
 		if (sweep.hit.valid) {
 			sweep.time = sweep.hit.time = 0;
 		}
@@ -199,18 +199,18 @@ Sweep sweepAABB(Box box1, Box box2, Vec2 delta) {
 		return sweep;
 	}
 	
-	sweep.hit = intersectSegment(box1, box2.pos, delta, box2.half.x, box2.half.y);
+	sweep.hit = intersectSegment(check, box.pos, delta, box.half.x, box.half.y);
 	if (sweep.hit.valid) {
 		sweep.time = clamp(sweep.hit.time - std::numeric_limits<double>::epsilon(), 0.0, 1.0);
-		sweep.pos.x = box2.pos.x + delta.x * sweep.time;
-		sweep.pos.y = box2.pos.y + delta.y * sweep.time;
+		sweep.pos.x = box.pos.x + delta.x * sweep.time;
+		sweep.pos.y = box.pos.y + delta.y * sweep.time;
 		auto direction = Vec2_normalize(delta);
-		sweep.hit.pos.x += direction.x * box2.half.x;
-		sweep.hit.pos.y += direction.y * box2.half.y;
+		sweep.hit.pos.x += direction.x * box.half.x;
+		sweep.hit.pos.y += direction.y * box.half.y;
 	}
 	else {
-		sweep.pos.x = box2.pos.x + delta.x;
-		sweep.pos.y = box2.pos.y + delta.y;
+		sweep.pos.x = box.pos.x + delta.x;
+		sweep.pos.y = box.pos.y + delta.y;
 		sweep.time = 1;
 	}
 	return sweep;

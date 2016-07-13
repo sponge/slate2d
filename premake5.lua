@@ -8,7 +8,8 @@ solution "game"
       language "C++"
       files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
       includedirs { "include", "nanovg" }
-      targetdir "build"
+      debugdir "."
+      targetdir "bin/%{cfg.buildcfg}"
       links { "nanovg" }
 
       configuration { "windows" }

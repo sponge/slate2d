@@ -39,13 +39,13 @@ void RectMoverSystem::update(EntityManager &es, double dt) {
 			}
 		}
 
-		if (body->x + body->w > WORLD_WIDTH || body->x < 0) {
-			body->x = body->x < 0 ? 0 : WORLD_WIDTH - body->w;
+		if (body->max().x > WORLD_WIDTH || body->min().x < 0) {
+			body->x = body->min().x < 0 ? body->w / 2 : WORLD_WIDTH - body->w / 2;
 			movable->dx *= -1;
 		}
 
-		if (body->y + body->h > WORLD_HEIGHT || body->y < 0) {
-			body->y = body->y < 0 ? 0 : WORLD_HEIGHT - body->h;
+		if (body->max().y > WORLD_HEIGHT || body->min().y < 0) {
+			body->y = body->min().y < 0 ? body->h / 2 : WORLD_HEIGHT - body->h / 2;
 			movable->dy *= -1;
 		}
 

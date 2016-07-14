@@ -1,6 +1,7 @@
 #include "scene_main.h"
 #include <nanovg.h>
 #include <random>
+#include <tmx.h>
 
 #include "sys/systems.h"
 
@@ -11,6 +12,11 @@ std::uniform_real_distribution<double> distr(0, 1);
 void MainScene::Startup(ClientInfo* info) {
 	inf = info;
 	Entity ent;
+
+	auto m = tmx_load("base/maps/smw.tmx");
+	if (!m) tmx_perror("error");
+
+	tmx_map_free(m);
 
 	//// rolling into platform
 	//ent = es.create();
@@ -53,7 +59,7 @@ void MainScene::Startup(ClientInfo* info) {
 		double dx = distr(g) * 200 * (x < 2 ? 1 : -1) + 50;
 		double dy = distr(g) * 200 * (y < 2 ? 1 : -1) + 50;
 
-		auto ent = es.create();
+		ent = es.create();
 		ent.assign<Body>(x, y, w, h);
 		ent.assign<Movable>(dx, dy);
 		ent.assign<Renderable>(distr(g) * 255, distr(g) * 255, distr(g) * 255, distr(g) * 200 + 55);

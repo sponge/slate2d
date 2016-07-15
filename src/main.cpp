@@ -19,6 +19,8 @@
 
 #include "scene.h"
 #include "scene_main.h"
+#include "scene_test.h"
+#include "scene_map.h"
 #include "scene_perf.h"
 
 ClientInfo i;
@@ -77,7 +79,7 @@ int main(int argc, char *argv[]) {
 	i.nvg = vg;
 
 	auto sm = new SceneManager(i);
-	auto main_scene = new MainScene();
+	Scene* main_scene = new MainScene();
 	sm->Switch(main_scene);
 	auto perf_scene = new PerfScene();
 	sm->Push(perf_scene);
@@ -95,7 +97,30 @@ int main(int argc, char *argv[]) {
 		prevt = t;
 
 		while (SDL_PollEvent(&ev)) {
-			if (ev.type == SDL_QUIT) {
+			if (ev.type == SDL_KEYUP) {
+				Scene* oldCurrent;
+				switch (ev.key.keysym.sym) {
+				case SDLK_1:
+					delete(main_scene);
+					main_scene = new MainScene();
+					sm->Switch(main_scene);
+					sm->Push(perf_scene);
+				break;
+				case SDLK_2:
+					delete(main_scene);
+					main_scene = new TestScene();
+					sm->Switch(main_scene);
+					sm->Push(perf_scene);
+				break;
+				case SDLK_3:
+					delete(main_scene);
+					main_scene = new MapScene();
+					sm->Switch(main_scene);
+					sm->Push(perf_scene);
+				break;
+				}
+			}
+			else if (ev.type == SDL_QUIT) {
 				quit = 1;
 			}
 		}

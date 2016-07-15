@@ -5,51 +5,13 @@
 
 #include "sys/systems.h"
 
-std::random_device rand_dev;
-std::mt19937 g(rand_dev());
-std::uniform_real_distribution<double> distr(0, 1);
-
 void MainScene::Startup(ClientInfo* info) {
 	inf = info;
 	Entity ent;
 
-	auto m = tmx_load("base/maps/smw.tmx");
-	if (!m) tmx_perror("error");
-
-	tmx_map_free(m);
-
-	//// rolling into platform
-	//ent = es.create();
-	//ent.assign<Body>(50, 100, 50, 50);
-	//ent.assign<Movable>(60, 500);
-	//ent.assign<Renderable>(distr(g) * 255, distr(g) * 255, distr(g) * 255, distr(g) * 200 + 55);
-
-	//ent = es.create();
-	//ent.assign<Body>(300, 500, 500, 50);
-	//ent.assign<Movable>(0, 0);
-	//ent.assign<Renderable>(distr(g) * 255, distr(g) * 255, distr(g) * 255, distr(g) * 200 + 55);
-
-	//// two way diag collision
-	//ent = es.create();
-	//ent.assign<Body>(100, 100, 50, 50);
-	//ent.assign<Movable>(20, 20);
-	//ent.assign<Renderable>(distr(g) * 255, distr(g) * 255, distr(g) * 255, distr(g) * 200 + 55);
-
-	//ent = es.create();
-	//ent.assign<Body>(200, 200, 50, 50);
-	//ent.assign<Movable>(0, 0);
-	//ent.assign<Renderable>(distr(g) * 255, distr(g) * 255, distr(g) * 255, distr(g) * 200 + 55);
-
-	//// horiz scrape by
-	//ent = es.create();
-	//ent.assign<Body>(400, 100, 50, 50);
-	//ent.assign<Movable>(20, 0);
-	//ent.assign<Renderable>(distr(g) * 255, distr(g) * 255, distr(g) * 255, distr(g) * 200 + 55);
-
-	//ent = es.create();
-	//ent.assign<Body>(475, 150, 50, 50);
-	//ent.assign<Movable>(-20, 0);
-	//ent.assign<Renderable>(distr(g) * 255, distr(g) * 255, distr(g) * 255, distr(g) * 200 + 55);
+	std::random_device rand_dev;
+	std::mt19937 g(rand_dev());
+	std::uniform_real_distribution<double> distr(0, 1);
 
 	for (int i = 0; i < 16; i++) {
 		double x = (i % 4) * (inf->width / 4);

@@ -25,7 +25,7 @@ public:
 		for (auto s : scenes) {
 			s->Teardown();
 		}
-		scenes.empty();
+		scenes.clear();
 		Push(newScene);
 	}
 

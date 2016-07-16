@@ -38,6 +38,7 @@ public:
 	void Render() {
 		for (auto s : scenes) {
 			s->Render();
+			nvgReset(info.nvg);
 		}
 	}
 

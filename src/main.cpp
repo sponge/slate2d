@@ -98,25 +98,28 @@ int main(int argc, char *argv[]) {
 
 		while (SDL_PollEvent(&ev)) {
 			if (ev.type == SDL_KEYUP) {
-				Scene* oldCurrent;
+				Scene* newScene;
 				switch (ev.key.keysym.sym) {
 				case SDLK_1:
-					delete(main_scene);
-					main_scene = new MainScene();
-					sm->Switch(main_scene);
+					newScene = new MainScene();
+					sm->Switch(newScene);
 					sm->Push(perf_scene);
+					delete(main_scene);
+					main_scene = newScene;
 				break;
 				case SDLK_2:
-					delete(main_scene);
-					main_scene = new TestScene();
-					sm->Switch(main_scene);
+					newScene = new TestScene();
+					sm->Switch(newScene);
 					sm->Push(perf_scene);
+					delete(main_scene);
+					main_scene = newScene;
 				break;
 				case SDLK_3:
-					delete(main_scene);
-					main_scene = new MapScene();
-					sm->Switch(main_scene);
+					newScene = new MapScene();
+					sm->Switch(newScene);
 					sm->Push(perf_scene);
+					delete(main_scene);
+					main_scene = newScene;
 				break;
 				}
 			}

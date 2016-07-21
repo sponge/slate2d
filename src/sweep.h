@@ -30,9 +30,29 @@ typedef struct Sweep {
 	double time = 1.0;
 } sweep_t;
 
+typedef struct Corners {
+	Vec2 tl, tr, bl, br;
+} corners_t;
+
 typedef struct Box {
 	Box(double x, double y, double w, double h) : pos(x,y), size(w,h), half(w*0.5, h*0.5) {}
 	Vec2 pos, half, size;
+	Vec2 min() {
+		return Vec2(pos.x - half.x, pos.y - half.y);
+	};
+	Vec2 max() {
+		return Vec2(pos.x + half.x, pos.y + half.y);
+	};
+	Corners corners() {
+		auto min = Vec2(pos.x - half.x, pos.y - half.y);
+		auto max = Vec2(pos.x + half.x, pos.y + half.y);
+		return Corners {
+			{min.x, min.y},
+			{max.x, min.y},
+			{min.x, max.y},
+			{max.x, max.y}
+		};
+	}
 } box_t;
 
 double Vec2_length(Vec2 vec);
@@ -42,8 +62,10 @@ Hit intersectSegment(Box box, Vec2 pos, Vec2 delta, double paddingX = 0.0, doubl
 Hit intersectAABB(Box check, Box box2);
 Sweep sweepAABB(Box check, Box box, Vec2 delta);
 Box getBroadPhaseBox(Box b, Vec2 delta);
+Sweep sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, int y), bool (*isResolvable)(void * tile));
 
 #ifdef AABB_IMPLEMENTATION
+//#if 1
 
 double Vec2_length(Vec2 vec) {
 	double len = vec.x * vec.x + vec.y * vec.y;
@@ -237,6 +259,14 @@ Box getBroadPhaseBox(Box b, Vec2 delta)
 
 	return Box(x, y, w, h);
 }
+
+Sweep sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, int y), bool(*isResolvable)(void *tile))
+{
+	auto sweep = Sweep();
+
+	return sweep;
+}
+
 
 #ifdef DEBUG
 #include <stdio.h>

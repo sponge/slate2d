@@ -1,7 +1,7 @@
 #include "systems.h"
 
-const double WORLD_WIDTH = 800.0;
-const double WORLD_HEIGHT = 600.0;
+const double WORLD_WIDTH = 1280.0;
+const double WORLD_HEIGHT = 720.0;
 
 void RectMoverSystem::update(EntityManager &es, double dt) {
 	dt = dt > 0.1 ? 0.1 : dt;

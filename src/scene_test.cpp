@@ -64,5 +64,14 @@ void TestScene::Render() {
 }
 
 void TestScene::Teardown() {
+	for (auto sys : updateSystems) {
+		delete(sys);
+	}
+	updateSystems.clear();
 
+	for (auto sys : renderSystems) {
+		delete(sys);
+
+	}
+	renderSystems.clear();
 }

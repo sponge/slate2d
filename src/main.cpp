@@ -43,8 +43,8 @@ int main(int argc, char *argv[]) {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 #endif
 
-	i.width = 800;
-	i.height = 600;
+	i.width = 1280;
+	i.height = 720;
 
 	i.window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, i.width, i.height, SDL_WINDOW_OPENGL);
 

@@ -1,6 +1,9 @@
 #pragma once
 #include "sweep.h"
-struct Body : Vec2 {
+#include "tmx.h"
+#include "local.h"
+
+struct Body {
 	Body(double x, double y, double w, double h) : x(x), y(y), w(w), h(h) {}
 	double x, y;
 	double w, h;
@@ -21,3 +24,36 @@ struct Renderable {
 	Renderable(unsigned char r, unsigned char g, unsigned char b, unsigned char a) : r(r), g(g), b(b), a(a) {}
 	unsigned char r, g, b, a;
 };
+
+struct TileMap {
+	TileMap() {}
+	tmx_map *map;
+	tmx_layer *worldLayer;
+};
+
+struct Camera {
+	Camera(double x, double y, double w, double h) : size(x, y) {
+		//inf = info;
+		Move(x, y);
+	}
+
+	void Move(double x, double y) {
+		pos.x = x;
+		pos.y = y;
+		top = y - size.y / 2;
+		right = x + size.x / 2;
+		bottom = y + size.y / 2;
+		left = x - size.x / 2;
+	}
+
+	bool active = true;
+	Vec2 pos, size;
+	double top, right, bottom, left;
+	//ClientInfo *inf;
+};
+
+using Components = entityx::Components<Body, Movable, Renderable, TileMap, Camera>;
+using EntityManager = entityx::EntityX<Components>;
+template <typename C>
+using Component = EntityManager::Component<C>;
+using Entity = EntityManager::Entity;

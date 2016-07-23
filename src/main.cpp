@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
 
 	SDL_GLContext context = SDL_GL_CreateContext(i.window);
 
-	SDL_GL_SetSwapInterval(1);
+	SDL_GL_SetSwapInterval(0);
 
 	if (context == NULL) {
 		std::cerr << "There was an error creating OpenGL context: " << SDL_GetError() << std::endl;
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
 	i.nvg = vg;
 
 	auto sm = new SceneManager(i);
-	Scene* main_scene = new MainScene();
+	Scene* main_scene = new MapScene();
 	sm->Switch(main_scene);
 	auto perf_scene = new PerfScene();
 	sm->Push(perf_scene);

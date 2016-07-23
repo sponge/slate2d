@@ -2,7 +2,7 @@
 #include <SDL/SDL.h>
 #include <vector>
 #include "scene.h"
-#include "local.h"
+#include <tmx.h>
 
 class MapScene : public Scene {
 public:

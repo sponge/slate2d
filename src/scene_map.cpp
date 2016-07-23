@@ -1,25 +1,63 @@
 #include "scene_map.h"
 #include <nanovg.h>
 #include <random>
-#include <tmx.h>
-
 #include "sys/systems.h"
 #include "sweep.h"
+#include "local.h"
 
 NVGcontext *nvg;
 
+void* nvg_img_load_func(const char *path) {
+	Img *img = new Img();
+	img->nvg = nvg;
+	img->hnd = nvgCreateImage(nvg, path, 0);
+	nvgImageSize(img->nvg, img->hnd, &img->w, &img->h);
+	strncpy(img->path, path, sizeof(img->path));
+	return (void*)img;
+}
+
+void nvg_img_free_func(void *address) {
+	Img *img = (Img*)address;
+	nvgDeleteImage(nvg, img->hnd);
+	delete(img);
+}
+
 void MapScene::Startup(ClientInfo* info) {
 	inf = info;
-	Entity ent;
+	nvg = info->nvg;
 
-	auto m = tmx_load("base/maps/smw.tmx");
-	if (!m) tmx_perror("error");
+	tmx_img_load_func = nvg_img_load_func;
+	tmx_img_free_func = nvg_img_free_func;
 
-	tmx_map_free(m);
+	auto map = tmx_load("base/maps/smw.tmx");
+	if (!map) tmx_perror("error");
 
-	updateSystems.push_back(new RectMoverSystem());
+	Entity world = es.create();
+	auto tileMap = world.assign<TileMap>();
+	tileMap->map = map;
 
-	renderSystems.push_back(new RectDrawSystem());
+	tmx_layer *layer = map->ly_head;
+	while (layer) {
+		if (layer->visible == false) {
+			layer = layer->next;
+			continue;
+		}
+
+		if (strcmp(layer->name, "world") == 0) {
+			tileMap->worldLayer = layer;
+		}
+
+		if (layer->type == L_OBJGR) {
+			// parse objects
+		}
+
+		layer = layer->next;
+	}
+
+	auto camera = world.assign<Camera>(-16, 0, inf->width, inf->height);
+
+	renderSystems.push_back(new CameraSystem());
+	renderSystems.push_back(new TileMapDrawSystem());
 }
 
 void MapScene::Update(double dt) {
@@ -57,20 +95,16 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 	Vec2 opp;
 	// the direction we're going to project out and over to cover the width/height of the box
 	Vec2 direction;
-
 #ifdef DEBUG
 	// the outside corners used for debug drawing
 	Vec2 nonIntersect[2];
 #endif
-
 	// find the corner that's occluded by the box by checking for a collision
 	if (delta.y == 0) {
 		opp = delta.x > 0 ? corners.br : corners.bl;
-		direction = Vec2(0 - sign(delta.x), 0 - sign(delta.y));
 	}
 	else if (delta.x == 0) {
 		opp = delta.y > 0 ? corners.br : corners.tr;
-		direction = Vec2(0 - sign(delta.x), 0 - sign(delta.y));
 	}
 	else {
 		for (int i = 0; i < sizeof(cornerArr); i++) {
@@ -86,7 +120,6 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 
 			// assign a direction vector so we can project outward from the corner toward the 2 corners
 			// (used to loop from position to testing box width/height)
-			direction = Vec2(0 - sign(delta.x), 0 - sign(delta.y));
 #ifdef DEBUG
 			// pos of the 2 corners that are min/max bounds of the line
 			nonIntersect[0] = cornerArr[(i + 1) % 4];
@@ -95,7 +128,7 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 			break;
 		};
 	}
-
+	direction = Vec2(0 - sign(delta.x), 0 - sign(delta.y));
 
 #ifdef DEBUG
 	// debug draw the outside corners of the rect. the background tiles should always fill the lines
@@ -124,9 +157,6 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 
 	// whether we found a collision in either axis
 	auto xCollided = false, yCollided = false;
-
-	// time the collision in this axis occured
-	auto xTime = 1.0, yTime = 1.0;
 
 	// step through the tiles
 	for (int ix = 0, iy = 0; (ix < n.x || iy < n.y);) {
@@ -237,6 +267,7 @@ void MapScene::Render() {
 
 	auto sweep = _sweepTiles(box, delta, tileSize, &getTile, &isResolvable);
 
+	// destination box
 	nvgBeginPath(nvg);
 	nvgStrokeColor(nvg, nvgRGBA(0, 255, 0, 255));
 	nvgStrokeWidth(nvg, 1);
@@ -247,7 +278,6 @@ void MapScene::Render() {
 void MapScene::Teardown() {
 	for (auto sys : updateSystems) {
 		delete(sys);
-		printf("hi");
 	}
 	updateSystems.clear();
 
@@ -256,4 +286,10 @@ void MapScene::Teardown() {
 	
 	}
 	renderSystems.clear();
+
+	// FIXME: free the map
+	//tmx_map_free(map);
+
+	tmx_img_load_func = nullptr;
+	tmx_img_free_func = nullptr;
 }

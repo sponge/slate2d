@@ -13,11 +13,12 @@ struct ClientInfo {
 	int width, height;
 };
 
-using Components = entityx::Components<Body, Movable, Renderable>;
-using EntityManager = entityx::EntityX<Components>;
-template <typename C>
-using Component = EntityManager::Component<C>;
-using Entity = EntityManager::Entity;
+typedef struct Img {
+	NVGcontext *nvg;
+	int hnd;
+	int w, h;
+	char path[64];
+} img_t;
 
 struct System {
 	virtual ~System() {}

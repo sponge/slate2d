@@ -15,6 +15,10 @@ struct TileMapDrawSystem : RenderSystem {
 	void draw_tiles(ClientInfo *inf, tmx_map * map, tmx_layer *layer);
 };
 
-struct CameraSystem : RenderSystem {
+struct CameraUpdateSystem : System {
+	void update(EntityManager &es, double dt);
+};
+
+struct CameraDrawSystem : RenderSystem {
 	void render(EntityManager &es, ClientInfo *inf);
 };

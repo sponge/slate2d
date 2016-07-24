@@ -54,10 +54,21 @@ void MapScene::Startup(ClientInfo* info) {
 		layer = layer->next;
 	}
 
-	auto camera = world.assign<Camera>(-16, 0, inf->width, inf->height);
+	// temp
+	auto ent = es.create();
+	auto boxBody = ent.assign<Body>(0, 0, 28, 28);
+	ent.assign<Movable>(30, 20);
+	ent.assign<Renderable>(30, 30, 30, 255);
 
-	renderSystems.push_back(new CameraSystem());
+	auto camera = world.assign<Camera>(0, 0, inf->width, inf->height);
+	camera->target = boxBody.get();
+
+	updateSystems.push_back(new RectMoverSystem());
+	updateSystems.push_back(new CameraUpdateSystem());
+
+	renderSystems.push_back(new CameraDrawSystem());
 	renderSystems.push_back(new TileMapDrawSystem());
+	renderSystems.push_back(new RectDrawSystem());
 }
 
 void MapScene::Update(double dt) {

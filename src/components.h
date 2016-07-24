@@ -32,7 +32,7 @@ struct TileMap {
 };
 
 struct Camera {
-	Camera(double x, double y, double w, double h) : size(x, y) {
+	Camera(double x, double y, double w, double h) : size(w, h) {
 		//inf = info;
 		Move(x, y);
 	}
@@ -49,6 +49,8 @@ struct Camera {
 	bool active = true;
 	Vec2 pos, size;
 	double top, right, bottom, left;
+	Body *target = nullptr;
+	//Entity target;
 	//ClientInfo *inf;
 };
 

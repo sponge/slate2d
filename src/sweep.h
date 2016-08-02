@@ -35,7 +35,7 @@ typedef struct Corners {
 } corners_t;
 
 typedef struct Box {
-	Box(double x, double y, double w, double h) : pos(x,y), size(w,h), half(w*0.5, h*0.5) {}
+	Box(double x, double y, double w, double h) : pos(x,y), half(w*0.5, h*0.5), size(w,h) {}
 	Vec2 pos, half, size;
 	Vec2 min() {
 		return Vec2(pos.x - half.x, pos.y - half.y);

@@ -1,13 +1,13 @@
 solution "game"
    configurations { "Debug", "Release" }
    location "build"
-   platforms {"x86"}
+   platforms {"x86", "x64"}
 
    project "game"
       kind "ConsoleApp"
       language "C++"
       files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
-      includedirs { "include", "nanovg", "tmx" }
+      sysincludedirs { "include", "nanovg", "tmx" }
       debugdir "."
       targetdir "bin/%{cfg.buildcfg}"
       links { "nanovg", "tmx" }
@@ -23,15 +23,11 @@ solution "game"
             '{COPY} "%{wks.location}../lib/win32/SDL2.dll" "%{cfg.targetdir}"',
          }
 
-      -- configuration { "linux" }
-      --    linkoptions { "`pkg-config --libs glfw3`" }
-      --    links { "GL", "GLU", "m", "GLEW" }
-      --    defines { "NANOVG_GLEW" }
-
-      -- configuration { "macosx" }
-      --    libdirs { "lib/osx" }
-      --    links { "glfw3", "GLEW" }
-      --    linkoptions { "-framework OpenGL", "-framework Cocoa", "-framework IOKit", "-framework CoreVideo" }
+      configuration { "macosx" }
+         --libdirs { "lib/osx" }
+         links { "OpenGL.framework", "SDL2.framework", "xml2" }
+         buildoptions {"-std=c++14", "-stdlib=libc++"}
+         linkoptions {"-stdlib=libc++", "-F /Library/Frameworks"}
 
       configuration "Debug"
          defines { "DEBUG" }
@@ -41,7 +37,7 @@ solution "game"
          defines { "NDEBUG" }
          flags { "Optimize", "ExtraWarnings" }
 
-   	project "nanovg"
+	project "nanovg"
 		language "C"
 		kind "StaticLib"
 		includedirs { "nanovg" }
@@ -49,10 +45,10 @@ solution "game"
 		targetdir("build")
 		defines { "_CRT_SECURE_NO_WARNINGS" }
 
-      project "tmx"
+   project "tmx"
       language "C"
       kind "StaticLib"
-      includedirs { "include", "tmx" }
+      sysincludedirs { "include" }
       files { "tmx/**.c", "tmx/**.h" }
       targetdir("build")
       defines { "_CRT_SECURE_NO_WARNINGS" }

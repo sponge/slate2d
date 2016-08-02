@@ -1,8 +1,12 @@
 #include <iostream>
 #include <cmath>
 
+#ifdef WIN32
 #define GLEW_STATIC
 #include <GL/glew.h>
+#else
+#include <OpenGL/gl3.h>
+#endif
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
@@ -68,10 +72,12 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
+#ifdef WIN32
 	if (glewInit() != GLEW_OK) {
 		printf("Could not init glew.\n");
 		return -1;
 	}
+#endif
 
 	SDL_GL_MakeCurrent(i.window, context);
 

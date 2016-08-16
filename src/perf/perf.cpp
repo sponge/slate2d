@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#ifdef WIN32
+#ifdef _WIN32
 #define GLEW_STATIC
 #include <GL/glew.h>
 #else

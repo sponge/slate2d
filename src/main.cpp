@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-#ifdef WIN32
+#ifdef _WIN32
 	if (glewInit() != GLEW_OK) {
 		printf("Could not init glew.\n");
 		return -1;

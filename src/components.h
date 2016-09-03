@@ -54,7 +54,13 @@ struct Camera {
 	//ClientInfo *inf;
 };
 
-using Components = entityx::Components<Body, Movable, Renderable, TileMap, Camera>;
+struct PlayerInput {
+	PlayerInput() {}
+
+	bool up = false, down = false, left = false, right = false, jump = false, run = false, attack = false, menu = false;
+};
+
+using Components = entityx::Components<Body, Movable, Renderable, TileMap, Camera, PlayerInput>;
 using EntityManager = entityx::EntityX<Components>;
 template <typename C>
 using Component = EntityManager::Component<C>;

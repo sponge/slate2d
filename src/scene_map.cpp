@@ -56,15 +56,18 @@ void MapScene::Startup(ClientInfo* info) {
 
 	// temp
 	auto ent = es.create();
-	auto boxBody = ent.assign<Body>(0, 0, 28, 28);
+	auto boxBody = ent.assign<Body>(0, 0, 14, 28);
 	ent.assign<Movable>(30, 20);
-	ent.assign<Renderable>(30, 30, 30, 255);
+	ent.assign<Renderable>(200, 30, 30, 255);
+	ent.assign<PlayerInput>();
 
 	auto camera = world.assign<Camera>(0, 0, inf->width, inf->height);
 	camera->target = boxBody.get();
 
-	updateSystems.push_back(new RectMoverSystem());
+	updateSystems.push_back(new InputSystem());
+	updateSystems.push_back(new PlayerSystem());
 	updateSystems.push_back(new CameraUpdateSystem());
+	//updateSystems.push_back(new RectMoverSystem());
 
 	renderSystems.push_back(new CameraDrawSystem());
 	renderSystems.push_back(new TileMapDrawSystem());
@@ -79,10 +82,12 @@ void MapScene::Update(double dt) {
 
 void* getTile(int x, int y) {
 	auto collide = x > 50 || y > 35 || x < 15 || y < 5;
+#ifdef DEBUG
 	nvgBeginPath(nvg);
 	nvgFillColor(nvg, collide ? nvgRGBA(150, 0, 0, 150) : nvgRGBA(0, 150, 0, 150));
 	nvgRect(nvg, x * 16, y*16, 16, 16);
 	nvgFill(nvg);
+#endif
 	return collide ? (void*)0x00000001 : nullptr;
 }
 

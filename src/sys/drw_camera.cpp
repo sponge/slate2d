@@ -6,7 +6,7 @@ void CameraDrawSystem::render(EntityManager & es, ClientInfo * inf) {
 		if (cam->active == false) {
 			continue;
 		}
-		nvgScale(inf->nvg, 4, 4);
+		nvgScale(inf->nvg, 3, 3);
 		nvgTranslate(inf->nvg, 0 - cam->pos.x + 100, 0 - cam->pos.y + 100);
 	}
 }

@@ -22,3 +22,11 @@ struct CameraUpdateSystem : System {
 struct CameraDrawSystem : RenderSystem {
 	void render(EntityManager &es, ClientInfo *inf);
 };
+
+struct InputSystem : System {
+	void update(EntityManager &es, double dt);
+};
+
+struct PlayerSystem : System {
+	void update(EntityManager &es, double dt);
+};

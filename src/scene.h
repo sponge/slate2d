@@ -10,6 +10,9 @@ public:
 	virtual void Teardown() = 0;
 	virtual void Update(double dt) = 0;
 	virtual void Render() = 0;
+	virtual bool Event(SDL_Event *ev) {
+		return true;
+	};
 };
 
 class SceneManager {
@@ -39,6 +42,14 @@ public:
 		for (auto s : scenes) {
 			s->Render();
 			nvgReset(info.nvg);
+		}
+	}
+
+	void Event(SDL_Event *ev) {
+		for (auto s : scenes) {
+			if (s->Event(ev) == false) {
+				break;
+			}
 		}
 	}
 

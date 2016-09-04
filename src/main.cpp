@@ -139,7 +139,10 @@ int main(int argc, char *argv[]) {
 			}
 			else if (ev.type == SDL_QUIT) {
 				quit = 1;
+				break;
 			}
+
+			sm->Event(&ev);
 		}
 
 		sm->Update(dt / 1000.0f);

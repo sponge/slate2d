@@ -10,6 +10,7 @@ public:
 	void Teardown() override;
 	void Update(double dt) override;
 	void Render() override;
+	//bool Event(SDL_Event *ev) override;
 
 private:
 	ClientInfo* inf;

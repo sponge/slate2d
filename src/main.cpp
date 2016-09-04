@@ -34,6 +34,10 @@ int main(int argc, char *argv[]) {
 	testCollision();
 #endif
 
+	Cbuf_Init();
+	Cmd_Init();
+	Cvar_Init();
+
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		std::cerr << "There was an error initing SDL2: " << SDL_GetError() << std::endl;
 		return 1;
@@ -41,15 +45,17 @@ int main(int argc, char *argv[]) {
 
 	atexit(SDL_Quit);
 
+	auto r_width = Cvar_Get("r_width", "1280", 0);
+	auto r_height = Cvar_Get("r_height", "720", 0);
+
 #ifndef _WIN32
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile::SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 #endif
 
-	i.width = 1280;
-	i.height = 720;
-
+	i.width = r_width->integer;
+	i.height = r_height->integer;
 	i.window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, i.width, i.height, SDL_WINDOW_OPENGL);
 
 	if (i.window == NULL) {
@@ -101,6 +107,8 @@ int main(int argc, char *argv[]) {
 		t = SDL_GetTicks();
 		dt = t - prevt;
 		prevt = t;
+
+		Cbuf_Execute();
 
 		while (SDL_PollEvent(&ev)) {
 			if (ev.type == SDL_KEYUP) {

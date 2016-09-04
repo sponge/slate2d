@@ -36,7 +36,7 @@ void __cdecl Com_Error(int level, const char *error, ...) {
 		return;
 	}
 
-	printf(error);
+	Com_Printf(error);
 
 	exit(1);
 }
@@ -310,6 +310,16 @@ void Cmd_Echo_f (void)
 	Com_Printf ("\n");
 }
 
+/*
+=================
+Com_Crash_f
+
+A way to force a bus error for development reasons
+=================
+*/
+static void Com_Crash_f(void) {
+	*(int *)0 = 0x12345678;
+}
 
 /*
 =============================================================================
@@ -674,8 +684,6 @@ Cmd_List_f
 */
 void Cmd_List_f (void)
 {
-	// FIXME
-	/*
 	cmd_function_t	*cmd;
 	int				i;
 	char			*match;
@@ -688,13 +696,12 @@ void Cmd_List_f (void)
 
 	i = 0;
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next) {
-		if (match && !Com_Filter(match, cmd->name, qfalse)) continue;
+		//if (match && !Com_Filter(match, cmd->name, qfalse)) continue;
 
 		Com_Printf ("%s\n", cmd->name);
 		i++;
 	}
 	Com_Printf ("%i commands\n", i);
-	*/
 }
 
 /*
@@ -708,5 +715,6 @@ void Cmd_Init (void) {
 	Cmd_AddCommand ("vstr",Cmd_Vstr_f);
 	Cmd_AddCommand ("echo",Cmd_Echo_f);
 	Cmd_AddCommand ("wait", Cmd_Wait_f);
+	Cmd_AddCommand ("crash", Com_Crash_f);
 }
 

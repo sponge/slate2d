@@ -26,6 +26,7 @@
 #include "scene_test.h"
 #include "scene_map.h"
 #include "scene_perf.h"
+#include "scene_console.h"
 
 ClientInfo i;
 
@@ -93,6 +94,8 @@ int main(int argc, char *argv[]) {
 	auto sm = new SceneManager(i);
 	Scene* main_scene = new MapScene();
 	sm->Switch(main_scene);
+	auto console_scene = new ConsoleScene();
+	sm->Push(console_scene);
 	auto perf_scene = new PerfScene();
 	sm->Push(perf_scene);
 
@@ -117,6 +120,7 @@ int main(int argc, char *argv[]) {
 				case SDLK_1:
 					newScene = new MainScene();
 					sm->Switch(newScene);
+					sm->Push(console_scene);
 					sm->Push(perf_scene);
 					delete(main_scene);
 					main_scene = newScene;
@@ -124,6 +128,7 @@ int main(int argc, char *argv[]) {
 				case SDLK_2:
 					newScene = new TestScene();
 					sm->Switch(newScene);
+					sm->Push(console_scene);
 					sm->Push(perf_scene);
 					delete(main_scene);
 					main_scene = newScene;
@@ -131,6 +136,7 @@ int main(int argc, char *argv[]) {
 				case SDLK_3:
 					newScene = new MapScene();
 					sm->Switch(newScene);
+					sm->Push(console_scene);
 					sm->Push(perf_scene);
 					delete(main_scene);
 					main_scene = newScene;

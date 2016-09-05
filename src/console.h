@@ -5,11 +5,12 @@
 
 // COMMAND SYSTEM
 
-typedef unsigned char 		byte;
+typedef unsigned char byte;
 typedef void(*xcommand_t) (void);
 
 void __cdecl Com_Error(int level, const char *error, ...);
 char *CopyString(const char *in);
+char * __cdecl va(char *format, ...);
 
 void Cbuf_Init(void);
 void Cbuf_AddText(const char *text);
@@ -23,6 +24,10 @@ void Cmd_Init(void);
 void Cmd_ExecuteString(const char *text);
 void Cmd_AddCommand(const char *cmd_name, xcommand_t function);
 void Cmd_RemoveCommand(const char *cmd_name);
+void Com_ParseCommandLine(char *commandLine);
+void Com_StartupVariable(const char *match);
+bool Com_AddStartupCommands(void);
+void Cmd_TokenizeString(const char *text_in);
 
 // possibly private stuff that's still needed
 

@@ -50,6 +50,31 @@ char *CopyString(const char *in) {
 	return out;
 }
 
+/*
+============
+va
+
+does a varargs printf into a temp buffer, so I don't need to have
+varargs versions of all text functions.
+FIXME: make this buffer size safe someday
+============
+*/
+char	* __cdecl va(char *format, ...) {
+	va_list		argptr;
+	static char		string[2][32000];	// in case va is called by nested functions
+	static int		index = 0;
+	char	*buf;
+
+	buf = string[index & 1];
+	index++;
+
+	__crt_va_start(argptr, format);
+	vsprintf(buf, format, argptr);
+	__crt_va_end(argptr);
+
+	return buf;
+}
+
 
 //=============================================================================
 
@@ -68,6 +93,237 @@ void Cmd_Wait_f( void ) {
 	} else {
 		cmd_wait = 1;
 	}
+}
+
+/*
+============================================================================
+
+COMMAND LINE FUNCTIONS
+
++ characters seperate the commandLine string into multiple console
+command lines.
+
+All of these are valid:
+
+quake3 +set test blah +map test
+quake3 set test blah+map test
+quake3 set test blah + map test
+
+============================================================================
+*/
+
+#define	MAX_CONSOLE_LINES	32
+int		com_numConsoleLines;
+char	*com_consoleLines[MAX_CONSOLE_LINES];
+
+/*
+==================
+Com_ParseCommandLine
+
+Break it up into multiple console lines
+==================
+*/
+void Com_ParseCommandLine(char *commandLine) {
+	int inq = 0;
+	com_consoleLines[0] = commandLine;
+	com_numConsoleLines = 1;
+
+	while (*commandLine) {
+		if (*commandLine == '"') {
+			inq = !inq;
+		}
+		// look for a + seperating character
+		// if commandLine came from a file, we might have real line seperators
+		if ((*commandLine == '+' && !inq) || *commandLine == '\n' || *commandLine == '\r') {
+			if (com_numConsoleLines == MAX_CONSOLE_LINES) {
+				return;
+			}
+			com_consoleLines[com_numConsoleLines] = commandLine + 1;
+			com_numConsoleLines++;
+			*commandLine = 0;
+		}
+		commandLine++;
+	}
+}
+
+/*
+===============
+Com_StartupVariable
+
+Searches for command line parameters that are set commands.
+If match is not NULL, only that cvar will be looked for.
+That is necessary because cddir and basedir need to be set
+before the filesystem is started, but all other sets shouls
+be after execing the config and default.
+===============
+*/
+void Com_StartupVariable(const char *match) {
+	int		i;
+	char	*s;
+	cvar_t	*cv;
+
+	for (i = 0; i < com_numConsoleLines; i++) {
+		Cmd_TokenizeString(com_consoleLines[i]);
+		if (strcmp(Cmd_Argv(0), "set")) {
+			continue;
+		}
+
+		s = Cmd_Argv(1);
+		if (!match || !strcmp(s, match)) {
+			Cvar_Set(s, Cmd_Argv(2));
+			cv = Cvar_Get(s, "", 0);
+			cv->flags |= CVAR_USER_CREATED;
+			//			com_consoleLines[i] = 0;
+		}
+	}
+}
+
+
+/*
+=================
+Com_AddStartupCommands
+
+Adds command line parameters as script statements
+Commands are seperated by + signs
+
+Returns qtrue if any late commands were added, which
+will keep the demoloop from immediately starting
+=================
+*/
+bool Com_AddStartupCommands(void) {
+	int		i;
+	bool	added;
+
+	added = false;
+	// quote every token, so args with semicolons can work
+	for (i = 0; i < com_numConsoleLines; i++) {
+		if (!com_consoleLines[i] || !com_consoleLines[i][0]) {
+			continue;
+		}
+
+		// set commands won't override menu startup
+		auto match = strstr(com_consoleLines[i], "set");
+		if (match == com_consoleLines[i]) {
+			added = true;
+		}
+		Cbuf_AddText(com_consoleLines[i]);
+		Cbuf_AddText("\n");
+	}
+
+	return added;
+}
+
+/*
+============
+Cmd_TokenizeString
+
+Parses the given string into command line tokens.
+The text is copied to a seperate buffer and 0 characters
+are inserted in the apropriate place, The argv array
+will point into this temporary buffer.
+============
+*/
+static	int			cmd_argc;
+static	char		*cmd_argv[MAX_STRING_TOKENS];		// points into cmd_tokenized
+static	char		cmd_tokenized[BIG_INFO_STRING + MAX_STRING_TOKENS];	// will have 0 bytes inserted
+static	char		cmd_cmd[BIG_INFO_STRING]; // the original command we received (no token processing)
+
+void Cmd_TokenizeString(const char *text_in) {
+	const char	*text;
+	char	*textOut;
+
+	// clear previous args
+	cmd_argc = 0;
+
+	if (!text_in) {
+		return;
+	}
+
+	strncpy(cmd_cmd, text_in, sizeof(cmd_cmd));
+
+	text = text_in;
+	textOut = cmd_tokenized;
+
+	while (1) {
+		if (cmd_argc == MAX_STRING_TOKENS) {
+			return;			// this is usually something malicious
+		}
+
+		while (1) {
+			// skip whitespace
+			while (*text && *text <= ' ') {
+				text++;
+			}
+			if (!*text) {
+				return;			// all tokens parsed
+			}
+
+			// skip // comments
+			if (text[0] == '/' && text[1] == '/') {
+				return;			// all tokens parsed
+			}
+
+			// skip /* */ comments
+			if (text[0] == '/' && text[1] == '*') {
+				while (*text && (text[0] != '*' || text[1] != '/')) {
+					text++;
+				}
+				if (!*text) {
+					return;		// all tokens parsed
+				}
+				text += 2;
+			}
+			else {
+				break;			// we are ready to parse a token
+			}
+		}
+
+		// handle quoted strings
+		// NOTE TTimo this doesn't handle \" escaping
+		if (*text == '"') {
+			cmd_argv[cmd_argc] = textOut;
+			cmd_argc++;
+			text++;
+			while (*text && *text != '"') {
+				*textOut++ = *text++;
+			}
+			*textOut++ = 0;
+			if (!*text) {
+				return;		// all tokens parsed
+			}
+			text++;
+			continue;
+		}
+
+		// regular token
+		cmd_argv[cmd_argc] = textOut;
+		cmd_argc++;
+
+		// skip until whitespace, quote, or command
+		while (*text > ' ') {
+			if (text[0] == '"') {
+				break;
+			}
+
+			if (text[0] == '/' && text[1] == '/') {
+				break;
+			}
+
+			// skip /* */ comments
+			if (text[0] == '/' && text[1] == '*') {
+				break;
+			}
+
+			*textOut++ = *text++;
+		}
+
+		*textOut++ = 0;
+
+		if (!*text) {
+			return;		// all tokens parsed
+		}
+	}
+
 }
 
 
@@ -229,7 +485,7 @@ void Cbuf_Execute (void)
 		}
 
 // execute the command line
-
+			
 		Cmd_ExecuteString (line);		
 	}
 }
@@ -282,7 +538,7 @@ Inserts the current value of a variable as command text
 ===============
 */
 void Cmd_Vstr_f( void ) {
-/*	char	*v;
+	char	*v;
 
 	if (Cmd_Argc () != 2) {
 		Com_Printf ("vstr <variablename> : execute a variable command\n");
@@ -290,7 +546,7 @@ void Cmd_Vstr_f( void ) {
 	}
 
 	v = Cvar_VariableString( Cmd_Argv( 1 ) );
-	Cbuf_InsertText( va("%s\n", v ) );*/
+	Cbuf_InsertText( va("%s\n", v ) );
 }
 
 
@@ -335,12 +591,6 @@ typedef struct cmd_function_s
 	char					*name;
 	xcommand_t				function;
 } cmd_function_t;
-
-
-static	int			cmd_argc;
-static	char		*cmd_argv[MAX_STRING_TOKENS];		// points into cmd_tokenized
-static	char		cmd_tokenized[BIG_INFO_STRING+MAX_STRING_TOKENS];	// will have 0 bytes inserted
-static	char		cmd_cmd[BIG_INFO_STRING]; // the original command we received (no token processing)
 
 static	cmd_function_t	*cmd_functions;		// possible commands to execute
 
@@ -449,121 +699,6 @@ char *Cmd_Cmd()
 {
 	return cmd_cmd;
 }
-
-/*
-============
-Cmd_TokenizeString
-
-Parses the given string into command line tokens.
-The text is copied to a seperate buffer and 0 characters
-are inserted in the apropriate place, The argv array
-will point into this temporary buffer.
-============
-*/
-// NOTE TTimo define that to track tokenization issues
-//#define TKN_DBG
-void Cmd_TokenizeString( const char *text_in ) {
-	const char	*text;
-	char	*textOut;
-
-#ifdef TKN_DBG
-  // FIXME TTimo blunt hook to try to find the tokenization of userinfo
-  Com_DPrintf("Cmd_TokenizeString: %s\n", text_in);
-#endif
-
-	// clear previous args
-	cmd_argc = 0;
-
-	if ( !text_in ) {
-		return;
-	}
-	
-	strncpy( cmd_cmd, text_in, sizeof(cmd_cmd) );
-
-	text = text_in;
-	textOut = cmd_tokenized;
-
-	while ( 1 ) {
-		if ( cmd_argc == MAX_STRING_TOKENS ) {
-			return;			// this is usually something malicious
-		}
-
-		while ( 1 ) {
-			// skip whitespace
-			while ( *text && *text <= ' ' ) {
-				text++;
-			}
-			if ( !*text ) {
-				return;			// all tokens parsed
-			}
-
-			// skip // comments
-			if ( text[0] == '/' && text[1] == '/' ) {
-				return;			// all tokens parsed
-			}
-
-			// skip /* */ comments
-			if ( text[0] == '/' && text[1] =='*' ) {
-				while ( *text && ( text[0] != '*' || text[1] != '/' ) ) {
-					text++;
-				}
-				if ( !*text ) {
-					return;		// all tokens parsed
-				}
-				text += 2;
-			} else {
-				break;			// we are ready to parse a token
-			}
-		}
-
-		// handle quoted strings
-    // NOTE TTimo this doesn't handle \" escaping
-		if ( *text == '"' ) {
-			cmd_argv[cmd_argc] = textOut;
-			cmd_argc++;
-			text++;
-			while ( *text && *text != '"' ) {
-				*textOut++ = *text++;
-			}
-			*textOut++ = 0;
-			if ( !*text ) {
-				return;		// all tokens parsed
-			}
-			text++;
-			continue;
-		}
-
-		// regular token
-		cmd_argv[cmd_argc] = textOut;
-		cmd_argc++;
-
-		// skip until whitespace, quote, or command
-		while ( *text > ' ' ) {
-			if ( text[0] == '"' ) {
-				break;
-			}
-
-			if ( text[0] == '/' && text[1] == '/' ) {
-				break;
-			}
-
-			// skip /* */ comments
-			if ( text[0] == '/' && text[1] =='*' ) {
-				break;
-			}
-
-			*textOut++ = *text++;
-		}
-
-		*textOut++ = 0;
-
-		if ( !*text ) {
-			return;		// all tokens parsed
-		}
-	}
-	
-}
-
 
 /*
 ============

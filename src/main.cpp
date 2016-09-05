@@ -28,16 +28,36 @@
 #include "scene_perf.h"
 #include "scene_console.h"
 
-ClientInfo i;
+ClientInfo inf;
 
 int main(int argc, char *argv[]) {
 #ifdef DEBUG
 	testCollision();
 #endif
 
+	int len, i;
+	for (len = 1, i = 1; i < argc; i++) {
+		len += strlen(argv[i]) + 1;
+	}
+
+	char *cmdline = (char *) malloc(len);
+	*cmdline = 0;
+	for (i = 1; i < argc; i++)
+	{
+		if (i > 1) {
+			strcat(cmdline, " ");
+		}
+		strcat(cmdline, argv[i]);
+	}
+
+	Com_ParseCommandLine(cmdline);
+
 	Cbuf_Init();
 	Cmd_Init();
 	Cvar_Init();
+
+	Com_AddStartupCommands();
+	Cbuf_Execute();
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		std::cerr << "There was an error initing SDL2: " << SDL_GetError() << std::endl;
@@ -55,16 +75,16 @@ int main(int argc, char *argv[]) {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 #endif
 
-	i.width = r_width->integer;
-	i.height = r_height->integer;
-	i.window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, i.width, i.height, SDL_WINDOW_OPENGL);
+	inf.width = r_width->integer;
+	inf.height = r_height->integer;
+	inf.window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, inf.width, inf.height, SDL_WINDOW_OPENGL);
 
-	if (i.window == NULL) {
+	if (inf.window == NULL) {
 		std::cerr << "There was an error creating the window: " << SDL_GetError() << std::endl;
 		return 1;
 	}
 
-	SDL_GLContext context = SDL_GL_CreateContext(i.window);
+	SDL_GLContext context = SDL_GL_CreateContext(inf.window);
 
 	SDL_GL_SetSwapInterval(0);
 
@@ -86,12 +106,12 @@ int main(int argc, char *argv[]) {
 	}
 #endif
 
-	SDL_GL_MakeCurrent(i.window, context);
+	SDL_GL_MakeCurrent(inf.window, context);
 
 	struct NVGcontext* vg = nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES);
-	i.nvg = vg;
+	inf.nvg = vg;
 
-	auto sm = new SceneManager(i);
+	auto sm = new SceneManager(inf);
 	Scene* main_scene = new MapScene();
 	sm->Switch(main_scene);
 	auto console_scene = new ConsoleScene();
@@ -155,11 +175,11 @@ int main(int argc, char *argv[]) {
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		nvgBeginFrame(i.nvg, i.width, i.height, (float)i.width / i.height);
+		nvgBeginFrame(inf.nvg, inf.width, inf.height, (float)inf.width / inf.height);
 		sm->Render();
 		nvgEndFrame(vg);
 
-		SDL_GL_SwapWindow(i.window);
+		SDL_GL_SwapWindow(inf.window);
 	}
 
 	SDL_GL_DeleteContext(context);

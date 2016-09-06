@@ -58,6 +58,12 @@ public:
 		newScene->Startup(&info);
 	}
 
+	void Replace(Scene * oldScene, Scene *newScene) {
+		oldScene->Teardown();
+		std::replace(scenes.begin(), scenes.end(), oldScene, newScene);
+		newScene->Startup(&info);
+	}
+
 	void Pop() {
 		if (scenes.size() == 0) {
 			return;

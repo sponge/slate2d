@@ -112,8 +112,8 @@ int main(int argc, char *argv[]) {
 	inf.nvg = vg;
 
 	auto sm = new SceneManager(inf);
-	Scene* main_scene = new MapScene();
-	sm->Switch(main_scene);
+	Scene* mainScene = new MapScene();
+	sm->Switch(mainScene);
 	auto perf_scene = new PerfScene();
 	sm->Push(perf_scene);
 	auto console_scene = new ConsoleScene();
@@ -139,27 +139,21 @@ int main(int argc, char *argv[]) {
 				switch (ev.key.keysym.sym) {
 				case SDLK_1:
 					newScene = new MainScene();
-					sm->Switch(newScene);
-					sm->Push(console_scene);
-					sm->Push(perf_scene);
-					delete(main_scene);
-					main_scene = newScene;
+					sm->Replace(mainScene, newScene);
+					delete(mainScene);
+					mainScene = newScene;
 				break;
 				case SDLK_2:
 					newScene = new TestScene();
-					sm->Switch(newScene);
-					sm->Push(console_scene);
-					sm->Push(perf_scene);
-					delete(main_scene);
-					main_scene = newScene;
+					sm->Replace(mainScene, newScene);
+					delete(mainScene);
+					mainScene = newScene;
 				break;
 				case SDLK_3:
 					newScene = new MapScene();
-					sm->Switch(newScene);
-					sm->Push(console_scene);
-					sm->Push(perf_scene);
-					delete(main_scene);
-					main_scene = newScene;
+					sm->Replace(mainScene, newScene);
+					delete(mainScene);
+					mainScene = newScene;
 				break;
 				}
 			}

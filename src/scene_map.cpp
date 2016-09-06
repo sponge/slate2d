@@ -7,6 +7,8 @@
 
 NVGcontext *nvg;
 Body *body;
+tmx_map *tmap;
+tmx_layer *wlayer;
 
 void* nvg_img_load_func(const char *path) {
 	Img *img = new Img();
@@ -36,6 +38,7 @@ void MapScene::Startup(ClientInfo* info) {
 	Entity world = es.create();
 	auto tileMap = world.assign<TileMap>();
 	tileMap->map = map;
+	tmap = map;
 
 	tmx_layer *layer = map->ly_head;
 	while (layer) {
@@ -46,6 +49,7 @@ void MapScene::Startup(ClientInfo* info) {
 
 		if (strcmp(layer->name, "world") == 0) {
 			tileMap->worldLayer = layer;
+			wlayer = layer;
 		}
 
 		if (layer->type == L_OBJGR) {
@@ -83,14 +87,17 @@ void MapScene::Update(double dt) {
 }
 
 void* getTile(int x, int y) {
-	auto collide = x > 50 || y > 35 || x < 15 || y < 5;
+	auto gid = (wlayer->content.gids[(y*tmap->width) + x]) & TMX_FLIP_BITS_REMOVAL;
 #ifdef DEBUG
 	nvgBeginPath(nvg);
-	nvgFillColor(nvg, collide ? nvgRGBA(150, 0, 0, 150) : nvgRGBA(0, 150, 0, 150));
+	nvgFillColor(nvg, gid > 0 ? nvgRGBA(150, 0, 0, 150) : nvgRGBA(0, 150, 0, 150));
 	nvgRect(nvg, x * 16, y*16, 16, 16);
 	nvgFill(nvg);
+	nvgFontSize(nvg, 4);
+	nvgFillColor(nvg, nvgRGBA(255, 255, 255, 255));
+	nvgText(nvg, x * 16 + 8, y * 16 + 8, va("%i, %i", x, y), 0);
 #endif
-	return collide ? (void*)0x00000001 : nullptr;
+	return gid > 0 ? (void*)0x00000001 : nullptr;
 }
 
 bool isResolvable(void *tile) {
@@ -212,6 +219,12 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 					auto box = Box(p.x * tileSize.x + tileSize.x / 2, (p.y + i * direction.y) * tileSize.y + tileSize.y / 2, tileSize.x, tileSize.y);
 					auto tempSweep = sweepAABB(box, check, delta);
 					sweep = tempSweep.time < sweep.time ? tempSweep : sweep;
+
+					// actually we didn't! sometimes we check too many times.
+					if (sweep.time == 1.0) {
+						xCollided = false;
+						continue;
+					}
 				}
 
 			}
@@ -246,9 +259,16 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 					nvgRect(nvg, (p.x + i * direction.x) * tileSize.x, p.y * tileSize.y, tileSize.x, tileSize.y);
 					nvgStroke(nvg);
 #endif
+					// we found a collision on x, calculate the time of the collision
 					auto box = Box((p.x + i * direction.x) * tileSize.x + tileSize.x / 2, p.y * tileSize.y + tileSize.y / 2, tileSize.x, tileSize.y);
 					auto tempSweep = sweepAABB(box, check, delta);
 					sweep = tempSweep.time < sweep.time ? tempSweep : sweep;
+
+					// actually we didn't! sometimes we check too many times.
+					if (sweep.time == 1.0) {
+						yCollided = false;
+						continue;
+					}
 				}
 			}
 
@@ -274,13 +294,6 @@ void MapScene::Render() {
 	SDL_GetMouseState(&x, &y);
 	Vec2 delta = Vec2(x - body->pos.x, y - body->pos.y);
 	Vec2 tileSize = Vec2(16, 16);
-
-	// box
-	nvgBeginPath(nvg);
-	nvgStrokeColor(nvg, nvgRGBA(255, 0, 0, 255));
-	nvgStrokeWidth(nvg, 1);
-	nvgRect(nvg, body->pos.x - body->half.x, body->pos.y - body->half.y, body->size.x, body->size.y);
-	nvgStroke(nvg);
 
 	auto sweep = _sweepTiles(*body, delta, tileSize, &getTile, &isResolvable);
 

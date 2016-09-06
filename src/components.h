@@ -3,16 +3,8 @@
 #include "tmx.h"
 #include "local.h"
 
-struct Body {
-	Body(double x, double y, double w, double h) : x(x), y(y), w(w), h(h) {}
-	double x, y;
-	double w, h;
-	Vec2 min() {
-		return Vec2(x - w / 2, y - h / 2);
-	}
-	Vec2 max() {
-		return Vec2(x + w / 2, y + h / 2);
-	}
+struct Body : public Box {
+	Body(double x, double y, double w, double h) : Box(x, y, w, h) {	}
 };
 
 struct Movable {

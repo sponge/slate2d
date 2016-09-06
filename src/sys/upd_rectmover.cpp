@@ -17,8 +17,8 @@ void RectMoverSystem::update(EntityManager &es, double dt) {
 
 		auto move = Move(&es, ent, dx, dy, hitEnt);
 
-		body->x = move.pos.x;
-		body->y = move.pos.y;
+		body->pos.x = move.pos.x;
+		body->pos.y = move.pos.y;
 
 		if (move.hit.valid) {
 			auto dotprod = (dx * move.hit.normal.y + dy * move.hit.normal.x) * (1.0 - move.time);
@@ -26,8 +26,8 @@ void RectMoverSystem::update(EntityManager &es, double dt) {
 			dy = dotprod * move.hit.normal.x;
 
 			move = Move(&es, ent, dx, dy, hitEnt);
-			body->x = move.pos.x;
-			body->y = move.pos.y;
+			body->pos.x = move.pos.x;
+			body->pos.y = move.pos.y;
 
 			// if the second move is still blocked, reverse direction
 			if (dx != 0 && move.hit.normal.x != 0) {
@@ -40,12 +40,12 @@ void RectMoverSystem::update(EntityManager &es, double dt) {
 		}
 
 		if (body->max().x > WORLD_WIDTH || body->min().x < 0) {
-			body->x = body->min().x < 0 ? body->w / 2 : WORLD_WIDTH - body->w / 2;
+			body->pos.x = body->min().x < 0 ? body->size.x / 2 : WORLD_WIDTH - body->size.x / 2;
 			movable->dx *= -1;
 		}
 
 		if (body->max().y > WORLD_HEIGHT || body->min().y < 0) {
-			body->y = body->min().y < 0 ? body->h / 2 : WORLD_HEIGHT - body->h / 2;
+			body->pos.y = body->min().y < 0 ? body->size.y / 2 : WORLD_HEIGHT - body->size.y / 2;
 			movable->dy *= -1;
 		}
 

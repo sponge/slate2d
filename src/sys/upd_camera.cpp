@@ -8,7 +8,7 @@ void CameraUpdateSystem::update(EntityManager &es, double dt) {
 		}
 
 		if (cam->target != nullptr) {
-			cam->Move(cam->target->x, cam->target->y);
+			cam->Move(cam->target->pos.x, cam->target->pos.y);
 		}
 	}
 }

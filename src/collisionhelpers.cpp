@@ -3,14 +3,14 @@
 const Sweep Move(EntityManager * es, Entity ent, double dx, double dy, Entity &hitEnt)
 {
 	auto body = ent.component<Body>();
-	auto box = Box(body->x, body->y, body->w, body->h);
+	auto box = Box(body->pos.x, body->pos.y, body->size.x, body->size.y);
 
 	auto broad = getBroadPhaseBox(box, Vec2(dx, dy));
 
 	Sweep sweep;
 	sweep.time = 1.0;
-	sweep.pos.x = body->x + dx;
-	sweep.pos.y = body->y + dy;
+	sweep.pos.x = body->pos.x + dx;
+	sweep.pos.y = body->pos.y + dy;
 
 	for (auto ent2 : es->entities_with_components<Body>()) {
 		if (ent == ent2) {
@@ -18,7 +18,7 @@ const Sweep Move(EntityManager * es, Entity ent, double dx, double dy, Entity &h
 		}
 
 		auto body2 = ent2.component<Body>();
-		auto box2 = Box(body2->x, body2->y, body2->w, body2->h);
+		auto box2 = Box(body2->pos.x, body2->pos.y, body2->size.x, body2->size.y);
 
 		if (intersectAABB(broad, box2).valid == false) {
 			continue;

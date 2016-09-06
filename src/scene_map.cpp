@@ -6,6 +6,7 @@
 #include "local.h"
 
 NVGcontext *nvg;
+Body *body;
 
 void* nvg_img_load_func(const char *path) {
 	Img *img = new Img();
@@ -63,6 +64,7 @@ void MapScene::Startup(ClientInfo* info) {
 
 	auto camera = world.assign<Camera>(0, 0, inf->width, inf->height);
 	camera->target = boxBody.get();
+	body = boxBody.get();
 
 	updateSystems.push_back(new InputSystem());
 	updateSystems.push_back(new PlayerSystem());
@@ -270,24 +272,23 @@ void MapScene::Render() {
 
 	int x, y;
 	SDL_GetMouseState(&x, &y);
-	auto box = Box(645, 326, 50, 100);
-	Vec2 delta = Vec2(x - box.pos.x, y - box.pos.y);
+	Vec2 delta = Vec2(x - body->pos.x, y - body->pos.y);
 	Vec2 tileSize = Vec2(16, 16);
 
 	// box
 	nvgBeginPath(nvg);
 	nvgStrokeColor(nvg, nvgRGBA(255, 0, 0, 255));
 	nvgStrokeWidth(nvg, 1);
-	nvgRect(nvg, box.pos.x - box.half.x, box.pos.y - box.half.y, box.size.x, box.size.y);
+	nvgRect(nvg, body->pos.x - body->half.x, body->pos.y - body->half.y, body->size.x, body->size.y);
 	nvgStroke(nvg);
 
-	auto sweep = _sweepTiles(box, delta, tileSize, &getTile, &isResolvable);
+	auto sweep = _sweepTiles(*body, delta, tileSize, &getTile, &isResolvable);
 
 	// destination box
 	nvgBeginPath(nvg);
 	nvgStrokeColor(nvg, nvgRGBA(0, 255, 0, 255));
 	nvgStrokeWidth(nvg, 1);
-	nvgRect(nvg, sweep.pos.x - box.half.x, sweep.pos.y - box.half.y, box.size.x, box.size.y);
+	nvgRect(nvg, sweep.pos.x - body->half.x, sweep.pos.y - body->half.y, body->size.x, body->size.y);
 	nvgStroke(nvg);
 }
 

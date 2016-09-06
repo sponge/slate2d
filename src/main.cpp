@@ -66,8 +66,8 @@ int main(int argc, char *argv[]) {
 
 	atexit(SDL_Quit);
 
-	auto r_width = Cvar_Get("r_width", "1280", 0);
-	auto r_height = Cvar_Get("r_height", "720", 0);
+	auto vid_width = Cvar_Get("vid_width", "1280", 0);
+	auto vid_height = Cvar_Get("vid_height", "720", 0);
 
 #ifndef _WIN32
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile::SDL_GL_CONTEXT_PROFILE_CORE);
@@ -75,8 +75,8 @@ int main(int argc, char *argv[]) {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 #endif
 
-	inf.width = r_width->integer;
-	inf.height = r_height->integer;
+	inf.width = vid_width->integer;
+	inf.height = vid_height->integer;
 	inf.window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, inf.width, inf.height, SDL_WINDOW_OPENGL);
 
 	if (inf.window == NULL) {

@@ -114,10 +114,10 @@ int main(int argc, char *argv[]) {
 	auto sm = new SceneManager(inf);
 	Scene* main_scene = new MapScene();
 	sm->Switch(main_scene);
-	auto console_scene = new ConsoleScene();
-	sm->Push(console_scene);
 	auto perf_scene = new PerfScene();
 	sm->Push(perf_scene);
+	auto console_scene = new ConsoleScene();
+	sm->Push(console_scene);
 
 	bool quit = false;
 	SDL_Event ev;

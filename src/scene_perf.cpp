@@ -17,7 +17,7 @@ void PerfScene::Update(double dt) {
 void PerfScene::Render() {
 	NVGcontext *nvg = i->nvg;
 
-	renderGraph(nvg, 5, 5, &fps);
+	renderGraph(nvg, i->width - 205, 5, &fps);
 }
 
 void PerfScene::Teardown() {

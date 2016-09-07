@@ -29,12 +29,33 @@
 #include "scene_console.h"
 
 ClientInfo inf;
+SceneManager *sm;
+Scene* mainScene;
+
+void Cmd_Scene_f(void) {
+	auto num = atoi(Cmd_Argv(1));
+	if (num == 0 || num > 3) {
+		printf("invalid scene, specify 1, 2, or 3\n");
+		return;
+	}
+	Scene* newScene;
+	switch (num) {
+	case 1: newScene = new MainScene(); break;
+	case 2: newScene = new TestScene(); break;
+	case 3: newScene = new MapScene(); break;
+	}
+
+	sm->Replace(mainScene, newScene);
+	delete(mainScene);
+	mainScene = newScene;
+}
 
 int main(int argc, char *argv[]) {
 #ifdef DEBUG
 	testCollision();
 #endif
 
+	// handle command line parsing. combine into one string and pass it in.
 	int len, i;
 	for (len = 1, i = 1; i < argc; i++) {
 		len += strlen(argv[i]) + 1;
@@ -49,11 +70,12 @@ int main(int argc, char *argv[]) {
 		}
 		strcat(cmdline, argv[i]);
 	}
-
 	Com_ParseCommandLine(cmdline);
+	free(cmdline);
 
 	Cbuf_Init();
 	Cmd_Init();
+	Cmd_AddCommand("scene", Cmd_Scene_f);
 	Cvar_Init();
 
 	Com_AddStartupCommands();
@@ -108,11 +130,11 @@ int main(int argc, char *argv[]) {
 
 	SDL_GL_MakeCurrent(inf.window, context);
 
-	struct NVGcontext* vg = nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES);
+	struct NVGcontext* vg = nvgCreateGL3(NVG_STENCIL_STROKES);
 	inf.nvg = vg;
 
-	auto sm = new SceneManager(inf);
-	Scene* mainScene = new MapScene();
+	sm = new SceneManager(inf);
+	mainScene = new MapScene();
 	sm->Switch(mainScene);
 	auto perf_scene = new PerfScene();
 	sm->Push(perf_scene);
@@ -134,30 +156,7 @@ int main(int argc, char *argv[]) {
 		Cbuf_Execute();
 
 		while (SDL_PollEvent(&ev)) {
-			if (ev.type == SDL_KEYUP) {
-				Scene* newScene;
-				switch (ev.key.keysym.sym) {
-				case SDLK_1:
-					newScene = new MainScene();
-					sm->Replace(mainScene, newScene);
-					delete(mainScene);
-					mainScene = newScene;
-				break;
-				case SDLK_2:
-					newScene = new TestScene();
-					sm->Replace(mainScene, newScene);
-					delete(mainScene);
-					mainScene = newScene;
-				break;
-				case SDLK_3:
-					newScene = new MapScene();
-					sm->Replace(mainScene, newScene);
-					delete(mainScene);
-					mainScene = newScene;
-				break;
-				}
-			}
-			else if (ev.type == SDL_QUIT) {
+			if (ev.type == SDL_QUIT) {
 				quit = 1;
 				break;
 			}

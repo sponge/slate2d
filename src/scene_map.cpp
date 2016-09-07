@@ -143,8 +143,6 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 			// the deepest point inside the sweep
 			opp = cornerArr[(i + 2) % 4];
 
-			// assign a direction vector so we can project outward from the corner toward the 2 corners
-			// (used to loop from position to testing box width/height)
 #ifdef DEBUG
 			// pos of the 2 corners that are min/max bounds of the line
 			nonIntersect[0] = cornerArr[(i + 1) % 4];
@@ -153,6 +151,9 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 			break;
 		};
 	}
+
+	// assign a direction vector so we can project outward from the corner toward the 2 corners
+	// (used to loop from position to testing box width/height)
 	direction = Vec2(0 - sign(delta.x), 0 - sign(delta.y));
 
 #ifdef DEBUG
@@ -173,114 +174,116 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 #endif
 
 	// size of the check box in tiles, rounded up.
+	// FIXME: this doesn't work, i need to find out how many tiles it goes over at the point of the line
 	auto boxTileSize = Vec2(ceil(check.size.x / tileSize.x), ceil(check.size.y / tileSize.y));
+	//boxTileSize.x = Cvar_Get("size_x", "0", 0)->integer;
+	//boxTileSize.y = Cvar_Get("size_y", "0", 0)->integer;
 
-	// tile position of start and end of move
-	auto startTile = Vec2(floor(opp.x / tileSize.x), floor(opp.y / tileSize.y));
-	auto endTile = Vec2(floor((opp.x + delta.x) / tileSize.x), floor((opp.y + delta.y) / tileSize.y));
+	// http://playtechs.blogspot.com/2007/03/raytracing-on-grid.html
+	auto x0 = opp.x / 16;
+	auto x1 = (opp.x + delta.x) / 16;
+	auto y0 = opp.y / 16;
+	auto y1 = (opp.y + delta.y) / 16;
 
-	// adapted from http://www.redblobgames.com/grids/line-drawing.html - 2.1 orthagonal steps
-	auto d = Vec2(endTile.x - startTile.x, endTile.y - startTile.y);
-	auto n = Vec2(abs(d.x), abs(d.y));
+	double dx = fabs(x1 - x0);
+	double dy = fabs(y1 - y0);
 
-	// current point we're stepping through
-	auto p = startTile;
+	int x = int(floor(x0));
+	int y = int(floor(y0));
 
-	// whether we found a collision in either axis
-	auto xCollided = false, yCollided = false;
+	int n = 1;
+	int x_inc, y_inc;
+	double error;
 
-	// step through the tiles
-	for (int ix = 0, iy = 0; (ix < n.x || iy < n.y);) {
-		// break if we've found collisions in both axises
-		if (xCollided == true && yCollided == true) {
-			break;
-		}
+	if (dx == 0) {
+		x_inc = 0;
+		error = std::numeric_limits<double>::infinity();
+	}
+	else if (x1 > x0) {
+		x_inc = 1;
+		n += int(floor(x1)) - x;
+		error = (floor(x0) + 1 - x0) * dy;
+	}
+	else {
+		x_inc = -1;
+		n += x - int(floor(x1));
+		error = (x0 - floor(x0)) * dy;
+	}
 
-		if ((0.5 + ix) / n.x < (0.5 + iy) / n.y) {
-			// step is in the x direction
-			p.x += sign(d.x);
-			ix++;
+	if (dy == 0) {
+		y_inc = 0;
+		error -= std::numeric_limits<double>::infinity();
+	}
+	else if (y1 > y0) {
+		y_inc = 1;
+		n += int(floor(y1)) - y;
+		error -= (floor(y0) + 1 - y0) * dx;
+	}
+	else {
+		y_inc = -1;
+		n += y - int(floor(y1));
+		error -= (y0 - floor(y0)) * dx;
+	}
 
-			if (xCollided == true) {
-				continue;
-			}
+	for (; n > 0; --n) {
+		if (error > 0) {
+			// step is in the y direction
+			y += y_inc;
 
 			// start from the outside corner and move toward the center line looking for a hit
-			for (int i = 0; i <= boxTileSize.y; i++) {
-				auto t = getTile(p.x, p.y + i * direction.y);
+			for (int i = 0; i <= boxTileSize.x; i++) {
+				auto lx = x + i * direction.x;
+				auto ly = y;
+				auto t = getTile(lx, ly);
 				if (t == nullptr) {
 					continue;
 				}
-				xCollided = isResolvable(t);
+				auto xCollided = isResolvable(t);
 				if (xCollided) {
 #ifdef DEBUG
 					// draw a box around a confirmed hit
 					nvgBeginPath(nvg);
-					nvgStrokeColor(nvg, nvgRGBA(255, 255, 0, 255));
-					nvgStrokeWidth(nvg, 1);
-					nvgRect(nvg, p.x * tileSize.x, (p.y + i * direction.y) * tileSize.y, tileSize.x, tileSize.y);
-					nvgStroke(nvg);
+					nvgRect(nvg, lx * tileSize.x, ly * tileSize.y, tileSize.x, tileSize.y);
 #endif
 					// we found a collision on x, calculate the time of the collision
-					auto box = Box(p.x * tileSize.x + tileSize.x / 2, (p.y + i * direction.y) * tileSize.y + tileSize.y / 2, tileSize.x, tileSize.y);
-					auto tempSweep = sweepAABB(box, check, delta);
-					sweep = tempSweep.time < sweep.time ? tempSweep : sweep;
-
-					// actually we didn't! sometimes we check too many times.
-					if (sweep.time == 1.0) {
-						xCollided = false;
-						continue;
+					auto box = Box(lx * tileSize.x + tileSize.x / 2, ly * tileSize.y + tileSize.y / 2, tileSize.x, tileSize.y);
+					sweep = sweepAABB(box, check, delta);
+					if (sweep.time < 1.0) {
+						return sweep;
 					}
 				}
-
 			}
 
-			// we don't need to go past the current column so if we've found the other collision we can stop now
-			if (yCollided) {
-				xCollided = true;
-			}
+			error -= dx;
 		}
 		else {
-			// do the same thing for the y axis
-			p.y += sign(d.y);
-			iy++;
+			// step is in the x direction
+			x += x_inc;
 
-			if (yCollided == true) {
-				continue;
-			}
-
-			for (int i = 0; i <= boxTileSize.x; i++) {
-				auto t = getTile(p.x + i * direction.x, p.y);
+			for (int i = 0; i <= boxTileSize.y; i++) {
+				auto lx = x;
+				auto ly = y + i * direction.y;
+				auto t = getTile(lx, ly);
 				if (t == nullptr) {
 					continue;
 				}
-				yCollided = isResolvable(t);
+				auto yCollided = isResolvable(t);
 				if (yCollided) {
 #ifdef DEBUG
 					// draw a box around a confirmed hit
 					nvgBeginPath(nvg);
-					nvgStrokeColor(nvg, nvgRGBA(0, 255, 255, 255));
-					nvgStrokeWidth(nvg, 1);
-					nvgRect(nvg, (p.x + i * direction.x) * tileSize.x, p.y * tileSize.y, tileSize.x, tileSize.y);
-					nvgStroke(nvg);
+					nvgRect(nvg, lx * tileSize.x, ly * tileSize.y, tileSize.x, tileSize.y);
 #endif
 					// we found a collision on x, calculate the time of the collision
-					auto box = Box((p.x + i * direction.x) * tileSize.x + tileSize.x / 2, p.y * tileSize.y + tileSize.y / 2, tileSize.x, tileSize.y);
-					auto tempSweep = sweepAABB(box, check, delta);
-					sweep = tempSweep.time < sweep.time ? tempSweep : sweep;
-
-					// actually we didn't! sometimes we check too many times.
-					if (sweep.time == 1.0) {
-						yCollided = false;
-						continue;
+					auto box = Box(lx * tileSize.x + tileSize.x / 2, ly * tileSize.y + tileSize.y / 2, tileSize.x, tileSize.y);
+					sweep = sweepAABB(box, check, delta);
+					if (sweep.time < 1.0) {
+						return sweep;
 					}
 				}
 			}
 
-			// we don't need to go past the current column so if we've found the other collision we can stop now
-			if (xCollided) {
-				yCollided = true;
-			}
+			error += dy;
 		}
 	}
 

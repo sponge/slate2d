@@ -7,14 +7,14 @@ solution "game"
       kind "ConsoleApp"
       language "C++"
       files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
-      sysincludedirs { "include", "nanovg", "tmx" }
+      sysincludedirs { "include", "nanovg", "tmx", "imgui" }
       debugdir "."
       targetdir "bin/%{cfg.buildcfg}"
       links { "nanovg", "tmx" }
 
       configuration { "windows" }
          libdirs { "lib/Win32" }
-         links { "SDL2", "SDL2main", "glew32s", "opengl32", "libxml2" }
+         links { "SDL2", "SDL2main", "glew32s", "opengl32", "libxml2", "imgui" }
          defines { "_CRT_SECURE_NO_WARNINGS" }
 
          postbuildcommands {
@@ -60,3 +60,9 @@ solution "game"
 		configuration "Release"
 			defines { "NDEBUG" }
 			flags { "Optimize", "ExtraWarnings"}
+
+	project "imgui"
+	  language "C++"
+	  kind "StaticLib"
+	  files { "imgui/**.cpp", "imgui/**.h" }
+      targetdir("build")

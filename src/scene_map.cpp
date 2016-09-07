@@ -73,7 +73,6 @@ void MapScene::Startup(ClientInfo* info) {
 	updateSystems.push_back(new InputSystem());
 	updateSystems.push_back(new PlayerSystem());
 	updateSystems.push_back(new CameraUpdateSystem());
-	//updateSystems.push_back(new RectMoverSystem());
 
 	renderSystems.push_back(new CameraDrawSystem());
 	renderSystems.push_back(new TileMapDrawSystem());
@@ -87,7 +86,7 @@ void MapScene::Update(double dt) {
 }
 
 void* getTile(int x, int y) {
-	auto gid = (wlayer->content.gids[(y*tmap->width) + x]) & TMX_FLIP_BITS_REMOVAL;
+	auto gid = (x < 0 || y < 0) ? 0 : (wlayer->content.gids[(y*tmap->width) + x]) & TMX_FLIP_BITS_REMOVAL;
 #ifdef DEBUG
 	nvgBeginPath(nvg);
 	nvgFillColor(nvg, gid > 0 ? nvgRGBA(150, 0, 0, 150) : nvgRGBA(0, 150, 0, 150));
@@ -97,7 +96,7 @@ void* getTile(int x, int y) {
 	nvgFillColor(nvg, nvgRGBA(255, 255, 255, 255));
 	nvgText(nvg, x * 16 + 8, y * 16 + 8, va("%i, %i", x, y), 0);
 #endif
-	return gid > 0 ? (void*)0x00000001 : nullptr;
+	return (void*) gid;
 }
 
 bool isResolvable(void *tile) {

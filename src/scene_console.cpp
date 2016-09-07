@@ -1,11 +1,13 @@
 #include "scene_console.h"
 #include <nanovg.h>
-#include <random>
-#include <tmx.h>
+#include <imgui.h>
+#include "imgui_impl_sdl_gl3.h"
+
+cvar_t *r_showfps;
 
 void ConsoleScene::Startup(ClientInfo* info) {
 	inf = info;
-
+	r_showfps = Cvar_Get("r_showfps", "1", 0);
 #if 0
 	SDL_RWops *io = SDL_RWFromFile("temp.txt", "rb");
 	if (io != NULL) {
@@ -16,33 +18,32 @@ void ConsoleScene::Startup(ClientInfo* info) {
 }
 
 void ConsoleScene::Update(double dt) {
-
-}
-
-void ConsoleScene::Render() {
 	if (!consoleActive) {
 		return;
 	}
 
-	auto nvg = inf->nvg;
+}
 
-	nvgBeginPath(nvg);
-	nvgFillColor(nvg, nvgRGBA(50, 50, 50, 200));
-	nvgRect(nvg, 20, 20, inf->width - 40, 24);
-	nvgFill(nvg);
-
-	nvgFillColor(nvg, nvgRGBA(255, 255, 255, 255));
-	nvgTextAlign(nvg, NVG_ALIGN_LEFT);
-	nvgText(nvg, 20 + 4, 20 + 15, ">", 0);
-	nvgText(nvg, 20 + 16, 20 + 15, currentLine, 0);
-
-#if 0
-	NVGtextRow nvgRows[256] = {};
-	auto rows = nvgTextBreakLines(nvg, history, history + strlen(history), inf->width - 20, &nvgRows[0], 256);
-	for (int i = 0; i < rows; i++) {
-		nvgText(nvg, 10, inf->height / 2 - 36 - 12 * i, nvgRows[i].start, nvgRows[i].end);
+void ConsoleScene::Render() {
+	
+	if (r_showfps->integer) {
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10, 2));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
+		ImGui::SetNextWindowPos(ImVec2(inf->width - 80, 0));
+		ImGui::SetNextWindowSize(ImVec2(80, 0));
+		ImGui::Begin("", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoInputs);
+		ImGui::Text("%.1f FPS\n%.3f ms", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
+		ImGui::End();
+		ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
 	}
-#endif
+
+	if (!consoleActive) {
+		return;
+	}
+	
+	ImGui::ShowTestWindow();
+
 }
 
 void ConsoleScene::Teardown() {

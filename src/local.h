@@ -6,7 +6,7 @@
 
 #include "components.h"
 #include "sweep.h"
-#include "console.h"
+#include "console/console.h"
 
 struct ClientInfo {
 	SDL_Window *window;

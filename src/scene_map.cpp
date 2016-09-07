@@ -61,8 +61,8 @@ void MapScene::Startup(ClientInfo* info) {
 
 	// temp
 	auto ent = es.create();
-	auto boxBody = ent.assign<Body>(0, 0, 14, 28);
-	ent.assign<Movable>(30, 20);
+	auto boxBody = ent.assign<Body>(306, 178, 14, 28);
+	ent.assign<Movable>(0, 0);
 	ent.assign<Renderable>(200, 30, 30, 255);
 	ent.assign<PlayerInput>();
 
@@ -164,6 +164,12 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 		nvgLineTo(nvg, corner.x + delta.x, corner.y + delta.y);
 		nvgStroke(nvg);
 	}
+
+	nvgStrokeColor(nvg, nvgRGBA(0, 0, 255, 255));
+	nvgBeginPath(nvg);
+	nvgMoveTo(nvg, opp.x, opp.y);
+	nvgLineTo(nvg, opp.x + delta.x, opp.y + delta.y);
+	nvgStroke(nvg);
 #endif
 
 	// size of the check box in tiles, rounded up.
@@ -193,9 +199,9 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 		if ((0.5 + ix) / n.x < (0.5 + iy) / n.y) {
 			// step is in the x direction
 			p.x += sign(d.x);
+			ix++;
 
 			if (xCollided == true) {
-				ix++;
 				continue;
 			}
 
@@ -233,14 +239,13 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 			if (yCollided) {
 				xCollided = true;
 			}
-
-			ix++;
 		}
 		else {
 			// do the same thing for the y axis
 			p.y += sign(d.y);
+			iy++;
+
 			if (yCollided == true) {
-				iy++;
 				continue;
 			}
 
@@ -276,8 +281,6 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 			if (xCollided) {
 				yCollided = true;
 			}
-
-			iy++;
 		}
 	}
 

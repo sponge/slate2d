@@ -25,7 +25,7 @@ solution "game"
 
       configuration { "macosx" }
          --libdirs { "lib/osx" }
-         links { "OpenGL.framework", "SDL2.framework", "xml2" }
+         links { "OpenGL.framework", "SDL2.framework", "xml2", "imgui" }
          buildoptions {"-std=c++14", "-stdlib=libc++"}
          linkoptions {"-stdlib=libc++", "-F /Library/Frameworks"}
 

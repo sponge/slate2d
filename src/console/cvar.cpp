@@ -26,6 +26,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <stdlib.h>
 #include <ctype.h>
 
+#ifdef _WIN32
+#define strcasecmp _stricmp
+#endif
+
 cvar_t		*cvar_vars;
 cvar_t		*cvar_cheats;
 int			cvar_modifiedFlags;
@@ -91,7 +95,7 @@ static cvar_t *Cvar_FindVar( const char *var_name ) {
 	hash = generateHashValue(var_name);
 	
 	for (var=hashTable[hash] ; var ; var=var->hashNext) {
-		if (!_stricmp(var_name, var->name)) {
+		if (!strcasecmp(var_name, var->name)) {
 			return var;
 		}
 	}

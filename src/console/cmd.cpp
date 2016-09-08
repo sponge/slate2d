@@ -28,6 +28,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "console.h"
 
+#ifdef _WIN32
+#define strcasecmp _stricmp
+#endif
+
 int			cmd_wait;
 cmd_t		cmd_text;
 byte		cmd_text_buf[MAX_CMD_BUFFER];
@@ -824,7 +828,7 @@ void	Cmd_ExecuteString( const char *text ) {
 	// check registered command functions	
 	for ( prev = &cmd_functions ; *prev ; prev = &cmd->next ) {
 		cmd = *prev;
-		if ( !_stricmp( cmd_argv[0],cmd->name ) ) {
+		if ( !strcasecmp( cmd_argv[0],cmd->name ) ) {
 			// rearrange the links so that the command will be
 			// near the head of the list next time it is used
 			*prev = cmd->next;

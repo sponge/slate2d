@@ -652,7 +652,7 @@ void Cvar_List_f( void ) {
 	for (var = cvar_vars ; var ; var = var->next, i++)
 	{
 		//if (match && !Com_Filter(match, var->name, false)) continue;
-
+		/*
 		if (var->flags & CVAR_SERVERINFO) {
 			Com_Printf("S");
 		} else {
@@ -688,6 +688,7 @@ void Cvar_List_f( void ) {
 		} else {
 			Com_Printf(" ");
 		}
+		*/
 
 		Com_Printf (" %s \"%s\"\n", var->name, var->string);
 	}

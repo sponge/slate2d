@@ -59,6 +59,7 @@ void Com_StartupVariable(const char *match);
 bool Com_AddStartupCommands(void);
 void Cmd_TokenizeString(const char *text_in);
 void Cmd_CommandCompletion(void(*callback)(const char *match, const char *candidate), const char *match);
+void Cvar_CommandCompletion(void(*callback)(const char *match, const char *candidate), const char *match);
 
 // possibly private stuff that's still needed
 

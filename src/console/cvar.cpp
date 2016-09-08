@@ -171,11 +171,11 @@ void Cvar_VariableStringBuffer( const char *var_name, char *buffer, int bufsize 
 Cvar_CommandCompletion
 ============
 */
-void	Cvar_CommandCompletion( void(*callback)(const char *s) ) {
+void	Cvar_CommandCompletion(void(*callback)(const char *match, const char *candidate), const char *match) {
 	cvar_t		*cvar;
 	
 	for ( cvar = cvar_vars ; cvar ; cvar = cvar->next ) {
-		callback( cvar->name );
+		callback(match, cvar->name);
 	}
 }
 

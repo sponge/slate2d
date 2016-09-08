@@ -159,6 +159,7 @@ int ConsoleUI::TextEditCallback(ImGuiTextEditCallbackData* data)
 
 		candidates.clear();
 		Cmd_CommandCompletion(cb, word_start);
+		Cvar_CommandCompletion(cb, word_start);
 
 		if (candidates.Size == 0)
 		{

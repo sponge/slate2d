@@ -10,11 +10,11 @@ solution "game"
       sysincludedirs { "include", "nanovg", "tmx", "imgui" }
       debugdir "."
       targetdir "bin/%{cfg.buildcfg}"
-      links { "nanovg", "tmx" }
+      links { "nanovg", "tmx", "imgui" }
 
       configuration { "windows" }
          libdirs { "lib/Win32" }
-         links { "SDL2", "SDL2main", "glew32s", "opengl32", "libxml2", "imgui" }
+         links { "SDL2", "SDL2main", "glew32s", "opengl32", "libxml2" }
          defines { "_CRT_SECURE_NO_WARNINGS" }
 
          postbuildcommands {
@@ -25,7 +25,7 @@ solution "game"
 
       configuration { "macosx" }
          --libdirs { "lib/osx" }
-         links { "OpenGL.framework", "SDL2.framework", "xml2", "imgui" }
+         links { "OpenGL.framework", "SDL2.framework", "xml2" }
          buildoptions {"-std=c++14", "-stdlib=libc++"}
          linkoptions {"-stdlib=libc++", "-F /Library/Frameworks"}
 

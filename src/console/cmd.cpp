@@ -42,6 +42,17 @@ void __cdecl Com_Error(int level, const char *error, ...) {
 	exit(1);
 }
 
+void Com_Printf(const char *fmt, ...) {
+	va_list		argptr;
+	char		msg[1024];
+
+	va_start(argptr, fmt);
+	vsnprintf(msg, sizeof(msg), fmt, argptr);
+	va_end(argptr);
+
+	printf(msg);
+	Console()->AddLog(msg);
+}
 
 char *CopyString(const char *in) {
 	char	*out;
@@ -579,6 +590,30 @@ static void Com_Crash_f(void) {
 }
 
 /*
+=================
+Com_Clear_f
+
+Clears the console
+=================
+*/
+static void Com_Clear_f(void) {
+	Console()->ClearLog();
+}
+
+/*
+=================
+Com_Quit_f
+
+Quits the game
+=================
+*/
+static void Com_Quit_f(void) {
+	exit(0);
+}
+
+
+
+/*
 =============================================================================
 
 					COMMAND EXECUTION
@@ -761,11 +796,11 @@ void	Cmd_RemoveCommand( const char *cmd_name ) {
 Cmd_CommandCompletion
 ============
 */
-void	Cmd_CommandCompletion( void(*callback)(const char *s) ) {
+void	Cmd_CommandCompletion( void(*callback)(const char *match, const char *candidate), const char *match ) {
 	cmd_function_t	*cmd;
 	
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next) {
-		callback( cmd->name );
+		callback( match, cmd->name );
 	}
 }
 
@@ -811,6 +846,8 @@ void	Cmd_ExecuteString( const char *text ) {
 	if ( Cvar_Command() ) {
 		return;
 	}
+
+	Com_Printf("unknown command %s", text);
 }
 
 /*
@@ -852,5 +889,10 @@ void Cmd_Init (void) {
 	Cmd_AddCommand ("echo",Cmd_Echo_f);
 	Cmd_AddCommand ("wait", Cmd_Wait_f);
 	Cmd_AddCommand ("crash", Com_Crash_f);
+	Cmd_AddCommand ("clear", Com_Clear_f);
+	Cmd_AddCommand ("quit", Com_Quit_f);
+
+	// force the console to init here
+	Console();
 }
 

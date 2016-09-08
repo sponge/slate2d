@@ -13,7 +13,7 @@ tmx_layer *wlayer;
 void* nvg_img_load_func(const char *path) {
 	Img *img = new Img();
 	img->nvg = nvg;
-	img->hnd = nvgCreateImage(nvg, path, 0);
+	img->hnd = nvgCreateImage(nvg, path, NVG_IMAGE_NEAREST);
 	nvgImageSize(img->nvg, img->hnd, &img->w, &img->h);
 	strncpy(img->path, path, sizeof(img->path));
 	return (void*)img;
@@ -94,7 +94,7 @@ void* getTile(int x, int y) {
 	nvgFill(nvg);
 	nvgFontSize(nvg, 4);
 	nvgFillColor(nvg, nvgRGBA(255, 255, 255, 255));
-	nvgText(nvg, x * 16 + 8, y * 16 + 8, va("%i, %i", x, y), 0);
+	nvgText(nvg, x * 16 + 8, y * 16 + 8, va("%i, %i", x, y), nullptr);
 #endif
 	return (void*) gid;
 }

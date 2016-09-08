@@ -57,22 +57,24 @@ int main(int argc, char *argv[]) {
 #endif
 
 	// handle command line parsing. combine into one string and pass it in.
-	int len, i;
-	for (len = 1, i = 1; i < argc; i++) {
-		len += strlen(argv[i]) + 1;
-	}
-
-	char *cmdline = (char *) malloc(len);
-	*cmdline = 0;
-	for (i = 1; i < argc; i++)
-	{
-		if (i > 1) {
-			strcat(cmdline, " ");
+	if (argc > 1) {
+		int len, i;
+		for (len = 1, i = 1; i < argc; i++) {
+			len += strlen(argv[i]) + 1;
 		}
-		strcat(cmdline, argv[i]);
+
+		char *cmdline = (char *)malloc(len);
+		*cmdline = 0;
+		for (i = 1; i < argc; i++)
+		{
+			if (i > 1) {
+				strcat(cmdline, " ");
+			}
+			strcat(cmdline, argv[i]);
+		}
+		Com_ParseCommandLine(cmdline);
+		free(cmdline);
 	}
-	Com_ParseCommandLine(cmdline);
-	free(cmdline);
 
 	Cbuf_Init();
 	Cmd_Init();
@@ -132,9 +134,12 @@ int main(int argc, char *argv[]) {
 	SDL_GL_MakeCurrent(inf.window, context);
 
 	ImGui_ImplSdlGL3_Init(inf.window);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
 
 	struct NVGcontext* vg = nvgCreateGL3(NVG_STENCIL_STROKES);
 	inf.nvg = vg;
+
+	nvgCreateFont(vg, "sans", "base/fonts/Roboto-Regular.ttf");
 
 	sm = new SceneManager(inf);
 	mainScene = new MapScene();

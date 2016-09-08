@@ -224,7 +224,7 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 		error -= (y0 - floor(y0)) * dx;
 	}
 
-	for (; n > 0; --n) {
+	for (; n > 1; --n) {
 		if (error > 0) {
 			// step is in the y direction
 			y += y_inc;
@@ -305,7 +305,7 @@ void MapScene::Render() {
 	// destination box
 	nvgBeginPath(nvg);
 	nvgStrokeColor(nvg, nvgRGBA(0, 255, 0, 255));
-	nvgStrokeWidth(nvg, 1);
+	nvgStrokeWidth(nvg, 0.5);
 	nvgRect(nvg, sweep.pos.x - body->half.x, sweep.pos.y - body->half.y, body->size.x, body->size.y);
 	nvgStroke(nvg);
 }

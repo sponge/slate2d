@@ -1,11 +1,11 @@
-#include "scene_main.h"
+#include "scene_testbounce.h"
 #include <nanovg.h>
 #include <random>
 #include <tmx.h>
 
 #include "sys/systems.h"
 
-void MainScene::Startup(ClientInfo* info) {
+void TestBounceScene::Startup(ClientInfo* info) {
 	inf = info;
 	Entity ent;
 
@@ -32,19 +32,19 @@ void MainScene::Startup(ClientInfo* info) {
 	renderSystems.push_back(new RectDrawSystem());
 }
 
-void MainScene::Update(double dt) {
+void TestBounceScene::Update(double dt) {
 	for (auto sys : updateSystems) {
 		sys->update(es, dt);
 	}
 }
 
-void MainScene::Render() {
+void TestBounceScene::Render() {
 	for (auto sys : renderSystems) {
 		sys->render(es, inf);
 	}
 }
 
-void MainScene::Teardown() {
+void TestBounceScene::Teardown() {
 	for (auto sys : updateSystems) {
 		delete(sys);
 	}

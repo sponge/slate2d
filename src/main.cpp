@@ -24,8 +24,9 @@
 #include "local.h"
 
 #include "scene.h"
-#include "scene_main.h"
+//#include "scene_main.h"
 #include "scene_test.h"
+#include "scene_testbounce.h"
 #include "scene_map.h"
 #include "scene_console.h"
 
@@ -41,7 +42,7 @@ void Cmd_Scene_f(void) {
 	}
 	Scene* newScene;
 	switch (num) {
-	case 1: newScene = new MainScene(); break;
+	case 1: newScene = new TestBounceScene(); break;
 	case 2: newScene = new TestScene(); break;
 	case 3: newScene = new MapScene(); break;
 	}

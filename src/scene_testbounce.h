@@ -4,7 +4,7 @@
 #include "scene.h"
 #include "local.h"
 
-class MainScene : public Scene {
+class TestBounceScene : public Scene {
 public:
 	void Startup(ClientInfo* i) override;
 	void Teardown() override;

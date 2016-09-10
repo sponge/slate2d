@@ -7,10 +7,10 @@ solution "game"
       kind "ConsoleApp"
       language "C++"
       files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
-      sysincludedirs { "include", "nanovg", "tmx", "imgui" }
+      sysincludedirs { "include", "nanovg", "tmx", "imgui", "physfs" }
       debugdir "."
       targetdir "bin/%{cfg.buildcfg}"
-      links { "nanovg", "tmx", "imgui" }
+      links { "nanovg", "tmx", "imgui", "physfs" }
 
       configuration { "windows" }
          libdirs { "lib/Win32" }
@@ -65,4 +65,11 @@ solution "game"
 	  language "C++"
 	  kind "StaticLib"
 	  files { "imgui/**.cpp", "imgui/**.h" }
+      targetdir("build")
+
+    project "physfs"
+      language "C"
+      kind "StaticLib"
+      defines { "_CRT_SECURE_NO_WARNINGS", "DPHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_QPAK", "PHYSFS_INTERNAL_ZLIB"}
+      files { "physfs/**.c", "physfs/**.h" }
       targetdir("build")

@@ -18,13 +18,15 @@
 #include <imgui.h>
 #include "imgui_impl_sdl_gl3.h"
 
+#include <physfs.h>
+
 #define AABB_IMPLEMENTATION
 #include "sweep.h"
 
 #include "local.h"
 
 #include "scene.h"
-//#include "scene_main.h"
+#include "scene_menu.h"
 #include "scene_test.h"
 #include "scene_testbounce.h"
 #include "scene_map.h"
@@ -36,12 +38,13 @@ Scene* mainScene;
 
 void Cmd_Scene_f(void) {
 	auto num = atoi(Cmd_Argv(1));
-	if (num == 0 || num > 3) {
-		Com_Printf("invalid scene, specify 1, 2, or 3\n");
+	if (num < 0 || num > 3) {
+		Com_Printf("invalid scene, specify 0, 1, 2, or 3\n");
 		return;
 	}
 	Scene* newScene;
 	switch (num) {
+	case 0: default: newScene = new MenuScene(); break;
 	case 1: newScene = new TestBounceScene(); break;
 	case 2: newScene = new TestScene(); break;
 	case 3: newScene = new MapScene(); break;
@@ -76,6 +79,9 @@ int main(int argc, char *argv[]) {
 		Com_ParseCommandLine(cmdline);
 		free(cmdline);
 	}
+
+	PHYSFS_init(argv[0]);
+	const char *baseDir = PHYSFS_getBaseDir();
 
 	Cbuf_Init();
 	Cmd_Init();

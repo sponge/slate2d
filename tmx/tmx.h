@@ -72,13 +72,13 @@ typedef union {
 } tmx_user_data;
 
 struct _tmx_prop { /* <properties> and <property> */
-	char *name;
-	char *value;
+	const char *name;
+	const char *value;
 	tmx_property *next;
 };
 
 struct _tmx_img { /* <image> */
-	char *source;
+	const char *source;
 	unsigned int trans; /* bytes : RGB */
 	int uses_trans;
 	unsigned long width, height;
@@ -110,7 +110,7 @@ struct _tmx_tile { /* <tile> */
 
 struct _tmx_ts { /* <tileset> and <tileoffset> */
 	unsigned int firstgid;
-	char *name;
+	const char *name;
 
 	unsigned int tile_width, tile_height;
 	unsigned int spacing, margin;
@@ -140,7 +140,7 @@ struct _tmx_obj { /* <object> */
 	int visible; /* 0 == false */
 	double rotation;
 
-	char *name, *type;
+	const char *name, *type;
 	tmx_property *properties;
 	tmx_object *next;
 };
@@ -152,7 +152,7 @@ struct _tmx_objgr { /* <objectgroup> */
 };
 
 struct _tmx_layer { /* <layer> or <imagelayer> or <objectgroup> */
-	char *name;
+	const char *name;
 	double opacity;
 	int visible; /* 0 == false */
 	int offsetx, offsety;

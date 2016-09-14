@@ -26,7 +26,7 @@ tmx_map* tmx_load(const char *path) {
 	if (!tmx_alloc_func) tmx_alloc_func = realloc;
 	if (!tmx_free_func) tmx_free_func = free;
 
-	map = parse_xml(path);
+	map = parse_tinyxml(path);
 
 	if (map) {
 		if (!mk_map_tile_array(map)) {

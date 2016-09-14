@@ -14,18 +14,16 @@ solution "game"
 
       configuration { "windows" }
          libdirs { "lib/Win32" }
-         links { "SDL2", "SDL2main", "glew32s", "opengl32", "libxml2" }
+         links { "SDL2", "SDL2main", "glew32s", "opengl32" }
          defines { "_CRT_SECURE_NO_WARNINGS" }
 
          postbuildcommands {
-            '{COPY} "%{wks.location}../lib/win32/iconv.dll" "%{cfg.targetdir}"',
-            '{COPY} "%{wks.location}../lib/win32/libxml2.dll" "%{cfg.targetdir}"',
-            '{COPY} "%{wks.location}../lib/win32/SDL2.dll" "%{cfg.targetdir}"',
+            '{COPY} "%{wks.location}../lib/win32/SDL2.dll" "%{cfg.targetdir}"'
          }
 
       configuration { "macosx" }
          --libdirs { "lib/osx" }
-         links { "OpenGL.framework", "SDL2.framework", "xml2" }
+         links { "OpenGL.framework", "SDL2.framework" }
          buildoptions {"-std=c++14", "-stdlib=libc++"}
          linkoptions {"-stdlib=libc++", "-F /Library/Frameworks"}
 
@@ -46,10 +44,10 @@ solution "game"
 		defines { "_CRT_SECURE_NO_WARNINGS" }
 
    project "tmx"
-      language "C"
+      language "C++"
       kind "StaticLib"
       sysincludedirs { "include" }
-      files { "tmx/**.c", "tmx/**.h" }
+      files { "tmx/**.c", "tmx/**.h", "tmx/**.cpp" }
       targetdir("build")
       defines { "_CRT_SECURE_NO_WARNINGS" }
 		

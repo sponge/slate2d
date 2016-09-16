@@ -12,9 +12,8 @@ tmx_map *tmap;
 tmx_layer *wlayer;
 
 void* nvg_img_load_func(const char *path) {
-	auto sz = FS_ReadFile(path, nullptr);
-	auto buffer = malloc(sz);
-	sz = FS_ReadFile(path, &buffer);
+	void *buffer;
+	auto sz = FS_ReadFile(path, &buffer);
 
 	Img *img = new Img();
 	img->nvg = nvg;
@@ -34,16 +33,13 @@ void nvg_img_free_func(void *address) {
 }
 
 void* physfs_file_read_func(const char *path, int *outSz) {
-
-	auto sz = FS_ReadFile(path, nullptr);
-
-	if (PHYSFS_exists(path) == false) {
-		Com_Error(ERR_FATAL, "Couldn't find map %s", path);
-	}
-
-	auto xml = malloc(sz);
+	void *xml;
 
 	*outSz = FS_ReadFile(path, &xml);
+
+	if (outSz < 0) {
+		Com_Error(ERR_FATAL, "Couldn't load file while parsing map %s", path);
+	}
 
 	return (void *)xml;
 }

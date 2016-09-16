@@ -26,11 +26,9 @@ void FS_Init(const char *argv0) {
 	size_t extlen = strlen(archiveExt);
 	char *ext;
 
-	for (i = rc; *i != NULL; i++)
-	{
+	for (i = rc; *i != NULL; i++) {
 		size_t l = strlen(*i);
-		if ((l > extlen) && ((*i)[l - extlen - 1] == '.'))
-		{
+		if ((l > extlen) && ((*i)[l - extlen - 1] == '.')) {
 			ext = (*i) + (l - extlen);
 			if (stricmp(ext, archiveExt) == 0) {
 				PHYSFS_mount(va("%s/base/%s", fs_basepath->string, *i), "/", 0);
@@ -44,8 +42,6 @@ void FS_Init(const char *argv0) {
 }
 
 int FS_ReadFile(const char *path, void **buffer) {
-	// FIXME: this should handle memory allocation instead of the caller
-	// still always close the handle though
 	auto f = PHYSFS_openRead(path);
 
 	if (f == nullptr) {
@@ -57,6 +53,8 @@ int FS_ReadFile(const char *path, void **buffer) {
 	if (buffer == nullptr) {
 		return sz;
 	}
+	
+	*buffer = malloc(sz);
 
 	int read_sz = PHYSFS_read(f, *buffer, 1, sz);
 

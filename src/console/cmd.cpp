@@ -566,9 +566,6 @@ void Cmd_Exec_f( void ) {
 
 	strncpy( filename, Cmd_Argv(1), sizeof( filename ) );
 	Com_DefaultExtension( filename, sizeof( filename ), ".cfg" ); 
-	len = FS_ReadFile(filename, nullptr);
-
-	f = (char *) malloc(len);
 	len = FS_ReadFile(filename, (void **)&f);
 
 	if (len < 0) {
@@ -578,6 +575,7 @@ void Cmd_Exec_f( void ) {
 	Com_Printf ("execing %s\n",Cmd_Argv(1));
 	
 	Cbuf_InsertText (f);
+	free(f);
 }
 
 

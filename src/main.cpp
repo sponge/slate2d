@@ -146,9 +146,8 @@ int main(int argc, char *argv[]) {
 	struct NVGcontext* vg = nvgCreateGL3(NVG_STENCIL_STROKES);
 	inf.nvg = vg;
 
-	auto sz = FS_ReadFile("/fonts/Roboto-Regular.ttf", nullptr);
-	unsigned char *font = (unsigned char *) malloc(sz);
-	sz = FS_ReadFile("/fonts/Roboto-Regular.ttf", (void **)&font);
+	unsigned char *font;
+	auto sz = FS_ReadFile("/fonts/Roboto-Regular.ttf", (void **)&font);
 	nvgCreateFontMem(vg, "sans", font, sz, 1);
 
 	sm = new SceneManager(inf);

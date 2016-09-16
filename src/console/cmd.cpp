@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <stdarg.h>
 
 #include "console.h"
+#include "../local.h"
 
 #ifdef _WIN32
 #define strcasecmp _stricmp
@@ -40,6 +41,12 @@ void __cdecl Com_Error(int level, const char *error, ...) {
 	if (level == ERR_NONE) {
 		return;
 	}
+
+#if defined(_WIN32) && defined(DEBUG)
+	__asm {
+		int 0x03
+	}
+#endif
 
 	Com_Printf(error);
 
@@ -64,6 +71,32 @@ char *CopyString(const char *in) {
 	out = (char *)malloc(strlen(in) + 1);
 	strcpy(out, in);
 	return out;
+}
+
+/*
+==================
+Com_DefaultExtension
+==================
+*/
+void Com_DefaultExtension(char *path, int maxSize, const char *extension) {
+	char	oldPath[MAX_QPATH];
+	char    *src;
+
+	//
+	// if path doesn't have a .EXT, append extension
+	// (extension should include the .)
+	//
+	src = path + strlen(path) - 1;
+
+	while (*src != '/' && src != path) {
+		if (*src == '.') {
+			return;                 // it has an extension
+		}
+		src--;
+	}
+
+	strncpy(oldPath, path, sizeof(oldPath));
+	Com_sprintf(path, maxSize, "%s%s", oldPath, extension);
 }
 
 /*
@@ -522,7 +555,7 @@ Cmd_Exec_f
 ===============
 */
 void Cmd_Exec_f( void ) {
-/*	char	*f;
+	char	*f;
 	int		len;
 	char	filename[MAX_QPATH];
 
@@ -531,18 +564,20 @@ void Cmd_Exec_f( void ) {
 		return;
 	}
 
-	Q_strncpyz( filename, Cmd_Argv(1), sizeof( filename ) );
-	COM_DefaultExtension( filename, sizeof( filename ), ".cfg" ); 
-	len = FS_ReadFile( filename, (void **)&f);
-	if (!f) {
+	strncpy( filename, Cmd_Argv(1), sizeof( filename ) );
+	Com_DefaultExtension( filename, sizeof( filename ), ".cfg" ); 
+	len = FS_ReadFile(filename, nullptr);
+
+	f = (char *) malloc(len);
+	len = FS_ReadFile(filename, (void **)&f);
+
+	if (len < 0) {
 		Com_Printf ("couldn't exec %s\n",Cmd_Argv(1));
 		return;
 	}
 	Com_Printf ("execing %s\n",Cmd_Argv(1));
 	
 	Cbuf_InsertText (f);
-
-	FS_FreeFile (f);*/
 }
 
 

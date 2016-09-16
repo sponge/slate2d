@@ -16,7 +16,7 @@ void Cmd_Dir_f() {
 
 void FS_Init(const char *argv0) {
 	PHYSFS_init(argv0);
-	auto fs_basepath = Cvar_Get("fs_basepath", "base", CVAR_INIT);
+	auto fs_basepath = Cvar_Get("fs_basepath", va("%sbase", PHYSFS_getBaseDir()), CVAR_INIT);
 
 	PHYSFS_mount(fs_basepath->string, "/", 0);
 
@@ -24,11 +24,14 @@ void FS_Init(const char *argv0) {
 }
 
 int FS_ReadFile(const char *path, void **buffer) {
-	if (PHYSFS_exists(path) == false) {
+	// FIXME: this should handle memory allocation instead of the caller
+	// still always close the handle though
+	auto f = PHYSFS_openRead(path);
+
+	if (f == nullptr) {
 		return -1;
 	}
 
-	auto f = PHYSFS_openRead(path);
 	auto sz = PHYSFS_fileLength(f);
 
 	if (buffer == nullptr) {
@@ -36,6 +39,12 @@ int FS_ReadFile(const char *path, void **buffer) {
 	}
 
 	int read_sz = PHYSFS_read(f, *buffer, 1, sz);
+
+	if (read_sz == -1) {
+		Com_Printf("FS err: %s", PHYSFS_getLastError());
+	}
+
+	PHYSFS_close(f);
 
 	return read_sz;
 }

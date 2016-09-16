@@ -41,6 +41,7 @@ typedef void(*xcommand_t) (void);
 void __cdecl Com_Error(int level, const char *error, ...);
 char *CopyString(const char *in);
 char * __cdecl va(char *format, ...);
+void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 
 void Cbuf_Init(void);
 void Cbuf_AddText(const char *text);
@@ -83,6 +84,7 @@ void Com_Printf(const char *fmt, ...);
 #define	MAX_CMD_LINE	1024
 
 #define	BIG_INFO_STRING		8192  // used for system info key only
+#define MAX_QPATH 1024
 
 typedef struct {
 	byte	*data;

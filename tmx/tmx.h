@@ -41,6 +41,7 @@ TMXEXPORT extern void  (*tmx_free_func ) (void *address);             /* free */
    the library to load/free images */
 TMXEXPORT extern void* (*tmx_img_load_func) (const char *path);
 TMXEXPORT extern void  (*tmx_img_free_func) (void *address);
+TMXEXPORT extern void* (*tmx_file_read_func) (const char *path, int *outSz);
 
 /*
 	Data Structures

@@ -80,8 +80,8 @@ int main(int argc, char *argv[]) {
 		free(cmdline);
 	}
 
-	PHYSFS_init(argv[0]);
-	const char *baseDir = PHYSFS_getBaseDir();
+	FS_Init(argv[0]);
+	
 
 	Cbuf_Init();
 	Cmd_Init();
@@ -146,7 +146,10 @@ int main(int argc, char *argv[]) {
 	struct NVGcontext* vg = nvgCreateGL3(NVG_STENCIL_STROKES);
 	inf.nvg = vg;
 
-	nvgCreateFont(vg, "sans", "base/fonts/Roboto-Regular.ttf");
+	auto sz = FS_ReadFile("/fonts/Roboto-Regular.ttf", nullptr);
+	unsigned char *font = (unsigned char *) malloc(sz);
+	sz = FS_ReadFile("/fonts/Roboto-Regular.ttf", (void **)&font);
+	nvgCreateFontMem(vg, "sans", font, sz, 1);
 
 	sm = new SceneManager(inf);
 	mainScene = new MapScene();

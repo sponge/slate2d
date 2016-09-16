@@ -40,7 +40,7 @@ solution "game"
 		kind "StaticLib"
 		includedirs { "nanovg" }
 		files { "nanovg/**.c", "nanovg/**.h" }
-		targetdir("build")
+		targetdir "build"
 		defines { "_CRT_SECURE_NO_WARNINGS" }
 
    project "tmx"
@@ -48,7 +48,7 @@ solution "game"
       kind "StaticLib"
       sysincludedirs { "include" }
       files { "tmx/**.c", "tmx/**.h", "tmx/**.cpp" }
-      targetdir("build")
+      targetdir "build"
       defines { "_CRT_SECURE_NO_WARNINGS" }
 		
 		configuration "Debug"
@@ -63,11 +63,11 @@ solution "game"
 	  language "C++"
 	  kind "StaticLib"
 	  files { "imgui/**.cpp", "imgui/**.h" }
-      targetdir("build")
+      targetdir "build"
 
     project "physfs"
       language "C"
       kind "StaticLib"
       defines { "_CRT_SECURE_NO_WARNINGS", "DPHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_QPAK", "PHYSFS_INTERNAL_ZLIB"}
       files { "physfs/**.c", "physfs/**.h" }
-      targetdir("build")
+      targetdir "build"

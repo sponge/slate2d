@@ -1,6 +1,7 @@
 #include "scene_map.h"
 #include <nanovg.h>
 #include <random>
+#include <physfs.h>
 #include "sys/systems.h"
 #include "sweep.h"
 #include "local.h"
@@ -11,11 +12,18 @@ tmx_map *tmap;
 tmx_layer *wlayer;
 
 void* nvg_img_load_func(const char *path) {
+	auto sz = FS_ReadFile(path, nullptr);
+	auto buffer = malloc(sz);
+	sz = FS_ReadFile(path, &buffer);
+
 	Img *img = new Img();
 	img->nvg = nvg;
-	img->hnd = nvgCreateImage(nvg, path, NVG_IMAGE_NEAREST);
+	img->hnd = nvgCreateImageMem(nvg, NVG_IMAGE_NEAREST, (unsigned char *) buffer, sz);
 	nvgImageSize(img->nvg, img->hnd, &img->w, &img->h);
 	strncpy(img->path, path, sizeof(img->path));
+
+	free(buffer);
+
 	return (void*)img;
 }
 
@@ -25,15 +33,36 @@ void nvg_img_free_func(void *address) {
 	delete(img);
 }
 
+void* physfs_file_read_func(const char *path, int *outSz) {
+
+	auto sz = FS_ReadFile(path, nullptr);
+
+	if (PHYSFS_exists(path) == false) {
+		Com_Error(ERR_FATAL, "Couldn't find map %s", path);
+	}
+
+	auto xml = malloc(sz);
+
+	*outSz = FS_ReadFile(path, &xml);
+
+	return (void *)xml;
+}
+
 void MapScene::Startup(ClientInfo* info) {
+	auto mapName = "maps/smw.tmx";
+
 	inf = info;
 	nvg = info->nvg;
 
 	tmx_img_load_func = nvg_img_load_func;
 	tmx_img_free_func = nvg_img_free_func;
+	tmx_file_read_func = physfs_file_read_func;
 
-	auto map = tmx_load("base/maps/smw.tmx");
-	if (!map) tmx_perror("error");
+	auto map = tmx_load(mapName);
+
+	if (!map) {
+		Com_Error(ERR_FATAL, "Map loading failed");
+	}
 
 	Entity world = es.create();
 	auto tileMap = world.assign<TileMap>();

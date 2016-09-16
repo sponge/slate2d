@@ -32,3 +32,8 @@ struct RenderSystem {
 };
 
 const Sweep Move(EntityManager * es, Entity ent, double dx, double dy, Entity &hitEnt);
+
+// files.cpp
+
+void FS_Init(const char *argv0);
+int FS_ReadFile(const char *path, void **buffer);

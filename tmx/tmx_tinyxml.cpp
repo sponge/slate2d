@@ -510,10 +510,20 @@ static bool parse_tileset(XMLElement *ele, tmx_tileset **ts_headadr, const char 
 		// FIXME: leaky leaky
 		XMLDocument *doc = new XMLDocument();
 		auto ab_path = mk_absolute_path(filename, source);
-		auto err = doc->LoadFile(ab_path);
+		XMLError err;
+
+		if (tmx_file_read_func) {
+			int sz = 0;
+			const char *str = (const char *)tmx_file_read_func(ab_path, &sz);
+			err = doc->Parse(str, sz);
+			tmx_free_func((void*)str);
+		}
+		else {
+			err = doc->LoadFile(ab_path);
+		}
 
 		if (err != XML_SUCCESS) {
-			return res;
+			return false;
 		}
 
 		auto tsNode = doc->FirstChildElement();
@@ -650,16 +660,8 @@ static bool parse_properties(XMLElement *ele, tmx_property **prop_headadr) {
 	return true;
 }
 
-extern "C" tmx_map *parse_tinyxml(const char *filename) {
-	// FIXME: leaky leaky (string ownership issue)
-	XMLDocument *doc = new XMLDocument();
+tmx_map *parse_root_map(XMLDocument *doc, const char *filename) {
 	tmx_map *res = NULL;
-
-	auto err = doc->LoadFile(filename);
-
-	if (err != XML_SUCCESS) {
-		return res;
-	}
 
 	auto mapNode = doc->FirstChildElement();
 	auto name = mapNode->ToElement()->Value();;
@@ -770,7 +772,7 @@ extern "C" tmx_map *parse_tinyxml(const char *filename) {
 		}
 
 		if (!success) {
-			return NULL;
+			return nullptr;
 		}
 
 		mapChild = mapChild->NextSiblingElement();
@@ -780,5 +782,31 @@ extern "C" tmx_map *parse_tinyxml(const char *filename) {
 
 cleanup:
 	tmx_map_free(res);
-	return NULL;
+	return nullptr;
+}
+
+
+extern "C" tmx_map *parse_tinyxml(const char *filename) {
+	// FIXME: leaky leaky (string ownership issue)
+	XMLDocument *doc = new XMLDocument();
+
+	XMLError err;
+
+	if (tmx_file_read_func) {
+		int sz = 0;
+		const char *str = (const char *) tmx_file_read_func(filename, &sz);
+		err = doc->Parse(str, sz);
+		tmx_free_func((void*)str);
+	}
+	else {
+		err = doc->LoadFile(filename);
+	}
+
+	if (err != XML_SUCCESS) {
+		return nullptr;
+	}
+
+	auto res = parse_root_map(doc, filename);
+
+	return res;
 }

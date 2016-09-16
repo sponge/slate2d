@@ -16,6 +16,8 @@ void  (*tmx_free_func ) (void *address) = NULL;
 void* (*tmx_img_load_func) (const char *p) = NULL;
 void  (*tmx_img_free_func) (void *address) = NULL;
 
+void* (*tmx_file_read_func) (const char *path, int *outSz) = NULL;
+
 /*
 	Public functions
 */

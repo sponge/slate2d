@@ -16,9 +16,29 @@ void Cmd_Dir_f() {
 
 void FS_Init(const char *argv0) {
 	PHYSFS_init(argv0);
-	auto fs_basepath = Cvar_Get("fs_basepath", va("%sbase", PHYSFS_getBaseDir()), CVAR_INIT);
+	auto fs_basepath = Cvar_Get("fs_basepath", PHYSFS_getBaseDir(), CVAR_INIT);
 
-	PHYSFS_mount(fs_basepath->string, "/", 0);
+	PHYSFS_mount(va("%s/base", fs_basepath->string), "/", 1);
+
+	const char *archiveExt = "pk3";
+	char **rc = PHYSFS_enumerateFiles("/");
+	char **i;
+	size_t extlen = strlen(archiveExt);
+	char *ext;
+
+	for (i = rc; *i != NULL; i++)
+	{
+		size_t l = strlen(*i);
+		if ((l > extlen) && ((*i)[l - extlen - 1] == '.'))
+		{
+			ext = (*i) + (l - extlen);
+			if (stricmp(ext, archiveExt) == 0) {
+				PHYSFS_mount(va("base/%s",*i), "/", 0);
+			}
+		}
+	}
+
+	PHYSFS_freeList(rc);
 
 	Cmd_AddCommand("dir", Cmd_Dir_f);
 }

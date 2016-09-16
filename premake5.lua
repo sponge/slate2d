@@ -68,6 +68,6 @@ solution "game"
     project "physfs"
       language "C"
       kind "StaticLib"
-      defines { "_CRT_SECURE_NO_WARNINGS", "DPHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_QPAK", "PHYSFS_INTERNAL_ZLIB"}
+      defines { "_CRT_SECURE_NO_WARNINGS", "PHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_QPAK", "PHYSFS_INTERNAL_ZLIB"}
       files { "physfs/**.c", "physfs/**.h" }
       targetdir "build"

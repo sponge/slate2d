@@ -33,7 +33,7 @@ void FS_Init(const char *argv0) {
 		{
 			ext = (*i) + (l - extlen);
 			if (stricmp(ext, archiveExt) == 0) {
-				PHYSFS_mount(va("base/%s",*i), "/", 0);
+				PHYSFS_mount(va("%s/base/%s", fs_basepath->string, *i), "/", 0);
 			}
 		}
 	}

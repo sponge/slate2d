@@ -37,3 +37,7 @@ const Sweep Move(EntityManager * es, Entity ent, double dx, double dy, Entity &h
 
 void FS_Init(const char *argv0);
 int FS_ReadFile(const char *path, void **buffer);
+
+// input.cpp
+
+bool KeyEvent(int key, bool down, unsigned time);

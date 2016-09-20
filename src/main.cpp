@@ -178,7 +178,14 @@ int main(int argc, char *argv[]) {
 				quit = 1;
 				break;
 			}
+			else if (ev.type == SDL_KEYDOWN) {
+				KeyEvent(ev.key.keysym.scancode, true, t);
+			}
+			else if (ev.type == SDL_KEYUP) {
+				//KeyEvent(ev.key.keysym.scancode, false, t);
+			}
 
+			// FIXME: console uses this atm to toggle, should be done through command?
 			sm->Event(&ev);
 		}
 		Cbuf_Execute();

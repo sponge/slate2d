@@ -129,7 +129,7 @@ int Key_StringToKeynum(char *str) {
 		else if (str[0] == '0') {
 			return SDL_SCANCODE_0;
 		}
-		return toupper(str[0]) - 62;
+		return toupper(str[0]) - 61;
 	}
 
 	// check for hex code
@@ -192,7 +192,7 @@ char *Key_KeynumToString(int keynum) {
 	}
 
 	if (keynum >= SDL_SCANCODE_A && keynum <= SDL_SCANCODE_Z) {
-		tinystr[0] = keynum + 62;
+		tinystr[0] = keynum + 61;
 		tinystr[1] = 0;
 		return tinystr;
 	}

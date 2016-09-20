@@ -504,7 +504,6 @@ Toggles a cvar for easy single key binding
 ============
 */
 void Cvar_Toggle_f( void ) {
-	/*
 	int		v;
 
 	if ( Cmd_Argc() != 2 ) {
@@ -516,7 +515,6 @@ void Cvar_Toggle_f( void ) {
 	v = !v;
 
 	Cvar_Set2 (Cmd_Argv(1), va("%i", v), false);
-	*/
 }
 
 /*

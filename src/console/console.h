@@ -160,3 +160,19 @@ void Cvar_SetLatched(const char *var_name, const char *value);
 void Cvar_SetValue(const char *var_name, float value);
 void Cvar_Reset(const char *var_name);
 bool Cvar_Command(void);
+
+// BIND SYSTEM
+
+#include <SDL\SDL_scancode.h>
+
+typedef struct {
+	bool		down;
+	int			repeats;		// if > 1, it is autorepeating
+	char		*binding;
+} qkey_t;
+
+extern	qkey_t		keys[SDL_NUM_SCANCODES];
+
+void CL_InitKeyCommands(void);
+int Key_StringToKeynum(char *str);
+char *Key_KeynumToString(int keynum);

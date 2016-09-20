@@ -87,6 +87,7 @@ int main(int argc, char *argv[]) {
 	Cmd_Init();
 	Cmd_AddCommand("scene", Cmd_Scene_f);
 	Cvar_Init();
+	CL_InitKeyCommands();
 
 	Com_AddStartupCommands();
 	Cbuf_Execute();
@@ -180,6 +181,7 @@ int main(int argc, char *argv[]) {
 
 			sm->Event(&ev);
 		}
+		Cbuf_Execute();
 
 		sm->Update(dt / 1000.0f);
 

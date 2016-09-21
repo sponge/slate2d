@@ -4,6 +4,7 @@
 #include "imgui_impl_sdl_gl3.h"
 
 cvar_t *r_showfps;
+bool consoleActive;
 
 void ConsoleScene::Startup(ClientInfo* info) {
 	inf = info;
@@ -25,7 +26,6 @@ void ConsoleScene::Update(double dt) {
 }
 
 void ConsoleScene::Render() {
-	
 	if (r_showfps->integer) {
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10, 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
@@ -43,9 +43,6 @@ void ConsoleScene::Render() {
 	}
 
 	Console()->Draw("Console", &consoleActive);
-	
-	//ImGui::ShowTestWindow();
-
 }
 
 void ConsoleScene::Teardown() {

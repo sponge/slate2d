@@ -1,17 +1,27 @@
 #include "systems.h"
+#include "../local.h"
 
 void InputSystem::update(EntityManager & es, double dt) {
 	auto *state = SDL_GetKeyboardState(NULL);
 
 	for (auto ent : es.entities_with_components<PlayerInput>()) {
 		auto input = ent.component<PlayerInput>();
-		input->left = state[SDL_SCANCODE_LEFT] != 0;
-		input->right = state[SDL_SCANCODE_RIGHT] != 0;
-		input->up = state[SDL_SCANCODE_UP] != 0;
-		input->down = state[SDL_SCANCODE_DOWN] != 0;
-		input->jump = state[SDL_SCANCODE_Z] != 0;
-		input->attack = state[SDL_SCANCODE_X] != 0;
-		input->run = state[SDL_SCANCODE_A] != 0;
-		input->menu = state[SDL_SCANCODE_RETURN] != 0;
+		if (consoleActive) {
+			input->left = false;
+			input->right = false;
+			input->up = false;
+			input->down = false;
+			input->jump = false;
+			input->attack = false;
+			input->menu = false;
+			continue;
+		}
+		input->left = CL_KeyState(&in_1_left) > 0;
+		input->right = CL_KeyState(&in_1_right) > 0;
+		input->up = CL_KeyState(&in_1_up) > 0;
+		input->down = CL_KeyState(&in_1_down) > 0;
+		input->jump = CL_KeyState(&in_1_jump) > 0;
+		input->attack = CL_KeyState(&in_1_attack) > 0;
+		input->menu = CL_KeyState(&in_1_menu) > 0;
 	}
 }

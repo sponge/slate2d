@@ -1,8 +1,6 @@
 #include "systems.h"
 
 void PlayerSystem::update(EntityManager & es, double dt) {
-	auto *state = SDL_GetKeyboardState(NULL);
-
 	for (auto ent : es.entities_with_components<PlayerInput, Body, Movable>()) {
 		auto input = ent.component<PlayerInput>();
 		auto body = ent.component<Body>();

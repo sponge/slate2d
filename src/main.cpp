@@ -35,6 +35,7 @@
 ClientInfo inf;
 SceneManager *sm;
 Scene* mainScene;
+int frame_msec, com_frameTime;
 
 void Cmd_Scene_f(void) {
 	auto num = atoi(Cmd_Argv(1));
@@ -88,8 +89,14 @@ int main(int argc, char *argv[]) {
 	Cmd_AddCommand("scene", Cmd_Scene_f);
 	Cvar_Init();
 	CL_InitKeyCommands();
+	CL_InitInput();
 
 	Com_AddStartupCommands();
+
+	Cbuf_AddText("exec default.cfg\n");
+	if (PHYSFS_exists("autoexec.cfg")) {
+		Cbuf_AddText("exec autoexec.cfg\n");
+	}
 	Cbuf_Execute();
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -163,11 +170,9 @@ int main(int argc, char *argv[]) {
 	int prevt = SDL_GetTicks();
 
 	while (!quit) {
-		int t, dt;
-
-		t = SDL_GetTicks();
-		dt = t - prevt;
-		prevt = t;
+		com_frameTime = SDL_GetTicks();
+		frame_msec = com_frameTime - prevt;
+		prevt = com_frameTime;
 
 		Cbuf_Execute();
 
@@ -178,28 +183,31 @@ int main(int argc, char *argv[]) {
 				quit = 1;
 				break;
 			}
-			else if (ev.type == SDL_KEYDOWN) {
-				KeyEvent(ev.key.keysym.scancode, true, t);
-			}
-			else if (ev.type == SDL_KEYUP) {
-				//KeyEvent(ev.key.keysym.scancode, false, t);
+
+			if (ev.type == SDL_KEYUP) {
+				KeyEvent(ev.key.keysym.scancode, false, com_frameTime);
 			}
 
-			// FIXME: console uses this atm to toggle, should be done through command?
-			sm->Event(&ev);
+			auto propagate = sm->Event(&ev);
+			if (!propagate) {
+				continue;
+			}
+
+			if (ev.type == SDL_KEYDOWN) {
+				KeyEvent(ev.key.keysym.scancode, true, com_frameTime);
+			}
 		}
 		Cbuf_Execute();
 
-		sm->Update(dt / 1000.0f);
+		ImGui_ImplSdlGL3_NewFrame(inf.window);
+		sm->Update(frame_msec / 1000.0f);
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		nvgBeginFrame(inf.nvg, inf.width, inf.height, (float)inf.width / inf.height);
-		ImGui_ImplSdlGL3_NewFrame(inf.window);
-
 		sm->Render();
-
 		nvgEndFrame(vg);
+
 		ImGui::Render();
 
 		SDL_GL_SwapWindow(inf.window);

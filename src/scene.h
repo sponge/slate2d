@@ -45,12 +45,14 @@ public:
 		}
 	}
 
-	void Event(SDL_Event *ev) {
-		for (auto s : scenes) {
-			if (s->Event(ev) == false) {
-				break;
+	bool Event(SDL_Event *ev) {
+		for (auto s = scenes.rbegin(); s != scenes.rend(); ++s) {
+			if ((*s)->Event(ev) == false) {
+				return false;
 			}
 		}
+
+		return true;
 	}
 
 	void Push(Scene* newScene) {

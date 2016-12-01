@@ -1,5 +1,5 @@
 #include <physfs.h>
-#include "console\console.h"
+#include "console/console.h"
 #include "local.h"
 
 void Cmd_Dir_f() {
@@ -30,7 +30,7 @@ void FS_Init(const char *argv0) {
 		size_t l = strlen(*i);
 		if ((l > extlen) && ((*i)[l - extlen - 1] == '.')) {
 			ext = (*i) + (l - extlen);
-			if (stricmp(ext, archiveExt) == 0) {
+			if (strcasecmp(ext, archiveExt) == 0) {
 				PHYSFS_mount(va("%s/base/%s", fs_basepath->string, *i), "/", 0);
 			}
 		}

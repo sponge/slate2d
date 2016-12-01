@@ -163,7 +163,7 @@ bool Cvar_Command(void);
 
 // BIND SYSTEM
 
-#include <SDL\SDL_scancode.h>
+#include <SDL/SDL_scancode.h>
 
 typedef struct {
 	bool		down;

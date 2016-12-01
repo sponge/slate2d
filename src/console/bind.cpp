@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "console.h"
-#include <SDL\SDL_keyboard.h>
+#include <SDL/SDL_keyboard.h>
 
 qkey_t		keys[SDL_NUM_SCANCODES];
 
@@ -163,7 +163,7 @@ int Key_StringToKeynum(char *str) {
 
 	// scan for a text match
 	for (kn = keynames; kn->name; kn++) {
-		if (!stricmp(str, kn->name))
+		if (!strcasecmp(str, kn->name))
 			return kn->keynum;
 	}
 

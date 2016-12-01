@@ -22,8 +22,7 @@ solution "game"
          }
 
       configuration { "macosx" }
-         --libdirs { "lib/osx" }
-         links { "OpenGL.framework", "SDL2.framework" }
+         links { "OpenGL.framework", "SDL2.framework", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework" }
          buildoptions {"-std=c++14", "-stdlib=libc++"}
          linkoptions {"-stdlib=libc++", "-F /Library/Frameworks"}
 
@@ -50,6 +49,7 @@ solution "game"
       files { "tmx/**.c", "tmx/**.h", "tmx/**.cpp" }
       targetdir "build"
       defines { "_CRT_SECURE_NO_WARNINGS" }
+      buildoptions {"-std=c++14", "-stdlib=libc++"}
 		
 		configuration "Debug"
 			defines { "DEBUG" }

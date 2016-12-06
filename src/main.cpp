@@ -81,6 +81,7 @@ int main(int argc, char *argv[]) {
 		free(cmdline);
 	}
 
+	Com_StartupVariable("fs_basepath");
 	FS_Init(argv[0]);
 	
 
@@ -93,6 +94,10 @@ int main(int argc, char *argv[]) {
 
 	Com_AddStartupCommands();
 
+	if (!PHYSFS_exists("default.cfg")) {
+		Com_Error(ERR_FATAL, "Filesystem error, check fs_basepath is set correctly.\n");
+	}
+
 	Cbuf_AddText("exec default.cfg\n");
 	if (PHYSFS_exists("autoexec.cfg")) {
 		Cbuf_AddText("exec autoexec.cfg\n");
@@ -100,8 +105,7 @@ int main(int argc, char *argv[]) {
 	Cbuf_Execute();
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		std::cerr << "There was an error initing SDL2: " << SDL_GetError() << std::endl;
-		return 1;
+		Com_Error(ERR_FATAL, "There was an error initing SDL2: %s\n", SDL_GetError());
 	}
 
 	atexit(SDL_Quit);
@@ -120,8 +124,7 @@ int main(int argc, char *argv[]) {
 	inf.window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, inf.width, inf.height, SDL_WINDOW_OPENGL);
 
 	if (inf.window == NULL) {
-		Com_Printf("There was an error creating the window: %s\n", SDL_GetError());
-		return 1;
+		Com_Error(ERR_FATAL, "There was an error creating the window: %s\n", SDL_GetError());
 	}
 
 	SDL_GLContext context = SDL_GL_CreateContext(inf.window);
@@ -129,20 +132,17 @@ int main(int argc, char *argv[]) {
 	SDL_GL_SetSwapInterval(0);
 
 	if (context == NULL) {
-		Com_Printf("There was an error creating OpenGL context: %s\n", SDL_GetError());
-		return 1;
+		Com_Error(ERR_FATAL, "There was an error creating OpenGL context: %s\n", SDL_GetError());
 	}
 
 	const unsigned char *version = glGetString(GL_VERSION);
 	if (version == NULL) {
-		Com_Printf("There was an error with OpenGL configuration\n");
-		return 1;
+		Com_Error(ERR_FATAL, "There was an error with OpenGL configuration.\n");
 	}
 
 #ifdef _WIN32
 	if (glewInit() != GLEW_OK) {
-		Com_Printf("Could not init glew.\n");
-		return -1;
+		Com_Error(ERR_FATAL, "Could not init glew.\n");
 	}
 #endif
 
@@ -156,6 +156,7 @@ int main(int argc, char *argv[]) {
 
 	unsigned char *font;
 	auto sz = FS_ReadFile("/fonts/Roboto-Regular.ttf", (void **)&font);
+	assert(sz != -1);
 	nvgCreateFontMem(vg, "sans", font, sz, 1);
 
 	sm = new SceneManager(inf);

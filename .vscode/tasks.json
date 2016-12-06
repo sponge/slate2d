@@ -1,0 +1,25 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "0.1.0",
+  "command": "make",
+  "isShellCommand": true,
+  "args": [
+    "-C",
+    "./build"
+  ],
+  "tasks": [
+    {
+      "taskName": "config=debug_x64",
+      "isBuildCommand": true
+    },
+    {
+      "taskName": "config=release_x64"
+    },
+    {
+      "taskName": "clean"
+    }
+
+  ],
+  "showOutput": "always"
+}

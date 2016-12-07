@@ -20,10 +20,6 @@
 #define TMXEXPORT
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define TMX_FLIPPED_HORIZONTALLY 0x80000000
 #define TMX_FLIPPED_VERTICALLY   0x40000000
 #define TMX_FLIPPED_DIAGONALLY   0x20000000
@@ -238,9 +234,5 @@ extern tmx_error_codes tmx_errno;
 TMXEXPORT void tmx_perror(const char*);
 /* return the error message for the current value of `tmx_errno` */
 TMXEXPORT const char* tmx_strerr(void); /* FIXME errno parameter ? (as strerror) */
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* TMX_H */

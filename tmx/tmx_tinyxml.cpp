@@ -4,10 +4,8 @@
 
 #include "tinyxml2.h"
 
-extern "C" {
 #include "tmx.h"
 #include "tmx_utils.h"
-}
 
 using namespace tinyxml2;
 
@@ -674,6 +672,7 @@ tmx_map *parse_root_map(XMLDocument *doc, const char *filename) {
 	if (!(res = alloc_map())) return NULL;
 
 	const char *value;
+	XMLElement *mapChild;
 
 	value = mapNode->Attribute("orientation");
 	if (!value) {
@@ -749,7 +748,7 @@ tmx_map *parse_root_map(XMLDocument *doc, const char *filename) {
 		res->hexsidelength = atoi(value);
 	}
 
-	auto mapChild = mapNode->FirstChildElement();
+	mapChild = mapNode->FirstChildElement();
 	while (mapChild) {
 		auto name = mapChild->Value();
 		bool success = false;
@@ -786,7 +785,7 @@ cleanup:
 }
 
 
-extern "C" tmx_map *parse_tinyxml(const char *filename) {
+tmx_map *parse_tinyxml(const char *filename) {
 	// FIXME: leaky leaky (string ownership issue)
 	XMLDocument *doc = new XMLDocument();
 

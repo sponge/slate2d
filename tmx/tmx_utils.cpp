@@ -371,7 +371,7 @@ int mk_map_tile_array(tmx_map *map) {
 	}
 
 	/* Allocates the GID indexed tile array */
-	if (!(map->tiles = tmx_alloc_func(NULL, map->tilecount * sizeof(void*)))) {
+	if (!(map->tiles = (tmx_tile **) tmx_alloc_func(NULL, map->tilecount * sizeof(void*)))) {
 		tmx_errno = E_ALLOC;
 		return 0;
 	}

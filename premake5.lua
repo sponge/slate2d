@@ -10,7 +10,7 @@ solution "game"
       sysincludedirs { "include", "nanovg", "tmx", "imgui", "physfs" }
       debugdir "."
       targetdir "bin/%{cfg.buildcfg}"
-      links { "nanovg", "tmx", "imgui", "physfs" }
+      links { "nanovg", "tmx", "imgui", "physfs", "glew" }
 
       configuration { "windows" }
          libdirs { "lib/Win32" }
@@ -59,15 +59,23 @@ solution "game"
 			defines { "NDEBUG" }
 			flags { "Optimize", "ExtraWarnings"}
 
-	project "imgui"
+  project "imgui"
 	  language "C++"
 	  kind "StaticLib"
 	  files { "imgui/**.cpp", "imgui/**.h" }
       targetdir "build"
 
-    project "physfs"
-      language "C"
-      kind "StaticLib"
-      defines { "_CRT_SECURE_NO_WARNINGS", "PHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_QPAK", "PHYSFS_INTERNAL_ZLIB"}
-      files { "physfs/**.c", "physfs/**.h" }
-      targetdir "build"
+  project "physfs"
+    language "C"
+    kind "StaticLib"
+    defines { "_CRT_SECURE_NO_WARNINGS", "PHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_QPAK", "PHYSFS_INTERNAL_ZLIB"}
+    files { "physfs/**.c", "physfs/**.h" }
+    targetdir "build"
+
+  project "glew"
+    language "C++"
+    kind "StaticLib"
+    defines { "GLEW_STATIC" }
+    includedirs { "glew" }
+    files { "glew/**.c", "glew/**.h" }
+    targetdir "build"

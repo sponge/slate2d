@@ -1,12 +1,8 @@
 #include <iostream>
 #include <cmath>
 
-#ifdef _WIN32
 #define GLEW_STATIC
 #include <GL/glew.h>
-#else
-#include <OpenGL/gl3.h>
-#endif
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
@@ -140,11 +136,9 @@ int main(int argc, char *argv[]) {
 		Com_Error(ERR_FATAL, "There was an error with OpenGL configuration.\n");
 	}
 
-#ifdef _WIN32
 	if (glewInit() != GLEW_OK) {
 		Com_Error(ERR_FATAL, "Could not init glew.\n");
 	}
-#endif
 
 	SDL_GL_MakeCurrent(inf.window, context);
 

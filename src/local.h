@@ -7,6 +7,11 @@
 #include "sweep.h"
 #include "console/console.h"
 
+#ifdef _MSC_VER 
+#define strncasecmp _strnicmp
+#define strcasecmp _stricmp
+#endif
+
 struct ClientInfo {
 	SDL_Window *window;
 	NVGcontext *nvg;

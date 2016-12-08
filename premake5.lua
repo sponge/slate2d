@@ -15,7 +15,7 @@ solution "game"
     kind "ConsoleApp"
     language "C++"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
-    sysincludedirs { "include", "nanovg", "tmx", "imgui", "physfs", "entityx" }
+    sysincludedirs { "include", "nanovg", "tmx", "imgui", "physfs", "entityx", "glew" }
     debugdir "."
     targetdir "bin/%{cfg.buildcfg}"
     links { "nanovg", "tmx", "imgui", "physfs", "glew", "entityx" }

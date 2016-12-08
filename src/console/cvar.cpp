@@ -20,15 +20,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 // cvar.c -- dynamic variable tracking
+#include "../local.h"
 #include "console.h"
 
 #include <stdio.h>      /* printf, fgets */
 #include <stdlib.h>
 #include <ctype.h>
-
-#ifdef _WIN32
-#define strcasecmp _stricmp
-#endif
 
 cvar_t		*cvar_vars;
 cvar_t		*cvar_cheats;

@@ -15,10 +15,10 @@ solution "game"
     kind "ConsoleApp"
     language "C++"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
-    sysincludedirs { "include", "nanovg", "tmx", "imgui", "physfs" }
+    sysincludedirs { "include", "nanovg", "tmx", "imgui", "physfs", "entityx" }
     debugdir "."
     targetdir "bin/%{cfg.buildcfg}"
-    links { "nanovg", "tmx", "imgui", "physfs", "glew" }
+    links { "nanovg", "tmx", "imgui", "physfs", "glew", "entityx" }
 
     configuration { "windows" }
       libdirs { "lib/Win32" }
@@ -69,4 +69,12 @@ solution "game"
     defines { "GLEW_STATIC" }
     includedirs { "glew" }
     files { "glew/**.c", "glew/**.h" }
+    targetdir "build"
+
+  project "entityx"
+    language "C++"
+    kind "StaticLib"
+    buildoptions {"-std=c++14", "-stdlib=libc++"}
+    includedirs { "entityx" }
+    files { "entityx/**.cc", "entityx/**.h" }
     targetdir "build"

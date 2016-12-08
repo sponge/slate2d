@@ -2,9 +2,8 @@
 
 #include <nanovg.h>
 #include <SDL/SDL.h>
-#include "entityx.hh"
+#include <entityx/entityx.h> // FIXMEEX: this should be unnecessary but its not
 
-#include "components.h"
 #include "sweep.h"
 #include "console/console.h"
 
@@ -21,17 +20,7 @@ typedef struct Img {
 	char path[64];
 } img_t;
 
-struct System {
-	virtual ~System() {}
-	virtual void update(EntityManager &es, double dt) = 0;
-};
-
-struct RenderSystem {
-	virtual ~RenderSystem() {}
-	virtual void render(EntityManager &es, ClientInfo *inf) = 0;
-};
-
-const Sweep Move(EntityManager * es, Entity ent, double dx, double dy, Entity &hitEnt);
+// const Sweep Move(EntityManager * es, Entity ent, double dx, double dy, Entity &hitEnt); // FIXMEEX
 
 extern int com_frameTime;
 extern int frame_msec;

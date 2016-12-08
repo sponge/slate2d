@@ -13,7 +13,7 @@ public:
 
 private:
 	ClientInfo* inf;
-	EntityManager es;
-	std::vector<System*> updateSystems;
-	std::vector<RenderSystem*> renderSystems;
+	//EntityManager es;
+	//std::vector<System*> updateSystems;
+	//std::vector<RenderSystem*> renderSystems;
 };

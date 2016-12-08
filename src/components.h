@@ -4,27 +4,27 @@
 #include "local.h"
 
 struct Body : public Box {
-	Body(double x, double y, double w, double h) : Box(x, y, w, h) {	}
+	explicit Body(double x, double y, double w, double h) : Box(x, y, w, h) {	}
 };
 
 struct Movable {
-	Movable(double dx, double dy) : dx(dx), dy(dy) {}
+	explicit Movable(double dx, double dy) : dx(dx), dy(dy) {}
 	double dx, dy;
 };
 
 struct Renderable {
-	Renderable(unsigned char r, unsigned char g, unsigned char b, unsigned char a) : r(r), g(g), b(b), a(a) {}
+	explicit Renderable(unsigned char r, unsigned char g, unsigned char b, unsigned char a) : r(r), g(g), b(b), a(a) {}
 	unsigned char r, g, b, a;
 };
 
 struct TileMap {
-	TileMap() {}
+	explicit TileMap() {}
 	tmx_map *map;
 	tmx_layer *worldLayer;
 };
 
 struct Camera {
-	Camera(double x, double y, double w, double h) : size(w, h) {
+	explicit Camera(double x, double y, double w, double h) : size(w, h) {
 		//inf = info;
 		Move(x, y);
 	}
@@ -47,13 +47,7 @@ struct Camera {
 };
 
 struct PlayerInput {
-	PlayerInput() {}
+	explicit PlayerInput() {}
 
 	bool up = false, down = false, left = false, right = false, jump = false, attack = false, menu = false;
 };
-
-using Components = entityx::Components<Body, Movable, Renderable, TileMap, Camera, PlayerInput>;
-using EntityManager = entityx::EntityX<Components>;
-template <typename C>
-using Component = EntityManager::Component<C>;
-using Entity = EntityManager::Entity;

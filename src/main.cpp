@@ -23,9 +23,9 @@
 
 #include "scene.h"
 #include "scene_menu.h"
-#include "scene_test.h"
+//#include "scene_test.h"
 #include "scene_testbounce.h"
-#include "scene_map.h"
+//#include "scene_map.h"
 #include "scene_console.h"
 
 ClientInfo inf;
@@ -43,8 +43,8 @@ void Cmd_Scene_f(void) {
 	switch (num) {
 	case 0: default: newScene = new MenuScene(); break;
 	case 1: newScene = new TestBounceScene(); break;
-	case 2: newScene = new TestScene(); break;
-	case 3: newScene = new MapScene(); break;
+	//case 2: newScene = new TestScene(); break;
+	//case 3: newScene = new MapScene(); break;
 	}
 
 	sm->Replace(mainScene, newScene);
@@ -79,7 +79,6 @@ int main(int argc, char *argv[]) {
 
 	Com_StartupVariable("fs_basepath");
 	FS_Init(argv[0]);
-	
 
 	Cbuf_Init();
 	Cmd_Init();
@@ -154,7 +153,7 @@ int main(int argc, char *argv[]) {
 	nvgCreateFontMem(vg, "sans", font, sz, 1);
 
 	sm = new SceneManager(inf);
-	mainScene = new MapScene();
+	mainScene = new TestBounceScene();
 	sm->Switch(mainScene);
 	auto console_scene = new ConsoleScene();
 	sm->Push(console_scene);
@@ -192,6 +191,7 @@ int main(int argc, char *argv[]) {
 				KeyEvent(ev.key.keysym.scancode, true, com_frameTime);
 			}
 		}
+		
 		Cbuf_Execute();
 
 		ImGui_ImplSdlGL3_NewFrame(inf.window);

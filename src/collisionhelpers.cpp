@@ -1,5 +1,5 @@
 #include "local.h"
-
+/*
 const Sweep Move(EntityManager * es, Entity ent, double dx, double dy, Entity &hitEnt)
 {
 	auto body = ent.component<Body>();
@@ -33,3 +33,4 @@ const Sweep Move(EntityManager * es, Entity ent, double dx, double dy, Entity &h
 
 	return sweep;
 }
+*/

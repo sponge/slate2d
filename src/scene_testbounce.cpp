@@ -37,10 +37,7 @@ private:
 
 class TestBounceWorld : public ex::EntityX {
 public:
-  explicit TestBounceWorld(ClientInfo *inf) {
-		if (inf != nullptr) {
-			systems.add<RectDrawSystem>(inf);
-		}
+  explicit TestBounceWorld() {
     systems.configure();
 
 		std::random_device rand_dev;
@@ -48,8 +45,8 @@ public:
 		std::uniform_real_distribution<double> distr(0, 1);
 
 		for (int i = 0; i < 16; i++) {
-			double x = (i % 4) * (inf->width / 4);
-			double y = floor(i / 4) * (inf->height / 4);
+			double x = (i % 4) * (1280 / 4);
+			double y = floor(i / 4) * (720 / 4);
 			double w = distr(g) * 50 + 40;
 			double h = distr(g) * 50 + 40;
 			double dx = distr(g) * 200 * (x < 2 ? 1 : -1) + 50;
@@ -68,11 +65,16 @@ public:
 };
 
 TestBounceWorld *world;
+ex::SystemManager *rendSys;
 
 void TestBounceScene::Startup(ClientInfo* info) {
 	inf = info;
 
-	world = new TestBounceWorld(inf);
+	world = new TestBounceWorld();
+
+	rendSys = new ex::SystemManager(world->entities, world->events);
+	rendSys->add<RectDrawSystem>(inf);
+	rendSys->configure();
 }
 
 void TestBounceScene::Update(double dt) {
@@ -80,6 +82,7 @@ void TestBounceScene::Update(double dt) {
 }
 
 void TestBounceScene::Render() {
+	rendSys->update_all(0);
 }
 
 void TestBounceScene::Teardown() {

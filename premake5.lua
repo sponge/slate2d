@@ -3,6 +3,9 @@ solution "game"
   location "build"
   platforms {"x86", "x64"}
 
+  configuration { "windows" }
+  	toolset "v141"
+
   configuration "Debug"
     defines { "DEBUG" }
     flags { "Symbols", "ExtraWarnings" }

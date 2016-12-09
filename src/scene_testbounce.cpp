@@ -5,15 +5,14 @@
 #include <entityx/entityx.h>
 
 #include "sys/systems_drw.h"
-//#include "sys/systems_upd.h"
+#include "sys/systems_upd.h"
 #include "components.h"
-
-namespace ex = entityx;
 
 class TestBounceWorld : public ex::EntityX {
 public:
-  explicit TestBounceWorld() {
-    systems.configure();
+	explicit TestBounceWorld() {
+		systems.add<RectMoverSystem>();
+		systems.configure();
 
 		std::random_device rand_dev;
 		std::mt19937 g(rand_dev());
@@ -34,9 +33,9 @@ public:
 		}
   }
 
-  void update(ex::TimeDelta dt) {
+	void update(ex::TimeDelta dt) {
 		systems.update_all(dt);
-  }
+	}
 };
 
 TestBounceWorld *world;

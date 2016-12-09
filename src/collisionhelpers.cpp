@@ -1,6 +1,7 @@
 #include "local.h"
-/*
-const Sweep Move(EntityManager * es, Entity ent, double dx, double dy, Entity &hitEnt)
+#include "components.h"
+
+const Sweep Move(ex::EntityManager * es, ex::Entity ent, double dx, double dy, ex::Entity &hitEnt)
 {
 	auto body = ent.component<Body>();
 	auto box = Box(body->pos.x, body->pos.y, body->size.x, body->size.y);
@@ -33,4 +34,3 @@ const Sweep Move(EntityManager * es, Entity ent, double dx, double dy, Entity &h
 
 	return sweep;
 }
-*/

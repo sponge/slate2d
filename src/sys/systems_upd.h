@@ -2,4 +2,7 @@
 #include <entityx/entityx.h>
 #include "../local.h"
 
-namespace ex = entityx;
+struct RectMoverSystem : public ex::System<RectMoverSystem> {
+	explicit RectMoverSystem() {};
+	void update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) override;
+};

@@ -4,13 +4,13 @@
 #include "scene.h"
 #include "local.h"
 
-class TestBounceWorld : public ex::EntityX {
+class TestWorld : public ex::EntityX {
 public:
-	explicit TestBounceWorld();
+	explicit TestWorld();
 	void update(ex::TimeDelta dt);
 };
 
-class TestBounceScene : public Scene {
+class TestScene : public Scene {
 public:
 	void Startup(ClientInfo* i) override;
 	void Teardown() override;
@@ -20,5 +20,5 @@ public:
 private:
 	ClientInfo* inf;
 	ex::SystemManager *rendSys;
-	TestBounceWorld *world;
+	TestWorld *world;
 };

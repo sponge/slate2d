@@ -14,6 +14,6 @@ void MenuScene::Render() {
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::Begin("", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoInputs);
 	ImGui::End();
-	//ImGui::ShowTestWindow();
+	ImGui::ShowTestWindow();
 	ImGui::PopStyleColor();
 }

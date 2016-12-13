@@ -6,6 +6,7 @@
 
 class Scene {
 public:
+	virtual ~Scene() {};
 	virtual void Startup(ClientInfo* i) = 0;
 	virtual void Update(double dt) = 0;
 	virtual void Render() = 0;
@@ -25,7 +26,7 @@ public:
 
 	void Switch(Scene* newScene) {
 		for (auto s : scenes) {
-			delete(s);
+			delete s;
 		}
 		scenes.clear();
 		Push(newScene);
@@ -61,7 +62,7 @@ public:
 
 	void Replace(Scene * oldScene, Scene *newScene) {
 		std::replace(scenes.begin(), scenes.end(), oldScene, newScene);
-		delete(oldScene);
+		delete oldScene;
 		newScene->Startup(&info);
 	}
 
@@ -72,7 +73,7 @@ public:
 
 		auto lastScene = scenes.back();
 		scenes.pop_back();
-		delete(lastScene);
+		delete lastScene;
 	}
 
 	Scene* Current() {

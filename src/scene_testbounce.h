@@ -15,6 +15,7 @@ public:
 	void Startup(ClientInfo* i) override;
 	void Update(double dt) override;
 	void Render() override;
+	~TestBounceScene();
 
 private:
 	ClientInfo* inf;

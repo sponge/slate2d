@@ -50,8 +50,3 @@ void TestBounceScene::Update(double dt) {
 void TestBounceScene::Render() {
 	rendSys->update_all(0);
 }
-
-void TestBounceScene::Teardown() {
-    delete(world);
-    delete(rendSys);
-}

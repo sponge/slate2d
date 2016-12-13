@@ -45,10 +45,6 @@ void ConsoleScene::Render() {
 	Console()->Draw("Console", &consoleActive);
 }
 
-void ConsoleScene::Teardown() {
-
-}
-
 bool ConsoleScene::Event(SDL_Event *ev) {
 	switch (ev->type) {
 	case SDL_KEYDOWN:

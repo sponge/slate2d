@@ -17,7 +17,3 @@ void MenuScene::Render() {
 	//ImGui::ShowTestWindow();
 	ImGui::PopStyleColor();
 }
-
-void MenuScene::Teardown() {
-
-}

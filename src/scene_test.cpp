@@ -72,8 +72,3 @@ void TestScene::Update(double dt) {
 void TestScene::Render() {
 	rendSys->update_all(0);
 }
-
-void TestScene::Teardown() {
-    delete(world);
-    delete(rendSys);
-}

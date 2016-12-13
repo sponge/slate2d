@@ -48,7 +48,6 @@ void Cmd_Scene_f(void) {
 	}
 
 	sm->Replace(mainScene, newScene);
-	delete(mainScene);
 	mainScene = newScene;
 }
 

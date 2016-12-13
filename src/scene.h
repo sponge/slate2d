@@ -7,7 +7,6 @@
 class Scene {
 public:
 	virtual void Startup(ClientInfo* i) = 0;
-	virtual void Teardown() = 0;
 	virtual void Update(double dt) = 0;
 	virtual void Render() = 0;
 	virtual bool Event(SDL_Event *ev) {
@@ -26,7 +25,7 @@ public:
 
 	void Switch(Scene* newScene) {
 		for (auto s : scenes) {
-			s->Teardown();
+			delete(s);
 		}
 		scenes.clear();
 		Push(newScene);
@@ -61,8 +60,8 @@ public:
 	}
 
 	void Replace(Scene * oldScene, Scene *newScene) {
-		oldScene->Teardown();
 		std::replace(scenes.begin(), scenes.end(), oldScene, newScene);
+		delete(oldScene);
 		newScene->Startup(&info);
 	}
 
@@ -73,7 +72,7 @@ public:
 
 		auto lastScene = scenes.back();
 		scenes.pop_back();
-		lastScene->Teardown();
+		delete(lastScene);
 	}
 
 	Scene* Current() {

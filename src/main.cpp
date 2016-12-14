@@ -25,7 +25,7 @@
 #include "scene_menu.h"
 #include "scene_test.h"
 #include "scene_testbounce.h"
-//#include "scene_map.h"
+#include "scene_map.h"
 #include "scene_console.h"
 
 ClientInfo inf;
@@ -33,10 +33,17 @@ SceneManager *sm;
 Scene* mainScene;
 int frame_msec, com_frameTime;
 
+void Cmd_Map_f(void) {
+	auto mapname = Cmd_Argv(1);
+	auto newScene = new MapScene(mapname);
+	sm->Replace(mainScene, newScene);
+	mainScene = newScene;
+}
+
 void Cmd_Scene_f(void) {
 	auto num = atoi(Cmd_Argv(1));
 	if (num < 0 || num > 3) {
-		Com_Printf("invalid scene, specify 0, 1, 2, or 3\n");
+		Com_Printf("invalid scene, specify 0, 1, 2\n");
 		return;
 	}
 	Scene* newScene;
@@ -44,7 +51,6 @@ void Cmd_Scene_f(void) {
 	case 0: default: newScene = new MenuScene(); break;
 	case 1: newScene = new TestBounceScene(); break;
 	case 2: newScene = new TestScene(); break;
-	//case 3: newScene = new MapScene(); break;
 	}
 
 	sm->Replace(mainScene, newScene);
@@ -82,6 +88,7 @@ int main(int argc, char *argv[]) {
 	Cbuf_Init();
 	Cmd_Init();
 	Cmd_AddCommand("scene", Cmd_Scene_f);
+	Cmd_AddCommand("map", Cmd_Map_f);
 	Cvar_Init();
 	CL_InitKeyCommands();
 	CL_InitInput();

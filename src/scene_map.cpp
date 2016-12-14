@@ -47,7 +47,10 @@ void* physfs_file_read_func(const char *path, int *outSz) {
 }
 
 GameWorld::GameWorld(const char *filename) {
-	systems.add<RectMoverSystem>();
+	// FIXME: re-enable these systems
+	//systems.add<InputSystem>;
+	//systems.add<PlayerSystem>;
+	//systems.add<CameraUpdateSystem>;
 	systems.configure();
 
 	tmx_img_load_func = nvg_img_load_func;
@@ -84,24 +87,19 @@ GameWorld::GameWorld(const char *filename) {
 		layer = layer->next;
 	}
 
-	// temp
-	// auto ent = es.create();
-	// auto boxBody = ent.assign<Body>(306, 178, 14, 28);
-	// ent.assign<Movable>(0, 0);
-	// ent.assign<Renderable>(200, 30, 30, 255);
-	// ent.assign<PlayerInput>();
+	auto ent = this->entities.create();
+	auto boxBody = ent.assign<Body>(306, 178, 14, 28);
+	ent.assign<Movable>(0, 0);
+	ent.assign<Renderable>(200, 30, 30, 255);
+	ent.assign<PlayerInput>();
 
-	// auto camera = world.assign<Camera>(0, 0, inf->width, inf->height);
-	// camera->target = boxBody.get();
-	// body = boxBody.get();
-
-	// updateSystems.push_back(new InputSystem());
-	// updateSystems.push_back(new PlayerSystem());
-	// updateSystems.push_back(new CameraUpdateSystem());
+	// FIXME: rendering in game world
+	auto camera = world.assign<Camera>(0, 0, 1280, 720);
+	camera->target = boxBody.get();
+	body = boxBody.get();
 }
 
 void GameWorld::update(ex::TimeDelta dt) {
-	systems.configure();
 	systems.update_all(dt);
 }
 
@@ -109,7 +107,7 @@ void MapScene::Startup(ClientInfo* info) {
 	inf = info;
 	nvg = info->nvg;
 
-	auto world = new GameWorld(fileName);
+	world = new GameWorld(fileName);
 
 	rendSys = new ex::SystemManager(world->entities, world->events);
 	//rendSys->add<RectDrawSystem>(inf);

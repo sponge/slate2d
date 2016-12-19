@@ -62,10 +62,8 @@ Hit intersectSegment(Box box, Vec2 pos, Vec2 delta, double paddingX = 0.0, doubl
 Hit intersectAABB(Box check, Box box2);
 Sweep sweepAABB(Box check, Box box, Vec2 delta);
 Box getBroadPhaseBox(Box b, Vec2 delta);
-Sweep sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, int y), bool (*isResolvable)(void * tile));
 
 #ifdef AABB_IMPLEMENTATION
-//#if 1
 
 double Vec2_length(Vec2 vec) {
 	double len = vec.x * vec.x + vec.y * vec.y;
@@ -259,14 +257,6 @@ Box getBroadPhaseBox(Box b, Vec2 delta)
 
 	return Box(x, y, w, h);
 }
-
-Sweep sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, int y), bool(*isResolvable)(void *tile))
-{
-	auto sweep = Sweep();
-
-	return sweep;
-}
-
 
 #ifdef DEBUG
 #include <stdio.h>

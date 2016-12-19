@@ -272,11 +272,6 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 				}
 				auto xCollided = isResolvable(t);
 				if (xCollided) {
-#ifdef DEBUG
-					// draw a box around a confirmed hit
-					nvgBeginPath(nvg);
-					nvgRect(nvg, lx * tileSize.x, ly * tileSize.y, tileSize.x, tileSize.y);
-#endif
 					// we found a collision on x, calculate the time of the collision
 					auto box = Box(lx * tileSize.x + tileSize.x / 2, ly * tileSize.y + tileSize.y / 2, tileSize.x, tileSize.y);
 					sweep = sweepAABB(box, check, delta);
@@ -301,11 +296,6 @@ Sweep _sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, 
 				}
 				auto yCollided = isResolvable(t);
 				if (yCollided) {
-#ifdef DEBUG
-					// draw a box around a confirmed hit
-					nvgBeginPath(nvg);
-					nvgRect(nvg, lx * tileSize.x, ly * tileSize.y, tileSize.x, tileSize.y);
-#endif
 					// we found a collision on x, calculate the time of the collision
 					auto box = Box(lx * tileSize.x + tileSize.x / 2, ly * tileSize.y + tileSize.y / 2, tileSize.x, tileSize.y);
 					sweep = sweepAABB(box, check, delta);

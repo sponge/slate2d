@@ -12,4 +12,5 @@ public:
 
 private:
 	ClientInfo* inf;
+	char mapName[64] = "smw";
 };

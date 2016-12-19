@@ -159,7 +159,7 @@ int main(int argc, char *argv[]) {
 	nvgCreateFontMem(vg, "sans", font, sz, 1);
 
 	sm = new SceneManager(inf);
-	mainScene = new TestBounceScene();
+	mainScene = new MenuScene();
 	sm->Switch(mainScene);
 	auto console_scene = new ConsoleScene();
 	sm->Push(console_scene);

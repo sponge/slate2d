@@ -47,10 +47,9 @@ void* physfs_file_read_func(const char *path, int *outSz) {
 }
 
 GameWorld::GameWorld(const char *filename) {
-	// FIXME: re-enable these systems
-	//systems.add<InputSystem>;
-	//systems.add<PlayerSystem>;
-	//systems.add<CameraUpdateSystem>;
+	systems.add<InputSystem>();
+	systems.add<PlayerSystem>();
+	systems.add<CameraUpdateSystem>();
 	systems.configure();
 
 	tmx_img_load_func = nvg_img_load_func;
@@ -93,7 +92,6 @@ GameWorld::GameWorld(const char *filename) {
 	ent.assign<Renderable>(200, 30, 30, 255);
 	ent.assign<PlayerInput>();
 
-	// FIXME: rendering in game world
 	auto camera = world.assign<Camera>(0, 0, 1280, 720);
 	camera->target = boxBody.get();
 	body = boxBody.get();
@@ -110,10 +108,9 @@ void MapScene::Startup(ClientInfo* info) {
 	world = new GameWorld(fileName);
 
 	rendSys = new ex::SystemManager(world->entities, world->events);
-	//rendSys->add<RectDrawSystem>(inf);
-	// renderSystems.push_back(new CameraDrawSystem());
-	// renderSystems.push_back(new TileMapDrawSystem());
-	// renderSystems.push_back(new RectDrawSystem());
+	rendSys->add<CameraDrawSystem>(inf);
+	rendSys->add<TileMapDrawSystem>(inf);
+	rendSys->add<RectDrawSystem>(inf);
 	rendSys->configure();
 }
 
@@ -330,7 +327,9 @@ MapScene::MapScene(const char *fileName) {
 }
 
 void MapScene::Render() {
-	rendSys->update_all(0);
+	rendSys->update<CameraDrawSystem>(0);
+	rendSys->update<TileMapDrawSystem>(0);
+	rendSys->update<RectDrawSystem>(0);
 
 	nvg = inf->nvg;
 

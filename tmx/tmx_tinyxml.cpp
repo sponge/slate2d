@@ -9,6 +9,13 @@
 
 using namespace tinyxml2;
 
+char *tmx_copyString(const char *in) {
+	char	*out;
+	out = (char *)malloc(strlen(in) + 1);
+	strcpy(out, in);
+	return out;
+}
+
 static bool parse_properties(XMLElement *ele, tmx_property **prop_headadr);
 
 static bool parse_data(XMLElement *ele, int32_t **gidsadr, size_t gidscount) {
@@ -108,7 +115,7 @@ static bool parse_image(XMLElement *ele, tmx_image **img_adr, bool strict, const
 
 	value = ele->Attribute("source");
 	if (value) {
-		res->source = value;
+		res->source = tmx_copyString(value);
 		if (!(load_image(&(res->resource_image), filename, value))) {
 			tmx_err(E_UNKN, "xml parser: an error occured in the delegated image loading function");
 			return false;
@@ -205,12 +212,12 @@ static bool parse_object(XMLElement *ele, tmx_object *obj) {
 	value = ele->Attribute("name");
 	if (value) {
 		// FIXME: these pointers are owned by tinyxml, but tmx_free frees them
-		obj->name = value;
+		obj->name = tmx_copyString(value);
 	}
 
 	value = ele->Attribute("type");
 	if (value) {
-		obj->type = value;
+		obj->type = tmx_copyString(value);
 	}
 
 	value = ele->Attribute("visible");
@@ -405,7 +412,7 @@ static bool parse_tileset_sub(XMLElement *ele, tmx_tileset *ts_addr, const char 
 		return false;
 	}
 	else {
-		ts_addr->name = value;
+		ts_addr->name = tmx_copyString(value);
 	}
 
 	value = ele->Attribute("tilecount");
@@ -526,6 +533,7 @@ static bool parse_tileset(XMLElement *ele, tmx_tileset **ts_headadr, const char 
 
 		auto tsNode = doc->FirstChildElement();
 		bool success = parse_tileset_sub(tsNode, res, ab_path);
+		delete doc;
 		return success;
 	}
 	else {
@@ -551,7 +559,7 @@ static bool parse_layer(XMLElement *ele, tmx_layer **layer_headadr, int map_h, i
 	const char *value;
 	value = ele->Attribute("name");
 	if (value) {
-		res->name = value;
+		res->name = tmx_copyString(value);
 	}
 	else {
 		tmx_err(E_MISSEL, "xml parser: missing 'name' attribute in the 'layer' element");
@@ -642,8 +650,8 @@ static bool parse_properties(XMLElement *ele, tmx_property **prop_headadr) {
 			return false;
 		}
 
-		res->name = prop->Attribute("name");
-		res->value = prop->Attribute("value");
+		res->name = tmx_copyString(prop->Attribute("name"));
+		res->value = tmx_copyString(prop->Attribute("value"));
 
 		if (!res->name || !res->value) {
 			tmx_err(E_MISSEL, "xml parser: missing 'name' or 'value' attribute in the 'property' element");
@@ -806,6 +814,7 @@ tmx_map *parse_tinyxml(const char *filename) {
 	}
 
 	auto res = parse_root_map(doc, filename);
+	delete doc;
 
 	return res;
 }

@@ -8,8 +8,11 @@
 #include "sys/systems_upd.h"
 #include "components.h"
 
+// used for shortcut in rendering, should probably go away
 NVGcontext *nvg;
-Body *body;
+Body *body; 
+
+// FIXME: needed for the getTile and isResolvable callbacks. prob doesn't need to be this way
 tmx_map *tmap;
 tmx_layer *wlayer;
 
@@ -167,5 +170,5 @@ MapScene::~MapScene() {
 	delete rendSys;
 
 	// FIXME: free the map
-	//tmx_map_free(map);
+	tmx_map_free(tmap);
 }

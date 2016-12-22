@@ -11,13 +11,10 @@ void MenuScene::Update(double dt) {
 
 void MenuScene::Render() {
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.01, 0.14, 0.45, 0.4));
-	ImGui::SetNextWindowSize(ImVec2(inf->width, inf->height));
-	ImGui::SetNextWindowPosCenter();
-	ImGui::Begin("", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings);
 
 		ImGui::SetNextWindowSize(ImVec2(300, 300));
 		ImGui::SetNextWindowPosCenter();
-		ImGui::Begin("Main Menu", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings);
+		ImGui::Begin("Main Menu", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings);
 			
 		ImGui::PushItemWidth(128);
 		ImGui::InputText("##input", mapName, 64);
@@ -36,7 +33,5 @@ void MenuScene::Render() {
 		}
 		
 		ImGui::End();
-
-	ImGui::End();
 	ImGui::PopStyleColor();
 }

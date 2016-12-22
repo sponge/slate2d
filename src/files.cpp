@@ -14,6 +14,10 @@ void Cmd_Dir_f() {
 	PHYSFS_freeList(rc);
 }
 
+bool FS_Exists(const char *file) {
+	return PHYSFS_exists(file);
+}
+
 void FS_Init(const char *argv0) {
 	PHYSFS_init(argv0);
 	auto fs_basepath = Cvar_Get("fs_basepath", PHYSFS_getBaseDir(), CVAR_INIT);

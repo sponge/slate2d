@@ -14,8 +14,6 @@
 #include <imgui.h>
 #include "imgui_impl_sdl_gl3.h"
 
-#include <physfs.h>
-
 #define AABB_IMPLEMENTATION
 #include "sweep.h"
 
@@ -95,12 +93,12 @@ int main(int argc, char *argv[]) {
 
 	Com_AddStartupCommands();
 
-	if (!PHYSFS_exists("default.cfg")) {
+	if (!FS_Exists("default.cfg")) {
 		Com_Error(ERR_FATAL, "Filesystem error, check fs_basepath is set correctly.\n");
 	}
 
 	Cbuf_AddText("exec default.cfg\n");
-	if (PHYSFS_exists("autoexec.cfg")) {
+	if (FS_Exists("autoexec.cfg")) {
 		Cbuf_AddText("exec autoexec.cfg\n");
 	}
 	Cbuf_Execute();

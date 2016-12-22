@@ -91,7 +91,7 @@ static bool parse_points(XMLElement *ele, double ***ptsarrayadr, int *ptslenadr)
 		(*ptsarrayadr)[i] = (*ptsarrayadr)[0] + (i * 2);
 	}
 
-	v = value;
+	v = tmx_copyString(value);
 	for (i = 0; i<*ptslenadr; i++) {
 		if (sscanf(v, "%lf,%lf", (*ptsarrayadr)[i], (*ptsarrayadr)[i] + 1) != 2) {
 			tmx_err(E_XDATA, "xml parser: corrupted point list");
@@ -211,7 +211,6 @@ static bool parse_object(XMLElement *ele, tmx_object *obj) {
 
 	value = ele->Attribute("name");
 	if (value) {
-		// FIXME: these pointers are owned by tinyxml, but tmx_free frees them
 		obj->name = tmx_copyString(value);
 	}
 
@@ -413,6 +412,7 @@ static bool parse_tileset_sub(XMLElement *ele, tmx_tileset *ts_addr, const char 
 	}
 	else {
 		ts_addr->name = tmx_copyString(value);
+
 	}
 
 	value = ele->Attribute("tilecount");
@@ -512,7 +512,6 @@ static bool parse_tileset(XMLElement *ele, tmx_tileset **ts_headadr, const char 
 
 	auto source = ele->Attribute("source");
 	if (source) {
-		// FIXME: leaky leaky
 		XMLDocument *doc = new XMLDocument();
 		auto ab_path = mk_absolute_path(filename, source);
 		XMLError err;
@@ -794,7 +793,6 @@ cleanup:
 
 
 tmx_map *parse_tinyxml(const char *filename) {
-	// FIXME: leaky leaky (string ownership issue)
 	XMLDocument *doc = new XMLDocument();
 
 	XMLError err;

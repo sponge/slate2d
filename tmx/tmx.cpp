@@ -43,8 +43,8 @@ tmx_map* tmx_load(const char *path) {
 static void free_props(tmx_property *p) {
 	if (p) {
 		free_props(p->next);
-		tmx_free_func(&p->name);
-		tmx_free_func(&p->value);
+		tmx_free_func((void*)p->name);
+		tmx_free_func((void*)p->value);
 		tmx_free_func(p);
 	}
 }
@@ -52,10 +52,11 @@ static void free_props(tmx_property *p) {
 static void free_obj(tmx_object *o) {
 	if (o) {
 		free_obj(o->next);
-		tmx_free_func(&o->name);
+		tmx_free_func((void*)o->name);
 		if (o->points) tmx_free_func(*(o->points));
-		tmx_free_func(&o->type);
-		tmx_free_func(o->points);
+		tmx_free_func((void*)o->type);
+		// FIXME is this even necessary?
+		// tmx_free_func(o->points);
 		tmx_free_func(o);
 	}
 }
@@ -69,7 +70,7 @@ static void free_objgr(tmx_object_group *o) {
 
 static void free_image(tmx_image *i) {
 	if (i) {
-		tmx_free_func(&i->source);
+		tmx_free_func((void*)i->source);
 		if (tmx_img_free_func) {
 			tmx_img_free_func(i->resource_image);
 		}
@@ -80,7 +81,7 @@ static void free_image(tmx_image *i) {
 static void free_layers(tmx_layer *l) {
 	if (l) {
 		free_layers(l->next);
-		tmx_free_func(&l->name);
+		tmx_free_func((void*)l->name);
 		if (l->type == L_LAYER)
 			tmx_free_func(l->content.gids);
 		else if (l->type == L_OBJGR)
@@ -108,7 +109,7 @@ static void free_tiles(tmx_tile *t, int tilecount) {
 static void free_ts(tmx_tileset *ts) {
 	if (ts) {
 		free_ts(ts->next);
-		tmx_free_func(&ts->name);
+		tmx_free_func((void*)ts->name);
 		free_image(ts->image);
 		free_props(ts->properties);
 		free_tiles(ts->tiles, ts->tilecount);

@@ -33,6 +33,10 @@ int frame_msec, com_frameTime;
 
 void Cmd_Map_f(void) {
 	auto mapname = Cmd_Argv(1);
+	if (!FS_Exists(mapname)) {
+		Com_Printf("Map does not exist: %s", mapname);
+		return;
+	}
 	auto newScene = new MapScene(mapname);
 	sm->Replace(mainScene, newScene);
 	mainScene = newScene;

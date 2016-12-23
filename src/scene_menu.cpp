@@ -21,7 +21,8 @@ void MenuScene::Render() {
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 		if (ImGui::Button("Load Map")) {
-			Cbuf_ExecuteText(EXEC_NOW, va("map maps/%s.tmx\n", mapName));
+			auto str = va("map %s\n", mapName);
+			Cbuf_ExecuteText(EXEC_NOW, str);
 		}
 
 		if (ImGui::Button("Test Scene 1")) {

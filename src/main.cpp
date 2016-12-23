@@ -33,11 +33,22 @@ int frame_msec, com_frameTime;
 
 void Cmd_Map_f(void) {
 	auto mapname = Cmd_Argv(1);
-	if (!FS_Exists(mapname)) {
-		Com_Printf("Map does not exist: %s", mapname);
+	char filename[MAX_QPATH];
+
+	if (Cmd_Argc () != 2) {
+		Com_Printf ("map <mapname> : load a map\n");
 		return;
 	}
-	auto newScene = new MapScene(mapname);
+
+	snprintf(filename, sizeof(filename), "maps/%s", mapname);
+	Com_DefaultExtension( filename, sizeof(filename), ".tmx" );
+
+	if (!FS_Exists(filename)) {
+		Com_Printf("Map does not exist: %s\n", filename);
+		return;
+	}
+
+	auto newScene = new MapScene(filename);
 	sm->Replace(mainScene, newScene);
 	mainScene = newScene;
 }

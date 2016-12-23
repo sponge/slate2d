@@ -8,11 +8,8 @@
 #include "sys/systems_upd.h"
 #include "components.h"
 
-// used for shortcut in rendering, should probably go away
+// used so the tmx nvg img funcs work. 
 NVGcontext *nvg;
-Body *body; 
-
-// FIXME: needed for the getTile and isResolvable callbacks. prob doesn't need to be this way
 
 void* nvg_img_load_func(const char *path) {
 	void *buffer;
@@ -41,7 +38,7 @@ void* physfs_file_read_func(const char *path, int *outSz) {
 	*outSz = FS_ReadFile(path, &xml);
 
 	if (outSz < 0) {
-		Com_Error(ERR_FATAL, "Couldn't load file while parsing map %s", path);
+		Com_Error(ERR_DROP, "Couldn't load file while parsing map %s", path);
 	}
 
 	return (void *)xml;
@@ -60,7 +57,7 @@ GameWorld::GameWorld(const char *filename) {
 	auto map = tmx_load(filename);
 
 	if (!map) {
-		Com_Error(ERR_FATAL, "Map loading failed");
+		Com_Error(ERR_DROP, "Failed to load map %s", filename);
 	}
 
 	auto world = this->entities.create();
@@ -94,7 +91,6 @@ GameWorld::GameWorld(const char *filename) {
 
 	auto camera = world.assign<Camera>(0, 0, 1280, 720);
 	camera->target = boxBody.get();
-	body = boxBody.get();
 }
 
 void GameWorld::update(ex::TimeDelta dt) {
@@ -130,22 +126,6 @@ void MapScene::Render() {
 	rendSys->update<CameraDrawSystem>(0);
 	rendSys->update<TileMapDrawSystem>(0);
 	rendSys->update<RectDrawSystem>(0);
-
-	nvg = inf->nvg;
-
-	int x, y;
-	SDL_GetMouseState(&x, &y);
-	Vec2 delta = Vec2(x - body->pos.x, y - body->pos.y);
-	Vec2 tileSize = Vec2(16, 16);
-
-	auto sweep = Map_SweepTiles(*world->tmap, *body, delta, tileSize);
-
-	// destination box
-	nvgBeginPath(nvg);
-	nvgStrokeColor(nvg, nvgRGBA(0, 255, 0, 255));
-	nvgStrokeWidth(nvg, 0.5);
-	nvgRect(nvg, sweep.pos.x - body->half.x, sweep.pos.y - body->half.y, body->size.x, body->size.y);
-	nvgStroke(nvg);
 }
 
 MapScene::~MapScene() {

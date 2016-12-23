@@ -158,8 +158,9 @@ const Sweep Move(ex::EntityManager * es, ex::Entity ent, double dx, double dy, e
 {
 	auto body = ent.component<Body>();
 	auto box = Box(body->pos.x, body->pos.y, body->size.x, body->size.y);
+	auto delta = Vec2(dx, dy);
 
-	auto broad = getBroadPhaseBox(box, Vec2(dx, dy));
+	auto broad = getBroadPhaseBox(box, delta);
 
 	Sweep sweep;
 	sweep.time = 1.0;
@@ -178,7 +179,16 @@ const Sweep Move(ex::EntityManager * es, ex::Entity ent, double dx, double dy, e
 			continue;
 		}
 
-		auto tempSweep = sweepAABB(box2, box, Vec2(dx, dy));
+		auto tempSweep = sweepAABB(box2, box, delta);
+		if (tempSweep.time < sweep.time) {
+			sweep = tempSweep;
+			hitEnt = ent2;
+		}
+	}
+
+	for (auto ent2 : es->entities_with_components<TileMap>()) {
+		auto tmap = ent2.component<TileMap>().get();
+		auto tempSweep = Map_SweepTiles(*tmap, box, delta, Vec2(16,16));
 		if (tempSweep.time < sweep.time) {
 			sweep = tempSweep;
 			hitEnt = ent2;

@@ -21,13 +21,22 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 
 		ex::Entity hitEnt;
 
-		auto move = Move(&es, ent, speed->dx * dt, speed->dy * dt, hitEnt);
+		Sweep move = Move(&es, ent, speed->dx * dt, speed->dy * dt, hitEnt);
 
 		body->pos.x = move.pos.x;
 		body->pos.y = move.pos.y;
 
 		if (move.hit.valid) {
+			speed->dx = move.hit.normal.x ? 0 : speed->dx;
+			speed->dy = move.hit.normal.y ? 0 : speed->dy;
+			
+			auto remain = 1.0 - move.time;
+			auto remx = move.hit.normal.x != 0 ? 0 : speed->dx * dt * remain;
+			auto remy = move.hit.normal.y != 0 ? 0 : speed->dy * dt * remain;
+			Sweep moveremain = Move(&es, ent, remx, remy, hitEnt);
 
+			body->pos.x = moveremain.pos.x;
+			body->pos.y = moveremain.pos.y;
 		}
 	}
 }

@@ -57,7 +57,7 @@ GameWorld::GameWorld(const char *filename) {
 	auto map = tmx_load(filename);
 
 	if (!map) {
-		Com_Error(ERR_DROP, "Failed to load map %s", filename);
+		Com_Error(ERR_DROP, "Failed to load map");
 	}
 
 	auto world = this->entities.create();

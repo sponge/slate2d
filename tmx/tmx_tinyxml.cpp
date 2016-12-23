@@ -801,7 +801,9 @@ tmx_map *parse_tinyxml(const char *filename) {
 		int sz = 0;
 		const char *str = (const char *) tmx_file_read_func(filename, &sz);
 		err = doc->Parse(str, sz);
-		tmx_free_func((void*)str);
+		if (err == XML_SUCCESS) {
+			tmx_free_func((void*)str);
+		}
 	}
 	else {
 		err = doc->LoadFile(filename);

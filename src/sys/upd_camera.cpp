@@ -3,15 +3,14 @@
 #include "../components.h"
 
 void CameraUpdateSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) {
-	for (auto ent : es.entities_with_components<Camera>()) {
-		auto cam = ent.component<Camera>();
-		if (cam->active == false) {
-			continue;
+	es.each<Camera>([this](ex::Entity entity, Camera &cam) {
+		if (cam.active == false) {
+			return;
 		}
 
-		if (cam->target != nullptr) {
-			cam->Move(cam->target->pos.x, cam->target->pos.y);
+		if (cam.target != nullptr) {
+			Cam_Move(cam, cam.target->pos.x, cam.target->pos.y);
 		}
-	}
+	});
 }
 

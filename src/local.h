@@ -6,6 +6,8 @@
 #include <entityx/entityx.h>
 namespace ex = entityx;
 
+#include "components.h"
+
 #include "sweep.h"
 #include "console/console.h"
 
@@ -28,7 +30,7 @@ typedef struct Img {
 } img_t;
 
 const Sweep Move(ex::EntityManager * es, ex::Entity ent, double dx, double dy, ex::Entity &hitEnt);
-Sweep sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, int y), bool(*isResolvable)(void *tile));
+Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize);
 
 extern int com_frameTime;
 extern int frame_msec;
@@ -38,6 +40,7 @@ extern bool consoleActive;
 
 void FS_Init(const char *argv0);
 int FS_ReadFile(const char *path, void **buffer);
+bool FS_Exists(const char *file);
 
 // input.cpp
 

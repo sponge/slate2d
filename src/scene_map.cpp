@@ -13,8 +13,6 @@ NVGcontext *nvg;
 Body *body; 
 
 // FIXME: needed for the getTile and isResolvable callbacks. prob doesn't need to be this way
-tmx_map *tmap;
-tmx_layer *wlayer;
 
 void* nvg_img_load_func(const char *path) {
 	void *buffer;
@@ -68,7 +66,7 @@ GameWorld::GameWorld(const char *filename) {
 	auto world = this->entities.create();
 	auto tileMap = world.assign<TileMap>();
 	tileMap->map = map;
-	tmap = map;
+	tmap = world.component<TileMap>().get();
 
 	tmx_layer *layer = map->ly_head;
 	while (layer) {
@@ -79,7 +77,6 @@ GameWorld::GameWorld(const char *filename) {
 
 		if (strcmp(layer->name, "world") == 0) {
 			tileMap->worldLayer = layer;
-			wlayer = layer;
 		}
 
 		if (layer->type == L_OBJGR) {
@@ -117,26 +114,12 @@ void MapScene::Startup(ClientInfo* info) {
 	rendSys->configure();
 }
 
+GameWorld::~GameWorld() {
+	tmx_map_free(tmap->map);
+}
+
 void MapScene::Update(double dt) {
 	world->update(dt);
-}
-
-void* getTile(int x, int y) {
-	auto gid = (x < 0 || y < 0) ? 0 : (wlayer->content.gids[(y*tmap->width) + x]) & TMX_FLIP_BITS_REMOVAL;
-#ifdef DEBUG
-	nvgBeginPath(nvg);
-	nvgFillColor(nvg, gid > 0 ? nvgRGBA(150, 0, 0, 150) : nvgRGBA(0, 150, 0, 150));
-	nvgRect(nvg, x * 16, y*16, 16, 16);
-	nvgFill(nvg);
-	nvgFontSize(nvg, 4);
-	nvgFillColor(nvg, nvgRGBA(255, 255, 255, 255));
-	nvgText(nvg, x * 16 + 8, y * 16 + 8, va("%i, %i", x, y), nullptr);
-#endif
-	return (void*) gid;
-}
-
-bool isResolvable(void *tile) {
-	return tile != nullptr;
 }
 
 MapScene::MapScene(const char *fileName) {
@@ -155,7 +138,7 @@ void MapScene::Render() {
 	Vec2 delta = Vec2(x - body->pos.x, y - body->pos.y);
 	Vec2 tileSize = Vec2(16, 16);
 
-	auto sweep = sweepTiles(*body, delta, tileSize, &getTile, &isResolvable);
+	auto sweep = Map_SweepTiles(*world->tmap, *body, delta, tileSize);
 
 	// destination box
 	nvgBeginPath(nvg);
@@ -168,7 +151,4 @@ void MapScene::Render() {
 MapScene::~MapScene() {
 	delete world;
 	delete rendSys;
-
-	// FIXME: free the map
-	tmx_map_free(tmap);
 }

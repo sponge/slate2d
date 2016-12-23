@@ -9,6 +9,8 @@ class GameWorld : public ex::EntityX {
 public:
 	explicit GameWorld(const char *filename);
 	void update(ex::TimeDelta dt);
+	TileMap *tmap;
+	~GameWorld();
 };
 
 class MapScene : public Scene {

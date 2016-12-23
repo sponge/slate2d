@@ -1,7 +1,16 @@
 #include "local.h"
 #include "components.h"
 
-Sweep sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, int y), bool(*isResolvable)(void *tile)) {
+int Map_GetTile(TileMap &tmap, int x, int y) {
+	int gid = (x < 0 || y < 0) ? 0 : (tmap.worldLayer->content.gids[(y*tmap.map->width) + x]) & TMX_FLIP_BITS_REMOVAL;
+	return gid;
+}
+
+bool Map_IsTileResolvable(TileMap &map, int gid) {
+	return gid != 0;
+}
+
+Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize) {
 	auto sweep = Sweep();
 	sweep.pos.x = check.pos.x + delta.x;
 	sweep.pos.y = check.pos.y + delta.y;
@@ -105,11 +114,8 @@ Sweep sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, i
 			for (int i = 0; i <= boxTileSize.x; i++) {
 				auto lx = x + i * direction.x;
 				auto ly = y;
-				auto t = getTile(lx, ly);
-				if (t == nullptr) {
-					continue;
-				}
-				auto xCollided = isResolvable(t);
+				auto t = Map_GetTile(map, lx, ly);
+				auto xCollided = Map_IsTileResolvable(map, t);
 				if (xCollided) {
 					// we found a collision on x, calculate the time of the collision
 					auto box = Box(lx * tileSize.x + tileSize.x / 2, ly * tileSize.y + tileSize.y / 2, tileSize.x, tileSize.y);
@@ -129,11 +135,8 @@ Sweep sweepTiles(Box check, Vec2 delta, Vec2 tileSize, void *(*getTile)(int x, i
 			for (int i = 0; i <= boxTileSize.y; i++) {
 				auto lx = x;
 				auto ly = y + i * direction.y;
-				auto t = getTile(lx, ly);
-				if (t == nullptr) {
-					continue;
-				}
-				auto yCollided = isResolvable(t);
+				auto t = Map_GetTile(map, lx, ly);
+				auto yCollided = Map_IsTileResolvable(map, t);
 				if (yCollided) {
 					// we found a collision on x, calculate the time of the collision
 					auto box = Box(lx * tileSize.x + tileSize.x / 2, ly * tileSize.y + tileSize.y / 2, tileSize.x, tileSize.y);
@@ -183,4 +186,13 @@ const Sweep Move(ex::EntityManager * es, ex::Entity ent, double dx, double dy, e
 	}
 
 	return sweep;
+}
+
+void Cam_Move(Camera &cam, double x, double y) {
+	cam.pos.x = x;
+	cam.pos.y = y;
+	cam.top = y - cam.size.y / 2;
+	cam.right = x + cam.size.x / 2;
+	cam.bottom = y + cam.size.y / 2;
+	cam.left = x - cam.size.x / 2;
 }

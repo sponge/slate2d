@@ -11,14 +11,6 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 		speed->dx += input->right ? 0.5 : input->left ? -0.5 : (speed->dx > 0 ? -0.5 : speed->dx < 0 ? 0.5 : 0);
 		speed->dy += input->down ? 0.5 : input->up ? -0.5 : (speed->dy > 0 ? -0.5 : speed->dy < 0 ? 0.5 : 0);
 
-		if (fabs(speed->dx) < 0.2) {
-			speed->dx = 0;
-		}
-
-		if (fabs(speed->dy) < 0.2) {
-			speed->dy = 0;
-		}
-
 		ex::Entity hitEnt;
 
 		Sweep move = Move(&es, ent, speed->dx * dt, speed->dy * dt, hitEnt);
@@ -37,6 +29,14 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 
 			body->pos.x = moveremain.pos.x;
 			body->pos.y = moveremain.pos.y;
+		}
+
+		if (fabs(speed->dx) < 0.2) {
+			speed->dx = 0;
+		}
+
+		if (fabs(speed->dy) < 0.2) {
+			speed->dy = 0;
 		}
 	}
 }

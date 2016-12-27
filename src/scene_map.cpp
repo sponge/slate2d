@@ -94,7 +94,9 @@ GameWorld::GameWorld(const char *filename) {
 }
 
 void GameWorld::update(ex::TimeDelta dt) {
-	systems.update_all(dt);
+	systems.update<InputSystem>(dt);
+	systems.update<PlayerSystem>(dt);
+	systems.update<CameraUpdateSystem>(dt);
 }
 
 void MapScene::Startup(ClientInfo* info) {

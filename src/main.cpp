@@ -92,7 +92,6 @@ int main(int argc, char *argv[]) {
 			strcat(cmdline, argv[i]);
 		}
 		Com_ParseCommandLine(cmdline);
-		free(cmdline);
 	}
 
 	Com_StartupVariable("fs_basepath");
@@ -106,8 +105,6 @@ int main(int argc, char *argv[]) {
 	CL_InitKeyCommands();
 	CL_InitInput();
 
-	Com_AddStartupCommands();
-
 	if (!FS_Exists("default.cfg")) {
 		Com_Error(ERR_FATAL, "Filesystem error, check fs_basepath is set correctly.\n");
 	}
@@ -117,6 +114,8 @@ int main(int argc, char *argv[]) {
 		Cbuf_AddText("exec autoexec.cfg\n");
 	}
 	Cbuf_Execute();
+
+	Com_StartupVariable(nullptr);
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		Com_Error(ERR_FATAL, "There was an error initing SDL2: %s\n", SDL_GetError());
@@ -171,6 +170,10 @@ int main(int argc, char *argv[]) {
 	assert(sz != -1);
 	nvgCreateFontMem(vg, "sans", font, sz, 1);
 
+	if (!Com_AddStartupCommands()) {
+		// do something here? don't load menu?
+	}
+
 	sm = new SceneManager(inf);
 	mainScene = new MenuScene();
 	sm->Switch(mainScene);
@@ -186,8 +189,6 @@ int main(int argc, char *argv[]) {
 		com_frameTime = SDL_GetTicks();
 		frame_msec = com_frameTime - prevt;
 		prevt = com_frameTime;
-
-		Cbuf_Execute();
 
 		while (SDL_PollEvent(&ev)) {
 			ImGui_ImplSdlGL3_ProcessEvent(&ev);

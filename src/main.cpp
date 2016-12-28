@@ -120,8 +120,9 @@ int main(int argc, char *argv[]) {
 
 	atexit(SDL_Quit);
 
-	auto vid_width = Cvar_Get("vid_width", "1280", 0);
-	auto vid_height = Cvar_Get("vid_height", "720", 0);
+	auto vid_width = Cvar_Get("vid_width", "1280", CVAR_INIT);
+	auto vid_height = Cvar_Get("vid_height", "720", CVAR_INIT);
+	auto vid_swapinterval = Cvar_Get("vid_swapInterval", "0", CVAR_INIT);
 
 #ifndef _WIN32
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile::SDL_GL_CONTEXT_PROFILE_CORE);
@@ -139,7 +140,7 @@ int main(int argc, char *argv[]) {
 
 	SDL_GLContext context = SDL_GL_CreateContext(inf.window);
 
-	SDL_GL_SetSwapInterval(0);
+	SDL_GL_SetSwapInterval(vid_swapinterval->integer);
 
 	if (context == NULL) {
 		Com_Error(ERR_FATAL, "There was an error creating OpenGL context: %s\n", SDL_GetError());

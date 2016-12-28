@@ -28,7 +28,6 @@
 
 ClientInfo inf;
 SceneManager *sm;
-Scene* mainScene;
 int frame_msec, com_frameTime;
 
 void Cmd_Map_f(void) {
@@ -49,8 +48,7 @@ void Cmd_Map_f(void) {
 	}
 
 	auto newScene = new MapScene(filename);
-	sm->Replace(mainScene, newScene);
-	mainScene = newScene;
+	sm->Replace(0, newScene);
 }
 
 void Cmd_Scene_f(void) {
@@ -66,8 +64,7 @@ void Cmd_Scene_f(void) {
 	case 2: newScene = new TestScene(); break;
 	}
 
-	sm->Replace(mainScene, newScene);
-	mainScene = newScene;
+	sm->Replace(0, newScene);
 }
 
 int main(int argc, char *argv[]) {
@@ -175,8 +172,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	sm = new SceneManager(inf);
-	mainScene = new MenuScene();
-	sm->Switch(mainScene);
+	sm->Switch(new MenuScene());
 	auto console_scene = new ConsoleScene();
 	sm->Push(console_scene);
 

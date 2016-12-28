@@ -1,5 +1,5 @@
 #pragma once
-#include <list>
+#include <vector>
 #include <SDL/SDL.h>
 #include <nanovg.h>
 #include "local.h"
@@ -17,7 +17,7 @@ public:
 
 class SceneManager {
 private:
-	std::list<Scene*> scenes;
+	std::vector<Scene*> scenes;
 	ClientInfo info;
 public:
 	SceneManager(ClientInfo i) {
@@ -60,10 +60,26 @@ public:
 		newScene->Startup(&info);
 	}
 
+	Scene* Get(int i) {
+		if (i < 0 || i > scenes.size()) {
+			return nullptr;
+		}
+		return scenes.at(i);
+	}
+
 	void Replace(Scene * oldScene, Scene *newScene) {
 		std::replace(scenes.begin(), scenes.end(), oldScene, newScene);
 		delete oldScene;
 		newScene->Startup(&info);
+	}
+
+	void Replace(int i, Scene *newScene) {
+		auto oldScene = Get(i);
+		if (oldScene == nullptr) {
+			return;
+		}
+
+		Replace(oldScene, newScene);
 	}
 
 	void Pop() {

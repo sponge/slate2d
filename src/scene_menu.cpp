@@ -3,6 +3,20 @@
 
 void MenuScene::Startup(ClientInfo* info) {
 	inf = info;
+	auto list = FS_List("maps/");
+	char **map;
+
+	for (map = list; *map != NULL && mapSize < MAX_MAPS; map++) {
+		if (strstr(*map, ".tmx") == nullptr) {
+			continue;
+		}
+		maps[mapSize] = *map;
+		mapSize++;
+	}
+}
+
+MenuScene::~MenuScene() {
+	FS_FreeList(maps);
 }
 
 void MenuScene::Update(double dt) {
@@ -17,11 +31,11 @@ void MenuScene::Render() {
 		ImGui::Begin("Main Menu", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings);
 			
 		ImGui::PushItemWidth(128);
-		ImGui::InputText("##input", mapName, 64);
+		ImGui::Combo("##input", &selected, maps, mapSize);
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 		if (ImGui::Button("Load Map")) {
-			auto str = va("map %s\n", mapName);
+			auto str = va("map %s\n", maps[selected]);
 			Cbuf_ExecuteText(EXEC_NOW, str);
 		}
 

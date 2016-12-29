@@ -12,8 +12,8 @@ struct RectDrawSystem : public ex::System<RectDrawSystem> {
 struct TileMapDrawSystem : public ex::System<TileMapDrawSystem> {
 	explicit TileMapDrawSystem(ClientInfo *inf) : inf(inf) {};
 	void update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) override;
-	void draw_image(ClientInfo *inf, tmx_map * map, tmx_layer *layer);
-	void draw_tiles(ClientInfo *inf, tmx_map * map, tmx_layer *layer);
+	void draw_image(ClientInfo *inf, tmx_map * map, tmx_layer *layer, ex::ComponentHandle<Camera> &cam);
+	void draw_tiles(ClientInfo *inf, tmx_map * map, tmx_layer *layer, ex::ComponentHandle<Camera> &cam);
 	ClientInfo *inf;
 };
 

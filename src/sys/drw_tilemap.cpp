@@ -10,6 +10,16 @@ inline unsigned int gid_clear_flags(unsigned int gid) {
 void TileMapDrawSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) {
 	NVGcontext *nvg = inf->nvg;
 
+	ex::ComponentHandle<Camera> activeCam;
+
+	for (auto ent : es.entities_with_components<Camera>()) {
+		auto cam = ent.component<Camera>();
+		if (cam->active) {
+			activeCam = cam;
+			break;
+		}
+	}
+
 	for (auto ent : es.entities_with_components<TileMap>()) {
 		auto tileMap = ent.component<TileMap>();
 
@@ -21,10 +31,10 @@ void TileMapDrawSystem::update(ex::EntityManager &es, ex::EventManager &events, 
 			}
 
 			if (layer->type == L_IMAGE) {
-				draw_image(inf, tileMap->map, layer);
+				draw_image(inf, tileMap->map, layer, activeCam);
 			}
 			else if (layer->type == L_LAYER) {
-				draw_tiles(inf, tileMap->map, layer);
+				draw_tiles(inf, tileMap->map, layer, activeCam);
 			}
 
 			layer = layer->next;
@@ -32,13 +42,13 @@ void TileMapDrawSystem::update(ex::EntityManager &es, ex::EventManager &events, 
 	}
 }
 
-void TileMapDrawSystem::draw_image(ClientInfo * inf, tmx_map * map, tmx_layer * layer) {
+void TileMapDrawSystem::draw_image(ClientInfo * inf, tmx_map * map, tmx_layer * layer, ex::ComponentHandle<Camera> &cam) {
 
 }
 
-void TileMapDrawSystem::draw_tiles(ClientInfo * inf, tmx_map * map, tmx_layer * layer) {
-	for (unsigned int y = 0; y < map->height; y++) {
-		for (unsigned int x = 0; x < map->width; x++) {
+void TileMapDrawSystem::draw_tiles(ClientInfo * inf, tmx_map * map, tmx_layer * layer, ex::ComponentHandle<Camera> &cam) {
+	for (unsigned int y = cam->top / map->tile_height; y < cam->bottom / map->tile_height; y++) {
+		for (unsigned int x = cam->left / map->tile_width; x < cam->right / map->tile_width; x++) {
 			auto gid = gid_clear_flags(layer->content.gids[(y*map->width) + x]);
 			if (gid == 0) {
 				continue;
@@ -61,11 +71,6 @@ void TileMapDrawSystem::draw_tiles(ClientInfo * inf, tmx_map * map, tmx_layer * 
 			nvgRect(img->nvg, dx, dy, w, h);
 			nvgFillPaint(img->nvg, paint);
 			nvgFill(img->nvg);
-
-			//nvgStrokeColor(img->nvg, nvgRGBA(255, 0, 0, 255));
-			//nvgStrokeWidth(img->nvg, 1);
-			//nvgStroke(img->nvg);
-			continue;
 		}
 	}
 }

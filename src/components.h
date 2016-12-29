@@ -24,14 +24,17 @@ struct TileMap {
 };
 
 struct Camera {
-	explicit Camera(double x, double y, double w, double h) : size(w, h) {}
+	explicit Camera(double w, double h, double scale = 0, double mx = 0, double my = 0) : size(w, h), max(mx, my), scale(scale) {}
 	bool active = true;
-	Vec2 pos, size;
+	Vec2 pos, size, max;
+	double scale;
 	double top, right, bottom, left;
 	Body *target = nullptr;
 };
 
 void Cam_Move(Camera &cam, double x, double y);
+void Cam_Center(Camera &cam, double cx, double cy);
+void Cam_Bind(Camera &cam);
 
 struct PlayerInput {
 	explicit PlayerInput() {}

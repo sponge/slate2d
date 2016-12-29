@@ -89,7 +89,7 @@ GameWorld::GameWorld(const char *filename) {
 	ent.assign<Renderable>(200, 30, 30, 255);
 	ent.assign<PlayerInput>();
 
-	auto camera = world.assign<Camera>(0, 0, 1280, 720);
+	auto camera = world.assign<Camera>(1280, 720, 3, map->width * map->tile_width, map->height * map->tile_height);
 	camera->target = boxBody.get();
 }
 

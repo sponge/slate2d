@@ -2,7 +2,7 @@
 #include "components.h"
 
 int Map_GetTile(TileMap &tmap, int x, int y) {
-	int gid = (x < 0 || y < 0) ? 0 : (tmap.worldLayer->content.gids[(y*tmap.map->width) + x]) & TMX_FLIP_BITS_REMOVAL;
+	int gid = (x < 0 || y < 0 || x >= tmap.map->width || y >= tmap.map->height) ? 1 : (tmap.worldLayer->content.gids[(y*tmap.map->width) + x]) & TMX_FLIP_BITS_REMOVAL;
 	return gid;
 }
 
@@ -198,11 +198,37 @@ const Sweep Move(ex::EntityManager * es, ex::Entity ent, double dx, double dy, e
 	return sweep;
 }
 
+void Cam_Center(Camera &cam, double cx, double cy) {
+	Cam_Move(cam, cx - (cam.size.x / 2) / cam.scale, cy - (cam.size.y / 2) / cam.scale);
+}
+
 void Cam_Move(Camera &cam, double x, double y) {
 	cam.pos.x = x;
 	cam.pos.y = y;
-	cam.top = y - cam.size.y / 2;
-	cam.right = x + cam.size.x / 2;
-	cam.bottom = y + cam.size.y / 2;
-	cam.left = x - cam.size.x / 2;
+	cam.top = y;
+	cam.right = x + (cam.size.x / cam.scale);
+	cam.bottom = y + (cam.size.y / cam.scale);
+	cam.left = x;
+}
+
+void Cam_Bind(Camera &cam) {
+	double x = cam.pos.x, y = cam.pos.y;
+
+	if (cam.left < 0) {
+		x = 0;
+	}
+
+	if (cam.right > cam.max.x) {
+		x = cam.max.x - (cam.size.x / cam.scale);
+	}
+
+	if (cam.top < 0) {
+		y = 0;
+	}
+
+	if (cam.bottom > cam.max.y) {
+		y = cam.max.y - (cam.size.y / cam.scale);
+	}
+
+	Cam_Move(cam, x, y);
 }

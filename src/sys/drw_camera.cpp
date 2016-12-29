@@ -8,7 +8,7 @@ void CameraDrawSystem::update(ex::EntityManager &es, ex::EventManager &events, e
 		if (cam->active == false) {
 			continue;
 		}
-		nvgScale(inf->nvg, 3, 3);
-		nvgTranslate(inf->nvg, 0 - cam->pos.x + 100, 0 - cam->pos.y + 100);
+		
+		nvgTransform(inf->nvg, cam->scale, 0, 0, cam->scale, (0 - cam->pos.x * cam->scale), 0 - cam->pos.y * cam->scale);
 	}
 }

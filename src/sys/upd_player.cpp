@@ -8,8 +8,8 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 		auto body = ent.component<Body>();
 		auto speed = ent.component<Movable>();
 
-		speed->dx += input->right ? 0.5 : input->left ? -0.5 : (speed->dx > 0 ? -0.5 : speed->dx < 0 ? 0.5 : 0);
-		speed->dy += input->down ? 0.5 : input->up ? -0.5 : (speed->dy > 0 ? -0.5 : speed->dy < 0 ? 0.5 : 0);
+		speed->dx += (input->right ? 100 : input->left ? -100 : (speed->dx > 0 ? -100 : speed->dx < 0 ? 100 : 0)) * dt;
+		speed->dy += (input->down ? 100 : input->up ? -100 : (speed->dy > 0 ? -100 : speed->dy < 0 ? 100 : 0)) * dt;
 
 		ex::Entity hitEnt;
 

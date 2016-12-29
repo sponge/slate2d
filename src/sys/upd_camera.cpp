@@ -9,7 +9,8 @@ void CameraUpdateSystem::update(ex::EntityManager &es, ex::EventManager &events,
 		}
 
 		if (cam.target != nullptr) {
-			Cam_Move(cam, cam.target->pos.x, cam.target->pos.y);
+			Cam_Center(cam, cam.target->pos.x, cam.target->pos.y);
+			Cam_Bind(cam);
 		}
 	});
 }

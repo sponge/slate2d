@@ -3,10 +3,10 @@
 
 void MenuScene::Startup(ClientInfo* info) {
 	inf = info;
-	auto list = FS_List("maps/");
+	rawMaps = FS_List("maps/");
 	char **map;
 
-	for (map = list; *map != NULL && mapSize < MAX_MAPS; map++) {
+	for (map = rawMaps; *map != NULL && mapSize < MAX_MAPS; map++) {
 		if (strstr(*map, ".tmx") == nullptr) {
 			continue;
 		}
@@ -16,7 +16,7 @@ void MenuScene::Startup(ClientInfo* info) {
 }
 
 MenuScene::~MenuScene() {
-	FS_FreeList(maps);
+	FS_FreeList(rawMaps);
 }
 
 void MenuScene::Update(double dt) {

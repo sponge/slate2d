@@ -14,8 +14,9 @@ public:
 	void Render() override;
 
 private:
-	constexpr static int MAX_MAPS = 64;
 	ClientInfo* inf;
+	char **rawMaps;
+	constexpr static int MAX_MAPS = 64;
 	const char *maps[MAX_MAPS];
 	int mapSize;
 	int selected;

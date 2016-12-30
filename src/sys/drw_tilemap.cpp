@@ -8,8 +8,6 @@ inline unsigned int gid_clear_flags(unsigned int gid) {
 }
 
 void TileMapDrawSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) {
-	NVGcontext *nvg = inf->nvg;
-
 	ex::ComponentHandle<Camera> activeCam;
 
 	for (auto ent : es.entities_with_components<Camera>()) {
@@ -47,6 +45,15 @@ void TileMapDrawSystem::draw_image(ClientInfo * inf, tmx_map * map, tmx_layer * 
 }
 
 void TileMapDrawSystem::draw_tiles(ClientInfo * inf, tmx_map * map, tmx_layer * layer, ex::ComponentHandle<Camera> &cam) {
+	nvgBeginPath(inf->nvg);
+	nvgRect(inf->nvg, cam->left, cam->top, cam->size.x / cam->scale, cam->size.y / cam->scale);
+	nvgFillColor(inf->nvg, nvgRGBA(
+		(map->backgroundcolor >> 16) & 0xFF,
+		(map->backgroundcolor >> 8) & 0xFF,
+		(map->backgroundcolor) & 0xFF,
+		255
+	));
+	nvgFill(inf->nvg);
 	for (unsigned int y = cam->top / map->tile_height; y < cam->bottom / map->tile_height; y++) {
 		for (unsigned int x = cam->left / map->tile_width; x < cam->right / map->tile_width; x++) {
 			auto gid = gid_clear_flags(layer->content.gids[(y*map->width) + x]);

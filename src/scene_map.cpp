@@ -86,7 +86,7 @@ GameWorld::GameWorld(const char *filename) {
 
 				if (strcmp("player", obj->type) == 0) {
 					auto ent = this->entities.create();
-					auto body = ent.assign<Body>(obj->x + (map->tile_width / 2), obj->y - 14, 14, 28);
+					auto body = ent.assign<Body>(obj->x + (map->tile_width / 2), obj->y - 14.001, 14, 28);  // FIXME able to fall into ground if 14
 					ent.assign<Movable>(0, 0);
 					ent.assign<Renderable>(200, 30, 30, 255);
 					ent.assign<PlayerInput>();

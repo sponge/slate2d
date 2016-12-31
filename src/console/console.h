@@ -148,7 +148,7 @@ typedef struct cvar_s {
 #define	MAX_CVAR_VALUE_STRING	256
 
 void Cvar_Init(void);
-static cvar_t *Cvar_FindVar(const char *var_name);
+cvar_t *Cvar_FindVar(const char *var_name);
 float Cvar_VariableValue(const char *var_name);
 int Cvar_VariableIntegerValue(const char *var_name);
 char *Cvar_VariableString(const char *var_name);

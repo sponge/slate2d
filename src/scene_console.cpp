@@ -2,13 +2,13 @@
 #include <nanovg.h>
 #include <imgui.h>
 #include "imgui_impl_sdl_gl3.h"
+#include "cvar_main.h"
 
 cvar_t *r_showfps;
 bool consoleActive;
 
 void ConsoleScene::Startup(ClientInfo* info) {
 	inf = info;
-	r_showfps = Cvar_Get("r_showfps", "1", 0);
 #if 0
 	SDL_RWops *io = SDL_RWFromFile("temp.txt", "rb");
 	if (io != NULL) {
@@ -26,7 +26,7 @@ void ConsoleScene::Update(double dt) {
 }
 
 void ConsoleScene::Render() {
-	if (r_showfps->integer) {
+	if (vid_showfps->integer) {
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10, 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
 		ImGui::SetNextWindowPos(ImVec2(inf->width - 80, 0));

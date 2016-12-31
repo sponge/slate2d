@@ -18,6 +18,7 @@
 #include "sweep.h"
 
 #include "local.h"
+#include "cvar_main.h"
 
 #include "scene.h"
 #include "scene_menu.h"
@@ -31,18 +32,12 @@ SceneManager *sm;
 int frame_msec, com_frameTime;
 
 void Cmd_Vid_Restart_f(void) {
-	auto vid_width = Cvar_FindVar("vid_width");
-	auto vid_height = Cvar_FindVar("vid_height");
-	auto vid_swapinterval = Cvar_FindVar("vid_swapInterval");
-	auto vid_fullscreen = Cvar_FindVar("vid_fullscreen");
-
 	inf.width = vid_width->integer;
 	inf.height = vid_height->integer;
 
 	SDL_SetWindowSize(inf.window, inf.width, inf.height);
 	SDL_GL_SetSwapInterval(vid_swapinterval->integer);
 	SDL_SetWindowFullscreen(inf.window, vid_fullscreen->integer == 2 ? SDL_WINDOW_FULLSCREEN : vid_fullscreen->integer == 1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
-
 }
 
 void Cmd_Map_f(void) {
@@ -115,6 +110,7 @@ int main(int argc, char *argv[]) {
 	Cmd_AddCommand("map", Cmd_Map_f);
 	Cmd_AddCommand("vid_restart", Cmd_Vid_Restart_f);
 	Cvar_Init();
+	RegisterMainCvars();
 	CL_InitKeyCommands();
 	CL_InitInput();
 
@@ -135,11 +131,6 @@ int main(int argc, char *argv[]) {
 	}
 
 	atexit(SDL_Quit);
-
-	auto vid_width = Cvar_Get("vid_width", "1280", 0);
-	auto vid_height = Cvar_Get("vid_height", "720", 0);
-	auto vid_swapinterval = Cvar_Get("vid_swapInterval", "0", 0);
-	auto vid_fullscreen = Cvar_Get("vid_fullscreen", "0", 0);
 
 #ifndef _WIN32
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile::SDL_GL_CONTEXT_PROFILE_CORE);

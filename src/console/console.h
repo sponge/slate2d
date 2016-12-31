@@ -145,6 +145,13 @@ typedef struct cvar_s {
 	struct cvar_s *hashNext;
 } cvar_t;
 
+typedef struct {
+	cvar_t		**cvar;
+	char		*cvarName;
+	char		*defaultString;
+	int			cvarFlags;
+} cvarTable_t;
+
 #define	MAX_CVAR_VALUE_STRING	256
 
 void Cvar_Init(void);

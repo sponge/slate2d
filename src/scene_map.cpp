@@ -8,51 +8,11 @@
 #include "sys/systems_upd.h"
 #include "components.h"
 
-// used so the tmx nvg img funcs work. 
-NVGcontext *nvg;
-
-void* nvg_img_load_func(const char *path) {
-	void *buffer;
-	auto sz = FS_ReadFile(path, &buffer);
-
-	Img *img = new Img();
-	img->nvg = nvg;
-	img->hnd = nvgCreateImageMem(nvg, NVG_IMAGE_NEAREST, (unsigned char *) buffer, sz);
-	nvgImageSize(img->nvg, img->hnd, &img->w, &img->h);
-	strncpy(img->path, path, sizeof(img->path));
-
-	free(buffer);
-
-	return (void*)img;
-}
-
-void nvg_img_free_func(void *address) {
-	Img *img = (Img*)address;
-	nvgDeleteImage(nvg, img->hnd);
-	delete img;
-}
-
-void* physfs_file_read_func(const char *path, int *outSz) {
-	void *xml;
-
-	*outSz = FS_ReadFile(path, &xml);
-
-	if (outSz < 0) {
-		Com_Error(ERR_DROP, "Couldn't load file while parsing map %s", path);
-	}
-
-	return (void *)xml;
-}
-
 GameWorld::GameWorld(const char *filename) {
 	systems.add<InputSystem>();
 	systems.add<PlayerSystem>();
 	systems.add<CameraUpdateSystem>();
 	systems.configure();
-
-	tmx_img_load_func = nvg_img_load_func;
-	tmx_img_free_func = nvg_img_free_func;
-	tmx_file_read_func = physfs_file_read_func;
 
 	auto map = tmx_load(filename);
 
@@ -103,15 +63,35 @@ GameWorld::GameWorld(const char *filename) {
 	}
 }
 
+GameWorld::~GameWorld() {
+	tmx_map_free(tmap->map);
+}
+
 void GameWorld::update(ex::TimeDelta dt) {
 	systems.update<InputSystem>(dt);
 	systems.update<PlayerSystem>(dt);
 	systems.update<CameraUpdateSystem>(dt);
 }
 
+// --------------------
+
+MapScene::MapScene(const char *fileName) {
+	this->fileName = fileName;
+}
+
+MapScene::~MapScene() {
+	delete world;
+	delete rendSys;
+}
+
 void MapScene::Startup(ClientInfo* info) {
+	using namespace std::placeholders; // for `_1`
+
 	inf = info;
-	nvg = info->nvg;
+
+	tmx_img_load_func = std::bind(&MapScene::nvg_img_load_func, this, _1);
+	tmx_img_free_func = std::bind(&MapScene::nvg_img_free_func, this, _1);
+	tmx_file_read_func = std::bind(&MapScene::physfs_file_read_func, this, _1, _2);;
 
 	world = new GameWorld(fileName);
 
@@ -122,16 +102,8 @@ void MapScene::Startup(ClientInfo* info) {
 	rendSys->configure();
 }
 
-GameWorld::~GameWorld() {
-	tmx_map_free(tmap->map);
-}
-
 void MapScene::Update(double dt) {
 	world->update(dt);
-}
-
-MapScene::MapScene(const char *fileName) {
-	this->fileName = fileName;
 }
 
 void MapScene::Render() {
@@ -140,7 +112,35 @@ void MapScene::Render() {
 	rendSys->update<RectDrawSystem>(0);
 }
 
-MapScene::~MapScene() {
-	delete world;
-	delete rendSys;
+void* MapScene::nvg_img_load_func(const char *path) {
+	void *buffer;
+	auto sz = FS_ReadFile(path, &buffer);
+
+	Img *img = new Img();
+	img->nvg = inf->nvg;
+	img->hnd = nvgCreateImageMem(img->nvg, NVG_IMAGE_NEAREST, (unsigned char *) buffer, sz);
+	nvgImageSize(img->nvg, img->hnd, &img->w, &img->h);
+	strncpy(img->path, path, sizeof(img->path));
+
+	free(buffer);
+
+	return (void*)img;
+}
+
+void MapScene::nvg_img_free_func(void *address) {
+	Img *img = (Img*)address;
+	nvgDeleteImage(img->nvg, img->hnd);
+	delete img;
+}
+
+void* MapScene::physfs_file_read_func(const char *path, int *outSz) {
+	void *xml;
+
+	*outSz = FS_ReadFile(path, &xml);
+
+	if (outSz < 0) {
+		Com_Error(ERR_DROP, "Couldn't load file while parsing map %s", path);
+	}
+
+	return (void *)xml;
 }

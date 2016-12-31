@@ -13,10 +13,9 @@
 
 void* (*tmx_alloc_func) (void *address, size_t len) = NULL;
 void  (*tmx_free_func ) (void *address) = NULL;
-void* (*tmx_img_load_func) (const char *p) = NULL;
-void  (*tmx_img_free_func) (void *address) = NULL;
-
-void* (*tmx_file_read_func) (const char *path, int *outSz) = NULL;
+std::function<void *(const char *path)> tmx_img_load_func;
+std::function<void (void *address)> tmx_img_free_func;
+std::function<void*(const char *path, int *outSz)> tmx_file_read_func;
 
 /*
 	Public functions

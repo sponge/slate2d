@@ -15,6 +15,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <functional>
 
 #ifndef TMXEXPORT
 #define TMXEXPORT
@@ -35,9 +36,9 @@ TMXEXPORT extern void  (*tmx_free_func ) (void *address);             /* free */
 
 /* load/free tmx_image->resource_image, you should set this if you want
    the library to load/free images */
-TMXEXPORT extern void* (*tmx_img_load_func) (const char *path);
-TMXEXPORT extern void  (*tmx_img_free_func) (void *address);
-TMXEXPORT extern void* (*tmx_file_read_func) (const char *path, int *outSz);
+TMXEXPORT extern std::function<void *(const char *path)> tmx_img_load_func;
+TMXEXPORT extern std::function<void (void *address)> tmx_img_free_func;
+TMXEXPORT extern std::function<void*(const char *path, int *outSz)> tmx_file_read_func;
 
 /*
 	Data Structures

@@ -20,6 +20,9 @@ public:
 	void Update(double dt) override;
 	void Render() override;
 	//bool Event(SDL_Event *ev) override;
+	void* nvg_img_load_func(const char *path);
+	void nvg_img_free_func(void *address);
+	void* physfs_file_read_func(const char *path, int *outSz);
 	~MapScene();
 
 private:

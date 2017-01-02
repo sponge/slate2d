@@ -32,9 +32,14 @@ typedef struct Img {
 const Sweep Move(ex::EntityManager * es, ex::Entity ent, double dx, double dy, ex::Entity &hitEnt);
 Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize);
 
+extern bool consoleActive;
+
+// main.cpp
+
 extern int com_frameTime;
 extern int frame_msec;
-extern bool consoleActive;
+
+void DropToMenu();
 
 // files.cpp
 

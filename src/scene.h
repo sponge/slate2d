@@ -92,7 +92,15 @@ public:
 		delete lastScene;
 	}
 
+	void Clear() {
+		scenes.clear();
+	}
+
 	Scene* Current() {
+		if (scenes.size() == 0) {
+			return nullptr;
+		}
+		
 		return scenes.back();
 	}
 };

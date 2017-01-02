@@ -33,7 +33,11 @@ int			cmd_wait;
 cmd_t		cmd_text;
 byte		cmd_text_buf[MAX_CMD_BUFFER];
 
+char	errorMessage[1024];
+
 void __cdecl Com_Error(int level, const char *error, ...) {
+	va_list		argptr;
+
 	if (level == ERR_NONE) {
 		return;
 	}
@@ -44,9 +48,18 @@ void __cdecl Com_Error(int level, const char *error, ...) {
 	}
 #endif
 
-	Com_Printf(error);
+	va_start (argptr,error);
+	vsprintf (errorMessage,error,argptr);
+	va_end (argptr);
 
-	exit(1);
+	Com_Printf("%s\n", errorMessage);
+	
+	if (level == ERR_FATAL) {
+		exit(1);
+	} else {
+		Cvar_Set("com_errorMessage", errorMessage);
+		DropToMenu();
+	}
 }
 
 void Com_Printf(const char *fmt, ...) {

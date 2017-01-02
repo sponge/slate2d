@@ -77,6 +77,10 @@ void Cmd_Scene_f(void) {
 	sm->Replace(0, newScene);
 }
 
+void DropToMenu() {
+	sm->Clear();
+}
+
 int main(int argc, char *argv[]) {
 #ifdef DEBUG
 	testCollision();
@@ -183,9 +187,9 @@ int main(int argc, char *argv[]) {
 	}
 
 	sm = new SceneManager(inf);
+
 	sm->Switch(new MenuScene());
-	auto console_scene = new ConsoleScene();
-	sm->Push(console_scene);
+	sm->Push(new ConsoleScene());
 
 	bool quit = false;
 	SDL_Event ev;
@@ -196,6 +200,12 @@ int main(int argc, char *argv[]) {
 		com_frameTime = SDL_GetTicks();
 		frame_msec = com_frameTime - prevt;
 		prevt = com_frameTime;
+
+		if (sm->Current() == nullptr) {
+			Com_Printf("no scene loaded, loading menu\n");
+			sm->Switch(new MenuScene());
+			sm->Push(new ConsoleScene());
+		}
 
 		while (SDL_PollEvent(&ev)) {
 			ImGui_ImplSdlGL3_ProcessEvent(&ev);

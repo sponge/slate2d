@@ -3,6 +3,7 @@
 
 void RegisterMainCvars( void );
 
+extern cvar_t *com_errorMessage;
 extern cvar_t *vid_width;
 extern cvar_t *vid_height;
 extern cvar_t *vid_swapinterval;

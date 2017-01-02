@@ -20,4 +20,5 @@ private:
 	const char *maps[MAX_MAPS];
 	int mapSize;
 	int selected;
+	bool showError;
 };

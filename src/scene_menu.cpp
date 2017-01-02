@@ -1,5 +1,6 @@
 #include "scene_menu.h"
 #include "console/console.h"
+#include "cvar_main.h"
 
 void MenuScene::Startup(ClientInfo* info) {
 	inf = info;
@@ -13,10 +14,17 @@ void MenuScene::Startup(ClientInfo* info) {
 		maps[mapSize] = *map;
 		mapSize++;
 	}
+
+	if (strlen(com_errorMessage->string) > 0) {
+		showError = true;
+	}
 }
 
 MenuScene::~MenuScene() {
 	FS_FreeList(rawMaps);
+	if (strlen(com_errorMessage->string) > 0) {
+		Cvar_Set("com_errorMessage", "");
+	}
 }
 
 void MenuScene::Update(double dt) {
@@ -48,5 +56,18 @@ void MenuScene::Render() {
 		}
 		
 		ImGui::End();
+
+		if (showError) {
+			ImGui::OpenPopup("Error");
+			showError = false;
+		}
+
+		if (ImGui::BeginPopupModal("Error")) {
+			ImGui::Text(com_errorMessage->string);
+			if (ImGui::Button("OK")) {
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
+		}
 	ImGui::PopStyleColor();
 }

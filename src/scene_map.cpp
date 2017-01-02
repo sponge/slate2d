@@ -21,6 +21,7 @@ GameWorld::GameWorld(const char *filename) {
 
 	if (!map) {
 		Com_Error(ERR_DROP, "Failed to load map");
+		return;
 	}
 
 	auto world = this->entities.create();
@@ -66,7 +67,9 @@ GameWorld::GameWorld(const char *filename) {
 }
 
 GameWorld::~GameWorld() {
-	tmx_map_free(tmap->map);
+	if (tmap != nullptr && tmap->map != nullptr) {
+		tmx_map_free(tmap->map);
+	}
 }
 
 void GameWorld::update(ex::TimeDelta dt) {
@@ -142,6 +145,7 @@ void* MapScene::physfs_file_read_func(const char *path, int *outSz) {
 
 	if (outSz < 0) {
 		Com_Error(ERR_DROP, "Couldn't load file while parsing map %s", path);
+		return nullptr;
 	}
 
 	return (void *)xml;

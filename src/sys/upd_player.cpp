@@ -1,6 +1,7 @@
 #include <entityx/entityx.h>
 #include "systems_upd.h"
 #include "../components.h"
+#include "../cvar_game.h"
 
 void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) {
 	for (auto ent : es.entities_with_components<PlayerInput, Body, Movable>()) {
@@ -8,8 +9,18 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 		auto body = ent.component<Body>();
 		auto speed = ent.component<Movable>();
 
-		speed->dx += (input->right ? 100 : input->left ? -100 : (speed->dx > 0 ? -100 : speed->dx < 0 ? 100 : 0)) * dt;
-		speed->dy += (input->down ? 100 : input->up ? -100 : (speed->dy > 0 ? -100 : speed->dy < 0 ? 100 : 0)) * dt;
+		if (input->right || input->left) {
+			speed->dx += (input->right ? p_accel->value : input->left ? -p_accel->value : 0) * dt;
+		} else if (speed->dx != 0) {
+			auto friction = p_groundFriction->value * dt;
+			if (friction > fabs(speed->dx)) {
+				speed->dx = 0;
+			} else {
+				speed->dx += friction * (speed->dx > 0 ? -1 : 1);
+			}
+		}
+
+		speed->dy = input->down ? p_accel->value : input->up ? -p_accel->value : 0 * dt;
 
 		ex::Entity hitEnt;
 

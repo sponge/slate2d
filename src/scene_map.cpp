@@ -7,8 +7,11 @@
 #include "sys/systems_drw.h"
 #include "sys/systems_upd.h"
 #include "components.h"
+#include "cvar_game.h"
 
 GameWorld::GameWorld(const char *filename) {
+	RegisterGameCvars();
+	
 	systems.add<InputSystem>();
 	systems.add<PlayerSystem>();
 	systems.add<CameraUpdateSystem>();
@@ -56,7 +59,6 @@ GameWorld::GameWorld(const char *filename) {
 				}
 				obj = obj->next;
 			}
-			// parse objects
 		}
 
 		layer = layer->next;

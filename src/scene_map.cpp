@@ -49,25 +49,7 @@ bool GameWorld::Load(const char *filename) {
 		}
 
 		if (layer->type == L_OBJGR) {
-			tmx_object *obj = layer->content.objgr->head;
-			while (obj != nullptr) {
-				if (obj->type == nullptr) {
-					obj = obj->next;
-					continue;
-				}
-
-				if (strcmp("player", obj->type) == 0) {
-					auto ent = this->entities.create();
-					auto body = ent.assign<Body>(obj->x + (map->tile_width / 2), obj->y - 14.001, 14, 28);  // FIXME able to fall into ground if 14
-					ent.assign<Movable>(0, 0);
-					ent.assign<Renderable>(200, 30, 30, 255);
-					ent.assign<PlayerInput>();
-
-					auto camera = world.assign<Camera>(1280, 720, 3, map->width * map->tile_width, map->height * map->tile_height);
-					camera->target = body.get();
-				}
-				obj = obj->next;
-			}
+			SpawnEntitiesFromLayer(*layer, this->entities);
 		}
 
 		layer = layer->next;

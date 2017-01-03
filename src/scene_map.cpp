@@ -25,9 +25,6 @@ GameWorld::~GameWorld() {
 }
 
 bool GameWorld::Load(const char *filename) {
-	error = "i'm the worst";
-	return false;
-	
 	tmx_map *map = tmx_load(filename);
 
 	if (map == nullptr) {

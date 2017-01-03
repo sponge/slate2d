@@ -9,6 +9,17 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 		auto body = ent.component<Body>();
 		auto speed = ent.component<Movable>();
 
+		// FIXME reset didjump/candoublejump if grounded
+
+		speed->dy += p_gravity->value * dt;
+
+		// set wallsliding to false
+		// check if can walljump
+
+		// if falling down and can walljump (since you're touching the wall) go wallslide
+
+		// set speed if wallsliding
+
 		if (input->right || input->left) {
 			speed->dx += (input->right ? p_accel->value : input->left ? -p_accel->value : 0) * dt;
 		} else if (speed->dx != 0) {
@@ -20,8 +31,15 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 			}
 		}
 
-		speed->dy = input->down ? p_accel->value : input->up ? -p_accel->value : 0 * dt;
+		if (input->up || input->down) {
+			speed->dy = input->down ? p_accel->value : input->up ? -p_accel->value : 0 * dt;
+		}
 
+		speed->dx = clamp(speed->dx, -p_maxSpeed->value, p_maxSpeed->value);
+		auto uncappedY = speed->dy;
+		speed->dy = clamp(speed->dy, -p_terminalVelocity->value, p_terminalVelocity->value);
+
+		// do the move and collision checks
 		ex::Entity hitEnt;
 
 		Sweep move = Move(&es, ent, speed->dx * dt, speed->dy * dt, hitEnt);

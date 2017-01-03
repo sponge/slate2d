@@ -8,8 +8,8 @@ struct Body : public Box {
 };
 
 struct Movable {
-	explicit Movable(double dx, double dy) : dx(dx), dy(dy) {}
-	double dx, dy;
+	explicit Movable(float dx, float dy) : dx(dx), dy(dy) {}
+	float dx, dy;
 };
 
 struct Renderable {

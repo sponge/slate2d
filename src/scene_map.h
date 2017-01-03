@@ -7,9 +7,11 @@
 
 class GameWorld : public ex::EntityX {
 public:
-	explicit GameWorld(const char *filename);
+	explicit GameWorld();
+	bool Load(const char *filename);
 	void update(ex::TimeDelta dt);
 	TileMap *tmap;
+	const char *error;
 	~GameWorld();
 };
 

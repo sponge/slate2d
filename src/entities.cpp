@@ -33,7 +33,7 @@ spawn_t	spawns[] = {
     {"player", SP_player}
 };
 
-bool SpawnEntitiesFromLayer(tmx_layer &layer, ex::EntityManager &es) {
+void SpawnEntitiesFromLayer(tmx_layer &layer, ex::EntityManager &es) {
     tmx_object *obj = layer.content.objgr->head;
     while (obj != nullptr) {
         if (obj->type == nullptr) {

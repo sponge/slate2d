@@ -44,7 +44,7 @@ struct PlayerInput {
 };
 
 struct Player {
-	unsigned char numJumps;
+	uint8_t numJumps;
 	bool isWallSliding;
 	bool canWallJump;
 };

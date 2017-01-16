@@ -156,7 +156,7 @@ int ConsoleUI::TextEditCallback(ImGuiTextEditCallbackData* data)
 
 		// Build a list of candidates
 		auto cb = [](const char *match, const char *cmd) {
-			if (strcasestr(cmd, match) == cmd) {
+			if (strncmp(match, cmd, strlen(match)) == 0) {
 				Console()->candidates.push_back(cmd);
 			}
 		};

@@ -14,7 +14,6 @@ namespace ex = entityx;
 #ifdef _MSC_VER 
 #define strncasecmp _strnicmp
 #define strcasecmp _stricmp
-#define strcasestr _stristr
 #endif
 
 struct ClientInfo {
@@ -69,5 +68,5 @@ void CL_InitInput(void);
 float CL_KeyState(kbutton_t *key);
 
 // entities.cpp
-bool SpawnEntitiesFromLayer(tmx_layer &layer, ex::EntityManager &es);
+void SpawnEntitiesFromLayer(tmx_layer &layer, ex::EntityManager &es);
 bool SpawnEntity(const char *type, ex::EntityManager &es, tmx_object &obj);

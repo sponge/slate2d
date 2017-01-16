@@ -15,8 +15,7 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 		mov->downTouch = Trace(es, ent, 0, 1, touchEnt).time < 1e-7;
 		mov->upTouch = Trace(es, ent, 0, -1, touchEnt).time < 1e-7;
 
-		ImGui::Text("%0.15f", Trace(es, ent, 0, -1, touchEnt).time);
-		ImGui::Text("%i, %i, %i, %i\n", mov->rightTouch, mov->leftTouch, mov->downTouch, mov->upTouch);
+		//ImGui::Text("%i, %i, %i, %i\n", mov->rightTouch, mov->leftTouch, mov->downTouch, mov->upTouch);
 
 		mov->dy += p_gravity->value * dt;
 
@@ -42,23 +41,18 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 		// do the move and collision checks
 		ex::Entity hitEnt;
 
-		Sweep move = Trace(es, ent, mov->dx * dt, mov->dy * dt, hitEnt);
+		// do x and y first since otherwise you get flickering collision normals
+		// it seems to work better for continuous input actions
+		Sweep xmove = Trace(es, ent, mov->dx * dt, 0, hitEnt);
+		body->pos.x = xmove.pos.x;
+		if (xmove.hit.valid) {
+			mov->dx = 0;
+		}
 
-		body->pos.x = move.pos.x;
-		body->pos.y = move.pos.y;
-
-		if (move.hit.valid) {
-			ImGui::Text("valid hit normal (%0.15f,%0.15f)", move.hit.normal.x, move.hit.normal.y);
-			mov->dx = move.hit.normal.x ? 0 : mov->dx;
-			mov->dy = move.hit.normal.y ? 0 : mov->dy;
-			
-			auto remain = 1.0 - move.time;
-			auto remx = move.hit.normal.x != 0 ? 0 : mov->dx * dt * remain;
-			auto remy = move.hit.normal.y != 0 ? 0 : mov->dy * dt * remain;
-			Sweep moveremain = Trace(es, ent, remx, remy, hitEnt);
-
-			body->pos.x = moveremain.pos.x;
-			body->pos.y = moveremain.pos.y;
+		Sweep ymove = Trace(es, ent, 0, mov->dy * dt, hitEnt);
+		body->pos.y = ymove.pos.y;
+		if (ymove.hit.valid) {
+			mov->dy = 0;
 		}
 
 		if (fabs(mov->dx) < 0.2) {

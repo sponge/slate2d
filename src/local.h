@@ -14,6 +14,7 @@ namespace ex = entityx;
 #ifdef _MSC_VER 
 #define strncasecmp _strnicmp
 #define strcasecmp _stricmp
+#define strcasestr _stristr
 #endif
 
 struct ClientInfo {

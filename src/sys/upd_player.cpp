@@ -4,7 +4,8 @@
 #include "../cvar_game.h"
 
 void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) {
-	for (auto ent : es.entities_with_components<PlayerInput, Body, Movable>()) {
+	for (auto ent : es.entities_with_components<Player, PlayerInput, Body, Movable>()) {
+		auto player = ent.component<Player>();
 		auto input = ent.component<PlayerInput>();
 		auto body = ent.component<Body>();
 		auto mov = ent.component<Movable>();
@@ -17,7 +18,28 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 
 		//ImGui::Text("%i, %i, %i, %i\n", mov->rightTouch, mov->leftTouch, mov->downTouch, mov->upTouch);
 
+		// if they're on the ground, they can always jump
+		if (mov->downTouch) {
+			player->numJumps = 0;
+		}
+
+        player->isWallSliding = false;
+
+		// if they're midair and are holding down toward the wall, they can wall jump
+		player->canWallJump = !mov->downTouch && ((input->left && mov->leftTouch) || (input->right && mov->rightTouch));
+
+		// if they're moving down and touching a wall the direction they're holding down, they are wall sliding
+        if (mov->dy > 0 && player->canWallJump) {
+            player->isWallSliding = true;
+        }
+
+		// finished updating player, now start figuring out speeds
+
 		mov->dy += p_gravity->value * dt;
+
+		if (player->isWallSliding) {
+			mov->dy = p_wallSlideSpeed->value;
+		}
 
 		if (input->right || input->left) {
 			mov->dx += (input->right ? p_accel->value : input->left ? -p_accel->value : 0) * dt;
@@ -41,7 +63,7 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 		// do the move and collision checks
 		ex::Entity hitEnt;
 
-		// do x and y first since otherwise you get flickering collision normals
+		// do x and y separately since otherwise you get flickering collision normals
 		// it seems to work better for continuous input actions
 		Sweep xmove = Trace(es, ent, mov->dx * dt, 0, hitEnt);
 		body->pos.x = xmove.pos.x;

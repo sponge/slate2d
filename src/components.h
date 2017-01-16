@@ -42,3 +42,9 @@ struct PlayerInput {
 
 	bool up = false, down = false, left = false, right = false, jump = false, attack = false, menu = false;
 };
+
+struct Player {
+	unsigned char numJumps;
+	bool isWallSliding;
+	bool canWallJump;
+};

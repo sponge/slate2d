@@ -150,6 +150,10 @@ int ConsoleUI::TextEditCallback(ImGuiTextEditCallbackData* data)
 			word_start--;
 		}
 
+		if (strlen(word_start) == 0) {
+			break;
+		}
+
 		// Build a list of candidates
 		auto cb = [](const char *match, const char *cmd) {
 			if (strcasestr(cmd, match) == cmd) {

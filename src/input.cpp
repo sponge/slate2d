@@ -98,8 +98,6 @@ bool KeyEvent(int key, bool down, unsigned time) {
 		Cbuf_AddText("\n");
 		return true;
 	}
-
-	return false;
 }
 
 void IN_KeyDown(kbutton_t *b) {

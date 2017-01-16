@@ -9,6 +9,14 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 		auto body = ent.component<Body>();
 		auto speed = ent.component<Movable>();
 
+		ex::Entity touchEnt;
+		auto t1 = Trace(es, ent, 1, 0, touchEnt).time;
+		auto t2 = Trace(es, ent, -1, 0, touchEnt).time;
+		auto t3 = Trace(es, ent, 0, 1, touchEnt).time;
+		auto t4 = Trace(es, ent, 0, -1, touchEnt).time;
+
+		ImGui::Text("%0.4f, %0.4f, %0.4f, %0.4f", t1, t2, t3, t4);
+
 		if (input->right || input->left) {
 			speed->dx += (input->right ? p_accel->value : input->left ? -p_accel->value : 0) * dt;
 		} else if (speed->dx != 0) {
@@ -24,7 +32,7 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 
 		ex::Entity hitEnt;
 
-		Sweep move = Move(&es, ent, speed->dx * dt, speed->dy * dt, hitEnt);
+		Sweep move = Trace(es, ent, speed->dx * dt, speed->dy * dt, hitEnt);
 
 		body->pos.x = move.pos.x;
 		body->pos.y = move.pos.y;
@@ -36,7 +44,7 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 			auto remain = 1.0 - move.time;
 			auto remx = move.hit.normal.x != 0 ? 0 : speed->dx * dt * remain;
 			auto remy = move.hit.normal.y != 0 ? 0 : speed->dy * dt * remain;
-			Sweep moveremain = Move(&es, ent, remx, remy, hitEnt);
+			Sweep moveremain = Trace(es, ent, remx, remy, hitEnt);
 
 			body->pos.x = moveremain.pos.x;
 			body->pos.y = moveremain.pos.y;

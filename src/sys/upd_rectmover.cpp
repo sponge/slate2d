@@ -17,7 +17,7 @@ void RectMoverSystem::update(ex::EntityManager &es, ex::EventManager &events, ex
 
 		ex::Entity hitEnt;
 
-		auto move = Move(&es, ent, dx, dy, hitEnt);
+		auto move = Trace(es, ent, dx, dy, hitEnt);
 
 		body->pos.x = move.pos.x;
 		body->pos.y = move.pos.y;
@@ -27,7 +27,7 @@ void RectMoverSystem::update(ex::EntityManager &es, ex::EventManager &events, ex
 			dx = dotprod * move.hit.normal.y;
 			dy = dotprod * move.hit.normal.x;
 
-			move = Move(&es, ent, dx, dy, hitEnt);
+			move = Trace(es, ent, dx, dy, hitEnt);
 			body->pos.x = move.pos.x;
 			body->pos.y = move.pos.y;
 

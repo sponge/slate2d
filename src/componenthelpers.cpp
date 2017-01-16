@@ -154,7 +154,7 @@ Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize) {
 	return sweep;
 }
 
-const Sweep Move(ex::EntityManager * es, ex::Entity ent, double dx, double dy, ex::Entity &hitEnt)
+const Sweep Trace(ex::EntityManager &es, ex::Entity ent, double dx, double dy, ex::Entity &hitEnt)
 {
 	auto body = ent.component<Body>();
 	auto box = Box(body->pos.x, body->pos.y, body->size.x, body->size.y);
@@ -167,7 +167,7 @@ const Sweep Move(ex::EntityManager * es, ex::Entity ent, double dx, double dy, e
 	sweep.pos.x = body->pos.x + dx;
 	sweep.pos.y = body->pos.y + dy;
 
-	for (auto ent2 : es->entities_with_components<Body>()) {
+	for (auto ent2 : es.entities_with_components<Body>()) {
 		if (ent == ent2) {
 			continue;
 		}
@@ -186,7 +186,7 @@ const Sweep Move(ex::EntityManager * es, ex::Entity ent, double dx, double dy, e
 		}
 	}
 
-	for (auto ent2 : es->entities_with_components<TileMap>()) {
+	for (auto ent2 : es.entities_with_components<TileMap>()) {
 		auto tmap = ent2.component<TileMap>().get();
 		auto tempSweep = Map_SweepTiles(*tmap, box, delta, Vec2(16,16));
 		if (tempSweep.time < sweep.time) {

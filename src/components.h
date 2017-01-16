@@ -10,6 +10,7 @@ struct Body : public Box {
 struct Movable {
 	explicit Movable(double dx, double dy) : dx(dx), dy(dy) {}
 	double dx, dy;
+	bool topTouch, leftTouch, rightTouch, downTouch;
 };
 
 struct Renderable {

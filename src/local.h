@@ -66,3 +66,7 @@ void IN_KeyDown(kbutton_t *b);
 void IN_KeyUp(kbutton_t *b);
 void CL_InitInput(void);
 float CL_KeyState(kbutton_t *key);
+
+// entities.cpp
+bool SpawnEntitiesFromLayer(tmx_layer &layer, ex::EntityManager &es);
+bool SpawnEntity(const char *type, ex::EntityManager &es, tmx_object &obj);

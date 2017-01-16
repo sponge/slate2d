@@ -9,19 +9,27 @@
 #include "components.h"
 #include "cvar_game.h"
 
-GameWorld::GameWorld(const char *filename) {
+GameWorld::GameWorld() {
 	RegisterGameCvars();
-	
+
 	systems.add<InputSystem>();
 	systems.add<PlayerSystem>();
 	systems.add<CameraUpdateSystem>();
 	systems.configure();
+}
 
-	auto map = tmx_load(filename);
+GameWorld::~GameWorld() {
+	if (tmap != nullptr && tmap->map != nullptr) {
+		tmx_map_free(tmap->map);
+	}
+}
 
-	if (!map) {
-		Com_Error(ERR_DROP, "Failed to load map");
-		return;
+bool GameWorld::Load(const char *filename) {
+	tmx_map *map = tmx_load(filename);
+
+	if (map == nullptr) {
+		error = "Failed to load tmx";
+		return false;
 	}
 
 	auto world = this->entities.create();
@@ -41,35 +49,13 @@ GameWorld::GameWorld(const char *filename) {
 		}
 
 		if (layer->type == L_OBJGR) {
-			tmx_object *obj = layer->content.objgr->head;
-			while (obj != nullptr) {
-				if (obj->type == nullptr) {
-					obj = obj->next;
-					continue;
-				}
-
-				if (strcmp("player", obj->type) == 0) {
-					auto ent = this->entities.create();
-					auto body = ent.assign<Body>(obj->x + (map->tile_width / 2), obj->y - 14.001, 14, 28);  // FIXME able to fall into ground if 14
-					ent.assign<Movable>(0, 0);
-					ent.assign<Renderable>(200, 30, 30, 255);
-					ent.assign<PlayerInput>();
-
-					auto camera = world.assign<Camera>(1280, 720, 3, map->width * map->tile_width, map->height * map->tile_height);
-					camera->target = body.get();
-				}
-				obj = obj->next;
-			}
+			SpawnEntitiesFromLayer(*layer, this->entities);
 		}
 
 		layer = layer->next;
 	}
-}
 
-GameWorld::~GameWorld() {
-	if (tmap != nullptr && tmap->map != nullptr) {
-		tmx_map_free(tmap->map);
-	}
+	return true;
 }
 
 void GameWorld::update(ex::TimeDelta dt) {
@@ -98,7 +84,12 @@ void MapScene::Startup(ClientInfo* info) {
 	tmx_img_free_func = std::bind(&MapScene::nvg_img_free_func, this, _1);
 	tmx_file_read_func = std::bind(&MapScene::physfs_file_read_func, this, _1, _2);;
 
-	world = new GameWorld(fileName);
+	world = new GameWorld();
+	auto success = world->Load(fileName);
+	if (!success) {
+		Com_Error(ERR_DROP, world->error);
+		return;
+	}
 
 	rendSys = new ex::SystemManager(world->entities, world->events);
 	rendSys->add<CameraDrawSystem>(inf);

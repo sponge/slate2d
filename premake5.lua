@@ -3,6 +3,9 @@ solution "game"
   location "build"
   platforms {"x86", "x64"}
 
+  configuration { "macosx" }
+    buildoptions {"-Wno-unused-parameter"}
+
   configuration { "windows" }
   	toolset "v141"
 

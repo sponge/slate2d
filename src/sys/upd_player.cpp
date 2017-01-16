@@ -17,6 +17,8 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 
 		ImGui::Text("%0.4f, %0.4f, %0.4f, %0.4f", t1, t2, t3, t4);
 
+		speed->dy += p_gravity->value * dt;
+
 		if (input->right || input->left) {
 			speed->dx += (input->right ? p_accel->value : input->left ? -p_accel->value : 0) * dt;
 		} else if (speed->dx != 0) {
@@ -28,8 +30,15 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 			}
 		}
 
-		speed->dy = input->down ? p_accel->value : input->up ? -p_accel->value : 0 * dt;
+		if (input->up || input->down) {
+			speed->dy = input->down ? p_accel->value : input->up ? -p_accel->value : 0 * dt;
+		}
 
+		speed->dx = clamp(speed->dx, -p_maxSpeed->value, p_maxSpeed->value);
+		auto uncappedY = speed->dy;
+		speed->dy = clamp(speed->dy, -p_terminalVelocity->value, p_terminalVelocity->value);
+
+		// do the move and collision checks
 		ex::Entity hitEnt;
 
 		Sweep move = Trace(es, ent, speed->dx * dt, speed->dy * dt, hitEnt);

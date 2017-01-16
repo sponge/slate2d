@@ -65,7 +65,7 @@ void TestScene::Startup(ClientInfo* info) {
 	rendSys->configure();
 }
 
-void TestScene::Update(double dt) {
+void TestScene::Update(float dt) {
 	world->update(dt);
 }
 

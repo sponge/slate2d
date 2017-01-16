@@ -7,64 +7,66 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 	for (auto ent : es.entities_with_components<PlayerInput, Body, Movable>()) {
 		auto input = ent.component<PlayerInput>();
 		auto body = ent.component<Body>();
-		auto speed = ent.component<Movable>();
+		auto mov = ent.component<Movable>();
 
 		ex::Entity touchEnt;
-		auto t1 = Trace(es, ent, 1, 0, touchEnt).time;
-		auto t2 = Trace(es, ent, -1, 0, touchEnt).time;
-		auto t3 = Trace(es, ent, 0, 1, touchEnt).time;
-		auto t4 = Trace(es, ent, 0, -1, touchEnt).time;
+		mov->rightTouch = Trace(es, ent, 1, 0, touchEnt).time < 1e-7;
+		mov->leftTouch = Trace(es, ent, -1, 0, touchEnt).time < 1e-7;
+		mov->downTouch = Trace(es, ent, 0, 1, touchEnt).time < 1e-7;
+		mov->upTouch = Trace(es, ent, 0, -1, touchEnt).time < 1e-7;
 
-		ImGui::Text("%0.4f, %0.4f, %0.4f, %0.4f", t1, t2, t3, t4);
+		ImGui::Text("%0.15f", Trace(es, ent, 0, -1, touchEnt).time);
+		ImGui::Text("%i, %i, %i, %i\n", mov->rightTouch, mov->leftTouch, mov->downTouch, mov->upTouch);
 
-		speed->dy += p_gravity->value * dt;
+		mov->dy += p_gravity->value * dt;
 
 		if (input->right || input->left) {
-			speed->dx += (input->right ? p_accel->value : input->left ? -p_accel->value : 0) * dt;
-		} else if (speed->dx != 0) {
+			mov->dx += (input->right ? p_accel->value : input->left ? -p_accel->value : 0) * dt;
+		} else if (mov->dx != 0) {
 			auto friction = p_groundFriction->value * dt;
-			if (friction > fabs(speed->dx)) {
-				speed->dx = 0;
+			if (friction > fabs(mov->dx)) {
+				mov->dx = 0;
 			} else {
-				speed->dx += friction * (speed->dx > 0 ? -1 : 1);
+				mov->dx += friction * (mov->dx > 0 ? -1 : 1);
 			}
 		}
 
 		if (input->up || input->down) {
-			speed->dy = input->down ? p_accel->value : input->up ? -p_accel->value : 0 * dt;
+			mov->dy = input->down ? p_accel->value : input->up ? -p_accel->value : 0 * dt;
 		}
 
-		speed->dx = clamp(speed->dx, -p_maxSpeed->value, p_maxSpeed->value);
-		auto uncappedY = speed->dy;
-		speed->dy = clamp(speed->dy, -p_terminalVelocity->value, p_terminalVelocity->value);
+		mov->dx = clamp(mov->dx, -p_maxSpeed->value, p_maxSpeed->value);
+		auto uncappedY = mov->dy;
+		mov->dy = clamp(mov->dy, -p_terminalVelocity->value, p_terminalVelocity->value);
 
 		// do the move and collision checks
 		ex::Entity hitEnt;
 
-		Sweep move = Trace(es, ent, speed->dx * dt, speed->dy * dt, hitEnt);
+		Sweep move = Trace(es, ent, mov->dx * dt, mov->dy * dt, hitEnt);
 
 		body->pos.x = move.pos.x;
 		body->pos.y = move.pos.y;
 
 		if (move.hit.valid) {
-			speed->dx = move.hit.normal.x ? 0 : speed->dx;
-			speed->dy = move.hit.normal.y ? 0 : speed->dy;
+			ImGui::Text("valid hit normal (%0.15f,%0.15f)", move.hit.normal.x, move.hit.normal.y);
+			mov->dx = move.hit.normal.x ? 0 : mov->dx;
+			mov->dy = move.hit.normal.y ? 0 : mov->dy;
 			
 			auto remain = 1.0 - move.time;
-			auto remx = move.hit.normal.x != 0 ? 0 : speed->dx * dt * remain;
-			auto remy = move.hit.normal.y != 0 ? 0 : speed->dy * dt * remain;
+			auto remx = move.hit.normal.x != 0 ? 0 : mov->dx * dt * remain;
+			auto remy = move.hit.normal.y != 0 ? 0 : mov->dy * dt * remain;
 			Sweep moveremain = Trace(es, ent, remx, remy, hitEnt);
 
 			body->pos.x = moveremain.pos.x;
 			body->pos.y = moveremain.pos.y;
 		}
 
-		if (fabs(speed->dx) < 0.2) {
-			speed->dx = 0;
+		if (fabs(mov->dx) < 0.2) {
+			mov->dx = 0;
 		}
 
-		if (fabs(speed->dy) < 0.2) {
-			speed->dy = 0;
+		if (fabs(mov->dy) < 0.2) {
+			mov->dy = 0;
 		}
 	}
 }

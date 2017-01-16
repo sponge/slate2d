@@ -13,7 +13,7 @@ public:
 class TestBounceScene : public Scene {
 public:
 	void Startup(ClientInfo* i) override;
-	void Update(double dt) override;
+	void Update(float dt) override;
 	void Render() override;
 	~TestBounceScene();
 

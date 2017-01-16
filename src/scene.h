@@ -8,7 +8,7 @@ class Scene {
 public:
 	virtual ~Scene() {};
 	virtual void Startup(ClientInfo* i) = 0;
-	virtual void Update(double dt) = 0;
+	virtual void Update(float dt) = 0;
 	virtual void Render() = 0;
 	virtual bool Event(SDL_Event *ev) {
 		return true;
@@ -32,7 +32,7 @@ public:
 		Push(newScene);
 	}
 
-	void Update(double dt) {
+	void Update(float dt) {
 		for (auto s : scenes) {
 			s->Update(dt);
 		}

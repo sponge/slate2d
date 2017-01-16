@@ -65,15 +65,15 @@ Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize) {
 	auto y0 = opp.y / 16;
 	auto y1 = (opp.y + delta.y) / 16;
 
-	double dx = fabs(x1 - x0);
-	double dy = fabs(y1 - y0);
+	float dx = fabs(x1 - x0);
+	float dy = fabs(y1 - y0);
 
 	int x = int(floor(x0));
 	int y = int(floor(y0));
 
 	int n = 1;
 	int x_inc, y_inc;
-	double error;
+	float error;
 
 	if (dx == 0) {
 		x_inc = 0;
@@ -154,7 +154,7 @@ Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize) {
 	return sweep;
 }
 
-const Sweep Trace(ex::EntityManager &es, ex::Entity ent, double dx, double dy, ex::Entity &hitEnt)
+const Sweep Trace(ex::EntityManager &es, ex::Entity ent, float dx, float dy, ex::Entity &hitEnt)
 {
 	auto body = ent.component<Body>();
 	auto box = Box(body->pos.x, body->pos.y, body->size.x, body->size.y);
@@ -198,11 +198,11 @@ const Sweep Trace(ex::EntityManager &es, ex::Entity ent, double dx, double dy, e
 	return sweep;
 }
 
-void Cam_Center(Camera &cam, double cx, double cy) {
+void Cam_Center(Camera &cam, float cx, float cy) {
 	Cam_Move(cam, cx - (cam.size.x / 2) / cam.scale, cy - (cam.size.y / 2) / cam.scale);
 }
 
-void Cam_Move(Camera &cam, double x, double y) {
+void Cam_Move(Camera &cam, float x, float y) {
 	cam.pos.x = x;
 	cam.pos.y = y;
 	cam.top = y;
@@ -212,7 +212,7 @@ void Cam_Move(Camera &cam, double x, double y) {
 }
 
 void Cam_Bind(Camera &cam) {
-	double x = cam.pos.x, y = cam.pos.y;
+	float x = cam.pos.x, y = cam.pos.y;
 
 	if (cam.left < 0) {
 		x = 0;

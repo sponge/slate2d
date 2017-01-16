@@ -2,8 +2,8 @@
 #include "systems_upd.h"
 #include "../components.h"
 
-const double WORLD_WIDTH = 1280.0;
-const double WORLD_HEIGHT = 720.0;
+const float WORLD_WIDTH = 1280.0;
+const float WORLD_HEIGHT = 720.0;
 
 void RectMoverSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) {
 	dt = dt > 0.1 ? 0.1 : dt;
@@ -12,8 +12,8 @@ void RectMoverSystem::update(ex::EntityManager &es, ex::EventManager &events, ex
 		auto body = ent.component<Body>();
 		auto movable = ent.component<Movable>();
 
-		double dx = movable->dx * dt;
-		double dy = movable->dy * dt;
+		float dx = movable->dx * dt;
+		float dy = movable->dy * dt;
 
 		ex::Entity hitEnt;
 

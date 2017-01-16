@@ -15,12 +15,12 @@ TestBounceWorld::TestBounceWorld() {
 	std::uniform_real_distribution<double> distr(0, 1);
 
 	for (int i = 0; i < 16; i++) {
-		double x = (i % 4) * (1280 / 4);
-		double y = floor(i / 4) * (720 / 4);
-		double w = distr(g) * 50 + 40;
-		double h = distr(g) * 50 + 40;
-		double dx = distr(g) * 200 * (x < 2 ? 1 : -1) + 50;
-		double dy = distr(g) * 200 * (y < 2 ? 1 : -1) + 50;
+		float x = (i % 4) * (1280 / 4);
+		float y = floor(i / 4) * (720 / 4);
+		float w = distr(g) * 50 + 40;
+		float h = distr(g) * 50 + 40;
+		float dx = distr(g) * 200 * (x < 2 ? 1 : -1) + 50;
+		float dy = distr(g) * 200 * (y < 2 ? 1 : -1) + 50;
 
 		auto ent = this->entities.create();
 		ent.assign<Body>(x, y, w, h);
@@ -43,7 +43,7 @@ void TestBounceScene::Startup(ClientInfo* info) {
 	rendSys->configure();
 }
 
-void TestBounceScene::Update(double dt) {
+void TestBounceScene::Update(float dt) {
 	world->update(dt);
 }
 

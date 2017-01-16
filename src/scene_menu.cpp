@@ -27,7 +27,7 @@ MenuScene::~MenuScene() {
 	}
 }
 
-void MenuScene::Update(double dt) {
+void MenuScene::Update(float dt) {
 
 }
 

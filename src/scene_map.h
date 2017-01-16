@@ -19,7 +19,7 @@ class MapScene : public Scene {
 public:
 	MapScene(const char *filename);
 	void Startup(ClientInfo* i) override;
-	void Update(double dt) override;
+	void Update(float dt) override;
 	void Render() override;
 	//bool Event(SDL_Event *ev) override;
 	void* nvg_img_load_func(const char *path);

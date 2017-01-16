@@ -29,7 +29,7 @@ typedef struct Img {
 	char path[64];
 } img_t;
 
-const Sweep Trace(ex::EntityManager &es, ex::Entity ent, double dx, double dy, ex::Entity &hitEnt);
+const Sweep Trace(ex::EntityManager &es, ex::Entity ent, float dx, float dy, ex::Entity &hitEnt);
 Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize);
 
 extern bool consoleActive;

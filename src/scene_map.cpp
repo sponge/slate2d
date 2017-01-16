@@ -98,7 +98,7 @@ void MapScene::Startup(ClientInfo* info) {
 	rendSys->configure();
 }
 
-void MapScene::Update(double dt) {
+void MapScene::Update(float dt) {
 	world->update(dt);
 }
 

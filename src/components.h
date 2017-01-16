@@ -4,13 +4,13 @@
 #include "local.h"
 
 struct Body : public Box {
-	explicit Body(double x, double y, double w, double h) : Box(x, y, w, h) {	}
+	explicit Body(float x, float y, float w, float h) : Box(x, y, w, h) {	}
 };
 
 struct Movable {
 	explicit Movable(float dx, float dy) : dx(dx), dy(dy) {}
 	float dx, dy;
-	bool topTouch, leftTouch, rightTouch, downTouch;
+	bool upTouch, leftTouch, rightTouch, downTouch;
 };
 
 struct Renderable {
@@ -25,16 +25,16 @@ struct TileMap {
 };
 
 struct Camera {
-	explicit Camera(double w, double h, double scale = 0, double mx = 0, double my = 0) : size(w, h), max(mx, my), scale(scale) {}
+	explicit Camera(float w, float h, float scale = 0, float mx = 0, float my = 0) : size(w, h), max(mx, my), scale(scale) {}
 	bool active = true;
 	Vec2 pos, size, max;
-	double scale;
-	double top, right, bottom, left;
+	float scale;
+	float top, right, bottom, left;
 	Body *target = nullptr;
 };
 
-void Cam_Move(Camera &cam, double x, double y);
-void Cam_Center(Camera &cam, double cx, double cy);
+void Cam_Move(Camera &cam, float x, float y);
+void Cam_Center(Camera &cam, float cx, float cy);
 void Cam_Bind(Camera &cam);
 
 struct PlayerInput {

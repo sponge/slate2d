@@ -10,7 +10,7 @@ class MenuScene : public Scene {
 public:
 	~MenuScene();
 	void Startup(ClientInfo* i) override;
-	void Update(double dt) override;
+	void Update(float dt) override;
 	void Render() override;
 
 private:

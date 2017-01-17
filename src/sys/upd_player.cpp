@@ -88,7 +88,17 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 		// FIXME: weapon logic
 
 		if (input->right || input->left) {
-			mov->dx += (input->right ? p_accel->value : input->left ? -p_accel->value : 0) * dt;
+			float accel = 0;
+			auto isSkidding = (input->left && mov->dx > 0) || (input->right && mov->dx < 0);
+			// FIXME: check stun time here
+			if (mov->downTouch) {
+				accel = isSkidding ? p_skidAccel->value : p_accel->value;
+			}
+			else {
+				accel = isSkidding ? p_turnAirAccel->value : p_airAccel->value;
+			}
+
+			mov->dx += (input->right ? accel : input->left ? -accel : 0) * dt;
 		} else if (mov->dx != 0) {
 			auto friction = p_groundFriction->value * dt;
 			if (friction > fabs(mov->dx)) {

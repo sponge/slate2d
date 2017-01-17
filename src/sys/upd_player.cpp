@@ -100,7 +100,7 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 
 		mov->dx = clamp(mov->dx, -p_maxSpeed->value, p_maxSpeed->value);
 		auto uncappedY = mov->dy;
-		mov->dy = std::min(mov->dy, p_terminalVelocity->value);
+		mov->dy = clamp(mov->dy, -p_terminalVelocity->value, p_terminalVelocity->value);
 
 		// do the move and collision checks
 		ex::Entity hitEnt;
@@ -125,6 +125,11 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 
 		if (fabs(mov->dy) < 0.2) {
 			mov->dy = 0;
+		}
+
+		// keep going upward as long as we don't have an upward collision
+		if (mov->dy < 0 && !ymove.hit.valid) {
+			mov->dy = uncappedY;
 		}
 	}
 }

@@ -18,8 +18,8 @@ cvar_t *p_groundFriction;
 cvar_t *p_airFriction;
 
 static cvarTable_t gameCvarTable[] = {
-    { &p_gravity, "p_gravity", "625", 0 },
-    { &p_jumpHeight, "p_jumpHeight", "290", 0 },
+    { &p_gravity, "p_gravity", "550", 0 },
+    { &p_jumpHeight, "p_jumpHeight", "280", 0 },
     { &p_wallSlideSpeed, "p_wallSlideSpeed", "45", 0 },
     { &p_earlyJumpEndModifier, "p_earlyJumpEndModifier", "0.5", 0 },
     { &p_pogoJumpHeight, "p_pogoJumpHeight", "350", 0 },
@@ -27,7 +27,7 @@ static cvarTable_t gameCvarTable[] = {
     { &p_wallJumpX, "p_wallJumpX", "95", 0 },
     { &p_maxSpeed, "p_maxSpeed", "170", 0 },
     { &p_terminalVelocity, "p_terminalVelocity", "230", 0 },
-    { &p_speedJumpBonus, "p_speedJumpBonus", "45", 0 },
+    { &p_speedJumpBonus, "p_speedJumpBonus", "35", 0 },
     { &p_airAccel, "p_airAccel", "190", 0 },
     { &p_turnAirAccel, "p_turnAirAccel", "325", 0 },
     { &p_accel, "p_accel", "175", 0 },

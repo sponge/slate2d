@@ -73,7 +73,7 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 			}
 			// regular on ground jump
 			else if (mov->downTouch) {
-				mov->dy = -(p_jumpHeight->value + (fabs(mov->dx) >= p_maxSpeed->value * 0.5f ? p_speedJumpBonus->value : 0));
+				mov->dy = -(p_jumpHeight->value + (fabs(mov->dx) >= p_maxSpeed->value * 0.25f ? p_speedJumpBonus->value : 0));
 				player->jumpHeld = true;
 				player->numJumps = 1;
 			}

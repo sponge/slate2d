@@ -47,4 +47,7 @@ struct Player {
 	uint8_t numJumps;
 	bool isWallSliding;
 	bool canWallJump;
+	bool jumpHeld;
+	bool willPogo;
+	float stunTime;
 };

@@ -33,13 +33,59 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
             player->isWallSliding = true;
         }
 
+		if (mov->downTouch && (mov->dy < 0 || !player->willPogo)) {
+			player->willPogo = input->down;
+		}
+
 		// finished updating player, now start figuring out speeds
 
+		// apply gravity now in case we want to override it later
 		mov->dy += p_gravity->value * dt;
 
+		// apply wallslide speed after gravity
 		if (player->isWallSliding) {
 			mov->dy = p_wallSlideSpeed->value;
 		}
+
+		// reset jump and slow upward velocity
+		if (!input->jump && player->jumpHeld) {
+			player->jumpHeld = false;
+			if (mov->dy < 0) {
+				mov->dy *= p_earlyJumpEndModifier->value;
+			}
+		}
+
+		// if touching ground and are about to pogo, pogo is first prio
+		if (mov->downTouch && player->willPogo) {
+			mov->dy = -p_pogoJumpHeight->value;
+			player->numJumps = 1;
+			player->willPogo = false;
+		}
+		// check for various types of jumps
+		else if (input->jump && !player->jumpHeld) {
+			if (player->canWallJump) {
+				mov->dy = -p_doubleJumpHeight->value; // TODO: separate wall jump height?
+				mov->dx = p_wallJumpX->value * (input->right ? -1 : 1);
+				// FIXME: need global time for stun
+				// player->stunTime = time + 0.1f;
+				player->jumpHeld = true;
+				player->numJumps = 1;
+			}
+			// regular on ground jump
+			else if (mov->downTouch) {
+				mov->dy = -(p_jumpHeight->value + (fabs(mov->dx) >= p_maxSpeed->value * 0.5f ? p_speedJumpBonus->value : 0));
+				player->jumpHeld = true;
+				player->numJumps = 1;
+			}
+			// midair double jump
+			else if (player->numJumps < 2) {
+				mov->dy = -p_doubleJumpHeight->value;
+				player->numJumps = 2;
+				player->jumpHeld = true;
+			}
+		}
+
+		// FIXME: weapon logic
 
 		if (input->right || input->left) {
 			mov->dx += (input->right ? p_accel->value : input->left ? -p_accel->value : 0) * dt;
@@ -52,13 +98,9 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 			}
 		}
 
-		if (input->up || input->down) {
-			mov->dy = input->down ? p_accel->value : input->up ? -p_accel->value : 0 * dt;
-		}
-
 		mov->dx = clamp(mov->dx, -p_maxSpeed->value, p_maxSpeed->value);
 		auto uncappedY = mov->dy;
-		mov->dy = clamp(mov->dy, -p_terminalVelocity->value, p_terminalVelocity->value);
+		mov->dy = std::min(mov->dy, p_terminalVelocity->value);
 
 		// do the move and collision checks
 		ex::Entity hitEnt;

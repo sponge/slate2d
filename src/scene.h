@@ -60,8 +60,8 @@ public:
 		newScene->Startup(&info);
 	}
 
-	Scene* Get(int i) {
-		if (i < 0 || i > scenes.size()) {
+	Scene* Get(unsigned long i) {
+		if (i > scenes.size()) {
 			return nullptr;
 		}
 		return scenes.at(i);

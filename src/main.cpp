@@ -29,7 +29,8 @@
 
 ClientInfo inf;
 SceneManager *sm;
-int frame_msec, com_frameTime, frame_accum;
+int frame_msec, com_frameTime;
+//int frame_accum;
 
 void Cmd_Vid_Restart_f(void) {
 	inf.width = vid_width->integer;
@@ -233,11 +234,15 @@ int main(int argc, char *argv[]) {
 
 		ImGui_ImplSdlGL3_NewFrame(inf.window);
 
+		// FIXME: not working on my mac, prob because fps is too low?
+		/*
 		frame_accum += frame_msec;
 		while (frame_accum > 5) {
 			sm->Update(5 / 1000.0f);
 			frame_accum -= 5;
 		}
+		*/
+		sm->Update(frame_msec / 1000.0f);
 
 		glClear(GL_COLOR_BUFFER_BIT);
 

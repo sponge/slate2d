@@ -88,14 +88,14 @@ Hit intersectVec2(Box box, Vec2 point) {
 	Hit hit;
 
 	auto dx = point.x - box.pos.x;
-	auto px = box.half.x - abs(dx);
+	auto px = box.half.x - fabs(dx);
 
 	if (px <= 0) {
 		return hit;
 	}
 
 	auto dy = point.y - box.pos.y;
-	auto py = box.half.y - abs(dy);
+	auto py = box.half.y - fabs(dy);
 	
 	if (py <= 0) {
 		return hit;
@@ -177,14 +177,14 @@ Hit intersectAABB(Box check, Box box) {
 	Hit hit;
 
 	auto dx = box.pos.x - check.pos.x;
-	auto px = (box.half.x + check.half.x) - abs(dx);
+	auto px = (box.half.x + check.half.x) - fabs(dx);
 
 	if (px <= 0) {
 		return hit;
 	}
 
 	auto dy = box.pos.y - check.pos.y;
-	auto py = (box.half.y + check.half.y) - abs(dy);
+	auto py = (box.half.y + check.half.y) - fabs(dy);
 	
 	if (py <= 0) {
 		return hit;
@@ -543,9 +543,6 @@ void testCollision() {
 		auto box2 = Box(64, -64, 16, 16);
 		auto delta = Vec2(0, 128);
 		auto sweep = sweepAABB(box1, box2, delta);
-		//assert(sweep instanceof intersect.Sweep);
-		//assert(sweep.pos instanceof intersect.Point);
-		//assert(sweep.hit == null);
 		assert(sweep.pos.x == box2.pos.x + delta.x);
 		assert(sweep.pos.y == box2.pos.y + delta.y);
 	}
@@ -556,9 +553,7 @@ void testCollision() {
 		auto box2 = Box(0, -64, 16, 16);
 		auto delta = Vec2(0, 128);
 		auto sweep = sweepAABB(box1, box2, delta);
-		//assert(sweep instanceof intersect.Sweep);
-		//assert(sweep.hit instanceof intersect.Hit);
-		//assert(sweep.pos instanceof intersect.Point);
+		assert(sweep.hit.valid == true);
 	}
 
 	printf("sweepAABB should place sweep.pos at a non-colliding point\n");

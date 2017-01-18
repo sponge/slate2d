@@ -135,7 +135,7 @@ int Cvar_VariableIntegerValue( const char *var_name ) {
 Cvar_VariableString
 ============
 */
-char *Cvar_VariableString( const char *var_name ) {
+const char *Cvar_VariableString( const char *var_name ) {
 	cvar_t *var;
 	
 	var = Cvar_FindVar (var_name);
@@ -734,7 +734,7 @@ void Cvar_Restart_f( void ) {
 			}
 			// clear the var completely, since we
 			// can't remove the index from the list
-			memset( var, 0, sizeof( var ) );
+			memset( var, 0, sizeof( cvar_s ) );
 			continue;
 		}
 

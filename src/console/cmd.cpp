@@ -117,7 +117,7 @@ varargs versions of all text functions.
 FIXME: make this buffer size safe someday
 ============
 */
-char	* __cdecl va(char *format, ...) {
+const char	* __cdecl va(const char *format, ...) {
 	va_list		argptr;
 	static char		string[2][32000];	// in case va is called by nested functions
 	static int		index = 0;
@@ -281,7 +281,7 @@ are inserted in the apropriate place, The argv array
 will point into this temporary buffer.
 ============
 */
-static	int			cmd_argc;
+static	unsigned int			cmd_argc;
 static	char		*cmd_argv[MAX_STRING_TOKENS];		// points into cmd_tokenized
 static	char		cmd_tokenized[BIG_INFO_STRING + MAX_STRING_TOKENS];	// will have 0 bytes inserted
 static	char		cmd_cmd[BIG_INFO_STRING]; // the original command we received (no token processing)
@@ -596,7 +596,7 @@ Inserts the current value of a variable as command text
 ===============
 */
 void Cmd_Vstr_f( void ) {
-	char	*v;
+	const char	*v;
 
 	if (Cmd_Argc () != 2) {
 		Com_Printf ("vstr <variablename> : execute a variable command\n");
@@ -632,7 +632,7 @@ A way to force a bus error for development reasons
 =================
 */
 static void Com_Crash_f(void) {
-	*(int *)0 = 0x12345678;
+	*(volatile int *)0 = 0x12345678;
 }
 
 /*
@@ -719,7 +719,7 @@ Returns a single string containing argv(1) to argv(argc()-1)
 */
 char	*Cmd_Args( void ) {
 	static	char		cmd_args[MAX_STRING_CHARS];
-	int		i;
+	unsigned int		i;
 
 	cmd_args[0] = 0;
 	for ( i = 1 ; i < cmd_argc ; i++ ) {
@@ -741,7 +741,7 @@ Returns a single string containing argv(arg) to argv(argc()-1)
 */
 char *Cmd_ArgsFrom( int arg ) {
 	static	char		cmd_args[BIG_INFO_STRING];
-	int		i;
+	unsigned int		i;
 
 	cmd_args[0] = 0;
 	if (arg < 0)

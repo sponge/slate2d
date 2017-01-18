@@ -3,8 +3,6 @@
 #include "../components.h"
 
 void InputSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) {
-	auto *state = SDL_GetKeyboardState(NULL);
-
 	for (auto ent : es.entities_with_components<PlayerInput>()) {
 		auto input = ent.component<PlayerInput>();
 		if (consoleActive) {

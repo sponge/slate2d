@@ -1,8 +1,8 @@
 #include "local.h"
 #include "components.h"
 
-int Map_GetTile(TileMap &tmap, int x, int y) {
-	int gid = (x < 0 || y < 0 || x >= tmap.map->width || y >= tmap.map->height) ? 1 : (tmap.worldLayer->content.gids[(y*tmap.map->width) + x]) & TMX_FLIP_BITS_REMOVAL;
+int Map_GetTile(TileMap &tmap, unsigned int x, unsigned int y) {
+	int gid = (x >= tmap.map->width || y >= tmap.map->height) ? 1 : (tmap.worldLayer->content.gids[(y*tmap.map->width) + x]) & TMX_FLIP_BITS_REMOVAL;
 	return gid;
 }
 
@@ -34,7 +34,7 @@ Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize) {
 		opp = delta.y > 0 ? corners.br : corners.tr;
 	}
 	else {
-		for (int i = 0; i < sizeof(cornerArr); i++) {
+		for (unsigned long i = 0; i < sizeof(cornerArr); i++) {
 			auto corner = cornerArr[i];
 			auto hit = intersectSegment(check, corner, delta);
 			if (hit.valid == false) {

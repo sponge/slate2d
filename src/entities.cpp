@@ -25,7 +25,7 @@ void SP_player(ex::EntityManager &es, tmx_object &obj) {
 }
 
 typedef struct {
-	char	*name;
+	const char	*name;
 	void	(*spawn)(ex::EntityManager &em, tmx_object &obj);
 } spawn_t;
 

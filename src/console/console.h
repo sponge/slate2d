@@ -46,7 +46,7 @@ typedef void(*xcommand_t) (void);
 
 void __cdecl Com_Error(int level, const char *error, ...);
 char *CopyString(const char *in);
-char * __cdecl va(char *format, ...);
+const char * __cdecl va(const char *format, ...);
 void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 
 void Cbuf_Init(void);
@@ -164,7 +164,7 @@ void Cvar_Init(void);
 cvar_t *Cvar_FindVar(const char *var_name);
 float Cvar_VariableValue(const char *var_name);
 int Cvar_VariableIntegerValue(const char *var_name);
-char *Cvar_VariableString(const char *var_name);
+const char *Cvar_VariableString(const char *var_name);
 void Cvar_VariableStringBuffer(const char *var_name, char *buffer, int bufsize);
 cvar_t *Cvar_Get(const char *var_name, const char *var_value, int flags);
 cvar_t *Cvar_Set2(const char *var_name, const char *value, bool force);

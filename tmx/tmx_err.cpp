@@ -6,7 +6,7 @@
 
 tmx_error_codes tmx_errno = E_NONE;
 
-static char *errmsgs[] = {
+static const char *errmsgs[] = {
 	"No error",
 	"Memory alloc failed",
 	"Missing privileges to access the file",
@@ -17,7 +17,7 @@ static char *errmsgs[] = {
 char custom_msg[256];
 
 const char* tmx_strerr(void) {
-	char *msg;
+	const char *msg;
 	switch(tmx_errno) {
 		case E_NONE:   msg = errmsgs[0]; break;
 		case E_ALLOC:  msg = errmsgs[1]; break;

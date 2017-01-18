@@ -13,6 +13,4 @@ public:
 
 private:
 	ClientInfo* inf;
-	char currentLine[MAX_CMD_LINE];
-	char history[262144];
 };

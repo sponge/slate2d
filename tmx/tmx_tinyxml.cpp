@@ -320,7 +320,7 @@ static bool parse_tile(XMLElement *ele, tmx_tileset *tileset, const char *filena
 	value = ele->Attribute("id");
 	if (value) {
 		int to_move;
-		auto id = atoi(value);
+		unsigned int id = atoi(value);
 		/* Insertion sort */
 		auto len = tileset->user_data.integer;
 		for (to_move = 0; (len - 1) - to_move >= 0; to_move++) {

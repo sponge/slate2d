@@ -29,7 +29,7 @@
 
 ClientInfo inf;
 SceneManager *sm;
-int frame_msec, com_frameTime;
+int frame_msec, com_frameTime, frame_accum;
 
 void Cmd_Vid_Restart_f(void) {
 	inf.width = vid_width->integer;
@@ -232,7 +232,12 @@ int main(int argc, char *argv[]) {
 		Cbuf_Execute();
 
 		ImGui_ImplSdlGL3_NewFrame(inf.window);
-		sm->Update(frame_msec / 1000.0f);
+
+		frame_accum += frame_msec;
+		while (frame_accum > 5) {
+			sm->Update(5 / 1000.0f);
+			frame_accum -= 5;
+		}
 
 		glClear(GL_COLOR_BUFFER_BIT);
 

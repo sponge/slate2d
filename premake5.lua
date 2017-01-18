@@ -2,6 +2,7 @@ solution "game"
   configurations { "Debug", "Release" }
   location "build"
   platforms {"x86", "x64"}
+  warnings "Extra"
 
   configuration { "macosx" }
     buildoptions {"-Wno-unused-parameter"}
@@ -11,11 +12,13 @@ solution "game"
 
   configuration "Debug"
     defines { "DEBUG" }
-    flags { "Symbols", "ExtraWarnings" }
+    symbols "On"
+    optimize "Off"
 
   configuration "Release"
     defines { "NDEBUG" }
-    flags { "Optimize", "ExtraWarnings" }
+    symbols "Off"
+    optimize "Full"
 
   project "game"
     kind "ConsoleApp"
@@ -25,6 +28,7 @@ solution "game"
     debugdir "."
     targetdir "bin/%{cfg.buildcfg}"
     links { "nanovg", "tmx", "imgui", "physfs", "glew", "entityx" }
+    flags { "C++11" }
 
     configuration { "windows" }
       libdirs { "lib/Win32" }
@@ -36,7 +40,7 @@ solution "game"
 
     configuration { "macosx" }
       links { "OpenGL.framework", "SDL2.framework", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework" }
-      buildoptions {"-std=c++14", "-stdlib=libc++"}
+      buildoptions {"-stdlib=libc++"}
       linkoptions {"-stdlib=libc++", "-F /Library/Frameworks"}
 
   project "nanovg"
@@ -44,30 +48,34 @@ solution "game"
     kind "StaticLib"
     includedirs { "nanovg" }
     files { "nanovg/**.c", "nanovg/**.h" }
-    targetdir "build"
+    targetdir "build/%{cfg.buildcfg}"
     defines { "_CRT_SECURE_NO_WARNINGS" }
+    warnings "Off"
 
   project "tmx"
     language "C++"
     kind "StaticLib"
     sysincludedirs { "include" }
     files { "tmx/**.c", "tmx/**.h", "tmx/**.cpp" }
-    targetdir "build"
+    targetdir "build/%{cfg.buildcfg}"
     defines { "_CRT_SECURE_NO_WARNINGS" }
-    buildoptions {"-std=c++14", "-stdlib=libc++"}
+    flags { "C++11" }
+    buildoptions {"-stdlib=libc++"}
 
   project "imgui"
     language "C++"
     kind "StaticLib"
     files { "imgui/**.cpp", "imgui/**.h" }
-    targetdir "build"
+    targetdir "build/%{cfg.buildcfg}"
+    warnings "Off"
 
   project "physfs"
     language "C"
     kind "StaticLib"
     defines { "_CRT_SECURE_NO_WARNINGS", "PHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_QPAK", "PHYSFS_INTERNAL_ZLIB"}
     files { "physfs/**.c", "physfs/**.h" }
-    targetdir "build"
+    targetdir "build/%{cfg.buildcfg}"
+    warnings "Off"
 
   project "glew"
     language "C++"
@@ -75,12 +83,15 @@ solution "game"
     defines { "GLEW_STATIC" }
     includedirs { "glew" }
     files { "glew/**.c", "glew/**.h" }
-    targetdir "build"
+    targetdir "build/%{cfg.buildcfg}"
+    warnings "Off"
 
   project "entityx"
     language "C++"
     kind "StaticLib"
-    buildoptions {"-std=c++14", "-stdlib=libc++"}
+    buildoptions {"-stdlib=libc++"}
     includedirs { "entityx" }
     files { "entityx/**.cc", "entityx/**.h" }
-    targetdir "build"
+    targetdir "build/%{cfg.buildcfg}"
+    flags { "C++11" }
+    warnings "Off"

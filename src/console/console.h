@@ -8,6 +8,7 @@
 #ifdef _MSC_VER 
 #define strncasecmp _strnicmp
 #define strcasecmp _stricmp
+#define strncasecmp strnicmp
 #endif
 
 // IMGUI CONSOLE

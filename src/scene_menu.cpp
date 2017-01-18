@@ -63,7 +63,7 @@ void MenuScene::Render() {
 		}
 
 		if (ImGui::BeginPopupModal("Error")) {
-			ImGui::Text(com_errorMessage->string);
+			ImGui::Text("%s", com_errorMessage->string);
 			if (ImGui::Button("OK")) {
 				ImGui::CloseCurrentPopup();
 			}

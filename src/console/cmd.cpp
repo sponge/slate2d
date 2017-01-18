@@ -70,8 +70,8 @@ void Com_Printf(const char *fmt, ...) {
 	vsnprintf(msg, sizeof(msg), fmt, argptr);
 	va_end(argptr);
 
-	printf(msg);
-	Console()->AddLog(msg);
+	printf("%s", msg);
+	Console()->AddLog("%s", msg);
 }
 
 char *CopyString(const char *in) {
@@ -217,7 +217,7 @@ be after execing the config and default.
 */
 void Com_StartupVariable(const char *match) {
 	int		i;
-	char	*s;
+	const char	*s;
 	cvar_t	*cv;
 
 	for (i = 0; i < com_numConsoleLines; i++) {
@@ -690,7 +690,7 @@ int		Cmd_Argc( void ) {
 Cmd_Argv
 ============
 */
-char	*Cmd_Argv( int arg ) {
+const char	*Cmd_Argv( int arg ) {
 	if ( (unsigned)arg >= cmd_argc ) {
 		return "";
 	}
@@ -905,7 +905,7 @@ void Cmd_List_f (void)
 {
 	cmd_function_t	*cmd;
 	int				i;
-	char			*match;
+	const char			*match;
 
 	if ( Cmd_Argc() > 1 ) {
 		match = Cmd_Argv( 1 );

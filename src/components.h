@@ -1,6 +1,6 @@
 #pragma once
 #include "sweep.h"
-#include "tmx.h"
+#include <tmx.h>
 #include "local.h"
 
 struct Body : public Box {

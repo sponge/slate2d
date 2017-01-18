@@ -28,7 +28,7 @@ solution "game"
     debugdir "."
     targetdir "bin/%{cfg.buildcfg}"
     links { "nanovg", "tmx", "imgui", "physfs", "glew", "entityx" }
-    flags { "C++11" }
+    flags { "C++14" }
 
     configuration { "windows" }
       libdirs { "lib/Win32" }
@@ -59,7 +59,7 @@ solution "game"
     files { "tmx/**.c", "tmx/**.h", "tmx/**.cpp" }
     targetdir "build/%{cfg.buildcfg}"
     defines { "_CRT_SECURE_NO_WARNINGS" }
-    flags { "C++11" }
+    flags { "C++14" }
     buildoptions {"-stdlib=libc++"}
 
   project "imgui"
@@ -93,5 +93,5 @@ solution "game"
     includedirs { "entityx" }
     files { "entityx/**.cc", "entityx/**.h" }
     targetdir "build/%{cfg.buildcfg}"
-    flags { "C++11" }
+    flags { "C++14" }
     warnings "Off"

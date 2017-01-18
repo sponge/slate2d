@@ -15,26 +15,26 @@
 
 struct ConsoleUI
 {
-	char                  InputBuf[256];
-	ImVector<char*>       Items;
-	bool                  ScrollToBottom;
-	ImVector<char*>       History;
-	int                   HistoryPos;    // -1: new line, 0..History.Size-1 browsing history.
-	ImVector<const char*> candidates;
+    char                  InputBuf[256];
+    ImVector<char*>       Items;
+    bool                  ScrollToBottom;
+    ImVector<char*>       History;
+    int                   HistoryPos;    // -1: new line, 0..History.Size-1 browsing history.
+    ImVector<const char*> candidates;
 
-	ConsoleUI();
-	~ConsoleUI();
+    ConsoleUI();
+    ~ConsoleUI();
 
-	static int   Stricmp(const char* str1, const char* str2) { int d; while ((d = toupper(*str2) - toupper(*str1)) == 0 && *str1) { str1++; str2++; } return d; }
-	static int   Strnicmp(const char* str1, const char* str2, int n) { int d = 0; while (n > 0 && (d = toupper(*str2) - toupper(*str1)) == 0 && *str1) { str1++; str2++; n--; } return d; }
-	static char* Strdup(const char *str) { size_t len = strlen(str) + 1; void* buff = malloc(len); return (char*)memcpy(buff, (const void*)str, len); }
+    static int   Stricmp(const char* str1, const char* str2) { int d; while ((d = toupper(*str2) - toupper(*str1)) == 0 && *str1) { str1++; str2++; } return d; }
+    static int   Strnicmp(const char* str1, const char* str2, int n) { int d = 0; while (n > 0 && (d = toupper(*str2) - toupper(*str1)) == 0 && *str1) { str1++; str2++; n--; } return d; }
+    static char* Strdup(const char *str) { size_t len = strlen(str) + 1; void* buff = malloc(len); return (char*)memcpy(buff, (const void*)str, len); }
 
-	void ClearLog();
-	void AddLog(const char* fmt, ...) IM_PRINTFARGS(2);
-	void Draw(const char* title, bool* p_open);
-	void ExecCommand(const char * command_line);
-	static int TextEditCallbackStub(ImGuiTextEditCallbackData * data);
-	int TextEditCallback(ImGuiTextEditCallbackData* data);
+    void ClearLog();
+    void AddLog(const char* fmt, ...) IM_PRINTFARGS(2);
+    void Draw(const char* title, bool* p_open);
+    void ExecCommand(const char * command_line);
+    static int TextEditCallbackStub(ImGuiTextEditCallbackData * data);
+    int TextEditCallback(ImGuiTextEditCallbackData* data);
 };
 
 ConsoleUI* Console();
@@ -56,7 +56,7 @@ void Cbuf_ExecuteText(int exec_when, const char *text);
 void Cbuf_Execute(void);
 
 int	Cmd_Argc(void);
-char *Cmd_Argv(int arg);
+const char *Cmd_Argv(int arg);
 void Cmd_Init(void);
 void Cmd_ExecuteString(const char *text);
 void Cmd_AddCommand(const char *cmd_name, xcommand_t function);
@@ -93,26 +93,26 @@ void Com_Printf(const char *fmt, ...);
 #define MAX_QPATH 1024
 
 typedef struct {
-	byte	*data;
-	int		maxsize;
-	int		cursize;
+    byte	*data;
+    int		maxsize;
+    int		cursize;
 } cmd_t;
 
 // paramters for command buffer stuffing
 typedef enum {
-	EXEC_NOW,			// don't return until completed, a VM should NEVER use this,
-						// because some commands might cause the VM to be unloaded...
-						EXEC_INSERT,		// insert at current position, but don't run yet
-						EXEC_APPEND			// add to end of the command buffer (normal case)
+    EXEC_NOW,			// don't return until completed, a VM should NEVER use this,
+                        // because some commands might cause the VM to be unloaded...
+                        EXEC_INSERT,		// insert at current position, but don't run yet
+                        EXEC_APPEND			// add to end of the command buffer (normal case)
 } cbufExec_t;
 
 // parameters to the main Error routine
 typedef enum {
-	ERR_NONE,
-	ERR_FATAL,					// exit the entire game with a popup window
-	ERR_DROP,					// print to console and disconnect from game
-	ERR_DISCONNECT,				// don't kill server
-	ERR_NEED_CD					// pop up the need-cd dialog
+    ERR_NONE,
+    ERR_FATAL,					// exit the entire game with a popup window
+    ERR_DROP,					// print to console and disconnect from game
+    ERR_DISCONNECT,				// don't kill server
+    ERR_NEED_CD					// pop up the need-cd dialog
 } errorParm_t;
 
 // CVARS
@@ -138,24 +138,24 @@ typedef enum {
 
 // nothing outside the Cvar_*() functions should modify these fields!
 typedef struct cvar_s {
-	char		*name;
-	char		*string;
-	char		*resetString;		// cvar_restart will reset to this value
-	char		*latchedString;		// for CVAR_LATCH vars
-	int			flags;
-	bool	modified;			// set each time the cvar is changed
-	int			modificationCount;	// incremented each time the cvar is changed
-	float		value;				// atof( string )
-	int			integer;			// atoi( string )
-	struct cvar_s *next;
-	struct cvar_s *hashNext;
+    char		*name;
+    char		*string;
+    char		*resetString;		// cvar_restart will reset to this value
+    char		*latchedString;		// for CVAR_LATCH vars
+    int			flags;
+    bool	modified;			// set each time the cvar is changed
+    int			modificationCount;	// incremented each time the cvar is changed
+    float		value;				// atof( string )
+    int			integer;			// atoi( string )
+    struct cvar_s *next;
+    struct cvar_s *hashNext;
 } cvar_t;
 
 typedef struct {
-	cvar_t		**cvar;
-	char		*cvarName;
-	char		*defaultString;
-	int			cvarFlags;
+    cvar_t	   		**cvar;
+    const char		*cvarName;
+    const char		*defaultString;
+    int	     		cvarFlags;
 } cvarTable_t;
 
 #define	MAX_CVAR_VALUE_STRING	256
@@ -179,13 +179,13 @@ bool Cvar_Command(void);
 #include <SDL/SDL_scancode.h>
 
 typedef struct {
-	bool		down;
-	int			repeats;		// if > 1, it is autorepeating
-	char		*binding;
+    bool		down;
+    int			repeats;		// if > 1, it is autorepeating
+    char		*binding;
 } qkey_t;
 
 extern	qkey_t		keys[SDL_NUM_SCANCODES];
 
 void CL_InitKeyCommands(void);
-int Key_StringToKeynum(char *str);
-char *Key_KeynumToString(int keynum);
+int Key_StringToKeynum(const char *str);
+const char *Key_KeynumToString(int keynum);

@@ -635,7 +635,7 @@ Cvar_List_f
 void Cvar_List_f( void ) {
 	cvar_t	*var;
 	int		i;
-	char	*match;
+	const char	*match;
 
 	if ( Cmd_Argc() > 1 ) {
 		match = Cmd_Argv( 1 );

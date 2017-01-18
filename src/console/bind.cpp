@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 qkey_t		keys[SDL_NUM_SCANCODES];
 
 typedef struct {
-	char	*name;
+	const char	*name;
 	int		keynum;
 } keyname_t;
 
@@ -115,7 +115,7 @@ the SDL_SCANCODE_* names are matched up.
 to be configured even if they don't have defined names.
 ===================
 */
-int Key_StringToKeynum(char *str) {
+int Key_StringToKeynum(const char *str) {
 
 	keyname_t	*kn;
 
@@ -178,7 +178,7 @@ Returns a string (either a single ascii char, a SDL_SCANCODE_* name, or a 0x11 h
 given keynum.
 ===================
 */
-char *Key_KeynumToString(int keynum) {
+const char *Key_KeynumToString(int keynum) {
 	keyname_t	*kn;
 	static	char	tinystr[5];
 	int			i, j;

@@ -6,9 +6,9 @@
 #include <ctype.h>
 
 #ifdef _MSC_VER 
+#define STRFUNCS
 #define strncasecmp _strnicmp
 #define strcasecmp _stricmp
-#define strncasecmp strnicmp
 #endif
 
 // IMGUI CONSOLE

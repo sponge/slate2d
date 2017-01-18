@@ -12,6 +12,7 @@ namespace ex = entityx;
 #include "console/console.h"
 
 #ifdef _MSC_VER 
+#define STRFUNCS
 #define strncasecmp _strnicmp
 #define strcasecmp _stricmp
 #endif

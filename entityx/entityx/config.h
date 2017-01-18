@@ -6,6 +6,6 @@
 namespace entityx {
 
 static const size_t MAX_COMPONENTS = 64;
-typedef double TimeDelta;
+typedef float TimeDelta;
 
 }  // namespace entityx

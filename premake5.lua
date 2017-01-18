@@ -9,7 +9,8 @@ solution "game"
 
   configuration { "windows" }
   	toolset "v141"
-
+    disablewarnings { "4100" }
+  
   configuration "Debug"
     defines { "DEBUG" }
     symbols "On"
@@ -40,7 +41,6 @@ solution "game"
 
     configuration { "macosx" }
       links { "OpenGL.framework", "SDL2.framework", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework" }
-      buildoptions {"-stdlib=libc++"}
       linkoptions {"-stdlib=libc++", "-F /Library/Frameworks"}
 
   project "nanovg"
@@ -60,7 +60,8 @@ solution "game"
     targetdir "build/%{cfg.buildcfg}"
     defines { "_CRT_SECURE_NO_WARNINGS" }
     flags { "C++14" }
-    buildoptions {"-stdlib=libc++"}
+    configuration { "macosx" }
+      buildoptions {"-stdlib=libc++"}
 
   project "imgui"
     language "C++"
@@ -89,9 +90,10 @@ solution "game"
   project "entityx"
     language "C++"
     kind "StaticLib"
-    buildoptions {"-stdlib=libc++"}
     includedirs { "entityx" }
     files { "entityx/**.cc", "entityx/**.h" }
     targetdir "build/%{cfg.buildcfg}"
     flags { "C++14" }
     warnings "Off"
+    configuration { "macosx" }
+      buildoptions {"-stdlib=libc++"}

@@ -6,7 +6,7 @@ const float WORLD_WIDTH = 1280.0;
 const float WORLD_HEIGHT = 720.0;
 
 void RectMoverSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) {
-	dt = dt > 0.1 ? 0.1 : dt;
+	dt = dt > 0.1f ? 0.1f : dt;
 
 	for (auto ent : es.entities_with_components<Body, Movable>()) {
 		auto body = ent.component<Body>();
@@ -23,7 +23,7 @@ void RectMoverSystem::update(ex::EntityManager &es, ex::EventManager &events, ex
 		body->pos.y = move.pos.y;
 
 		if (move.hit.valid) {
-			auto dotprod = (dx * move.hit.normal.y + dy * move.hit.normal.x) * (1.0 - move.time);
+			auto dotprod = (dx * move.hit.normal.y + dy * move.hit.normal.x) * (1.0f - move.time);
 			dx = dotprod * move.hit.normal.y;
 			dy = dotprod * move.hit.normal.x;
 

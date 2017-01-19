@@ -1,15 +1,19 @@
 #include "local.h"
 #include "components.h"
 
-int Map_GetTile(TileMap &tmap, unsigned int x, unsigned int y) {
-	int gid = (x >= tmap.map->width || y >= tmap.map->height) ? 1 : (tmap.worldLayer->content.gids[(y*tmap.map->width) + x]) & TMX_FLIP_BITS_REMOVAL;
-	return gid;
-}
+bool Map_IsTileResolvable(TileMap &map, Box check, unsigned int tx, unsigned int ty, double dx, double dy) {
+	unsigned int gid = (tx >= map.map->width || ty >= map.map->height) ? 1 : (map.worldLayer->content.gids[(ty*map.map->width) + tx]) & TMX_FLIP_BITS_REMOVAL;
+	// FIXME: if last tile, check slope?
+	if (map.tinfo[gid].platform) {
+		auto bottom = check.max().y;
+		return dy > 0 && bottom <= ty * map.map->tile_height && bottom + dy > ty * map.map->tile_height;
+	}
 
-bool Map_IsTileResolvable(TileMap &map, int gid) {
 	return map.tinfo[gid].solid;
 }
 
+// WARNING: this might not be safe for large deltas anymore, but should if the two callbacks are factored out
+// FIXME: make this pass in std::function for resolvable tile again since i found out about bound
 Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize) {
 	auto sweep = Sweep();
 	sweep.pos.x = check.pos.x + delta.x;
@@ -114,9 +118,7 @@ Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize) {
 			for (int i = 0; i <= boxTileSize.x; i++) {
 				auto lx = x + i * direction.x;
 				auto ly = y;
-				auto t = Map_GetTile(map, lx, ly);
-				auto xCollided = Map_IsTileResolvable(map, t);
-				if (xCollided) {
+				if (Map_IsTileResolvable(map, check, lx, ly, delta.x, delta.y)) {
 					// we found a collision on x, calculate the time of the collision
 					auto box = Box(lx * tileSize.x + tileSize.x / 2, ly * tileSize.y + tileSize.y / 2, tileSize.x, tileSize.y);
 					sweep = sweepAABB(box, check, delta);
@@ -135,12 +137,10 @@ Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize) {
 			for (int i = 0; i <= boxTileSize.y; i++) {
 				auto lx = x;
 				auto ly = y + i * direction.y;
-				auto t = Map_GetTile(map, lx, ly);
-				auto yCollided = Map_IsTileResolvable(map, t);
-				if (yCollided) {
+				if (Map_IsTileResolvable(map, check, lx, ly, delta.x, delta.y)) {
 					// we found a collision on x, calculate the time of the collision
 					auto box = Box(lx * tileSize.x + tileSize.x / 2, ly * tileSize.y + tileSize.y / 2, tileSize.x, tileSize.y);
-					sweep = sweepAABB(box, check, delta);
+					sweep = sweepAABB(box, check, delta);	
 					if (sweep.time < 1.0) {
 						return sweep;
 					}

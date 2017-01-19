@@ -3,7 +3,7 @@
 #include <tmx.h>
 #include "local.h"
 
-#define MAX_TILES 2048
+#define MAX_TILES 4096
 
 struct Body : public Box {
 	explicit Body(float x, float y, float w, float h) : Box(x, y, w, h) {	}

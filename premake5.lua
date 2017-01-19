@@ -9,7 +9,6 @@ solution "game"
 
   configuration { "windows" }
     platforms { "x86" }
-  	toolset "v141"
     disablewarnings { "4100" }
   
   configuration "Debug"

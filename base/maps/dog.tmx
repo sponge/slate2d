@@ -22,6 +22,16 @@
     <property name="solid" value="0"/>
    </properties>
   </tile>
+  <tile id="6">
+   <properties>
+    <property name="solid" value="0"/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="solid" value="0"/>
+   </properties>
+  </tile>
   <tile id="21">
    <properties>
     <property name="solid" value="0"/>

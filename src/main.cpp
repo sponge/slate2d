@@ -26,6 +26,7 @@
 #include "scene_testbounce.h"
 #include "scene_map.h"
 #include "scene_console.h"
+#include "scene_gl.h"
 
 ClientInfo inf;
 SceneManager *sm;
@@ -73,6 +74,7 @@ void Cmd_Scene_f(void) {
 	case 0: default: newScene = new MenuScene(); break;
 	case 1: newScene = new TestBounceScene(); break;
 	case 2: newScene = new TestScene(); break;
+	case 3: newScene = new GLScene(); break;
 	}
 
 	sm->Replace(0, newScene);

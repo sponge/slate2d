@@ -66,12 +66,15 @@ int FS_ReadFile(const char *path, void **buffer) {
 		return sz;
 	}
 	
-	*buffer = malloc(sz);
+	// FIXME: should it be +1? i seem to get junk at the end of files if i don't do this.
+	*buffer = malloc(sz+1);
+	memset(*buffer, 0, sz + 1);
 
 	int read_sz = PHYSFS_read(f, *buffer, 1, sz);
 
 	if (read_sz == -1) {
-		Com_Printf("FS err: %s", PHYSFS_getLastError());
+		auto lastErr = PHYSFS_getLastError();
+		Com_Printf("FS err: %s", lastErr);
 	}
 
 	PHYSFS_close(f);

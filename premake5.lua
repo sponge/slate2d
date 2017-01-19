@@ -1,13 +1,14 @@
 solution "game"
   configurations { "Debug", "Release" }
   location "build"
-  platforms {"x86", "x64"}
   warnings "Extra"
 
   configuration { "macosx" }
+    platforms { "x64" }
     buildoptions {"-Wno-unused-parameter"}
 
   configuration { "windows" }
+    platforms { "x86" }
   	toolset "v141"
     disablewarnings { "4100" }
   

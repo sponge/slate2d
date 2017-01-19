@@ -1,12 +1,12 @@
 #include "local.h"
 #include "components.h"
 
-bool Map_IsTileResolvable(TileMap &map, Box check, unsigned int tx, unsigned int ty, double dx, double dy) {
+bool Map_IsTileResolvable(TileMap &map, Box check, unsigned int tx, unsigned int ty, Vec2 delta) {
 	unsigned int gid = (tx >= map.map->width || ty >= map.map->height) ? 1 : (map.worldLayer->content.gids[(ty*map.map->width) + tx]) & TMX_FLIP_BITS_REMOVAL;
-	// FIXME: if last tile, check slope?
+	// TODO: if last tile, check slope?
 	if (map.tinfo[gid].platform) {
 		auto bottom = check.max().y;
-		return dy > 0 && bottom <= ty * map.map->tile_height && bottom + dy > ty * map.map->tile_height;
+		return delta.y > 0 && bottom <= ty * map.map->tile_height && bottom + delta.y > ty * map.map->tile_height;
 	}
 
 	return map.tinfo[gid].solid;
@@ -118,7 +118,7 @@ Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize) {
 			for (int i = 0; i <= boxTileSize.x; i++) {
 				auto lx = x + i * direction.x;
 				auto ly = y;
-				if (Map_IsTileResolvable(map, check, lx, ly, delta.x, delta.y)) {
+				if (Map_IsTileResolvable(map, check, lx, ly, delta)) {
 					// we found a collision on x, calculate the time of the collision
 					auto box = Box(lx * tileSize.x + tileSize.x / 2, ly * tileSize.y + tileSize.y / 2, tileSize.x, tileSize.y);
 					sweep = sweepAABB(box, check, delta);
@@ -137,7 +137,7 @@ Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize) {
 			for (int i = 0; i <= boxTileSize.y; i++) {
 				auto lx = x;
 				auto ly = y + i * direction.y;
-				if (Map_IsTileResolvable(map, check, lx, ly, delta.x, delta.y)) {
+				if (Map_IsTileResolvable(map, check, lx, ly, delta)) {
 					// we found a collision on x, calculate the time of the collision
 					auto box = Box(lx * tileSize.x + tileSize.x / 2, ly * tileSize.y + tileSize.y / 2, tileSize.x, tileSize.y);
 					sweep = sweepAABB(box, check, delta);	

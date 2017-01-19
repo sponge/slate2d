@@ -47,11 +47,11 @@ void GLScene::Startup(ClientInfo* info) {
 		Com_Error(ERR_DROP, "problem constructing shader");
 	}
 
-    GLint posAttrib = glGetAttribLocation(shader->shader, "position");
+    GLint posAttrib = glGetAttribLocation(shader->program, "position");
     glEnableVertexAttribArray(posAttrib);
     glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
 
-	GLint texAttrib = glGetAttribLocation(shader->shader, "iFragCoord");
+	GLint texAttrib = glGetAttribLocation(shader->program, "iFragCoord");
 	glEnableVertexAttribArray(texAttrib);
 	glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
 }
@@ -66,13 +66,13 @@ void GLScene::Render() {
 
 	// Draw a rectangle from the 2 triangles using 6 indices
 	shader->Bind();
-	GLint uniColor = glGetUniformLocation(shader->shader, "triangleColor");
+	GLint uniColor = glGetUniformLocation(shader->program, "triangleColor");
 	glUniform3f(uniColor, 1.0f, 0.0f, 0.0f);
 
-	GLint time = glGetUniformLocation(shader->shader, "iGlobalTime");
+	GLint time = glGetUniformLocation(shader->program, "iGlobalTime");
 	glUniform1f(time, SDL_GetTicks() / 1000.0f);
 
-	GLint delta = glGetUniformLocation(shader->shader, "iGlobalDelta");
+	GLint delta = glGetUniformLocation(shader->program, "iGlobalDelta");
 	glUniform1f(delta, _dt);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -81,6 +81,5 @@ void GLScene::Render() {
 GLScene::~GLScene() {
 	glDeleteBuffers(1, &ebo);
 	glDeleteBuffers(1, &vbo);
-
 	glDeleteVertexArrays(1, &vao);
 }

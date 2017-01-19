@@ -55,6 +55,37 @@ bool GameWorld::Load(const char *filename) {
 		layer = layer->next;
 	}
 
+	if (tmap->worldLayer == nullptr) {
+		Com_Error(ERR_DROP, "No layer named \"world\" found in map.");
+	}
+
+	if (map->tilecount > MAX_TILES) {
+		Com_Error(ERR_DROP, "Too many tiles in map, raise MAX_TILES.");
+	}
+
+	for (unsigned int i = 1; i < map->tilecount; i++) {
+		auto tile = map->tiles[i];
+		if (tile == nullptr) {
+			break;
+		}
+		auto &info = tmap->tinfo[i];
+		info.gid = i;
+		info.solid = true;
+		info.platform = false;
+
+		auto prop = tile->properties;
+		while (prop != nullptr) {
+			if (strcasecmp(prop->name, "solid") == 0) {
+				info.solid = atoi(prop->value) > 0;
+			}
+			else if (strcasecmp(prop->name, "platform") == 0) {
+				info.platform = atoi(prop->value) > 0;
+			}
+			prop = prop->next;
+		}
+				
+	}
+
 	return true;
 }
 

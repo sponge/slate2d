@@ -3,6 +3,8 @@
 #include <tmx.h>
 #include "local.h"
 
+#define MAX_TILES 2048
+
 struct Body : public Box {
 	explicit Body(float x, float y, float w, float h) : Box(x, y, w, h) {	}
 };
@@ -18,10 +20,17 @@ struct Renderable {
 	unsigned char r, g, b, a;
 };
 
+typedef struct TileInfo {
+	int gid;
+	bool solid;
+	bool platform;
+} tileinfo_t;
+
 struct TileMap {
 	explicit TileMap() {}
 	tmx_map *map;
 	tmx_layer *worldLayer;
+	TileInfo tinfo[MAX_TILES];
 };
 
 struct Camera {

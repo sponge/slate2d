@@ -7,7 +7,7 @@ int Map_GetTile(TileMap &tmap, unsigned int x, unsigned int y) {
 }
 
 bool Map_IsTileResolvable(TileMap &map, int gid) {
-	return gid != 0;
+	return map.tinfo[gid].solid;
 }
 
 Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize) {

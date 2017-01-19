@@ -5,11 +5,11 @@
 
 inline unsigned int gid_clear_flags(unsigned int gid) {
 	return gid & TMX_FLIP_BITS_REMOVAL;
+	
 }
 
 void TileMapDrawSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) {
 	ex::ComponentHandle<Camera> activeCam;
-
 	for (auto ent : es.entities_with_components<Camera>()) {
 		auto cam = ent.component<Camera>();
 		if (cam->active) {
@@ -20,6 +20,16 @@ void TileMapDrawSystem::update(ex::EntityManager &es, ex::EventManager &events, 
 
 	for (auto ent : es.entities_with_components<TileMap>()) {
 		auto tileMap = ent.component<TileMap>();
+
+		nvgBeginPath(inf->nvg);
+		nvgRect(inf->nvg, activeCam->left, activeCam->top, activeCam->size.x / activeCam->scale, activeCam->size.y / activeCam->scale);
+		nvgFillColor(inf->nvg, nvgRGBA(
+			(tileMap->map->backgroundcolor >> 16) & 0xFF,
+			(tileMap->map->backgroundcolor >> 8) & 0xFF,
+			(tileMap->map->backgroundcolor) & 0xFF,
+			255
+		));
+		nvgFill(inf->nvg);
 
 		auto layer = tileMap->map->ly_head;
 		while (layer) {
@@ -45,21 +55,17 @@ void TileMapDrawSystem::draw_image(ClientInfo * inf, tmx_map * map, tmx_layer * 
 }
 
 void TileMapDrawSystem::draw_tiles(ClientInfo * inf, tmx_map * map, tmx_layer * layer, ex::ComponentHandle<Camera> &cam) {
-	nvgBeginPath(inf->nvg);
-	nvgRect(inf->nvg, cam->left, cam->top, cam->size.x / cam->scale, cam->size.y / cam->scale);
-	nvgFillColor(inf->nvg, nvgRGBA(
-		(map->backgroundcolor >> 16) & 0xFF,
-		(map->backgroundcolor >> 8) & 0xFF,
-		(map->backgroundcolor) & 0xFF,
-		255
-	));
-	nvgFill(inf->nvg);
 	for (unsigned int y = cam->top / map->tile_height; y < cam->bottom / map->tile_height; y++) {
 		for (unsigned int x = cam->left / map->tile_width; x < cam->right / map->tile_width; x++) {
-			auto gid = gid_clear_flags(layer->content.gids[(y*map->width) + x]);
+			auto raw = layer->content.gids[(y*map->width) + x];
+			auto gid = gid_clear_flags(raw);
 			if (gid == 0) {
 				continue;
 			}
+
+			bool flipX = raw & TMX_FLIPPED_HORIZONTALLY;
+			bool flipY = raw & TMX_FLIPPED_VERTICALLY;
+			bool flipDiag = raw & TMX_FLIPPED_DIAGONALLY;
 
 			auto tile = map->tiles[gid];
 			auto ts = tile->tileset;

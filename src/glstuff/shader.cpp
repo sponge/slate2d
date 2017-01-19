@@ -1,6 +1,5 @@
 #include "shader.h"
 #include "../local.h"
-#include <gl/GLU.h>
 #include <physfs.h>
 
 Shader::Shader()

@@ -14,13 +14,13 @@ bool Shader::LoadFromFile(const char * fragFile, const char * vertFile)
 	int outSz;
 	outSz = FS_ReadFile(vertFile, (void **)&vertexSource);
 
-	if (outSz == 0) {
+	if (outSz <= 0) {
 		return false;
 	}
 
 	outSz = FS_ReadFile(fragFile, (void **)&fragmentSource);
 
-	if (outSz == 0) {
+	if (outSz <= 0) {
 		return false;
 	}
 
@@ -34,6 +34,8 @@ bool Shader::LoadFromFile(const char * fragFile, const char * vertFile)
 	glGetShaderiv(vertex, GL_COMPILE_STATUS, &status);
 
 	if (status == GL_FALSE) {
+		delete vertexSource;
+		delete fragmentSource;
 		return false;
 	}
 
@@ -44,26 +46,38 @@ bool Shader::LoadFromFile(const char * fragFile, const char * vertFile)
 	glGetShaderiv(fragment, GL_COMPILE_STATUS, &status);
 
 	if (status == GL_FALSE) {
+		delete vertexSource;
+		delete fragmentSource;
 		return false;
 	}
 
 	// Link the vertex and fragment shader into a shader program
-	shader = glCreateProgram();
-	glAttachShader(shader, vertex);
-	glAttachShader(shader, fragment);
-	glBindFragDataLocation(shader, 0, "fragColor");
-	glLinkProgram(shader);
+	program = glCreateProgram();
+	glAttachShader(program, vertex);
+	glAttachShader(program, fragment);
+	glBindFragDataLocation(program, 0, "fragColor");
+	glLinkProgram(program);
 
 	valid = true;
+
+	delete vertexSource;
+	delete fragmentSource;
+
 	return true;
 }
 
 void Shader::Bind()
 {
-	glUseProgram(shader);
+	glUseProgram(program);
 }
 
 void Shader::Unbind()
 {
 	glUseProgram(0);
+}
+
+Shader::~Shader() {
+	glDeleteProgram(program);
+	glDeleteShader(fragment);
+	glDeleteShader(vertex);
 }

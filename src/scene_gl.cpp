@@ -2,32 +2,14 @@
 #include <GL/glew.h>
 #include "glstuff/shader.h"
 
-const GLchar* vertexSource =
-"#version 150 core\n"
-"in vec2 position;"
-"in vec3 color;"
-"out vec3 Color;"
-"void main()"
-"{"
-"    Color = color;"
-"    gl_Position = vec4(position, 0.0, 1.0);"
-"}";
-
-const GLchar* fragmentSource =
-"#version 150 core\n"
-"in vec3 Color;"
-"out vec4 outColor;"
-"void main()"
-"{"
-"    outColor = vec4(Color, 1.0);"
-"}";
-
 GLuint vao;
 GLuint vbo;
 GLuint ebo;
 Shader *shader;
 
 void GLScene::Startup(ClientInfo* info) {
+
+	inf = info;
 	
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -39,10 +21,10 @@ void GLScene::Startup(ClientInfo* info) {
 	glGenBuffers(1, &vbo);
 
 	GLfloat vertices[] = {
-		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f, // Top-left
-		1.0f,  1.0f, 0.0f, 1.0f, 0.0f, // Top-right
-		1.0f, -1.0f, 0.0f, 0.0f, 1.0f, // Bottom-right
-		-1.0f, -1.0f, 1.0f, 1.0f, 1.0f  // Bottom-left
+		-1.0f,  1.0f, -1.0f, -1.0f, // Top-left
+         1.0f,  1.0f,  1.0f, -1.0f, // Top-right
+         1.0f, -1.0f,  1.0f,  1.0f, // Bottom-right
+		-1.0f, -1.0f, -1.0f,  1.0f  // Bottom-left
 	};
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -65,19 +47,17 @@ void GLScene::Startup(ClientInfo* info) {
 		Com_Error(ERR_DROP, "problem constructing shader");
 	}
 
-	// Specify the layout of the vertex data
-	GLint posAttrib = glGetAttribLocation(shader->shader, "position");
-	glEnableVertexAttribArray(posAttrib);
-	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
+    GLint posAttrib = glGetAttribLocation(shader->shader, "position");
+    glEnableVertexAttribArray(posAttrib);
+    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
 
-	GLint colAttrib = glGetAttribLocation(shader->shader, "color");
-	glEnableVertexAttribArray(colAttrib);
-	glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
-
-
+	GLint texAttrib = glGetAttribLocation(shader->shader, "iFragCoord");
+	glEnableVertexAttribArray(texAttrib);
+	glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
 }
 
 void GLScene::Update(float dt) {
+	_dt = dt;
 }
 
 void GLScene::Render() {
@@ -86,6 +66,15 @@ void GLScene::Render() {
 
 	// Draw a rectangle from the 2 triangles using 6 indices
 	shader->Bind();
+	GLint uniColor = glGetUniformLocation(shader->shader, "triangleColor");
+	glUniform3f(uniColor, 1.0f, 0.0f, 0.0f);
+
+	GLint time = glGetUniformLocation(shader->shader, "iGlobalTime");
+	glUniform1f(time, SDL_GetTicks() / 1000.0f);
+
+	GLint delta = glGetUniformLocation(shader->shader, "iGlobalDelta");
+	glUniform1f(delta, _dt);
+
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 

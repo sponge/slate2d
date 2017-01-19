@@ -12,4 +12,5 @@ public:
 
 private:
 	ClientInfo* inf;
+	float _dt;
 };

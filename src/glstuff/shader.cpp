@@ -52,7 +52,7 @@ bool Shader::LoadFromFile(const char * fragFile, const char * vertFile)
 	shader = glCreateProgram();
 	glAttachShader(shader, vertex);
 	glAttachShader(shader, fragment);
-	glBindFragDataLocation(shader, 0, "outColor");
+	glBindFragDataLocation(shader, 0, "fragColor");
 	glLinkProgram(shader);
 
 	valid = true;

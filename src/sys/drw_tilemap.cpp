@@ -1,6 +1,7 @@
 #include <entityx/entityx.h>
 #include "systems_drw.h"
 #include "../components.h"
+#include "../glstuff/shaderquad.h"
 #include <tmx.h>
 
 inline unsigned int gid_clear_flags(unsigned int gid) {
@@ -63,9 +64,9 @@ void TileMapDrawSystem::draw_tiles(ClientInfo * inf, tmx_map * map, tmx_layer * 
 				continue;
 			}
 
-			bool flipX = raw & TMX_FLIPPED_HORIZONTALLY;
-			bool flipY = raw & TMX_FLIPPED_VERTICALLY;
-			bool flipDiag = raw & TMX_FLIPPED_DIAGONALLY;
+			int flipX = raw & TMX_FLIPPED_HORIZONTALLY ? -1 : 1;
+			int flipY = raw & TMX_FLIPPED_VERTICALLY ? -1 : 1;
+			int flipDiag = raw & TMX_FLIPPED_DIAGONALLY ? 90 : 0;
 
 			auto tile = map->tiles[gid];
 			auto ts = tile->tileset;
@@ -74,16 +75,19 @@ void TileMapDrawSystem::draw_tiles(ClientInfo * inf, tmx_map * map, tmx_layer * 
 			int sy = tile->ul_y;
 			auto w = ts->tile_width;
 			auto h = ts->tile_height;
-			int dx = x*ts->tile_width;
-			int dy = y*ts->tile_height;
+			int dx = x*ts->tile_width + (flipX == -1 ? w : 0);
+			int dy = y*ts->tile_height + (flipY == -1 ? h : 0);
 
 			Img *img = (Img*)tile->tileset->image->resource_image;
 
-			auto paint = nvgImagePattern(img->nvg, dx - sx, dy - sy, img->w, img->h, 0, img->hnd, 1.0f);
+			nvgSave(img->nvg);
+			nvgScale(img->nvg, flipX, flipY);
+			auto paint = nvgImagePattern(img->nvg, flipX * dx - sx, flipY * dy - sy, img->w, img->h, 0, img->hnd, 1.0f);
 			nvgBeginPath(img->nvg);
-			nvgRect(img->nvg, dx, dy, w, h);
+			nvgRect(img->nvg, flipX * dx, flipY * dy, w, h);
 			nvgFillPaint(img->nvg, paint);
 			nvgFill(img->nvg);
+			nvgRestore(img->nvg);
 		}
 	}
 }

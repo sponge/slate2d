@@ -6,9 +6,6 @@ ShaderQuad::ShaderQuad() {
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
 	// Create a Vertex Buffer Object and copy the vertex data to it;
 	glGenBuffers(1, &vbo);
 
@@ -57,6 +54,8 @@ void ShaderQuad::Render() {
 	GLint time = glGetUniformLocation(shader->program, "iGlobalTime");
 	glUniform1f(time, SDL_GetTicks() / 1000.0f);
 
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }

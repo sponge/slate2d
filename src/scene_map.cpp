@@ -4,6 +4,9 @@
 #include "sweep.h"
 #include "local.h"
 
+#include "glstuff/shaderquad.h"
+#include "glstuff/shader.h"
+
 #include "sys/systems_drw.h"
 #include "sys/systems_upd.h"
 #include "components.h"
@@ -85,6 +88,16 @@ bool GameWorld::Load(const char *filename) {
 		}
 				
 	}
+
+	auto shq = world.assign<ShaderQuad>();
+	auto shader = new Shader();
+	shader->LoadFromFile("shaders/default.frag", "shaders/default.vert");
+
+	if (!shader->valid) {
+		Com_Error(ERR_DROP, "problem constructing shader");
+	}
+
+	shq->AttachShader(shader);
 
 	return true;
 }

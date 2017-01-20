@@ -2,7 +2,6 @@
 
 in vec2 fragCoord;
 uniform float iGlobalTime;
-uniform float iGlobalDelta;
 uniform vec3 triangleColor;
 out vec4 fragColor;
 

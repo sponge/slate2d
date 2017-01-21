@@ -58,15 +58,15 @@ void TileMapDrawSystem::draw_image(ClientInfo * inf, tmx_map * map, tmx_layer * 
 void TileMapDrawSystem::draw_tiles(ClientInfo * inf, tmx_map * map, tmx_layer * layer, ex::ComponentHandle<Camera> &cam) {
 	for (unsigned int y = cam->top / map->tile_height; y < cam->bottom / map->tile_height; y++) {
 		for (unsigned int x = cam->left / map->tile_width; x < cam->right / map->tile_width; x++) {
-			auto raw = layer->content.gids[(y*map->width) + x];
-			auto gid = gid_clear_flags(raw);
+			unsigned int raw = layer->content.gids[(y*map->width) + x];
+			unsigned int gid = gid_clear_flags(raw);
 			if (gid == 0) {
 				continue;
 			}
 
 			int flipX = raw & TMX_FLIPPED_HORIZONTALLY ? -1 : 1;
 			int flipY = raw & TMX_FLIPPED_VERTICALLY ? -1 : 1;
-			int flipDiag = raw & TMX_FLIPPED_DIAGONALLY ? 90 : 0;
+			bool flipDiag = raw & TMX_FLIPPED_DIAGONALLY;
 
 			tmx_tile *tile = map->tiles[gid];
 			tmx_tileset *ts = tile->tileset;
@@ -83,13 +83,21 @@ void TileMapDrawSystem::draw_tiles(ClientInfo * inf, tmx_map * map, tmx_layer * 
 			nvgSave(img->nvg);
 
 			nvgTranslate(img->nvg, dx + (w/2), dy + (h/2));
-			nvgRotate(img->nvg, nvgDegToRad(flipDiag));
-			nvgScale(img->nvg, flipX, flipY);
+
+			if (flipDiag) {
+				nvgTransform(img->nvg, 0, 1, 1, 0, 0, 0);
+			}
+
+			if (flipX == -1 ^ flipY == -1 && flipDiag) {
+				nvgScale(img->nvg, flipY, flipX);
+			} else {
+				nvgScale(img->nvg, flipX, flipY);
+			}
+
 			auto paint = nvgImagePattern(img->nvg, -(w/2)-sx, -(h/2)-sy, img->w, img->h, 0, img->hnd, 1.0f);
 			nvgBeginPath(img->nvg);
 			nvgRect(img->nvg, -(w/2), -(h/2), w, h);
 			nvgFillPaint(img->nvg, paint);
-			//nvgFillColor(img->nvg, nvgRGBA(0, 255, 0, 255));
 			nvgFill(img->nvg);
 
 			nvgRestore(img->nvg);

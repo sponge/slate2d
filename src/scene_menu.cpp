@@ -47,12 +47,16 @@ void MenuScene::Render() {
 			Cbuf_ExecuteText(EXEC_NOW, str);
 		}
 
-		if (ImGui::Button("Test Scene 1")) {
+		if (ImGui::Button("Test Bounce")) {
 			Cbuf_ExecuteText(EXEC_NOW, "scene 1\n");
 		}
 
-		if (ImGui::Button("Test Scene 2")) {
+		if (ImGui::Button("Test Collision")) {
 			Cbuf_ExecuteText(EXEC_NOW, "scene 2\n");		
+		}
+
+		if (ImGui::Button("Test Shader")) {
+			Cbuf_ExecuteText(EXEC_NOW, "scene 3\n");		
 		}
 		
 		ImGui::End();

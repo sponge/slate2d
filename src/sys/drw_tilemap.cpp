@@ -68,25 +68,30 @@ void TileMapDrawSystem::draw_tiles(ClientInfo * inf, tmx_map * map, tmx_layer * 
 			int flipY = raw & TMX_FLIPPED_VERTICALLY ? -1 : 1;
 			int flipDiag = raw & TMX_FLIPPED_DIAGONALLY ? 90 : 0;
 
-			auto tile = map->tiles[gid];
-			auto ts = tile->tileset;
+			tmx_tile *tile = map->tiles[gid];
+			tmx_tileset *ts = tile->tileset;
 
 			int sx = tile->ul_x;
 			int sy = tile->ul_y;
-			auto w = ts->tile_width;
-			auto h = ts->tile_height;
-			int dx = x*ts->tile_width + (flipX == -1 ? w : 0);
-			int dy = y*ts->tile_height + (flipY == -1 ? h : 0);
+			int w = ts->tile_width;
+			int h = ts->tile_height;
+			int dx = x*ts->tile_width;
+			int dy = y*ts->tile_height;
 
 			Img *img = (Img*)tile->tileset->image->resource_image;
 
 			nvgSave(img->nvg);
+
+			nvgTranslate(img->nvg, dx + (w/2), dy + (h/2));
+			nvgRotate(img->nvg, nvgDegToRad(flipDiag));
 			nvgScale(img->nvg, flipX, flipY);
-			auto paint = nvgImagePattern(img->nvg, flipX * dx - sx, flipY * dy - sy, img->w, img->h, 0, img->hnd, 1.0f);
+			auto paint = nvgImagePattern(img->nvg, -(w/2)-sx, -(h/2)-sy, img->w, img->h, 0, img->hnd, 1.0f);
 			nvgBeginPath(img->nvg);
-			nvgRect(img->nvg, flipX * dx, flipY * dy, w, h);
+			nvgRect(img->nvg, -(w/2), -(h/2), w, h);
 			nvgFillPaint(img->nvg, paint);
+			//nvgFillColor(img->nvg, nvgRGBA(0, 255, 0, 255));
 			nvgFill(img->nvg);
+
 			nvgRestore(img->nvg);
 		}
 	}

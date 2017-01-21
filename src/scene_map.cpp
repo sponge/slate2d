@@ -25,6 +25,10 @@ GameWorld::~GameWorld() {
 	if (tmap != nullptr && tmap->map != nullptr) {
 		tmx_map_free(tmap->map);
 	}
+
+	if (tmap != nullptr && tmap->tinfo != nullptr) {
+		free(tmap->tinfo);
+	}
 }
 
 bool GameWorld::Load(const char *filename) {
@@ -62,9 +66,7 @@ bool GameWorld::Load(const char *filename) {
 		Com_Error(ERR_DROP, "No layer named \"world\" found in map.");
 	}
 
-	if (map->tilecount > MAX_TILES) {
-		Com_Error(ERR_DROP, "Too many tiles in map, raise MAX_TILES.");
-	}
+	tmap->tinfo = (TileInfo *)malloc(sizeof(TileInfo) * 4096);
 
 	for (unsigned int i = 1; i < map->tilecount; i++) {
 		auto tile = map->tiles[i];

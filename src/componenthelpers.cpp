@@ -2,14 +2,23 @@
 #include "components.h"
 
 bool Map_IsTileResolvable(TileMap &map, Box check, unsigned int tx, unsigned int ty, Vec2 delta) {
+	bool resolved = false;
 	unsigned int gid = (tx >= map.map->width || ty >= map.map->height) ? 1 : (map.worldLayer->content.gids[(ty*map.map->width) + tx]) & TMX_FLIP_BITS_REMOVAL;
+
+	if (gid == 0) {
+		return false;
+	}
+
 	// TODO: if last tile, check slope?
 	if (map.tinfo[gid].platform) {
 		auto bottom = check.max().y;
-		return delta.y > 0 && bottom <= ty * map.map->tile_height && bottom + delta.y > ty * map.map->tile_height;
+		resolved = delta.y > 0 && bottom <= ty * map.map->tile_height && bottom + delta.y > ty * map.map->tile_height;
+	}
+	else {
+		resolved = map.tinfo[gid].solid;
 	}
 
-	return map.tinfo[gid].solid;
+	return resolved;
 }
 
 // WARNING: this might not be safe for large deltas anymore, but should if the two callbacks are factored out

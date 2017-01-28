@@ -20,7 +20,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 // cvar.c -- dynamic variable tracking
-#include "../local.h"
 #include "console.h"
 
 #include <stdio.h>      /* printf, fgets */

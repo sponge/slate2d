@@ -1,5 +1,5 @@
 #include <entityx/entityx.h>
-#include "local.h"
+#include "entities.h"
 #include "components.h"
 #include "console/console.h"
 
@@ -20,7 +20,7 @@ void SP_player(ex::EntityManager &es, tmx_object &obj) {
     ent.assign<Player>();
 
     // attach a camera to the world and target it at the player
-    auto camera = worldEnt.assign<Camera>(1280, 720, 3, tmap->map->width * tmap->map->tile_width, tmap->map->height * tmap->    map->tile_height);
+    auto camera = worldEnt.assign<Camera>(1280, 720, 3, tmap->map->width * tmap->map->tile_width, tmap->map->height * tmap->map->tile_height);
     camera->target = body.get();
 }
 

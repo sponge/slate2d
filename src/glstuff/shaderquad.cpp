@@ -1,6 +1,6 @@
 #include "shaderquad.h"
-#include "../local.h"
 #include <GL/glew.h>
+#include "../main.h"
 
 ShaderQuad::ShaderQuad() {
 	glGenVertexArrays(1, &vao);
@@ -52,7 +52,7 @@ void ShaderQuad::Render() {
 	shader->Bind();
 
 	GLint time = glGetUniformLocation(shader->program, "iGlobalTime");
-	glUniform1f(time, SDL_GetTicks() / 1000.0f);
+	glUniform1f(time, com_frameTime / 1000.0f);
 
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);

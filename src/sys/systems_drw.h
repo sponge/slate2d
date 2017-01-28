@@ -1,7 +1,10 @@
 #pragma once
 #include <entityx/entityx.h>
 #include <tmx.h>
-#include "../local.h"
+#include "../image.h"
+#include "../components.h"
+
+namespace ex = entityx;
 
 struct RectDrawSystem : public ex::System<RectDrawSystem> {
 	explicit RectDrawSystem(ClientInfo *inf) : inf(inf) {};
@@ -19,6 +22,12 @@ struct TileMapDrawSystem : public ex::System<TileMapDrawSystem> {
 
 struct CameraDrawSystem : public ex::System<CameraDrawSystem> {
 	explicit CameraDrawSystem(ClientInfo *inf) : inf(inf) {};
+	void update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) override;
+	ClientInfo *inf;
+};
+
+struct SpriteDrawSystem : public ex::System<SpriteDrawSystem> {
+	explicit SpriteDrawSystem(ClientInfo *inf) : inf(inf) {};
 	void update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) override;
 	ClientInfo *inf;
 };

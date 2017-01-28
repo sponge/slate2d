@@ -1,7 +1,7 @@
 #pragma once
 #include "sweep.h"
 #include <tmx.h>
-#include "local.h"
+#include "image.h"
 
 struct Body : public Box {
 	explicit Body(float x, float y, float w, float h) : Box(x, y, w, h) {	}
@@ -57,4 +57,10 @@ struct Player {
 	bool jumpHeld;
 	bool willPogo;
 	float stunTime;
+};
+
+struct Sprite {
+	Img *img;
+	unsigned int frame;
+	Vec2 ofs, size;
 };

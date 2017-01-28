@@ -1,6 +1,6 @@
 #pragma once
 #include <entityx/entityx.h>
-#include "../local.h"
+#include "../local.h" // FIXME: kill me
 
 struct RectMoverSystem : public ex::System<RectMoverSystem> {
 	explicit RectMoverSystem() {};

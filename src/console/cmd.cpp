@@ -27,7 +27,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <stdarg.h>
 
 #include "console.h"
-#include "../local.h"
+#include "../main.h"
+#include "../files.h"
 
 int			cmd_wait;
 cmd_t		cmd_text;

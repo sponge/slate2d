@@ -1,5 +1,5 @@
 #include "shader.h"
-#include "../local.h"
+#include "../files.h"
 #include <physfs.h>
 
 Shader::Shader()
@@ -29,7 +29,7 @@ bool Shader::LoadFromFile(const char * fragFile, const char * vertFile)
 
 	// Create and compile the vertex shader
 	vertex = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertex, 1, &vertexSource, NULL);
+	glShaderSource(vertex, 1, &vertexSource, nullptr);
 	glCompileShader(vertex);
 	glGetShaderiv(vertex, GL_COMPILE_STATUS, &status);
 
@@ -41,7 +41,7 @@ bool Shader::LoadFromFile(const char * fragFile, const char * vertFile)
 
 	// Create and compile the fragment shader
 	fragment = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragment, 1, &fragmentSource, NULL);
+	glShaderSource(fragment, 1, &fragmentSource, nullptr);
 	glCompileShader(fragment);
 	glGetShaderiv(fragment, GL_COMPILE_STATUS, &status);
 

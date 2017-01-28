@@ -1,5 +1,6 @@
 #include "console/console.h"
-#include "local.h"
+#include "input.h"
+#include "main.h"
 
 kbutton_t in_1_left, in_1_right, in_1_up, in_1_down, in_1_jump, in_1_attack, in_1_menu;
 

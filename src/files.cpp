@@ -1,6 +1,5 @@
 #include <physfs.h>
 #include "console/console.h"
-#include "local.h"
 
 void Cmd_Dir_f() {
 	const char *path = Cmd_Argc() > 1 ? Cmd_Argv(1) : "/";

@@ -2,7 +2,10 @@
 #include <vector>
 #include <SDL/SDL.h>
 #include <nanovg.h>
-#include "local.h"
+#include <algorithm>
+
+#include "image.h"
+#include "console/console.h"
 
 class Scene {
 public:

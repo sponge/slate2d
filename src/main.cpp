@@ -17,7 +17,8 @@
 #define AABB_IMPLEMENTATION
 #include "sweep.h"
 
-#include "local.h"
+#include "files.h"
+#include "input.h"
 #include "cvar_main.h"
 
 #include "scene.h"

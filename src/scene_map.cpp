@@ -2,7 +2,8 @@
 #include <nanovg.h>
 #include <tmx.h>
 #include "sweep.h"
-#include "local.h"
+#include "image.h"
+#include "console/console.h"
 
 #include "glstuff/shaderquad.h"
 #include "glstuff/shader.h"
@@ -10,6 +11,8 @@
 #include "sys/systems_drw.h"
 #include "sys/systems_upd.h"
 #include "components.h"
+#include "entities.h"
+#include "files.h"
 #include "cvar_game.h"
 
 GameWorld::GameWorld() {

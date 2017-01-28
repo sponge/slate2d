@@ -1,13 +1,14 @@
 #pragma once
+#include <entityx/entityx.h>
 #include <SDL/SDL.h>
 #include <vector>
 #include "scene.h"
-#include "local.h"
 
-class TestWorld : public ex::EntityX {
+
+class TestWorld : public entityx::EntityX {
 public:
 	explicit TestWorld();
-	void update(ex::TimeDelta dt);
+	void update(entityx::TimeDelta dt);
 };
 
 class TestScene : public Scene {
@@ -19,6 +20,6 @@ public:
 
 private:
 	ClientInfo* inf;
-	ex::SystemManager *rendSys;
+	entityx::SystemManager *rendSys;
 	TestWorld *world;
 };

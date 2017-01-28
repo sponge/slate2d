@@ -1,15 +1,16 @@
 #pragma once
+#include <entityx/entityx.h>
 #include <SDL/SDL.h>
 #include <vector>
 #include "scene.h"
-#include "local.h"
 #include <tmx.h>
+#include "components.h"
 
-class GameWorld : public ex::EntityX {
+class GameWorld : public entityx::EntityX {
 public:
 	explicit GameWorld();
 	bool Load(const char *filename);
-	void update(ex::TimeDelta dt);
+	void update(entityx::TimeDelta dt);
 	TileMap *tmap;
 	const char *error;
 	~GameWorld();
@@ -30,6 +31,6 @@ public:
 private:
 	const char *fileName;
 	ClientInfo* inf;
-	ex::SystemManager *rendSys;
+	entityx::SystemManager *rendSys;
 	GameWorld *world;
 };

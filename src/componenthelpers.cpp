@@ -1,5 +1,7 @@
-#include "local.h"
+#include <entityx/entityx.h>
 #include "components.h"
+
+namespace ex = entityx;
 
 bool Map_IsTileResolvable(TileMap &map, Box check, unsigned int tx, unsigned int ty, Vec2 delta) {
 	bool resolved = false;

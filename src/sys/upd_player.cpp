@@ -3,6 +3,8 @@
 #include "../components.h"
 #include "../cvar_game.h"
 
+namespace ex = entityx;
+
 void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) {
 	es.each<Player, PlayerInput, Body, Movable>([&es, &events, dt](ex::Entity ent, Player &player, PlayerInput &input, Body &body, Movable &mov) {
 		ex::Entity touchEnt;

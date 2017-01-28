@@ -1,6 +1,7 @@
 #include "scene_menu.h"
 #include "console/console.h"
 #include "cvar_main.h"
+#include "files.h"
 
 void MenuScene::Startup(ClientInfo* info) {
 	inf = info;

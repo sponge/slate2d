@@ -5,6 +5,8 @@
 const float WORLD_WIDTH = 1280.0;
 const float WORLD_HEIGHT = 720.0;
 
+namespace ex = entityx;
+
 void RectMoverSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) {
 	dt = dt > 0.1f ? 0.1f : dt;
 

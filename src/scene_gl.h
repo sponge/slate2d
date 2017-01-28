@@ -1,8 +1,8 @@
 #pragma once
 #include <SDL/SDL.h>
 #include "scene.h"
-#include "local.h"
-
+#include "image.h"
+#include "main.h"
 class GLScene : public Scene {
 public:
 	void Startup(ClientInfo* i) override;

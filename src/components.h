@@ -31,6 +31,9 @@ struct TileMap {
 	TileInfo *tinfo;
 };
 
+const Sweep Trace(entityx::EntityManager &es, entityx::Entity ent, float dx, float dy, entityx::Entity &hitEnt);
+Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize);
+
 struct Camera {
 	explicit Camera(float w, float h, float scale = 0, float mx = 0, float my = 0) : size(w, h), max(mx, my), scale(scale) {}
 	bool active = true;

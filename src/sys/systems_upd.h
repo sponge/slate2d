@@ -1,23 +1,22 @@
 #pragma once
 #include <entityx/entityx.h>
-#include "../local.h" // FIXME: kill me
 
-struct RectMoverSystem : public ex::System<RectMoverSystem> {
+struct RectMoverSystem : public entityx::System<RectMoverSystem> {
 	explicit RectMoverSystem() {};
-	void update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) override;
+	void update(entityx::EntityManager &es, entityx::EventManager &events, entityx::TimeDelta dt) override;
 };
 
-struct CameraUpdateSystem : public ex::System<CameraUpdateSystem> {
+struct CameraUpdateSystem : public entityx::System<CameraUpdateSystem> {
 	explicit CameraUpdateSystem() {};
-	void update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) override;
+	void update(entityx::EntityManager &es, entityx::EventManager &events, entityx::TimeDelta dt) override;
 };
 
-struct InputSystem : public ex::System<InputSystem> {
+struct InputSystem : public entityx::System<InputSystem> {
 	explicit InputSystem() {};
-	void update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) override;
+	void update(entityx::EntityManager &es, entityx::EventManager &events, entityx::TimeDelta dt) override;
 };
 
-struct PlayerSystem : public ex::System<PlayerSystem> {
+struct PlayerSystem : public entityx::System<PlayerSystem> {
 	explicit PlayerSystem() {};
-	void update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) override;
+	void update(entityx::EntityManager &es, entityx::EventManager &events, entityx::TimeDelta dt) override;
 };

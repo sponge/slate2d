@@ -1,13 +1,13 @@
 #pragma once
+#include <entityx/entityx.h>
 #include <SDL/SDL.h>
 #include <vector>
 #include "scene.h"
-#include "local.h"
 
-class TestBounceWorld : public ex::EntityX {
+class TestBounceWorld : public entityx::EntityX {
 public:
 	explicit TestBounceWorld();
-	void update(ex::TimeDelta dt);
+	void update(entityx::TimeDelta dt);
 };
 
 class TestBounceScene : public Scene {
@@ -19,6 +19,6 @@ public:
 
 private:
 	ClientInfo* inf;
-	ex::SystemManager *rendSys;
+	entityx::SystemManager *rendSys;
 	TestBounceWorld *world;
 };

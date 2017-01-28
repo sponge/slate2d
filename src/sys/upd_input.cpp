@@ -1,6 +1,10 @@
 #include <entityx/entityx.h>
 #include "systems_upd.h"
 #include "../components.h"
+#include "../main.h"
+#include "../input.h"
+
+namespace ex = entityx;
 
 void InputSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) {
 	for (auto ent : es.entities_with_components<PlayerInput>()) {

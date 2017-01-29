@@ -13,7 +13,7 @@ void SP_player(ex::EntityManager &es, tmx_object &obj) {
 
     // create the player
     auto ent = es.create();
-    auto body = ent.assign<Body>(obj.x + (tmap->map->tile_width / 2), obj.y - 14.001, 14, 28);  // FIXME able to fall into ground if 14
+    auto body = ent.assign<Body>(obj.x + (tmap->map->tile_width / 2), obj.y - 14.001, 17, 15);  // FIXME able to fall into ground if 14
     ent.assign<Movable>(0, 0);
     ent.assign<Renderable>(200, 30, 30, 255);
     ent.assign<PlayerInput>();

@@ -6,7 +6,7 @@
 namespace ex = entityx;
 
 void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) {
-	es.each<Player, PlayerInput, Body, Movable>([&es, &events, dt](ex::Entity ent, Player &player, PlayerInput &input, Body &body, Movable &mov) {
+	es.each<Player, PlayerInput, Body, Movable, Sprite>([&es, &events, dt](ex::Entity ent, Player &player, PlayerInput &input, Body &body, Movable &mov, Sprite &spr) {
 		ex::Entity touchEnt;
 		mov.rightTouch = Trace(es, ent, 1, 0, touchEnt).time < 1e-7;
 		mov.leftTouch = Trace(es, ent, -1, 0, touchEnt).time < 1e-7;
@@ -96,6 +96,7 @@ void PlayerSystem::update(ex::EntityManager &es, ex::EventManager &events, ex::T
 			}
 
 			mov.dx += (input.right ? accel : input.left ? -accel : 0) * dt;
+			spr.flipX = !input.right;
 		}
 		else if (mov.dx != 0) {
 			auto friction = p_groundFriction->value * dt;

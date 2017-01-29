@@ -11,6 +11,7 @@ void RectDrawSystem::update(ex::EntityManager &es, ex::EventManager &events, ex:
 		nvgFillColor(nvg, nvgRGBA(r.r, r.g, r.b, r.a));
 		nvgFill(nvg);
 
+		/*
 		nvgFillColor(nvg, nvgRGBA(255, 255, 255, 255));
 		char s[16];
 		nvgTextAlign(nvg, 2);
@@ -18,5 +19,6 @@ void RectDrawSystem::update(ex::EntityManager &es, ex::EventManager &events, ex:
 		nvgText(nvg, body.pos.x, body.pos.y, s, 0);
 		snprintf(s, sizeof(s), "%.0f, %.0f", m.dx, m.dy);
 		nvgText(nvg, body.pos.x, body.pos.y + 12, s, 0);
+		*/
 	});
 }

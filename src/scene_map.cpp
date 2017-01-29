@@ -140,10 +140,13 @@ void MapScene::Startup(ClientInfo* info) {
 		return;
 	}
 
+	Img_LoadAll(inf->nvg);
+
 	rendSys = new ex::SystemManager(world->entities, world->events);
 	rendSys->add<CameraDrawSystem>(inf);
 	rendSys->add<TileMapDrawSystem>(inf);
 	rendSys->add<RectDrawSystem>(inf);
+	rendSys->add<SpriteDrawSystem>(inf);
 	rendSys->configure();
 }
 
@@ -155,26 +158,18 @@ void MapScene::Render() {
 	rendSys->update<CameraDrawSystem>(0);
 	rendSys->update<TileMapDrawSystem>(0);
 	rendSys->update<RectDrawSystem>(0);
+	rendSys->update<SpriteDrawSystem>(0);
 }
 
 void* MapScene::nvg_img_load_func(const char *path) {
-	void *buffer;
-	auto sz = FS_ReadFile(path, &buffer);
-
-	Img *img = new Img();
-	img->nvg = inf->nvg;
-	img->hnd = nvgCreateImageMem(img->nvg, NVG_IMAGE_NEAREST, (unsigned char *) buffer, sz);
-	nvgImageSize(img->nvg, img->hnd, &img->w, &img->h);
-	strncpy(img->path, path, sizeof(img->path));
-
-	free(buffer);
-
-	return (void*)img;
+	Img *img = Img_Create(path, path);
+	Img_Load(inf->nvg, *img);
+	return img;
 }
 
 void MapScene::nvg_img_free_func(void *address) {
 	Img *img = (Img*)address;
-	nvgDeleteImage(img->nvg, img->hnd);
+	Img_Free(img->path);
 	delete img;
 }
 

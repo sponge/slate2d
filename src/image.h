@@ -15,4 +15,9 @@ typedef struct {
 	char path[64];
 } Img;
 
-Img * Img_Load(const NVGcontext *nvg, char *path);
+Img * Img_Create(const char * name, const char * path);
+void Img_Load(NVGcontext * nvg, Img & img);
+void Img_LoadAll(NVGcontext * nvg);
+Img * Img_Find(const char * name);
+bool Img_Free(const char * name);
+void Img_Clear();

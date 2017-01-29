@@ -63,6 +63,7 @@ struct Player {
 };
 
 struct Sprite {
+	explicit Sprite(Img *img, Vec2 size, Vec2 ofs) : img(img), size(size), ofs(ofs) {}
 	Img *img;
 	unsigned int frame;
 	Vec2 ofs, size;

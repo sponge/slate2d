@@ -18,6 +18,9 @@ void SP_player(ex::EntityManager &es, tmx_object &obj) {
     ent.assign<Renderable>(200, 30, 30, 255);
     ent.assign<PlayerInput>();
     ent.assign<Player>();
+	
+	auto playerImg = Img_Create("player", "gfx/dog.png");
+	ent.assign<Sprite>(playerImg, Vec2(22, 15), Vec2(0, 0));
 
     // attach a camera to the world and target it at the player
     auto camera = worldEnt.assign<Camera>(1280, 720, 3, tmap->map->width * tmap->map->tile_width, tmap->map->height * tmap->map->tile_height);

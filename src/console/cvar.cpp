@@ -759,6 +759,6 @@ void Cvar_Init (void) {
 	Cmd_AddCommand ("setu", Cvar_SetU_f);
 	Cmd_AddCommand ("seta", Cvar_SetA_f);
 	Cmd_AddCommand ("reset", Cvar_Reset_f);
-	Cmd_AddCommand ("cvarlist", Cvar_List_f);
+	Cmd_AddCommand ("listcvars", Cvar_List_f);
 	Cmd_AddCommand ("cvar_restart", Cvar_Restart_f);
 }

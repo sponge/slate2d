@@ -3,6 +3,7 @@
 
 void RegisterGameCvars( void );
 
+extern cvar_t *dbg_drawBbox;
 extern cvar_t *p_gravity;
 extern cvar_t *p_jumpHeight;
 extern cvar_t *p_wallSlideSpeed;

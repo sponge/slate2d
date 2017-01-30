@@ -145,8 +145,8 @@ void MapScene::Startup(ClientInfo* info) {
 	rendSys = new ex::SystemManager(world->entities, world->events);
 	rendSys->add<CameraDrawSystem>(inf);
 	rendSys->add<TileMapDrawSystem>(inf);
-	rendSys->add<RectDrawSystem>(inf);
 	rendSys->add<SpriteDrawSystem>(inf);
+	rendSys->add<RectDrawSystem>(inf);
 	rendSys->configure();
 }
 
@@ -157,8 +157,11 @@ void MapScene::Update(float dt) {
 void MapScene::Render() {
 	rendSys->update<CameraDrawSystem>(0);
 	rendSys->update<TileMapDrawSystem>(0);
-	rendSys->update<RectDrawSystem>(0);
 	rendSys->update<SpriteDrawSystem>(0);
+
+	if (dbg_drawBbox->integer == 1) {
+		rendSys->update<RectDrawSystem>(0);
+	}
 }
 
 void* MapScene::nvg_img_load_func(const char *path) {

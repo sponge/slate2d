@@ -1,5 +1,6 @@
 #include "cvar_game.h"
 
+cvar_t *dbg_drawBbox;
 cvar_t *p_gravity;
 cvar_t *p_jumpHeight;
 cvar_t *p_wallSlideSpeed;
@@ -18,6 +19,7 @@ cvar_t *p_groundFriction;
 cvar_t *p_airFriction;
 
 static cvarTable_t gameCvarTable[] = {
+    { &dbg_drawBbox, "dbg_drawBbox", "0", 0},
     { &p_gravity, "p_gravity", "550", 0 },
     { &p_jumpHeight, "p_jumpHeight", "280", 0 },
     { &p_wallSlideSpeed, "p_wallSlideSpeed", "45", 0 },

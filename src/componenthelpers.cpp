@@ -36,37 +36,16 @@ Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize) {
 	}
 
 	auto corners = check.corners();
-	Vec2 cornerArr[4] = { corners.tl, corners.tr, corners.br, corners.bl };
-	// the inside corner that we're tracing on
 	Vec2 opp;
-	// the direction we're going to project out and over to cover the width/height of the box
-	Vec2 direction;
-	// find the corner that's occluded by the box by checking for a collision
-	if (delta.y == 0) {
-		opp = delta.x > 0 ? corners.br : corners.bl;
-	}
-	else if (delta.x == 0) {
-		opp = delta.y > 0 ? corners.br : corners.tr;
-	}
-	else {
-		for (unsigned long i = 0; i < sizeof(cornerArr); i++) {
-			auto corner = cornerArr[i];
-			auto hit = intersectSegment(check, corner, delta);
-			if (hit.valid == false) {
-				continue;
-			}
-
-			// get the opposite corner of the corner that intersected itself, this is
-			// the deepest point inside the sweep
-			opp = cornerArr[(i + 2) % 4];
-
-			break;
-		};
+	if (sign(delta.x) >= 0) {
+		opp = sign(delta.y) >= 0 ? corners.br : corners.tr;
+	} else {
+		opp = sign(delta.y) >= 0 ? corners.bl : corners.tl;
 	}
 
 	// assign a direction vector so we can project outward from the corner toward the 2 corners
 	// (used to loop from position to testing box width/height)
-	direction = Vec2(0 - sign(delta.x), 0 - sign(delta.y));
+	Vec2 direction = Vec2(0 - sign(delta.x), 0 - sign(delta.y));
 
 	// size of the check box in tiles, rounded up.
 	// FIXME: this doesn't work, i need to find out how many tiles it goes over at the point of the line

@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <SDL/SDL.h>
+#include <SDL/SDL_events.h>
 #include <nanovg.h>
 #include <algorithm>
 

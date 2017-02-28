@@ -52,15 +52,6 @@ solution "game"
     targetdir "bin/%{cfg.buildcfg}"
     links { "nanovg", "tmx", "imgui" }
 
-    configuration { "windows" }
-      libdirs { "lib/Win32" }
-      links { "SDL2", "SDL2main", "opengl32" }
-      defines { "_CRT_SECURE_NO_WARNINGS" }
-
-    configuration { "macosx" }
-      links { "OpenGL.framework", "SDL2.framework", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework" }
-      linkoptions {"-stdlib=libc++", "-F /Library/Frameworks"}
-
   project "nanovg"
     language "C"
     kind "StaticLib"

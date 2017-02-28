@@ -38,14 +38,15 @@ int frame_msec, com_frameTime;
 //int frame_accum;
 
 gameExportFuncs_t * gexports;
+SDL_Window *window;
 
 void Cmd_Vid_Restart_f(void) {
 	inf.width = vid_width->integer;
 	inf.height = vid_height->integer;
 
-	SDL_SetWindowSize(inf.window, inf.width, inf.height);
+	SDL_SetWindowSize(window, inf.width, inf.height);
 	SDL_GL_SetSwapInterval(vid_swapinterval->integer);
-	SDL_SetWindowFullscreen(inf.window, vid_fullscreen->integer == 2 ? SDL_WINDOW_FULLSCREEN : vid_fullscreen->integer == 1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+	SDL_SetWindowFullscreen(window, vid_fullscreen->integer == 2 ? SDL_WINDOW_FULLSCREEN : vid_fullscreen->integer == 1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }
 
 void Cmd_Map_f(void) {
@@ -155,15 +156,15 @@ int main(int argc, char *argv[]) {
 
 	inf.width = vid_width->integer;
 	inf.height = vid_height->integer;
-	inf.window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, inf.width, inf.height, SDL_WINDOW_OPENGL);
+	window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, inf.width, inf.height, SDL_WINDOW_OPENGL);
 
-	if (inf.window == NULL) {
+	if (window == NULL) {
 		Com_Error(ERR_FATAL, "There was an error creating the window: %s\n", SDL_GetError());
 	}
 
-	SDL_SetWindowFullscreen(inf.window, vid_fullscreen->integer == 2 ? SDL_WINDOW_FULLSCREEN : vid_fullscreen->integer == 1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+	SDL_SetWindowFullscreen(window, vid_fullscreen->integer == 2 ? SDL_WINDOW_FULLSCREEN : vid_fullscreen->integer == 1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 
-	SDL_GLContext context = SDL_GL_CreateContext(inf.window);
+	SDL_GLContext context = SDL_GL_CreateContext(window);
 
 	SDL_GL_SetSwapInterval(vid_swapinterval->integer);
 
@@ -180,9 +181,9 @@ int main(int argc, char *argv[]) {
 		Com_Error(ERR_FATAL, "Could not init glew.\n");
 	}
 
-	SDL_GL_MakeCurrent(inf.window, context);
+	SDL_GL_MakeCurrent(window, context);
 
-	ImGui_ImplSdlGL3_Init(inf.window);
+	ImGui_ImplSdlGL3_Init(window);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
 
 	struct NVGcontext* vg = nvgCreateGL3(NVG_STENCIL_STROKES);
@@ -246,7 +247,7 @@ int main(int argc, char *argv[]) {
 		
 		Cbuf_Execute();
 
-		ImGui_ImplSdlGL3_NewFrame(inf.window);
+		ImGui_ImplSdlGL3_NewFrame(window);
 
 		// FIXME: not working on my mac, prob because fps is too low?
 		/*
@@ -268,7 +269,7 @@ int main(int argc, char *argv[]) {
 
 		ImGui::Render();
 
-		SDL_GL_SwapWindow(inf.window);
+		SDL_GL_SwapWindow(window);
 	}
 
 	SDL_GL_DeleteContext(context);

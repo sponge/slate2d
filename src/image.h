@@ -1,9 +1,7 @@
 #pragma once
-#include <SDL/SDL.h>
 #include <nanovg.h>
 
 typedef struct {
-	SDL_Window *window;
 	NVGcontext *nvg;
 	int width, height;
 } ClientInfo;

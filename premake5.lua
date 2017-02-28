@@ -48,9 +48,9 @@ solution "game"
     kind "SharedLib"
     language "C++"
     files { "game/**.c", "game/**.cpp", "game/**.h", "game/**.hh" }
-    sysincludedirs { "include", "nanovg", "tmx", "imgui", "physfs", "entityx", "glew" }
+    sysincludedirs { "include", "nanovg", "tmx", "imgui" }
     targetdir "bin/%{cfg.buildcfg}"
-    links { "nanovg", "tmx", "imgui", "physfs", "glew", "entityx" }
+    links { "nanovg", "tmx", "imgui" }
 
     configuration { "windows" }
       libdirs { "lib/Win32" }

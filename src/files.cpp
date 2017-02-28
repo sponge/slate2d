@@ -28,8 +28,9 @@ void FS_FreeList(void * listVar) {
 void FS_Init(const char *argv0) {
 	PHYSFS_init(argv0);
 	auto fs_basepath = Cvar_Get("fs_basepath", PHYSFS_getBaseDir(), CVAR_INIT);
+	auto fs_game = Cvar_Get("fs_game", "base", CVAR_INIT);
 
-	PHYSFS_mount(va("%s/base", fs_basepath->string), "/", 1);
+	PHYSFS_mount(va("%s/%s", fs_basepath->string, fs_game->string), "/", 1);
 
 	const char *archiveExt = "pk3";
 	char **rc = PHYSFS_enumerateFiles("/");
@@ -42,7 +43,7 @@ void FS_Init(const char *argv0) {
 		if ((l > extlen) && ((*i)[l - extlen - 1] == '.')) {
 			ext = (*i) + (l - extlen);
 			if (strcasecmp(ext, archiveExt) == 0) {
-				PHYSFS_mount(va("%s/base/%s", fs_basepath->string, *i), "/", 0);
+				PHYSFS_mount(va("%s/%s/%s", fs_basepath->string, fs_game->string, *i), "/", 0);
 			}
 		}
 	}

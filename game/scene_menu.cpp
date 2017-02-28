@@ -1,11 +1,10 @@
 #include "scene_menu.h"
-#include "console/console.h"
-#include "cvar_main.h"
-#include "files.h"
+#include "public.h"
+#include "game.h"
 
 void MenuScene::Startup(ClientInfo* info) {
 	inf = info;
-	rawMaps = FS_List("maps/");
+	rawMaps = trap->FS_List("maps/");
 	char **map;
 
 	for (map = rawMaps; *map != NULL && mapSize < MAX_MAPS; map++) {
@@ -16,15 +15,15 @@ void MenuScene::Startup(ClientInfo* info) {
 		mapSize++;
 	}
 
-	if (strlen(com_errorMessage->string) > 0) {
+	if (strlen(trap->Cvar_FindVar("com_errorMessage")->string) > 0) {
 		showError = true;
 	}
 }
 
 MenuScene::~MenuScene() {
-	FS_FreeList(rawMaps);
-	if (strlen(com_errorMessage->string) > 0) {
-		Cvar_Set("com_errorMessage", "");
+	trap->FS_FreeList(rawMaps);
+	if (strlen(trap->Cvar_FindVar("com_errorMessage")->string) > 0) {
+		trap->Cvar_Set("com_errorMessage", "");
 	}
 }
 
@@ -33,6 +32,12 @@ void MenuScene::Update(float dt) {
 }
 
 void MenuScene::Render() {
+	auto nvg = inf->nvg;
+	nvgBeginPath(nvg);
+	nvgRect(nvg, 60, 40, 300, 200);
+	nvgFillColor(nvg, nvgRGBA(255, 0, 255, 255));
+	nvgFill(nvg);
+
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.01, 0.14, 0.45, 0.4));
 
 		ImGui::SetNextWindowSize(ImVec2(300, 300));
@@ -45,19 +50,19 @@ void MenuScene::Render() {
 		ImGui::SameLine();
 		if (ImGui::Button("Load Map")) {
 			auto str = va("map %s\n", maps[selected]);
-			Cbuf_ExecuteText(EXEC_NOW, str);
+			trap->SendConsoleCommand(str);
 		}
 
 		if (ImGui::Button("Test Bounce")) {
-			Cbuf_ExecuteText(EXEC_NOW, "scene 1\n");
+			trap->SendConsoleCommand("scene 1\n");
 		}
 
 		if (ImGui::Button("Test Collision")) {
-			Cbuf_ExecuteText(EXEC_NOW, "scene 2\n");		
+			trap->SendConsoleCommand("scene 2\n");
 		}
 
 		if (ImGui::Button("Test Shader")) {
-			Cbuf_ExecuteText(EXEC_NOW, "scene 3\n");		
+			trap->SendConsoleCommand("scene 3\n");
 		}
 		
 		ImGui::End();
@@ -68,7 +73,7 @@ void MenuScene::Render() {
 		}
 
 		if (ImGui::BeginPopupModal("Error")) {
-			ImGui::Text("%s", com_errorMessage->string);
+			ImGui::Text("%s", trap->Cvar_FindVar("com_errorMessage")->string);
 			if (ImGui::Button("OK")) {
 				ImGui::CloseCurrentPopup();
 			}

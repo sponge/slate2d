@@ -1,9 +1,5 @@
 #pragma once
-#include <list>
-#include <string>
-#include <SDL/SDL.h>
-#include <vector>
-#include "scene.h"
+#include "../src/scene.h"
 
 class MenuScene : public Scene {
 public:

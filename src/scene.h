@@ -63,7 +63,7 @@ public:
 		newScene->Startup(&info);
 	}
 
-	Scene* Get(unsigned long i) {
+	Scene* Get(unsigned int i) {
 		if (i > scenes.size()) {
 			return nullptr;
 		}

@@ -21,18 +21,23 @@
 #include "input.h"
 #include "cvar_main.h"
 
+#include "gamedll.h"
+
 #include "scene.h"
-#include "scene_menu.h"
 #include "scene_test.h"
 #include "scene_testbounce.h"
 #include "scene_map.h"
 #include "scene_console.h"
 #include "scene_gl.h"
 
+#include "../game/public.h"
+
 ClientInfo inf;
 SceneManager *sm;
 int frame_msec, com_frameTime;
 //int frame_accum;
+
+gameExportFuncs_t * gexports;
 
 void Cmd_Vid_Restart_f(void) {
 	inf.width = vid_width->integer;
@@ -74,7 +79,7 @@ void Cmd_Scene_f(void) {
 	Scene* newScene;
 
 	switch (num) {
-	case 0: default: newScene = new MenuScene(); break;
+	//case 0: default: newScene = new MenuScene(); break;
 	case 1: newScene = new TestBounceScene(); break;
 	case 2: newScene = new TestScene(); break;
 	case 3: newScene = new GLScene(); break;
@@ -194,8 +199,12 @@ int main(int argc, char *argv[]) {
 
 	sm = new SceneManager(inf);
 
-	sm->Switch(new MenuScene());
-	sm->Push(new ConsoleScene());
+	auto consoleScene = new ConsoleScene();
+	consoleScene->Startup(&inf);
+
+	int ver = 0;
+	Sys_LoadDll("game.dll", (void **)(&gexports), &ver);
+	gexports->Init((void*)&inf, (void*)ImGui::GetCurrentContext());
 
 	bool quit = false;
 	SDL_Event ev;
@@ -207,11 +216,6 @@ int main(int argc, char *argv[]) {
 		frame_msec = com_frameTime - prevt;
 		prevt = com_frameTime;
 
-		if (sm->Current() == nullptr) {
-			Com_Printf("no scene loaded, loading menu\n");
-			sm->Switch(new MenuScene());
-			sm->Push(new ConsoleScene());
-		}
 
 		while (SDL_PollEvent(&ev)) {
 			ImGui_ImplSdlGL3_ProcessEvent(&ev);
@@ -225,7 +229,12 @@ int main(int argc, char *argv[]) {
 				KeyEvent(ev.key.keysym.scancode, false, com_frameTime);
 			}
 
-			auto propagate = sm->Event(&ev);
+			auto propagate = consoleScene->Event(&ev);
+			if (!propagate) {
+				continue;
+			}
+
+			propagate = sm->Event(&ev);
 			if (!propagate) {
 				continue;
 			}
@@ -246,13 +255,15 @@ int main(int argc, char *argv[]) {
 			sm->Update(5 / 1000.0f);
 			frame_accum -= 5;
 		}
-		*/
+		*/	
 		sm->Update(frame_msec / 1000.0f);
+		consoleScene->Update(frame_msec / 1000.0f);
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		nvgBeginFrame(inf.nvg, inf.width, inf.height, (float)inf.width / inf.height);
 		sm->Render();
+		consoleScene->Render();
 		nvgEndFrame(vg);
 
 		ImGui::Render();

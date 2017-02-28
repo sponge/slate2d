@@ -21,7 +21,8 @@ solution "game"
     symbols "Off"
     optimize "Full"
 
-  project "game"
+  -- FIXME: fix up excessive links and includes on here and game as i port everything over to a dll
+  project "engine"
     kind "ConsoleApp"
     language "C++"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
@@ -38,6 +39,23 @@ solution "game"
       postbuildcommands {
         '{COPY} "%{wks.location}../lib/win32/SDL2.dll" "%{cfg.targetdir}"'
       }
+
+    configuration { "macosx" }
+      links { "OpenGL.framework", "SDL2.framework", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework" }
+      linkoptions {"-stdlib=libc++", "-F /Library/Frameworks"}
+
+  project "game"
+    kind "SharedLib"
+    language "C++"
+    files { "game/**.c", "game/**.cpp", "game/**.h", "game/**.hh" }
+    sysincludedirs { "include", "nanovg", "tmx", "imgui", "physfs", "entityx", "glew" }
+    targetdir "bin/%{cfg.buildcfg}"
+    links { "nanovg", "tmx", "imgui", "physfs", "glew", "entityx" }
+
+    configuration { "windows" }
+      libdirs { "lib/Win32" }
+      links { "SDL2", "SDL2main", "opengl32" }
+      defines { "_CRT_SECURE_NO_WARNINGS" }
 
     configuration { "macosx" }
       links { "OpenGL.framework", "SDL2.framework", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework" }

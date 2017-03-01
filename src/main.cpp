@@ -24,8 +24,6 @@
 #include "gamedll.h"
 
 #include "scene.h"
-#include "scene_test.h"
-#include "scene_testbounce.h"
 #include "scene_map.h"
 #include "scene_console.h"
 #include "scene_gl.h"
@@ -70,25 +68,6 @@ void Cmd_Map_f(void) {
 	sm->Replace(0, newScene);
 }
 
-void Cmd_Scene_f(void) {
-	auto num = atoi(Cmd_Argv(1));
-
-	if (num < 0 || num > 3) {
-		Com_Printf("invalid scene, specify a number 0-3\n");
-		return;
-	}
-	Scene* newScene;
-
-	switch (num) {
-	//case 0: default: newScene = new MenuScene(); break;
-	case 1: newScene = new TestBounceScene(); break;
-	case 2: newScene = new TestScene(); break;
-	case 3: newScene = new GLScene(); break;
-	}
-
-	sm->Replace(0, newScene);
-}
-
 void DropToMenu() {
 	sm->Clear();
 }
@@ -122,7 +101,6 @@ int main(int argc, char *argv[]) {
 
 	Cbuf_Init();
 	Cmd_Init();
-	Cmd_AddCommand("scene", Cmd_Scene_f);
 	Cmd_AddCommand("map", Cmd_Map_f);
 	Cmd_AddCommand("vid_restart", Cmd_Vid_Restart_f);
 	Cvar_Init();

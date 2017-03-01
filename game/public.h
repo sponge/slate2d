@@ -10,6 +10,9 @@ typedef struct gameImportFuncs_s {
 	void (*Print)(const char * text);
 	cvar_t* (*Cvar_FindVar)(const char * name);
 	void (*Cvar_Set)(const char *var_name, const char *value);
+	void (*Cmd_AddCommand)(const char *cmd_name, xcommand_t function);
+	int(*Cmd_Argc)(void);
+	const char * (*Cmd_Argv)(int arg);
 	int  (*FS_ReadFile)(const char *path, void **buffer);
 	bool (*FS_Exists)(const char *file);
 	char** (*FS_List)(const char *path);

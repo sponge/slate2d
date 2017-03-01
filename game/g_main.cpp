@@ -2,11 +2,32 @@
 
 #include "public.h"
 #include "scene_menu.h"
+#include "scene_testbounce.h"
 
 gameImportFuncs_t *trap;
 
+void Cmd_Scene_f(void) {
+	auto num = atoi(trap->Cmd_Argv(1));
+
+	if (num < 0 || num > 3) {
+		trap->Print("invalid scene, specify a number 0-2\n");
+		return;
+	}
+	Scene* newScene;
+
+	switch (num) {
+	case 0: default: newScene = new MenuScene(); break;
+	case 1: newScene = new TestBounceScene(); break;
+	//case 2: newScene = new GLScene(); break;
+	}
+
+	trap->Scene_Replace(0, newScene);
+}
+
 // FIXME: abstract out rendering so i can just pass a list of drawing commands instead of nvg context stuff
 static void Init(void *clientInfo, void *imGuiContext) {
+	trap->Cmd_AddCommand("scene", Cmd_Scene_f);
+
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 	trap->Scene_Switch(new MenuScene());
 }

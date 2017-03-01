@@ -32,12 +32,6 @@ void MenuScene::Update(float dt) {
 }
 
 void MenuScene::Render() {
-	auto nvg = inf->nvg;
-	nvgBeginPath(nvg);
-	nvgRect(nvg, 60, 40, 300, 200);
-	nvgFillColor(nvg, nvgRGBA(255, 0, 255, 255));
-	nvgFill(nvg);
-
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.01, 0.14, 0.45, 0.4));
 
 		ImGui::SetNextWindowSize(ImVec2(300, 300));
@@ -57,12 +51,8 @@ void MenuScene::Render() {
 			trap->SendConsoleCommand("scene 1\n");
 		}
 
-		if (ImGui::Button("Test Collision")) {
-			trap->SendConsoleCommand("scene 2\n");
-		}
-
 		if (ImGui::Button("Test Shader")) {
-			trap->SendConsoleCommand("scene 3\n");
+			trap->SendConsoleCommand("scene 2\n");
 		}
 		
 		ImGui::End();

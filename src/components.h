@@ -7,6 +7,11 @@ struct Body : public Box {
 	explicit Body(float x, float y, float w, float h) : Box(x, y, w, h) {	}
 };
 
+struct Trigger {
+	float w;
+	float h;
+};
+
 struct Movable {
 	explicit Movable(float dx, float dy) : dx(dx), dy(dy) {}
 	float dx, dy;

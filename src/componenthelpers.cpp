@@ -163,6 +163,11 @@ const Sweep Trace(ex::EntityManager &es, ex::Entity ent, float dx, float dy, ex:
 		}
 
 		auto body2 = ent2.component<Body>();
+
+		if (body2->size.x == 0 || body2->size.y == 0) {
+			continue;
+		}
+
 		auto box2 = Box(body2->pos.x, body2->pos.y, body2->size.x, body2->size.y);
 
 		if (intersectAABB(broad, box2).valid == false) {
@@ -184,6 +189,11 @@ const Sweep Trace(ex::EntityManager &es, ex::Entity ent, float dx, float dy, ex:
 			hitEnt = ent2;
 		}
 	}
+
+	es.each<Trigger>([body, box, broad, delta](ex::Entity entity, Trigger &trigger) {
+		// FIXME: check broadphase, do sweep, send event if trigger time < sweep.time
+	});
+	
 
 	return sweep;
 }

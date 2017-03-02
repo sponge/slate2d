@@ -48,9 +48,9 @@ solution "game"
     kind "SharedLib"
     language "C++"
     files { "game/**.c", "game/**.cpp", "game/**.h", "game/**.hh" }
-    sysincludedirs { "include", "nanovg", "tmx", "imgui" }
+    sysincludedirs { "include", "nanovg", "tmx", "imgui", "lua" }
     targetdir "bin/%{cfg.buildcfg}"
-    links { "nanovg", "tmx", "imgui" }
+    links { "nanovg", "tmx", "imgui", "lua" }
 
   project "nanovg"
     language "C"
@@ -106,3 +106,10 @@ solution "game"
     warnings "Off"
     configuration { "macosx" }
       buildoptions {"-stdlib=libc++"}
+
+  project "lua"
+    language "C"
+    kind "StaticLib"
+    files { "lua/**.c", "lua/**.h" }
+    targetdir "build/%{cfg.buildcfg}"
+    warnings "Off"

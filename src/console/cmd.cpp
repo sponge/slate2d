@@ -740,7 +740,7 @@ Cmd_Args
 Returns a single string containing argv(arg) to argv(argc()-1)
 ============
 */
-char *Cmd_ArgsFrom( int arg ) {
+const char *Cmd_ArgsFrom( int arg ) {
 	static	char		cmd_args[BIG_INFO_STRING];
 	unsigned int		i;
 
@@ -778,7 +778,7 @@ For rcon use when you want to transmit without altering quoting
 https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=543
 ============
 */
-char *Cmd_Cmd()
+const char *Cmd_Cmd()
 {
 	return cmd_cmd;
 }

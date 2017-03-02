@@ -4,7 +4,17 @@
 #include "scene_menu.h"
 #include "scene_testbounce.h"
 
+#include "lua_extstate.h"
+
 gameImportFuncs_t *trap;
+
+LuaExt lua;
+
+void Cmd_Lua_f(void) {
+	auto line = trap->Cmd_Cmd();
+	line += 4;
+	lua(line);
+}
 
 void Cmd_Scene_f(void) {
 	auto num = atoi(trap->Cmd_Argv(1));
@@ -27,8 +37,12 @@ void Cmd_Scene_f(void) {
 // FIXME: abstract out rendering so i can just pass a list of drawing commands instead of nvg context stuff
 static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Cmd_AddCommand("scene", Cmd_Scene_f);
+	trap->Cmd_AddCommand("lua", Cmd_Lua_f);
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
+
+	lua.LoadGameFile("scripts/autoexec.lua");
+
 	trap->Scene_Switch(new MenuScene());
 }
 

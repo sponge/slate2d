@@ -13,6 +13,8 @@ typedef struct gameImportFuncs_s {
 	void (*Cmd_AddCommand)(const char *cmd_name, xcommand_t function);
 	int(*Cmd_Argc)(void);
 	const char * (*Cmd_Argv)(int arg);
+	const char * (*Cmd_ArgsFrom)(int arg);
+	const char * (*Cmd_Cmd)();
 	int  (*FS_ReadFile)(const char *path, void **buffer);
 	bool (*FS_Exists)(const char *file);
 	char** (*FS_List)(const char *path);

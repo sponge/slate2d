@@ -46,6 +46,8 @@ static gameImportFuncs_t GAMEtraps = {
 	Cmd_AddCommand,
 	Cmd_Argc,
 	Cmd_Argv,
+	Cmd_ArgsFrom,
+	Cmd_Cmd,
 	FS_ReadFile,
 	FS_Exists,
 	FS_List,

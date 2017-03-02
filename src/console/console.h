@@ -57,6 +57,8 @@ void Cbuf_Execute(void);
 
 int	Cmd_Argc(void);
 const char *Cmd_Argv(int arg);
+const char *Cmd_ArgsFrom(int arg);
+const char *Cmd_Cmd();
 void Cmd_Init(void);
 void Cmd_ExecuteString(const char *text);
 void Cmd_AddCommand(const char *cmd_name, xcommand_t function);

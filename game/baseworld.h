@@ -2,7 +2,13 @@
 #include "pecs.h"
 #include "components.h"
 
-#define GENERATE_COMPONENT(ENUM, TYPE) std::vector<TYPE> TYPE##s; void set_component(entity_t *entity, TYPE component) { entity->mask |= ENUM##; resize(this->##TYPE##s, entity->id); this->##TYPE##s[entity->id] = component; }
+#define GENERATE_COMPONENT(ENUM, TYPE) \
+std::vector<TYPE> TYPE##s; \
+void assign(entity_t *entity, TYPE component) { \
+	entity->mask |= ENUM##; \
+	resize(this->##TYPE##s, entity->id); \
+	this->##TYPE##s[entity->id] = component; \
+}
 
 using namespace pecs;
 

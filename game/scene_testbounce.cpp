@@ -5,6 +5,8 @@
 #include "game.h"
 #include "components.h"
 #include "componenthelpers.h"
+#include "lua_extstate.h"
+#include "lua_pecs_system.h"
 
 using namespace pecs;
 
@@ -137,14 +139,20 @@ void TestBounceScene::Startup(ClientInfo* info) {
 		float dx = distr(g) * 200 * (x < 2 ? 1 : -1) + 50;
 		float dy = distr(g) * 200 * (y < 2 ? 1 : -1) + 50;
 
-		
 		auto ent = world->get_entity();
 
-		world->set_component(&ent, Body{ x, y, w, h });
-		world->set_component(&ent, Movable{ dx, dy });
-		world->set_component(&ent, Renderable{ (unsigned char) (distr(g) * 255), (unsigned char)(distr(g) * 255), (unsigned char)(distr(g) * 255), (unsigned char)(distr(g) * 200 + 55) });
+		world->assign(&ent, Body{ x, y, w, h });
+		world->assign(&ent, Movable{ dx, dy });
+		world->assign(&ent, Renderable{ (unsigned char) (distr(g) * 255), (unsigned char)(distr(g) * 255), (unsigned char)(distr(g) * 255), (unsigned char)(distr(g) * 200 + 55) });
 		world->add(ent);
 	}
+
+	lua["add_system"] = [this](int priority, int mask, sel::function<int(lua_Number, int)> func) {
+		auto sys = new LuaSystem(lua, priority, mask, func);
+		world->add(sys);
+	};
+
+	lua.LoadGameFile("scripts/main.lua");
 }
 
 void TestBounceScene::Update(float dt) {

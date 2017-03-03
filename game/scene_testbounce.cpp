@@ -152,6 +152,8 @@ void TestBounceScene::Startup(ClientInfo* info) {
 		world->add(sys);
 	};
 
+	lua["Movable"].SetClass<Movable>("dx", &Movable::dx, "dy", &Movable::dy);
+
 	lua.LoadGameFile("scripts/main.lua");
 }
 

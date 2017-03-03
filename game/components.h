@@ -15,8 +15,8 @@ struct Body : public Box {
 
 struct Movable {
 	Movable() {}
-	explicit Movable(float dx, float dy) : dx(dx), dy(dy) {}
-	float dx, dy;
+	explicit Movable(double dx, double dy) : dx(dx), dy(dy) {}
+	double dx, dy;
 	bool upTouch, leftTouch, rightTouch, downTouch;
 };
 

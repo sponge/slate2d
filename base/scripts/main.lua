@@ -1,6 +1,6 @@
 
 local update = function (dt, ent)
     -- print('in update')
-    print("dx: ".. mov:dx())
+    print("dx: ".. movable:dx() .. " dy: ".. movable:dy())
 end
 add_system(69, 0, update)

@@ -9,15 +9,15 @@ using namespace pecs;
 const Sweep Trace(BaseWorld &world, entity_t &ent, float dx, float dy, entity_t *hitEnt)
 {
 	auto body = world.Bodys[ent.id];
-	auto box = Box(body.pos.x, body.pos.y, body.size.x, body.size.y);
+	auto box = Box(body.x, body.y, body.w, body.h);
 	auto delta = Vec2(dx, dy);
 
 	auto broad = getBroadPhaseBox(box, delta);
 
 	Sweep sweep;
 	sweep.time = 1.0;
-	sweep.pos.x = body.pos.x + dx;
-	sweep.pos.y = body.pos.y + dy;
+	sweep.pos.x = body.x + dx;
+	sweep.pos.y = body.y + dy;
 	
 	for (auto &ent2 : world.entities) {
 		if (ent.id == ent2.id) {
@@ -26,11 +26,11 @@ const Sweep Trace(BaseWorld &world, entity_t &ent, float dx, float dy, entity_t 
 
 		auto body2 = world.Bodys[ent2.id];
 
-		if (body2.size.x == 0 || body2.size.y == 0) {
+		if (body2.w == 0 || body2.h == 0) {
 			continue;
 		}
 
-		auto box2 = Box(body2.pos.x, body2.pos.y, body2.size.x, body2.size.y);
+		auto box2 = Box(body2.x, body2.y, body2.w, body2.h);
 
 		if (intersectAABB(broad, box2).valid == false) {
 			continue;

@@ -39,8 +39,8 @@ struct RectMoverSystem : system_t {
 
 			Sweep move = Trace(*world, entity, dx, dy, hitEnt);
 
-			body.pos.x = move.pos.x;
-			body.pos.y = move.pos.y;
+			body.x = move.pos.x;
+			body.y = move.pos.y;
 
 			if (move.hit.valid) {
 				auto dotprod = (dx * move.hit.normal.y + dy * move.hit.normal.x) * (1.0f - move.time);
@@ -48,8 +48,8 @@ struct RectMoverSystem : system_t {
 				dy = dotprod * move.hit.normal.x;
 
 				move = Trace(*world, entity, dx, dy, hitEnt);
-				body.pos.x = move.pos.x;
-				body.pos.y = move.pos.y;
+				body.x = move.pos.x;
+				body.y = move.pos.y;
 
 				// if the second move is still blocked, reverse direction
 				if (dx != 0 && move.hit.normal.x != 0) {
@@ -62,12 +62,12 @@ struct RectMoverSystem : system_t {
 			}
 
 			if (body.max().x > WORLD_WIDTH || body.min().x < 0) {
-				body.pos.x = body.min().x < 0 ? body.size.x / 2 : WORLD_WIDTH - body.size.x / 2;
+				body.x = body.min().x < 0 ? body.w / 2 : WORLD_WIDTH - body.w / 2;
 				movable.dx *= -1;
 			}
 
 			if (body.max().y > WORLD_HEIGHT || body.min().y < 0) {
-				body.pos.y = body.min().y < 0 ? body.size.y / 2 : WORLD_HEIGHT - body.size.y / 2;
+				body.y = body.min().y < 0 ? body.h / 2 : WORLD_HEIGHT - body.h / 2;
 				movable.dy *= -1;
 			}
 		}
@@ -99,17 +99,17 @@ struct RectDrawSystem : system_t {
 			auto &r = world->getRenderable(entity.id);
 
 			nvgBeginPath(nvg);
-			nvgRect(nvg, body.pos.x - (body.size.x*0.5), body.pos.y - (body.size.y*0.5), body.size.x, body.size.y);
+			nvgRect(nvg, body.x - (body.w*0.5), body.y - (body.h*0.5), body.w, body.h);
 			nvgFillColor(nvg, nvgRGBA(r.r, r.g, r.b, r.a));
 			nvgFill(nvg);
 
 			nvgFillColor(nvg, nvgRGBA(255, 255, 255, 255));
 			char s[16];
 			nvgTextAlign(nvg, 2);
-			snprintf(s, sizeof(s), "%.0f, %.0f", body.pos.x, body.pos.y);
-			nvgText(nvg, body.pos.x, body.pos.y, s, 0);
+			snprintf(s, sizeof(s), "%.0f, %.0f", body.x, body.y);
+			nvgText(nvg, body.x, body.y, s, 0);
 			snprintf(s, sizeof(s), "%.0f, %.0f", m.dx, m.dy);
-			nvgText(nvg, body.pos.x, body.pos.y + 12, s, 0);
+			nvgText(nvg, body.x, body.y + 12, s, 0);
 		}
 	}
 };

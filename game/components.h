@@ -8,9 +8,16 @@ enum {
 	COMPONENT_RENDERABLE = 1 << 2
 };
 
-struct Body : public Box {
-	Body() : Box(0, 0, 0, 0) {}
-	explicit Body(float x, float y, float w, float h) : Box(x, y, w, h) {	}
+struct Body {
+	Body() {}
+	Body(double x, double y, double w, double h) : x(x), y(y), w(w), h(h), hw(w*0.5), hh(h*0.5) {}
+	double x, y, w, h, hw, hh;
+	Vec2 min() {
+		return Vec2(x - hw, y - hh);
+	};
+	Vec2 max() {
+		return Vec2(x + hh, y + hh);
+	};
 };
 
 struct Movable {

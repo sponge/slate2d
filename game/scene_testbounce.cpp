@@ -152,7 +152,10 @@ void TestBounceScene::Startup(ClientInfo* info) {
 		world->add(sys);
 	};
 
+	lua["Vec2"].SetClass<Vec2>("x", &Vec2::x, "y", &Vec2::y);
+	lua["Body"].SetClass<Body>("x", &Body::x, "y", &Body::y, "w", &Body::w, "h", &Body::h, "hw", &Body::hw, "hh", &Body::hh, "min", &Body::min, "max", &Body::max);
 	lua["Movable"].SetClass<Movable>("dx", &Movable::dx, "dy", &Movable::dy);
+	lua["Renderable"].SetClass<Renderable>("r", &Renderable::r, "g", &Renderable::g, "b", &Renderable::b, "a", &Renderable::a);
 
 	lua.LoadGameFile("scripts/main.lua");
 }

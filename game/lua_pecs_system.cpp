@@ -16,8 +16,11 @@ void LuaSystem::update(double dt)
 
 	for (auto &entity : world->entities) {
 		PECS_SKIP_INVALID_ENTITY;
+		if (entity.mask & COMPONENT_BODY) {
+			lua["body"].SetObj(world->getBody(entity.id), "x", &Body::x, "y", &Body::y);
+		}
 		if (entity.mask & COMPONENT_MOVABLE) {
-			lua["movable"].SetObj(world->Movables[entity.id], "dx", &Movable::dx, "dy", &Movable::dy);
+			lua["movable"].SetObj(world->getMovable(entity.id), "dx", &Movable::dx, "dy", &Movable::dy);
 		}
 		this->luaUpdate(dt, entity.id);
 	}

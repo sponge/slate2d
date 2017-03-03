@@ -94,9 +94,9 @@ struct RectDrawSystem : system_t {
 		for (auto &entity : world->entities) {
 			PECS_SKIP_INVALID_ENTITY;
 
-			auto &body = world->Bodys[entity.id];
-			auto &m = world->Movables[entity.id];
-			auto &r = world->Renderables[entity.id];
+			auto &body = world->getBody(entity.id);
+			auto &m = world->getMovable(entity.id);
+			auto &r = world->getRenderable(entity.id);
 
 			nvgBeginPath(nvg);
 			nvgRect(nvg, body.pos.x - (body.size.x*0.5), body.pos.y - (body.size.y*0.5), body.size.x, body.size.y);

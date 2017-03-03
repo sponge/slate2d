@@ -8,6 +8,9 @@ void assign(entity_t *entity, TYPE component) { \
 	entity->mask |= ENUM##; \
 	resize(this->##TYPE##s, entity->id); \
 	this->##TYPE##s[entity->id] = component; \
+} \
+TYPE##& get##TYPE##(int id) { \
+	return TYPE##s[id]; \
 }
 
 using namespace pecs;

@@ -1,7 +1,8 @@
 #pragma once
-#include "selene/selene.h"
+#define SOL_NO_EXCEPTIONS
+#include "sol.h"
 
-class LuaExt : public sel::State {
+class LuaExt : public sol::state {
 public:
 	LuaExt();
 	bool LoadGameFile(const std::string &file);

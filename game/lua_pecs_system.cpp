@@ -4,7 +4,7 @@
 
 using namespace pecs;
 
-LuaSystem::LuaSystem(sel::State &st, int priority, int mask, sel::function<int(lua_Number, int)> func) : luaUpdate(func), lua(st)
+LuaSystem::LuaSystem(sol::state &st, int priority, int mask, sol::function func) : luaUpdate(func), lua(st)
 {
 	this->priority = priority;
 	this->mask = mask;
@@ -16,13 +16,35 @@ void LuaSystem::update(double dt)
 
 	for (auto &entity : world->entities) {
 		PECS_SKIP_INVALID_ENTITY;
+		auto components = lua.create_named_table("components");
 		if (entity.mask & COMPONENT_BODY) {
-			lua["body"].SetObj(world->getBody(entity.id), "x", &Body::x, "y", &Body::y);
+			auto body = world->getBody(entity.id);
+			components["body"] = lua.create_table_with(
+				"x", body.x,
+				"y", body.y,
+				"w", body.w,
+				"h", body.h
+			);
 		}
 		if (entity.mask & COMPONENT_MOVABLE) {
-			lua["movable"].SetObj(world->getMovable(entity.id), "dx", &Movable::dx, "dy", &Movable::dy);
+			auto mov = world->getMovable(entity.id);
+			components["movable"] = lua.create_table_with(
+				"dx", mov.dx,
+				"dy", mov.dy
+			);
 		}
+
 		this->luaUpdate(dt, entity.id);
+
+		if (entity.mask & COMPONENT_BODY) {
+			auto body = world->getBody(entity.id);
+			sol::table tbl = components["body"];
+			double x = tbl["x"];
+			body.x = tbl["x"];
+			body.y = tbl["y"];
+			body.w = tbl["w"];
+			body.h = tbl["h"];
+		}
 	}
 }
 

@@ -11,9 +11,13 @@ gameImportFuncs_t *trap;
 LuaExt lua;
 
 void Cmd_Lua_f(void) {
-	auto line = trap->Cmd_Cmd();
+	const char *line = trap->Cmd_Cmd();
 	line += 4;
-	lua(line);
+	auto res = lua.do_string(line);
+	if (!res.valid()) {
+		sol::error err = res;
+		trap->Print(err.what());
+	}
 }
 
 void Cmd_Scene_f(void) {

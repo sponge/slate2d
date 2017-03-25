@@ -121,8 +121,8 @@ void TestBounceScene::Startup(ClientInfo* info) {
 
 	world = new BaseWorld();
 
-	auto a = new RectMoverSystem();
-	world->add(a);
+	//auto a = new RectMoverSystem();
+	//world->add(a);
 
 	auto b = new RectDrawSystem(inf->nvg);
 	world->add(b);
@@ -147,15 +147,11 @@ void TestBounceScene::Startup(ClientInfo* info) {
 		world->add(ent);
 	}
 
-	lua["add_system"] = [this](int priority, int mask, sel::function<int(lua_Number, int)> func) {
+	
+	lua["add_system"] = [this](int priority, int mask, sol::function func) {
 		auto sys = new LuaSystem(lua, priority, mask, func);
 		world->add(sys);
 	};
-
-	lua["Vec2"].SetClass<Vec2>("x", &Vec2::x, "y", &Vec2::y);
-	lua["Body"].SetClass<Body>("x", &Body::x, "y", &Body::y, "w", &Body::w, "h", &Body::h, "hw", &Body::hw, "hh", &Body::hh, "min", &Body::min, "max", &Body::max);
-	lua["Movable"].SetClass<Movable>("dx", &Movable::dx, "dy", &Movable::dy);
-	lua["Renderable"].SetClass<Renderable>("r", &Renderable::r, "g", &Renderable::g, "b", &Renderable::b, "a", &Renderable::a);
 
 	lua.LoadGameFile("scripts/main.lua");
 }

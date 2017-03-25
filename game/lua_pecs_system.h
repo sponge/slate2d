@@ -1,12 +1,12 @@
 #pragma once
 #include "pecs.h"
-#include "selene/selene.h"
+#include "sol.h"
 
 struct LuaSystem : pecs::system_t {
-	sel::State &lua;
-	sel::function<int(lua_Number, int)> luaUpdate;
+	sol::state &lua;
+	sol::function luaUpdate;
 
-	LuaSystem(sel::State &st, int priority, int mask, sel::function<int(lua_Number, int)> func);
+	LuaSystem(sol::state &st, int priority, int mask, sol::function func);
 	void update(double dt);
 	void on_add(pecs::world_t *world);
 	void on_remove(pecs::world_t *world);

@@ -16,43 +16,48 @@ static int l_my_print(lua_State* L) {
 	return 0;
 }
 
-LuaExt::LuaExt() : sel::State(true) {
-	HandleExceptionsWith(sel::ExceptionHandler::function([](int, std::string msg, std::exception_ptr) { trap->Print(msg.c_str()); }));
+LuaExt::LuaExt() {
+	auto st = this->lua_state();
+	lua.open_libraries();
+	
+	//HandleExceptionsWith(sel::ExceptionHandler::function([](int, std::string msg, std::exception_ptr) { trap->Print(msg.c_str()); }));
 
 	static const struct luaL_Reg printlib[] = {
 		{ "print", l_my_print },
 		{ NULL, NULL }
 	};
 
-	luaL_openlibs(_l);
-	lua_getglobal(_l, "_G");
-	luaL_setfuncs(_l, printlib, 0);
-	lua_pop(_l, 1);
+	lua_getglobal(st, "_G");
+	luaL_setfuncs(st, printlib, 0);
+	lua_pop(st, 1);
 }
 
 bool LuaExt::LoadGameFile(const std::string &file) {
+
+	auto st = this->lua_state();
+
 	const char *buffer;
 	int sz = trap->FS_ReadFile(file.c_str(), (void **)&buffer);
-	auto status = luaL_loadbuffer(this->_l, buffer, sz, file.c_str());
+	auto status = luaL_loadbuffer(st, buffer, sz, file.c_str());
 
 	if (status != LUA_OK) {
 		if (status == LUA_ERRSYNTAX) {
-			const char *msg = lua_tostring(_l, -1);
-			_exception_handler->Handle(status, msg ? msg : file + ": syntax error");
+			const char *msg = lua_tostring(st, -1);
+			//_exception_handler->Handle(status, msg ? msg : file + ": syntax error");
 		}
 		else if (status == LUA_ERRFILE) {
-			const char *msg = lua_tostring(_l, -1);
-			_exception_handler->Handle(status, msg ? msg : file + ": file error");
+			const char *msg = lua_tostring(st, -1);
+			//_exception_handler->Handle(status, msg ? msg : file + ": file error");
 		}
 		return false;
 	}
 
-	status = lua_pcall(_l, 0, LUA_MULTRET, 0);
+	status = lua_pcall(st, 0, LUA_MULTRET, 0);
 	if (status == LUA_OK) {
 		return true;
 	}
 
-	const char *msg = lua_tostring(_l, -1);
-	_exception_handler->Handle(status, msg ? msg : file + ": dofile failed");
+	const char *msg = lua_tostring(st, -1);
+	//_exception_handler->Handle(status, msg ? msg : file + ": dofile failed");
 	return false;
 }

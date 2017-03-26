@@ -183,7 +183,7 @@ int main(int argc, char *argv[]) {
 
 	int ver = 0;
 
-#ifdef WIN32
+#ifdef _WIN32
 	static const char *lib = "game.dll";
 #elif defined MACOS
 	static const char *lib = "libgame.dylib";

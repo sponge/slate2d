@@ -182,7 +182,14 @@ int main(int argc, char *argv[]) {
 	consoleScene->Startup(&inf);
 
 	int ver = 0;
-	Sys_LoadDll("game.dll", (void **)(&gexports), &ver);
+
+#ifdef WIN32
+	static const char *lib = "game.dll";
+#elif defined MACOS
+	static const char *lib = "libgame.dylib";
+#endif
+
+	Sys_LoadDll(lib, (void **)(&gexports), &ver);
 	gexports->Init((void*)&inf, (void*)ImGui::GetCurrentContext());
 
 	bool quit = false;

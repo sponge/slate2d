@@ -52,8 +52,11 @@ static gameExportFuncs_t GAMEfuncs = {
 	Init,
 };
 
-// FIXME: windows only :(
-extern "C" __declspec(dllexport) void dllEntry(void ** exports, void * imports, int * version) {
+extern "C" 
+#ifdef WIN32
+__declspec(dllexport)
+#endif
+void dllEntry(void ** exports, void * imports, int * version) {
 	*exports = &GAMEfuncs;
 	trap = (gameImportFuncs_t *)imports;
 	*version = 1;

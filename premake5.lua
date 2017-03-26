@@ -4,6 +4,7 @@ solution "game"
   warnings "Extra"
 
   configuration { "macosx" }
+    defines { "MACOS" }
     platforms { "x64" }
     buildoptions {"-Wno-unused-parameter"}
 
@@ -50,6 +51,7 @@ solution "game"
     files { "game/**.c", "game/**.cpp", "game/**.h", "game/**.hh" }
     sysincludedirs { "include", "nanovg", "tmx", "imgui", "lua" }
     targetdir "bin/%{cfg.buildcfg}"
+    flags { "C++14" }
     links { "nanovg", "tmx", "imgui", "lua" }
 
   project "nanovg"

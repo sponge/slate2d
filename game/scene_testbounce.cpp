@@ -12,6 +12,7 @@ using namespace pecs;
 
 struct RectMoverSystem : system_t {
 	RectMoverSystem() {
+		this->name = "Rect Mover (C)";
 		this->priority = 0;
 		this->mask = COMPONENT_BODY | COMPONENT_MOVABLE;
 	}
@@ -78,6 +79,7 @@ struct RectDrawSystem : system_t {
 	NVGcontext *nvg;
 
 	RectDrawSystem(NVGcontext *nvg) {
+		this->name = "Rect Drawer";
 		this->nvg = nvg;
 		this->priority = 0;
 		this->mask = COMPONENT_BODY | COMPONENT_MOVABLE | COMPONENT_RENDERABLE;

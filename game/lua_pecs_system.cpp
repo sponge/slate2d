@@ -4,8 +4,9 @@
 
 using namespace pecs;
 
-LuaSystem::LuaSystem(sol::state &st, int priority, int mask, sol::function func) : luaUpdate(func), lua(st)
+LuaSystem::LuaSystem(sol::state &st, const char *name, int priority, int mask, sol::function func) : luaUpdate(func), lua(st)
 {
+	this->name = name;
 	this->priority = priority;
 	this->mask = mask;
 }

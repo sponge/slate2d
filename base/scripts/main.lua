@@ -48,4 +48,4 @@ local rectUpdate = function (dt, ent, c)
         c.mov.dy = c.mov.dy * -1
     end
 end
-add_system(0, 1 + 2, rectUpdate)
+add_system("Rect Mover", 0, 1 + 2, rectUpdate)

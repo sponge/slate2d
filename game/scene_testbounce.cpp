@@ -147,8 +147,8 @@ void TestBounceScene::Startup(ClientInfo* info) {
 	//auto a = new RectMoverSystem();
 	//world->add(a);
 	
-	lua["add_system"] = [this](int priority, int mask, sol::function func) {
-		auto sys = new LuaSystem(lua, priority, mask, func);
+	lua["add_system"] = [this](const char *name, int priority, int mask, sol::function func) {
+		auto sys = new LuaSystem(lua, name, priority, mask, func);
 		world->add(sys);
 	};
 	

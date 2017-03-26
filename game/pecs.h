@@ -41,6 +41,7 @@ struct entity_t {
  */
 struct world_t; // good 'ol circular dependencies.
 struct system_t {
+	const char *name;
 	int priority;
 	bool active;
 	bool renderOnly = false;

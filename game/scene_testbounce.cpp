@@ -121,9 +121,6 @@ void TestBounceScene::Startup(ClientInfo* info) {
 
 	world = new BaseWorld();
 
-	//auto a = new RectMoverSystem();
-	//world->add(a);
-
 	auto b = new RectDrawSystem(inf->nvg);
 	world->add(b);
 
@@ -147,6 +144,8 @@ void TestBounceScene::Startup(ClientInfo* info) {
 		world->add(ent);
 	}
 
+	//auto a = new RectMoverSystem();
+	//world->add(a);
 	
 	lua["add_system"] = [this](int priority, int mask, sol::function func) {
 		auto sys = new LuaSystem(lua, priority, mask, func);

@@ -16,16 +16,11 @@ void LuaSystem::update(double dt)
 
 	for (auto &entity : world->entities) {
 		PECS_SKIP_INVALID_ENTITY;
-		auto components = lua.create_table_with();
-		if (entity.mask & COMPONENT_BODY) {
-			auto &body = world->getBody(entity.id);
-			components["body"] = &body;
-		}
 
-		if (entity.mask & COMPONENT_MOVABLE) {
-			auto &mov = world->getMovable(entity.id);
-			components["mov"] = &mov;
-		}
+		auto components = lua.create_table_with();
+		if (this->mask & COMPONENT_BODY) { components["body"] = &world->getBody(entity.id); }
+		if (this->mask & COMPONENT_MOVABLE) { components["mov"] = &world->getMovable(entity.id); }
+		if (this->mask & COMPONENT_RENDERABLE) { components["renderable"] = &world->getRenderable(entity.id); }
 
 		this->luaUpdate(dt, entity, components);
 	}

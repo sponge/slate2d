@@ -157,6 +157,25 @@ void TestBounceScene::Startup(ClientInfo* info) {
 		return Trace(*world, ent, dx, dy, NULL);
 	};
 
+	lua.new_usertype<Vec2>("Vec2",
+		"x", &Vec2::x,
+		"y", &Vec2::y
+	);
+
+	lua.new_usertype<Hit>("Hit",
+		"valid", &Hit::valid,
+		"pos", &Hit::pos,
+		"delta", &Hit::delta,
+		"normal", &Hit::normal,
+		"time", &Hit::time
+	);
+
+	lua.new_usertype<Sweep>("Sweep",
+		"hit", &Sweep::hit,
+		"pos", &Sweep::pos,
+		"time", &Sweep::time
+	);
+
 	lua.new_usertype<Body>("Body",
 		"x", &Body::x,
 		"y", &Body::y,

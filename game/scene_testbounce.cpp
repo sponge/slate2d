@@ -82,6 +82,7 @@ struct RectDrawSystem : system_t {
 		this->name = "Rect Drawer";
 		this->nvg = nvg;
 		this->priority = 0;
+		this->renderOnly = true;
 		this->mask = COMPONENT_BODY | COMPONENT_MOVABLE | COMPONENT_RENDERABLE;
 	}
 

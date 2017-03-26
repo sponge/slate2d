@@ -79,11 +79,11 @@ bool LuaExt::LoadGameFile(const std::string &file) {
 	if (status != LUA_OK) {
 		if (status == LUA_ERRSYNTAX) {
 			const char *msg = lua_tostring(st, -1);
-			trap->Print(msg ? msg : va("%s: syntax error", file));
+			trap->Print(msg ? msg : va("%s: syntax error", file.c_str()));
 		}
 		else if (status == LUA_ERRFILE) {
 			const char *msg = lua_tostring(st, -1);
-			trap->Print(msg ? msg : va("%s: file error", file));
+			trap->Print(msg ? msg : va("%s: file error", file.c_str()));
 		}
 		return false;
 	}
@@ -94,6 +94,6 @@ bool LuaExt::LoadGameFile(const std::string &file) {
 	}
 
 	const char *msg = lua_tostring(st, -1);
-	trap->Print(msg ? msg : va("%s: dofile failed", file));
+	trap->Print(msg ? msg : va("%s: dofile failed", file.c_str()));
 	return false;
 }

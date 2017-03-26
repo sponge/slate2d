@@ -4,7 +4,7 @@
 #include "../src/scene.h"
 #include "baseworld.h"
 
-extern class TestBounceWorld;
+class TestBounceWorld;
 
 class TestBounceScene : public Scene {
 public:

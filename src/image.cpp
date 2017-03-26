@@ -1,6 +1,7 @@
 #include <nanovg.h>
 #include <map>
 #include <string>
+#include <stdlib.h>
 #include "image.h"
 #include "files.h"
 

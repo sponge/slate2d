@@ -53,7 +53,7 @@ static gameExportFuncs_t GAMEfuncs = {
 };
 
 extern "C" 
-#ifdef WIN32
+#ifdef _WIN32
 __declspec(dllexport)
 #endif
 void dllEntry(void ** exports, void * imports, int * version) {

@@ -8,8 +8,6 @@
 
 gameImportFuncs_t *trap;
 
-LuaExt lua;
-
 void Cmd_Lua_f(void) {
 	const char *line = trap->Cmd_Cmd();
 	line += 4;

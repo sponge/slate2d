@@ -152,6 +152,31 @@ void TestBounceScene::Startup(ClientInfo* info) {
 		auto sys = new LuaSystem(lua, priority, mask, func);
 		world->add(sys);
 	};
+	
+	lua["trace"] = [this](entity_t &ent, double dx, double dy) {
+		return Trace(*world, ent, dx, dy, NULL);
+	};
+
+	lua.new_usertype<Body>("Body",
+		"x", &Body::x,
+		"y", &Body::y,
+		"w", &Body::w,
+		"h", &Body::h,
+		"hw", &Body::hw,
+		"hh", &Body::hh
+	);
+
+	lua.new_usertype<Movable>("Movable",
+		"dx", &Movable::dx,
+		"dy", &Movable::dy
+	);
+
+	lua.new_usertype<Renderable>("Renderable",
+		"r", &Renderable::r,
+		"g", &Renderable::g,
+		"b", &Renderable::b,
+		"a", &Renderable::a
+	);
 
 	lua.LoadGameFile("scripts/main.lua");
 }

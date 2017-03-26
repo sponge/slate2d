@@ -1,6 +1,8 @@
 #include "public.h"
 #include "lua_extstate.h"
 
+LuaExt lua;
+
 static int l_my_print(lua_State* L) {
 	int nargs = lua_gettop(L);
 
@@ -43,11 +45,11 @@ bool LuaExt::LoadGameFile(const std::string &file) {
 	if (status != LUA_OK) {
 		if (status == LUA_ERRSYNTAX) {
 			const char *msg = lua_tostring(st, -1);
-			//_exception_handler->Handle(status, msg ? msg : file + ": syntax error");
+			trap->Print(msg ? msg : va("%s: syntax error", file));
 		}
 		else if (status == LUA_ERRFILE) {
 			const char *msg = lua_tostring(st, -1);
-			//_exception_handler->Handle(status, msg ? msg : file + ": file error");
+			trap->Print(msg ? msg : va("%s: file error", file));
 		}
 		return false;
 	}
@@ -58,6 +60,6 @@ bool LuaExt::LoadGameFile(const std::string &file) {
 	}
 
 	const char *msg = lua_tostring(st, -1);
-	//_exception_handler->Handle(status, msg ? msg : file + ": dofile failed");
+	trap->Print(msg ? msg : va("%s: dofile failed", file));
 	return false;
 }

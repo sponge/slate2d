@@ -1,7 +1,7 @@
 
-local update = function (dt, ent)
-    components.body.x = 69
-    --local x, y, dx, dy = body:x(), body:y(), movable:dx(), movable:dy()
-    --print("x:" .. x .. " y:".. y .." dx:".. dx .. " dy:".. dy)
+local rectUpdate = function (dt, ent, c)
+    c.body.x = c.body.x + 10 * dt
+    c.mov.dx = 0
+    local tr = trace(ent, c.mov.dx, c.mov.dy)
 end
-add_system(69, 0, update)
+add_system(0, 0, rectUpdate)

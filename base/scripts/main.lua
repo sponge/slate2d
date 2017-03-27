@@ -4,15 +4,13 @@ require 'components'
 local WORLD_WIDTH = 1280
 local WORLD_HEIGHT = 720
 
-math.randomseed(os.time())
-
 for i=0,15 do
     local x = (i % 4) * (WORLD_WIDTH / 4) + 100
     local y = math.floor(i / 4) * (WORLD_HEIGHT / 4) + 100
     local w = math.random(40,90)
     local h = math.random(40,90)
-    local dx = math.random(50, 250) * (x < 2 and 1 or -1);
-    local dy = math.random(50, 250) * (y < 2 and 1 or -1);
+    local dx = math.random(50, 250) * (x < WORLD_WIDTH / 2 and 1 or -1);
+    local dy = math.random(50, 250) * (y < WORLD_HEIGHT / 2 and 1 or -1);
     local ent = world:get_entity()
     world:addBody(ent, Body:new(x, y, w, h))
     world:addMovable(ent, Movable:new(dx, dy))

@@ -142,9 +142,7 @@ void TestBounceScene::Startup(ClientInfo* info) {
 		return Trace(*world, ent, dx, dy, NULL);
 	};
 
-	BaseWorld &wref = *world;
-
-	lua["world"] = &wref;
+	lua["world"] = world;
 
 	lua.new_usertype<BaseWorld>("BaseWorld",
 		"get_entity", &BaseWorld::get_entity,

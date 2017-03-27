@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cmath>
+#include <chrono>
+#include <thread>
 
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -32,8 +34,8 @@
 
 ClientInfo inf;
 SceneManager *sm;
-int frame_msec, com_frameTime;
-//int frame_accum;
+unsigned frame_msec, com_frameTime;
+//float frame_accum;
 
 gameExportFuncs_t * gexports;
 SDL_Window *window;
@@ -76,6 +78,9 @@ int main(int argc, char *argv[]) {
 #ifdef DEBUG
 	testCollision();
 #endif
+
+	using clock = std::chrono::high_resolution_clock;
+	using namespace std::chrono_literals;
 
 	// handle command line parsing. combine into one string and pass it in.
 	if (argc > 1) {
@@ -195,13 +200,15 @@ int main(int argc, char *argv[]) {
 	bool quit = false;
 	SDL_Event ev;
 
-	int prevt = SDL_GetTicks();
+	auto start = clock::now();
+	auto last = clock::now();
 
 	while (!quit) {
-		com_frameTime = SDL_GetTicks();
-		frame_msec = com_frameTime - prevt;
-		prevt = com_frameTime;
-
+		auto now = clock::now();
+		auto dt = std::chrono::duration<float>(now - last).count();
+		com_frameTime = std::chrono::duration<float>(now - start).count() * 1000 * 1000;
+		frame_msec = dt * 1000 * 1000;
+		last = now;
 
 		while (SDL_PollEvent(&ev)) {
 			ImGui_ImplSdlGL3_ProcessEvent(&ev);
@@ -234,16 +241,16 @@ int main(int argc, char *argv[]) {
 
 		ImGui_ImplSdlGL3_NewFrame(window);
 
-		// FIXME: not working on my mac, prob because fps is too low?
 		/*
-		frame_accum += frame_msec;
-		while (frame_accum > 5) {
-			sm->Update(5 / 1000.0f);
-			frame_accum -= 5;
+		frame_accum += dt;
+		while (frame_accum >= 1 / 200.0f) {
+			sm->Update(1 / 200.0f);
+			frame_accum -= 1 / 200.0f;
 		}
-		*/	
-		sm->Update(frame_msec / 1000.0f);
-		consoleScene->Update(frame_msec / 1000.0f);
+		*/
+		sm->Update(dt);
+
+		consoleScene->Update(dt);
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
@@ -255,6 +262,10 @@ int main(int argc, char *argv[]) {
 		ImGui::Render();
 
 		SDL_GL_SwapWindow(window);
+
+		if (SDL_GL_GetSwapInterval() == 0) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
 	}
 
 	SDL_GL_DeleteContext(context);

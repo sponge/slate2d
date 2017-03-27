@@ -2,7 +2,7 @@
 
 extern bool consoleActive;
 
-extern int com_frameTime;
-extern int frame_msec;
+extern unsigned com_frameTime;
+extern unsigned frame_msec;
 
 void DropToMenu();

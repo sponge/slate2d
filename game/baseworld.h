@@ -11,6 +11,9 @@ void assign(entity_t *entity, TYPE component) { \
 } \
 TYPE & get##TYPE (int id) { \
 	return TYPE##s[id]; \
+} \
+void add##TYPE (entity_t *entity, TYPE comp) { \
+	this->assign(entity, comp); \
 }
 
 using namespace pecs;

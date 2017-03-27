@@ -1,5 +1,4 @@
 #include "scene_testbounce.h"
-#include <random>
 #include "pecs.h"
 #include "../src/sweep.h"
 #include "game.h"
@@ -127,26 +126,6 @@ void TestBounceScene::Startup(ClientInfo* info) {
 	auto b = new RectDrawSystem(inf->nvg);
 	world->add(b);
 
-	std::random_device rand_dev;
-	std::mt19937 g(rand_dev());
-	std::uniform_real_distribution<double> distr(0, 1);
-
-	for (int i = 0; i < 16; i++) {
-		float x = (i % 4) * (1280 / 4) + 100;
-		float y = floor(i / 4) * (720 / 4) + 100;
-		float w = distr(g) * 50 + 40;
-		float h = distr(g) * 50 + 40;
-		float dx = distr(g) * 200 * (x < 2 ? 1 : -1) + 50;
-		float dy = distr(g) * 200 * (y < 2 ? 1 : -1) + 50;
-
-		auto ent = world->get_entity();
-
-		world->assign(&ent, Body{ x, y, w, h });
-		world->assign(&ent, Movable{ dx, dy });
-		world->assign(&ent, Renderable{ (unsigned char) (distr(g) * 255), (unsigned char)(distr(g) * 255), (unsigned char)(distr(g) * 255), (unsigned char)(distr(g) * 200 + 55) });
-		world->add(ent);
-	}
-
 	//auto a = new RectMoverSystem();
 	//world->add(a);
 	
@@ -154,10 +133,25 @@ void TestBounceScene::Startup(ClientInfo* info) {
 		auto sys = new LuaSystem(lua, name, priority, mask, func);
 		world->add(sys);
 	};
+
+	lua["add_entity"] = [this](entity_t ent) {
+		world->add(ent);
+	};
 	
 	lua["trace"] = [this](entity_t &ent, double dx, double dy) {
 		return Trace(*world, ent, dx, dy, NULL);
 	};
+
+	BaseWorld &wref = *world;
+
+	lua["world"] = &wref;
+
+	lua.new_usertype<BaseWorld>("BaseWorld",
+		"get_entity", &BaseWorld::get_entity,
+		"addBody", &BaseWorld::addBody,
+		"addMovable", &BaseWorld::addMovable,
+		"addRenderable", &BaseWorld::addRenderable
+	);
 
 	lua.new_usertype<Vec2>("Vec2",
 		"x", &Vec2::x,
@@ -179,6 +173,7 @@ void TestBounceScene::Startup(ClientInfo* info) {
 	);
 
 	lua.new_usertype<Body>("Body",
+		sol::constructors<Body(), Body(double, double, double, double)>(),
 		"x", &Body::x,
 		"y", &Body::y,
 		"w", &Body::w,
@@ -188,11 +183,13 @@ void TestBounceScene::Startup(ClientInfo* info) {
 	);
 
 	lua.new_usertype<Movable>("Movable",
+		sol::constructors<Movable(), Movable(double, double)>(),
 		"dx", &Movable::dx,
 		"dy", &Movable::dy
 	);
 
 	lua.new_usertype<Renderable>("Renderable",
+		sol::constructors<Renderable(), Renderable(unsigned char, unsigned char, unsigned char, unsigned char)>(),
 		"r", &Renderable::r,
 		"g", &Renderable::g,
 		"b", &Renderable::b,

@@ -1,6 +1,12 @@
 #pragma once
 #include "../src/sweep.h"
 
+// when adding a new component:
+// - update the enum
+// - update baseworld GENERATE_COMPONENT calls
+// - update lua binding
+// - update components.lua
+
 enum {
 	COMPONENT_ANY = 0,
 	COMPONENT_BODY = 1 << 0,

@@ -1,7 +1,24 @@
 local inspect = require 'inspect'
+require 'components'
 
 local WORLD_WIDTH = 1280
 local WORLD_HEIGHT = 720
+
+math.randomseed(os.time())
+
+for i=0,15 do
+    local x = (i % 4) * (WORLD_WIDTH / 4) + 100
+    local y = math.floor(i / 4) * (WORLD_HEIGHT / 4) + 100
+    local w = math.random(40,90)
+    local h = math.random(40,90)
+    local dx = math.random(50, 250) * (x < 2 and 1 or -1);
+    local dy = math.random(50, 250) * (y < 2 and 1 or -1);
+    local ent = world:get_entity()
+    world:addBody(ent, Body:new(x, y, w, h))
+    world:addMovable(ent, Movable:new(dx, dy))
+    world:addRenderable(ent, Renderable:new(math.random(0,255), math.random(0,255), math.random(0,255), math.random(55,255)))
+    add_entity(ent)
+end
 
 local rectUpdate = function (dt, ent, c)
     local dx = c.mov.dx * dt
@@ -48,4 +65,4 @@ local rectUpdate = function (dt, ent, c)
         c.mov.dy = c.mov.dy * -1
     end
 end
-add_system("Rect Mover", 0, 1 + 2, rectUpdate)
+add_system("Rect Mover", 0, COMPONENT_BODY|COMPONENT_MOVABLE, rectUpdate)

@@ -40,10 +40,31 @@ static int l_my_print(lua_State* L) {
 
 	for (int i = 1; i <= nargs; i++) {
 		if (lua_isstring(L, i)) {
-			trap->Print(lua_tostring(L, i));
+			trap->Print(va("%s\n",lua_tostring(L, i)));
+		}
+		else if (lua_isnil(L,i)) {
+			trap->Print("nil\n");
+		}
+		else if (lua_isboolean(L, i)) {
+			trap->Print(va("boolean %s\n", lua_toboolean(L, i) ? "true" : "false"));
+		}
+		else if (lua_isuserdata(L, i)) {
+			trap->Print("userdata");
+		}
+		else if (lua_isfunction(L, i)) {
+			trap->Print("function");
+		}
+		else if (lua_iscfunction(L, i)) {
+			trap->Print("c function");
+		}
+		else if (lua_isnone(L, i)) {
+			trap->Print("none");
+		}
+		else if (lua_istable(L, i)) {
+			trap->Print("table");
 		}
 		else {
-			/* Do something with non-strings if you like */
+			trap->Print(va("%s\n", lua_tostring(L, i)));
 		}
 	}
 
@@ -54,8 +75,6 @@ LuaExt::LuaExt() {
 	auto st = this->lua_state();
 	lua.open_libraries();
 	
-	//HandleExceptionsWith(sel::ExceptionHandler::function([](int, std::string msg, std::exception_ptr) { trap->Print(msg.c_str()); }));
-
 	static const struct luaL_Reg printlib[] = {
 		{ "print", l_my_print },
 		{ "fs_require", physfs_searcher},

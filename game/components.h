@@ -3,8 +3,8 @@
 
 // when adding a new component:
 // - update the enum
-// - update baseworld GENERATE_COMPONENT calls
-// - update lua binding
+// - update GENERATE_COMPONENT calls in baseworld.h
+// - update struct->lua binding in baseworld.cpp
 // - update components.lua
 
 enum {

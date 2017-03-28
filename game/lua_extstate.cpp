@@ -35,36 +35,24 @@ static int physfs_searcher(lua_State* st) {
 	return 1;
 }
 
-static int l_my_print(lua_State* L) {
+static int console_print(lua_State* L) {
 	int nargs = lua_gettop(L);
 
 	for (int i = 1; i <= nargs; i++) {
-		if (lua_isstring(L, i)) {
-			trap->Print(va("%s\n",lua_tostring(L, i)));
-		}
-		else if (lua_isnil(L,i)) {
-			trap->Print("nil\n");
-		}
-		else if (lua_isboolean(L, i)) {
-			trap->Print(va("boolean %s\n", lua_toboolean(L, i) ? "true" : "false"));
-		}
-		else if (lua_isuserdata(L, i)) {
-			trap->Print("userdata");
-		}
-		else if (lua_isfunction(L, i)) {
-			trap->Print("function");
-		}
-		else if (lua_iscfunction(L, i)) {
-			trap->Print("c function");
-		}
-		else if (lua_isnone(L, i)) {
-			trap->Print("none");
-		}
-		else if (lua_istable(L, i)) {
-			trap->Print("table");
-		}
-		else {
-			trap->Print(va("%s\n", lua_tostring(L, i)));
+		int t = lua_type(L, i);
+		switch (t) {
+		case LUA_TSTRING:
+			trap->Print(va("string: %s\n", lua_tostring(L, i)));
+			break;
+		case LUA_TBOOLEAN:
+			trap->Print(va("%s: %s\n", luaL_typename(L, i), lua_toboolean(L, i) ? "true" : "false"));
+			break;
+		case LUA_TNUMBER:
+			trap->Print(va("%s: %0.5f\n", luaL_typename(L, i), lua_tonumber(L, i)));
+			break;
+		default:
+			trap->Print(va("%s: %p\n", luaL_typename(L, i), lua_topointer(L, i)));
+			break;
 		}
 	}
 
@@ -76,7 +64,7 @@ LuaExt::LuaExt() {
 	lua.open_libraries();
 	
 	static const struct luaL_Reg printlib[] = {
-		{ "print", l_my_print },
+		{ "print", console_print },
 		{ "fs_require", physfs_searcher},
 		{ NULL, NULL }
 	};

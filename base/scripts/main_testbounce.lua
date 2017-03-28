@@ -12,9 +12,9 @@ for i=0,15 do
     local dx = math.random(50, 250) * (x < WORLD_WIDTH / 2 and 1 or -1);
     local dy = math.random(50, 250) * (y < WORLD_HEIGHT / 2 and 1 or -1);
     local ent = world:get_entity()
-    world:addBody(ent, Body:new(x, y, w, h))
-    world:addMovable(ent, Movable:new(dx, dy))
-    world:addRenderable(ent, Renderable:new(math.random(0,255), math.random(0,255), math.random(0,255), math.random(55,255)))
+    world:addBody(ent, Body.new(x, y, w, h))
+    world:addMovable(ent, Movable.new(dx, dy))
+    world:addRenderable(ent, Renderable.new(math.random(0,255), math.random(0,255), math.random(0,255), math.random(55,255)))
     add_entity(ent)
 end
 

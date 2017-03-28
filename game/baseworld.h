@@ -35,6 +35,7 @@ void resize(std::vector<T> &components, uint32_t id) {
 }
 
 struct BaseWorld : world_t {
+	BaseWorld();
 	GENERATE_COMPONENT(COMPONENT_BODY, Body);
 	GENERATE_COMPONENT(COMPONENT_MOVABLE, Movable);
 	GENERATE_COMPONENT(COMPONENT_RENDERABLE, Renderable);

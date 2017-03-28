@@ -11,6 +11,11 @@ solution "game"
   configuration { "windows" }
     platforms { "x86" }
     disablewarnings { "4100" }
+
+  configuration { "linux" }
+    defines { "LINUX" }
+    toolset "clang"
+    platforms { "x64" }
   
   configuration "Debug"
     defines { "DEBUG" }
@@ -45,6 +50,9 @@ solution "game"
       links { "OpenGL.framework", "SDL2.framework", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework" }
       linkoptions {"-stdlib=libc++", "-F /Library/Frameworks"}
 
+    configuration { "linux" }
+      linkoptions { "-stdlib=libc++" }
+
   project "game"
     kind "SharedLib"
     language "C++"
@@ -71,7 +79,7 @@ solution "game"
     targetdir "build/%{cfg.buildcfg}"
     defines { "_CRT_SECURE_NO_WARNINGS" }
     flags { "C++14" }
-    configuration { "macosx" }
+    configuration { "macosx", "linux" }
       buildoptions {"-stdlib=libc++"}
 
   project "imgui"
@@ -106,7 +114,7 @@ solution "game"
     targetdir "build/%{cfg.buildcfg}"
     flags { "C++14" }
     warnings "Off"
-    configuration { "macosx" }
+    configuration { "macosx", "linux" }
       buildoptions {"-stdlib=libc++"}
 
   project "lua"

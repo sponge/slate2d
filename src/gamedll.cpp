@@ -14,14 +14,6 @@ void trap_SendConsoleCommand(const char *text) {
 	Cbuf_ExecuteText(EXEC_NOW, text);
 }
 
-void trap_Print(const char *text) {
-	Com_Printf("%s", text);
-}
-
-cvar_t * trap_Cvar_FindVar(const char *name) {
-	return Cvar_FindVar(name);
-}
-
 void trap_Scene_Switch(Scene *newScene) {
 	sm->Switch(newScene);
 }
@@ -40,8 +32,9 @@ Scene * trap_Scene_Current() {
 
 static gameImportFuncs_t GAMEtraps = {
 	trap_SendConsoleCommand,
-	trap_Print,
-	trap_Cvar_FindVar,
+	Com_Printf,
+	Cvar_Get,
+	Cvar_FindVar,
 	Cvar_Set,
 	Cmd_AddCommand,
 	Cmd_Argc,

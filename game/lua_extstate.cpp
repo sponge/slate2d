@@ -42,16 +42,16 @@ static int console_print(lua_State* L) {
 		int t = lua_type(L, i);
 		switch (t) {
 		case LUA_TSTRING:
-			trap->Print(va("string: %s\n", lua_tostring(L, i)));
+			trap->Print("string: %s\n", lua_tostring(L, i));
 			break;
 		case LUA_TBOOLEAN:
-			trap->Print(va("%s: %s\n", luaL_typename(L, i), lua_toboolean(L, i) ? "true" : "false"));
+			trap->Print("%s: %s\n", luaL_typename(L, i), lua_toboolean(L, i) ? "true" : "false");
 			break;
 		case LUA_TNUMBER:
-			trap->Print(va("%s: %0.5f\n", luaL_typename(L, i), lua_tonumber(L, i)));
+			trap->Print("%s: %0.5f\n", luaL_typename(L, i), lua_tonumber(L, i));
 			break;
 		default:
-			trap->Print(va("%s: %p\n", luaL_typename(L, i), lua_topointer(L, i)));
+			trap->Print("%s: %p\n", luaL_typename(L, i), lua_topointer(L, i));
 			break;
 		}
 	}

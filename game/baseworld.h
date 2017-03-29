@@ -1,6 +1,7 @@
 #pragma once
 #include "pecs.h"
 #include "components.h"
+#include "sol.h"
 
 #define GENERATE_COMPONENT(ENUM, TYPE) \
 std::vector<TYPE> TYPE##s; \
@@ -39,10 +40,13 @@ struct BaseWorld : world_t {
 	GENERATE_COMPONENT(COMPONENT_BODY, Body);
 	GENERATE_COMPONENT(COMPONENT_MOVABLE, Movable);
 	GENERATE_COMPONENT(COMPONENT_RENDERABLE, Renderable);
-	GENERATE_COMPONENT(COMPONENT_TILEINFO, TileInfo);
 	GENERATE_COMPONENT(COMPONENT_TILEMAP, TileMap);
 	GENERATE_COMPONENT(COMPONENT_CAMERA, Camera);
 	GENERATE_COMPONENT(COMPONENT_PLAYERINPUT, PlayerInput);
 	GENERATE_COMPONENT(COMPONENT_PLAYER, Player);
 	GENERATE_COMPONENT(COMPONENT_SPRITE, Sprite);
+
+	void add_lua_system(const char *name, int priority, int mask, sol::function func);
+	void add_entity(entity_t ent);
+	Sweep trace(entity_t &ent, double dx, double dy);
 };

@@ -15,14 +15,14 @@ for i=0,15 do
     world:addBody(ent, Body.new(x, y, w, h))
     world:addMovable(ent, Movable.new(dx, dy))
     world:addRenderable(ent, Renderable.new(math.random(0,255), math.random(0,255), math.random(0,255), math.random(55,255)))
-    add_entity(ent)
+    world:add_entity(ent)
 end
 
 local rectUpdate = function (dt, ent, c)
     local dx = c.mov.dx * dt
     local dy = c.mov.dy * dt
 
-    local move = trace(ent, dx, dy)
+    local move = world:trace(ent, dx, dy)
 
     c.body.x = move.pos.x
     c.body.y = move.pos.y
@@ -32,7 +32,7 @@ local rectUpdate = function (dt, ent, c)
         dx = dotprod * move.hit.normal.y
         dy = dotprod * move.hit.normal.x
 
-        move = trace(ent, dx, dy)
+        move = world:trace(ent, dx, dy)
         c.body.x = move.pos.x
         c.body.y = move.pos.y
 
@@ -63,4 +63,4 @@ local rectUpdate = function (dt, ent, c)
         c.mov.dy = c.mov.dy * -1
     end
 end
-add_system("Rect Mover", 0, COMPONENT_BODY|COMPONENT_MOVABLE, rectUpdate)
+world:add_system("Rect Mover", 0, COMPONENT_BODY|COMPONENT_MOVABLE, rectUpdate)

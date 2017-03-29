@@ -14,12 +14,11 @@ enum {
 	COMPONENT_BODY = 1 << 0,
 	COMPONENT_MOVABLE = 1 << 1,
 	COMPONENT_RENDERABLE = 1 << 2,
-	COMPONENT_TILEINFO = 1 << 3,
-	COMPONENT_TILEMAP = 1 << 4,
-	COMPONENT_CAMERA = 1 << 5,
-	COMPONENT_PLAYERINPUT = 1 << 6,
-	COMPONENT_PLAYER = 1 << 7,
-	COMPONENT_SPRITE = 1 << 8
+	COMPONENT_TILEMAP = 1 << 3,
+	COMPONENT_CAMERA = 1 << 4,
+	COMPONENT_PLAYERINPUT = 1 << 5,
+	COMPONENT_PLAYER = 1 << 6,
+	COMPONENT_SPRITE = 1 << 7
 };
 
 struct Body {
@@ -47,6 +46,7 @@ struct Renderable {
 	unsigned char r, g, b, a;
 };
 
+// not a component: used in tilemap
 typedef struct TileInfo {
 	TileInfo() {}
 	int gid;

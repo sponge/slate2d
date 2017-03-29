@@ -3,28 +3,36 @@
 #include "lua_pecs_system.h"
 #include "componenthelpers.h"
 
+void BaseWorld::add_lua_system(const char *name, int priority, int mask, sol::function func) {
+	auto sys = new LuaSystem(lua, name, priority, mask, func);
+	this->add(sys);
+}
+
+void BaseWorld::add_entity(entity_t ent) {
+	this->add(ent);
+}
+
+Sweep BaseWorld::trace(entity_t & ent, double dx, double dy)
+{
+	return Trace(*this, ent, dx, dy, NULL);
+}
+
 BaseWorld::BaseWorld() {
-	lua["add_system"] = [this](const char *name, int priority, int mask, sol::function func) {
-		auto sys = new LuaSystem(lua, name, priority, mask, func);
-		this->add(sys);
-	};
-
-	lua["add_entity"] = [this](entity_t ent) {
-		this->add(ent);
-	};
-
-	lua["trace"] = [this](entity_t &ent, double dx, double dy) {
-		return Trace(*this, ent, dx, dy, NULL);
-	};
-
 	lua["world"] = this;
 
+	// other types that we want to expose in lua
+
 	lua.new_usertype<BaseWorld>("BaseWorld",
+		"add_system", &BaseWorld::add_lua_system,
+		"add_entity", &BaseWorld::add_entity,
 		"get_entity", &BaseWorld::get_entity,
+		"trace", &BaseWorld::trace,
 		"addBody", &BaseWorld::addBody,
 		"addMovable", &BaseWorld::addMovable,
 		"addRenderable", &BaseWorld::addRenderable
 		);
+
+	// collision types
 
 	lua.new_usertype<Vec2>("Vec2",
 		"x", &Vec2::x,
@@ -44,6 +52,8 @@ BaseWorld::BaseWorld() {
 		"pos", &Sweep::pos,
 		"time", &Sweep::time
 		);
+
+	// components
 
 	lua.new_usertype<Body>("Body",
 		sol::constructors<Body(), Body(double, double, double, double)>(),

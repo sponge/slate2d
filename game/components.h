@@ -1,5 +1,7 @@
 #pragma once
 #include "../src/sweep.h"
+#include <tmx.h>
+#include "../src/image.h"
 
 // when adding a new component:
 // - update the enum
@@ -11,7 +13,13 @@ enum {
 	COMPONENT_ANY = 0,
 	COMPONENT_BODY = 1 << 0,
 	COMPONENT_MOVABLE = 1 << 1,
-	COMPONENT_RENDERABLE = 1 << 2
+	COMPONENT_RENDERABLE = 1 << 2,
+	COMPONENT_TILEINFO = 1 << 3,
+	COMPONENT_TILEMAP = 1 << 4,
+	COMPONENT_CAMERA = 1 << 5,
+	COMPONENT_PLAYERINPUT = 1 << 6,
+	COMPONENT_PLAYER = 1 << 7,
+	COMPONENT_SPRITE = 1 << 8
 };
 
 struct Body {
@@ -37,4 +45,53 @@ struct Renderable {
 	Renderable() {}
 	explicit Renderable(unsigned char r, unsigned char g, unsigned char b, unsigned char a) : r(r), g(g), b(b), a(a) {}
 	unsigned char r, g, b, a;
+};
+
+typedef struct TileInfo {
+	TileInfo() {}
+	int gid;
+	bool solid;
+	bool platform;
+} tileinfo_t;
+
+struct TileMap {
+	TileMap() {}
+	tmx_map *map;
+	tmx_layer *worldLayer;
+	TileInfo *tinfo;
+};
+
+struct Camera {
+	Camera() {}
+	explicit Camera(float w, float h, float scale = 0, float mx = 0, float my = 0) : size(w, h), max(mx, my), scale(scale) {}
+	bool active = true;
+	Vec2 pos, size, max;
+	float scale;
+	float top, right, bottom, left;
+	Body *target = nullptr;
+};
+
+struct PlayerInput {
+	explicit PlayerInput() {}
+
+	bool up = false, down = false, left = false, right = false, jump = false, attack = false, menu = false;
+};
+
+struct Player {
+	Player() {}
+	uint8_t numJumps;
+	bool isWallSliding;
+	bool canWallJump;
+	bool jumpHeld;
+	bool willPogo;
+	float stunTime;
+};
+
+struct Sprite {
+	Sprite() {}
+	explicit Sprite(Img *img, Vec2 size, Vec2 ofs) : img(img), ofs(ofs), size(size) {}
+	Img *img;
+	unsigned int frame;
+	Vec2 ofs, size;
+	bool flipX, flipY;
 };

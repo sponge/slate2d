@@ -20,12 +20,12 @@ Sweep BaseWorld::trace(entity_t & ent, double dx, double dy)
 BaseWorld::BaseWorld() {
 	lua["world"] = this;
 
-	// other types that we want to expose in lua
+	// expose world management to lua
 
 	lua.new_usertype<BaseWorld>("BaseWorld",
 		"add_system", &BaseWorld::add_lua_system,
 		"add_entity", &BaseWorld::add_entity,
-		"get_entity", &BaseWorld::get_entity,
+		"new_entity", &BaseWorld::get_entity,
 		"trace", &BaseWorld::trace,
 		"addBody", &BaseWorld::addBody,
 		"addMovable", &BaseWorld::addMovable,

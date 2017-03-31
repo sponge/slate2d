@@ -24,5 +24,4 @@ void RegisterMainCvars( void ) {
 	for ( i = 0, cv = mainCvarTable ; i < mainCvarTableSize ; i++, cv++ ) {
         *cv->cvar = Cvar_Get(cv->cvarName, cv->defaultString, cv->cvarFlags);
     }
-
 }

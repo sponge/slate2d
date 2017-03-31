@@ -32,10 +32,10 @@ solution "game"
     kind "ConsoleApp"
     language "C++"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
-    sysincludedirs { "include", "nanovg", "tmx", "imgui", "physfs", "entityx", "glew" }
+    sysincludedirs { "include", "nanovg", "tmx", "imgui", "physfs", "glew" }
     debugdir "."
     targetdir "bin/%{cfg.buildcfg}"
-    links { "nanovg", "tmx", "imgui", "physfs", "glew", "entityx" }
+    links { "nanovg", "tmx", "imgui", "physfs", "glew" }
     flags { "C++14" }
 
     configuration { "windows" }
@@ -105,17 +105,6 @@ solution "game"
     files { "glew/**.c", "glew/**.h" }
     targetdir "build/%{cfg.buildcfg}"
     warnings "Off"
-
-  project "entityx"
-    language "C++"
-    kind "StaticLib"
-    includedirs { "entityx" }
-    files { "entityx/**.cc", "entityx/**.h" }
-    targetdir "build/%{cfg.buildcfg}"
-    flags { "C++14" }
-    warnings "Off"
-    configuration { "macosx", "linux" }
-      buildoptions {"-stdlib=libc++"}
 
   project "lua"
     language "C"

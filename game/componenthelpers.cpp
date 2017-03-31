@@ -1,6 +1,5 @@
 #include "game.h"
-#define AABB_IMPLEMENTATION
-#include "../src/sweep.h"
+#include "sweep.h"
 #include "pecs.h"
 #include "baseworld.h"
 

@@ -1,6 +1,6 @@
 #include "scene_testbounce.h"
 #include "pecs.h"
-#include "../src/sweep.h"
+#include "sweep.h"
 #include "game.h"
 #include "components.h"
 #include "componenthelpers.h"

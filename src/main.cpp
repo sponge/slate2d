@@ -16,9 +16,6 @@
 #include <imgui.h>
 #include "imgui_impl_sdl_gl3.h"
 
-#define AABB_IMPLEMENTATION
-#include "sweep.h"
-
 #include "files.h"
 #include "input.h"
 #include "cvar_main.h"
@@ -26,7 +23,6 @@
 #include "gamedll.h"
 
 #include "scene.h"
-#include "scene_map.h"
 #include "scene_console.h"
 #include "scene_gl.h"
 
@@ -49,36 +45,11 @@ void Cmd_Vid_Restart_f(void) {
 	SDL_SetWindowFullscreen(window, vid_fullscreen->integer == 2 ? SDL_WINDOW_FULLSCREEN : vid_fullscreen->integer == 1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }
 
-void Cmd_Map_f(void) {
-	auto mapname = Cmd_Argv(1);
-	char filename[MAX_QPATH];
-
-	if (Cmd_Argc () != 2) {
-		Com_Printf ("map <mapname> : load a map\n");
-		return;
-	}
-
-	snprintf(filename, sizeof(filename), "maps/%s", mapname);
-	Com_DefaultExtension( filename, sizeof(filename), ".tmx" );
-
-	if (!FS_Exists(filename)) {
-		Com_Printf("Map does not exist: %s\n", filename);
-		return;
-	}
-
-	auto newScene = new MapScene(filename);
-	sm->Replace(0, newScene);
-}
-
 void DropToMenu() {
 	sm->Clear();
 }
 
 int main(int argc, char *argv[]) {
-#ifdef DEBUG
-	testCollision();
-#endif
-
 	using clock = std::chrono::high_resolution_clock;
 	using namespace std::chrono_literals;
 
@@ -106,7 +77,6 @@ int main(int argc, char *argv[]) {
 
 	Cbuf_Init();
 	Cmd_Init();
-	Cmd_AddCommand("oldmap", Cmd_Map_f);
 	Cmd_AddCommand("vid_restart", Cmd_Vid_Restart_f);
 	Cvar_Init();
 	RegisterMainCvars();

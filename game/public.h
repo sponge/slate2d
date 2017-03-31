@@ -1,4 +1,5 @@
 #include <nanovg.h>
+#include <tmx.h>
 
 // FIXME: getting functions not just types
 #include "../src/image.h"
@@ -29,6 +30,9 @@ typedef struct gameImportFuncs_s {
 	Scene* (*Scene_Get)(int i);
 	void (*Scene_Replace)(int i, Scene *newScene);
 	Scene* (*Scene_Current)();
+	tmx_map* (*Map_Load)(const char *file);
+	void (*Map_Free)(tmx_map* map);
+
 } gameImportFuncs_t;
 
 typedef struct gameExportFuncs_s {

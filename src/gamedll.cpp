@@ -1,4 +1,5 @@
 #include <SDL/SDL.h>
+#include <tmx.h>
 
 #include "gamedll.h"
 #include "../game/public.h"
@@ -9,6 +10,7 @@
 #include "scene.h"
 
 extern SceneManager *sm;
+extern ClientInfo inf;
 
 void trap_SendConsoleCommand(const char *text) {
 	Cbuf_ExecuteText(EXEC_NOW, text);
@@ -28,6 +30,47 @@ void trap_Scene_Replace(int i, Scene *newScene) {
 
 Scene * trap_Scene_Current() {
 	return sm->Current();
+}
+
+tmx_map * trap_Map_Load(const char *filename) {
+
+	tmx_img_load_func = [](const char *path) {
+		Img *img = Img_Create(path, path);
+		Img_Load(inf.nvg, *img);
+		return img;
+	};
+
+	tmx_img_free_func = [](void *address) {
+		Img *img = (Img*)address;
+		Img_Free(img->path);
+		delete img;
+	};
+
+	tmx_file_read_func = [](const char *path, int *outSz) -> void* {
+		void *xml;
+
+		*outSz = FS_ReadFile(path, &xml);
+
+		if (outSz < 0) {
+			Com_Error(ERR_DROP, "Couldn't load file while parsing map %s", path);
+			return nullptr;
+		}
+
+		return xml;
+	};
+
+	tmx_map *map = tmx_load(filename);
+
+	if (map == nullptr) {
+		Com_Error(ERR_DROP, "Failed to load tmx");
+		return nullptr;
+	}
+
+	return map;
+}
+
+void trap_Map_Free(tmx_map *map) {
+	tmx_map_free(map);
 }
 
 static gameImportFuncs_t GAMEtraps = {
@@ -53,7 +96,9 @@ static gameImportFuncs_t GAMEtraps = {
 	trap_Scene_Switch,
 	trap_Scene_Get,
 	trap_Scene_Replace,
-	trap_Scene_Current
+	trap_Scene_Current,
+	trap_Map_Load,
+	trap_Map_Free
 };
 
 void Sys_LoadDll(const char * module, void ** exports, int * version) {

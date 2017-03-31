@@ -12,6 +12,7 @@ public:
 
 private:
 	const char *mapFileName;
+	tmx_map *map;
 	ClientInfo* inf;
 	BaseWorld *world;
 };

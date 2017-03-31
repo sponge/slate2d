@@ -1,5 +1,5 @@
 #pragma once
-#include "../src/sweep.h"
+#include "sweep.h"
 #include <tmx.h>
 #include "../src/image.h"
 

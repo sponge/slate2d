@@ -1,6 +1,10 @@
 #include <imgui.h>
 
+#define AABB_IMPLEMENTATION
+#include "sweep.h"
+
 #include "public.h"
+#include "cvar_game.h"
 #include "scene_menu.h"
 #include "scene_gamemap.h"
 #include "scene_testbounce.h"
@@ -65,6 +69,8 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Cmd_AddCommand("lua", Cmd_Lua_f);
 	trap->Cmd_AddCommand("map", Cmd_Map_f);
 
+	RegisterGameCvars();
+
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
 	lua.LoadGameFile("scripts/autoexec.lua");
@@ -81,6 +87,10 @@ extern "C"
 __declspec(dllexport)
 #endif
 void dllEntry(void ** exports, void * imports, int * version) {
+#ifdef DEBUG
+	testCollision();
+#endif
+
 	*exports = &GAMEfuncs;
 	trap = (gameImportFuncs_t *)imports;
 	*version = 1;

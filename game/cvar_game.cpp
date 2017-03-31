@@ -1,4 +1,5 @@
 #include "cvar_game.h"
+#include "public.h"
 
 cvar_t *dbg_drawBbox;
 cvar_t *p_gravity;
@@ -44,7 +45,7 @@ void RegisterGameCvars( void ) {
     cvarTable_t *cv;
     int i;
 	for ( i = 0, cv = gameCvarTable ; i < gameCvarTableSize ; i++, cv++ ) {
-        *cv->cvar = Cvar_Get(cv->cvarName, cv->defaultString, cv->cvarFlags);
+        *cv->cvar = trap->Cvar_Get(cv->cvarName, cv->defaultString, cv->cvarFlags);
     }
 
 }

@@ -3,6 +3,7 @@
 #include "lua_pecs_system.h"
 #include "componenthelpers.h"
 
+
 void BaseWorld::add_lua_system(const char *name, int priority, int mask, sol::function func) {
 	auto sys = new LuaSystem(lua, name, priority, mask, func);
 	this->add(sys);
@@ -12,16 +13,14 @@ void BaseWorld::add_entity(entity_t ent) {
 	this->add(ent);
 }
 
-Sweep BaseWorld::trace(entity_t & ent, double dx, double dy)
-{
+Sweep BaseWorld::trace(entity_t & ent, double dx, double dy) {
 	return Trace(*this, ent, dx, dy, NULL);
 }
 
 BaseWorld::BaseWorld() {
-	lua["world"] = this;
-
 	// expose world management to lua
 
+	lua["world"] = this;
 	lua.new_usertype<BaseWorld>("BaseWorld",
 		"add_system", &BaseWorld::add_lua_system,
 		"add_entity", &BaseWorld::add_entity,

@@ -2,11 +2,34 @@
 
 #include "public.h"
 #include "scene_menu.h"
+#include "scene_gamemap.h"
 #include "scene_testbounce.h"
 
 #include "lua_extstate.h"
 
 gameImportFuncs_t *trap;
+
+void Cmd_Map_f(void) {
+	auto mapname = trap->Cmd_Argv(1);
+	char filename[MAX_QPATH];
+
+	if (trap->Cmd_Argc() != 2) {
+		trap->Print("map <mapname> : load a map\n");
+		return;
+	}
+
+	snprintf(filename, sizeof(filename), "maps/%s", mapname);
+	Com_DefaultExtension(filename, sizeof(filename), ".tmx");
+
+	if (!trap->FS_Exists(filename)) {
+		trap->Print("Map does not exist: %s\n", filename);
+		return;
+	}
+
+	auto newScene = new GameMapScene(filename);
+	
+	trap->Scene_Replace(0, newScene);
+}
 
 void Cmd_Lua_f(void) {
 	const char *line = trap->Cmd_Cmd();
@@ -40,6 +63,7 @@ void Cmd_Scene_f(void) {
 static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Cmd_AddCommand("scene", Cmd_Scene_f);
 	trap->Cmd_AddCommand("lua", Cmd_Lua_f);
+	trap->Cmd_AddCommand("map", Cmd_Map_f);
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
@@ -85,4 +109,30 @@ const char	* __cdecl va(const char *format, ...) {
 	va_end(argptr);
 
 	return buf;
+}
+
+/*
+==================
+Com_DefaultExtension
+==================
+*/
+void Com_DefaultExtension(char *path, int maxSize, const char *extension) {
+	char	oldPath[1024];
+	char    *src;
+
+	//
+	// if path doesn't have a .EXT, append extension
+	// (extension should include the .)
+	//
+	src = path + strlen(path) - 1;
+
+	while (*src != '/' && src != path) {
+		if (*src == '.') {
+			return;                 // it has an extension
+		}
+		src--;
+	}
+
+	strncpy(oldPath, path, sizeof(oldPath));
+	snprintf(path, maxSize, "%s%s", oldPath, extension);
 }

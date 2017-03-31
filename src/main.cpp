@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
 
 	Cbuf_Init();
 	Cmd_Init();
-	Cmd_AddCommand("map", Cmd_Map_f);
+	Cmd_AddCommand("oldmap", Cmd_Map_f);
 	Cmd_AddCommand("vid_restart", Cmd_Vid_Restart_f);
 	Cvar_Init();
 	RegisterMainCvars();

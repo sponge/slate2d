@@ -15,6 +15,8 @@ void GameMapScene::Startup(ClientInfo* info) {
 
 	world = new BaseWorld();
 
+	// FIXME: add rendering systems here
+
 	// our "master" entity
 	entity_t worldEnt = world->get_entity();
 	auto tmap = TileMap();
@@ -23,12 +25,7 @@ void GameMapScene::Startup(ClientInfo* info) {
 	// look for a layer named "world" and error out if we can't find one as it's required
 	tmx_layer *layer = map->ly_head;
 	while (layer) {
-		if (layer->visible == false) {
-			layer = layer->next;
-			continue;
-		}
-
-		if (strcmp(layer->name, "world") == 0) {
+		if (strcmp(layer->name, "world") == 0 && layer->visible == true) {
 			tmap.worldLayer = layer;
 			break;
 		}
@@ -38,6 +35,7 @@ void GameMapScene::Startup(ClientInfo* info) {
 
 	if (tmap.worldLayer == nullptr) {
 		trap->Error(ERR_DROP, "No visible layer named \"world\" found in map.");
+		return;
 	}
 
 	// FIXME: allocate and generate tileinfos

@@ -660,7 +660,7 @@ static bool parse_properties(XMLElement *ele, tmx_property **prop_headadr) {
 		res->next = *prop_headadr;
 		*prop_headadr = res;
 
-		prop = ele->NextSiblingElement("property");
+		prop = prop->NextSiblingElement("property");
 	}
 	return true;
 }

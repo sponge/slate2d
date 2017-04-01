@@ -76,6 +76,7 @@ void trap_Map_Free(tmx_map *map) {
 static gameImportFuncs_t GAMEtraps = {
 	trap_SendConsoleCommand,
 	Com_Printf,
+	Com_Error,
 	Cvar_Get,
 	Cvar_FindVar,
 	Cvar_Set,

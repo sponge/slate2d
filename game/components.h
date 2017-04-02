@@ -64,11 +64,46 @@ struct TileMap {
 struct Camera {
 	Camera() {}
 	explicit Camera(float w, float h, float scale = 0, float mx = 0, float my = 0) : size(w, h), max(mx, my), scale(scale) {}
-	bool active = true;
+	bool active = false;
 	Vec2 pos, size, max;
 	float scale;
 	float top, right, bottom, left;
 	Body *target = nullptr;
+
+	void Center(float cx, float cy) {
+		Move(cx - (size.x / 2) / scale, cy - (size.y / 2) / scale);
+	};
+
+	void Move(float x, float y) {
+		pos.x = x;
+		pos.y = y;
+		top = y;
+		right = x + (size.x / scale);
+		bottom = y + (size.y / scale);
+		left = x;
+	};
+
+	void Bind() {
+		float x = pos.x, y = pos.y;
+
+		if (left < 0) {
+			x = 0;
+		}
+
+		if (right > max.x) {
+			x = max.x - (size.x / scale);
+		}
+
+		if (top < 0) {
+			y = 0;
+		}
+
+		if (bottom > max.y) {
+			y = max.y - (size.y / scale);
+		}
+
+		Move(x, y);
+	};
 };
 
 struct PlayerInput {

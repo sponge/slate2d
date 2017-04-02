@@ -4,6 +4,7 @@
 #include "game.h"
 #include "public.h"
 #include "lua_extstate.h"
+#include "systems/systems.h"
 
 void GameMapScene::Startup(ClientInfo* info) {
 	inf = info;
@@ -15,7 +16,12 @@ void GameMapScene::Startup(ClientInfo* info) {
 
 	world = new BaseWorld();
 
-	// FIXME: add rendering systems here
+	// FIXME: leaky leaky
+	auto camsys = new CameraDrawSystem(info);
+	world->add(camsys);
+
+	auto tmapsys = new TileMapDrawSystem(info);
+	world->add(tmapsys);
 
 	// our "master" entity
 	entity_t worldEnt = world->get_entity();
@@ -41,6 +47,7 @@ void GameMapScene::Startup(ClientInfo* info) {
 	// FIXME: allocate and generate tileinfos
 
 	world->assign(&worldEnt, tmap);
+	world->add(worldEnt);
 
 	// load the lua script and check for a spawn_entity global func
 	lua.LoadGameFile("scripts/main.lua");

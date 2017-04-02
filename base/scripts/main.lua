@@ -25,6 +25,11 @@ spawn_entity = function(world, ent)
 	print(inspect(ent))
 end
 
--- FIXME: spawn camera
+local ent = world:new_entity()
+local cam = Camera.new(1280, 720, 3, 1000, 416)
+cam.active = true
+cam:Center(0,400)
+world:addCamera(ent, cam)
+world:add_entity(ent)
 
 print("hello from game map world")

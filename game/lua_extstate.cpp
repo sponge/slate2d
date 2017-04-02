@@ -42,7 +42,7 @@ static int console_print(lua_State* L) {
 		int t = lua_type(L, i);
 		switch (t) {
 		case LUA_TSTRING:
-			trap->Print("string: %s\n", lua_tostring(L, i));
+			trap->Print("%s\n", lua_tostring(L, i));
 			break;
 		case LUA_TBOOLEAN:
 			trap->Print("%s: %s\n", luaL_typename(L, i), lua_toboolean(L, i) ? "true" : "false");

@@ -28,7 +28,12 @@ BaseWorld::BaseWorld() {
 		"trace", &BaseWorld::trace,
 		"addBody", &BaseWorld::addBody,
 		"addMovable", &BaseWorld::addMovable,
-		"addRenderable", &BaseWorld::addRenderable
+		"addRenderable", &BaseWorld::addRenderable,
+		"addTileMap", &BaseWorld::addTileMap,
+		"addCamera", &BaseWorld::addCamera,
+		"addPlayerInput", &BaseWorld::addPlayerInput,
+		"addPlayer", &BaseWorld::addPlayer,
+		"addSprite", &BaseWorld::addSprite
 		);
 
 	// collision types
@@ -76,5 +81,23 @@ BaseWorld::BaseWorld() {
 		"g", &Renderable::g,
 		"b", &Renderable::b,
 		"a", &Renderable::a
+		);
+
+	lua.new_usertype<Camera>("Camera",
+		sol::constructors<Camera(), Camera(float, float, float, float, float)>(),
+		"active", &Camera::active,
+		"pos", &Camera::pos,
+		"size", &Camera::size,
+		"max", &Camera::max,
+		"scale", &Camera::scale,
+		"top", &Camera::top,
+		"right", &Camera::right,
+		"bottom", &Camera::bottom,
+		"left", &Camera::left,
+		"target", &Camera::target,
+
+		"Center", &Camera::Center,
+		"Move", &Camera::Move,
+		"Bind", &Camera::Bind
 		);
 }

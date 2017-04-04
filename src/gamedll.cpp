@@ -43,7 +43,6 @@ tmx_map * trap_Map_Load(const char *filename) {
 	tmx_img_free_func = [](void *address) {
 		Img *img = (Img*)address;
 		Img_Free(img->path);
-		delete img;
 	};
 
 	tmx_file_read_func = [](const char *path, int *outSz) -> void* {
@@ -99,7 +98,10 @@ static gameImportFuncs_t GAMEtraps = {
 	trap_Scene_Replace,
 	trap_Scene_Current,
 	trap_Map_Load,
-	trap_Map_Free
+	trap_Map_Free,
+	IN_KeyDown,
+	IN_KeyUp,
+	CL_KeyState
 };
 
 void Sys_LoadDll(const char * module, void ** exports, int * version) {

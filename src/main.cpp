@@ -81,7 +81,6 @@ int main(int argc, char *argv[]) {
 	Cvar_Init();
 	RegisterMainCvars();
 	CL_InitKeyCommands();
-	CL_InitInput();
 
 	if (!FS_Exists("default.cfg")) {
 		Com_Error(ERR_FATAL, "Filesystem error, check fs_basepath is set correctly.\n");

@@ -15,4 +15,5 @@ private:
 	tmx_map *map;
 	ClientInfo* inf;
 	BaseWorld *world;
+	TileInfo *tinfo;
 };

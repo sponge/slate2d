@@ -2,12 +2,10 @@ local inspect = require 'inspect'
 require 'components'
 
 spawn_entity = function(world, ent)
+	if ent.type == 'player' then
+		local tmap = world:getTileMap(world.master_entity.id).map
 
- --    // get the reference to the main world entity
- --    auto iter = es.entities_with_components<TileMap>();
- --    ex::Entity worldEnt = *(iter.begin());
- --    auto tmap = worldEnt.component<TileMap>();
-
+		local ent = world:new_entity()
  --    // create the player
  --    auto ent = es.create();
  --    auto body = ent.assign<Body>(obj.x + (tmap->map->tile_width / 2), obj.y - 14.001, 16, 15);  // FIXME able to fall into ground if 14
@@ -22,14 +20,17 @@ spawn_entity = function(world, ent)
  --    // attach a camera to the world and target it at the player
  --    auto camera = worldEnt.assign<Camera>(1280, 720, 3, tmap->map->width * tmap->map->tile_width, tmap->map->height * tmap->map->tile_height);
  --    camera->target = body.get();
-	print(inspect(ent))
+	else
+		print("unhandled entity:")
+		print(inspect(ent))
+	end
 end
 
-local ent = world:new_entity()
-local cam = Camera.new(1280, 720, 3, 1000, 416)
+local tmap = world:getTileMap(world.master_entity.id).map
+
+-- FIXME: the rest of this hardcoded shit
+local cam = Camera.new(1280, 720, 3, tmap.w * tmap.tile_width, tmap.h * tmap.tile_height)
 cam.active = true
 cam:Center(0,400)
-world:addCamera(ent, cam)
-world:add_entity(ent)
-
-print("hello from game map world")
+cam:Bind()
+world:addCamera(world.master_entity, cam)

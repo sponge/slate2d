@@ -3,7 +3,6 @@
 #include "lua_pecs_system.h"
 #include "componenthelpers.h"
 
-
 void BaseWorld::add_lua_system(const char *name, int priority, int mask, sol::function func) {
 	auto sys = new LuaSystem(lua, name, priority, mask, func);
 	this->add(sys);
@@ -22,18 +21,44 @@ BaseWorld::BaseWorld() {
 
 	lua["world"] = this;
 	lua.new_usertype<BaseWorld>("BaseWorld",
+		"master_entity", &BaseWorld::masterEntity,
+
 		"add_system", &BaseWorld::add_lua_system,
 		"add_entity", &BaseWorld::add_entity,
 		"new_entity", &BaseWorld::get_entity,
 		"trace", &BaseWorld::trace,
+
 		"addBody", &BaseWorld::addBody,
+		"getBody", &BaseWorld::getBody,
 		"addMovable", &BaseWorld::addMovable,
+		"getMovable", &BaseWorld::getMovable,
 		"addRenderable", &BaseWorld::addRenderable,
+		"getRenderable", &BaseWorld::getRenderable,
 		"addTileMap", &BaseWorld::addTileMap,
+		"getTileMap", &BaseWorld::getTileMap,
 		"addCamera", &BaseWorld::addCamera,
+		"getCamera", &BaseWorld::getCamera,
 		"addPlayerInput", &BaseWorld::addPlayerInput,
+		"getPlayerInput", &BaseWorld::getPlayerInput,
 		"addPlayer", &BaseWorld::addPlayer,
-		"addSprite", &BaseWorld::addSprite
+		"getPlayer", &BaseWorld::getPlayer,
+		"addSprite", &BaseWorld::addSprite,
+		"getSprite", &BaseWorld::getSprite
+		);
+
+	lua.new_usertype<entity_t>("Entity",
+		"alive", &entity_t::alive,
+		"id", &entity_t::id,
+		"mask", &entity_t::mask
+	);
+
+	// other types
+
+	lua.new_usertype<tmx_map>("TmxMap",
+		"w", &tmx_map::width,
+		"h", &tmx_map::height,
+		"tile_width", &tmx_map::tile_width,
+		"tile_height", &tmx_map::tile_height
 		);
 
 	// collision types
@@ -81,6 +106,10 @@ BaseWorld::BaseWorld() {
 		"g", &Renderable::g,
 		"b", &Renderable::b,
 		"a", &Renderable::a
+		);
+
+	lua.new_usertype<TileMap>("TileMap",
+		"map", &TileMap::map
 		);
 
 	lua.new_usertype<Camera>("Camera",

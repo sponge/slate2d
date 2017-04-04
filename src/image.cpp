@@ -54,6 +54,8 @@ bool Img_Free(const char *name) {
 	}
 
 	nvgDeleteImage(img->nvg, img->hnd);
+	imgs.erase(name);
+	delete imgs[name];
 	return true;
 }
 

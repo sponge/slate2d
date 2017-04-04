@@ -4,6 +4,7 @@
 // FIXME: getting functions not just types
 #include "../src/image.h"
 #include "../src/scene.h"
+#include "../src/input.h"
 #include "../src/console/console.h" // FIXME: getting function defs that it shouldn't, just need cvar_t really
 
 typedef struct gameImportFuncs_s {
@@ -33,7 +34,9 @@ typedef struct gameImportFuncs_s {
 	Scene* (*Scene_Current)();
 	tmx_map* (*Map_Load)(const char *file);
 	void (*Map_Free)(tmx_map* map);
-
+	void (*IN_KeyDown)(kbutton_t *b);
+	void (*IN_KeyUp)(kbutton_t *b);
+	float (*CL_KeyState)(kbutton_t *key);
 } gameImportFuncs_t;
 
 typedef struct gameExportFuncs_s {

@@ -2,8 +2,6 @@
 #include "input.h"
 #include "main.h"
 
-kbutton_t in_1_left, in_1_right, in_1_up, in_1_down, in_1_jump, in_1_attack, in_1_menu;
-
 /*
 ===================
 CL_AddKeyUpCommands
@@ -225,36 +223,3 @@ float CL_KeyState(kbutton_t *key) {
 
 	return val;
 }
-
-void IN_P1_UpDown(void) { IN_KeyDown(&in_1_up); }
-void IN_P1_UpUp(void) { IN_KeyUp(&in_1_up); }
-void IN_P1_DownDown(void) { IN_KeyDown(&in_1_down); }
-void IN_P1_DownUp(void) { IN_KeyUp(&in_1_down); }
-void IN_P1_LeftDown(void) { IN_KeyDown(&in_1_left); }
-void IN_P1_LeftUp(void) { IN_KeyUp(&in_1_left); }
-void IN_P1_RightDown(void) { IN_KeyDown(&in_1_right); }
-void IN_P1_RightUp(void) { IN_KeyUp(&in_1_right); }
-void IN_P1_JumpDown(void) { IN_KeyDown(&in_1_jump); }
-void IN_P1_JumpUp(void) { IN_KeyUp(&in_1_jump); }
-void IN_P1_AttackDown(void) { IN_KeyDown(&in_1_attack); }
-void IN_P1_AttackUp(void) { IN_KeyUp(&in_1_attack); }
-void IN_P1_MenuDown(void) { IN_KeyDown(&in_1_menu); }
-void IN_P1_MenuUp(void) { IN_KeyUp(&in_1_menu); }
-
-void CL_InitInput(void) {
-	Cmd_AddCommand("+p1up", IN_P1_UpDown);
-	Cmd_AddCommand("-p1up", IN_P1_UpUp);
-	Cmd_AddCommand("+p1down", IN_P1_DownDown);
-	Cmd_AddCommand("-p1down", IN_P1_DownUp);
-	Cmd_AddCommand("+p1left", IN_P1_LeftDown);
-	Cmd_AddCommand("-p1left", IN_P1_LeftUp);
-	Cmd_AddCommand("+p1right", IN_P1_RightDown);
-	Cmd_AddCommand("-p1right", IN_P1_RightUp);
-	Cmd_AddCommand("+p1jump", IN_P1_JumpDown);
-	Cmd_AddCommand("-p1jump", IN_P1_JumpUp);
-	Cmd_AddCommand("+p1attack", IN_P1_AttackDown);
-	Cmd_AddCommand("-p1attack", IN_P1_AttackUp);
-	Cmd_AddCommand("+p1menu", IN_P1_MenuDown);
-	Cmd_AddCommand("-p1menu", IN_P1_MenuUp);
-}
-

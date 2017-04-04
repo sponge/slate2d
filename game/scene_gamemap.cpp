@@ -44,10 +44,37 @@ void GameMapScene::Startup(ClientInfo* info) {
 		return;
 	}
 
-	// FIXME: allocate and generate tileinfos
+	// generate tileinfo structs so we know properties about
+	tmap.tinfo = (TileInfo *)malloc(sizeof(TileInfo) * map->tilecount);
+	this->tinfo = tmap.tinfo;
 
+	for (unsigned int i = 1; i < map->tilecount; i++) {
+		auto tile = map->tiles[i];
+		if (tile == nullptr) {
+			break;
+		}
+		auto &info = tmap.tinfo[i];
+		info.gid = i;
+		info.solid = true;
+		info.platform = false;
+
+		auto prop = tile->properties;
+		while (prop != nullptr) {
+			if (strcasecmp(prop->name, "solid") == 0) {
+				info.solid = atoi(prop->value) > 0;
+			}
+			else if (strcasecmp(prop->name, "platform") == 0) {
+				info.platform = atoi(prop->value) > 0;
+			}
+			prop = prop->next;
+		}
+
+	}
+
+	// assign the world entity now (since it will do a copy)
 	world->assign(&worldEnt, tmap);
 	world->add(worldEnt);
+	world->masterEntity = &world->entities[worldEnt.id];
 
 	// load the lua script and check for a spawn_entity global func
 	lua.LoadGameFile("scripts/main.lua");
@@ -114,6 +141,13 @@ void GameMapScene::Render() {
 }
 
 GameMapScene::~GameMapScene() {
+	for (auto sys : world->systems) {
+		delete sys;
+	}
 	delete world;
 	trap->Map_Free(map);
+
+	if (this->tinfo != nullptr) {
+		free(this->tinfo);
+	}
 }

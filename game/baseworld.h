@@ -35,6 +35,9 @@ void resize(std::vector<T> &components, uint32_t id) {
 	}
 }
 
+#include <string>
+#include <math.h>
+
 struct BaseWorld : world_t {
 	BaseWorld();
 	GENERATE_COMPONENT(COMPONENT_BODY, Body);
@@ -46,7 +49,17 @@ struct BaseWorld : world_t {
 	GENERATE_COMPONENT(COMPONENT_PLAYER, Player);
 	GENERATE_COMPONENT(COMPONENT_SPRITE, Sprite);
 
+	entity_t *masterEntity;
+
 	void add_lua_system(const char *name, int priority, int mask, sol::function func);
 	void add_entity(entity_t ent);
 	Sweep trace(entity_t &ent, double dx, double dy);
+
+
+
+
+	template <typename T>
+	T testclamp(const T& n, const T& lower, const T& upper) {
+		return std::max(lower, std::min(n, upper));
+	}
 };

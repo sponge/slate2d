@@ -12,6 +12,7 @@
 #include "lua_extstate.h"
 
 gameImportFuncs_t *trap;
+kbutton_t in_1_left, in_1_right, in_1_up, in_1_down, in_1_jump, in_1_attack, in_1_menu;
 
 void Cmd_Map_f(void) {
 	auto mapname = trap->Cmd_Argv(1);
@@ -68,6 +69,21 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Cmd_AddCommand("scene", Cmd_Scene_f);
 	trap->Cmd_AddCommand("lua", Cmd_Lua_f);
 	trap->Cmd_AddCommand("map", Cmd_Map_f);
+
+	trap->Cmd_AddCommand("+p1up",     []() { trap->IN_KeyDown(&in_1_up); });
+	trap->Cmd_AddCommand("-p1up",     []() { trap->IN_KeyUp(&in_1_up); });
+	trap->Cmd_AddCommand("+p1down",   []() { trap->IN_KeyDown(&in_1_down); });
+	trap->Cmd_AddCommand("-p1down",   []() { trap->IN_KeyUp(&in_1_down); });
+	trap->Cmd_AddCommand("+p1left",   []() { trap->IN_KeyDown(&in_1_left); });
+	trap->Cmd_AddCommand("-p1left",   []() { trap->IN_KeyUp(&in_1_left); });
+	trap->Cmd_AddCommand("+p1right",  []() { trap->IN_KeyDown(&in_1_right); });
+	trap->Cmd_AddCommand("-p1right",  []() { trap->IN_KeyUp(&in_1_right); });
+	trap->Cmd_AddCommand("+p1jump",   []() { trap->IN_KeyDown(&in_1_jump); });
+	trap->Cmd_AddCommand("-p1jump",   []() { trap->IN_KeyUp(&in_1_jump); });
+	trap->Cmd_AddCommand("+p1attack", []() { trap->IN_KeyDown(&in_1_attack); });
+	trap->Cmd_AddCommand("-p1attack", []() { trap->IN_KeyUp(&in_1_attack); });
+	trap->Cmd_AddCommand("+p1menu",   []() { trap->IN_KeyDown(&in_1_menu); });
+	trap->Cmd_AddCommand("-p1menu",   []() { trap->IN_KeyUp(&in_1_menu); });
 
 	RegisterGameCvars();
 

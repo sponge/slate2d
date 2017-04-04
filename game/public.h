@@ -1,3 +1,4 @@
+#pragma once
 #include <nanovg.h>
 #include <tmx.h>
 
@@ -41,6 +42,7 @@ typedef struct gameImportFuncs_s {
 
 typedef struct gameExportFuncs_s {
 	void(*Init)(void *clientInfo, void *imGuiContext);
+	void(*Console)(const char *line);
 } gameExportFuncs_t;
 
 extern gameImportFuncs_t *trap;

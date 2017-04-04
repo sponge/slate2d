@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include "console.h"
+#include "../main.h"
 
 #define IM_ARRAYSIZE(_ARR)  ((int)(sizeof(_ARR)/sizeof(*_ARR)))
 
@@ -122,7 +123,12 @@ void ConsoleUI::ExecCommand(const char* command_line) {
 		}
 	History.push_back(Strdup(command_line));
 
-	Cbuf_ExecuteText(EXEC_NOW, command_line);
+	if (command_line[0] == '/') {
+		Cbuf_ExecuteText(EXEC_NOW, command_line + 1);
+	}
+	else {
+		gexports->Console(command_line);
+	}
 }
 
 int ConsoleUI::TextEditCallbackStub(ImGuiTextEditCallbackData* data) { // In C++11 you are better off using lambdas for this sort of forwarding callbacks
@@ -150,6 +156,10 @@ int ConsoleUI::TextEditCallback(ImGuiTextEditCallbackData* data)
 			word_start--;
 		}
 
+		if (word_start[0] == '/') {
+			word_start++;
+		}
+
 		if (strlen(word_start) == 0) {
 			break;
 		}
@@ -174,6 +184,9 @@ int ConsoleUI::TextEditCallback(ImGuiTextEditCallbackData* data)
 		{
 			// Single match. Delete the beginning of the word and replace it entirely so we've got nice casing
 			data->DeleteChars((int)(word_start - data->Buf), (int)(word_end - word_start));
+			if (data->Buf[0] != '/') {
+				data->InsertChars(0, "/");
+			}
 			data->InsertChars(data->CursorPos, candidates[0]);
 			data->InsertChars(data->CursorPos, " ");
 		}
@@ -198,6 +211,9 @@ int ConsoleUI::TextEditCallback(ImGuiTextEditCallbackData* data)
 			if (match_len > 0)
 			{
 				data->DeleteChars((int)(word_start - data->Buf), (int)(word_end - word_start));
+				if (data->Buf[0] != '/') {
+					data->InsertChars(0, "/");
+				}
 				data->InsertChars(data->CursorPos, candidates[0], candidates[0] + match_len);
 			}
 

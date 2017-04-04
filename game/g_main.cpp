@@ -42,7 +42,7 @@ void Cmd_Lua_f(void) {
 	auto res = lua.do_string(line);
 	if (!res.valid()) {
 		sol::error err = res;
-		trap->Print(err.what());
+		trap->Print("lua error: %s", err.what());
 	}
 }
 
@@ -94,8 +94,17 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Scene_Switch(new MenuScene());
 }
 
+static void Console(const char *line) {
+	auto res = lua.do_string(line);
+	if (!res.valid()) {
+		sol::error err = res;
+		trap->Print("lua error: %s", err.what());
+	}
+}
+
 static gameExportFuncs_t GAMEfuncs = {
 	Init,
+	Console
 };
 
 extern "C" 

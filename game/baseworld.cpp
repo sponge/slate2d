@@ -129,4 +129,15 @@ BaseWorld::BaseWorld() {
 		"Move", &Camera::Move,
 		"Bind", &Camera::Bind
 		);
+
+	lua.new_usertype<PlayerInput>("PlayerInput",
+		sol::constructors<Camera()>(),
+		"up", &PlayerInput::up,
+		"down", &PlayerInput::down,
+		"left", &PlayerInput::left,
+		"right", &PlayerInput::right,
+		"jump", &PlayerInput::jump,
+		"attack", &PlayerInput::attack,
+		"menu", &PlayerInput::menu
+		);
 }

@@ -23,6 +23,9 @@ void GameMapScene::Startup(ClientInfo* info) {
 	auto tmapsys = new TileMapDrawSystem(info);
 	world->add(tmapsys);
 
+	auto inputsys = new PlayerInputSystem();
+	world->add(inputsys);
+
 	// our "master" entity
 	entity_t worldEnt = world->get_entity();
 	auto tmap = TileMap();

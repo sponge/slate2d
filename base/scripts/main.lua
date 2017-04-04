@@ -34,3 +34,6 @@ cam.active = true
 cam:Center(0,400)
 cam:Bind()
 world:addCamera(world.master_entity, cam)
+
+local input = PlayerInput.new()
+world:addPlayerInput(world.master_entity, input)

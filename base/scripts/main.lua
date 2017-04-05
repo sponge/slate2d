@@ -1,39 +1,63 @@
 local inspect = require 'inspect'
 require 'components'
 
-spawn_entity = function(world, ent)
-	if ent.type == 'player' then
-		local tmap = world:getTileMap(world.master_entity.id).map
-
-		local ent = world:new_entity()
- --    // create the player
- --    auto ent = es.create();
- --    auto body = ent.assign<Body>(obj.x + (tmap->map->tile_width / 2), obj.y - 14.001, 16, 15);  // FIXME able to fall into ground if 14
- --    ent.assign<Movable>(0, 0);
- --    ent.assign<Renderable>(200, 30, 30, 200);
- --    ent.assign<PlayerInput>();
- --    ent.assign<Player>();
-	
-	-- auto playerImg = Img_Create("player", "gfx/dog.png");
-	-- ent.assign<Sprite>(playerImg, Vec2(22, 15), Vec2(0, 0));
-
- --    // attach a camera to the world and target it at the player
- --    auto camera = worldEnt.assign<Camera>(1280, 720, 3, tmap->map->width * tmap->map->tile_width, tmap->map->height * tmap->map->tile_height);
- --    camera->target = body.get();
-	else
-		print("unhandled entity:")
-		print(inspect(ent))
-	end
-end
-
-local tmap = world:getTileMap(world.master_entity.id).map
-
 -- FIXME: the rest of this hardcoded shit
+local tmap = world:getTileMap(world.master_entity.id).map
 local cam = Camera.new(1280, 720, 3, tmap.w * tmap.tile_width, tmap.h * tmap.tile_height)
 cam.active = true
-cam:Center(0,400)
 cam:Bind()
 world:addCamera(world.master_entity, cam)
 
-local input = PlayerInput.new()
-world:addPlayerInput(world.master_entity, input)
+spawn_entity = function(world, obj)
+    if obj.type == 'player' then
+        local map = world:getTileMap(world.master_entity.id).map
+        local camera = world:getCamera(world.master_entity.id)
+
+        local ent = world:new_entity()
+        local b = Body:new(obj.x + (map.tile_width / 2), obj.y - 14.001, 16, 15)
+        world:addBody(ent, b)
+        world:addMovable(ent, Movable:new(0, 0))
+        world:addRenderable(ent, Renderable:new(200, 30, 30, 200))
+        world:addPlayerInput(ent, PlayerInput:new())
+        -- world:addPlayer(ent, Player:new())
+        -- auto playerImg = Img_Create("player", "gfx/dog.png");
+        -- ent.assign<Sprite>(playerImg, Vec2(22, 15), Vec2(0, 0));
+        world:add_entity(ent)
+
+        camera.target = ent.id
+    else
+        print("unhandled entity:")
+        print(inspect(obj))
+    end
+end
+
+local camUpdate = function(dt, ent, c)
+    if c.camera.active == false then
+        return
+    end
+
+    if c.camera.target < 0 then
+        return
+    end
+    
+    local body = world:getBody(c.camera.target)
+    c.camera:Center(body.x, body.y)
+    c.camera:Bind()
+end
+world:add_system("Camera Update", 0, COMPONENT_CAMERA, camUpdate)
+
+local playerUpdate = function(dt, ent, c)
+    if c.playerinput.right then
+        c.body.x = c.body.x + 50 * dt
+    end
+    if c.playerinput.left then
+        c.body.x = c.body.x - 50 * dt
+    end
+    if c.playerinput.up then
+        c.body.y = c.body.y - 50 * dt
+    end
+    if c.playerinput.down then
+        c.body.y = c.body.y + 50 * dt
+    end
+end
+world:add_system("Player Update", 0, COMPONENT_PLAYERINPUT|COMPONENT_BODY|COMPONENT_MOVABLE, playerUpdate)

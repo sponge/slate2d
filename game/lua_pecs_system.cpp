@@ -22,6 +22,11 @@ void LuaSystem::update(double dt)
 		if (this->mask & COMPONENT_BODY) { components["body"] = &world->getBody(entity.id); }
 		if (this->mask & COMPONENT_MOVABLE) { components["mov"] = &world->getMovable(entity.id); }
 		if (this->mask & COMPONENT_RENDERABLE) { components["renderable"] = &world->getRenderable(entity.id); }
+		if (this->mask & COMPONENT_TILEMAP) { components["tilemap"] = &world->getTileMap(entity.id); }
+		if (this->mask & COMPONENT_CAMERA) { components["camera"] = &world->getCamera(entity.id); }
+		if (this->mask & COMPONENT_PLAYERINPUT) { components["playerinput"] = &world->getPlayerInput(entity.id); }
+		if (this->mask & COMPONENT_PLAYER) { components["player"] = &world->getPlayer(entity.id); }
+		if (this->mask & COMPONENT_SPRITE) { components["sprite"] = &world->getSprite(entity.id); }
 
 		this->luaUpdate(dt, entity, components);
 	}

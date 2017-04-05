@@ -26,6 +26,9 @@ void GameMapScene::Startup(ClientInfo* info) {
 	auto inputsys = new PlayerInputSystem();
 	world->add(inputsys);
 
+	auto rectsys = new RectDrawerSystem(info);
+	world->add(rectsys);
+
 	// our "master" entity
 	entity_t worldEnt = world->get_entity();
 	auto tmap = TileMap();

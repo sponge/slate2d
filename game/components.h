@@ -7,6 +7,7 @@
 // - update the enum
 // - update GENERATE_COMPONENT calls in baseworld.h
 // - update struct->lua binding in baseworld.cpp
+// - update table generation in lua_pecs_system.cpp
 // - update components.lua
 
 enum {
@@ -68,7 +69,7 @@ struct Camera {
 	Vec2 pos, size, max;
 	float scale;
 	float top, right, bottom, left;
-	Body *target = nullptr;
+	int target = -1;
 
 	void Center(float cx, float cy) {
 		Move(cx - (size.x / 2) / scale, cy - (size.y / 2) / scale);

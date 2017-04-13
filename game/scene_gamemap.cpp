@@ -99,34 +99,21 @@ void GameMapScene::Startup(ClientInfo* info) {
 			continue;
 		}
 
-		tmx_object *obj = layer->content.objgr->head;
+		const tmx_object *obj = layer->content.objgr->head;
 		while (obj != nullptr) {
 			if (obj->type == nullptr) {
 				obj = obj->next;
 				continue;
 			}
 
-			auto ent = lua.create_table_with(
-				"id", obj->id,
-				"x", obj->x,
-				"y", obj->y,
-				"width", obj->width,
-				"height", obj->height,
-				"gid", obj->gid,
-				"visible", obj->visible,
-				"rotation", obj->rotation,
-				"name", obj->name,
-				"type", obj->type
-			);
-
-			ent["properties"] = lua.create_table_with();
-			tmx_property *prop = obj->properties;
+			auto props = lua.create_table_with();
+			const tmx_property *prop = obj->properties;
 			while (prop != nullptr) {
-				ent["properties"][prop->name] = prop->value;
+				props[prop->name] = prop->value;
 				prop = prop->next;
 			}
 
-			spawnFunc(world, ent);
+			spawnFunc(world, obj, props);
 			obj = obj->next;
 		}
 

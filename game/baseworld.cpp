@@ -2,10 +2,31 @@
 #include "lua_extstate.h"
 #include "lua_pecs_system.h"
 #include "componenthelpers.h"
+#include <tmx.h>
 
-void BaseWorld::add_lua_system(const char *name, int priority, int mask, sol::function func) {
-	auto sys = new LuaSystem(lua, name, priority, mask, func);
+bool BaseWorld::add_lua_system(sol::table opts) {
+	sol::function procFunc = opts["process"];
+	if (!procFunc.valid()) {
+		return false;
+	}
+
+	int priority = opts.get_or("priority", 0);
+	std::string name = opts.get_or<std::string>("name", "Lua System");
+	int mask = COMPONENT_ANY;
+
+	sol::object components = opts["components"];
+	if (components.is<sol::table>()) {
+		for (auto key : components.as<sol::table>()) {
+			mask += key.second.as<int>();
+		}
+	}
+	else if (components.is<int>()) {
+		mask = components.as<int>();
+	}
+
+	auto sys = new LuaSystem(lua, name.c_str(), priority, mask, procFunc);
 	this->add(sys);
+	return true;
 }
 
 void BaseWorld::add_entity(entity_t ent) {
@@ -59,6 +80,19 @@ BaseWorld::BaseWorld() {
 		"h", &tmx_map::height,
 		"tile_width", &tmx_map::tile_width,
 		"tile_height", &tmx_map::tile_height
+		);
+
+	lua.new_usertype<tmx_object>("TmxObject",
+		"id", &tmx_object::id,
+		"x", &tmx_object::x,
+		"y", &tmx_object::y,
+		"width", &tmx_object::width,
+		"height", &tmx_object::height,
+		"gid", &tmx_object::gid,
+		"visible", &tmx_object::visible,
+		"rotation", &tmx_object::rotation,
+		"name", &tmx_object::name,
+		"type", &tmx_object::type
 		);
 
 	// collision types

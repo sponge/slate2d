@@ -19,6 +19,10 @@ const Sweep Trace(BaseWorld &world, entity_t &ent, float dx, float dy, entity_t 
 	sweep.pos.y = body.y + dy;
 	
 	for (auto &ent2 : world.entities) {
+		if ((ent2.mask & COMPONENT_BODY) == false) {
+			continue;
+		}
+
 		if (ent.id == ent2.id) {
 			continue;
 		}

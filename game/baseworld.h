@@ -51,7 +51,7 @@ struct BaseWorld : world_t {
 
 	entity_t *masterEntity;
 
-	void add_lua_system(const char *name, int priority, int mask, sol::function func);
+	bool add_lua_system(sol::table opts);
 	void add_entity(entity_t ent);
 	Sweep trace(entity_t &ent, double dx, double dy);
 

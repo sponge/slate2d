@@ -8,7 +8,8 @@ cam.active = true
 cam:Bind()
 world:addCamera(world.master_entity, cam)
 
-spawn_entity = function(world, obj)
+spawn_entity = function(world, obj, props)
+    print(inspect(props))
     if obj.type == 'player' then
         local map = world:getTileMap(world.master_entity.id).map
         local camera = world:getCamera(world.master_entity.id)
@@ -31,33 +32,41 @@ spawn_entity = function(world, obj)
     end
 end
 
-local camUpdate = function(dt, ent, c)
-    if c.camera.active == false then
-        return
-    end
+world:add_system {
+    name = "Camera Update",
+    priority = 0,
+    components = {COMPONENT_CAMERA},
+    process = function(dt, ent, c)
+        if c.camera.active == false then
+            return
+        end
 
-    if c.camera.target < 0 then
-        return
-    end
-    
-    local body = world:getBody(c.camera.target)
-    c.camera:Center(body.x, body.y)
-    c.camera:Bind()
-end
-world:add_system("Camera Update", 0, COMPONENT_CAMERA, camUpdate)
+        if c.camera.target < 0 then
+            return
+        end
 
-local playerUpdate = function(dt, ent, c)
-    if c.playerinput.right then
-        c.body.x = c.body.x + 50 * dt
+        local body = world:getBody(c.camera.target)
+        c.camera:Center(body.x, body.y)
+        c.camera:Bind()
     end
-    if c.playerinput.left then
-        c.body.x = c.body.x - 50 * dt
+}
+
+world:add_system {
+    name = "Player Update",
+    priority = 0,
+    components = {COMPONENT_PLAYERINPUT, COMPONENT_BODY, COMPONENT_MOVABLE},
+    process = function(dt, ent, c)
+        if c.playerinput.right then
+            c.body.x = c.body.x + 50 * dt
+        end
+        if c.playerinput.left then
+            c.body.x = c.body.x - 50 * dt
+        end
+        if c.playerinput.up then
+            c.body.y = c.body.y - 50 * dt
+        end
+        if c.playerinput.down then
+            c.body.y = c.body.y + 50 * dt
+        end
     end
-    if c.playerinput.up then
-        c.body.y = c.body.y - 50 * dt
-    end
-    if c.playerinput.down then
-        c.body.y = c.body.y + 50 * dt
-    end
-end
-world:add_system("Player Update", 0, COMPONENT_PLAYERINPUT|COMPONENT_BODY|COMPONENT_MOVABLE, playerUpdate)
+}

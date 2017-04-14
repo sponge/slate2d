@@ -1,5 +1,5 @@
 #pragma once
-#include "../src/console/console.h"
+#include "public.h"
 
 void RegisterGameCvars( void );
 

@@ -178,15 +178,13 @@ bool Cvar_Command(void);
 
 // BIND SYSTEM
 
-#include <SDL/SDL_scancode.h>
-
 typedef struct {
     bool		down;
     int			repeats;		// if > 1, it is autorepeating
     char		*binding;
 } qkey_t;
 
-extern	qkey_t		keys[SDL_NUM_SCANCODES];
+extern	qkey_t		keys[512];
 
 void CL_InitKeyCommands(void);
 int Key_StringToKeynum(const char *str);

@@ -57,7 +57,7 @@ solution "game"
     kind "SharedLib"
     language "C++"
     files { "game/**.c", "game/**.cpp", "game/**.h", "game/**.hh" }
-    sysincludedirs { "include", "nanovg", "tmx", "imgui", "lua", "luasocket" }
+    sysincludedirs { "nanovg", "tmx", "imgui", "lua", "luasocket" }
     targetdir "bin/%{cfg.buildcfg}"
     flags { "C++14" }
     links { "nanovg", "tmx", "imgui", "lua", "luasocket" }

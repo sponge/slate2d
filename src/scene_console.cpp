@@ -3,19 +3,18 @@
 #include <imgui.h>
 #include "imgui_impl_sdl_gl3.h"
 #include "cvar_main.h"
+#include "console/console.h";
 
 cvar_t *r_showfps;
 bool consoleActive;
 
+void Cmd_ToggleConsole_f(void) {
+	consoleActive = !consoleActive;
+}
+
 void ConsoleScene::Startup(ClientInfo* info) {
 	inf = info;
-#if 0
-	SDL_RWops *io = SDL_RWFromFile("temp.txt", "rb");
-	if (io != NULL) {
-		io->read(io, history, sizeof(history), 1);
-		io->close(io);
-	}
-#endif
+	Cmd_AddCommand("toggleconsole", Cmd_ToggleConsole_f);
 }
 
 void ConsoleScene::Update(float dt) {
@@ -43,17 +42,4 @@ void ConsoleScene::Render() {
 	}
 
 	Console()->Draw("Console", &consoleActive);
-}
-
-bool ConsoleScene::Event(SDL_Event *ev) {
-	switch (ev->type) {
-	case SDL_KEYDOWN:
-		switch (ev->key.keysym.sym) {
-		case SDLK_BACKQUOTE:
-			consoleActive = !consoleActive;
-			break;
-		}
-	}
-
-	return !consoleActive;
 }

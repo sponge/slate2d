@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include <SDL/SDL_events.h>
 #include <nanovg.h>
 #include <algorithm>
 
@@ -13,9 +12,6 @@ public:
 	virtual void Startup(ClientInfo* i) = 0;
 	virtual void Update(float dt) = 0;
 	virtual void Render() = 0;
-	virtual bool Event(SDL_Event *ev) {
-		return true;
-	};
 };
 
 class SceneManager {
@@ -46,16 +42,6 @@ public:
 			s->Render();
 			nvgReset(info.nvg);
 		}
-	}
-
-	bool Event(SDL_Event *ev) {
-		for (auto s = scenes.rbegin(); s != scenes.rend(); ++s) {
-			if ((*s)->Event(ev) == false) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	void Push(Scene* newScene) {

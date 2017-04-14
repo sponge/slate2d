@@ -32,6 +32,7 @@ typedef struct {
 // names not in this list can either be lowercase ascii, or '0xnn' hex sequences
 keyname_t keynames[] =
 {
+	{ "GRAVE", SDL_SCANCODE_GRAVE },
 	{ "TAB", SDL_SCANCODE_TAB },
 	{ "ENTER", SDL_SCANCODE_RETURN },
 	{ "ESCAPE", SDL_SCANCODE_ESCAPE },
@@ -123,7 +124,7 @@ int Key_StringToKeynum(const char *str) {
 	}
 	if (!str[1]) {
 		if (str[0] >= '1' && str[0] <= '9') {
-			return str[0] - 18;
+			return str[0] - 19;
 		}
 		else if (str[0] == '0') {
 			return SDL_SCANCODE_0;

@@ -191,16 +191,6 @@ int main(int argc, char *argv[]) {
 				KeyEvent(ev.key.keysym.scancode, false, com_frameTime);
 			}
 
-			auto propagate = consoleScene->Event(&ev);
-			if (!propagate) {
-				continue;
-			}
-
-			propagate = sm->Event(&ev);
-			if (!propagate) {
-				continue;
-			}
-
 			if (ev.type == SDL_KEYDOWN) {
 				KeyEvent(ev.key.keysym.scancode, true, com_frameTime);
 			}

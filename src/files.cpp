@@ -14,7 +14,13 @@ void Cmd_Dir_f() {
 }
 
 bool FS_Exists(const char *file) {
-	return PHYSFS_exists(file);
+	if (PHYSFS_exists(file)) {
+		if (!PHYSFS_isDirectory(file)) {
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 char** FS_List(const char *path) {

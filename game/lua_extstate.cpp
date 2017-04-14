@@ -22,15 +22,15 @@ static int physfs_searcher(lua_State* st) {
 	const char *buffer;
 	int sz;
 
-	sz = trap->FS_ReadFile(va("scripts/%s", file), (void **)&buffer);
-	if (sz == -1) {
-		sz = trap->FS_ReadFile(va("scripts/%s.lua", file), (void **)&buffer);
+	const char *full = va("scripts/%s", file);
+	if (!trap->FS_Exists(full)) {
+		full = va("scripts/%s.lua", file);
+		if (!trap->FS_Exists(full)) {
+			return 0;
+		}
 	}
 
-	if (sz == -1) {
-		return 0;
-	}
-
+	sz = trap->FS_ReadFile(va(full, file), (void **)&buffer);
 	auto status = luaL_loadbuffer(st, buffer, sz, file);
 
 	if (status != LUA_OK) {

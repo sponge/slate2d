@@ -3,7 +3,7 @@
 #include <imgui.h>
 #include "imgui_impl_sdl_gl3.h"
 #include "cvar_main.h"
-#include "console/console.h";
+#include "console/console.h"
 
 cvar_t *r_showfps;
 bool consoleActive;

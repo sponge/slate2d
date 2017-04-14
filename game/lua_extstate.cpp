@@ -1,7 +1,20 @@
 #include "public.h"
 #include "lua_extstate.h"
+extern "C" {
+#include <luasocket.h>
+#include <mime.h>
+}
 
 LuaExt lua;
+
+// Quick macro for adding functions to 
+// the preloder.
+#define PRELOAD(name, function) \
+	lua_getglobal(st, "package"); \
+	lua_getfield(st, -1, "preload"); \
+	lua_pushcfunction(st, function); \
+	lua_setfield(st, -2, name); \
+	lua_pop(st, 2);	
 
 static int physfs_searcher(lua_State* st) {
 	const char* file = lua_tostring(st, 1);
@@ -61,7 +74,11 @@ static int console_print(lua_State* L) {
 
 LuaExt::LuaExt() {
 	auto st = this->lua_state();
+
 	lua.open_libraries();
+
+	PRELOAD("socket.core", luaopen_socket_core);
+	PRELOAD("mime.core", luaopen_mime_core);
 	
 	static const struct luaL_Reg printlib[] = {
 		{ "print", console_print },

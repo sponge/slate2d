@@ -57,10 +57,10 @@ solution "game"
     kind "SharedLib"
     language "C++"
     files { "game/**.c", "game/**.cpp", "game/**.h", "game/**.hh" }
-    sysincludedirs { "include", "nanovg", "tmx", "imgui", "lua" }
+    sysincludedirs { "include", "nanovg", "tmx", "imgui", "lua", "luasocket" }
     targetdir "bin/%{cfg.buildcfg}"
     flags { "C++14" }
-    links { "nanovg", "tmx", "imgui", "lua" }
+    links { "nanovg", "tmx", "imgui", "lua", "luasocket" }
 
   project "nanovg"
     language "C"
@@ -112,3 +112,26 @@ solution "game"
     files { "lua/**.c", "lua/**.h" }
     targetdir "build/%{cfg.buildcfg}"
     warnings "Off"
+
+  project "luasocket"
+    language "C"
+    kind "StaticLib"
+    sysincludedirs { "lua" }
+    targetdir "build/%{cfg.buildcfg}"
+    links { "lua" }
+    warnings "Off"
+
+    files { "luasocket/luasocket.h", "luasocket/mime.h", "luasocket/luasocket.c", "luasocket/timeout.c", "luasocket/buffer.c", "luasocket/io.c", "luasocket/auxiliar.c",
+						"luasocket/options.c", "luasocket/inet.c", "luasocket/except.c", "luasocket/select.c", "luasocket/tcp.c", "luasocket/udp.c", "luasocket/mime.c" }
+    
+    configuration "Debug"
+      defines { "LUASOCKET_DEBUG" }
+
+    configuration "windows"
+      files { "luasocket/wsocket.c" }
+
+    configuration "macosx"
+      files { "luasocket/unixstream.c", "luasocket/unixdgram.c", "luasocket/usocket.c", "luasocket/buffer.c", "luasocket/auxiliar.c", "luasocket/options.c", "luasocket/timeout.c", "luasocket/io.c", "luasocket/usocket.c", "luasocket/unix.c"}
+      defines {
+        "UNIX_HAS_SUN_LEN",
+	    }

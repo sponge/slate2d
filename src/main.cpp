@@ -217,8 +217,9 @@ int main(int argc, char *argv[]) {
 			frame_accum -= 1 / 200.0f;
 		}
 		*/
-		sm->Update(dt);
 
+		gexports->Frame(dt);
+		sm->Update(dt);
 		consoleScene->Update(dt);
 
 		glClear(GL_COLOR_BUFFER_BIT);

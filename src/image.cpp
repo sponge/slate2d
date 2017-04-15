@@ -55,7 +55,7 @@ Img * Img_Find(const char *name) {
 
 void Img_LoadAll(NVGcontext *nvg) {
 	for (auto img : imgs) {
-		if (img->hnd == 0) {
+		if (img->nvg != nullptr && img->hnd == 0) {
 			Img_Load(nvg, *img);
 		}
 	}
@@ -66,10 +66,9 @@ bool Img_Free(const char *name) {
 	for (auto img : imgs) {
 		if (strcmp(img->name, name) == 0) {
 			nvgDeleteImage(img->nvg, img->hnd);
-			imgs.erase(imgs.begin() + index);
-			delete img;
+			img->hnd = 0;
+			img->nvg = nullptr;
 			return true;
-
 		}
 
 		return true;

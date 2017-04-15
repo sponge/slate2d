@@ -8,7 +8,8 @@ typedef struct {
 
 typedef struct {
 	NVGcontext *nvg;
-	int hnd;
+	unsigned int index;
+	unsigned int hnd;
 	int w, h;
 	char name[64];
 	char path[64];
@@ -18,5 +19,6 @@ Img * Img_Create(const char * name, const char * path);
 void Img_Load(NVGcontext * nvg, Img & img);
 void Img_LoadAll(NVGcontext * nvg);
 Img * Img_Find(const char * name);
+Img * Img_Get(unsigned int i);
 bool Img_Free(const char * name);
 void Img_Clear();

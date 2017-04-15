@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "bitset": "cpp",
+        "array": "cpp",
+        "hashtable": "cpp"
     }
 }

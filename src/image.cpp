@@ -5,6 +5,7 @@
 #include "image.h"
 #include "files.h"
 
+// FIXME: work out how to do this with a vector of structs instead vector of ptrs
 std::vector<Img *> imgs;
 
 Img * Img_Create(const char *name, const char *path) {
@@ -14,6 +15,8 @@ Img * Img_Create(const char *name, const char *path) {
 	}
 
 	auto img = new Img();
+
+	img->index = imgs.size();
 	strncpy(img->path, path, sizeof(img->path));
 	strncpy(img->name, name, sizeof(img->name));
 
@@ -34,6 +37,10 @@ void Img_Load(NVGcontext *nvg, Img &img) {
 	nvgImageSize(img.nvg, img.hnd, &img.w, &img.h);
 
 	free(buffer);
+}
+
+Img * Img_Get(unsigned int i) {
+	return imgs[i];
 }
 
 Img * Img_Find(const char *name) {

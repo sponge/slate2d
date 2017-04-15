@@ -28,6 +28,7 @@ typedef struct gameImportFuncs_s {
 	void (*Img_Load)(NVGcontext * nvg, Img & img);
 	void (*Img_LoadAll)(NVGcontext * nvg);
 	Img* (*Img_Find)(const char * name);
+	Img* (*Img_Get)(unsigned int i);
 	bool (*Img_Free)(const char * name);
 	void (*Scene_Switch)(Scene *newScene);
 	Scene* (*Scene_Get)(int i);

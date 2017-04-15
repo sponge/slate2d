@@ -92,6 +92,7 @@ static gameImportFuncs_t GAMEtraps = {
 	Img_Load,
 	Img_LoadAll,
 	Img_Find,
+	Img_Get,
 	Img_Free,
 	trap_Scene_Switch,
 	trap_Scene_Get,

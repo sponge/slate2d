@@ -10,6 +10,7 @@ typedef struct {
 	NVGcontext *nvg;
 	int hnd;
 	int w, h;
+	char name[64];
 	char path[64];
 } Img;
 

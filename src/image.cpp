@@ -1,21 +1,23 @@
 #include <nanovg.h>
-#include <map>
+#include <vector>
 #include <string>
 #include <stdlib.h>
 #include "image.h"
 #include "files.h"
 
-std::map<std::string, Img *> imgs;
+std::vector<Img *> imgs;
 
 Img * Img_Create(const char *name, const char *path) {
-	if (imgs[name] != nullptr ) {
-		return imgs[name];
+	auto found = Img_Find(name);
+	if (found != nullptr) {
+		return found;
 	}
 
 	auto img = new Img();
 	strncpy(img->path, path, sizeof(img->path));
+	strncpy(img->name, name, sizeof(img->name));
 
-	imgs[name] = img;
+	imgs.push_back(img);
 	return img;
 }
 
@@ -35,33 +37,43 @@ void Img_Load(NVGcontext *nvg, Img &img) {
 }
 
 Img * Img_Find(const char *name) {
-	return imgs[name];
+	for (auto img : imgs) {
+		if (strcmp(img->name, name) == 0) {
+			return img;
+		}
+	}
+
+	return nullptr;
 }
 
 void Img_LoadAll(NVGcontext *nvg) {
 	for (auto img : imgs) {
-		if (img.second->hnd == 0) {
-			Img_Load(nvg, *(img.second));
+		if (img->hnd == 0) {
+			Img_Load(nvg, *img);
 		}
 	}
 }
 
 bool Img_Free(const char *name) {
-	auto img = imgs[name];
+	auto index = 0;
+	for (auto img : imgs) {
+		if (strcmp(img->name, name) == 0) {
+			nvgDeleteImage(img->nvg, img->hnd);
+			imgs.erase(imgs.begin() + index);
+			delete img;
+			return true;
 
-	if (img == nullptr) {
-		return false;
+		}
+
+		return true;
 	}
 
-	nvgDeleteImage(img->nvg, img->hnd);
-	imgs.erase(name);
-	delete imgs[name];
-	return true;
+	return false;
 }
 
 void Img_Clear() {
 	for (auto img : imgs) {
-		nvgDeleteImage(img.second->nvg, img.second->hnd);
+		nvgDeleteImage(img->nvg, img->hnd);
 	}
 	imgs.clear();
 }

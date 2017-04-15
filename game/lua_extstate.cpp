@@ -79,7 +79,7 @@ LuaExt::LuaExt() {
 
 	PRELOAD("socket.core", luaopen_socket_core);
 	PRELOAD("mime.core", luaopen_mime_core);
-	
+
 	static const struct luaL_Reg printlib[] = {
 		{ "print", console_print },
 		{ "fs_require", physfs_searcher},
@@ -90,7 +90,9 @@ LuaExt::LuaExt() {
 	luaL_setfuncs(st, printlib, 0);
 	lua_pop(st, 1);
 
-	lua.script("table.insert(package.searchers, 1, fs_require)");
+	lua.script("package.searchers = {package.searchers[1]}");
+	lua.script("table.insert(package.searchers, 2, fs_require)");
+
 }
 
 bool LuaExt::LoadGameFile(const std::string &file) {

@@ -105,7 +105,8 @@ static void Console(const char *line) {
 // technically the scene manager will handle every frame for gameplay scenes,
 // but anything that needs an event loop type pump can go here
 static void Frame(float dt) {
-	lua["frame"](dt);
+	 sol::protected_function frame = lua["frame"];
+	 frame(dt);
 }
 
 static gameExportFuncs_t GAMEfuncs = {

@@ -1,4 +1,3 @@
-local inspect = require 'inspect'
 require 'components'
 
 -- FIXME: the rest of this hardcoded shit

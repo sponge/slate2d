@@ -1,3 +1,5 @@
+inspect = require 'inspect'
+
 math.randomseed(os.time())
 
 frame = function(dt)

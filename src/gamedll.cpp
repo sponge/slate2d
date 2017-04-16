@@ -36,7 +36,6 @@ tmx_map * trap_Map_Load(const char *filename) {
 
 	tmx_img_load_func = [](const char *path) {
 		Img *img = Img_Create(path, path);
-		Img_Load(inf.nvg, *img);
 		return img;
 	};
 

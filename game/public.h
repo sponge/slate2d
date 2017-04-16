@@ -25,8 +25,8 @@ typedef struct gameImportFuncs_s {
 	char** (*FS_List)(const char *path);
 	void (*FS_FreeList)(void * listVar);
 	Img* (*Img_Create)(const char * name, const char * path);
-	void (*Img_Load)(NVGcontext * nvg, Img & img);
-	void (*Img_LoadAll)(NVGcontext * nvg);
+	void (*Img_Load)(Img & img);
+	void (*Img_LoadAll)();
 	Img* (*Img_Find)(const char * name);
 	Img* (*Img_Get)(unsigned int i);
 	bool (*Img_Free)(const char * name);

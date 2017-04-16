@@ -53,13 +53,10 @@ struct BaseWorld : world_t {
 
 	bool add_lua_system(sol::table opts);
 	void add_entity(entity_t ent);
+	int new_image(const char *name, const char *path);
 	Sweep trace(entity_t &ent, double dx, double dy);
 
-
-
-
-	template <typename T>
-	T testclamp(const T& n, const T& lower, const T& upper) {
+	template <typename T> T testclamp(const T& n, const T& lower, const T& upper) {
 		return std::max(lower, std::min(n, upper));
 	}
 };

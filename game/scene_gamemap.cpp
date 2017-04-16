@@ -12,22 +12,16 @@ void GameMapScene::Startup(ClientInfo* info) {
 	// load the map and images
 	map = trap->Map_Load(mapFileName);
 
-	trap->Img_LoadAll(inf->nvg);
-
 	world = new BaseWorld();
 
-	// FIXME: leaky leaky
-	auto camsys = new CameraDrawSystem(info);
-	world->add(camsys);
+	// update systems (most are in lua)
+	world->add(new PlayerInputSystem());
 
-	auto tmapsys = new TileMapDrawSystem(info);
-	world->add(tmapsys);
-
-	auto inputsys = new PlayerInputSystem();
-	world->add(inputsys);
-
-	auto rectsys = new RectDrawerSystem(info);
-	world->add(rectsys);
+	// render systems
+	world->add(new CameraDrawSystem(info));
+	world->add(new TileMapDrawSystem(info));
+	world->add(new SpriteDrawerSystem(info));
+	world->add(new RectDrawerSystem(info));
 
 	// our "master" entity
 	entity_t worldEnt = world->get_entity();
@@ -119,6 +113,8 @@ void GameMapScene::Startup(ClientInfo* info) {
 
 		layer = layer->next;
 	}
+
+	trap->Img_LoadAll();
 }
 
 void GameMapScene::Update(float dt) {

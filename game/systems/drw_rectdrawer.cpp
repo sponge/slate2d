@@ -2,6 +2,7 @@
 #include "../baseworld.h"
 #include "../../src/image.h"
 #include "../public.h"
+#include "../cvar_game.h"
 
 RectDrawerSystem::RectDrawerSystem(ClientInfo *inf) : inf(inf)
 {
@@ -15,6 +16,12 @@ void RectDrawerSystem::update(double dt)
 {
 	BaseWorld *world = (BaseWorld*)this->world;
 
+	if (dbg_drawBbox->integer == 0) {
+		return;
+	}
+
+	nvgSave(inf->nvg);
+
 	for (auto &entity : world->entities) {
 		PECS_SKIP_INVALID_ENTITY;
 
@@ -27,6 +34,10 @@ void RectDrawerSystem::update(double dt)
 		nvgFillColor(inf->nvg, nvgRGBA(r.r, r.g, r.b, r.a));
 		nvgFill(inf->nvg);
 
+		if (dbg_drawBbox->integer == 1) {
+			return;
+		}
+
 		nvgFillColor(inf->nvg, nvgRGBA(255, 255, 255, 255));
 		char s[16];
 		nvgTextAlign(inf->nvg, 2);
@@ -35,5 +46,7 @@ void RectDrawerSystem::update(double dt)
 		snprintf(s, sizeof(s), "%.0f, %.0f", m.dx, m.dy);
 		nvgText(inf->nvg, body.x, body.y + 12, s, 0);
 	}
+
+	nvgRestore(inf->nvg);
 
 }

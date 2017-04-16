@@ -8,7 +8,6 @@ cam:Bind()
 world:addCamera(world.master_entity, cam)
 
 spawn_entity = function(world, obj, props)
-    print(inspect(props))
     if obj.type == 'player' then
         local map = world:getTileMap(world.master_entity.id).map
         local camera = world:getCamera(world.master_entity.id)
@@ -19,9 +18,9 @@ spawn_entity = function(world, obj, props)
         world:addMovable(ent, Movable:new(0, 0))
         world:addRenderable(ent, Renderable:new(200, 30, 30, 200))
         world:addPlayerInput(ent, PlayerInput:new())
-        -- world:addPlayer(ent, Player:new())
-        -- auto playerImg = Img_Create("player", "gfx/dog.png");
-        -- ent.assign<Sprite>(playerImg, Vec2(22, 15), Vec2(0, 0));
+        world:addPlayer(ent, Player:new())
+        local playerImg = world:new_image("player", "gfx/dog.png")
+        world:addSprite(ent, Sprite:new(playerImg, 22, 15, 0, 0))
         world:add_entity(ent)
 
         camera.target = ent.id
@@ -53,7 +52,7 @@ world:add_system {
 world:add_system {
     name = "Player Update",
     priority = 0,
-    components = {COMPONENT_PLAYERINPUT, COMPONENT_BODY, COMPONENT_MOVABLE},
+    components = {COMPONENT_PLAYERINPUT, COMPONENT_BODY, COMPONENT_MOVABLE, COMPONENT_PLAYER},
     process = function(dt, ent, c)
         if c.playerinput.right then
             c.body.x = c.body.x + 50 * dt

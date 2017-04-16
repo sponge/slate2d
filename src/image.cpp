@@ -4,11 +4,15 @@
 #include <stdlib.h>
 #include "image.h"
 #include "files.h"
+#include "console/console.h"
 
 // FIXME: work out how to do this with a vector of structs instead vector of ptrs
 std::vector<Img *> imgs;
+extern ClientInfo inf;
 
 Img * Img_Create(const char *name, const char *path) {
+	Com_Printf("img_create: %s %s\n", name, path);
+
 	auto found = Img_Find(name);
 	if (found != nullptr) {
 		return found;
@@ -24,7 +28,8 @@ Img * Img_Create(const char *name, const char *path) {
 	return img;
 }
 
-void Img_Load(NVGcontext *nvg, Img &img) {
+void Img_Load(Img &img) {
+	Com_Printf("img_load: %s %s\n", img.name, img.path);
 	if (img.hnd != 0) {
 		nvgDeleteImage(img.nvg, img.hnd);
 	}
@@ -32,7 +37,7 @@ void Img_Load(NVGcontext *nvg, Img &img) {
 	void *buffer;
 	auto sz = FS_ReadFile(img.path, &buffer);
 
-	img.nvg = nvg;
+	img.nvg = inf.nvg;
 	img.hnd = nvgCreateImageMem(img.nvg, NVG_IMAGE_NEAREST, (unsigned char *)buffer, sz);
 	nvgImageSize(img.nvg, img.hnd, &img.w, &img.h);
 
@@ -53,16 +58,15 @@ Img * Img_Find(const char *name) {
 	return nullptr;
 }
 
-void Img_LoadAll(NVGcontext *nvg) {
+void Img_LoadAll() {
 	for (auto img : imgs) {
-		if (img->nvg != nullptr && img->hnd == 0) {
-			Img_Load(nvg, *img);
+		if (img->hnd == 0) {
+			Img_Load(*img);
 		}
 	}
 }
 
 bool Img_Free(const char *name) {
-	auto index = 0;
 	for (auto img : imgs) {
 		if (strcmp(img->name, name) == 0) {
 			nvgDeleteImage(img->nvg, img->hnd);

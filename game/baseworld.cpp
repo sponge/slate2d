@@ -2,6 +2,7 @@
 #include "lua_extstate.h"
 #include "lua_pecs_system.h"
 #include "componenthelpers.h"
+#include "public.h"
 #include <tmx.h>
 
 bool BaseWorld::add_lua_system(sol::table opts) {
@@ -33,6 +34,11 @@ void BaseWorld::add_entity(entity_t ent) {
 	this->add(ent);
 }
 
+int BaseWorld::new_image(const char *name, const char *path) {
+	auto img = trap->Img_Create(name, path);
+	return img->index;
+}
+
 Sweep BaseWorld::trace(entity_t & ent, double dx, double dy) {
 	return Trace(*this, ent, dx, dy, NULL);
 }
@@ -47,6 +53,7 @@ BaseWorld::BaseWorld() {
 		"add_system", &BaseWorld::add_lua_system,
 		"add_entity", &BaseWorld::add_entity,
 		"new_entity", &BaseWorld::get_entity,
+		"new_image", &BaseWorld::new_image,
 		"trace", &BaseWorld::trace,
 
 		"addBody", &BaseWorld::addBody,
@@ -174,4 +181,24 @@ BaseWorld::BaseWorld() {
 		"attack", &PlayerInput::attack,
 		"menu", &PlayerInput::menu
 		);
+
+	lua.new_usertype<Player>("Player",
+		sol::constructors<Player()>(),
+		"numJumps", &Player::numJumps,
+		"isWallSliding", &Player::isWallSliding,
+		"canWallJump", &Player::canWallJump,
+		"jumpHeld", &Player::jumpHeld,
+		"willPogo", &Player::willPogo,
+		"stunTime", &Player::stunTime
+	);
+
+	lua.new_usertype<Sprite>("Sprite",
+		sol::constructors<Sprite(), Sprite(unsigned int img, int sx, int sy, int ofsx, int ofsy)>(),
+		"img", &Sprite::img,
+		"frame", &Sprite::frame,
+		"ofs", &Sprite::ofs,
+		"size", &Sprite::size,
+		"flipX", &Sprite::flipX,
+		"flipY", &Sprite::flipY
+	);
 }

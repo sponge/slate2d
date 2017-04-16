@@ -16,8 +16,8 @@ typedef struct {
 } Img;
 
 Img * Img_Create(const char * name, const char * path);
-void Img_Load(NVGcontext * nvg, Img & img);
-void Img_LoadAll(NVGcontext * nvg);
+void Img_Load(Img & img);
+void Img_LoadAll();
 Img * Img_Find(const char * name);
 Img * Img_Get(unsigned int i);
 bool Img_Free(const char * name);

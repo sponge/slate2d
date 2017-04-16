@@ -35,6 +35,16 @@ struct RectDrawerSystem : system_t {
 	ClientInfo *inf;
 };
 
+struct SpriteDrawerSystem : system_t {
+	SpriteDrawerSystem(ClientInfo *inf);
+	void on_add(world_t *world) { }
+	void on_remove(world_t *world) { }
+	void on_add(entity_t *entity) { }
+	void on_remove(entity_t *entity) { }
+	void update(double dt);
+	ClientInfo *inf;
+};
+
 struct PlayerInputSystem : system_t {
 	PlayerInputSystem();
 	void on_add(world_t *world) { }

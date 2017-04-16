@@ -91,6 +91,8 @@ void TileMapDrawSystem::update(double dt)
 		trap->Error(ERR_DROP, "can't draw tilemap without an active camera");
 	}
 
+	nvgSave(inf->nvg);
+
 	for (auto &entity : world->entities) {
 		PECS_SKIP_INVALID_ENTITY;
 
@@ -123,4 +125,6 @@ void TileMapDrawSystem::update(double dt)
 			layer = layer->next;
 		}
 	}
+
+	nvgRestore(inf->nvg);
 }

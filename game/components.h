@@ -125,7 +125,8 @@ struct Player {
 
 struct Sprite {
 	Sprite() {}
-	explicit Sprite(const char *imgName, Vec2 size, Vec2 ofs) : ofs(ofs), size(size) {}
+	explicit Sprite(unsigned int img, Vec2 size, Vec2 ofs) : img(img), ofs(ofs), size(size) {}
+	explicit Sprite(unsigned int img, int sx, int sy, int ofsx, int ofsy) : img(img), ofs(ofsx, ofsy), size(sx, sy) {}
 	unsigned int img;
 	unsigned int frame;
 	Vec2 ofs, size;

@@ -67,17 +67,18 @@ void Img_LoadAll() {
 }
 
 bool Img_Free(const char *name) {
+	Com_Printf("img_free: trying to free %s... ", name);
 	for (auto img : imgs) {
 		if (strcmp(img->name, name) == 0) {
 			nvgDeleteImage(img->nvg, img->hnd);
 			img->hnd = 0;
 			img->nvg = nullptr;
+			Com_Printf("found!\n");
 			return true;
 		}
-
-		return true;
 	}
 
+	Com_Printf("not found!\n");
 	return false;
 }
 

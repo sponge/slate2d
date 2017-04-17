@@ -130,5 +130,5 @@ struct Sprite {
 	unsigned int img;
 	unsigned int frame;
 	Vec2 ofs, size;
-	bool flipX, flipY;
+	bool flipX = false, flipY = false;
 };

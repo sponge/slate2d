@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="26" tilewidth="16" tileheight="16" backgroundcolor="#70c5d7" nextobjectid="2">
- <tileset firstgid="1" name="dog" tilewidth="16" tileheight="16" tilecount="40">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="26" tilewidth="16" tileheight="16" backgroundcolor="#70c5d7" nextobjectid="3">
+ <tileset firstgid="1" name="dog" tilewidth="16" tileheight="16" tilecount="40" columns="20">
   <image source="tilesets/dog.png" width="320" height="32"/>
   <tile id="1">
    <properties>
@@ -81,5 +81,6 @@
  </layer>
  <objectgroup name="objects">
   <object id="1" type="player" gid="47" x="16" y="352" width="16" height="16"/>
+  <object id="2" type="goal" gid="44" x="96" y="336" width="16" height="16"/>
  </objectgroup>
 </map>

@@ -27,6 +27,7 @@ void LuaSystem::update(double dt)
 		if (this->mask & COMPONENT_PLAYERINPUT) { components["playerinput"] = &world->getPlayerInput(entity.id); }
 		if (this->mask & COMPONENT_PLAYER) { components["player"] = &world->getPlayer(entity.id); }
 		if (this->mask & COMPONENT_SPRITE) { components["sprite"] = &world->getSprite(entity.id); }
+		if (this->mask & COMPONENT_ANIMATION) { components["animation"] = &world->getAnimation(entity.id); }
 
 		this->luaUpdate(dt, entity, components);
 	}

@@ -74,7 +74,7 @@ void GameMapScene::Startup(ClientInfo* info) {
 	// assign the world entity now (since it will do a copy)
 	world->assign(&worldEnt, tmap);
 	world->add(worldEnt);
-	world->masterEntity = &world->entities[worldEnt.id];
+	world->masterEntity = worldEnt.id;
 
 	// load the lua script and check for a spawn_entity global func
 	lua.LoadGameFile("scripts/main.lua");
@@ -118,15 +118,12 @@ void GameMapScene::Startup(ClientInfo* info) {
 }
 
 void GameMapScene::Update(float dt) {
+	world->time += dt;
 	world->update(dt);
 }
 
 void GameMapScene::Render() {
 	world->render(0);
-
-	if (dbg_drawBbox->integer) {
-		// draw debug bounding boxes
-	}
 }
 
 GameMapScene::~GameMapScene() {

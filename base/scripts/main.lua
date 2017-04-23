@@ -24,9 +24,17 @@ spawn_entity = function(world, obj, props)
         world:add_entity(ent)
 
         camera.target = ent.id
+    elseif obj.type == 'goal' then
+        local map = world:getTileMap(world.master_entity).map
+        local ent = world:new_entity()
+        local b = Body:new(obj.x, obj.y, 32, 32)
+        world:addBody(ent, b)
+        local bone = world:new_image("bone", "gfx/bone.png")
+        world:addSprite(ent, Sprite:new(bone, 32, 32, 0, 0))
+        world:addAnimation(ent, Animation:new(0, 0, 7, 0.1, world.time))
+        world:add_entity(ent)
     else
-        print("unhandled entity:")
-        print(inspect(obj))
+        print("unhandled entity: " .. obj.type)
     end
 end
 

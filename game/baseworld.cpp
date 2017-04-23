@@ -43,12 +43,19 @@ Sweep BaseWorld::trace(entity_t & ent, double dx, double dy) {
 	return Trace(*this, ent, dx, dy, NULL);
 }
 
+entity_t * BaseWorld::get_master_entity()
+{
+	return &this->entities[this->masterEntity];
+}
+
+
 BaseWorld::BaseWorld() {
 	// expose world management to lua
 
 	lua["world"] = this;
 	lua.new_usertype<BaseWorld>("BaseWorld",
-		"master_entity", &BaseWorld::masterEntity,
+		"master_entity", sol::property(&BaseWorld::get_master_entity),
+		"time", &BaseWorld::time,
 
 		"add_system", &BaseWorld::add_lua_system,
 		"add_entity", &BaseWorld::add_entity,
@@ -71,7 +78,9 @@ BaseWorld::BaseWorld() {
 		"addPlayer", &BaseWorld::addPlayer,
 		"getPlayer", &BaseWorld::getPlayer,
 		"addSprite", &BaseWorld::addSprite,
-		"getSprite", &BaseWorld::getSprite
+		"getSprite", &BaseWorld::getSprite,
+		"addAnimation", &BaseWorld::addAnimation,
+		"getAnimation", &BaseWorld::getAnimation
 		);
 
 	lua.new_usertype<entity_t>("Entity",
@@ -200,5 +209,14 @@ BaseWorld::BaseWorld() {
 		"size", &Sprite::size,
 		"flipX", &Sprite::flipX,
 		"flipY", &Sprite::flipY
+	);
+
+	lua.new_usertype<Animation>("Animation",
+		sol::constructors<Animation(), Animation(unsigned int id, unsigned int startFrame, unsigned int endFrame, double delay, double startTime)>(),
+		"id", &Animation::id,
+		"startFrame", &Animation::startFrame,
+		"endFrame", &Animation::endFrame,
+		"delay", &Animation::delay,
+		"startTime", &Animation::startTime
 	);
 }

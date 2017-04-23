@@ -19,7 +19,8 @@ enum {
 	COMPONENT_CAMERA = 1 << 4,
 	COMPONENT_PLAYERINPUT = 1 << 5,
 	COMPONENT_PLAYER = 1 << 6,
-	COMPONENT_SPRITE = 1 << 7
+	COMPONENT_SPRITE = 1 << 7,
+	COMPONENT_ANIMATION = 1 << 8
 };
 
 struct Body {
@@ -128,7 +129,14 @@ struct Sprite {
 	explicit Sprite(unsigned int img, Vec2 size, Vec2 ofs) : img(img), ofs(ofs), size(size) {}
 	explicit Sprite(unsigned int img, int sx, int sy, int ofsx, int ofsy) : img(img), ofs(ofsx, ofsy), size(sx, sy) {}
 	unsigned int img;
-	unsigned int frame;
+	unsigned int frame = 0;
 	Vec2 ofs, size;
 	bool flipX = false, flipY = false;
+};
+
+struct Animation {
+	Animation() {}
+	Animation(unsigned int id, unsigned int startFrame, unsigned int endFrame, double delay, double startTime) : id(id), startFrame(startFrame), endFrame(endFrame), delay(delay), startTime(startTime) {}
+	unsigned int id, startFrame, endFrame;
+	double delay, startTime;
 };

@@ -48,8 +48,11 @@ struct BaseWorld : world_t {
 	GENERATE_COMPONENT(COMPONENT_PLAYERINPUT, PlayerInput);
 	GENERATE_COMPONENT(COMPONENT_PLAYER, Player);
 	GENERATE_COMPONENT(COMPONENT_SPRITE, Sprite);
+	GENERATE_COMPONENT(COMPONENT_ANIMATION, Animation);
 
-	entity_t *masterEntity;
+	unsigned int masterEntity;
+	double time = 0;
+	entity_t * get_master_entity();
 
 	bool add_lua_system(sol::table opts);
 	void add_entity(entity_t ent);

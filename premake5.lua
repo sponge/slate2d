@@ -61,6 +61,8 @@ solution "game"
     targetdir "bin/%{cfg.buildcfg}"
     flags { "C++14" }
     links { "nanovg", "tmx", "imgui", "lua", "luasocket" }
+    configuration { "windows" }
+      links { "ws2_32" }
 
   project "nanovg"
     language "C"

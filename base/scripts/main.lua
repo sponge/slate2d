@@ -77,16 +77,28 @@ world:add_system {
         c.table.hello = c.table.hello + 1
 
         if c.playerinput.right then
-            c.body.x = c.body.x + 50 * dt
+            c.mov.dx = 50 * dt
         end
         if c.playerinput.left then
-            c.body.x = c.body.x - 50 * dt
+            c.mov.dx = -50 * dt
         end
         if c.playerinput.up then
-            c.body.y = c.body.y - 50 * dt
+            c.mov.dy = -50 * dt
         end
         if c.playerinput.down then
-            c.body.y = c.body.y + 50 * dt
+            c.mov.dy = 50 * dt
         end
+
+        local xmove = world:trace(ent, c.mov.dx, 0)
+        c.body.x = xmove.pos.x
+        -- if xmove.hit.valid then
+        --     c.mov.dx = 0
+        -- end
+
+        local ymove = world:trace(ent, 0, c.mov.dy)
+        c.body.y = ymove.pos.y
+        -- if ymove.hit.valid then
+        --     c.mov.dy = 0
+        -- end
     end
 }

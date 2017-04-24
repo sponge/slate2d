@@ -11,11 +11,12 @@ spawn_entity = function(world, obj, props)
         local camera = world:getCamera(world.master_entity.id)
 
         local ent = world:new_entity()
-        world:addBody(ent, Body:new(obj.x + (map.tile_width / 2), obj.y - 14.001, 16, 15))
+        world:addBody(ent, Body:new(obj.x + (map.tile_width / 2), obj.y - 14.001, 15, 15))
         world:addMovable(ent, Movable:new(0, 0))
         world:addRenderable(ent, Renderable:new(200, 30, 30, 200))
         world:addPlayerInput(ent, PlayerInput:new())
-        world:addSprite(ent, Sprite:new(world:new_image("player", "gfx/dog.png"), 22, 15, 0, 0))
+        world:addSprite(ent, Sprite:new(world:new_image("player", "gfx/dog.png"), 22, 16, 0, 0))
+        world:addAnimation(ent, Animation:new(0, 0, 6, 0.1, world.time))
         world:addTable(ent, {
             num_jumps = 0,
             is_wall_sliding = false,
@@ -64,8 +65,17 @@ world:add_system {
 world:add_system {
     name = "Player Update",
     priority = 0,
-    components = {COMPONENT_PLAYERINPUT, COMPONENT_BODY, COMPONENT_MOVABLE, COMPONENT_LUATABLE, COMPONENT_SPRITE},
+    components = {COMPONENT_PLAYERINPUT, COMPONENT_BODY, COMPONENT_MOVABLE, COMPONENT_LUATABLE, COMPONENT_SPRITE, COMPONENT_ANIMATION},
     process = function(dt, ent, c)
+
+        local right_touch = world:trace(ent, 1, 0).time < 1e-7;
+        local left_touch = world:trace(ent, -1, 0).time < 1e-7;
+        local down_touch = world:trace(ent, 0, 1).time < 1e-7;
+        local up_touch = world:trace(ent, 0, -1).time < 1e-7;
+
+        world:debug_text(inspect(c.table))
+        world:debug_text("l:" .. tostring(left_touch) .. " r:".. tostring(right_touch) .. " d:".. tostring(down_touch) .. " u:" .. tostring(up_touch))
+
         if c.playerinput.right then
             c.mov.dx = 50 * dt
         elseif c.playerinput.left then
@@ -84,6 +94,12 @@ world:add_system {
 
         if c.mov.dx ~= 0 then
             c.sprite.flipX = c.mov.dx < 0 and true or false
+            if c.animation.endFrame == 0 then
+                c.animation.startTime = world.time
+                c.animation.endFrame = 6
+            end
+        else
+            c.animation.endFrame = 0
         end
 
         local xmove = world:trace(ent, c.mov.dx, 0)

@@ -79,6 +79,13 @@ void GameMapScene::Startup(ClientInfo* info) {
 	// load the lua script and check for a spawn_entity global func
 	lua.LoadGameFile("scripts/main.lua");
 
+	sol::function initFunc = lua["init"];
+	if (!initFunc.valid()) {
+		trap->Error(ERR_DROP, "couldn't find function init in main.lua");
+		return;
+	}
+	initFunc();
+
 	sol::function spawnFunc = lua["spawn_entity"];
 	if (!spawnFunc.valid()) {
 		trap->Error(ERR_DROP, "couldn't find function spawn_entity in main.lua");

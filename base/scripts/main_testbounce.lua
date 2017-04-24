@@ -1,6 +1,3 @@
-local inspect = require 'inspect'
-require 'components'
-
 local WORLD_WIDTH = 1280
 local WORLD_HEIGHT = 720
 

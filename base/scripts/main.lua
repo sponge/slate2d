@@ -1,9 +1,11 @@
--- FIXME: the rest of this hardcoded shit
-local tmap = world:getTileMap(world.master_entity.id).map
-local cam = Camera.new(1280, 720, 3, tmap.w * tmap.tile_width, tmap.h * tmap.tile_height)
-cam.active = true
-cam:Bind()
-world:addCamera(world.master_entity, cam)
+init = function() 
+    -- FIXME: the rest of this hardcoded shit
+    local tmap = world:getTileMap(world.master_entity.id).map
+    local cam = Camera.new(1280, 720, 3, tmap.w * tmap.tile_width, tmap.h * tmap.tile_height)
+    cam.active = true
+    cam:Bind()
+    world:addCamera(world.master_entity, cam)
+end
 
 spawn_entity = function(world, obj, props)
     if obj.type == 'player' then

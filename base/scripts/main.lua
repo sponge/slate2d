@@ -76,17 +76,21 @@ world:add_system {
     process = function(dt, ent, c)
         c.table.hello = c.table.hello + 1
 
+
         if c.playerinput.right then
             c.mov.dx = 50 * dt
-        end
-        if c.playerinput.left then
+        elseif c.playerinput.left then
             c.mov.dx = -50 * dt
+        else
+            c.mov.dx = 0
         end
+
         if c.playerinput.up then
             c.mov.dy = -50 * dt
-        end
-        if c.playerinput.down then
+        elseif c.playerinput.down then
             c.mov.dy = 50 * dt
+        else
+            c.mov.dy = 0
         end
 
         local xmove = world:trace(ent, c.mov.dx, 0)

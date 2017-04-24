@@ -18,12 +18,23 @@ spawn_entity = function(world, obj, props)
         world:addMovable(ent, Movable:new(0, 0))
         world:addRenderable(ent, Renderable:new(200, 30, 30, 200))
         world:addPlayerInput(ent, PlayerInput:new())
-        world:addPlayer(ent, Player:new())
         local playerImg = world:new_image("player", "gfx/dog.png")
         world:addSprite(ent, Sprite:new(playerImg, 22, 15, 0, 0))
+
+        world:addTable(ent, {
+            hello = 69,
+            num_jumps = 0,
+            is_wall_sliding = false,
+            can_wall_jump = false,
+            jump_held = false,
+            will_pogo = false,
+            stunTime = 0.0
+        })
+
         world:add_entity(ent)
 
         camera.target = ent.id
+
     elseif obj.type == 'goal' then
         local map = world:getTileMap(world.master_entity).map
         local ent = world:new_entity()
@@ -33,6 +44,7 @@ spawn_entity = function(world, obj, props)
         world:addSprite(ent, Sprite:new(bone, 32, 32, 0, 0))
         world:addAnimation(ent, Animation:new(0, 0, 7, 0.1, world.time))
         world:add_entity(ent)
+
     else
         print("unhandled entity: " .. obj.type)
     end
@@ -60,8 +72,10 @@ world:add_system {
 world:add_system {
     name = "Player Update",
     priority = 0,
-    components = {COMPONENT_PLAYERINPUT, COMPONENT_BODY, COMPONENT_MOVABLE, COMPONENT_PLAYER},
+    components = {COMPONENT_PLAYERINPUT, COMPONENT_BODY, COMPONENT_MOVABLE, COMPONENT_LUATABLE},
     process = function(dt, ent, c)
+        c.table.hello = c.table.hello + 1
+
         if c.playerinput.right then
             c.body.x = c.body.x + 50 * dt
         end

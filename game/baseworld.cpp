@@ -75,8 +75,8 @@ BaseWorld::BaseWorld() {
 		"getCamera", &BaseWorld::getCamera,
 		"addPlayerInput", &BaseWorld::addPlayerInput,
 		"getPlayerInput", &BaseWorld::getPlayerInput,
-		"addPlayer", &BaseWorld::addPlayer,
-		"getPlayer", &BaseWorld::getPlayer,
+		"addTable", &BaseWorld::addTable,
+		"getTable", &BaseWorld::getTable,
 		"addSprite", &BaseWorld::addSprite,
 		"getSprite", &BaseWorld::getSprite,
 		"addAnimation", &BaseWorld::addAnimation,
@@ -87,7 +87,7 @@ BaseWorld::BaseWorld() {
 		"alive", &entity_t::alive,
 		"id", &entity_t::id,
 		"mask", &entity_t::mask
-	);
+		);
 
 	// other types
 
@@ -191,16 +191,6 @@ BaseWorld::BaseWorld() {
 		"menu", &PlayerInput::menu
 		);
 
-	lua.new_usertype<Player>("Player",
-		sol::constructors<Player()>(),
-		"numJumps", &Player::numJumps,
-		"isWallSliding", &Player::isWallSliding,
-		"canWallJump", &Player::canWallJump,
-		"jumpHeld", &Player::jumpHeld,
-		"willPogo", &Player::willPogo,
-		"stunTime", &Player::stunTime
-	);
-
 	lua.new_usertype<Sprite>("Sprite",
 		sol::constructors<Sprite(), Sprite(unsigned int img, int sx, int sy, int ofsx, int ofsy)>(),
 		"img", &Sprite::img,
@@ -209,7 +199,7 @@ BaseWorld::BaseWorld() {
 		"size", &Sprite::size,
 		"flipX", &Sprite::flipX,
 		"flipY", &Sprite::flipY
-	);
+		);
 
 	lua.new_usertype<Animation>("Animation",
 		sol::constructors<Animation(), Animation(unsigned int id, unsigned int startFrame, unsigned int endFrame, double delay, double startTime)>(),
@@ -218,5 +208,5 @@ BaseWorld::BaseWorld() {
 		"endFrame", &Animation::endFrame,
 		"delay", &Animation::delay,
 		"startTime", &Animation::startTime
-	);
+		);
 }

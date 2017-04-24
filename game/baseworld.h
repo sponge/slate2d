@@ -46,9 +46,19 @@ struct BaseWorld : world_t {
 	GENERATE_COMPONENT(COMPONENT_TILEMAP, TileMap);
 	GENERATE_COMPONENT(COMPONENT_CAMERA, Camera);
 	GENERATE_COMPONENT(COMPONENT_PLAYERINPUT, PlayerInput);
-	GENERATE_COMPONENT(COMPONENT_PLAYER, Player);
 	GENERATE_COMPONENT(COMPONENT_SPRITE, Sprite);
 	GENERATE_COMPONENT(COMPONENT_ANIMATION, Animation);
+
+	// not using the macro so we can pass a table directory
+	std::vector<sol::table> LuaTables;
+	sol::table & getTable(int id) {
+		return LuaTables[id];
+	}
+	void addTable(entity_t *entity, sol::table t) {
+		entity->mask |= COMPONENT_LUATABLE;
+		resize(this->LuaTables, entity->id);
+		this->LuaTables[entity->id] = t;
+	}
 
 	unsigned int masterEntity;
 	double time = 0;

@@ -18,7 +18,7 @@ enum {
 	COMPONENT_TILEMAP = 1 << 3,
 	COMPONENT_CAMERA = 1 << 4,
 	COMPONENT_PLAYERINPUT = 1 << 5,
-	COMPONENT_PLAYER = 1 << 6,
+	COMPONENT_LUATABLE = 1 << 6, // not defined here since it's lua specific and to avoid header spam
 	COMPONENT_SPRITE = 1 << 7,
 	COMPONENT_ANIMATION = 1 << 8
 };
@@ -112,16 +112,6 @@ struct PlayerInput {
 	explicit PlayerInput() {}
 
 	bool up = false, down = false, left = false, right = false, jump = false, attack = false, menu = false;
-};
-
-struct Player {
-	Player() {}
-	uint8_t numJumps;
-	bool isWallSliding;
-	bool canWallJump;
-	bool jumpHeld;
-	bool willPogo;
-	float stunTime;
 };
 
 struct Sprite {

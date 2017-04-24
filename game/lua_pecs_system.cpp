@@ -25,7 +25,7 @@ void LuaSystem::update(double dt)
 		if (this->mask & COMPONENT_TILEMAP) { components["tilemap"] = &world->getTileMap(entity.id); }
 		if (this->mask & COMPONENT_CAMERA) { components["camera"] = &world->getCamera(entity.id); }
 		if (this->mask & COMPONENT_PLAYERINPUT) { components["playerinput"] = &world->getPlayerInput(entity.id); }
-		if (this->mask & COMPONENT_PLAYER) { components["player"] = &world->getPlayer(entity.id); }
+		if (this->mask & COMPONENT_LUATABLE) { components["table"] = world->getTable(entity.id); } // reference the table directly since only member in component
 		if (this->mask & COMPONENT_SPRITE) { components["sprite"] = &world->getSprite(entity.id); }
 		if (this->mask & COMPONENT_ANIMATION) { components["animation"] = &world->getAnimation(entity.id); }
 

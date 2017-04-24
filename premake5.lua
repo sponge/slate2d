@@ -32,18 +32,18 @@ solution "game"
     kind "ConsoleApp"
     language "C++"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
-    sysincludedirs { "include", "nanovg", "tmx", "imgui", "physfs", "glew" }
+    sysincludedirs { "sdl", "nanovg", "tmx", "imgui", "physfs", "glew" }
     debugdir "."
     targetdir "bin/%{cfg.buildcfg}"
     links { "nanovg", "tmx", "imgui", "physfs", "glew" }
     flags { "C++14" }
 
     configuration { "windows" }
-      libdirs { "lib/Win32" }
+      libdirs { "sdl/lib/Win32" }
       links { "SDL2", "SDL2main", "opengl32" }
       defines { "_CRT_SECURE_NO_WARNINGS" }
       postbuildcommands {
-        '{COPY} "%{wks.location}../lib/win32/SDL2.dll" "%{cfg.targetdir}"'
+        '{COPY} "%{wks.location}../sdl/lib/win32/SDL2.dll" "%{cfg.targetdir}"'
       }
 
     configuration { "macosx" }

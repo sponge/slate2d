@@ -1,5 +1,3 @@
-require 'components'
-
 -- FIXME: the rest of this hardcoded shit
 local tmap = world:getTileMap(world.master_entity.id).map
 local cam = Camera.new(1280, 720, 3, tmap.w * tmap.tile_width, tmap.h * tmap.tile_height)

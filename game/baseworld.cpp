@@ -50,8 +50,20 @@ entity_t * BaseWorld::get_master_entity()
 
 
 BaseWorld::BaseWorld() {
-	// expose world management to lua
+	lua.script(
+	"COMPONENT_ANY = 0\n"
+	"COMPONENT_BODY = 1 << 0\n"
+	"COMPONENT_MOVABLE = 1 << 1\n"
+	"COMPONENT_RENDERABLE = 1 << 2\n"
+	"COMPONENT_TILEMAP = 1 << 3\n"
+	"COMPONENT_CAMERA = 1 << 4\n"
+	"COMPONENT_PLAYERINPUT = 1 << 5\n"
+	"COMPONENT_LUATABLE = 1 << 6\n"
+	"COMPONENT_SPRITE = 1 << 7\n"
+	"COMPONENT_ANIMATION = 1 << 8\n"
+	);
 
+	// expose world management to lua
 	lua["world"] = this;
 	lua.new_usertype<BaseWorld>("BaseWorld",
 		"master_entity", sol::property(&BaseWorld::get_master_entity),

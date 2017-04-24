@@ -6,9 +6,8 @@
 // when adding a new component:
 // - update the enum
 // - update GENERATE_COMPONENT calls in baseworld.h
-// - update struct->lua binding in baseworld.cpp
+// - update lua and struct->lua binding in baseworld.cpp
 // - update table generation in lua_pecs_system.cpp
-// - update components.lua
 
 enum {
 	COMPONENT_ANY = 0,

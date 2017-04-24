@@ -60,16 +60,13 @@ struct BaseWorld : world_t {
 		this->LuaTables[entity->id] = t;
 	}
 
+	entity_t * get_master_entity();
 	unsigned int masterEntity;
 	double time = 0;
-	entity_t * get_master_entity();
 
+	// functions exposed to lua environment
 	bool add_lua_system(sol::table opts);
 	void add_entity(entity_t ent);
 	int new_image(const char *name, const char *path);
 	Sweep trace(entity_t &ent, double dx, double dy);
-
-	template <typename T> T testclamp(const T& n, const T& lower, const T& upper) {
-		return std::max(lower, std::min(n, upper));
-	}
 };

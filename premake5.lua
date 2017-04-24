@@ -32,18 +32,18 @@ solution "game"
     kind "ConsoleApp"
     language "C++"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
-    sysincludedirs { "sdl", "nanovg", "tmx", "imgui", "physfs", "glew" }
+    sysincludedirs { "libs/sdl", "libs/nanovg", "libs/tmx", "libs/imgui", "libs/physfs", "libs/glew" }
     debugdir "."
     targetdir "bin/%{cfg.buildcfg}"
     links { "nanovg", "tmx", "imgui", "physfs", "glew" }
     flags { "C++14" }
 
     configuration { "windows" }
-      libdirs { "sdl/lib/Win32" }
+      libdirs { "libs/sdl/lib/Win32" }
       links { "SDL2", "SDL2main", "opengl32" }
       defines { "_CRT_SECURE_NO_WARNINGS" }
       postbuildcommands {
-        '{COPY} "%{wks.location}../sdl/lib/win32/SDL2.dll" "%{cfg.targetdir}"'
+        '{COPY} "%{wks.location}../libs/sdl/lib/win32/SDL2.dll" "%{cfg.targetdir}"'
       }
 
     configuration { "macosx" }
@@ -57,83 +57,84 @@ solution "game"
     kind "SharedLib"
     language "C++"
     files { "game/**.c", "game/**.cpp", "game/**.h", "game/**.hh" }
-    sysincludedirs { "nanovg", "tmx", "imgui", "lua", "luasocket" }
+    sysincludedirs { "libs/nanovg", "libs/tmx", "libs/imgui", "libs/lua", "libs/luasocket" }
     targetdir "bin/%{cfg.buildcfg}"
     flags { "C++14" }
     links { "nanovg", "tmx", "imgui", "lua", "luasocket" }
     configuration { "windows" }
       links { "ws2_32" }
 
-  project "nanovg"
-    language "C"
-    kind "StaticLib"
-    includedirs { "nanovg" }
-    files { "nanovg/**.c", "nanovg/**.h" }
-    targetdir "build/%{cfg.buildcfg}"
-    defines { "_CRT_SECURE_NO_WARNINGS" }
-    warnings "Off"
+  group "libraries"
 
-  project "tmx"
-    language "C++"
-    kind "StaticLib"
-    sysincludedirs { "include" }
-    files { "tmx/**.c", "tmx/**.h", "tmx/**.cpp" }
-    targetdir "build/%{cfg.buildcfg}"
-    defines { "_CRT_SECURE_NO_WARNINGS" }
-    flags { "C++14" }
-    configuration { "macosx", "linux" }
-      buildoptions {"-stdlib=libc++"}
+    project "nanovg"
+      language "C"
+      kind "StaticLib"
+      includedirs { "libs/nanovg" }
+      files { "libs/nanovg/**.c", "libs/nanovg/**.h" }
+      targetdir "build/%{cfg.buildcfg}"
+      defines { "_CRT_SECURE_NO_WARNINGS" }
+      warnings "Off"
 
-  project "imgui"
-    language "C++"
-    kind "StaticLib"
-    files { "imgui/**.cpp", "imgui/**.h" }
-    targetdir "build/%{cfg.buildcfg}"
-    warnings "Off"
+    project "tmx"
+      language "C++"
+      kind "StaticLib"
+      files { "libs/tmx/**.c", "libs/tmx/**.h", "libs/tmx/**.cpp" }
+      targetdir "build/%{cfg.buildcfg}"
+      defines { "_CRT_SECURE_NO_WARNINGS" }
+      flags { "C++14" }
+      configuration { "macosx", "linux" }
+        buildoptions {"-stdlib=libc++"}
 
-  project "physfs"
-    language "C"
-    kind "StaticLib"
-    defines { "_CRT_SECURE_NO_WARNINGS", "PHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_QPAK", "PHYSFS_INTERNAL_ZLIB"}
-    files { "physfs/**.c", "physfs/**.h" }
-    targetdir "build/%{cfg.buildcfg}"
-    warnings "Off"
+    project "imgui"
+      language "C++"
+      kind "StaticLib"
+      files { "libs/imgui/**.cpp", "libs/imgui/**.h" }
+      targetdir "build/%{cfg.buildcfg}"
+      warnings "Off"
 
-  project "glew"
-    language "C++"
-    kind "StaticLib"
-    defines { "GLEW_STATIC" }
-    includedirs { "glew" }
-    files { "glew/**.c", "glew/**.h" }
-    targetdir "build/%{cfg.buildcfg}"
-    warnings "Off"
+    project "physfs"
+      language "C"
+      kind "StaticLib"
+      defines { "_CRT_SECURE_NO_WARNINGS", "PHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_QPAK", "PHYSFS_INTERNAL_ZLIB"}
+      files { "libs/physfs/**.c", "libs/physfs/**.h" }
+      targetdir "build/%{cfg.buildcfg}"
+      warnings "Off"
 
-  project "lua"
-    language "C"
-    kind "StaticLib"
-    files { "lua/**.c", "lua/**.h" }
-    targetdir "build/%{cfg.buildcfg}"
-    warnings "Off"
+    project "glew"
+      language "C++"
+      kind "StaticLib"
+      defines { "GLEW_STATIC" }
+      includedirs { "libs/glew" }
+      files { "libs/glew/**.c", "libs/glew/**.h" }
+      targetdir "build/%{cfg.buildcfg}"
+      warnings "Off"
 
-  project "luasocket"
-    language "C"
-    kind "StaticLib"
-    sysincludedirs { "lua" }
-    targetdir "build/%{cfg.buildcfg}"
-    links { "lua" }
-    warnings "Off"
+    project "lua"
+      language "C"
+      kind "StaticLib"
+      files { "libs/lua/**.c", "libs/lua/**.h" }
+      targetdir "build/%{cfg.buildcfg}"
+      warnings "Off"
 
-    files { "luasocket/luasocket.h", "luasocket/mime.h", "luasocket/luasocket.c", "luasocket/timeout.c", "luasocket/buffer.c", "luasocket/io.c", "luasocket/auxiliar.c",
-						"luasocket/options.c", "luasocket/inet.c", "luasocket/except.c", "luasocket/select.c", "luasocket/tcp.c", "luasocket/udp.c", "luasocket/mime.c" }
-    
-    configuration "Debug"
-      defines { "LUASOCKET_DEBUG" }
+    project "luasocket"
+      language "C"
+      kind "StaticLib"
+      sysincludedirs { "libs/lua" }
+      targetdir "build/%{cfg.buildcfg}"
+      links { "lua" }
+      warnings "Off"
 
-    configuration "windows"
-      files { "luasocket/wsocket.c" }
+      files { "libs/luasocket/luasocket.h", "libs/luasocket/mime.h", "libs/luasocket/luasocket.c", "libs/luasocket/timeout.c", "libs/luasocket/buffer.c", "libs/luasocket/io.c", "libs/luasocket/auxiliar.c",
+              "libs/luasocket/options.c", "libs/luasocket/inet.c", "libs/luasocket/except.c", "libs/luasocket/select.c", "libs/luasocket/tcp.c", "libs/luasocket/udp.c", "libs/luasocket/mime.c" }
+      
+      configuration "Debug"
+        defines { "LUASOCKET_DEBUG" }
 
-    configuration "macosx"
-      files { "luasocket/unixstream.c", "luasocket/unixdgram.c", "luasocket/usocket.c", "luasocket/buffer.c", "luasocket/auxiliar.c", "luasocket/options.c", "luasocket/timeout.c", "luasocket/io.c", "luasocket/usocket.c", "luasocket/unix.c"}
-      defines {
-        "UNIX_HAS_SUN_LEN",
-	    }
+      configuration "windows"
+        files { "libs/luasocket/wsocket.c" }
+
+      configuration "macosx"
+        files { "libs/luasocket/unixstream.c", "libs/luasocket/unixdgram.c", "libs/luasocket/usocket.c", "libs/luasocket/buffer.c", "libs/luasocket/auxiliar.c", "libs/luasocket/options.c", "libs/luasocket/timeout.c", "libs/luasocket/io.c", "libs/luasocket/usocket.c", "libs/luasocket/unix.c"}
+        defines {
+          "UNIX_HAS_SUN_LEN",
+        }

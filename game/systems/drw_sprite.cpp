@@ -15,10 +15,10 @@ void SpriteDrawerSystem::update(double dt)
 {
 	BaseWorld *world = (BaseWorld*)this->world;
 
-    nvgSave(inf->nvg);
-
 	for (auto &entity : world->entities) {
 		PECS_SKIP_INVALID_ENTITY;
+
+		nvgSave(inf->nvg);
 
 		auto &body = world->getBody(entity.id);
 		auto &spr = world->getSprite(entity.id);
@@ -41,6 +41,4 @@ void SpriteDrawerSystem::update(double dt)
 
 		nvgRestore(inf->nvg);
 	}
-
-    nvgRestore(inf->nvg);
 }

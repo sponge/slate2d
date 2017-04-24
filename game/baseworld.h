@@ -69,4 +69,5 @@ struct BaseWorld : world_t {
 	void add_entity(entity_t ent);
 	int new_image(const char *name, const char *path);
 	Sweep trace(entity_t &ent, double dx, double dy);
+	void debug_text(const char *text);
 };

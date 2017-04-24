@@ -43,6 +43,11 @@ Sweep BaseWorld::trace(entity_t & ent, double dx, double dy) {
 	return Trace(*this, ent, dx, dy, NULL);
 }
 
+void BaseWorld::debug_text(const char * text)
+{
+	ImGui::Text(text);
+}
+
 entity_t * BaseWorld::get_master_entity()
 {
 	return &this->entities[this->masterEntity];
@@ -74,6 +79,7 @@ BaseWorld::BaseWorld() {
 		"new_entity", &BaseWorld::get_entity,
 		"new_image", &BaseWorld::new_image,
 		"trace", &BaseWorld::trace,
+		"debug_text", &BaseWorld::debug_text,
 
 		"addBody", &BaseWorld::addBody,
 		"getBody", &BaseWorld::getBody,

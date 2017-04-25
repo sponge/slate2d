@@ -4,9 +4,9 @@
 
 struct LuaSystem : pecs::system_t {
 	sol::state &lua;
-	sol::function luaUpdate;
+	sol::protected_function luaUpdate;
 
-	LuaSystem(sol::state &st, const char *name, int priority, int mask, sol::function func);
+	LuaSystem(sol::state &st, std::string name, int priority, int mask, sol::function func);
 	void update(double dt);
 	void on_add(pecs::world_t *world);
 	void on_remove(pecs::world_t *world);

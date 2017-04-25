@@ -4,7 +4,7 @@
 
 using namespace pecs;
 
-LuaSystem::LuaSystem(sol::state &st, const char *name, int priority, int mask, sol::function func) : lua(st), luaUpdate(func)
+LuaSystem::LuaSystem(sol::state &st, std::string name, int priority, int mask, sol::function func) : lua(st), luaUpdate(func)
 {
 	this->name = name;
 	this->priority = priority;
@@ -24,13 +24,18 @@ void LuaSystem::update(double dt)
 		if (this->mask & COMPONENT_RENDERABLE) { components["renderable"] = &world->getRenderable(entity.id); }
 		if (this->mask & COMPONENT_TILEMAP) { components["tilemap"] = &world->getTileMap(entity.id); }
 		if (this->mask & COMPONENT_CAMERA) { components["camera"] = &world->getCamera(entity.id); }
-		if (this->mask & COMPONENT_PLAYERINPUT) { components["playerinput"] = &world->getPlayerInput(entity.id); }
+		if (this->mask & COMPONENT_PLAYERINPUT) { components["input"] = &world->getPlayerInput(entity.id); }
 		if (this->mask & COMPONENT_LUATABLE) { components["table"] = world->getTable(entity.id); } // reference the table directly since only member in component
 		if (this->mask & COMPONENT_SPRITE) { components["sprite"] = &world->getSprite(entity.id); }
 		if (this->mask & COMPONENT_ANIMATION) { components["animation"] = &world->getAnimation(entity.id); }
-		if (this->mask & COMPONENT_ANIMATION) { components["trigger"] = &world->getTrigger(entity.id); }
+		if (this->mask & COMPONENT_TRIGGER) { components["trigger"] = &world->getTrigger(entity.id); }
 
-		this->luaUpdate(dt, entity, components);
+		auto result = this->luaUpdate(dt, entity, components);
+		if (result.valid() == false) {
+			sol::error err = result;
+			trap->Print("error: (%s) %s", this->name.c_str(), err.what());
+			this->active = false;
+		}
 	}
 }
 

@@ -177,7 +177,7 @@ const entity_t* CheckTrigger(BaseWorld &world, entity_t &ent) {
 	return nullptr;
 }
 
-const Sweep Trace(BaseWorld &world, entity_t &ent, float dx, float dy, entity_t *hitEnt)
+const Sweep Trace(BaseWorld &world, entity_t &ent, float dx, float dy)
 {
 	auto body = world.Bodys[ent.id];
 	auto box = Box(body.x, body.y, body.w, body.h);
@@ -215,7 +215,7 @@ const Sweep Trace(BaseWorld &world, entity_t &ent, float dx, float dy, entity_t 
 			auto tempSweep = sweepAABB(box2, box, delta);
 			if (tempSweep.time < sweep.time) {
 				sweep = tempSweep;
-				hitEnt = &ent2;
+				sweep.hit.id = ent2.id;
 			}
 		}
 		else if ((ent2.mask & COMPONENT_TILEMAP) > 0) {
@@ -223,7 +223,7 @@ const Sweep Trace(BaseWorld &world, entity_t &ent, float dx, float dy, entity_t 
 			auto tempSweep = Map_SweepTiles(tmap, box, delta, Vec2(16, 16));
 			if (tempSweep.time < sweep.time) {
 				sweep = tempSweep;
-				hitEnt = &ent2;
+				sweep.hit.id = ent2.id;
 			}
 		}
 

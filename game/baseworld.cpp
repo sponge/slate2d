@@ -43,8 +43,9 @@ const entity_t* BaseWorld::check_trigger(entity_t &ent) {
 	return CheckTrigger(*this, ent);
 }
 
-Sweep BaseWorld::trace(entity_t & ent, double dx, double dy) {
-	return Trace(*this, ent, dx, dy, NULL);
+Sweep BaseWorld::trace(entity_t & ent, double dx, double dy)
+{
+	return Trace(*this, ent, dx, dy);
 }
 
 void BaseWorld::debug_text(const char * text)
@@ -56,7 +57,6 @@ entity_t * BaseWorld::get_master_entity()
 {
 	return &this->entities[this->masterEntity];
 }
-
 
 BaseWorld::BaseWorld() {
 	lua.script(
@@ -137,6 +137,12 @@ BaseWorld::BaseWorld() {
 		"type", &tmx_object::type
 		);
 
+	lua.new_usertype<cvar_t>("CVar",
+		"name", &cvar_t::name,
+		"string", &cvar_t::string,
+		"value", &cvar_t::value,
+		"integer", &cvar_t::integer
+	);
 	// collision types
 
 	lua.new_usertype<Vec2>("Vec2",
@@ -149,7 +155,8 @@ BaseWorld::BaseWorld() {
 		"pos", &Hit::pos,
 		"delta", &Hit::delta,
 		"normal", &Hit::normal,
-		"time", &Hit::time
+		"time", &Hit::time,
+		"id", &Hit::id
 		);
 
 	lua.new_usertype<Sweep>("Sweep",
@@ -208,6 +215,7 @@ BaseWorld::BaseWorld() {
 
 	lua.new_usertype<PlayerInput>("PlayerInput",
 		sol::constructors<Camera()>(),
+		"enabled", &PlayerInput::enabled,
 		"up", &PlayerInput::up,
 		"down", &PlayerInput::down,
 		"left", &PlayerInput::left,

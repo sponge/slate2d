@@ -23,6 +23,7 @@ typedef struct Hit {
 	bool valid = false;
 	Vec2 pos, delta, normal;
 	double time = 1.0;
+	int id = 0;
 } hit_t;
 
 typedef struct Sweep {

@@ -33,10 +33,8 @@ struct RectMoverSystem : system_t {
 
 			float dx = movable.dx * dt;
 			float dy = movable.dy * dt;
-			
-			entity_t *hitEnt = nullptr;
 
-			Sweep move = Trace(*world, entity, dx, dy, hitEnt);
+			Sweep move = Trace(*world, entity, dx, dy);
 
 			body.x = move.pos.x;
 			body.y = move.pos.y;
@@ -46,7 +44,7 @@ struct RectMoverSystem : system_t {
 				dx = dotprod * move.hit.normal.y;
 				dy = dotprod * move.hit.normal.x;
 
-				move = Trace(*world, entity, dx, dy, hitEnt);
+				move = Trace(*world, entity, dx, dy);
 				body.x = move.pos.x;
 				body.y = move.pos.y;
 

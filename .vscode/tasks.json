@@ -11,7 +11,22 @@
   "tasks": [
     {
       "taskName": "config=debug_x64",
-      "isBuildCommand": true
+      "isBuildCommand": true,
+      "problemMatcher": {
+        "owner": "cpp",
+        "fileLocation": [
+          "relative",
+          "${workspaceRoot}/build"
+        ],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
     },
     {
       "taskName": "config=release_x64"
@@ -19,7 +34,7 @@
     {
       "taskName": "clean"
     }
-
+    
   ],
   "showOutput": "always"
 }

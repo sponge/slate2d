@@ -5,10 +5,10 @@
       "name": "C++ Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceRoot}/bin/Debug/game",
+      "program": "${workspaceRoot}/bin/Debug/engine",
       "args": ["+set fs_basepath ${workspaceRoot}"],
       "stopAtEntry": false,
-      "cwd": "${workspaceRoot}",
+      "cwd": "${workspaceRoot}/bin/Debug/",
       "environment": [],
       "externalConsole": false,
       "preLaunchTask": "config=debug_x64",
@@ -27,7 +27,7 @@
       "type": "cppdbg",
       "request": "attach",
       "program": "${workspaceRoot}/bin/Debug/game",
-      "processId": "${command.pickProcess}",
+      "processId": "${command:pickProcess}",
       "linux": {
         "MIMode": "gdb"
       },

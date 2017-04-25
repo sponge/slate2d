@@ -95,6 +95,7 @@ solution "game"
     project "physfs"
       language "C"
       kind "StaticLib"
+      undefines { "DEBUG" } -- fixes a weird issue on mac
       defines { "_CRT_SECURE_NO_WARNINGS", "PHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_QPAK", "PHYSFS_INTERNAL_ZLIB"}
       files { "libs/physfs/**.c", "libs/physfs/**.h" }
       targetdir "build/%{cfg.buildcfg}"

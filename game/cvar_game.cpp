@@ -1,6 +1,9 @@
 #include "cvar_game.h"
 #include "public.h"
 
+#include "lua_extstate.h"
+extern LuaExt lua;
+
 cvar_t *dbg_drawBbox;
 cvar_t *p_gravity;
 cvar_t *p_jumpHeight;
@@ -44,8 +47,11 @@ static int gameCvarTableSize = sizeof( gameCvarTable ) / sizeof( gameCvarTable[0
 void RegisterGameCvars( void ) {
     cvarTable_t *cv;
     int i;
+
+	auto luacv = lua.create_named_table("cvars");
 	for ( i = 0, cv = gameCvarTable ; i < gameCvarTableSize ; i++, cv++ ) {
         *cv->cvar = trap->Cvar_Get(cv->cvarName, cv->defaultString, cv->cvarFlags);
+		luacv[cv->cvarName] = *cv->cvar;
     }
 
 }

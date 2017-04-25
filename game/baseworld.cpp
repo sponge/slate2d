@@ -45,7 +45,7 @@ Sweep BaseWorld::trace(entity_t & ent, double dx, double dy) {
 
 void BaseWorld::debug_text(const char * text)
 {
-	ImGui::Text(text);
+	ImGui::Text("%s", text);
 }
 
 entity_t * BaseWorld::get_master_entity()

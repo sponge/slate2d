@@ -39,6 +39,10 @@ int BaseWorld::new_image(const char *name, const char *path) {
 	return img->index;
 }
 
+const entity_t* BaseWorld::check_trigger(entity_t &ent) {
+	return CheckTrigger(*this, ent);
+}
+
 Sweep BaseWorld::trace(entity_t & ent, double dx, double dy) {
 	return Trace(*this, ent, dx, dy, NULL);
 }
@@ -66,6 +70,7 @@ BaseWorld::BaseWorld() {
 	"COMPONENT_LUATABLE = 1 << 6\n"
 	"COMPONENT_SPRITE = 1 << 7\n"
 	"COMPONENT_ANIMATION = 1 << 8\n"
+	"COMPONENT_TRIGGER = 1 << 9\n"
 	);
 
 	// expose world management to lua
@@ -79,6 +84,7 @@ BaseWorld::BaseWorld() {
 		"new_entity", &BaseWorld::get_entity,
 		"new_image", &BaseWorld::new_image,
 		"trace", &BaseWorld::trace,
+		"check_trigger", &BaseWorld::check_trigger,
 		"debug_text", &BaseWorld::debug_text,
 
 		"addBody", &BaseWorld::addBody,
@@ -98,7 +104,9 @@ BaseWorld::BaseWorld() {
 		"addSprite", &BaseWorld::addSprite,
 		"getSprite", &BaseWorld::getSprite,
 		"addAnimation", &BaseWorld::addAnimation,
-		"getAnimation", &BaseWorld::getAnimation
+		"getAnimation", &BaseWorld::getAnimation,
+		"addTrigger", &BaseWorld::addTrigger,
+		"getTrigger", &BaseWorld::getTrigger
 		);
 
 	lua.new_usertype<entity_t>("Entity",
@@ -226,5 +234,11 @@ BaseWorld::BaseWorld() {
 		"endFrame", &Animation::endFrame,
 		"delay", &Animation::delay,
 		"startTime", &Animation::startTime
+		);
+
+	lua.new_usertype<Trigger>("Trigger",
+		sol::constructors<Trigger(), Trigger(int)>(),
+		"enabled", &Trigger::enabled,
+		"type", &Trigger::type
 		);
 }

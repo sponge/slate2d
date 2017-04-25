@@ -32,12 +32,11 @@ spawn_entity = function(world, obj, props)
         camera.target = ent.id
 
     elseif obj.type == 'goal' then
-        local map = world:getTileMap(world.master_entity).map
-
         local ent = world:new_entity()
         world:addBody(ent, Body:new(obj.x, obj.y, 32, 32))
         world:addSprite(ent, Sprite:new(world:new_image("bone", "gfx/bone.png"), 32, 32, 0, 0))
         world:addAnimation(ent, Animation:new(0, 0, 7, 0.1, world.time))
+        world:addTrigger(ent, Trigger:new(69))
         world:add_entity(ent)
 
     else
@@ -114,6 +113,14 @@ world:add_system {
         c.body.y = ymove.pos.y
         if ymove.hit.valid then
             c.mov.dy = 0
+        end
+
+        local trigger_ent = world:check_trigger(ent)
+        if trigger_ent ~= nil then
+            local trig = world:getTrigger(trigger_ent.id)
+            world:debug_text(inspect(trig))
+            trig.enabled = false
+            print("triggered! ".. tostring(trig.type))
         end
     end
 }

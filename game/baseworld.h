@@ -48,6 +48,7 @@ struct BaseWorld : world_t {
 	GENERATE_COMPONENT(COMPONENT_PLAYERINPUT, PlayerInput);
 	GENERATE_COMPONENT(COMPONENT_SPRITE, Sprite);
 	GENERATE_COMPONENT(COMPONENT_ANIMATION, Animation);
+	GENERATE_COMPONENT(COMPONENT_TRIGGER, Trigger);
 
 	// not using the macro so we can pass a table directory
 	std::vector<sol::table> LuaTables;
@@ -69,5 +70,6 @@ struct BaseWorld : world_t {
 	void add_entity(entity_t ent);
 	int new_image(const char *name, const char *path);
 	Sweep trace(entity_t &ent, double dx, double dy);
+	const entity_t* check_trigger(entity_t &ent);
 	void debug_text(const char *text);
 };

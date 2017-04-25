@@ -19,7 +19,8 @@ enum {
 	COMPONENT_PLAYERINPUT = 1 << 5,
 	COMPONENT_LUATABLE = 1 << 6, // not defined here since it's lua specific and to avoid header spam
 	COMPONENT_SPRITE = 1 << 7,
-	COMPONENT_ANIMATION = 1 << 8
+	COMPONENT_ANIMATION = 1 << 8,
+	COMPONENT_TRIGGER = 1 << 9
 };
 
 struct Body {
@@ -128,4 +129,11 @@ struct Animation {
 	Animation(unsigned int id, unsigned int startFrame, unsigned int endFrame, double delay, double startTime) : id(id), startFrame(startFrame), endFrame(endFrame), delay(delay), startTime(startTime) {}
 	unsigned int id, startFrame, endFrame;
 	double delay, startTime;
+};
+
+struct Trigger {
+	Trigger() {}
+	Trigger(int type) : type(type) {}
+	bool enabled = true;
+	int type;
 };

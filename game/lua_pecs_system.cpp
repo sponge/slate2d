@@ -28,6 +28,7 @@ void LuaSystem::update(double dt)
 		if (this->mask & COMPONENT_LUATABLE) { components["table"] = world->getTable(entity.id); } // reference the table directly since only member in component
 		if (this->mask & COMPONENT_SPRITE) { components["sprite"] = &world->getSprite(entity.id); }
 		if (this->mask & COMPONENT_ANIMATION) { components["animation"] = &world->getAnimation(entity.id); }
+		if (this->mask & COMPONENT_ANIMATION) { components["trigger"] = &world->getTrigger(entity.id); }
 
 		this->luaUpdate(dt, entity, components);
 	}

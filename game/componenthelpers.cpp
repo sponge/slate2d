@@ -147,6 +147,36 @@ Sweep Map_SweepTiles(TileMap &map, Box check, Vec2 delta, Vec2 tileSize) {
 	return sweep;
 }
 
+const entity_t* CheckTrigger(BaseWorld &world, entity_t &ent) {
+	auto body = world.Bodys[ent.id];
+	auto box = Box(body.x, body.y, body.w, body.h);
+
+	for (auto &ent2 : world.entities) {
+		if (ent.id == ent2.id) {
+			continue;
+		}
+
+		if ((ent2.mask & COMPONENT_BODY) == 0 || (ent2.mask & COMPONENT_TRIGGER) == 0) {
+			continue;
+		}
+
+		auto &body2 = world.Bodys[ent2.id];
+
+		auto &trigger2 = world.Triggers[ent2.id];
+		if (trigger2.enabled == false) {
+			continue;
+		}
+
+		auto box2 = Box(body2.x, body2.y, body2.w, body2.h);
+		auto hit = intersectAABB(box2, box);
+		if (hit.valid) {
+			return &ent2;
+		}
+	}
+
+	return nullptr;
+}
+
 const Sweep Trace(BaseWorld &world, entity_t &ent, float dx, float dy, entity_t *hitEnt)
 {
 	auto body = world.Bodys[ent.id];
@@ -162,6 +192,10 @@ const Sweep Trace(BaseWorld &world, entity_t &ent, float dx, float dy, entity_t 
 	
 	for (auto &ent2 : world.entities) {
 		if (ent.id == ent2.id) {
+			continue;
+		}
+
+		if ((ent2.mask & COMPONENT_TRIGGER) > 0) {
 			continue;
 		}
 
@@ -194,12 +228,6 @@ const Sweep Trace(BaseWorld &world, entity_t &ent, float dx, float dy, entity_t 
 		}
 
 	}
-
-	/*
-	es.each<Trigger>([body, box, broad, delta](ex::Entity entity, Trigger &trigger) {
-		// FIXME: check broadphase, do sweep, send event if trigger time < sweep.time
-	});
-	*/
 
 	return sweep;
 }

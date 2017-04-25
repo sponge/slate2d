@@ -1,3 +1,7 @@
+local clamp = function(val, min, max)
+    return math.max(min, math.min(max, val))
+end
+
 init = function() 
     -- FIXME: the rest of this hardcoded shit
     local tmap = world:getTileMap(world.master_entity.id).map
@@ -25,7 +29,7 @@ spawn_entity = function(world, obj, props)
             can_wall_jump = false,
             jump_held = false,
             will_pogo = false,
-            stunTime = 0.0
+            stun_time = 0.0
         })
         world:add_entity(ent)
 
@@ -68,6 +72,7 @@ world:add_system {
     priority = 0,
     components = {COMPONENT_PLAYERINPUT, COMPONENT_BODY, COMPONENT_MOVABLE, COMPONENT_LUATABLE, COMPONENT_SPRITE, COMPONENT_ANIMATION},
     process = function(dt, ent, c)
+        local player = c.table
 
         local right_touch = world:trace(ent, 1, 0).time < 1e-7;
         local left_touch = world:trace(ent, -1, 0).time < 1e-7;
@@ -77,22 +82,102 @@ world:add_system {
         world:debug_text(inspect(c.table))
         world:debug_text("l:" .. tostring(left_touch) .. " r:".. tostring(right_touch) .. " d:".. tostring(down_touch) .. " u:" .. tostring(up_touch))
 
-        if c.playerinput.right then
-            c.mov.dx = 50 * dt
-        elseif c.playerinput.left then
-            c.mov.dx = -50 * dt
-        else
-            c.mov.dx = 0
+        -- if they're on the ground, they can always jump
+        if down_touch then
+            player.num_jumps = 0
         end
 
-        if c.playerinput.up then
-            c.mov.dy = -50 * dt
-        elseif c.playerinput.down then
-            c.mov.dy = 50 * dt
-        else
-            c.mov.dy = 0
+        player.is_wall_sliding = false
+
+        -- if they're midair and are holding down toward the wall, they can wall jump
+        player.can_wall_jump = (not down_touch) and (c.input.left and left_touch) or (c.input.right and right_touch)
+
+        -- if they're moving down and touching a wall the direction they're holding down, they are wall sliding
+        if c.mov.dy > 0 and player.can_wall_jump then
+            player.is_wall_sliding = true
         end
 
+        -- FIXME: is this right?
+        if down_touch and (c.mov.dy < 0 or not player.will_pogo) then
+            player.will_pogo = c.input.down
+        end
+
+        -- finished updating player, now start figuring out speeds
+
+        c.mov.dy = c.mov.dy + cvars["p_gravity"].value * dt
+        
+        -- apply wallslide speed after gravity
+        if player.is_wall_sliding then
+            c.mov.dy = cvars["p_wallSlideSpeed"].value
+        end
+
+        -- reset jump and slow upward velocity
+        if not c.input.jump and player.jump_held then
+            player.jump_held = false
+            if c.mov.dy < 0 then
+                c.mov.dy = c.mov.dy * cvars["p_earlyJumpEndModifier"].value
+            end
+        end
+
+        -- if touching ground and are about to pogo, pogo is first prio
+        if down_touch and player.will_pogo then
+            c.mov.dy = 0 - cvars["p_pogoJumpHeight"].value
+            player.num_jumps = 1
+            player.will_pogo = false
+        -- check for various types of jumps
+        elseif c.input.jump and not player.jump_held then
+            -- wall jump
+            if player.can_wall_jump then
+                c.mov.dy = 0 - cvars["p_doubleJumpHeight"].value -- TODO: separate wall jump height?
+                c.mov.dx = cvars["p_wallJumpX"].value * (c.input.right and -1 or 1)
+                player.stun_time = world.time + 0.1
+                player.jump_held = true
+                player.num_jumps = 1
+
+            -- regular on ground jump
+            elseif down_touch then
+                -- FIXME: mov.dy = -(p_jumpHeight->value + (fabs(mov.dx) >= p_maxSpeed->value * 0.25f ? p_speedJumpBonus->value : 0));
+                c.mov.dy = -cvars["p_jumpHeight"].value
+                player.jump_held = true
+                player.num_jumps = 1
+
+            -- midair double jump
+            elseif player.num_jumps < 2 then
+                c.mov.dy = -cvars["p_doubleJumpHeight"].value
+                player.num_jumps = 2
+                player.jump_held = true
+            end
+
+        end
+
+        if c.input.right or c.input.left then
+            -- float accel = 0;
+            -- auto isSkidding = (input.left && mov.dx > 0) || (input.right && mov.dx < 0);
+            -- // FIXME: check stun time here
+            -- if (mov.downTouch) {
+            --     accel = isSkidding ? p_skidAccel->value : p_accel->value;
+            -- }
+            -- else {
+            --     accel = isSkidding ? p_turnAirAccel->value : p_airAccel->value;
+            -- }
+
+            -- mov.dx += (input.right ? accel : input.left ? -accel : 0) * dt;
+            -- spr.flipX = !input.right;
+        elseif c.mov.dx ~= 0 then
+            -- auto friction = p_groundFriction->value * dt;
+            -- if (friction > fabs(mov.dx)) {
+            --     mov.dx = 0;
+            -- }
+            -- else {
+            --     mov.dx += friction * (mov.dx > 0 ? -1 : 1);
+            -- }
+        end
+
+        -- mov.dx = clamp(mov.dx, -p_maxSpeed->value, p_maxSpeed->value);
+        -- auto uncappedY = mov.dy;
+        -- mov.dy = clamp(mov.dy, -p_terminalVelocity->value, p_terminalVelocity->value);
+
+        -- sprite and animation
         if c.mov.dx ~= 0 then
             c.sprite.flipX = c.mov.dx < 0 and true or false
             if c.animation.endFrame == 0 then
@@ -103,13 +188,13 @@ world:add_system {
             c.animation.endFrame = 0
         end
 
-        local xmove = world:trace(ent, c.mov.dx, 0)
+        local xmove = world:trace(ent, c.mov.dx * dt, 0)
         c.body.x = xmove.pos.x
         if xmove.hit.valid then
             c.mov.dx = 0
         end
 
-        local ymove = world:trace(ent, 0, c.mov.dy)
+        local ymove = world:trace(ent, 0, c.mov.dy * dt)
         c.body.y = ymove.pos.y
         if ymove.hit.valid then
             c.mov.dy = 0
@@ -122,5 +207,18 @@ world:add_system {
             trig.enabled = false
             print("triggered! ".. tostring(trig.type))
         end
+
+        -- if (fabs(mov.dx) < 0.2) {
+        --     mov.dx = 0;
+        -- }
+
+        -- if (fabs(mov.dy) < 0.2) {
+        --     mov.dy = 0;
+        -- }
+
+        -- // keep going upward as long as we don't have an upward collision
+        -- if (mov.dy < 0 && !ymove.hit.valid) {
+        --     mov.dy = uncappedY;
+        -- }
     end
 }

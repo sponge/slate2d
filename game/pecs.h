@@ -11,6 +11,7 @@
 #include <vector>
 #include <cstdio>
 #include <cstdint>
+#include <string>
 
 namespace pecs {
 

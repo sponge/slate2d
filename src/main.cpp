@@ -28,6 +28,11 @@
 
 #include "../game/public.h"
 
+#include "soloud.h"
+#include "soloud_speech.h"
+#include "soloud_thread.h"
+#include "soloud_modplug.h"
+
 ClientInfo inf;
 SceneManager *sm;
 unsigned frame_msec, com_frameTime;
@@ -165,6 +170,23 @@ int main(int argc, char *argv[]) {
 
 	Sys_LoadDll(lib, (void **)(&gexports), &ver);
 	gexports->Init((void*)&inf, (void*)ImGui::GetCurrentContext());
+
+	SoLoud::Soloud soloud;  // SoLoud engine core
+	SoLoud::Speech speech;  // A sound source (speech, in this case)
+	SoLoud::Modplug music;
+
+	// initialize SoLoud.
+	soloud.init();
+
+	unsigned char *musicbuf;
+	auto mussz = FS_ReadFile("/music/frantic_-_dog_doesnt_care.it", (void **)&musicbuf);
+
+	speech.setText("great job! You are a good dog!");
+	music.loadMem(musicbuf, mussz, false, true);
+
+	// Play the sound source (we could do this several times if we wanted)
+	soloud.play(speech);
+	soloud.play(music);
 
 	bool quit = false;
 	SDL_Event ev;

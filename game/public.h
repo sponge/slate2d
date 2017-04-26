@@ -39,6 +39,9 @@ typedef struct gameImportFuncs_s {
 	void (*IN_KeyDown)(kbutton_t *b);
 	void (*IN_KeyUp)(kbutton_t *b);
 	float (*CL_KeyState)(kbutton_t *key);
+	void(*SND_PlaySpeech)(const char *text);
+	void(*SND_PlayMusic)(const char *file);
+	void(*SND_PlaySound)(const char *file);
 } gameImportFuncs_t;
 
 typedef struct gameExportFuncs_s {

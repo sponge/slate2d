@@ -9,8 +9,14 @@
 #include "files.h"
 #include "scene.h"
 
+#include "soloud.h"
+#include "soloud_thread.h"
+#include "soloud_speech.h"
+#include "soloud_modplug.h"
+
 extern SceneManager *sm;
 extern ClientInfo inf;
+extern SoLoud::Soloud soloud;
 
 void trap_SendConsoleCommand(const char *text) {
 	Cbuf_ExecuteText(EXEC_NOW, text);
@@ -71,6 +77,33 @@ void trap_Map_Free(tmx_map *map) {
 	tmx_map_free(map);
 }
 
+void SND_PlaySpeech(const char *text) {
+	// FIXME: leaky
+	auto speech = new SoLoud::Speech();
+	speech->setText(text);
+	soloud.play(*speech);
+}
+
+void SND_PlayMusic(const char *file) {
+	// FIXME: leaky
+	auto music = new SoLoud::Modplug();
+
+	unsigned char *musicbuf;
+	auto sz = FS_ReadFile(file, (void **)&musicbuf);
+
+	if (sz <= 0) {
+		return;
+	}
+
+	music->loadMem(musicbuf, sz, false, true);
+	music->setLooping(true);
+	soloud.play(*music);
+}
+
+void SND_PlaySound(const char *file) {
+
+}
+
 static gameImportFuncs_t GAMEtraps = {
 	trap_SendConsoleCommand,
 	Com_Printf,
@@ -101,7 +134,10 @@ static gameImportFuncs_t GAMEtraps = {
 	trap_Map_Free,
 	IN_KeyDown,
 	IN_KeyUp,
-	CL_KeyState
+	CL_KeyState,
+	SND_PlaySpeech,
+	SND_PlayMusic,
+	SND_PlaySound
 };
 
 void Sys_LoadDll(const char * module, void ** exports, int * version) {

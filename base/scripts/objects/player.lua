@@ -178,9 +178,9 @@ local module = {
                 local trigger_ent = world:check_trigger(ent)
                 if trigger_ent ~= nil then
                     local trig = world:getTrigger(trigger_ent.id)
-                    world:debug_text(inspect(trig))
                     trig.enabled = false
-                    print("triggered! ".. tostring(trig.type))
+                    world:kill_entity(trigger_ent)
+                    play_speech("great job! you are a good dog!")
                 end
 
                 if math.abs(mov.dy) < 0.2 then

@@ -7,6 +7,7 @@ init = function()
     cam.active = true
     cam:Bind()
     world:addCamera(world.master_entity, cam)
+    play_music("/music/frantic_-_dog_doesnt_care.it")
 end
 
 spawn_entity = function(obj, props)

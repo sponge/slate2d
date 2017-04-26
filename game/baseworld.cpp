@@ -75,6 +75,10 @@ BaseWorld::BaseWorld() {
 
 	// expose world management to lua
 	lua["world"] = this;
+	lua["play_music"] = [](const char *file) { trap->SND_PlayMusic(file); },
+	lua["play_sound"] = [](const char *file) { trap->SND_PlaySound(file); },
+	lua["play_speech"] = [](const char *text) { trap->SND_PlaySpeech(text); },
+
 	lua.new_usertype<BaseWorld>("BaseWorld",
 		"master_entity", sol::property(&BaseWorld::get_master_entity),
 		"time", &BaseWorld::time,
@@ -83,6 +87,7 @@ BaseWorld::BaseWorld() {
 		"add_entity", &BaseWorld::add_entity,
 		"new_entity", &BaseWorld::get_entity,
 		"new_image", &BaseWorld::new_image,
+		"kill_entity", &BaseWorld::kill, 
 		"trace", &BaseWorld::trace,
 		"check_trigger", &BaseWorld::check_trigger,
 		"debug_text", &BaseWorld::debug_text,

@@ -153,10 +153,10 @@ solution "game"
         "libs/soloud/src/core/**.c*",
         "libs/soloud/src/backend/sdl2_static/**.c*"
 	    }
-      includedirs
-      {
+      includedirs {
         "libs/soloud/src/**",
-        "libs/soloud/include", 
+        "libs/soloud/include",
+        "libs/sdl/SDL" 
       }
       configuration { "windows" }
         libdirs { "libs/sdl/lib/Win32" }
@@ -170,18 +170,10 @@ solution "game"
 		kind "StaticLib"
     targetdir "build/%{cfg.buildcfg}"
 		language "C++"
-
-		defines { "MODPLUG_STATIC", "HAVE_SETENV", "HAVE_SINF" }
-
-		files
-		{
-		"libs/soloud/ext/libmodplug/src/**.cpp*"
-	  }
-
-		includedirs
-		{
-		"libs/soloud/ext/libmodplug/src/**"
-		}
-
+		defines { "MODPLUG_STATIC", "HAVE_SINF" }
+		files { "libs/soloud/ext/libmodplug/src/**.cpp*" }
+		includedirs { "libs/soloud/ext/libmodplug/src/**" }
 		targetname "libmodplug"
     warnings "Off"
+    configuration { "macosx" }
+      defines { "HAVE_SETENV" }

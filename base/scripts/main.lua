@@ -128,9 +128,9 @@ world:add_system {
         elseif c.input.jump and not player.jump_held then
             -- wall jump
             if player.can_wall_jump then
-                c.mov.dy = 0 - cvars["p_doubleJumpHeight"].value -- TODO: separate wall jump height?
+                c.mov.dy = 0 - cvars["p_doubleJumpHeight"].value
                 c.mov.dx = cvars["p_wallJumpX"].value * (c.input.right and -1 or 1)
-                player.stun_time = world.time + 0.1
+                player.stun_time = world.time + 0.2
                 player.jump_held = true
                 player.num_jumps = 1
 
@@ -151,35 +151,36 @@ world:add_system {
         end
 
         if c.input.right or c.input.left then
-            -- float accel = 0;
-            -- auto isSkidding = (input.left && mov.dx > 0) || (input.right && mov.dx < 0);
-            -- // FIXME: check stun time here
-            -- if (mov.downTouch) {
-            --     accel = isSkidding ? p_skidAccel->value : p_accel->value;
-            -- }
-            -- else {
-            --     accel = isSkidding ? p_turnAirAccel->value : p_airAccel->value;
-            -- }
-
-            -- mov.dx += (input.right ? accel : input.left ? -accel : 0) * dt;
-            -- spr.flipX = !input.right;
+            local accel = 0;
+            local isSkidding = (c.input.left and c.mov.dx > 0) or (c.input.right and c.mov.dx < 0)
+            if world.time < player.stun_time then
+                accel = 0
+            elseif down_touch then
+                accel = isSkidding and cvars["p_skidAccel"].value or cvars["p_accel"].value
+            else
+                accel = isSkidding and cvars["p_turnAirAccel"].value or cvars["p_airAccel"].value
+            end
+            
+            if c.input.left then
+                accel = -accel
+            end
+            c.mov.dx = c.mov.dx + accel * dt
+            c.sprite.flipX = not c.input.right
         elseif c.mov.dx ~= 0 then
-            -- auto friction = p_groundFriction->value * dt;
-            -- if (friction > fabs(mov.dx)) {
-            --     mov.dx = 0;
-            -- }
-            -- else {
-            --     mov.dx += friction * (mov.dx > 0 ? -1 : 1);
-            -- }
+            local friction = cvars["p_groundFriction"].value * dt;
+            if friction > math.abs(c.mov.dx) then
+                c.mov.dx = 0;
+            else
+                c.mov.dx = c.mov.dx + friction * (c.mov.dx > 0 and -1 or 1);
+            end
         end
 
-        -- mov.dx = clamp(mov.dx, -p_maxSpeed->value, p_maxSpeed->value);
-        -- auto uncappedY = mov.dy;
-        -- mov.dy = clamp(mov.dy, -p_terminalVelocity->value, p_terminalVelocity->value);
+        c.mov.dx = clamp(c.mov.dx, -cvars["p_maxSpeed"].value, cvars["p_maxSpeed"].value);
+        local uncappedY = c.mov.dy;
+        c.mov.dy = clamp(c.mov.dy, -cvars["p_terminalVelocity"].value, cvars["p_terminalVelocity"].value);
 
         -- sprite and animation
         if c.mov.dx ~= 0 then
-            c.sprite.flipX = c.mov.dx < 0 and true or false
             if c.animation.endFrame == 0 then
                 c.animation.startTime = world.time
                 c.animation.endFrame = 6
@@ -187,6 +188,7 @@ world:add_system {
         else
             c.animation.endFrame = 0
         end
+        
 
         local xmove = world:trace(ent, c.mov.dx * dt, 0)
         c.body.x = xmove.pos.x
@@ -208,17 +210,17 @@ world:add_system {
             print("triggered! ".. tostring(trig.type))
         end
 
-        -- if (fabs(mov.dx) < 0.2) {
-        --     mov.dx = 0;
-        -- }
+        if math.abs(c.mov.dx) < 0.2 then
+            c.mov.dx = 0;
+        end
 
-        -- if (fabs(mov.dy) < 0.2) {
-        --     mov.dy = 0;
-        -- }
+        if math.abs(c.mov.dy) < 0.2 then
+            c.mov.dy = 0;
+        end
 
-        -- // keep going upward as long as we don't have an upward collision
-        -- if (mov.dy < 0 && !ymove.hit.valid) {
-        --     mov.dy = uncappedY;
-        -- }
+        -- keep going upward as long as we don't have an upward collision
+        if c.mov.dy < 0 and not ymove.hit.valid then
+            c.mov.dy = uncappedY;
+        end
     end
 }

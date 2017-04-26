@@ -114,7 +114,7 @@ void GameMapScene::Startup(ClientInfo* info) {
 				prop = prop->next;
 			}
 
-			spawnFunc(world, obj, props);
+			spawnFunc(obj, props);
 			obj = obj->next;
 		}
 

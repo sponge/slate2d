@@ -32,10 +32,10 @@ solution "game"
     kind "ConsoleApp"
     language "C++"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
-    sysincludedirs { "libs/sdl", "libs/nanovg", "libs/tmx", "libs/imgui", "libs/physfs", "libs/glew" }
+    sysincludedirs { "libs/sdl", "libs/nanovg", "libs/tmx", "libs/imgui", "libs/physfs", "libs/glew", "libs/soloud/include" }
     debugdir "."
     targetdir "bin/%{cfg.buildcfg}"
-    links { "nanovg", "tmx", "imgui", "physfs", "glew" }
+    links { "nanovg", "tmx", "imgui", "physfs", "glew", "soloud", "libmodplug" }
     flags { "C++14" }
 
     configuration { "windows" }
@@ -139,3 +139,49 @@ solution "game"
         defines {
           "UNIX_HAS_SUN_LEN",
         }
+
+    project "soloud"
+      language "C++"
+      kind "StaticLib"
+      targetdir "build/%{cfg.buildcfg}"
+      targetname "soloud_static"
+      warnings "Off"
+      defines { "MODPLUG_STATIC", "WITH_MODPLUG", "WITH_SDL2_STATIC" }
+  		files {
+        "libs/soloud/src/audiosource/**.c*",
+        "libs/soloud/src/filter/**.c*",
+        "libs/soloud/src/core/**.c*",
+        "libs/soloud/src/backend/sdl2_static/**.c*"
+	    }
+      includedirs
+      {
+        "libs/soloud/src/**",
+        "libs/soloud/include", 
+      }
+      configuration { "windows" }
+        libdirs { "libs/sdl/lib/Win32" }
+        links { "SDL2" }
+
+      configuration { "macosx" }
+        links { "SDL2.framework" }
+        linkoptions {"-F /Library/Frameworks"}
+
+	project "libmodplug"
+		kind "StaticLib"
+    targetdir "build/%{cfg.buildcfg}"
+		language "C++"
+
+		defines { "MODPLUG_STATIC", "HAVE_SETENV", "HAVE_SINF" }
+
+		files
+		{
+		"libs/soloud/ext/libmodplug/src/**.cpp*"
+	  }
+
+		includedirs
+		{
+		"libs/soloud/ext/libmodplug/src/**"
+		}
+
+		targetname "libmodplug"
+    warnings "Off"

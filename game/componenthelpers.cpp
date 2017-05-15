@@ -156,6 +156,10 @@ const entity_t* CheckTrigger(BaseWorld &world, entity_t &ent) {
 			continue;
 		}
 
+		if (ent2.alive == false) {
+			continue;
+		}
+
 		if ((ent2.mask & COMPONENT_BODY) == 0 || (ent2.mask & COMPONENT_TRIGGER) == 0) {
 			continue;
 		}

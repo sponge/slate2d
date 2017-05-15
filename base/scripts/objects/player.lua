@@ -178,8 +178,8 @@ local module = {
                 local trigger_ent = world:check_trigger(ent)
                 if trigger_ent ~= nil then
                     local trig = world:getTrigger(trigger_ent.id)
-                    trig.enabled = false
                     world:kill_entity(trigger_ent)
+                    input.enabled = false
                     play_speech("great job! you are a good dog!")
                 end
 

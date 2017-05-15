@@ -175,5 +175,6 @@ solution "game"
 		includedirs { "libs/soloud/ext/libmodplug/src/**" }
 		targetname "libmodplug"
     warnings "Off"
+    characterset "MBCS"
     configuration { "macosx" }
       defines { "HAVE_SETENV" }

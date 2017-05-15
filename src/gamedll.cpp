@@ -96,8 +96,7 @@ void SND_PlayMusic(const char *file) {
 	}
 
 	music->loadMem(musicbuf, sz, false, true);
-	music->setLooping(true);
-	soloud.play(*music);
+	auto hnd = soloud.play(*music);
 }
 
 void SND_PlaySound(const char *file) {

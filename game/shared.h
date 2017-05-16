@@ -121,7 +121,7 @@ typedef struct {
 typedef struct {
 	int		commandId;
 	float	x, y, w, h;
-	int     color[4];
+	byte     color[4];
 } drawRectCommand_t;
 
 typedef enum {

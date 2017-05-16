@@ -9,6 +9,7 @@
 #include "files.h"
 #include "scene.h"
 #include "input.h"
+#include "rendercommands.h"
 
 #include "soloud.h"
 #include "soloud_thread.h"
@@ -137,7 +138,8 @@ static gameImportFuncs_t GAMEtraps = {
 	CL_KeyState,
 	SND_PlaySpeech,
 	SND_PlayMusic,
-	SND_PlaySound
+	SND_PlaySound,
+	SubmitRenderCommands
 };
 
 void Sys_LoadDll(const char * module, void ** exports, int * version) {

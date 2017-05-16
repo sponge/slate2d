@@ -5,6 +5,7 @@
 #include "components.h"
 #include "componenthelpers.h"
 #include "lua_extstate.h"
+#include "drawcommands.h"
 
 using namespace pecs;
 
@@ -97,10 +98,7 @@ struct RectDrawSystem : system_t {
 			auto &m = world->getMovable(entity.id);
 			auto &r = world->getRenderable(entity.id);
 
-			nvgBeginPath(nvg);
-			nvgRect(nvg, body.x - (body.w*0.5), body.y - (body.h*0.5), body.w, body.h);
-			nvgFillColor(nvg, nvgRGBA(r.r, r.g, r.b, r.a));
-			nvgFill(nvg);
+			DC_DrawRect(body.x - (body.w*0.5), body.y - (body.h*0.5), body.w, body.h, r.r, r.g, r.b, r.a);
 
 			nvgFillColor(nvg, nvgRGBA(255, 255, 255, 255));
 			char s[16];
@@ -134,7 +132,9 @@ void TestBounceScene::Update(float dt) {
 }
 
 void TestBounceScene::Render() {
+	DC_Clear();
 	world->render(0);
+	DC_Submit();
 }
 
 TestBounceScene::~TestBounceScene() {

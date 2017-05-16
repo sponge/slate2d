@@ -2,11 +2,7 @@
 #include <nanovg.h>
 #include <tmx.h>
 
-// FIXME: getting functions not just types
-#include "../src/image.h"
-#include "../src/scene.h"
-#include "../src/input.h"
-#include "../src/console/console.h" // FIXME: getting function defs that it shouldn't, just need cvar_t really
+#include "shared.h"
 
 typedef struct gameImportFuncs_s {
 	void (*SendConsoleCommand)(const char * text);

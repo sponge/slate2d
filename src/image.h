@@ -1,19 +1,7 @@
 #pragma once
 #include <nanovg.h>
 
-typedef struct {
-	NVGcontext *nvg;
-	int width, height;
-} ClientInfo;
-
-typedef struct {
-	NVGcontext *nvg;
-	unsigned int index;
-	unsigned int hnd;
-	int w, h;
-	char name[64];
-	char path[64];
-} Img;
+#include "../game/shared.h"
 
 Img * Img_Create(const char * name, const char * path);
 void Img_Load(Img & img);

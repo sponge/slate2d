@@ -1,5 +1,5 @@
 #pragma once
-#include "public.h"
+#include "shared.h"
 
 void RegisterGameCvars( void );
 

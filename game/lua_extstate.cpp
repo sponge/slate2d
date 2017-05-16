@@ -1,5 +1,6 @@
 #include "public.h"
 #include "lua_extstate.h"
+#include "game.h"
 extern "C" {
 #include <luasocket.h>
 #include <mime.h>

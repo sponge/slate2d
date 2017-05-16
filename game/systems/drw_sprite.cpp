@@ -1,6 +1,5 @@
 #include "systems.h"
 #include "../baseworld.h"
-#include "../../src/image.h"
 #include "../public.h"
 
 SpriteDrawerSystem::SpriteDrawerSystem(ClientInfo *inf) : inf(inf)

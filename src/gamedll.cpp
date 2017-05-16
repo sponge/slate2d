@@ -8,6 +8,7 @@
 #include "image.h"
 #include "files.h"
 #include "scene.h"
+#include "input.h"
 
 #include "soloud.h"
 #include "soloud_thread.h"

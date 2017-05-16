@@ -4,6 +4,7 @@
 #include "componenthelpers.h"
 #include "public.h"
 #include <tmx.h>
+#include <imgui.h>
 
 bool BaseWorld::add_lua_system(sol::table opts) {
 	sol::function procFunc = opts["process"];

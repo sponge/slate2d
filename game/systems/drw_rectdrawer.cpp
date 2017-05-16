@@ -1,7 +1,6 @@
 #include "systems.h"
 #include "../baseworld.h"
-#include "../../src/image.h"
-#include "../public.h"
+#include "../shared.h"
 #include "../cvar_game.h"
 
 RectDrawerSystem::RectDrawerSystem(ClientInfo *inf) : inf(inf)

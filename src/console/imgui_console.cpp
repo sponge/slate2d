@@ -4,7 +4,8 @@
 #include <stdlib.h>
 
 #include "console.h"
-#include "../main.h"
+#include "../../game/public.h"
+extern gameExportFuncs_t * gexports;
 
 #define IM_ARRAYSIZE(_ARR)  ((int)(sizeof(_ARR)/sizeof(*_ARR)))
 

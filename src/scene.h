@@ -5,14 +5,7 @@
 
 #include "image.h"
 #include "console/console.h"
-
-class Scene {
-public:
-	virtual ~Scene() {};
-	virtual void Startup(ClientInfo* i) = 0;
-	virtual void Update(float dt) = 0;
-	virtual void Render() = 0;
-};
+#include "../game/shared.h"
 
 class SceneManager {
 private:

@@ -1,7 +1,6 @@
 #include "systems.h"
 #include "../baseworld.h"
-#include "../../src/image.h"
-#include "../public.h"
+#include "../shared.h"
 
 CameraDrawSystem::CameraDrawSystem(ClientInfo *inf) : inf(inf)
 {

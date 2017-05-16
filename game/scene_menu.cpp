@@ -1,3 +1,4 @@
+#include <imgui.h>
 #include "scene_menu.h"
 #include "public.h"
 #include "game.h"

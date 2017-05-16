@@ -1,5 +1,5 @@
 #pragma once
-#include "../src/scene.h"
+#include "shared.h"
 #include "baseworld.h"
 
 class TestBounceScene : public Scene {

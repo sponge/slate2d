@@ -14,9 +14,11 @@
 gameImportFuncs_t *trap;
 kbutton_t in_1_left, in_1_right, in_1_up, in_1_down, in_1_jump, in_1_attack, in_1_menu;
 
+void Com_DefaultExtension(char *path, int maxSize, const char *extension);
+
 void Cmd_Map_f(void) {
 	auto mapname = trap->Cmd_Argv(1);
-	char filename[MAX_QPATH];
+	char filename[256];
 
 	if (trap->Cmd_Argc() != 2) {
 		trap->Print("map <mapname> : load a map\n");

@@ -1,7 +1,7 @@
 #pragma once
 #include "sweep.h"
 #include <tmx.h>
-#include "../src/image.h"
+#include "shared.h"
 
 // when adding a new component:
 // - update the enum

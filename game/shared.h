@@ -3,6 +3,12 @@
 
 #include <nanovg.h> // FIXME: this shouldn't have to be here (used in ClientInfo and Img)
 
+#ifdef _MSC_VER 
+#define STRFUNCS
+#define strncasecmp _strnicmp
+#define strcasecmp _stricmp
+#endif
+
 typedef unsigned char byte;
 typedef void(*xcommand_t) (void);
 
@@ -14,10 +20,9 @@ typedef struct {
 
 // paramters for command buffer stuffing
 typedef enum {
-	EXEC_NOW,			// don't return until completed, a VM should NEVER use this,
-						// because some commands might cause the VM to be unloaded...
-						EXEC_INSERT,		// insert at current position, but don't run yet
-						EXEC_APPEND			// add to end of the command buffer (normal case)
+	EXEC_NOW,			// don't return until completed
+	EXEC_INSERT,		// insert at current position, but don't run yet
+	EXEC_APPEND			// add to end of the command buffer (normal case)
 } cbufExec_t;
 
 // parameters to the main Error routine
@@ -103,3 +108,23 @@ public:
 	virtual void Update(float dt) = 0;
 	virtual void Render() = 0;
 };
+
+// RENDER COMMANDS
+
+#define	MAX_RENDER_COMMANDS	0x40000
+
+typedef struct {
+	byte	cmds[MAX_RENDER_COMMANDS];
+	int		used;
+} renderCommandList_t;
+
+typedef struct {
+	int		commandId;
+	float	x, y, w, h;
+	int     color[4];
+} drawRectCommand_t;
+
+typedef enum {
+	RC_END_OF_LIST,
+	RC_DRAW_RECT
+} renderCommand_t;

@@ -120,11 +120,30 @@ typedef struct {
 
 typedef struct {
 	int		commandId;
+	float	color[4];
+} setColorCommand_t;
+
+typedef struct {
+	int		commandId;
+	float	transform[6];
+} setTransformCommand_t;
+
+typedef struct {
+	int		commandId;
 	float	x, y, w, h;
-	byte     color[4];
 } drawRectCommand_t;
+
+typedef struct {
+	int commandId;
+	int align;
+	float x, y;
+	char text[16];
+} drawTextCommand_t;
 
 typedef enum {
 	RC_END_OF_LIST,
-	RC_DRAW_RECT
+	RC_SET_COLOR,
+	RC_SET_TRANSFORM,
+	RC_DRAW_RECT,
+	RC_DRAW_TEXT
 } renderCommand_t;

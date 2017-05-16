@@ -73,11 +73,9 @@ struct RectMoverSystem : system_t {
 };
 
 struct RectDrawSystem : system_t {
-	NVGcontext *nvg;
 
-	RectDrawSystem(NVGcontext *nvg) {
+	RectDrawSystem() {
 		this->name = "Rect Drawer";
-		this->nvg = nvg;
 		this->priority = 0;
 		this->renderOnly = true;
 		this->mask = COMPONENT_BODY | COMPONENT_MOVABLE | COMPONENT_RENDERABLE;
@@ -98,15 +96,12 @@ struct RectDrawSystem : system_t {
 			auto &m = world->getMovable(entity.id);
 			auto &r = world->getRenderable(entity.id);
 
-			DC_DrawRect(body.x - (body.w*0.5), body.y - (body.h*0.5), body.w, body.h, r.r, r.g, r.b, r.a);
+			DC_SetColor(r.r, r.g, r.b, r.a);
+			DC_DrawRect(body.x - (body.w*0.5), body.y - (body.h*0.5), body.w, body.h);
 
-			nvgFillColor(nvg, nvgRGBA(255, 255, 255, 255));
-			char s[16];
-			nvgTextAlign(nvg, 2);
-			snprintf(s, sizeof(s), "%.0f, %.0f", body.x, body.y);
-			nvgText(nvg, body.x, body.y, s, 0);
-			snprintf(s, sizeof(s), "%.0f, %.0f", m.dx, m.dy);
-			nvgText(nvg, body.x, body.y + 12, s, 0);
+			DC_SetColor(255, 255, 255, 255);
+			DC_DrawText(body.x, body.y, va("%.0f, %.0f", body.x, body.y), 2);
+			DC_DrawText(body.x, body.y + 12, va("%.0f, %.0f", m.dx, m.dy), 2);
 		}
 	}
 };
@@ -118,7 +113,7 @@ void TestBounceScene::Startup(ClientInfo* info) {
 
 	world = new BaseWorld();
 
-	auto b = new RectDrawSystem(inf->nvg);
+	auto b = new RectDrawSystem();
 	world->add(b);
 
 	//auto a = new RectMoverSystem();

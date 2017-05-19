@@ -41,6 +41,28 @@ const void *RB_DrawText(const void *data) {
 	return (const void *)(cmd + 1);
 }
 
+const void *RB_DrawImage(const void *data) {
+	auto cmd = (const drawImageCommand_t *)data;
+
+	nvgSave(inf.nvg);
+
+	nvgTranslate(inf.nvg, cmd->x, cmd->y);
+	nvgScale(inf.nvg, cmd->flipBits & 1 == 0 ? -1 : 1, cmd->flipBits & 2 == 0 ? -1 : 1);
+	nvgTranslate(inf.nvg, -(cmd->w / 2), -(cmd->h / 2));
+
+	auto img = Img_Get(cmd->imgId);
+	auto paint = nvgImagePattern(inf.nvg, cmd->ox, cmd->oy, img->w, img->h, 0, img->hnd, cmd->alpha);
+	nvgBeginPath(inf.nvg);
+	// FIXME? i used to have 0 - spr.ofs.x/y but i can't quite remember why
+	nvgRect(inf.nvg, 0, 0, cmd->w, cmd->h);
+	nvgFillPaint(inf.nvg, paint);
+	nvgFill(inf.nvg);
+
+	nvgRestore(inf.nvg);
+
+	return (const void *)(cmd + 1);
+}
+
 void SubmitRenderCommands(renderCommandList_t * list) {
 	const void *data = list->cmds;
 
@@ -62,6 +84,10 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 
 		case RC_DRAW_TEXT:
 			data = RB_DrawText(data);
+			break;
+
+		case RC_DRAW_IMAGE:
+			data = RB_DrawImage(data);
 			break;
 
 		case RC_END_OF_LIST:

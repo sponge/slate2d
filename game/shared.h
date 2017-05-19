@@ -119,31 +119,39 @@ typedef struct {
 } renderCommandList_t;
 
 typedef struct {
-	int		commandId;
+	byte	commandId;
 	float	color[4];
 } setColorCommand_t;
 
 typedef struct {
-	int		commandId;
+	byte	commandId;
 	float	transform[6];
 } setTransformCommand_t;
 
 typedef struct {
-	int		commandId;
+	byte	commandId;
 	float	x, y, w, h;
 } drawRectCommand_t;
 
 typedef struct {
-	int commandId;
+	byte commandId;
 	int align;
 	float x, y;
 	char text[16];
 } drawTextCommand_t;
+
+typedef struct {
+	byte commandId;
+	float x, y, w, h, ox, oy, angle, alpha;
+	byte flipBits;
+	unsigned int imgId;
+} drawImageCommand_t;
 
 typedef enum {
 	RC_END_OF_LIST,
 	RC_SET_COLOR,
 	RC_SET_TRANSFORM,
 	RC_DRAW_RECT,
-	RC_DRAW_TEXT
+	RC_DRAW_TEXT,
+	RC_DRAW_IMAGE
 } renderCommand_t;

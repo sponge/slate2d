@@ -2,6 +2,7 @@
 #include "sweep.h"
 #include "pecs.h"
 #include "baseworld.h"
+#include "drawcommands.h"
 
 using namespace pecs;
 
@@ -234,4 +235,15 @@ const Sweep Trace(BaseWorld &world, entity_t &ent, float dx, float dy)
 	}
 
 	return sweep;
+}
+
+void DC_DrawSprite(Body &body, Sprite &sprite) {
+	// FIXME: flip, get right offset
+	// also used to have 0 - spr.ofs.x/y here
+	DC_DrawImage(
+		body.x, body.y,
+		sprite.size.x, sprite.size.y,
+		0 - (sprite.frame * sprite.size.x), 0,
+		1.0, 0, sprite.img
+	);
 }

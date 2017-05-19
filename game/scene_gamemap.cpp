@@ -5,6 +5,7 @@
 #include "public.h"
 #include "lua_extstate.h"
 #include "systems/systems.h"
+#include "drawcommands.h"
 
 void GameMapScene::Startup(ClientInfo* info) {
 	inf = info;
@@ -130,7 +131,9 @@ void GameMapScene::Update(float dt) {
 }
 
 void GameMapScene::Render() {
+	DC_Clear();
 	world->render(0);
+	DC_Submit();
 }
 
 GameMapScene::~GameMapScene() {

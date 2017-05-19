@@ -56,7 +56,7 @@ local module = {
                 player.is_wall_sliding = false
 
                 -- if they're midair and are holding down toward the wall, they can wall jump
-                player.can_wall_jump = (not down_touch) and (input.left and left_touch) or (input.right and right_touch)
+                player.can_wall_jump = (not down_touch) and ((input.left and left_touch) or (input.right and right_touch))
 
                 -- if they're moving down and touching a wall the direction they're holding down, they are wall sliding
                 if mov.dy > 0 and player.can_wall_jump then

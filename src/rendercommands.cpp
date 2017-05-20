@@ -44,16 +44,30 @@ const void *RB_DrawText(const void *data) {
 const void *RB_DrawImage(const void *data) {
 	auto cmd = (const drawImageCommand_t *)data;
 
+	float flipX = cmd->flipBits & FLIP_H ? -1.0f : 1.0f;
+	float flipY = cmd->flipBits & FLIP_V ? -1.0f : 1.0f;
+	bool flipDiag = cmd->flipBits & FLIP_DIAG;
+
 	nvgSave(inf.nvg);
 
 	nvgTranslate(inf.nvg, cmd->x, cmd->y);
-	nvgScale(inf.nvg, cmd->flipBits & 1 == 0 ? -1 : 1, cmd->flipBits & 2 == 0 ? -1 : 1);
+
+	if (flipDiag) {
+		nvgTransform(inf.nvg, 0, 1, 1, 0, 0, 0);
+	}
+
+	if ((flipX == -1) ^ (flipY == -1) && flipDiag) {
+		nvgScale(inf.nvg, flipY, flipX);
+	}
+	else {
+		nvgScale(inf.nvg, flipX, flipY);
+	}
+
 	nvgTranslate(inf.nvg, -(cmd->w / 2), -(cmd->h / 2));
 
 	auto img = Img_Get(cmd->imgId);
 	auto paint = nvgImagePattern(inf.nvg, cmd->ox, cmd->oy, img->w, img->h, 0, img->hnd, cmd->alpha);
 	nvgBeginPath(inf.nvg);
-	// FIXME? i used to have 0 - spr.ofs.x/y but i can't quite remember why
 	nvgRect(inf.nvg, 0, 0, cmd->w, cmd->h);
 	nvgFillPaint(inf.nvg, paint);
 	nvgFill(inf.nvg);

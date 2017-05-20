@@ -140,6 +140,10 @@ typedef struct {
 	char text[16];
 } drawTextCommand_t;
 
+#define FLIP_H 1
+#define FLIP_V 2
+#define FLIP_DIAG 4
+
 typedef struct {
 	byte commandId;
 	float x, y, w, h, ox, oy, angle, alpha;

@@ -238,12 +238,11 @@ const Sweep Trace(BaseWorld &world, entity_t &ent, float dx, float dy)
 }
 
 void DC_DrawSprite(Body &body, Sprite &sprite) {
-	// FIXME: flip, get right offset
-	// also used to have 0 - spr.ofs.x/y here
+	byte flipBits = (sprite.flipX ? FLIP_H : 0) | (sprite.flipY ? FLIP_V : 0);
 	DC_DrawImage(
-		body.x, body.y,
+		body.x + sprite.ofs.x, body.y + sprite.ofs.y,
 		sprite.size.x, sprite.size.y,
 		0 - (sprite.frame * sprite.size.x), 0,
-		1.0, 0, sprite.img
+		1.0, flipBits, sprite.img
 	);
 }

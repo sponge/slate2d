@@ -1,7 +1,8 @@
 #include "systems.h"
 #include "../baseworld.h"
-#include "../shared.h"
 #include "../cvar_game.h"
+#include "../drawcommands.h"
+#include "../game.h"
 
 RectDrawerSystem::RectDrawerSystem(ClientInfo *inf) : inf(inf)
 {
@@ -19,33 +20,20 @@ void RectDrawerSystem::update(double dt)
 		return;
 	}
 
-	nvgSave(inf->nvg);
-
 	for (auto &entity : world->entities) {
-		PECS_SKIP_INVALID_ENTITY;
+		for (auto &entity : world->entities) {
+			PECS_SKIP_INVALID_ENTITY;
 
-		auto &body = world->getBody(entity.id);
-		auto &m = world->getMovable(entity.id);
-		auto &r = world->getRenderable(entity.id);
+			auto &body = world->getBody(entity.id);
+			auto &m = world->getMovable(entity.id);
+			auto &r = world->getRenderable(entity.id);
 
-		nvgBeginPath(inf->nvg);
-		nvgRect(inf->nvg, body.x - (body.w*0.5), body.y - (body.h*0.5), body.w, body.h);
-		nvgFillColor(inf->nvg, nvgRGBA(r.r, r.g, r.b, r.a));
-		nvgFill(inf->nvg);
+			DC_SetColor(r.r, r.g, r.b, r.a);
+			DC_DrawRect(body.x - (body.w*0.5), body.y - (body.h*0.5), body.w, body.h);
 
-		if (dbg_drawBbox->integer == 1) {
-			return;
+			DC_SetColor(255, 255, 255, 255);
+			DC_DrawText(body.x, body.y, va("%.0f, %.0f", body.x, body.y), 2);
+			DC_DrawText(body.x, body.y + 12, va("%.0f, %.0f", m.dx, m.dy), 2);
 		}
-
-		nvgFillColor(inf->nvg, nvgRGBA(255, 255, 255, 255));
-		char s[16];
-		nvgTextAlign(inf->nvg, 2);
-		snprintf(s, sizeof(s), "%.0f, %.0f", body.x, body.y);
-		nvgText(inf->nvg, body.x, body.y, s, 0);
-		snprintf(s, sizeof(s), "%.0f, %.0f", m.dx, m.dy);
-		nvgText(inf->nvg, body.x, body.y + 12, s, 0);
 	}
-
-	nvgRestore(inf->nvg);
-
 }

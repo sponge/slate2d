@@ -1,6 +1,7 @@
 #include "systems.h"
 #include "../baseworld.h"
 #include "../shared.h"
+#include "../drawcommands.h"
 
 CameraDrawSystem::CameraDrawSystem(ClientInfo *inf) : inf(inf)
 {
@@ -23,6 +24,6 @@ void CameraDrawSystem::update(double dt)
 			continue;
 		}
 
-		nvgTransform(inf->nvg, cam.scale, 0, 0, cam.scale, (0 - cam.pos.x * cam.scale), 0 - cam.pos.y * cam.scale);
+		DC_SetTransform(cam.scale, 0, 0, cam.scale, (0 - cam.pos.x * cam.scale), 0 - cam.pos.y * cam.scale);
 	}
 }

@@ -66,7 +66,7 @@ const void *RB_DrawImage(const void *data) {
 	nvgTranslate(inf.nvg, -(cmd->w / 2), -(cmd->h / 2));
 
 	auto img = Img_Get(cmd->imgId);
-	auto paint = nvgImagePattern(inf.nvg, cmd->ox, cmd->oy, img->w, img->h, 0, img->hnd, cmd->alpha);
+	auto paint = nvgImagePattern(inf.nvg, 0 - cmd->ox, 0 - cmd->oy, img->w, img->h, 0, img->hnd, cmd->alpha);
 	nvgBeginPath(inf.nvg);
 	nvgRect(inf.nvg, 0, 0, cmd->w, cmd->h);
 	nvgFillPaint(inf.nvg, paint);

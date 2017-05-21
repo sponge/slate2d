@@ -1,6 +1,7 @@
 #include "systems.h"
 #include "../baseworld.h"
 #include "../public.h"
+#include "../drawcommands.h"
 
 TileMapDrawSystem::TileMapDrawSystem(ClientInfo *inf) : inf(inf)
 {
@@ -32,44 +33,19 @@ void draw_tiles(ClientInfo &inf, tmx_map &map, tmx_layer &layer, Camera &cam) {
 				continue;
 			}
 
-			int flipX = raw & TMX_FLIPPED_HORIZONTALLY ? -1 : 1;
-			int flipY = raw & TMX_FLIPPED_VERTICALLY ? -1 : 1;
-			bool flipDiag = raw & TMX_FLIPPED_DIAGONALLY;
+			byte flipBits = (raw & TMX_FLIPPED_HORIZONTALLY ? FLIP_H : 0) | (raw & TMX_FLIPPED_VERTICALLY ? FLIP_V : 0) | (raw & TMX_FLIPPED_DIAGONALLY ? FLIP_DIAG : 0);
 
 			tmx_tile *tile = map.tiles[gid];
 			tmx_tileset *ts = tile->tileset;
 
-			int sx = tile->ul_x;
-			int sy = tile->ul_y;
-			int w = ts->tile_width;
-			int h = ts->tile_height;
-			int dx = x*ts->tile_width;
-			int dy = y*ts->tile_height;
-
 			Img *img = (Img*)tile->tileset->image->resource_image;
 
-			nvgSave(img->nvg);
-
-			nvgTranslate(img->nvg, dx + (w / 2), dy + (h / 2));
-
-			if (flipDiag) {
-				nvgTransform(img->nvg, 0, 1, 1, 0, 0, 0);
-			}
-
-			if (flipX == -1 ^ flipY == -1 && flipDiag) {
-				nvgScale(img->nvg, flipY, flipX);
-			}
-			else {
-				nvgScale(img->nvg, flipX, flipY);
-			}
-
-			auto paint = nvgImagePattern(img->nvg, -(w / 2) - sx, -(h / 2) - sy, img->w, img->h, 0, img->hnd, 1.0f);
-			nvgBeginPath(img->nvg);
-			nvgRect(img->nvg, -(w / 2), -(h / 2), w, h);
-			nvgFillPaint(img->nvg, paint);
-			nvgFill(img->nvg);
-
-			nvgRestore(img->nvg);
+			DC_DrawImage(
+				x*ts->tile_width + (ts->tile_width / 2), y*ts->tile_height + (ts->tile_height / 2),
+				ts->tile_width, ts->tile_height,
+				tile->ul_x, tile->ul_y,
+				1.0, flipBits, img->index
+			);
 		}
 	}
 }
@@ -90,22 +66,17 @@ void TileMapDrawSystem::update(double dt)
 		trap->Error(ERR_DROP, "can't draw tilemap without an active camera");
 	}
 
-	nvgSave(inf->nvg);
-
 	for (auto &entity : world->entities) {
 		PECS_SKIP_INVALID_ENTITY;
 
 		auto &tileMap = world->TileMaps[entity.id];
 
-		nvgBeginPath(inf->nvg);
-		nvgRect(inf->nvg, activeCam->left, activeCam->top, activeCam->size.x / activeCam->scale, activeCam->size.y / activeCam->scale);
-		nvgFillColor(inf->nvg, nvgRGBA(
-			(tileMap.map->backgroundcolor >> 16) & 0xFF,
+		DC_SetColor((tileMap.map->backgroundcolor >> 16) & 0xFF,
 			(tileMap.map->backgroundcolor >> 8) & 0xFF,
 			(tileMap.map->backgroundcolor) & 0xFF,
 			255
-		));
-		nvgFill(inf->nvg);
+		);
+		DC_DrawRect(activeCam->left, activeCam->top, activeCam->size.x / activeCam->scale, activeCam->size.y / activeCam->scale);
 
 		auto layer = tileMap.map->ly_head;
 		while (layer) {
@@ -125,5 +96,4 @@ void TileMapDrawSystem::update(double dt)
 		}
 	}
 
-	nvgRestore(inf->nvg);
 }

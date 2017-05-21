@@ -242,7 +242,7 @@ void DC_DrawSprite(Body &body, Sprite &sprite) {
 	DC_DrawImage(
 		body.x + sprite.ofs.x, body.y + sprite.ofs.y,
 		sprite.size.x, sprite.size.y,
-		0 - (sprite.frame * sprite.size.x), 0,
+		sprite.frame * sprite.size.x, 0,
 		1.0, flipBits, sprite.img
 	);
 }

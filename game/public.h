@@ -26,6 +26,12 @@ typedef struct gameImportFuncs_s {
 	Img* (*Img_Find)(const char * name);
 	Img* (*Img_Get)(unsigned int i);
 	bool (*Img_Free)(const char * name);
+	BitmapFont * (*BMPFNT_Create)(const char *name, const char *path, const char *glyphs, int charSpacing, int spaceWidth, int lineHeight);
+	void (*BMPFNT_Load)(BitmapFont &font);
+	BitmapFont * (*BMPFNT_Get)(unsigned int i);
+	BitmapFont * (*BMPFNT_Find)(const char *name);
+	void (*BMPFNT_LoadAll)();
+	bool (*BMPFNT_Free)(const char *name);
 	void (*Scene_Switch)(Scene *newScene);
 	Scene* (*Scene_Get)(int i);
 	void (*Scene_Replace)(int i, Scene *newScene);

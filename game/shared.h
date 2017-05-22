@@ -101,6 +101,29 @@ typedef struct {
 	char path[64];
 } Img;
 
+// BITMAP FONTS
+
+typedef struct {
+	char glyph;
+	int start;
+	int end;
+} BitmapGlyph;
+
+typedef struct {
+	NVGcontext *nvg;
+	unsigned int index;
+	unsigned int hnd;
+	int charSpacing, spaceWidth, lineHeight;
+	int w, h;
+	unsigned char glyphs[256];
+	BitmapGlyph offsets[256];
+	char name[64];
+	char path[64];
+} BitmapFont;
+
+
+// SCENE
+
 class Scene {
 public:
 	virtual ~Scene() {};

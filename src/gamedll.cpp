@@ -10,6 +10,7 @@
 #include "scene.h"
 #include "input.h"
 #include "rendercommands.h"
+#include "bitmapfont.h"
 
 #include "soloud.h"
 #include "soloud_thread.h"
@@ -127,6 +128,12 @@ static gameImportFuncs_t GAMEtraps = {
 	Img_Find,
 	Img_Get,
 	Img_Free,
+	BMPFNT_Create,
+	BMPFNT_Load,
+	BMPFNT_Get,
+	BMPFNT_Find,
+	BMPFNT_LoadAll,
+	BMPFNT_Free,
 	trap_Scene_Switch,
 	trap_Scene_Get,
 	trap_Scene_Replace,

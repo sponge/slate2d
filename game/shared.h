@@ -68,8 +68,6 @@ typedef struct cvar_s {
 	int			modificationCount;	// incremented each time the cvar is changed
 	float		value;				// atof( string )
 	int			integer;			// atoi( string )
-	struct cvar_s *next;
-	struct cvar_s *hashNext;
 } cvar_t;
 
 typedef struct {
@@ -160,8 +158,15 @@ typedef struct {
 	byte commandId;
 	int align;
 	float x, y;
-	char text[16];
+	char text[32];
 } drawTextCommand_t;
+
+typedef struct {
+	byte commandId;
+	unsigned int fntId;
+	float x, y;
+	char text[32];
+} drawBmpTextCommand_t;
 
 #define FLIP_H 1
 #define FLIP_V 2
@@ -180,5 +185,6 @@ typedef enum {
 	RC_SET_TRANSFORM,
 	RC_DRAW_RECT,
 	RC_DRAW_TEXT,
+	RC_DRAW_BMPTEXT,
 	RC_DRAW_IMAGE
 } renderCommand_t;

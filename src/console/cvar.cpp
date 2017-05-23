@@ -25,38 +25,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <stdio.h>      /* printf, fgets */
 #include <stdlib.h>
 #include <ctype.h>
+#include <string>
+#include <map>
 
-cvar_t		*cvar_vars;
+std::map<std::string, cvar_t*> cvars;
 cvar_t		*cvar_cheats;
 int			cvar_modifiedFlags;
-
-#define	MAX_CVARS	1024
-cvar_t		cvar_indexes[MAX_CVARS];
-int			cvar_numIndexes;
-
-#define FILE_HASH_SIZE		256
-static	cvar_t*		hashTable[FILE_HASH_SIZE];
-
-/*
-================
-return a hash value for the filename
-================
-*/
-static long generateHashValue( const char *fname ) {
-	int		i;
-	long	hash;
-	char	letter;
-
-	hash = 0;
-	i = 0;
-	while (fname[i] != '\0') {
-		letter = tolower(fname[i]);
-		hash+=(long)(letter)*(i+119);
-		i++;
-	}
-	hash &= (FILE_HASH_SIZE-1);
-	return hash;
-}
 
 /*
 ============
@@ -85,18 +59,7 @@ Cvar_FindVar
 ============
 */
 cvar_t *Cvar_FindVar( const char *var_name ) {
-	cvar_t	*var;
-	long hash;
-
-	hash = generateHashValue(var_name);
-	
-	for (var=hashTable[hash] ; var ; var=var->hashNext) {
-		if (!strcasecmp(var_name, var->name)) {
-			return var;
-		}
-	}
-
-	return nullptr;
+	return cvars[var_name];
 }
 
 /*
@@ -170,8 +133,8 @@ Cvar_CommandCompletion
 void	Cvar_CommandCompletion(void(*callback)(const char *match, const char *candidate), const char *match) {
 	cvar_t		*cvar;
 	
-	for ( cvar = cvar_vars ; cvar ; cvar = cvar->next ) {
-		callback(match, cvar->name);
+	for (const auto &cvar : cvars) {
+		callback(match, cvar.second->name);
 	}
 }
 
@@ -252,11 +215,7 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 	//
 	// allocate a new cvar
 	//
-	if ( cvar_numIndexes >= MAX_CVARS ) {
-		Com_Error( ERR_FATAL, "MAX_CVARS" );
-	}
-	var = &cvar_indexes[cvar_numIndexes];
-	cvar_numIndexes++;
+	var = new cvar_t();
 	var->name = CopyString (var_name);
 	var->string = CopyString (var_value);
 	var->modified = true;
@@ -266,14 +225,9 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 	var->resetString = CopyString( var_value );
 
 	// link the variable in
-	var->next = cvar_vars;
-	cvar_vars = var;
+	cvars[var->name] = var;
 
 	var->flags = flags;
-
-	hash = generateHashValue(var_name);
-	var->hashNext = hashTable[hash];
-	hashTable[hash] = var;
 
 	return var;
 }
@@ -442,10 +396,9 @@ Any testing variables will be reset to the safe values
 ============
 */
 void Cvar_SetCheatState( void ) {
-	cvar_t	*var;
-
 	// set all default vars to the safe value
-	for ( var = cvar_vars ; var ; var = var->next ) {
+	for (const auto &cvar : cvars) {
+		cvar_t *var = cvar.second;
 		if ( var->flags & CVAR_CHEAT ) {
       // the CVAR_LATCHED|CVAR_CHEAT vars might escape the reset here 
       // because of a different var->latchedString
@@ -632,7 +585,6 @@ Cvar_List_f
 ============
 */
 void Cvar_List_f( void ) {
-	cvar_t	*var;
 	int		i;
 	const char	*match;
 
@@ -643,8 +595,9 @@ void Cvar_List_f( void ) {
 	}
 
 	i = 0;
-	for (var = cvar_vars ; var ; var = var->next, i++)
-	{
+	for (const auto &cvar : cvars) {
+		i++;
+		cvar_t *var = cvar.second;
 		//if (match && !Com_Filter(match, var->name, false)) continue;
 		/*
 		if (var->flags & CVAR_SERVERINFO) {
@@ -688,7 +641,6 @@ void Cvar_List_f( void ) {
 	}
 
 	Com_Printf ("\n%i total cvars\n", i);
-	Com_Printf ("%i cvar indexes\n", cvar_numIndexes);
 }
 
 /*
@@ -700,11 +652,9 @@ Resets all cvars to their hardcoded values
 */
 void Cvar_Restart_f( void ) {
 	cvar_t	*var;
-	cvar_t	**prev;
 
-	prev = &cvar_vars;
-	while ( 1 ) {
-		var = *prev;
+	for (const auto &cvar : cvars) {
+		var = cvar.second;
 		if ( !var ) {
 			break;
 		}
@@ -712,13 +662,11 @@ void Cvar_Restart_f( void ) {
 		// don't mess with rom values, or some inter-module
 		// communication will get broken (com_cl_running, etc)
 		if ( var->flags & ( CVAR_ROM | CVAR_INIT | CVAR_NORESTART ) ) {
-			prev = &var->next;
 			continue;
 		}
 
 		// throw out any variables the user created
 		if ( var->flags & CVAR_USER_CREATED ) {
-			*prev = var->next;
 			if ( var->name ) {
 				free( var->name );
 			}
@@ -738,8 +686,6 @@ void Cvar_Restart_f( void ) {
 		}
 
 		Cvar_Set( var->name, var->resetString );
-
-		prev = &var->next;
 	}
 }
 

@@ -104,6 +104,21 @@ void DC_DrawText(float x, float y, const char *text, int align) {
 	cmd->y = y;
 }
 
+void DC_DrawBmpText(float x, float y, const char *text, unsigned int fntId) {
+	drawBmpTextCommand_t *cmd;
+
+	cmd = (drawBmpTextCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
+	if (!cmd) {
+		return;
+	}
+
+	cmd->commandId = RC_DRAW_BMPTEXT;
+	cmd->fntId = fntId;
+	strncpy(&cmd->text[0], text, sizeof(cmd->text));
+	cmd->x = x;
+	cmd->y = y;
+}
+
 void DC_DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, byte flipBits, unsigned int imgId) {
 	drawImageCommand_t *cmd;
 

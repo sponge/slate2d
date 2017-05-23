@@ -1,6 +1,7 @@
 #include "rendercommands.h"
 #include <nanovg.h>
 #include "image.h"
+#include "bitmapfont.h"
 
 extern ClientInfo inf;
 
@@ -37,6 +38,15 @@ const void *RB_DrawText(const void *data) {
 	nvgTextAlign(inf.nvg, cmd->align);
 	nvgText(inf.nvg, cmd->x, cmd->y, cmd->text, 0);
 	nvgRestore(inf.nvg);
+
+	return (const void *)(cmd + 1);
+}
+
+const void *RB_DrawBmpText(const void *data) {
+	auto cmd = (const drawBmpTextCommand_t *)data;
+
+	auto fnt = BMPFNT_Get(cmd->fntId);
+	BMPFNT_DrawText(*fnt, cmd->x, cmd->y, cmd->text);
 
 	return (const void *)(cmd + 1);
 }
@@ -98,6 +108,10 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 
 		case RC_DRAW_TEXT:
 			data = RB_DrawText(data);
+			break;
+
+		case RC_DRAW_BMPTEXT:
+			data = RB_DrawBmpText(data);
 			break;
 
 		case RC_DRAW_IMAGE:

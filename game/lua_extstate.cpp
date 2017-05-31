@@ -1,6 +1,7 @@
 #include "public.h"
 #include "lua_extstate.h"
 #include "game.h"
+#include "drawcommands.h"
 extern "C" {
 #include <luasocket.h>
 #include <mime.h>
@@ -94,6 +95,20 @@ LuaExt::LuaExt() {
 	lua.script("package.searchers = {package.searchers[1]}");
 	lua.script("table.insert(package.searchers, 2, fs_require)");
 
+	auto dct = lua.create_table_with();
+	lua["dc"] = dct;
+	dct["submit"] = DC_Submit;
+	dct["clear"] = DC_Clear;
+	dct["set_color"] = DC_SetColor;
+	dct["set_transform"] = DC_SetTransform;
+	dct["rect"] = DC_DrawRect;
+	dct["text"] = DC_DrawText;
+	dct["bmp_text"] = DC_DrawBmpText;
+	dct["image"] = DC_DrawImage;
+
+	lua["play_music"] = [](const char *file) { trap->SND_PlayMusic(file); };
+	lua["play_sound"] = [](const char *file) { trap->SND_PlaySound(file); };
+	lua["play_speech"] = [](const char *text) { trap->SND_PlaySpeech(text); };
 }
 
 bool LuaExt::LoadGameFile(const std::string &file) {

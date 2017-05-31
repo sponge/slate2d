@@ -5,6 +5,7 @@
 #include "public.h"
 #include <tmx.h>
 #include <imgui.h>
+#include "drawcommands.h"
 
 bool BaseWorld::add_lua_system(sol::table opts) {
 	sol::function procFunc = opts["process"];
@@ -26,7 +27,9 @@ bool BaseWorld::add_lua_system(sol::table opts) {
 		mask = components.as<int>();
 	}
 
-	auto sys = new LuaSystem(lua, name.c_str(), priority, mask, procFunc);
+	bool renderOnly = opts.get_or("render", false);
+
+	auto sys = new LuaSystem(lua, name.c_str(), priority, mask, renderOnly, procFunc);
 	this->add(sys);
 	return true;
 }
@@ -76,9 +79,6 @@ BaseWorld::BaseWorld() {
 
 	// expose world management to lua
 	lua["world"] = this;
-	lua["play_music"] = [](const char *file) { trap->SND_PlayMusic(file); },
-	lua["play_sound"] = [](const char *file) { trap->SND_PlaySound(file); },
-	lua["play_speech"] = [](const char *text) { trap->SND_PlaySpeech(text); },
 
 	lua.new_usertype<BaseWorld>("BaseWorld",
 		"master_entity", sol::property(&BaseWorld::get_master_entity),

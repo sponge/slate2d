@@ -4,11 +4,12 @@
 
 using namespace pecs;
 
-LuaSystem::LuaSystem(sol::state &st, std::string name, int priority, int mask, sol::function func) : lua(st), luaUpdate(func)
+LuaSystem::LuaSystem(sol::state &st, std::string name, int priority, int mask, bool renderOnly, sol::function func) : lua(st), luaUpdate(func)
 {
 	this->name = name;
 	this->priority = priority;
 	this->mask = mask;
+	this->renderOnly = renderOnly;
 }
 
 void LuaSystem::update(double dt)

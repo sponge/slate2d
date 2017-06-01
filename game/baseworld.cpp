@@ -8,6 +8,7 @@
 #include "drawcommands.h"
 
 bool BaseWorld::add_lua_system(sol::table opts) {
+	// the function is mandatory
 	sol::function procFunc = opts["process"];
 	if (!procFunc.valid()) {
 		return false;
@@ -15,8 +16,9 @@ bool BaseWorld::add_lua_system(sol::table opts) {
 
 	int priority = opts.get_or("priority", 0);
 	std::string name = opts.get_or<std::string>("name", "Lua System");
-	int mask = COMPONENT_ANY;
 
+	// accept components as either a list or a single component/added together
+	int mask = COMPONENT_ANY;
 	sol::object components = opts["components"];
 	if (components.is<sol::table>()) {
 		for (auto key : components.as<sol::table>()) {
@@ -27,45 +29,54 @@ bool BaseWorld::add_lua_system(sol::table opts) {
 		mask = components.as<int>();
 	}
 
+	// whether it should only trigger during a render phase
 	bool renderOnly = opts.get_or("render", false);
 
 	auto sys = new LuaSystem(lua, name.c_str(), priority, mask, renderOnly, procFunc);
 
+	// only trigger the update for this individual entity if it's not -1
 	sys->onlyEntId = opts.get_or("only_entity_id", -1);
 
 	this->add(sys);
 	return true;
 }
 
+// lua: adds the entity to the world
 void BaseWorld::add_entity(entity_t ent) {
 	this->add(ent);
 }
 
+// lua: calls into the engine to create (but not immediately load!) an image
 int BaseWorld::new_image(const char *name, const char *path) {
 	auto img = trap->Img_Create(name, path);
 	return img->index;
 }
 
+// lua: returns the first entity with a trigger component that ent is touching
 const entity_t* BaseWorld::check_trigger(entity_t &ent) {
 	return CheckTrigger(*this, ent);
 }
 
+// lua: returns the result of a trace query against the world
 Sweep BaseWorld::trace(entity_t & ent, double dx, double dy)
 {
 	return Trace(*this, ent, dx, dy);
 }
 
+// lua: prints the text into the default imgui window
 void BaseWorld::debug_text(const char * text)
 {
 	ImGui::Text("%s", text);
 }
 
+// lua: every ecs system needs a master entity that has a bunch of stuff, and this one is no exception
 entity_t * BaseWorld::get_master_entity()
 {
 	return &this->entities[this->masterEntity];
 }
 
 BaseWorld::BaseWorld() {
+	// add the components to the global scope. update me when adding new components.
 	lua.script(
 	"COMPONENT_ANY = 0\n"
 	"COMPONENT_BODY = 1 << 0\n"
@@ -96,6 +107,7 @@ BaseWorld::BaseWorld() {
 		"check_trigger", &BaseWorld::check_trigger,
 		"debug_text", &BaseWorld::debug_text,
 
+		// update me when adding new components
 		"addBody", &BaseWorld::addBody,
 		"getBody", &BaseWorld::getBody,
 		"addMovable", &BaseWorld::addMovable,
@@ -124,7 +136,7 @@ BaseWorld::BaseWorld() {
 		"mask", &entity_t::mask
 		);
 
-	// other types
+	// other types that aren't directly components
 
 	lua.new_usertype<tmx_map>("TmxMap",
 		"w", &tmx_map::width,
@@ -152,7 +164,8 @@ BaseWorld::BaseWorld() {
 		"value", &cvar_t::value,
 		"integer", &cvar_t::integer
 	);
-	// collision types
+
+	// collision related types
 
 	lua.new_usertype<Vec2>("Vec2",
 		"x", &Vec2::x,
@@ -174,7 +187,7 @@ BaseWorld::BaseWorld() {
 		"time", &Sweep::time
 		);
 
-	// components
+	// components. update me when adding new components.
 
 	lua.new_usertype<Body>("Body",
 		sol::constructors<Body(), Body(double, double, double, double)>(),

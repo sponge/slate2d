@@ -3,8 +3,11 @@
 #include "sol.h"
 
 struct LuaSystem : pecs::system_t {
+	// lua state attached to this system
 	sol::state &lua;
+	// update function that system will trigger every tick
 	sol::protected_function luaUpdate;
+	// if set to > -1, system will only run on this single entity
 	int onlyEntId = -1;
 
 	LuaSystem(sol::state &st, std::string name, int priority, int mask, bool renderOnly, sol::function func);

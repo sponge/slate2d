@@ -17,7 +17,7 @@ enum {
 	COMPONENT_TILEMAP = 1 << 3,
 	COMPONENT_CAMERA = 1 << 4,
 	COMPONENT_PLAYERINPUT = 1 << 5,
-	COMPONENT_LUATABLE = 1 << 6, // not defined here since it's lua specific and to avoid header spam
+	COMPONENT_LUATABLE = 1 << 6, // struct not defined here to avoid having to pull in lua here
 	COMPONENT_SPRITE = 1 << 7,
 	COMPONENT_ANIMATION = 1 << 8,
 	COMPONENT_TRIGGER = 1 << 9

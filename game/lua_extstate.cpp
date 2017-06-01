@@ -9,8 +9,7 @@ extern "C" {
 
 LuaExt lua;
 
-// Quick macro for adding functions to 
-// the preloder.
+// Quick macro for adding functions to the preloder.
 #define PRELOAD(name, function) \
 	lua_getglobal(st, "package"); \
 	lua_getfield(st, -1, "preload"); \
@@ -18,6 +17,7 @@ LuaExt lua;
 	lua_setfield(st, -2, name); \
 	lua_pop(st, 2);	
 
+// search paths for lua to search virtual fs from. must end in a nullptr!
 const char * const searchPaths[] = {
 	"scripts/%s",
 	"scripts/%s.lua",
@@ -26,6 +26,7 @@ const char * const searchPaths[] = {
 	nullptr
 };
 
+// called by lua to resolve paths. use vfs here instead of filesystem.
 static int physfs_searcher(lua_State* st) {
 	const char* file = lua_tostring(st, 1);
 
@@ -63,6 +64,7 @@ static int physfs_searcher(lua_State* st) {
 	return 1;
 }
 
+// override print function to go through dll interface
 static int console_print(lua_State* L) {
 	int nargs = lua_gettop(L);
 
@@ -90,8 +92,10 @@ static int console_print(lua_State* L) {
 LuaExt::LuaExt() {
 	auto st = this->lua_state();
 
+	// open all base libs
 	lua.open_libraries();
 
+	// open all third party libs
 	PRELOAD("socket.core", luaopen_socket_core);
 	PRELOAD("mime.core", luaopen_mime_core);
 
@@ -105,9 +109,11 @@ LuaExt::LuaExt() {
 	luaL_setfuncs(st, printlib, 0);
 	lua_pop(st, 1);
 
+	// overwrite all searchers so all requires go through physfs
 	lua.script("package.searchers = {package.searchers[1]}");
 	lua.script("table.insert(package.searchers, 2, fs_require)");
 
+	// expose draw commands to lua
 	auto dct = lua.create_table_with();
 	lua["dc"] = dct;
 	dct["submit"] = DC_Submit;
@@ -119,11 +125,13 @@ LuaExt::LuaExt() {
 	dct["bmp_text"] = DC_DrawBmpText;
 	dct["image"] = DC_DrawImage;
 
+	// expose audio commands to lua. this should probably get better.
 	lua["play_music"] = [](const char *file) { trap->SND_PlayMusic(file); };
 	lua["play_sound"] = [](const char *file) { trap->SND_PlaySound(file); };
 	lua["play_speech"] = [](const char *text) { trap->SND_PlaySpeech(text); };
 }
 
+// convenience function to read and execute lua files from the vfs
 bool LuaExt::LoadGameFile(const std::string &file) {
 	auto st = this->lua_state();
 

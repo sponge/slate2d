@@ -37,6 +37,8 @@ void resize(std::vector<T> &components, uint32_t id) {
 
 struct BaseWorld : world_t {
 	BaseWorld();
+
+	// update me to generate getters/setters for each component
 	GENERATE_COMPONENT(COMPONENT_BODY, Body);
 	GENERATE_COMPONENT(COMPONENT_MOVABLE, Movable);
 	GENERATE_COMPONENT(COMPONENT_RENDERABLE, Renderable);
@@ -46,8 +48,8 @@ struct BaseWorld : world_t {
 	GENERATE_COMPONENT(COMPONENT_SPRITE, Sprite);
 	GENERATE_COMPONENT(COMPONENT_ANIMATION, Animation);
 	GENERATE_COMPONENT(COMPONENT_TRIGGER, Trigger);
-
-	// not using the macro so we can pass a table directory
+	
+	// not using the macro for COMPONENT_LUATABLE so we can pass a table directory in the lua system
 	std::vector<sol::table> LuaTables;
 	sol::table & getTable(int id) {
 		return LuaTables[id];
@@ -58,15 +60,23 @@ struct BaseWorld : world_t {
 		this->LuaTables[entity->id] = t;
 	}
 
-	entity_t * get_master_entity();
-	unsigned int masterEntity;
+	// absolute time world has been alive for
 	double time = 0;
 
-	// functions exposed to lua environment
+	// lua: add a lua-based system
 	bool add_lua_system(sol::table opts);
+	// lua: adds the entity to the world
 	void add_entity(entity_t ent);
+	// lua: calls into the engine to create (but not immediately load!) an image
 	int new_image(const char *name, const char *path);
+	// lua: returns the result of a trace query against the world
 	Sweep trace(entity_t &ent, double dx, double dy);
+	// lua: returns the first entity with a trigger component that ent is touching
 	const entity_t* check_trigger(entity_t &ent);
+	// lua: prints the text into the default imgui window
 	void debug_text(const char *text);
+	// lua: every ecs system needs a master entity that has a bunch of stuff, and this one is no exception
+	entity_t * get_master_entity();
+	unsigned int masterEntity;
+
 };

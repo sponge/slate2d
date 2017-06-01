@@ -16,6 +16,7 @@ kbutton_t in_1_left, in_1_right, in_1_up, in_1_down, in_1_jump, in_1_attack, in_
 
 void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 
+// map (name) - load a map and switch to the game scene
 void Cmd_Map_f(void) {
 	auto mapname = trap->Cmd_Argv(1);
 	char filename[256];
@@ -38,6 +39,7 @@ void Cmd_Map_f(void) {
 	trap->Scene_Replace(0, newScene);
 }
 
+// lua (code) - eval the code in the global namespace
 void Cmd_Lua_f(void) {
 	const char *line = trap->Cmd_Cmd();
 	line += 4;
@@ -48,6 +50,7 @@ void Cmd_Lua_f(void) {
 	}
 }
 
+// scene (num) - loads a specific scene based on slot, usually just menu
 void Cmd_Scene_f(void) {
 	auto num = atoi(trap->Cmd_Argv(1));
 
@@ -66,7 +69,6 @@ void Cmd_Scene_f(void) {
 	trap->Scene_Replace(0, newScene);
 }
 
-// FIXME: abstract out rendering so i can just pass a list of drawing commands instead of nvg context stuff
 static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Cmd_AddCommand("scene", Cmd_Scene_f);
 	trap->Cmd_AddCommand("lua", Cmd_Lua_f);
@@ -96,6 +98,7 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Scene_Switch(new MenuScene());
 }
 
+// exported to engine if leading / isn't specified, will eval line as lua
 static void Console(const char *line) {
 	auto res = lua.do_string(line);
 	if (!res.valid()) {

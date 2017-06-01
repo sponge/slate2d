@@ -72,12 +72,12 @@ void GameMapScene::Startup(ClientInfo* info) {
 
 	}
 
-	// assign the world entity now (since it will do a copy)
+	// assign the world entity now (since it will copy the struct)
 	world->assign(&worldEnt, tmap);
 	world->add(worldEnt);
 	world->masterEntity = worldEnt.id;
 
-	// load the lua script and check for a spawn_entity global func
+	// load the lua script and check for functions that we require
 	lua.LoadGameFile("scripts/main.lua");
 
 	sol::function initFunc = lua["init"];
@@ -101,6 +101,7 @@ void GameMapScene::Startup(ClientInfo* info) {
 			continue;
 		}
 
+		// loop through all objects in the object group
 		const tmx_object *obj = layer->content.objgr->head;
 		while (obj != nullptr) {
 			if (obj->type == nullptr) {
@@ -108,6 +109,7 @@ void GameMapScene::Startup(ClientInfo* info) {
 				continue;
 			}
 
+			// generate a table of properties to send to lua
 			auto props = lua.create_table_with();
 			const tmx_property *prop = obj->properties;
 			while (prop != nullptr) {
@@ -115,6 +117,7 @@ void GameMapScene::Startup(ClientInfo* info) {
 				prop = prop->next;
 			}
 
+			// send it into lua
 			spawnFunc(obj, props);
 			obj = obj->next;
 		}
@@ -122,6 +125,7 @@ void GameMapScene::Startup(ClientInfo* info) {
 		layer = layer->next;
 	}
 
+	// as the last thing, do all the disk io and image loading, someday maybe we can draw a progress bar!
 	trap->Img_LoadAll();
 }
 

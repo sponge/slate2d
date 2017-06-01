@@ -30,6 +30,9 @@ bool BaseWorld::add_lua_system(sol::table opts) {
 	bool renderOnly = opts.get_or("render", false);
 
 	auto sys = new LuaSystem(lua, name.c_str(), priority, mask, renderOnly, procFunc);
+
+	sys->onlyEntId = opts.get_or("only_entity_id", -1);
+
 	this->add(sys);
 	return true;
 }

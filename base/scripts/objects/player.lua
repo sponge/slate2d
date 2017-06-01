@@ -23,15 +23,13 @@ local module = {
             stun_time = 0.0
         })
         world:add_entity(ent)
-
+        
         camera.target = ent.id
-    end,
 
-    world_loaded = function()
         world:add_system {
             name = "Player Update",
             priority = 0,
-            components = {COMPONENT_PLAYERINPUT, COMPONENT_BODY, COMPONENT_MOVABLE, COMPONENT_LUATABLE, COMPONENT_SPRITE, COMPONENT_ANIMATION},
+            only_entity_id = ent.id,
             process = function(dt, ent, c)
                 local player = c.table
                 local mov = c.mov

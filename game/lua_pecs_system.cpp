@@ -19,18 +19,32 @@ void LuaSystem::update(double dt)
 	for (auto &entity : world->entities) {
 		PECS_SKIP_INVALID_ENTITY;
 
-		auto components = lua.create_table_with();
-		if (this->mask & COMPONENT_BODY) { components["body"] = &world->getBody(entity.id); }
-		if (this->mask & COMPONENT_MOVABLE) { components["mov"] = &world->getMovable(entity.id); }
-		if (this->mask & COMPONENT_RENDERABLE) { components["renderable"] = &world->getRenderable(entity.id); }
-		if (this->mask & COMPONENT_TILEMAP) { components["tilemap"] = &world->getTileMap(entity.id); }
-		if (this->mask & COMPONENT_CAMERA) { components["camera"] = &world->getCamera(entity.id); }
-		if (this->mask & COMPONENT_PLAYERINPUT) { components["input"] = &world->getPlayerInput(entity.id); }
-		if (this->mask & COMPONENT_LUATABLE) { components["table"] = world->getTable(entity.id); } // reference the table directly since only member in component
-		if (this->mask & COMPONENT_SPRITE) { components["sprite"] = &world->getSprite(entity.id); }
-		if (this->mask & COMPONENT_ANIMATION) { components["animation"] = &world->getAnimation(entity.id); }
-		if (this->mask & COMPONENT_TRIGGER) { components["trigger"] = &world->getTrigger(entity.id); }
+		// if onlyEntId is set to an entity number, skip if entity doesn't match
+		// FIXME: pull this out so we don't loop through all entities in these systems
+		if (this->onlyEntId != -1 && this->onlyEntId != entity.id) {
+			continue;
+		}
 
+		// override mask to get all components if this lua system only applies to one entity
+		int mask = this->mask;
+		if (this->onlyEntId != -1) {
+			mask = entity.mask;
+		}
+
+		// crate a table containing references to all components so lua can update them.
+		auto components = lua.create_table_with();
+		if (mask & COMPONENT_BODY) { components["body"] = &world->getBody(entity.id); }
+		if (mask & COMPONENT_MOVABLE) { components["mov"] = &world->getMovable(entity.id); }
+		if (mask & COMPONENT_RENDERABLE) { components["renderable"] = &world->getRenderable(entity.id); }
+		if (mask & COMPONENT_TILEMAP) { components["tilemap"] = &world->getTileMap(entity.id); }
+		if (mask & COMPONENT_CAMERA) { components["camera"] = &world->getCamera(entity.id); }
+		if (mask & COMPONENT_PLAYERINPUT) { components["input"] = &world->getPlayerInput(entity.id); }
+		if (mask & COMPONENT_LUATABLE) { components["table"] = world->getTable(entity.id); } // reference the table directly since only member in component
+		if (mask & COMPONENT_SPRITE) { components["sprite"] = &world->getSprite(entity.id); }
+		if (mask & COMPONENT_ANIMATION) { components["animation"] = &world->getAnimation(entity.id); }
+		if (mask & COMPONENT_TRIGGER) { components["trigger"] = &world->getTrigger(entity.id); }
+
+		// run lua update and disable system if lua errors out instead of crashing or spamming every frame.
 		auto result = this->luaUpdate(dt, entity, components);
 		if (result.valid() == false) {
 			sol::error err = result;

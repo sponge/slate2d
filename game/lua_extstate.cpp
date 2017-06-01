@@ -18,18 +18,31 @@ LuaExt lua;
 	lua_setfield(st, -2, name); \
 	lua_pop(st, 2);	
 
+const char * const searchPaths[] = {
+	"scripts/%s",
+	"scripts/%s.lua",
+	"scripts/lib/%s",
+	"scripts/lib/%s.lua",
+	nullptr
+};
+
 static int physfs_searcher(lua_State* st) {
 	const char* file = lua_tostring(st, 1);
 
 	const char *buffer;
 	int sz;
 
-	const char *full = va("scripts/%s", file);
-	if (!trap->FS_Exists(full)) {
-		full = va("scripts/%s.lua", file);
-		if (!trap->FS_Exists(full)) {
-			return 0;
+	const char *full = nullptr;
+	for (int i = 0; searchPaths[i] != nullptr; i++) {
+		const char *check = va(searchPaths[i], file);
+		if (trap->FS_Exists(check)) {
+			full = check;
+			break;
 		}
+	}
+
+	if (full == nullptr) {
+		return 0;
 	}
 
 	sz = trap->FS_ReadFile(va(full, file), (void **)&buffer);

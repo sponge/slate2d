@@ -8,6 +8,9 @@ init = function()
     cam:Bind()
     world:addCamera(world.master_entity, cam)
     play_music("/music/frantic_-_dog_doesnt_care.it")
+
+    goodneighbors = new_bitmap_font("goodneighbors", "gfx/good_neighbors.png", "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", -1, 7, 16);
+
 end
 
 spawn_entity = function(obj, props)

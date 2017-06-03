@@ -134,7 +134,7 @@ void BMPFNT_Clear() {
 	fonts.clear();
 }
 
-int BMPFNT_DrawText(BitmapFont &font, float x, float y, const char *string) {
+int BMPFNT_DrawText(BitmapFont &font, float x, float y, float scale, const char *string) {
 	float currX = x, currY = y;
 	int i = 0;
 	while (string[i] != '\0') {
@@ -154,7 +154,7 @@ int BMPFNT_DrawText(BitmapFont &font, float x, float y, const char *string) {
 		BitmapGlyph &glyph = font.offsets[string[i]];
 
 		nvgSave(inf.nvg);
-		nvgScale(inf.nvg, 4, 4);
+		nvgScale(inf.nvg, scale, scale);
 
 		nvgTranslate(inf.nvg, currX, currY);
 

@@ -147,6 +147,7 @@ typedef struct {
 typedef struct {
 	byte	commandId;
 	float	transform[6];
+	bool	absolute;
 } setTransformCommand_t;
 
 typedef struct {
@@ -164,7 +165,7 @@ typedef struct {
 typedef struct {
 	byte commandId;
 	unsigned int fntId;
-	float x, y;
+	float x, y, scale;
 	char text[32];
 } drawBmpTextCommand_t;
 

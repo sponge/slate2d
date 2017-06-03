@@ -9,4 +9,4 @@ BitmapFont * BMPFNT_Find(const char *name);
 void BMPFNT_LoadAll();
 bool BMPFNT_Free(const char *name);
 void BMPFNT_Clear();
-int BMPFNT_DrawText(BitmapFont &font, float x, float y, const char *string);
+int BMPFNT_DrawText(BitmapFont &font, float x, float y, float scale, const char *string);

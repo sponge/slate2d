@@ -73,7 +73,7 @@ void GameMapScene::Startup(ClientInfo* info) {
 	}
 
 	// assign the world entity now (since it will copy the struct)
-	world->assign(&worldEnt, tmap);
+	world->assign(worldEnt, tmap);
 	world->add(worldEnt);
 	world->masterEntity = worldEnt.id;
 
@@ -127,6 +127,7 @@ void GameMapScene::Startup(ClientInfo* info) {
 
 	// as the last thing, do all the disk io and image loading, someday maybe we can draw a progress bar!
 	trap->Img_LoadAll();
+	trap->BMPFNT_LoadAll();
 }
 
 void GameMapScene::Update(float dt) {

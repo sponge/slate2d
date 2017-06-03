@@ -16,6 +16,10 @@ const void *RB_SetColor(const void *data) {
 const void *RB_SetTransform(const void *data) {
 	auto cmd = (const setTransformCommand_t *)data;
 
+	if (cmd->absolute) {
+		nvgResetTransform(inf.nvg);
+	}
+
 	nvgTransform(inf.nvg, cmd->transform[0], cmd->transform[1], cmd->transform[2], cmd->transform[3], cmd->transform[4], cmd->transform[5]);
 
 	return (const void *)(cmd + 1);
@@ -46,7 +50,7 @@ const void *RB_DrawBmpText(const void *data) {
 	auto cmd = (const drawBmpTextCommand_t *)data;
 
 	auto fnt = BMPFNT_Get(cmd->fntId);
-	BMPFNT_DrawText(*fnt, cmd->x, cmd->y, cmd->text);
+	BMPFNT_DrawText(*fnt, cmd->x, cmd->y, cmd->scale, cmd->text);
 
 	return (const void *)(cmd + 1);
 }

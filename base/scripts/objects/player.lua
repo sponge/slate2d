@@ -1,3 +1,5 @@
+local Event = require 'event'
+
 local clamp = function(val, min, max)
     return math.max(min, math.min(max, val))
 end
@@ -12,7 +14,7 @@ local module = {
         world:addMovable(ent, Movable:new(0, 0))
         world:addRenderable(ent, Renderable:new(200, 30, 30, 200))
         world:addPlayerInput(ent, PlayerInput:new())
-        world:addSprite(ent, Sprite:new(world:new_image("player", "gfx/dog.png"), 22, 16, 0, 0))
+        world:addSprite(ent, Sprite:new(new_image("player", "gfx/dog.png"), 22, 16, 0, 0))
         world:addAnimation(ent, Animation:new(0, 0, 6, 0.1, world.time))
         world:addTable(ent, {
             num_jumps = 0,
@@ -20,11 +22,25 @@ local module = {
             can_wall_jump = false,
             jump_held = false,
             will_pogo = false,
-            stun_time = 0.0
+            stun_time = 0.0,
+            goal_time = 0.0
         })
         world:add_entity(ent)
         
         camera.target = ent.id
+
+        world:add_system {
+            name = "Goal Text Draw",
+            priority = 1,
+            only_entity_id = ent.id,
+            render = true,
+            process = function(dt, ent, c)
+                if c.table.goal_time ~= 0 then
+                    dc.set_transform(true, 1, 0, 0, 1, 500, 100)
+                    dc.bmp_text(0, 0, 5, "You are a\nGood Dog!", goodneighbors);
+                end
+            end
+        }
 
         world:add_system {
             name = "Player Update",
@@ -43,8 +59,12 @@ local module = {
                 local down_touch = world:trace(ent, 0, 1).time < 1e-7;
                 local up_touch = world:trace(ent, 0, -1).time < 1e-7;
 
-                world:debug_text(inspect(player))
-                world:debug_text("l:" .. tostring(left_touch) .. " r:".. tostring(right_touch) .. " d:".. tostring(down_touch) .. " u:" .. tostring(up_touch))
+                debug_text(inspect(player))
+                debug_text("l:" .. tostring(left_touch) .. " r:".. tostring(right_touch) .. " d:".. tostring(down_touch) .. " u:" .. tostring(up_touch))
+
+                if player.goal_time > 0 then
+                    input.enabled = false
+                end
 
                 -- if they're on the ground, they can always jump
                 if down_touch then
@@ -176,9 +196,7 @@ local module = {
                 local trigger_ent = world:check_trigger(ent)
                 if trigger_ent ~= nil then
                     local trig = world:getTrigger(trigger_ent.id)
-                    world:kill_entity(trigger_ent)
-                    input.enabled = false
-                    play_speech("great job! you are a good dog!")
+                    Event.dispatch('trigger '.. trigger_ent.id, ent, trigger_ent)
                 end
 
                 if math.abs(mov.dy) < 0.2 then

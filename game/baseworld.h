@@ -5,15 +5,15 @@
 
 #define GENERATE_COMPONENT(ENUM, TYPE) \
 std::vector<TYPE> TYPE##s; \
-void assign(entity_t *entity, TYPE component) { \
-	entity->mask |= ENUM ; \
-	resize(this->TYPE##s, entity->id); \
-	this->TYPE##s[entity->id] = component; \
+void assign(entity_t &entity, TYPE component) { \
+	entity.mask |= ENUM ; \
+	resize(this->TYPE##s, entity.id); \
+	this->TYPE##s[entity.id] = component; \
 } \
 TYPE & get##TYPE (int id) { \
 	return TYPE##s[id]; \
 } \
-void add##TYPE (entity_t *entity, TYPE comp) { \
+void add##TYPE (entity_t &entity, TYPE comp) { \
 	this->assign(entity, comp); \
 }
 
@@ -54,27 +54,27 @@ struct BaseWorld : world_t {
 	sol::table & getTable(int id) {
 		return LuaTables[id];
 	}
-	void addTable(entity_t *entity, sol::table t) {
-		entity->mask |= COMPONENT_LUATABLE;
-		resize(this->LuaTables, entity->id);
-		this->LuaTables[entity->id] = t;
+	void addTable(entity_t &entity, sol::table t) {
+		entity.mask |= COMPONENT_LUATABLE;
+		resize(this->LuaTables, entity.id);
+		this->LuaTables[entity.id] = t;
 	}
 
 	// absolute time world has been alive for
 	double time = 0;
 
+	bool entityHas(entity_t &ent, int component) {
+		return (ent.mask & component) != 0;
+	}
+
 	// lua: add a lua-based system
 	bool add_lua_system(sol::table opts);
 	// lua: adds the entity to the world
 	void add_entity(entity_t ent);
-	// lua: calls into the engine to create (but not immediately load!) an image
-	int new_image(const char *name, const char *path);
 	// lua: returns the result of a trace query against the world
 	Sweep trace(entity_t &ent, double dx, double dy);
 	// lua: returns the first entity with a trigger component that ent is touching
 	const entity_t* check_trigger(entity_t &ent);
-	// lua: prints the text into the default imgui window
-	void debug_text(const char *text);
 	// lua: every ecs system needs a master entity that has a bunch of stuff, and this one is no exception
 	entity_t * get_master_entity();
 	unsigned int masterEntity;

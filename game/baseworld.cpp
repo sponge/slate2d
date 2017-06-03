@@ -4,7 +4,6 @@
 #include "componenthelpers.h"
 #include "public.h"
 #include <tmx.h>
-#include <imgui.h>
 #include "drawcommands.h"
 
 bool BaseWorld::add_lua_system(sol::table opts) {
@@ -46,12 +45,6 @@ void BaseWorld::add_entity(entity_t ent) {
 	this->add(ent);
 }
 
-// lua: calls into the engine to create (but not immediately load!) an image
-int BaseWorld::new_image(const char *name, const char *path) {
-	auto img = trap->Img_Create(name, path);
-	return img->index;
-}
-
 // lua: returns the first entity with a trigger component that ent is touching
 const entity_t* BaseWorld::check_trigger(entity_t &ent) {
 	return CheckTrigger(*this, ent);
@@ -61,12 +54,6 @@ const entity_t* BaseWorld::check_trigger(entity_t &ent) {
 Sweep BaseWorld::trace(entity_t & ent, double dx, double dy)
 {
 	return Trace(*this, ent, dx, dy);
-}
-
-// lua: prints the text into the default imgui window
-void BaseWorld::debug_text(const char * text)
-{
-	ImGui::Text("%s", text);
 }
 
 // lua: every ecs system needs a master entity that has a bunch of stuff, and this one is no exception
@@ -101,11 +88,10 @@ BaseWorld::BaseWorld() {
 		"add_system", &BaseWorld::add_lua_system,
 		"add_entity", &BaseWorld::add_entity,
 		"new_entity", &BaseWorld::get_entity,
-		"new_image", &BaseWorld::new_image,
 		"kill_entity", &BaseWorld::kill, 
 		"trace", &BaseWorld::trace,
 		"check_trigger", &BaseWorld::check_trigger,
-		"debug_text", &BaseWorld::debug_text,
+		"entity_has", &BaseWorld::entityHas,
 
 		// update me when adding new components
 		"addBody", &BaseWorld::addBody,

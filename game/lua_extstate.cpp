@@ -2,6 +2,7 @@
 #include "lua_extstate.h"
 #include "game.h"
 #include "drawcommands.h"
+#include <imgui.h>
 extern "C" {
 #include <luasocket.h>
 #include <mime.h>
@@ -129,6 +130,14 @@ LuaExt::LuaExt() {
 	lua["play_music"] = [](const char *file) { trap->SND_PlayMusic(file); };
 	lua["play_sound"] = [](const char *file) { trap->SND_PlaySound(file); };
 	lua["play_speech"] = [](const char *text) { trap->SND_PlaySpeech(text); };
+
+	lua["new_image"] = [](const char *name, const char *path) { return trap->Img_Create(name, path)->index; };
+	lua["new_bitmap_font"] = [](const char *name, const char *path, const char *glyphs, int charSpacing, int spaceWidth, int lineHeight) {
+		auto fnt = trap->BMPFNT_Create(name, path, glyphs, charSpacing, spaceWidth, lineHeight);
+		return fnt->index;
+	};
+
+	lua["debug_text"] = [](const char * text) { ImGui::Text("%s", text); };
 }
 
 // convenience function to read and execute lua files from the vfs

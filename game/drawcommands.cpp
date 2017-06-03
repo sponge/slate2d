@@ -57,7 +57,7 @@ void DC_SetColor(byte r, byte g, byte b, byte a) {
 	cmd->color[3] = a;
 }
 
-void DC_SetTransform(float a, float b, float c, float d, float e, float f) {
+void DC_SetTransform(bool absolute, float a, float b, float c, float d, float e, float f) {
 	setTransformCommand_t *cmd;
 
 	cmd = (setTransformCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
@@ -66,6 +66,7 @@ void DC_SetTransform(float a, float b, float c, float d, float e, float f) {
 	}
 
 	cmd->commandId = RC_SET_TRANSFORM;
+	cmd->absolute = absolute;
 	cmd->transform[0] = a;
 	cmd->transform[1] = b;
 	cmd->transform[2] = c;
@@ -104,7 +105,7 @@ void DC_DrawText(float x, float y, const char *text, int align) {
 	cmd->y = y;
 }
 
-void DC_DrawBmpText(float x, float y, const char *text, unsigned int fntId) {
+void DC_DrawBmpText(float x, float y, float scale, const char *text, unsigned int fntId) {
 	drawBmpTextCommand_t *cmd;
 
 	cmd = (drawBmpTextCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
@@ -117,6 +118,7 @@ void DC_DrawBmpText(float x, float y, const char *text, unsigned int fntId) {
 	strncpy(&cmd->text[0], text, sizeof(cmd->text));
 	cmd->x = x;
 	cmd->y = y;
+	cmd->scale = scale;
 }
 
 void DC_DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, byte flipBits, unsigned int imgId) {

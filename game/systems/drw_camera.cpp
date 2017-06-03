@@ -24,6 +24,6 @@ void CameraDrawSystem::update(double dt)
 			continue;
 		}
 
-		DC_SetTransform(cam.scale, 0, 0, cam.scale, (0 - cam.pos.x * cam.scale), 0 - cam.pos.y * cam.scale);
+		DC_SetTransform(true, cam.scale, 0, 0, cam.scale, (0 - cam.pos.x * cam.scale), 0 - cam.pos.y * cam.scale);
 	}
 }

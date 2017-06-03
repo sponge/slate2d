@@ -136,6 +136,10 @@ LuaExt::LuaExt() {
 		auto fnt = trap->BMPFNT_Create(name, path, glyphs, charSpacing, spaceWidth, lineHeight);
 		return fnt->index;
 	};
+	lua["bitmap_text_width"] = [](int id, const char *text) {
+		auto fnt = trap->BMPFNT_Get(id);
+		return trap->BMPFNT_TextWidth(*fnt, text);
+	};
 
 	lua["debug_text"] = [](const char * text) { ImGui::Text("%s", text); };
 }

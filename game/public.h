@@ -30,6 +30,7 @@ typedef struct gameImportFuncs_s {
 	void (*BMPFNT_Load)(BitmapFont &font);
 	BitmapFont * (*BMPFNT_Get)(unsigned int i);
 	BitmapFont * (*BMPFNT_Find)(const char *name);
+	int (*BMPFNT_TextWidth)(BitmapFont &font, const char *string);
 	void (*BMPFNT_LoadAll)();
 	bool (*BMPFNT_Free)(const char *name);
 	void (*Scene_Switch)(Scene *newScene);

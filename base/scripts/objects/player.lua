@@ -36,8 +36,15 @@ local module = {
             render = true,
             process = function(dt, ent, c)
                 if c.table.goal_time ~= 0 then
-                    dc.set_transform(true, 1, 0, 0, 1, 500, 100)
-                    dc.bmp_text(0, 0, 5, "You are a\nGood Dog!", goodneighbors);
+                    dc.set_transform(true, 1, 0, 0, 1, 500, 125)
+                    local txt = "Good Dog!"
+                    local x = 0;
+                    for i=1, #txt do
+                        local w = bitmap_text_width(goodneighbors, txt:sub(i,i))
+                        local y = math.sin((world.time - c.table.goal_time + (i*0.1)) * 4) * 10
+                        dc.bmp_text(x, y, 5, txt:sub(i,i), goodneighbors);
+                        x = x + w
+                    end
                 end
             end
         }

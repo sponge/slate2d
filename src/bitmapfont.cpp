@@ -134,6 +134,33 @@ void BMPFNT_Clear() {
 	fonts.clear();
 }
 
+int BMPFNT_TextWidth(BitmapFont &font, const char *string) {
+	int currX = 0;
+
+	int i = 0;
+	while (string[i] != '\0') {
+		if (string[i] == '\n') {
+			currX = 0;
+			i++;
+			continue;
+		}
+
+		if (string[i] == ' ') {
+			currX += font.spaceWidth;
+			i++;
+			continue;
+		}
+
+		BitmapGlyph &glyph = font.offsets[string[i]];
+
+		currX += glyph.end - glyph.start + font.charSpacing;
+		i++;
+
+	}
+
+	return currX;
+}
+
 int BMPFNT_DrawText(BitmapFont &font, float x, float y, float scale, const char *string) {
 	float currX = x, currY = y;
 	int i = 0;

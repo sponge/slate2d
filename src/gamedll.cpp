@@ -132,6 +132,7 @@ static gameImportFuncs_t GAMEtraps = {
 	BMPFNT_Load,
 	BMPFNT_Get,
 	BMPFNT_Find,
+	BMPFNT_TextWidth,
 	BMPFNT_LoadAll,
 	BMPFNT_Free,
 	trap_Scene_Switch,

@@ -8,16 +8,16 @@ local module = {
         world:addAnimation(ent, Animation:new(0, 0, 7, 0.1, world.time))
         world:addTrigger(ent, Trigger:new(1))
         world:add_entity(ent)
-
-        Event.on('trigger 1', function(activator, ent)
-            world:kill_entity(ent)
-            if world:entity_has(activator, COMPONENT_LUATABLE) then
-                local t = world:getTable(activator.id)
-                t.goal_time = world.time
-            end
-            play_speech("great job! you are a good dog!")
-        end)
     end
 }
+
+Event.on('trigger 1', function(activator, ent)
+    world:kill_entity(ent)
+    if world:entity_has(activator, COMPONENT_LUATABLE) then
+        local t = world:getTable(activator.id)
+        t.goal_time = world.time
+    end
+    play_speech("great job! you are a good dog!")
+end)
 
 return module

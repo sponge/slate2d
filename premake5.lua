@@ -11,6 +11,7 @@ solution "game"
   configuration { "windows" }
     platforms { "x86" }
     disablewarnings { "4100" }
+    systemversion "10.0.15063.0"
 
   configuration { "linux" }
     defines { "LINUX" }

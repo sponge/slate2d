@@ -11,6 +11,7 @@ extern cvar_t *p_earlyJumpEndModifier;
 extern cvar_t *p_pogoJumpHeight;
 extern cvar_t *p_doubleJumpHeight;
 extern cvar_t *p_wallJumpX;
+extern cvar_t *p_runSpeed;
 extern cvar_t *p_maxSpeed;
 extern cvar_t *p_terminalVelocity;
 extern cvar_t *p_speedJumpBonus;

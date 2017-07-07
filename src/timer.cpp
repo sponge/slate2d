@@ -21,7 +21,7 @@ bool Timer_Clear(unsigned int id) {
 	return false;
 }
 
-int Timer_Tick(unsigned int group, unsigned int time) {
+void Timer_Tick(unsigned int group, unsigned int time) {
 	for (auto timer = timers.begin(); timer != timers.end();) {
 		if (timer->group != group) {
 			continue;

@@ -228,6 +228,7 @@ BaseWorld::BaseWorld() {
 		"down", &PlayerInput::down,
 		"left", &PlayerInput::left,
 		"right", &PlayerInput::right,
+		"run", &PlayerInput::run,
 		"jump", &PlayerInput::jump,
 		"attack", &PlayerInput::attack,
 		"menu", &PlayerInput::menu

@@ -111,7 +111,7 @@ struct Camera {
 struct PlayerInput {
 	explicit PlayerInput() {}
 	bool enabled = true;
-	bool up = false, down = false, left = false, right = false, jump = false, attack = false, menu = false;
+	bool up = false, down = false, left = false, right = false, run = false, jump = false, attack = false, menu = false;
 };
 
 struct Sprite {

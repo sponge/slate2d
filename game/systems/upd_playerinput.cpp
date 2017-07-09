@@ -25,6 +25,7 @@ void PlayerInputSystem::update(double dt)
 			input.right = false;
 			input.up = false;
 			input.down = false;
+			input.run = false;
 			input.jump = false;
 			input.attack = false;
 			input.menu = false;
@@ -35,6 +36,7 @@ void PlayerInputSystem::update(double dt)
 		input.right = trap->CL_KeyState(&in_1_right) > 0;
 		input.up = trap->CL_KeyState(&in_1_up) > 0;
 		input.down = trap->CL_KeyState(&in_1_down) > 0;
+		input.run = trap->CL_KeyState(&in_1_run) > 0;
 		input.jump = trap->CL_KeyState(&in_1_jump) > 0;
 		input.attack = trap->CL_KeyState(&in_1_attack) > 0;
 		input.menu = trap->CL_KeyState(&in_1_menu) > 0;

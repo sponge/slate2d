@@ -22,6 +22,7 @@ cvar_t *p_skidAccel;
 cvar_t *p_groundFriction;
 cvar_t *p_airFriction;
 cvar_t *p_runSpeed;
+cvar_t *p_walkSpeed;
 
 static cvarTable_t gameCvarTable[] = {
     { &dbg_drawBbox, "dbg_drawBbox", "0", 0},
@@ -32,6 +33,7 @@ static cvarTable_t gameCvarTable[] = {
     { &p_pogoJumpHeight, "p_pogoJumpHeight", "350", 0 },
     { &p_doubleJumpHeight, "p_doubleJumpHeight", "245", 0 },
     { &p_wallJumpX, "p_wallJumpX", "95", 0 },
+	{ &p_walkSpeed, "p_walkSpeed", "75", 0 },
 	{ &p_runSpeed, "p_runSpeed", "135", 0 },
     { &p_maxSpeed, "p_maxSpeed", "180", 0 },
     { &p_terminalVelocity, "p_terminalVelocity", "230", 0 },

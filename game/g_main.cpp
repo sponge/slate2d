@@ -12,7 +12,7 @@
 #include "lua_extstate.h"
 
 gameImportFuncs_t *trap;
-kbutton_t in_1_left, in_1_right, in_1_up, in_1_down, in_1_jump, in_1_attack, in_1_menu;
+kbutton_t in_1_left, in_1_right, in_1_up, in_1_run, in_1_down, in_1_jump, in_1_attack, in_1_menu;
 
 void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 
@@ -82,6 +82,8 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Cmd_AddCommand("-p1left",   []() { trap->IN_KeyUp(&in_1_left); });
 	trap->Cmd_AddCommand("+p1right",  []() { trap->IN_KeyDown(&in_1_right); });
 	trap->Cmd_AddCommand("-p1right",  []() { trap->IN_KeyUp(&in_1_right); });
+	trap->Cmd_AddCommand("+p1run",    []() { trap->IN_KeyDown(&in_1_run); });
+	trap->Cmd_AddCommand("-p1run",    []() { trap->IN_KeyUp(&in_1_run); });
 	trap->Cmd_AddCommand("+p1jump",   []() { trap->IN_KeyDown(&in_1_jump); });
 	trap->Cmd_AddCommand("-p1jump",   []() { trap->IN_KeyUp(&in_1_jump); });
 	trap->Cmd_AddCommand("+p1attack", []() { trap->IN_KeyDown(&in_1_attack); });

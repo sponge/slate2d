@@ -177,7 +177,9 @@ local module = {
                     end
                 end
 
-                mov.dx = clamp(mov.dx, -cvars["p_runSpeed"].value, cvars["p_runSpeed"].value);
+                local maxSpeed = input.run and cvars["p_runSpeed"].value or cvars["p_walkSpeed"].value
+
+                mov.dx = clamp(mov.dx, -maxSpeed, maxSpeed);
                 local uncappedY = mov.dy;
                 mov.dy = clamp(mov.dy, -cvars["p_terminalVelocity"].value, cvars["p_terminalVelocity"].value);
 

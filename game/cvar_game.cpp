@@ -22,6 +22,7 @@ cvar_t *p_skidAccel;
 cvar_t *p_groundFriction;
 cvar_t *p_airFriction;
 cvar_t *p_runSpeed;
+cvar_t *p_runChargeTime;
 
 static cvarTable_t gameCvarTable[] = {
     { &dbg_drawBbox, "dbg_drawBbox", "0", 0},
@@ -34,6 +35,7 @@ static cvarTable_t gameCvarTable[] = {
     { &p_wallJumpX, "p_wallJumpX", "95", 0 },
 	{ &p_runSpeed, "p_runSpeed", "135", 0 },
     { &p_maxSpeed, "p_maxSpeed", "180", 0 },
+	{ &p_runChargeTime, "p_runChargeTime", "0.93", 0 },
     { &p_terminalVelocity, "p_terminalVelocity", "230", 0 },
     { &p_speedJumpBonus, "p_speedJumpBonus", "35", 0 },
     { &p_airAccel, "p_airAccel", "190", 0 },

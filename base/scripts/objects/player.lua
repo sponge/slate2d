@@ -181,15 +181,10 @@ local module = {
 
                 if input.run and math.abs(mov.dx) >= cvars["p_runSpeed"].value then
                     player.p_meter = player.p_meter + dt
-                    if player.p_meter > cvars["p_runChargeTime"].value then
-                        player.p_meter = cvars["p_runChargeTime"].value
-                    end
                 elseif player.p_meter > 0 then
                     player.p_meter = player.p_meter - (dt * 0.5)
-                    if player.p_meter < 0 then
-                        player.p_meter = 0
-                    end
                 end
+                player.p_meter = clamp(player.p_meter, 0, cvars["p_runChargeTime"].value)
 
                 debug_text("speed: " .. tostring(mov.dx))
                 debug_text("p meter: " .. tostring(player.p_meter) .. "/" .. tostring(cvars["p_runChargeTime"].value))

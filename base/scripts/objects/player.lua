@@ -22,6 +22,7 @@ local module = {
             can_wall_jump = false,
             jump_held = false,
             will_pogo = false,
+            p_meter = 0.0,
             stun_time = 0.0,
             goal_time = 0.0
         })
@@ -162,7 +163,6 @@ local module = {
 
                     debug_text("dt:" .. tostring(dt))
                     debug_text("accel: ".. tostring(accel * dt))
-                    debug_text("speed: " .. tostring(mov.dx))
 
                     mov.dx = mov.dx + accel * dt
                     spr.flipX = not input.right
@@ -177,7 +177,31 @@ local module = {
                     end
                 end
 
-                local maxSpeed = input.run and cvars["p_runSpeed"].value or cvars["p_walkSpeed"].value
+                -- p meter handling
+
+                if input.run and math.abs(mov.dx) >= cvars["p_runSpeed"].value then
+                    player.p_meter = player.p_meter + dt
+                    if player.p_meter > cvars["p_runChargeTime"].value then
+                        player.p_meter = cvars["p_runChargeTime"].value
+                    end
+                elseif player.p_meter > 0 then
+                    player.p_meter = player.p_meter - (dt * 0.5)
+                    if player.p_meter < 0 then
+                        player.p_meter = 0
+                    end
+                end
+
+                debug_text("speed: " .. tostring(mov.dx))
+                debug_text("p meter: " .. tostring(player.p_meter) .. "/" .. tostring(cvars["p_runChargeTime"].value))
+
+                local maxSpeed = 0
+                if player.p_meter == cvars["p_runChargeTime"].value then
+                    maxSpeed = cvars["p_maxSpeed"].value
+                elseif input.run then
+                    maxSpeed = cvars["p_runSpeed"].value
+                else
+                    maxSpeed = cvars["p_walkSpeed"].value
+                end
 
                 mov.dx = clamp(mov.dx, -maxSpeed, maxSpeed);
                 local uncappedY = mov.dy;

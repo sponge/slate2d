@@ -43,7 +43,7 @@ static cvarTable_t gameCvarTable[] = {
     { &p_airAccel, "p_airAccel", "190", 0 },
     { &p_turnAirAccel, "p_turnAirAccel", "325", 0 },
     { &p_accel, "p_accel", "337", 0 },
-    { &p_skidAccel, "p_skidAccel", "420", 0 },
+    { &p_skidAccel, "p_skidAccel", "575", 0 },
     { &p_groundFriction, "p_groundFriction", "300", 0 },
     { &p_airFriction, "p_airFriction", "100", 0 },
 };

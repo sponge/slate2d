@@ -4,6 +4,26 @@ local clamp = function(val, min, max)
     return math.max(min, math.min(max, val))
 end
 
+local jump_heights = {
+    {180, 345},
+    {150, 334},
+    {120, 326},
+    {90, 315},
+    {60, 307},
+    {30, 296},
+    {0, 288},
+}
+
+local max_speeds = { walk = 75, run = 135, sprint = 180 }
+
+local get_jump_height = function(dx)
+    for i,v in ipairs(jump_heights) do
+        if math.abs(dx) >= v[1] then
+            return 0 - v[2]
+        end
+    end
+end
+
 local module = {
     spawner = function(obj, props)
         local map = world:getTileMap(world.master_entity.id).map
@@ -128,8 +148,7 @@ local module = {
 
                     -- regular on ground jump
                     elseif down_touch then
-                        -- FIXME: mov.dy = -(p_jumpHeight->value + (fabs(mov.dx) >= p_maxSpeed->value * 0.25f ? p_speedJumpBonus->value : 0));
-                        mov.dy = -cvars["p_jumpHeight"].value
+                        mov.dy = get_jump_height(mov.dx)
                         player.jump_held = true
                         player.num_jumps = 1
 
@@ -186,16 +205,16 @@ local module = {
                 end
                 player.p_meter = clamp(player.p_meter, 0, cvars["p_runChargeTime"].value)
 
+                debug_text("jumpheight: " .. tostring(get_jump_height(mov.dx)))
                 debug_text("speed: " .. tostring(mov.dx))
-                debug_text("p meter: " .. tostring(player.p_meter) .. "/" .. tostring(cvars["p_runChargeTime"].value))
 
                 local maxSpeed = 0
                 if player.p_meter == cvars["p_runChargeTime"].value then
-                    maxSpeed = cvars["p_maxSpeed"].value
+                    maxSpeed = max_speeds.sprint
                 elseif input.run then
-                    maxSpeed = cvars["p_runSpeed"].value
+                    maxSpeed = max_speeds.run
                 else
-                    maxSpeed = cvars["p_walkSpeed"].value
+                    maxSpeed = max_speeds.walk
                 end
 
                 mov.dx = clamp(mov.dx, -maxSpeed, maxSpeed);

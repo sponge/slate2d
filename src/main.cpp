@@ -28,8 +28,8 @@
 
 #include "../game/public.h"
 
-#include "soloud.h"
-#include "soloud_thread.h"
+#include <soloud.h>
+#include <soloud_thread.h>
 
 SoLoud::Soloud soloud;
 ClientInfo inf;

@@ -53,6 +53,9 @@
             "name": "Win32",
             "includePath": [
                 "C:/Program Files (x86)/Windows Kits/10/Include/10.0.14393.0/ucrt",
+                "c:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.10.25017/include",
+                "c:/Program Files (x86)/Windows Kits/10/Include/10.0.14393.0/um",
+                "c:/Program Files (x86)/Windows Kits/10/Include/10.0.14393.0/shared",                
                 "${workspaceRoot}/libs/glew",
                 "${workspaceRoot}/libs/imgui",
                 "${workspaceRoot}/libs/lua",
@@ -60,7 +63,7 @@
                 "${workspaceRoot}/libs/nanovg",
                 "${workspaceRoot}/libs/physfs",                
                 "${workspaceRoot}/libs/sdl",
-                "${workspaceRoot}/libs/soloud",
+                "${workspaceRoot}/libs/soloud/include",
                 "${workspaceRoot}/libs/tmx"
             ],
             "browse": {

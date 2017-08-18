@@ -52,10 +52,10 @@
         {
             "name": "Win32",
             "includePath": [
-                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.14393.0/ucrt",
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.15063.0/ucrt",
                 "c:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.10.25017/include",
-                "c:/Program Files (x86)/Windows Kits/10/Include/10.0.14393.0/um",
-                "c:/Program Files (x86)/Windows Kits/10/Include/10.0.14393.0/shared",                
+                "c:/Program Files (x86)/Windows Kits/10/Include/10.0.15063.0/um",
+                "c:/Program Files (x86)/Windows Kits/10/Include/10.0.15063.0/shared",                
                 "${workspaceRoot}/libs/glew",
                 "${workspaceRoot}/libs/imgui",
                 "${workspaceRoot}/libs/lua",
@@ -70,7 +70,7 @@
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "",
                 "path": [
-                    "C:/Program Files (x86)/Windows Kits/10/Include/10.0.14393.0/ucrt",
+                    "C:/Program Files (x86)/Windows Kits/10/Include/10.0.15063.0/ucrt",
                     "${workspaceRoot}"
                     
                 ]

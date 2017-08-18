@@ -1,40 +1,22 @@
 {
-  // See https://go.microsoft.com/fwlink/?LinkId=733558
-  // for the documentation about the tasks.json format
-  "version": "0.1.0",
-  "command": "make",
-  "isShellCommand": true,
-  "args": [
-    "-C",
-    "./build"
-  ],
-  "tasks": [
-    {
-      "taskName": "config=debug_x64",
-      "isBuildCommand": true,
-      "problemMatcher": {
-        "owner": "cpp",
-        "fileLocation": [
-          "relative",
-          "${workspaceRoot}/build"
-        ],
-        "pattern": {
-          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
-          "file": 1,
-          "line": 2,
-          "column": 3,
-          "severity": 4,
-          "message": 5
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "taskName": "build",
+            "type": "shell",
+            "command": "${workspaceRoot}/build.bat",
+            "args": [
+                "${workspaceRoot}"
+            ],
+            "group": "build",
+            "presentation": {
+                // Reveal the output only if unrecognized errors occur.
+                "reveal": "never"
+            },
+            // Use the standard MS compiler pattern to detect errors, warnings and infos
+            "problemMatcher": "$msCompile"
         }
-      }
-    },
-    {
-      "taskName": "config=release_x64"
-    },
-    {
-      "taskName": "clean"
-    }
-    
-  ],
-  "showOutput": "always"
+    ]
 }

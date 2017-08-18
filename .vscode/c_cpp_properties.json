@@ -4,14 +4,22 @@
             "name": "Mac",
             "includePath": [
                 "/usr/include",
-                "${workspaceRoot}/include"
+                "${workspaceRoot}/libs/glew",
+                "${workspaceRoot}/libs/imgui",
+                "${workspaceRoot}/libs/lua",
+                "${workspaceRoot}/libs/luasocket",
+                "${workspaceRoot}/libs/nanovg",
+                "${workspaceRoot}/libs/physfs",                
+                "${workspaceRoot}/libs/sdl",
+                "${workspaceRoot}/libs/soloud",
+                "${workspaceRoot}/libs/tmx"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "",
                 "path": [
                     "/usr/include",
-                    "${workspaceRoot}/include"
+                    "${workspaceRoot}"
                 ]
             },
             "intelliSenseMode": "clang-x64"
@@ -20,14 +28,23 @@
             "name": "Linux",
             "includePath": [
                 "/usr/include",
-                "${workspaceRoot}/include"
+                "${workspaceRoot}/libs/glew",
+                "${workspaceRoot}/libs/imgui",
+                "${workspaceRoot}/libs/lua",
+                "${workspaceRoot}/libs/luasocket",
+                "${workspaceRoot}/libs/nanovg",
+                "${workspaceRoot}/libs/physfs",                
+                "${workspaceRoot}/libs/sdl",
+                "${workspaceRoot}/libs/soloud",
+                "${workspaceRoot}/libs/tmx"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "",
                 "path": [
                     "/usr/include",
-                    "${workspaceRoot}/include"
+                    "${workspaceRoot}/include",
+                    "${workspaceRoot}"
                 ]
             },
             "intelliSenseMode": "clang-x64"
@@ -35,18 +52,28 @@
         {
             "name": "Win32",
             "includePath": [
-                "c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include",
-                "${workspaceRoot}/include"
+                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.14393.0/ucrt",
+                "${workspaceRoot}/libs/glew",
+                "${workspaceRoot}/libs/imgui",
+                "${workspaceRoot}/libs/lua",
+                "${workspaceRoot}/libs/luasocket",
+                "${workspaceRoot}/libs/nanovg",
+                "${workspaceRoot}/libs/physfs",                
+                "${workspaceRoot}/libs/sdl",
+                "${workspaceRoot}/libs/soloud",
+                "${workspaceRoot}/libs/tmx"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "",
                 "path": [
-                    "c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include",
-                    "${workspaceRoot}/include"
+                    "C:/Program Files (x86)/Windows Kits/10/Include/10.0.14393.0/ucrt",
+                    "${workspaceRoot}"
+                    
                 ]
             },
             "intelliSenseMode": "msvc-x64"
         }
-    ]
+    ],
+    "version": 2
 }

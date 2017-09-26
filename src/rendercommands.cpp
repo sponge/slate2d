@@ -81,6 +81,8 @@ const void *RB_DrawImage(const void *data) {
 
 	auto img = Img_Get(cmd->imgId);
 	auto paint = nvgImagePattern(inf.nvg, 0 - cmd->ox, 0 - cmd->oy, img->w, img->h, 0, img->hnd, cmd->alpha);
+	paint.shader = cmd->shaderId;
+	nvgGlobalCompositeBlendFuncSeparate(inf.nvg, NVG_SRC_ALPHA, NVG_ONE_MINUS_SRC_ALPHA, NVG_ONE, NVG_ONE_MINUS_SRC_ALPHA);
 	nvgBeginPath(inf.nvg);
 	nvgRect(inf.nvg, 0, 0, cmd->w, cmd->h);
 	nvgFillPaint(inf.nvg, paint);

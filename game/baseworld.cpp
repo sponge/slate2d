@@ -235,8 +235,9 @@ BaseWorld::BaseWorld() {
 		);
 
 	lua.new_usertype<Sprite>("Sprite",
-		sol::constructors<Sprite(), Sprite(unsigned int img, int sx, int sy, int ofsx, int ofsy)>(),
+		sol::constructors<Sprite(), Sprite(unsigned int img, unsigned int shaderId, int sx, int sy, int ofsx, int ofsy)>(),
 		"img", &Sprite::img,
+		"shader", &Sprite::shader,
 		"frame", &Sprite::frame,
 		"ofs", &Sprite::ofs,
 		"size", &Sprite::size,

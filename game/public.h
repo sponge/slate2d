@@ -46,6 +46,7 @@ typedef struct gameImportFuncs_s {
 	void(*SND_PlayMusic)(const char *file);
 	void(*SND_PlaySound)(const char *file);
 	void(*SubmitRenderCommands)(renderCommandList_t *list);
+	int(*R_RegisterShader)(const char *name, const char *vshader, const char *fshader);
 } gameImportFuncs_t;
 
 typedef struct gameExportFuncs_s {

@@ -29,12 +29,14 @@ local module = {
         local map = world:getTileMap(world.master_entity.id).map
         local camera = world:getCamera(world.master_entity.id)
 
+        local shaderId = register_shader("test", nil, "vec4 effect(vec4 color) { return vec4(1,0,0,color.w); }")
+
         local ent = world:new_entity()
         world:addBody(ent, Body:new(obj.x + (map.tile_width / 2), obj.y - 14.001, 15, 15))
         world:addMovable(ent, Movable:new(0, 0))
         world:addRenderable(ent, Renderable:new(200, 30, 30, 200))
         world:addPlayerInput(ent, PlayerInput:new())
-        world:addSprite(ent, Sprite:new(new_image("player", "gfx/dog.png"), 22, 16, 0, 0))
+        world:addSprite(ent, Sprite:new(new_image("player", "gfx/dog.png"), shaderId, 22, 16, 0, 0))
         world:addAnimation(ent, Animation:new(0, 0, 6, 0.1, world.time))
         world:addTable(ent, {
             num_jumps = 0,

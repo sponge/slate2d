@@ -117,6 +117,7 @@ LuaExt::LuaExt() {
 	// expose draw commands to lua
 	auto dct = lua.create_table_with();
 	lua["dc"] = dct;
+
 	dct["submit"] = DC_Submit;
 	dct["clear"] = DC_Clear;
 	dct["set_color"] = DC_SetColor;
@@ -142,6 +143,8 @@ LuaExt::LuaExt() {
 	};
 
 	lua["debug_text"] = [](const char * text) { ImGui::Text("%s", text); };
+
+	lua["register_shader"] = [](const char *name, const char *vshader, const char *fshader) { return trap->R_RegisterShader(name, vshader, fshader); };
 }
 
 // convenience function to read and execute lua files from the vfs

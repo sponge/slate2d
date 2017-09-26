@@ -116,9 +116,10 @@ struct PlayerInput {
 
 struct Sprite {
 	Sprite() {}
-	explicit Sprite(unsigned int img, Vec2 size, Vec2 ofs) : img(img), ofs(ofs), size(size) {}
-	explicit Sprite(unsigned int img, int sx, int sy, int ofsx, int ofsy) : img(img), ofs(ofsx, ofsy), size(sx, sy) {}
+	explicit Sprite(unsigned int img, unsigned int shaderId, Vec2 size, Vec2 ofs) : img(img), ofs(ofs), size(size) {}
+	explicit Sprite(unsigned int img, unsigned int shaderId, int sx, int sy, int ofsx, int ofsy) : shader(shaderId), img(img), ofs(ofsx, ofsy), size(sx, sy) {}
 	unsigned int img;
+	unsigned int shader;
 	unsigned int frame = 0;
 	Vec2 ofs, size;
 	bool flipX = false, flipY = false;

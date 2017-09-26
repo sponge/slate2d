@@ -44,7 +44,7 @@ void draw_tiles(ClientInfo &inf, tmx_map &map, tmx_layer &layer, Camera &cam) {
 				x*ts->tile_width + (ts->tile_width / 2), y*ts->tile_height + (ts->tile_height / 2),
 				ts->tile_width, ts->tile_height,
 				tile->ul_x, tile->ul_y,
-				1.0, flipBits, img->index
+				1.0, flipBits, img->index, 0
 			);
 		}
 	}

@@ -178,6 +178,7 @@ typedef struct {
 	float x, y, w, h, ox, oy, angle, alpha;
 	byte flipBits;
 	unsigned int imgId;
+	unsigned int shaderId;
 } drawImageCommand_t;
 
 typedef enum {

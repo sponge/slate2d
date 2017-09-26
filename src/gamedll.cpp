@@ -1,5 +1,9 @@
 #include <SDL/SDL.h>
 #include <tmx.h>
+#define NANOVG_GL3
+#include <GL/glew.h>
+#include <nanovg.h>
+#include <nanovg_gl.h>
 
 #include "gamedll.h"
 #include "../game/public.h"
@@ -20,6 +24,8 @@
 extern SceneManager *sm;
 extern ClientInfo inf;
 extern SoLoud::Soloud soloud;
+
+extern ClientInfo inf;
 
 void trap_SendConsoleCommand(const char *text) {
 	Cbuf_ExecuteText(EXEC_NOW, text);
@@ -106,6 +112,10 @@ void SND_PlaySound(const char *file) {
 
 }
 
+int R_RegisterShader(const char *name, const char *vshader, const char *fshader) {
+	return nvglCreateShaderGL3(inf.nvg, name, vshader, fshader);
+}
+
 static gameImportFuncs_t GAMEtraps = {
 	trap_SendConsoleCommand,
 	Com_Printf,
@@ -147,7 +157,8 @@ static gameImportFuncs_t GAMEtraps = {
 	SND_PlaySpeech,
 	SND_PlayMusic,
 	SND_PlaySound,
-	SubmitRenderCommands
+	SubmitRenderCommands,
+	R_RegisterShader
 };
 
 void Sys_LoadDll(const char * module, void ** exports, int * version) {

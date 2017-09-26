@@ -104,11 +104,9 @@ int main(int argc, char *argv[]) {
 
 	atexit(SDL_Quit);
 
-#ifndef _WIN32
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile::SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-#endif
 
 	inf.width = vid_width->integer;
 	inf.height = vid_height->integer;

@@ -121,7 +121,7 @@ void DC_DrawBmpText(float x, float y, float scale, const char *text, unsigned in
 	cmd->scale = scale;
 }
 
-void DC_DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, byte flipBits, unsigned int imgId) {
+void DC_DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, byte flipBits, unsigned int imgId, unsigned int shaderId) {
 	drawImageCommand_t *cmd;
 
 	cmd = (drawImageCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
@@ -139,5 +139,5 @@ void DC_DrawImage(float x, float y, float w, float h, float ox, float oy, float 
 	cmd->alpha = alpha;
 	cmd->flipBits = flipBits;
 	cmd->imgId = imgId;
-
+	cmd->shaderId = shaderId;
 }

@@ -24,7 +24,6 @@
 
 #include "scene.h"
 #include "scene_console.h"
-#include "scene_gl.h"
 
 #include "../game/public.h"
 

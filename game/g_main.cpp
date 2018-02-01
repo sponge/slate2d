@@ -1,15 +1,5 @@
 #include <imgui.h>
-
-#define AABB_IMPLEMENTATION
-#include "sweep.h"
-
 #include "public.h"
-#include "cvar_game.h"
-#include "scene_menu.h"
-#include "scene_gamemap.h"
-#include "scene_testbounce.h"
-
-#include "lua_extstate.h"
 
 gameImportFuncs_t *trap;
 kbutton_t in_1_left, in_1_right, in_1_up, in_1_run, in_1_down, in_1_jump, in_1_attack, in_1_menu;
@@ -34,24 +24,16 @@ void Cmd_Map_f(void) {
 		return;
 	}
 
+	/*
 	auto newScene = new GameMapScene(filename);
 	
 	trap->Scene_Replace(0, newScene);
-}
-
-// lua (code) - eval the code in the global namespace
-void Cmd_Lua_f(void) {
-	const char *line = trap->Cmd_Cmd();
-	line += 4;
-	auto res = lua.do_string(line);
-	if (!res.valid()) {
-		sol::error err = res;
-		trap->Print("lua error: %s", err.what());
-	}
+	*/
 }
 
 // scene (num) - loads a specific scene based on slot, usually just menu
 void Cmd_Scene_f(void) {
+	/*
 	auto num = atoi(trap->Cmd_Argv(1));
 
 	if (num < 0 || num > 3) {
@@ -67,11 +49,11 @@ void Cmd_Scene_f(void) {
 	}
 
 	trap->Scene_Replace(0, newScene);
+	*/
 }
 
 static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Cmd_AddCommand("scene", Cmd_Scene_f);
-	trap->Cmd_AddCommand("lua", Cmd_Lua_f);
 	trap->Cmd_AddCommand("map", Cmd_Map_f);
 
 	trap->Cmd_AddCommand("+p1up",     []() { trap->IN_KeyDown(&in_1_up); });
@@ -91,29 +73,23 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Cmd_AddCommand("+p1menu",   []() { trap->IN_KeyDown(&in_1_menu); });
 	trap->Cmd_AddCommand("-p1menu",   []() { trap->IN_KeyUp(&in_1_menu); });
 
-	RegisterGameCvars();
+	//RegisterGameCvars();
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
-	lua.LoadGameFile("scripts/autoexec.lua");
+	//lua.LoadGameFile("scripts/autoexec.lua");
 
-	trap->Scene_Switch(new MenuScene());
+	//trap->Scene_Switch(new MenuScene());
 }
 
-// exported to engine if leading / isn't specified, will eval line as lua
 static void Console(const char *line) {
-	auto res = lua.do_string(line);
-	if (!res.valid()) {
-		sol::error err = res;
-		trap->Print("lua error: %s", err.what());
-	}
+
 }
 
 // technically the scene manager will handle every frame for gameplay scenes,
 // but anything that needs an event loop type pump can go here
 static void Frame(float dt) {
-	 sol::protected_function frame = lua["frame"];
-	 frame(dt);
+
 }
 
 static gameExportFuncs_t GAMEfuncs = {
@@ -127,10 +103,6 @@ extern "C"
 __declspec(dllexport)
 #endif
 void dllEntry(void ** exports, void * imports, int * version) {
-#ifdef DEBUG
-	testCollision();
-#endif
-
 	*exports = &GAMEfuncs;
 	trap = (gameImportFuncs_t *)imports;
 	*version = 1;

@@ -4,9 +4,9 @@
         "bitset": "cpp",
         "array": "cpp",
         "hashtable": "cpp"
-    }
+    },
     "files.exclude": {
         "bin/": true,
         "build/": true
-    },"
+    },
 }

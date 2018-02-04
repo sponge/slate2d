@@ -1,8 +1,6 @@
 #pragma once
 // types that are shared across the dll and engine
 
-#include <nanovg.h> // FIXME: this shouldn't have to be here (used in ClientInfo and Img)
-
 #ifdef _MSC_VER 
 #define STRFUNCS
 #define strncasecmp _strnicmp
@@ -86,12 +84,12 @@ typedef struct {
 } kbutton_t;
 
 typedef struct {
-	NVGcontext *nvg;
+	struct NVGcontext *nvg;
 	int width, height;
 } ClientInfo;
 
 typedef struct {
-	NVGcontext *nvg;
+	struct NVGcontext *nvg;
 	unsigned int index;
 	unsigned int hnd;
 	int w, h;

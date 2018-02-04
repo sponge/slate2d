@@ -1,5 +1,4 @@
 #pragma once
-#include <nanovg.h>
 #include <tmx.h>
 
 #include "shared.h"

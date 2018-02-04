@@ -11,7 +11,6 @@ solution "game"
   configuration { "windows" }
     platforms { "x86" }
     disablewarnings { "4100" }
-    systemversion "10.0.15063.0"
 
   configuration { "linux" }
     defines { "LINUX" }
@@ -28,7 +27,6 @@ solution "game"
     symbols "Off"
     optimize "Full"
 
-  -- FIXME: fix up excessive links and includes on here and game as i port everything over to a dll
   project "engine"
     kind "ConsoleApp"
     language "C++"
@@ -58,12 +56,10 @@ solution "game"
     kind "SharedLib"
     language "C++"
     files { "game/**.c", "game/**.cpp", "game/**.h", "game/**.hh" }
-    sysincludedirs { "libs/nanovg", "libs/tmx", "libs/imgui" }
+    sysincludedirs { "libs/tmx", "libs/imgui" }
     targetdir "bin/%{cfg.buildcfg}"
     cppdialect "C++14"
-    links { "nanovg", "tmx", "imgui" }
-    configuration { "windows" }
-      links { "ws2_32" }
+    links { "tmx", "imgui" }
 
   group "libraries"
 

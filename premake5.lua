@@ -133,15 +133,15 @@ solution "game"
         links { "SDL2.framework" }
         linkoptions {"-F /Library/Frameworks"}
 
-	project "libmodplug"
-		kind "StaticLib"
-    targetdir "build/%{cfg.buildcfg}"
-		language "C++"
-		defines { "MODPLUG_STATIC", "HAVE_SINF" }
-		files { "libs/soloud/ext/libmodplug/src/**.cpp*" }
-		includedirs { "libs/soloud/ext/libmodplug/src/**" }
-		targetname "libmodplug"
-    warnings "Off"
-    characterset "MBCS"
-    configuration { "macosx" }
-      defines { "HAVE_SETENV" }
+    project "libmodplug"
+      kind "StaticLib"
+      targetdir "build/%{cfg.buildcfg}"
+      language "C++"
+      defines { "MODPLUG_STATIC", "HAVE_SINF" }
+      files { "libs/soloud/ext/libmodplug/src/**.cpp*" }
+      includedirs { "libs/soloud/ext/libmodplug/src/**" }
+      targetname "libmodplug"
+      warnings "Off"
+      characterset "MBCS"
+      configuration { "macosx" }
+        defines { "HAVE_SETENV" }

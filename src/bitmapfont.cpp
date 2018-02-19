@@ -1,9 +1,11 @@
 #include <vector>
+#include <nanovg.h>
 #include "bitmapfont.h"
 #include "files.h"
 #include "../game/shared.h"
 #include "console/console.h"
 #include <stb_image.h>
+#include "assetloader.h"
 
 // FIXME: work out how to do this with a vector of structs instead vector of ptrs
 std::vector<BitmapFont *> fonts;

@@ -28,8 +28,6 @@ typedef enum {
 	ERR_NONE,
 	ERR_FATAL,					// exit the entire game with a popup window
 	ERR_DROP,					// print to console and disconnect from game
-	ERR_DISCONNECT,				// don't kill server
-	ERR_NEED_CD					// pop up the need-cd dialog
 } errorParm_t;
 
 // CVARS
@@ -37,21 +35,19 @@ typedef enum {
 #define	CVAR_ARCHIVE		1	// set to cause it to be saved to vars.rc
 // used for system variables, not for player
 // specific configurations
-#define	CVAR_USERINFO		2	// sent to server on connect or change
-#define	CVAR_SERVERINFO		4	// sent in response to front end requests
-#define	CVAR_SYSTEMINFO		8	// these cvars will be duplicated on all clients
-#define	CVAR_INIT			16	// don't allow change from console at all,
+#define	CVAR_SYSTEMINFO		2	// these cvars will be duplicated on all clients
+#define	CVAR_INIT			4	// don't allow change from console at all,
 // but can be set from the command line
-#define	CVAR_LATCH			32	// will only change when C code next does
+#define	CVAR_LATCH			8	// will only change when C code next does
 // a Cvar_Get(), so it can't be changed
 // without proper initialization.  modified
 // will be set, even though the value hasn't
 // changed yet
-#define	CVAR_ROM			64	// display only, cannot be set by user at all
-#define	CVAR_USER_CREATED	128	// created by a set command
-#define	CVAR_TEMP			256	// can be set even when cheats are disabled, but is not archived
-#define CVAR_CHEAT			512	// can not be changed if cheats are disabled
-#define CVAR_NORESTART		1024	// do not clear when a cvar_restart is issued
+#define	CVAR_ROM			16	// display only, cannot be set by user at all
+#define	CVAR_USER_CREATED	32	// created by a set command
+#define	CVAR_TEMP			64	// can be set even when cheats are disabled, but is not archived
+#define CVAR_CHEAT			128	// can not be changed if cheats are disabled
+#define CVAR_NORESTART		256	// do not clear when a cvar_restart is issued
 
 #define	MAX_CVAR_VALUE_STRING	256
 
@@ -87,36 +83,6 @@ typedef struct {
 	struct NVGcontext *nvg;
 	int width, height;
 } ClientInfo;
-
-typedef struct {
-	struct NVGcontext *nvg;
-	unsigned int index;
-	unsigned int hnd;
-	int w, h;
-	char name[64];
-	char path[64];
-} Img;
-
-// BITMAP FONTS
-
-typedef struct {
-	char glyph;
-	int start;
-	int end;
-} BitmapGlyph;
-
-typedef struct {
-	NVGcontext *nvg;
-	unsigned int index;
-	unsigned int hnd;
-	int charSpacing, spaceWidth, lineHeight;
-	int w, h;
-	unsigned char glyphs[256];
-	BitmapGlyph offsets[256];
-	char name[64];
-	char path[64];
-} BitmapFont;
-
 
 // SCENE
 

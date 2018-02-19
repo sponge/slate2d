@@ -502,50 +502,6 @@ void Cvar_Set_f( void ) {
 
 /*
 ============
-Cvar_SetU_f
-
-As Cvar_Set, but also flags it as userinfo
-============
-*/
-void Cvar_SetU_f( void ) {
-	cvar_t	*v;
-
-	if ( Cmd_Argc() != 3 ) {
-		Com_Printf ("usage: setu <variable> <value>\n");
-		return;
-	}
-	Cvar_Set_f();
-	v = Cvar_FindVar( Cmd_Argv( 1 ) );
-	if ( !v ) {
-		return;
-	}
-	v->flags |= CVAR_USERINFO;
-}
-
-/*
-============
-Cvar_SetS_f
-
-As Cvar_Set, but also flags it as userinfo
-============
-*/
-void Cvar_SetS_f( void ) {
-	cvar_t	*v;
-
-	if ( Cmd_Argc() != 3 ) {
-		Com_Printf ("usage: sets <variable> <value>\n");
-		return;
-	}
-	Cvar_Set_f();
-	v = Cvar_FindVar( Cmd_Argv( 1 ) );
-	if ( !v ) {
-		return;
-	}
-	v->flags |= CVAR_SERVERINFO;
-}
-
-/*
-============
 Cvar_SetA_f
 
 As Cvar_Set, but also flags it as archived
@@ -701,8 +657,6 @@ void Cvar_Init (void) {
 
 	Cmd_AddCommand ("toggle", Cvar_Toggle_f);
 	Cmd_AddCommand ("set", Cvar_Set_f);
-	Cmd_AddCommand ("sets", Cvar_SetS_f);
-	Cmd_AddCommand ("setu", Cvar_SetU_f);
 	Cmd_AddCommand ("seta", Cvar_SetA_f);
 	Cmd_AddCommand ("reset", Cvar_Reset_f);
 	Cmd_AddCommand ("listcvars", Cvar_List_f);

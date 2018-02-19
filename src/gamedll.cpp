@@ -1,9 +1,5 @@
 #include <SDL/SDL.h>
 #include <tmx.h>
-#define NANOVG_GL3
-#include <GL/glew.h>
-#include <nanovg.h>
-#include <nanovg_gl.h>
 
 #include "gamedll.h"
 #include "../game/public.h"
@@ -16,14 +12,16 @@
 #include "rendercommands.h"
 #include "bitmapfont.h"
 
+/*
 #include "soloud.h"
 #include "soloud_thread.h"
 #include "soloud_speech.h"
 #include "soloud_modplug.h"
+extern SoLoud::Soloud soloud;
+*/
 
 extern SceneManager *sm;
 extern ClientInfo inf;
-extern SoLoud::Soloud soloud;
 
 extern ClientInfo inf;
 
@@ -50,13 +48,14 @@ Scene * trap_Scene_Current() {
 tmx_map * trap_Map_Load(const char *filename) {
 
 	tmx_img_load_func = [](const char *path) {
-		Img *img = Img_Create(path, path);
-		return img;
+		//Img *img = Img_Create(path, path);
+		//return img;
+		return nullptr;
 	};
 
 	tmx_img_free_func = [](void *address) {
-		Img *img = (Img*)address;
-		Img_Free(img->path);
+		//Img *img = (Img*)address;
+		//Img_Free(img->path);
 	};
 
 	tmx_file_read_func = [](const char *path, int *outSz) -> void* {
@@ -87,13 +86,16 @@ void trap_Map_Free(tmx_map *map) {
 }
 
 void SND_PlaySpeech(const char *text) {
+	/*
 	// FIXME: leaky
 	auto speech = new SoLoud::Speech();
 	speech->setText(text);
 	soloud.play(*speech);
+	*/
 }
 
 void SND_PlayMusic(const char *file) {
+	/*
 	// FIXME: leaky
 	auto music = new SoLoud::Modplug();
 
@@ -106,6 +108,7 @@ void SND_PlayMusic(const char *file) {
 
 	music->loadMem(musicbuf, sz, false, true);
 	auto hnd = soloud.play(*music);
+	*/
 }
 
 void SND_PlaySound(const char *file) {
@@ -113,7 +116,8 @@ void SND_PlaySound(const char *file) {
 }
 
 int R_RegisterShader(const char *name, const char *vshader, const char *fshader) {
-	return nvglCreateShaderGL3(inf.nvg, name, vshader, fshader);
+	return 0;
+	//return nvglCreateShaderGL3(inf.nvg, name, vshader, fshader);
 }
 
 static gameImportFuncs_t GAMEtraps = {
@@ -132,19 +136,6 @@ static gameImportFuncs_t GAMEtraps = {
 	FS_Exists,
 	FS_List,
 	FS_FreeList,
-	Img_Create,
-	Img_Load,
-	Img_LoadAll,
-	Img_Find,
-	Img_Get,
-	Img_Free,
-	BMPFNT_Create,
-	BMPFNT_Load,
-	BMPFNT_Get,
-	BMPFNT_Find,
-	BMPFNT_TextWidth,
-	BMPFNT_LoadAll,
-	BMPFNT_Free,
 	trap_Scene_Switch,
 	trap_Scene_Get,
 	trap_Scene_Replace,

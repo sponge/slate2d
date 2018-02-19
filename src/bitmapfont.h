@@ -1,6 +1,6 @@
 #pragma once
-#include <nanovg.h>
 #include "../game/shared.h"
+#include "assetloader.h"
 
 BitmapFont * BMPFNT_Create(const char *name, const char *path, const char *glyphs, int charSpacing, int spaceWidth, int lineHeight);
 void BMPFNT_Load(BitmapFont &font);

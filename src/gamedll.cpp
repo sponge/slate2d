@@ -11,6 +11,7 @@
 #include "input.h"
 #include "rendercommands.h"
 #include "bitmapfont.h"
+#include "audio.h"
 
 extern SceneManager *sm;
 extern ClientInfo inf;
@@ -77,36 +78,6 @@ void trap_Map_Free(tmx_map *map) {
 	tmx_map_free(map);
 }
 
-void SND_PlaySpeech(const char *text) {
-	/*
-	// FIXME: leaky
-	auto speech = new SoLoud::Speech();
-	speech->setText(text);
-	soloud.play(*speech);
-	*/
-}
-
-void SND_PlayMusic(const char *file) {
-	/*
-	// FIXME: leaky
-	auto music = new SoLoud::Modplug();
-
-	unsigned char *musicbuf;
-	auto sz = FS_ReadFile(file, (void **)&musicbuf);
-
-	if (sz <= 0) {
-		return;
-	}
-
-	music->loadMem(musicbuf, sz, false, true);
-	auto hnd = soloud.play(*music);
-	*/
-}
-
-void SND_PlaySound(const char *file) {
-
-}
-
 int R_RegisterShader(const char *name, const char *vshader, const char *fshader) {
 	return 0;
 	//return nvglCreateShaderGL3(inf.nvg, name, vshader, fshader);
@@ -142,7 +113,8 @@ static gameImportFuncs_t GAMEtraps = {
 	Asset_Create,
 	Asset_Find,
 	Asset_LoadAll,
-	Asset_ClearAll
+	Asset_ClearAll,
+	Snd_Play
 };
 
 void Sys_LoadDll(const char * module, void ** exports, int * version) {

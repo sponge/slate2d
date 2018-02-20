@@ -42,6 +42,8 @@ typedef struct gameImportFuncs_s {
 	AssetHandle (*Asset_Find)(const char *name);
 	void (*Asset_LoadAll)();
 	void (*Asset_ClearAll)();
+
+	void (*Snd_Play)(AssetHandle asset, float volume, float pan, bool loop);
 } gameImportFuncs_t;
 
 typedef struct gameExportFuncs_s {

@@ -32,7 +32,7 @@ void Cmd_Map_f(void) {
 	*/
 }
 
-AssetHandle dog;
+AssetHandle dog, music;
 
 static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Cmd_AddCommand("map", Cmd_Map_f);
@@ -59,8 +59,11 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	//trap->Scene_Switch(new MenuScene());
 
 	dog = trap->Asset_Create(ASSET_IMAGE, "dog", "gfx/dog.png");
+	music = trap->Asset_Create(ASSET_MOD, "music", "music/frantic_-_dog_doesnt_care.it");
 
 	trap->Asset_LoadAll();
+
+	trap->Snd_Play(music, 1.0f, 0.0f, false);
 }
 
 static void Console(const char *line) {

@@ -33,7 +33,7 @@ Asset* Asset_Get(AssetHandle id) {
 }
 
 AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *path) {
-	Com_Printf("asset_create: %i %s %s\n", assetType, name, path);
+	Com_Printf("asset_create: %s name:%s path:%s\n", assetStrings[assetType], name, path);
 
 	if (assetType < 0 || assetType > ASSET_MAX) {
 		return INVALID_ASSET;
@@ -58,7 +58,7 @@ AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *pa
 
 void Asset_LoadAll() {
 	for (auto &asset : assets) {
-		Com_Printf("asset_load: %i %s %s\n", asset.type, asset.name, asset.path);
+		Com_Printf("asset_load: %s name:%s path:%s\n", assetStrings[asset.type], asset.name, asset.path);
 		void *resourcePtr = assetHandler[asset.type].Load(asset);
 		if (resourcePtr == nullptr) {
 			Com_Error(ERR_DROP, "asset_loadall: got nullptr while loading %s", asset.name);

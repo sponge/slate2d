@@ -171,6 +171,16 @@ typedef enum {
 	ASSET_MAX
 } AssetType_t;
 
+static const char* assetStrings[] = {
+	"ASSET_IMAGE",
+	"ASSET_SPEECH",
+	"ASSET_SOUND",
+	"ASSET_MOD",
+	"ASSET_FONT",
+	"ASSET_BITMAPFONT",
+	"ASSET_MAX"
+};
+
 typedef struct {
 	AssetHandle id;
 	AssetType_t type;

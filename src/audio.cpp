@@ -56,3 +56,14 @@ void Mod_Free(Asset &asset) {
 	SoLoud::Modplug* mod = (SoLoud::Modplug*) asset.resource;
 	delete mod;
 }
+
+void Snd_Play(AssetHandle assetHandle, float volume, float pan, bool loop) {
+	auto asset = Asset_Get(assetHandle);
+	if (asset->type != ASSET_SOUND && asset->type != ASSET_SPEECH && asset->type != ASSET_MOD) {
+		return;
+	}
+
+	SoLoud::AudioSource *src = (SoLoud::AudioSource*) asset->resource;
+	src->setLooping(loop);
+	soloud.play(*src, volume, pan);
+}

@@ -2,13 +2,10 @@
 #include "assetloader.h"
 #include "files.h"
 #include "console/console.h"
-#include "../game/shared.h"
 
 extern ClientInfo inf;
 
 void* Img_Load(Asset &asset) {
-	Com_Printf("img_load: %s %s\n", asset.name, asset.path);
-
 	void *buffer;
 	auto sz = FS_ReadFile(asset.path, &buffer);
 

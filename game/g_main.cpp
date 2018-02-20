@@ -1,5 +1,6 @@
 #include <imgui.h>
 #include "public.h"
+#include "draw.h"
 
 gameImportFuncs_t *trap;
 kbutton_t in_1_left, in_1_right, in_1_up, in_1_run, in_1_down, in_1_jump, in_1_attack, in_1_menu;
@@ -31,29 +32,9 @@ void Cmd_Map_f(void) {
 	*/
 }
 
-// scene (num) - loads a specific scene based on slot, usually just menu
-void Cmd_Scene_f(void) {
-	/*
-	auto num = atoi(trap->Cmd_Argv(1));
-
-	if (num < 0 || num > 3) {
-		trap->Print("invalid scene, specify a number 0-2\n");
-		return;
-	}
-	Scene* newScene;
-
-	switch (num) {
-	case 0: default: newScene = new MenuScene(); break;
-	case 1: newScene = new TestBounceScene(); break;
-	//case 2: newScene = new GLScene(); break;
-	}
-
-	trap->Scene_Replace(0, newScene);
-	*/
-}
+AssetHandle dog;
 
 static void Init(void *clientInfo, void *imGuiContext) {
-	trap->Cmd_AddCommand("scene", Cmd_Scene_f);
 	trap->Cmd_AddCommand("map", Cmd_Map_f);
 
 	trap->Cmd_AddCommand("+p1up",     []() { trap->IN_KeyDown(&in_1_up); });
@@ -73,13 +54,13 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Cmd_AddCommand("+p1menu",   []() { trap->IN_KeyDown(&in_1_menu); });
 	trap->Cmd_AddCommand("-p1menu",   []() { trap->IN_KeyUp(&in_1_menu); });
 
-	//RegisterGameCvars();
-
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
-	//lua.LoadGameFile("scripts/autoexec.lua");
-
 	//trap->Scene_Switch(new MenuScene());
+
+	dog = trap->Asset_Create(ASSET_IMAGE, "dog", "gfx/dog.png");
+
+	trap->Asset_LoadAll();
 }
 
 static void Console(const char *line) {
@@ -89,7 +70,11 @@ static void Console(const char *line) {
 // technically the scene manager will handle every frame for gameplay scenes,
 // but anything that needs an event loop type pump can go here
 static void Frame(float dt) {
-
+	DC_Clear();
+	DC_SetColor(255, 0, 0, 255);
+	DC_DrawRect(0, 0, 16, 16);
+	DC_DrawImage(120, 120, 154, 16, 0, 0, 1.0, 0, dog, 0);
+	DC_Submit();
 }
 
 static gameExportFuncs_t GAMEfuncs = {

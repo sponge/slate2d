@@ -1,32 +1,14 @@
 #pragma once
 
-typedef int AssetHandle;
-
-#define INVALID_ASSET -1
-
-typedef enum {
-	ASSET_IMAGE,
-	/*
-	ASSET_FONT,
-	ASSET_BITMAPFONT,
-	ASSET_SOUND,
-	*/
-	ASSET_MAX
-} AssetType_t;
-
-typedef struct {
-	AssetHandle id;
-	AssetType_t type;
-	char name[64];
-	char path[64];
-	void *resource;
-} Asset;
+#include "../game/shared.h"
 
 AssetHandle Asset_Find(const char *name);
 Asset* Asset_Get(AssetHandle id);
 AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *path);
 void Asset_LoadAll();
 void Asset_ClearAll();
+
+// image assets
 
 typedef struct {
 	struct NVGcontext *nvg;
@@ -37,6 +19,8 @@ typedef struct {
 void* Img_Load(Asset &asset);
 void Img_Free(Asset &asset);
 Image* Get_Img(AssetHandle id);
+
+// bitmap font assets
 
 typedef struct {
 	char glyph;
@@ -55,3 +39,11 @@ typedef struct BitmapFont {
 	char name[64];
 	char path[64];
 } BitmapFont_t;
+
+// audio assets
+
+void* Speech_Load(Asset &asset);
+void Speech_Free(Asset &asset);
+void* Sound_Load(Asset &asset);
+void Sound_Free(Asset &asset);
+void Mod_Free(Asset &asset);

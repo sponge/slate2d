@@ -211,17 +211,17 @@ int main(int argc, char *argv[]) {
 		}
 		*/
 
+		glClear(GL_COLOR_BUFFER_BIT);
+		nvgBeginFrame(inf.nvg, inf.width, inf.height, (float)inf.width / inf.height);
+
 		gexports->Frame(dt);
 		sm->Update(dt);
 		consoleScene->Update(dt);
 
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		nvgBeginFrame(inf.nvg, inf.width, inf.height, (float)inf.width / inf.height);
 		sm->Render();
 		consoleScene->Render();
-		nvgEndFrame(vg);
 
+		nvgEndFrame(vg);
 		ImGui::Render();
 
 		SDL_GL_SwapWindow(window);

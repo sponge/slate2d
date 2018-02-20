@@ -12,14 +12,6 @@
 #include "rendercommands.h"
 #include "bitmapfont.h"
 
-/*
-#include "soloud.h"
-#include "soloud_thread.h"
-#include "soloud_speech.h"
-#include "soloud_modplug.h"
-extern SoLoud::Soloud soloud;
-*/
-
 extern SceneManager *sm;
 extern ClientInfo inf;
 
@@ -145,11 +137,12 @@ static gameImportFuncs_t GAMEtraps = {
 	IN_KeyDown,
 	IN_KeyUp,
 	CL_KeyState,
-	SND_PlaySpeech,
-	SND_PlayMusic,
-	SND_PlaySound,
 	SubmitRenderCommands,
-	R_RegisterShader
+	R_RegisterShader,
+	Asset_Create,
+	Asset_Find,
+	Asset_LoadAll,
+	Asset_ClearAll
 };
 
 void Sys_LoadDll(const char * module, void ** exports, int * version) {

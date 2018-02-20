@@ -154,3 +154,27 @@ typedef enum {
 	RC_DRAW_BMPTEXT,
 	RC_DRAW_IMAGE
 } renderCommand_t;
+
+// ASSETS
+
+typedef int AssetHandle;
+
+#define INVALID_ASSET -1
+
+typedef enum {
+	ASSET_IMAGE,
+	ASSET_SPEECH,
+	ASSET_SOUND,
+	ASSET_MOD,
+	ASSET_FONT,
+	ASSET_BITMAPFONT,
+	ASSET_MAX
+} AssetType_t;
+
+typedef struct {
+	AssetHandle id;
+	AssetType_t type;
+	char name[64];
+	char path[64];
+	void *resource;
+} Asset;

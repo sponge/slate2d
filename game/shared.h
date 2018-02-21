@@ -162,6 +162,7 @@ typedef int AssetHandle;
 #define INVALID_ASSET -1
 
 typedef enum {
+	ASSET_ANY,
 	ASSET_IMAGE,
 	ASSET_SPEECH,
 	ASSET_SOUND,
@@ -172,6 +173,7 @@ typedef enum {
 } AssetType_t;
 
 static const char* assetStrings[] = {
+	"ASSET_ANY",
 	"ASSET_IMAGE",
 	"ASSET_SPEECH",
 	"ASSET_SOUND",

@@ -26,10 +26,7 @@ void Img_Free(Asset &asset) {
 }
 
 Image* Get_Img(AssetHandle id) {
-	Asset* asset = Asset_Get(id);
-	if (asset->type != ASSET_IMAGE) {
-		return nullptr;
-	}
-
+	Asset* asset = Asset_Get(ASSET_IMAGE, id);
+	assert(asset != nullptr && asset->resource != nullptr);
 	return (Image*) asset->resource;
 }

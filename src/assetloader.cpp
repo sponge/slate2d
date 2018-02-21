@@ -10,12 +10,13 @@ typedef struct AssetLoadHandler {
 } AssetLoadHandler_t;
 
 static AssetLoadHandler assetHandler[ASSET_MAX] = {
+	{}, // ASSET_ANY
 	{Img_Load, Img_Free},
 	{Speech_Load, Speech_Free},
 	{Sound_Load, Sound_Free},
 	{Sound_Load, Mod_Free},
-	// font
-	// bitmapfont
+	{}, // font
+	{BMPFNT_Load, BMPFNT_Free}
 };
 
 AssetHandle Asset_Find(const char *name) {
@@ -28,8 +29,14 @@ AssetHandle Asset_Find(const char *name) {
 	return INVALID_ASSET;
 }
 
-Asset* Asset_Get(AssetHandle id) {
-	return &assets.at(id);
+Asset* Asset_Get(AssetType_t type, AssetHandle id) {
+	Asset* asset = &assets.at(id);
+
+	if (type != ASSET_ANY && type != asset->type) {
+		return nullptr;
+	}
+
+	return asset;
 }
 
 AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *path) {
@@ -61,7 +68,7 @@ void Asset_LoadAll() {
 		Com_Printf("asset_load: %s name:%s path:%s\n", assetStrings[asset.type], asset.name, asset.path);
 		void *resourcePtr = assetHandler[asset.type].Load(asset);
 		if (resourcePtr == nullptr) {
-			Com_Error(ERR_DROP, "asset_loadall: got nullptr while loading %s", asset.name);
+			Com_Error(ERR_FATAL, "asset_loadall: got nullptr while loading %s", asset.name);
 			return;
 		}
 		asset.resource = resourcePtr;

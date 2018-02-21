@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "assetloader.h"
 #include "files.h"
 #include "../game/shared.h"
@@ -58,10 +59,13 @@ void Mod_Free(Asset &asset) {
 }
 
 void Snd_Play(AssetHandle assetHandle, float volume, float pan, bool loop) {
-	auto asset = Asset_Get(assetHandle);
+	Asset* asset = Asset_Get(ASSET_ANY, assetHandle);
 	if (asset->type != ASSET_SOUND && asset->type != ASSET_SPEECH && asset->type != ASSET_MOD) {
+		assert(false);
 		return;
 	}
+
+	assert(asset != nullptr && asset->resource != nullptr);
 
 	SoLoud::AudioSource *src = (SoLoud::AudioSource*) asset->resource;
 	src->setLooping(loop);

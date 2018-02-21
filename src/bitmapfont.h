@@ -1,13 +1,5 @@
 #pragma once
-#include "../game/shared.h"
 #include "assetloader.h"
 
-BitmapFont * BMPFNT_Create(const char *name, const char *path, const char *glyphs, int charSpacing, int spaceWidth, int lineHeight);
-void BMPFNT_Load(BitmapFont &font);
-BitmapFont * BMPFNT_Get(unsigned int i);
-BitmapFont * BMPFNT_Find(const char *name);
-void BMPFNT_LoadAll();
-bool BMPFNT_Free(const char *name);
-void BMPFNT_Clear();
-int BMPFNT_TextWidth(BitmapFont &font, const char *string);
-int BMPFNT_DrawText(BitmapFont &font, float x, float y, float scale, const char *string);
+int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string);
+int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, const char *string);

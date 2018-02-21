@@ -1,4 +1,3 @@
-#include <vector>
 #include <nanovg.h>
 #include "bitmapfont.h"
 #include "files.h"
@@ -7,31 +6,42 @@
 #include <stb_image.h>
 #include "assetloader.h"
 
-// FIXME: work out how to do this with a vector of structs instead vector of ptrs
-std::vector<BitmapFont *> fonts;
 extern ClientInfo inf;
 
-BitmapFont * BMPFNT_Create(const char *name, const char *path, const char *glyphs, int charSpacing, int spaceWidth, int lineHeight) {
-	Com_Printf("bmpfont_create: %s %s\n", name, path);
-	auto found = BMPFNT_Find(name);
-	if (found != nullptr) {
-		return found;
+void* BMPFNT_Load(Asset &asset) {
+	// bitmap fonts need to be setup before load.
+	if (asset.resource == nullptr) {
+		Com_Error(ERR_FATAL, "BMPFNT_Load: bitmap font not setup before load %s", asset.path);
+	}
+
+	// load and scan image here
+
+	return (void*)asset.resource;
+}
+
+void BMPFNT_Free(Asset &asset) {
+	BitmapFont *font = (BitmapFont*)asset.resource;
+	nvgDeleteImage(font->nvg, font->hnd);
+	free(font);
+}
+
+void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int charSpacing, int spaceWidth, int lineHeight) {
+	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
+
+	if (asset == nullptr) {
+		Com_Error(ERR_FATAL, "BMPFNT_Set: asset not found");
+		return;
 	}
 
 	auto font = new BitmapFont();
-
-	font->index = fonts.size();
-	strncpy(font->path, path, sizeof(font->path));
-	strncpy(font->name, name, sizeof(font->name));
 	memcpy_s(font->glyphs, sizeof(font->glyphs), glyphs, strlen(glyphs));
 	font->charSpacing = charSpacing;
 	font->spaceWidth = spaceWidth;
 	font->lineHeight = lineHeight;
 	
-	fonts.push_back(font);
-	return font;
+	asset->resource = (void*)font;
 }
-
+/*
 void BMPFNT_Load(BitmapFont &font) {
 	Com_Printf("bmpfont_load: %s %s\n", font.name, font.path);
 
@@ -90,53 +100,10 @@ void BMPFNT_Load(BitmapFont &font) {
 
 	free(buffer);
 }
+*/
 
-BitmapFont * BMPFNT_Get(unsigned int i) {
-	return fonts[i];
-}
-
-BitmapFont * BMPFNT_Find(const char *name) {
-	for (auto font : fonts) {
-		if (strcmp(font->name, name) == 0) {
-			return font;
-		}
-	}
-
-	return nullptr;
-}
-
-void BMPFNT_LoadAll() {
-	for (auto font : fonts) {
-		if (font->hnd == 0) {
-			BMPFNT_Load(*font);
-		}
-	}
-}
-
-bool BMPFNT_Free(const char *name) {
-	Com_Printf("bmpfnt_free: trying to free %s... ", name);
-	for (auto font : fonts) {
-		if (strcmp(font->name, name) == 0) {
-			nvgDeleteImage(font->nvg, font->hnd);
-			font->hnd = 0;
-			font->nvg = nullptr;
-			Com_Printf("found!\n");
-			return true;
-		}
-	}
-
-	Com_Printf("not found!\n");
-	return false;
-}
-
-void BMPFNT_Clear() {
-	for (auto font : fonts) {
-		nvgDeleteImage(font->nvg, font->hnd);
-	}
-	fonts.clear();
-}
-
-int BMPFNT_TextWidth(BitmapFont &font, const char *string) {
+int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string) {
+	/*
 	int currX = 0;
 
 	int i = 0;
@@ -161,9 +128,18 @@ int BMPFNT_TextWidth(BitmapFont &font, const char *string) {
 	}
 
 	return currX;
+	*/
+
+	return 0;
 }
 
-int BMPFNT_DrawText(BitmapFont &font, float x, float y, float scale, const char *string) {
+int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, const char *string) {
+	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
+	BitmapFont *font = (BitmapFont*)asset->resource;
+
+	assert(asset != nullptr && font != nullptr);
+
+	/*
 	float currX = x, currY = y;
 	int i = 0;
 	while (string[i] != '\0') {
@@ -201,4 +177,7 @@ int BMPFNT_DrawText(BitmapFont &font, float x, float y, float scale, const char 
 	}
 
 	return currX - font.charSpacing - x;
+	*/
+
+	return 0;
 }

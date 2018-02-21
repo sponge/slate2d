@@ -5,13 +5,13 @@
 #include "../game/public.h"
 #include "console/console.h"
 #include "main.h"
-#include "image.h"
 #include "files.h"
 #include "scene.h"
 #include "input.h"
 #include "rendercommands.h"
 #include "bitmapfont.h"
 #include "audio.h"
+#include "assetloader.h"
 
 extern SceneManager *sm;
 extern ClientInfo inf;

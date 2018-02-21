@@ -3,7 +3,6 @@
 #include <nanovg.h>
 #include <algorithm>
 
-#include "image.h"
 #include "console/console.h"
 #include "../game/shared.h"
 

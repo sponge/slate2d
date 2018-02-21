@@ -1,6 +1,6 @@
 #include "rendercommands.h"
 #include <nanovg.h>
-#include "image.h"
+#include "assetloader.h"
 #include "bitmapfont.h"
 
 extern ClientInfo inf;
@@ -49,8 +49,8 @@ const void *RB_DrawText(const void *data) {
 const void *RB_DrawBmpText(const void *data) {
 	auto cmd = (const drawBmpTextCommand_t *)data;
 
-	auto fnt = BMPFNT_Get(cmd->fntId);
-	BMPFNT_DrawText(*fnt, cmd->x, cmd->y, cmd->scale, cmd->text);
+	//auto fnt = BMPFNT_Get(cmd->fntId);
+	//BMPFNT_DrawText(*fnt, cmd->x, cmd->y, cmd->scale, cmd->text);
 
 	return (const void *)(cmd + 1);
 }

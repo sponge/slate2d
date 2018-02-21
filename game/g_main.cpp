@@ -32,7 +32,7 @@ void Cmd_Map_f(void) {
 	*/
 }
 
-AssetHandle dog, music, speech;
+AssetHandle dog, music, speech, font;
 
 static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Cmd_AddCommand("map", Cmd_Map_f);
@@ -61,6 +61,8 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	dog = trap->Asset_Create(ASSET_IMAGE, "dog", "gfx/dog.png");
 	music = trap->Asset_Create(ASSET_MOD, "music", "music/frantic_-_dog_doesnt_care.it");
 	speech = trap->Asset_Create(ASSET_SPEECH, "speech", "great job! you are a good dog!");
+	font = trap->Asset_Create(ASSET_BITMAPFONT, "font", "gfx/good_neighbors.png");
+	trap->BMPFNT_Set(font, "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", -1, 7, 16);
 
 	trap->Asset_LoadAll();
 
@@ -78,7 +80,8 @@ static void Frame(float dt) {
 	DC_Clear();
 	DC_SetColor(255, 0, 0, 255);
 	DC_DrawRect(0, 0, 16, 16);
-	DC_DrawImage(120, 120, 154, 16, 0, 0, 1.0, 0, dog, 0);
+	DC_DrawImage(120, 120, 154, 16, 0, 0, 4.0, 0, dog, 0);
+	DC_DrawBmpText(32, 50, 3.0f, "Good Dog!", font);
 	DC_Submit();
 }
 

@@ -114,7 +114,8 @@ static gameImportFuncs_t GAMEtraps = {
 	Asset_Find,
 	Asset_LoadAll,
 	Asset_ClearAll,
-	Snd_Play
+	BMPFNT_Set,
+	Snd_Play,
 };
 
 void Sys_LoadDll(const char * module, void ** exports, int * version) {

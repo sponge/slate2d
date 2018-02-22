@@ -1,5 +1,7 @@
 #include "public.h"
 
+#define GET_COMMAND(type) type *cmd; cmd = (type *)R_GetCommandBuffer(sizeof(*cmd)); if (!cmd) { return; }
+
 // FIXME: wrap me in a class instead?
 
 static renderCommandList_t cmdList;
@@ -27,29 +29,8 @@ void DC_Clear() {
 	memset(&cmdList, 0, sizeof(cmdList));
 }
 
-void DC_SetColor(byte color[4]) {
-	setColorCommand_t *cmd;
-
-	cmd = (setColorCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-	if (!cmd) {
-		return;
-	}
-
-	cmd->commandId = RC_SET_COLOR;
-	cmd->color[0] = color[0];
-	cmd->color[1] = color[1];
-	cmd->color[2] = color[2];
-	cmd->color[3] = color[3];
-}
-
 void DC_SetColor(byte r, byte g, byte b, byte a) {
-	setColorCommand_t *cmd;
-
-	cmd = (setColorCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-	if (!cmd) {
-		return;
-	}
-
+	GET_COMMAND(setColorCommand_t)
 	cmd->commandId = RC_SET_COLOR;
 	cmd->color[0] = r;
 	cmd->color[1] = g;
@@ -57,14 +38,12 @@ void DC_SetColor(byte r, byte g, byte b, byte a) {
 	cmd->color[3] = a;
 }
 
+void DC_SetColor(byte color[4]) {
+	DC_SetColor(color[0], color[1], color[2], color[3]);
+}
+
 void DC_SetTransform(bool absolute, float a, float b, float c, float d, float e, float f) {
-	setTransformCommand_t *cmd;
-
-	cmd = (setTransformCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-	if (!cmd) {
-		return;
-	}
-
+	GET_COMMAND(setTransformCommand_t)
 	cmd->commandId = RC_SET_TRANSFORM;
 	cmd->absolute = absolute;
 	cmd->transform[0] = a;
@@ -76,13 +55,7 @@ void DC_SetTransform(bool absolute, float a, float b, float c, float d, float e,
 }
 
 void DC_DrawRect(float x, float y, float w, float h) {
-	drawRectCommand_t *cmd;
-
-	cmd = (drawRectCommand_t *) R_GetCommandBuffer(sizeof(*cmd));
-	if (!cmd) {
-		return;
-	}
-
+	GET_COMMAND(drawRectCommand_t)
 	cmd->commandId = RC_DRAW_RECT;
 	cmd->x = x;
 	cmd->y = y;
@@ -91,13 +64,7 @@ void DC_DrawRect(float x, float y, float w, float h) {
 }
 
 void DC_DrawText(float x, float y, const char *text, int align) {
-	drawTextCommand_t *cmd;
-
-	cmd = (drawTextCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-	if (!cmd) {
-		return;
-	}
-
+	GET_COMMAND(drawTextCommand_t)
 	cmd->commandId = RC_DRAW_TEXT;
 	strncpy(&cmd->text[0], text, sizeof(cmd->text));
 	cmd->align = align;
@@ -106,13 +73,7 @@ void DC_DrawText(float x, float y, const char *text, int align) {
 }
 
 void DC_DrawBmpText(float x, float y, float scale, const char *text, unsigned int fntId) {
-	drawBmpTextCommand_t *cmd;
-
-	cmd = (drawBmpTextCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-	if (!cmd) {
-		return;
-	}
-
+	GET_COMMAND(drawBmpTextCommand_t)
 	cmd->commandId = RC_DRAW_BMPTEXT;
 	cmd->fntId = fntId;
 	strncpy(&cmd->text[0], text, sizeof(cmd->text));
@@ -122,13 +83,7 @@ void DC_DrawBmpText(float x, float y, float scale, const char *text, unsigned in
 }
 
 void DC_DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, byte flipBits, unsigned int imgId, unsigned int shaderId) {
-	drawImageCommand_t *cmd;
-
-	cmd = (drawImageCommand_t *)R_GetCommandBuffer(sizeof(*cmd));
-	if (!cmd) {
-		return;
-	}
-
+	GET_COMMAND(drawImageCommand_t)
 	cmd->commandId = RC_DRAW_IMAGE;
 	cmd->x = x;
 	cmd->y = y;

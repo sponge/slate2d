@@ -43,17 +43,17 @@ void __cdecl Com_Error(int level, const char *error, ...) {
 		return;
 	}
 
-#if defined(_WIN32) && defined(DEBUG)
-	__asm {
-		int 0x03
-	}
-#endif
-
 	va_start (argptr,error);
 	vsprintf (errorMessage,error,argptr);
 	va_end (argptr);
 
 	Com_Printf("%s\n", errorMessage);
+
+#if defined(_WIN32) && defined(DEBUG)
+	__asm {
+		int 0x03
+	}
+#endif
 	
 	if (level == ERR_FATAL) {
 		exit(1);

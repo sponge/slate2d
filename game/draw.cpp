@@ -1,6 +1,6 @@
 #include "public.h"
 
-#define GET_COMMAND(type) type *cmd; cmd = (type *)R_GetCommandBuffer(sizeof(*cmd)); if (!cmd) { return; }
+#define GET_COMMAND(type, id) type *cmd; cmd = (type *)R_GetCommandBuffer(sizeof(*cmd)); if (!cmd) { return; } cmd->commandId = id;
 
 // FIXME: wrap me in a class instead?
 
@@ -29,22 +29,21 @@ void DC_Clear() {
 	memset(&cmdList, 0, sizeof(cmdList));
 }
 
-void DC_SetColor(byte r, byte g, byte b, byte a) {
-	GET_COMMAND(setColorCommand_t)
-	cmd->commandId = RC_SET_COLOR;
+void DC_SetColor(byte which, byte r, byte g, byte b, byte a) {
+	GET_COMMAND(setColorCommand_t, RC_SET_COLOR)
+	cmd->which = which;
 	cmd->color[0] = r;
 	cmd->color[1] = g;
 	cmd->color[2] = b;
 	cmd->color[3] = a;
 }
 
-void DC_SetColor(byte color[4]) {
-	DC_SetColor(color[0], color[1], color[2], color[3]);
+void DC_SetColor(byte which, byte color[4]) {
+	DC_SetColor(which, color[0], color[1], color[2], color[3]);
 }
 
 void DC_SetTransform(bool absolute, float a, float b, float c, float d, float e, float f) {
-	GET_COMMAND(setTransformCommand_t)
-	cmd->commandId = RC_SET_TRANSFORM;
+	GET_COMMAND(setTransformCommand_t, RC_SET_TRANSFORM)
 	cmd->absolute = absolute;
 	cmd->transform[0] = a;
 	cmd->transform[1] = b;
@@ -54,9 +53,9 @@ void DC_SetTransform(bool absolute, float a, float b, float c, float d, float e,
 	cmd->transform[5] = f;
 }
 
-void DC_DrawRect(float x, float y, float w, float h) {
-	GET_COMMAND(drawRectCommand_t)
-	cmd->commandId = RC_DRAW_RECT;
+void DC_DrawRect(float x, float y, float w, float h, bool outline=false) {
+	GET_COMMAND(drawRectCommand_t, RC_DRAW_RECT)
+	cmd->outline = outline;
 	cmd->x = x;
 	cmd->y = y;
 	cmd->w = w;
@@ -64,8 +63,7 @@ void DC_DrawRect(float x, float y, float w, float h) {
 }
 
 void DC_DrawText(float x, float y, const char *text, int align) {
-	GET_COMMAND(drawTextCommand_t)
-	cmd->commandId = RC_DRAW_TEXT;
+	GET_COMMAND(drawTextCommand_t, RC_DRAW_TEXT)
 	strncpy(&cmd->text[0], text, sizeof(cmd->text));
 	cmd->align = align;
 	cmd->x = x;
@@ -73,8 +71,7 @@ void DC_DrawText(float x, float y, const char *text, int align) {
 }
 
 void DC_DrawBmpText(float x, float y, float scale, const char *text, unsigned int fntId) {
-	GET_COMMAND(drawBmpTextCommand_t)
-	cmd->commandId = RC_DRAW_BMPTEXT;
+	GET_COMMAND(drawBmpTextCommand_t, RC_DRAW_BMPTEXT)
 	cmd->fntId = fntId;
 	strncpy(&cmd->text[0], text, sizeof(cmd->text));
 	cmd->x = x;
@@ -83,8 +80,7 @@ void DC_DrawBmpText(float x, float y, float scale, const char *text, unsigned in
 }
 
 void DC_DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, byte flipBits, unsigned int imgId, unsigned int shaderId) {
-	GET_COMMAND(drawImageCommand_t)
-	cmd->commandId = RC_DRAW_IMAGE;
+	GET_COMMAND(drawImageCommand_t, RC_DRAW_IMAGE)
 	cmd->x = x;
 	cmd->y = y;
 	cmd->w = w;
@@ -95,4 +91,12 @@ void DC_DrawImage(float x, float y, float w, float h, float ox, float oy, float 
 	cmd->flipBits = flipBits;
 	cmd->imgId = imgId;
 	cmd->shaderId = shaderId;
+}
+
+void DC_DrawLine(float x1, float y1, float x2, float y2) {
+	GET_COMMAND(drawLineCommand_t, RC_DRAW_LINE);
+	cmd->x1 = x1;
+	cmd->y1 = y1;
+	cmd->x2 = x2;
+	cmd->y2 = y2;
 }

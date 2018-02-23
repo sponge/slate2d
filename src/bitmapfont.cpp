@@ -172,6 +172,4 @@ int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, cons
 	}
 
 	return currX - font->charSpacing - x;
-
-	return 0;
 }

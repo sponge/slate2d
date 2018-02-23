@@ -103,8 +103,11 @@ typedef struct {
 	int		used;
 } renderCommandList_t;
 
+#define COLOR_FILL 0
+#define COLOR_STROKE 1
 typedef struct {
 	byte	commandId;
+	byte	which;
 	float	color[4];
 } setColorCommand_t;
 
@@ -114,8 +117,11 @@ typedef struct {
 	bool	absolute;
 } setTransformCommand_t;
 
+#define FILL false
+#define OUTLINE true
 typedef struct {
 	byte	commandId;
+	byte	outline;
 	float	x, y, w, h;
 } drawRectCommand_t;
 
@@ -145,6 +151,11 @@ typedef struct {
 	unsigned int shaderId;
 } drawImageCommand_t;
 
+typedef struct {
+	byte commandId;
+	float x1, y1, x2, y2;
+} drawLineCommand_t;
+
 typedef enum {
 	RC_END_OF_LIST,
 	RC_SET_COLOR,
@@ -152,7 +163,8 @@ typedef enum {
 	RC_DRAW_RECT,
 	RC_DRAW_TEXT,
 	RC_DRAW_BMPTEXT,
-	RC_DRAW_IMAGE
+	RC_DRAW_IMAGE,
+	RC_DRAW_LINE,
 } renderCommand_t;
 
 // ASSETS

@@ -10,12 +10,6 @@ void Asset_ClearAll();
 
 // image assets
 
-typedef struct {
-	struct NVGcontext *nvg;
-	unsigned int hnd;
-	int w, h;
-} Image;
-
 void* Img_Load(Asset &asset);
 void Img_Free(Asset &asset);
 Image* Get_Img(AssetHandle id);

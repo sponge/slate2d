@@ -1,4 +1,6 @@
 #include "public.h"
+#include "draw.h"
+#include <assert.h>
 
 #define GET_COMMAND(type, id) type *cmd; cmd = (type *)R_GetCommandBuffer(sizeof(*cmd)); if (!cmd) { return; } cmd->commandId = id;
 
@@ -53,7 +55,7 @@ void DC_SetTransform(bool absolute, float a, float b, float c, float d, float e,
 	cmd->transform[5] = f;
 }
 
-void DC_DrawRect(float x, float y, float w, float h, bool outline=false) {
+void DC_DrawRect(float x, float y, float w, float h, bool outline) {
 	GET_COMMAND(drawRectCommand_t, RC_DRAW_RECT)
 	cmd->outline = outline;
 	cmd->x = x;
@@ -101,7 +103,7 @@ void DC_DrawLine(float x1, float y1, float x2, float y2) {
 	cmd->y2 = y2;
 }
 
-void DC_DrawCircle(float x, float y, float radius, bool outline = false) {
+void DC_DrawCircle(float x, float y, float radius, bool outline) {
 	GET_COMMAND(drawCircleCommand_t, RC_DRAW_CIRCLE);
 	cmd->outline = outline;
 	cmd->x = x;
@@ -109,7 +111,7 @@ void DC_DrawCircle(float x, float y, float radius, bool outline = false) {
 	cmd->radius = radius;
 }
 
-void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, bool outline = false) {
+void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, bool outline) {
 	GET_COMMAND(drawTriCommand_t, RC_DRAW_TRI);
 	cmd->outline = outline;
 	cmd->x1 = x1;
@@ -119,3 +121,39 @@ void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, bool
 	cmd->x3 = x3;
 	cmd->y3 = y3;
 }
+
+const Sprite DC_CreateSprite(unsigned int asset, int width, int height, int marginX, int marginY) {
+	Image *img = trap->Get_Img(asset);
+	assert(img != nullptr);
+
+	int cols = (img->w / (width + marginX));
+	int rows = (img->h / (height + marginY));
+	return {
+		asset,
+		rows * cols - 1,
+		img->w, img->h,
+		width, height,
+		marginX, marginY,
+		rows, cols
+	};
+}
+
+void DC_DrawSprite(const Sprite spr, int id, float x, float y, float alpha, byte flipBits, int w, int h) {
+	if (id > spr.maxId) {
+		return;
+	}
+
+	for (int ty = 0; ty < h; ty++) {
+		for (int tx = 0; tx < w; tx++) {
+			int currentId = id + (ty * spr.cols) + tx;
+			DC_DrawImage(
+				x + (tx*spr.spriteWidth),
+				y + (ty*spr.spriteHeight),
+				spr.spriteWidth,
+				spr.spriteHeight,
+				(currentId % spr.cols) * spr.spriteWidth,
+				(currentId / spr.cols) * spr.spriteHeight, 1.0f, flipBits, spr.asset, 0);
+		}
+	}
+}
+

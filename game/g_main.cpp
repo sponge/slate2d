@@ -32,7 +32,8 @@ void Cmd_Map_f(void) {
 	*/
 }
 
-AssetHandle dog, music, speech, font;
+AssetHandle dog, sprites, music, speech, font;
+Sprite spr;
 
 static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Cmd_AddCommand("map", Cmd_Map_f);
@@ -59,6 +60,7 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	//trap->Scene_Switch(new MenuScene());
 
 	dog = trap->Asset_Create(ASSET_IMAGE, "dog", "gfx/dog.png");
+	sprites = trap->Asset_Create(ASSET_IMAGE, "sprites", "gfx/sprites.gif");
 	music = trap->Asset_Create(ASSET_MOD, "music", "music/frantic_-_dog_doesnt_care.it");
 	speech = trap->Asset_Create(ASSET_SPEECH, "speech", "great job! you are a good dog!");
 	font = trap->Asset_Create(ASSET_BITMAPFONT, "font", "gfx/good_neighbors.png");
@@ -68,6 +70,8 @@ static void Init(void *clientInfo, void *imGuiContext) {
 
 	trap->Snd_Play(music, 1.0f, 0.0f, true);
 	trap->Snd_Play(speech, 1.0f, 0.0f, false);
+
+	spr = DC_CreateSprite(sprites, 8, 8, 0, 0);
 }
 
 static void Console(const char *line) {
@@ -95,6 +99,8 @@ static void Frame(float dt) {
 
 	DC_DrawTri(150, 150, 160, 160, 130, 160);
 	DC_DrawTri(150, 180, 170, 170, 180, 180, OUTLINE);
+
+	DC_DrawSprite(spr, 265, 200, 200, 1.0f, 2.0f, 0, 3, 3);
 
 	DC_Submit();
 }

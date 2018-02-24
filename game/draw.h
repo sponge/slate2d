@@ -11,3 +11,15 @@ void DC_DrawCircle(float x, float y, float radius, bool outline = false);
 void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, bool outline = false);
 void DC_Submit();
 void DC_Clear();
+
+typedef struct {
+	unsigned int asset;
+	int maxId;
+	int imageWidth, imageHeight;
+	int spriteWidth, spriteHeight;
+	int marginX, marginY;
+	int rows, cols;
+} Sprite;
+
+const Sprite DC_CreateSprite(unsigned int asset, int width, int height, int marginX, int marginY);
+void DC_DrawSprite(const Sprite sprite, int id, float x, float y, float alpha = 1.0f, byte flipBits = 0, int w = 1, int h = 1);

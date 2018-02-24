@@ -43,6 +43,7 @@ typedef struct gameImportFuncs_s {
 	void (*Asset_LoadAll)();
 	void (*Asset_ClearAll)();
 	void (*BMPFNT_Set)(AssetHandle assetHandle, const char *glyphs, int charSpacing, int spaceWidth, int lineHeight);
+	Image* (*Get_Img)(AssetHandle id);
 
 	void (*Snd_Play)(AssetHandle asset, float volume, float pan, bool loop);
 } gameImportFuncs_t;

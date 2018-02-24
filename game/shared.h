@@ -216,3 +216,9 @@ typedef struct {
 	char path[64];
 	void *resource;
 } Asset;
+
+typedef struct {
+	struct NVGcontext *nvg;
+	unsigned int hnd;
+	int w, h;
+} Image;

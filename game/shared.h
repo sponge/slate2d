@@ -156,6 +156,18 @@ typedef struct {
 	float x1, y1, x2, y2;
 } drawLineCommand_t;
 
+typedef struct {
+	byte	commandId;
+	byte	outline;
+	float x, y, radius;
+} drawCircleCommand_t;
+
+typedef struct {
+	byte	commandId;
+	byte	outline;
+	float x1, y1, x2, y2, x3, y3;
+} drawTriCommand_t;
+
 typedef enum {
 	RC_END_OF_LIST,
 	RC_SET_COLOR,
@@ -165,6 +177,8 @@ typedef enum {
 	RC_DRAW_BMPTEXT,
 	RC_DRAW_IMAGE,
 	RC_DRAW_LINE,
+	RC_DRAW_CIRCLE,
+	RC_DRAW_TRI,
 } renderCommand_t;
 
 // ASSETS

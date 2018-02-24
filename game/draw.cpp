@@ -100,3 +100,22 @@ void DC_DrawLine(float x1, float y1, float x2, float y2) {
 	cmd->x2 = x2;
 	cmd->y2 = y2;
 }
+
+void DC_DrawCircle(float x, float y, float radius, bool outline = false) {
+	GET_COMMAND(drawCircleCommand_t, RC_DRAW_CIRCLE);
+	cmd->outline = outline;
+	cmd->x = x;
+	cmd->y = y;
+	cmd->radius = radius;
+}
+
+void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, bool outline = false) {
+	GET_COMMAND(drawTriCommand_t, RC_DRAW_TRI);
+	cmd->outline = outline;
+	cmd->x1 = x1;
+	cmd->y1 = y1;
+	cmd->x2 = x2;
+	cmd->y2 = y2;
+	cmd->x3 = x3;
+	cmd->y3 = y3;
+}

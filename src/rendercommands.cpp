@@ -28,6 +28,7 @@ const void *RB_SetTransform(const void *data) {
 	}
 
 	nvgTransform(inf.nvg, cmd->transform[0], cmd->transform[1], cmd->transform[2], cmd->transform[3], cmd->transform[4], cmd->transform[5]);
+	nvgStrokeWidth(inf.nvg, 1 / cmd->transform[0]);
 
 	return (const void *)(cmd + 1);
 }
@@ -114,6 +115,40 @@ const void *RB_DrawLine(const void *data) {
 	return (const void *)(cmd + 1);
 }
 
+const void *RB_DrawCircle(const void *data) {
+	auto cmd = (const drawCircleCommand_t *)data;
+
+	nvgBeginPath(inf.nvg);
+	nvgCircle(inf.nvg, cmd->x, cmd->y, cmd->radius);
+	if (cmd->outline) {
+		nvgStroke(inf.nvg);
+	}
+	else {
+		nvgFill(inf.nvg);
+	}
+
+	return (const void *)(cmd + 1);
+}
+
+const void *RB_DrawTri(const void *data) {
+	auto cmd = (const drawTriCommand_t *)data;
+
+	nvgBeginPath(inf.nvg);
+	nvgMoveTo(inf.nvg, cmd->x1, cmd->y1);
+	nvgLineTo(inf.nvg, cmd->x2, cmd->y2);
+	nvgLineTo(inf.nvg, cmd->x3, cmd->y3);
+	nvgLineTo(inf.nvg, cmd->x1, cmd->y1);
+	
+	if (cmd->outline) {
+		nvgStroke(inf.nvg);
+	}
+	else {
+		nvgFill(inf.nvg);
+	}
+
+	return (const void *)(cmd + 1);
+}
+
 void SubmitRenderCommands(renderCommandList_t * list) {
 	const void *data = list->cmds;
 
@@ -147,6 +182,14 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 
 		case RC_DRAW_LINE:
 			data = RB_DrawLine(data);
+			break;
+
+		case RC_DRAW_CIRCLE:
+			data = RB_DrawCircle(data);
+			break;
+
+		case RC_DRAW_TRI:
+			data = RB_DrawTri(data);
 			break;
 
 		case RC_END_OF_LIST:

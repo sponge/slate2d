@@ -78,15 +78,23 @@ static void Console(const char *line) {
 // but anything that needs an event loop type pump can go here
 static void Frame(float dt) {
 	DC_Clear();
-	DC_SetColor(COLOR_FILL, 255, 0, 0, 255);
-	DC_DrawRect(0, 0, 16, 16);
+	DC_SetTransform(true, 3, 0, 0, 3, 0, 0);
 
-	DC_DrawImage(120, 120, 154, 16, 0, 0, 4.0, 0, dog, 0);
-	DC_DrawBmpText(32, 50, 3.0f, "Good Dog!", font);
+	DC_SetColor(COLOR_FILL, 255, 0, 0, 255);
+	DC_DrawRect(5, 3, 16, 16);
+
+	DC_DrawImage(120, 120, 154, 16, 0, 0, 1.0, 0, dog, 0);
+	DC_DrawBmpText(32, 50, 1.0f, "Good Dog!", font);
 
 	DC_SetColor(COLOR_STROKE, 0, 255, 0, 255);
 	DC_DrawLine(0, 0, 600, 300);
-	DC_DrawRect(200, 300, 64, 64, OUTLINE);
+	DC_DrawRect(10, 30, 64, 64, OUTLINE);
+
+	DC_DrawCircle(200, 25, 16, OUTLINE);
+	DC_DrawCircle(200, 70, 16);
+
+	DC_DrawTri(150, 150, 160, 160, 130, 160);
+	DC_DrawTri(150, 180, 170, 170, 180, 180, OUTLINE);
 
 	DC_Submit();
 }

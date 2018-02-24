@@ -7,5 +7,7 @@ void DC_DrawText(float x, float y, const char *text, int align);
 void DC_DrawBmpText(float x, float y, float scale, const char *text, unsigned int fntId);
 void DC_DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, byte flipBits, unsigned int imgId, unsigned int shaderId);
 void DC_DrawLine(float x1, float y1, float x2, float y2);
+void DC_DrawCircle(float x, float y, float radius, bool outline = false);
+void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, bool outline = false);
 void DC_Submit();
 void DC_Clear();

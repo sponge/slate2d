@@ -55,6 +55,18 @@ void DC_SetTransform(bool absolute, float a, float b, float c, float d, float e,
 	cmd->transform[5] = f;
 }
 
+void DC_SetScissor(float x, float y, float w, float h) {
+	GET_COMMAND(setScissorCommand_t, RC_SET_SCISSOR)
+	cmd->x = x;
+	cmd->y = y;
+	cmd->w = w;
+	cmd->h = h;
+}
+
+void DC_ResetScissor() {
+	DC_SetScissor(0, 0, 0, 0);
+}
+
 void DC_DrawRect(float x, float y, float w, float h, bool outline) {
 	GET_COMMAND(drawRectCommand_t, RC_DRAW_RECT)
 	cmd->outline = outline;

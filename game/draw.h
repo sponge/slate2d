@@ -2,6 +2,8 @@
 
 void DC_SetColor(byte which, byte r, byte g, byte b, byte a);
 void DC_SetTransform(bool absolute, float a, float b, float c, float d, float e, float f);
+void DC_SetScissor(float x, float y, float w, float h);
+void DC_ResetScissor();
 void DC_DrawRect(float x, float y, float w, float h, bool outline = false);
 void DC_DrawText(float x, float y, const char *text, int align);
 void DC_DrawBmpText(float x, float y, float scale, const char *text, unsigned int fntId);

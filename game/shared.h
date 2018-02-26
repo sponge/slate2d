@@ -117,6 +117,11 @@ typedef struct {
 	bool	absolute;
 } setTransformCommand_t;
 
+typedef struct {
+	byte commandId;
+	float x, y, w, h;
+} setScissorCommand_t;
+
 #define FILL false
 #define OUTLINE true
 typedef struct {
@@ -172,6 +177,7 @@ typedef enum {
 	RC_END_OF_LIST,
 	RC_SET_COLOR,
 	RC_SET_TRANSFORM,
+	RC_SET_SCISSOR,
 	RC_DRAW_RECT,
 	RC_DRAW_TEXT,
 	RC_DRAW_BMPTEXT,

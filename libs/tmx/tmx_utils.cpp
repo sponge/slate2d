@@ -8,6 +8,7 @@
 #include <ctype.h> /* is */
 
 #include "tmx.h"
+#include "tsx.h"
 #include "tmx_utils.h"
 
 /*
@@ -249,63 +250,17 @@ int data_decode(const char *source, enum enccmp_t type, size_t gids_count, int32
 }
 
 /*
-	Node allocation
-*/
-
-static void* node_alloc(size_t size) {
-	void *res = tmx_alloc_func(NULL, size);
-	if (res) {
-		memset(res, 0, size);
-	} else {
-		tmx_errno = E_ALLOC;
-	}
-	return res;
-}
-
-tmx_property* alloc_prop(void) {
-	return (tmx_property*)node_alloc(sizeof(tmx_property));
-}
-
-tmx_image* alloc_image(void) {
-	return (tmx_image*)node_alloc(sizeof(tmx_image));
-}
-
-tmx_object* alloc_object(void) {
-	tmx_object *res = (tmx_object*)node_alloc(sizeof(tmx_object));
-	if (res) {
-		res->visible = 1;
-	}
-	return res;
-}
-
-tmx_object_group* alloc_objgr(void) {
-	return (tmx_object_group*)node_alloc(sizeof(tmx_object_group));
-}
-
-tmx_layer* alloc_layer(void) {
-	tmx_layer *res = (tmx_layer*)node_alloc(sizeof(tmx_layer));
-	if (res) {
-		res->opacity = 1.0f;
-		res->visible = 1;
-	}
-	return res;
-}
-
-tmx_tile* alloc_tiles(int count) {
-	return (tmx_tile*)node_alloc(count * sizeof(tmx_tile));
-}
-
-tmx_tileset* alloc_tileset(void) {
-	return (tmx_tileset*)node_alloc(sizeof(tmx_tileset));
-}
-
-tmx_map* alloc_map(void) {
-	return (tmx_map*)node_alloc(sizeof(tmx_map));
-}
-
-/*
 	Misc
 */
+
+void map_post_parsing(tmx_map **map) {
+	if (*map) {
+		if (!mk_map_tile_array(*map)) {
+			tmx_map_free(*map);
+			*map = NULL;
+		}
+	}
+}
 
 /* Sets tile->tileset and tile->ul_x,y */
 int set_tiles_runtime_props(tmx_tileset *ts) {
@@ -347,11 +302,16 @@ int set_tiles_runtime_props(tmx_tileset *ts) {
 /* Creates the array at map->tiles */
 int mk_map_tile_array(tmx_map *map) {
 	unsigned int i;
-	tmx_tileset *ts, *max_ts;
+	tmx_tileset_list *ts, *max_ts;
 
 	if (!map) {
 		tmx_err(E_INVAL, "mk_map_tile_array: invalid argument: map is NULL");
 		return 0;
+	}
+
+	if (!(map->ts_head)) {
+		/* no tileset => nothing to do */
+		return 1;
 	}
 
 	/* Counts total tile count */
@@ -362,12 +322,12 @@ int mk_map_tile_array(tmx_map *map) {
 		}
 		ts = ts->next;
 	}
-	if (max_ts->image) {
-		map->tilecount = max_ts->firstgid + max_ts->tilecount;
+	if (max_ts->tileset->image) {
+		map->tilecount = max_ts->firstgid + max_ts->tileset->tilecount;
 	}
 	else {
 		/* Gets the last id, ts->tiles is sorted by id */
-		map->tilecount = max_ts->firstgid + max_ts->tiles[max_ts->tilecount - 1].id + 1;
+		map->tilecount = max_ts->firstgid + max_ts->tileset->tiles[max_ts->tileset->tilecount - 1].id + 1;
 	}
 
 	/* Allocates the GID indexed tile array */
@@ -381,8 +341,8 @@ int mk_map_tile_array(tmx_map *map) {
 	map->tiles[0] = NULL; /* GIDs start from 1 */
 	ts = map->ts_head;
 	while (ts != NULL) {
-		for (i=0; i<ts->tilecount; i++) {
-			map->tiles[ts->firstgid + ts->tiles[i].id] = &(ts->tiles[i]);
+		for (i=0; i<ts->tileset->tilecount; i++) {
+			map->tiles[ts->firstgid + ts->tileset->tiles[i].id] = &(ts->tileset->tiles[i]);
 		}
 		ts = ts->next;
 	}
@@ -398,7 +358,7 @@ enum tmx_map_orient parse_orient(const char *orient_str) {
 	if (!strcmp(orient_str, "isometric")) {
 		return O_ISO;
 	}
-	if (!strcmp(orient_str, "stagging")) {
+	if (!strcmp(orient_str, "staggered")) {
 		return O_STA;
 	}
 	if (!strcmp(orient_str, "hexagonal")) {
@@ -457,6 +417,88 @@ enum tmx_stagger_axis parse_stagger_axis(const char *staggeraxis) {
 	return SA_NONE;
 }
 
+/* "integer" -> PT_INT */
+enum tmx_property_type parse_property_type(const char *propertytype) {
+	if (propertytype == NULL || !strcmp(propertytype, "string")) {
+		return PT_STRING;
+	}
+	if (!strcmp(propertytype, "int")) {
+		return PT_INT;
+	}
+	if (!strcmp(propertytype, "float")) {
+		return PT_FLOAT;
+	}
+	if (!strcmp(propertytype, "bool")) {
+		return PT_BOOL;
+	}
+	if (!strcmp(propertytype, "color")) {
+		return PT_COLOR;
+	}
+	if (!strcmp(propertytype, "file")) {
+		return PT_FILE;
+	}
+	return PT_NONE;
+}
+
+enum tmx_horizontal_align parse_horizontal_align(const char *horalign) {
+	if (horalign == NULL) {
+		return HA_NONE;
+	}
+	if (!strcmp(horalign, "left")) {
+		return HA_LEFT;
+	}
+	if (!strcmp(horalign, "center")) {
+		return HA_CENTER;
+	}
+	if (!strcmp(horalign, "right")) {
+		return HA_RIGHT;
+	}
+	return HA_NONE;
+}
+
+enum tmx_vertical_align parse_vertical_align(const char *veralign) {
+	if (veralign == NULL) {
+		return VA_NONE;
+	}
+	if (!strcmp(veralign, "top")) {
+		return VA_TOP;
+	}
+	if (!strcmp(veralign, "center")) {
+		return VA_CENTER;
+	}
+	if (!strcmp(veralign, "bottom")) {
+		return VA_BOTTOM;
+	}
+	return VA_NONE;
+}
+
+enum tmx_layer_type parse_layer_type(const char *nodename) {
+	if (nodename == NULL) {
+		return L_NONE;
+	}
+	if (!strcmp(nodename, "layer")) {
+		return L_LAYER;
+	}
+	if (!strcmp(nodename, "objectgroup")) {
+		return L_OBJGR;
+	}
+	if (!strcmp(nodename, "imagelayer")) {
+		return L_IMAGE;
+	}
+	if (!strcmp(nodename, "group")) {
+		return L_GROUP;
+	}
+	return L_NONE;
+}
+
+/* "false" -> 0 */
+int parse_boolean(const char *boolean) {
+	if (boolean != NULL && !strcmp(boolean, "true")) {
+		return 1;
+	}
+	return 0;
+}
+
 /* "#337FA2" -> 0x337FA2 */
 int get_color_rgb(const char *c) {
 	if (*c == '#') c++;
@@ -502,6 +544,9 @@ size_t dirpath_len(const char *str) {
 
 /* ("C:\Maps\map.tmx", "tilesets\ts1.tsx") => "C:\Maps\tilesets\ts1.tsx" */
 char* mk_absolute_path(const char *base_path, const char *rel_path) {
+	if (base_path == NULL) {
+		return tmx_strdup(rel_path);
+	}
 	/* if base_path is a directory, it MUST have a trailing path separator */
 	size_t dp_len = dirpath_len(base_path);
 	size_t rp_len = strlen(rel_path);

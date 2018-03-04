@@ -2,11 +2,12 @@
 #include <stdio.h>
 
 #include "tmx.h"
+#include "tsx.h"
 #include "tmx_utils.h"
 
 tmx_error_codes tmx_errno = E_NONE;
 
-static const char *errmsgs[] = {
+static char *errmsgs[] = {
 	"No error",
 	"Memory alloc failed",
 	"Missing privileges to access the file",
@@ -17,7 +18,7 @@ static const char *errmsgs[] = {
 char custom_msg[256];
 
 const char* tmx_strerr(void) {
-	const char *msg;
+	char *msg;
 	switch(tmx_errno) {
 		case E_NONE:   msg = errmsgs[0]; break;
 		case E_ALLOC:  msg = errmsgs[1]; break;

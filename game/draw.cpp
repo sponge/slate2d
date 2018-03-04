@@ -1,6 +1,7 @@
 #include "public.h"
 #include "draw.h"
 #include <assert.h>
+#include <cstring>
 
 #define GET_COMMAND(type, id) type *cmd; cmd = (type *)R_GetCommandBuffer(sizeof(*cmd)); if (!cmd) { return; } cmd->commandId = id;
 

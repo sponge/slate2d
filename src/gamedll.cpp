@@ -15,7 +15,7 @@
 
 extern SceneManager *sm;
 extern ClientInfo inf;
-
+extern tmx_map *map;
 extern ClientInfo inf;
 
 void trap_SendConsoleCommand(const char *text) {
@@ -38,6 +38,15 @@ Scene * trap_Scene_Current() {
 	return sm->Current();
 }
 
+void * tmx_img_load(const char *path) {
+	const char *fullpath = va("maps/%s", path);
+	return (void*) Asset_Create(ASSET_IMAGE, fullpath, fullpath);
+}
+
+void tmx_img_free(void *address) {
+	
+}
+
 void *tmx_fs(const char *filename, int *outSz) {
 	void *xml;
 
@@ -52,17 +61,8 @@ void *tmx_fs(const char *filename, int *outSz) {
 }
 
 tmx_map * trap_Map_Load(const char *filename) {
-
-	//tmx_img_load_func = [](const char *path) {
-	//	//Img *img = Img_Create(path, path);
-	//	//return img;
-	//	return nullptr;
-	//};
-
-	//tmx_img_free_func = [](void *address) {
-	//	//Img *img = (Img*)address;
-	//	//Img_Free(img->path);
-	//};
+	tmx_img_load_func = &tmx_img_load;
+	tmx_img_free_func = &tmx_img_free;
 	tmx_file_read_func = &tmx_fs;
 
 	const char *xml;
@@ -72,7 +72,7 @@ tmx_map * trap_Map_Load(const char *filename) {
 		return nullptr;
 	}
 
-	tmx_map *map = tmx_load_buffer(xml, outSz);
+	map = tmx_load_buffer(xml, outSz);
 
 	if (map == nullptr) {
 		Com_Error(ERR_DROP, "Failed to load tmx");
@@ -82,8 +82,9 @@ tmx_map * trap_Map_Load(const char *filename) {
 	return map;
 }
 
-void trap_Map_Free(tmx_map *map) {
-	tmx_map_free(map);
+void trap_Map_Free(tmx_map *localMap) {
+	tmx_map_free(localMap);
+	map = nullptr;
 }
 
 int R_RegisterShader(const char *name, const char *vshader, const char *fshader) {

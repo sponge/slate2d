@@ -135,6 +135,18 @@ void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, bool
 	cmd->y3 = y3;
 }
 
+void DC_DrawMapLayer(unsigned int layer, float x, float y, unsigned int cellX, unsigned int cellY, unsigned int cellW, unsigned int cellH)
+{
+	GET_COMMAND(drawMapCommand_t, RC_DRAW_MAP_LAYER);
+	cmd->layer = layer;
+	cmd->x = x;
+	cmd->y = y;
+	cmd->cellX = cellX;
+	cmd->cellY = cellY;
+	cmd->cellW = cellW;
+	cmd->cellH = cellH;
+}
+
 const Sprite DC_CreateSprite(unsigned int asset, int width, int height, int marginX, int marginY) {
 	Image *img = trap->Get_Img(asset);
 	assert(img != nullptr);

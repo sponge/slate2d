@@ -173,6 +173,12 @@ typedef struct {
 	float x1, y1, x2, y2, x3, y3;
 } drawTriCommand_t;
 
+typedef struct {
+	byte commandId;
+	float x, y;
+	unsigned int layer, cellX, cellY, cellW, cellH;
+} drawMapCommand_t;
+
 typedef enum {
 	RC_END_OF_LIST,
 	RC_SET_COLOR,
@@ -185,6 +191,7 @@ typedef enum {
 	RC_DRAW_LINE,
 	RC_DRAW_CIRCLE,
 	RC_DRAW_TRI,
+	RC_DRAW_MAP_LAYER,
 } renderCommand_t;
 
 // ASSETS

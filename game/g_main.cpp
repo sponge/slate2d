@@ -67,14 +67,14 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	font = trap->Asset_Create(ASSET_BITMAPFONT, "font", "gfx/good_neighbors.png");
 	trap->BMPFNT_Set(font, "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", -1, 7, 16);
 
+	const tmx_map *map = trap->Map_Load("maps/dognew.tmx");
+
 	trap->Asset_LoadAll();
 
 	trap->Snd_Play(music, 1.0f, 0.0f, true);
 	trap->Snd_Play(speech, 1.0f, 0.0f, false);
 
 	spr = DC_CreateSprite(sprites, 8, 8, 0, 0);
-
-	const tmx_map *map = trap->Map_Load("maps/dognew.tmx");
 }
 
 static void Console(const char *line) {
@@ -86,6 +86,8 @@ static void Console(const char *line) {
 static void Frame(float dt) {
 	DC_Clear();
 	DC_SetTransform(true, 3, 0, 0, 3, 0, 0);
+
+	DC_DrawMapLayer(0, 0.0f, -150.0f);
 
 	DC_SetColor(COLOR_FILL, 255, 0, 0, 255);
 	DC_DrawRect(5, 3, 16, 16);

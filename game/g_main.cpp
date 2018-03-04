@@ -1,6 +1,7 @@
 #include <imgui.h>
 #include "public.h"
 #include "draw.h"
+#include <stdio.h>
 
 gameImportFuncs_t *trap;
 kbutton_t in_1_left, in_1_right, in_1_up, in_1_run, in_1_down, in_1_jump, in_1_attack, in_1_menu;
@@ -72,6 +73,8 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Snd_Play(speech, 1.0f, 0.0f, false);
 
 	spr = DC_CreateSprite(sprites, 8, 8, 0, 0);
+
+	const tmx_map *map = trap->Map_Load("maps/dognew.tmx");
 }
 
 static void Console(const char *line) {

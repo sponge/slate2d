@@ -75,6 +75,10 @@ AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *pa
 void Asset_LoadAll() {
 	for (int i = 0; i < nextAsset; i++) {
 		Asset &asset = assets[i];
+		if (asset.loaded) {
+			continue;
+		}
+
 		Com_Printf("asset_load: %s name:%s path:%s\n", assetStrings[asset.type], asset.name, asset.path);
 		void *resourcePtr = assetHandler[asset.type].Load(asset);
 		if (resourcePtr == nullptr) {
@@ -82,9 +86,18 @@ void Asset_LoadAll() {
 			return;
 		}
 		asset.resource = resourcePtr;
+		asset.loaded = true;
 	}
 }
 
 void Asset_ClearAll() {
+	for (int i = 0; i < MAX_ASSETS; i++) {
+		Asset &asset = assets[i];
+		if (asset.loaded == false) {
+			continue;
+		}
+		assetHandler[asset.type].Free(asset);
+		asset.resource = nullptr;
+	}
 	memset(assets, 0, sizeof(Asset) * MAX_ASSETS);
 }

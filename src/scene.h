@@ -42,7 +42,7 @@ public:
 	}
 
 	Scene* Get(unsigned int i) {
-		if (i > scenes.size()) {
+		if (i >= scenes.size()) {
 			return nullptr;
 		}
 		return scenes.at(i);
@@ -57,6 +57,7 @@ public:
 	void Replace(int i, Scene *newScene) {
 		auto oldScene = Get(i);
 		if (oldScene == nullptr) {
+			Switch(newScene);
 			return;
 		}
 

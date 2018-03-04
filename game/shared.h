@@ -225,6 +225,7 @@ static const char* assetStrings[] = {
 typedef struct {
 	AssetHandle id;
 	AssetType_t type;
+	bool loaded;
 	char name[64];
 	char path[64];
 	void *resource;

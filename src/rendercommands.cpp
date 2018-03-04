@@ -81,16 +81,14 @@ const void *RB_DrawBmpText(const void *data) {
 	return (const void *)(cmd + 1);
 }
 
-const void *RB_DrawImage(const void *data) {
-	auto cmd = (const drawImageCommand_t *)data;
-
-	float flipX = cmd->flipBits & FLIP_H ? -1.0f : 1.0f;
-	float flipY = cmd->flipBits & FLIP_V ? -1.0f : 1.0f;
-	bool flipDiag = cmd->flipBits & FLIP_DIAG;
+void DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, byte flipBits, unsigned int imgId, unsigned int shaderId) {
+	float flipX = flipBits & FLIP_H ? -1.0f : 1.0f;
+	float flipY = flipBits & FLIP_V ? -1.0f : 1.0f;
+	bool flipDiag = flipBits & FLIP_DIAG;
 
 	nvgSave(inf.nvg);
 
-	nvgTranslate(inf.nvg, cmd->x, cmd->y);
+	nvgTranslate(inf.nvg, x, y);
 
 	if (flipDiag) {
 		nvgTransform(inf.nvg, 0, 1, 1, 0, 0, 0);
@@ -103,19 +101,23 @@ const void *RB_DrawImage(const void *data) {
 		nvgScale(inf.nvg, flipX, flipY);
 	}
 
-	nvgTranslate(inf.nvg, -(cmd->w / 2), -(cmd->h / 2));
+	nvgTranslate(inf.nvg, -(w / 2), -(h / 2));
 
-	auto img = Get_Img(cmd->imgId);
-	auto paint = nvgImagePattern(inf.nvg, 0 - cmd->ox, 0 - cmd->oy, img->w, img->h, 0, img->hnd, cmd->alpha);
-	paint.shader = cmd->shaderId;
+	auto img = Get_Img(imgId);
+	auto paint = nvgImagePattern(inf.nvg, 0 - ox, 0 - oy, img->w, img->h, 0, img->hnd, alpha);
+	paint.shader = shaderId;
 	nvgGlobalCompositeBlendFuncSeparate(inf.nvg, NVG_SRC_ALPHA, NVG_ONE_MINUS_SRC_ALPHA, NVG_ONE, NVG_ONE_MINUS_SRC_ALPHA);
 	nvgBeginPath(inf.nvg);
-	nvgRect(inf.nvg, 0, 0, cmd->w, cmd->h);
+	nvgRect(inf.nvg, 0, 0, w, h);
 	nvgFillPaint(inf.nvg, paint);
 	nvgFill(inf.nvg);
 
 	nvgRestore(inf.nvg);
+}
 
+const void *RB_DrawImage(const void *data) {
+	auto cmd = (const drawImageCommand_t *)data;
+	DrawImage(cmd->x, cmd->y, cmd->w, cmd->h, cmd->ox, cmd->oy, cmd->alpha, cmd->flipBits, cmd->imgId, cmd->shaderId);
 	return (const void *)(cmd + 1);
 }
 
@@ -174,8 +176,8 @@ const void *RB_DrawMapLayer(const void *data) {
 
 	assert(layer != nullptr);
 
-	for (int y = 0; y < map->height; y++) {
-		for (int x = 0; x < map->width; x++) {
+	for (unsigned int y = 0; y < map->height; y++) {
+		for (unsigned int x = 0; x < map->width; x++) {
 			unsigned int raw = layer->content.gids[(y*map->width) + x];
 			unsigned int gid = raw & TMX_FLIP_BITS_REMOVAL;
 
@@ -184,39 +186,17 @@ const void *RB_DrawMapLayer(const void *data) {
 			}
 
 			byte flipBits = (raw & TMX_FLIPPED_HORIZONTALLY ? FLIP_H : 0) | (raw & TMX_FLIPPED_VERTICALLY ? FLIP_V : 0) | (raw & TMX_FLIPPED_DIAGONALLY ? FLIP_DIAG : 0);
-			float flipX = flipBits & FLIP_H ? -1.0f : 1.0f;
-			float flipY = flipBits & FLIP_V ? -1.0f : 1.0f;
-			bool flipDiag = flipBits & FLIP_DIAG;
 
 			tmx_tile *tile = map->tiles[gid];
 			tmx_tileset *ts = tile->tileset;
-
 			AssetHandle handle = (AssetHandle) tile->tileset->image->resource_image;
-			Image *img = Get_Img(handle);
 
-			nvgSave(inf.nvg);
-
-			if (flipDiag) {
-				nvgTransform(inf.nvg, 0, 1, 1, 0, 0, 0);
-			}
-
-			if ((flipX == -1) ^ (flipY == -1) && flipDiag) {
-				nvgScale(inf.nvg, flipY, flipX);
-			}
-			else {
-				nvgScale(inf.nvg, flipX, flipY);
-			}
-
-			float sx = (0-(map->tile_width / 2.0f)) + cmd->x + (x * map->tile_width);
-			float sy = (0-(map->tile_height / 2.0f)) + cmd->y + (y * map->tile_height);
-
-			auto paint = nvgImagePattern(inf.nvg, sx - tile->ul_x, sy - tile->ul_y, img->w, img->h, 0, img->hnd, 1.0f);
-			nvgGlobalCompositeBlendFuncSeparate(inf.nvg, NVG_SRC_ALPHA, NVG_ONE_MINUS_SRC_ALPHA, NVG_ONE, NVG_ONE_MINUS_SRC_ALPHA);
-			nvgBeginPath(inf.nvg);
-			nvgRect(inf.nvg, sx, sy, map->tile_width, map->tile_height);
-			nvgFillPaint(inf.nvg, paint);
-			nvgFill(inf.nvg);
-			nvgRestore(inf.nvg);
+			DrawImage(
+				cmd->x + x*ts->tile_width + (ts->tile_width / 2), cmd->y + y*ts->tile_height + (ts->tile_height / 2),
+				ts->tile_width, ts->tile_height,
+				tile->ul_x, tile->ul_y,
+				1.0, flipBits, handle, 0
+			);
 		}
 	}
 

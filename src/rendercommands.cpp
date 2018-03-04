@@ -81,7 +81,7 @@ const void *RB_DrawBmpText(const void *data) {
 	return (const void *)(cmd + 1);
 }
 
-void DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, byte flipBits, unsigned int imgId, unsigned int shaderId) {
+void DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, byte flipBits, Image *img, unsigned int shaderId) {
 	float flipX = flipBits & FLIP_H ? -1.0f : 1.0f;
 	float flipY = flipBits & FLIP_V ? -1.0f : 1.0f;
 	bool flipDiag = flipBits & FLIP_DIAG;
@@ -103,7 +103,6 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float alp
 
 	nvgTranslate(inf.nvg, -(w / 2), -(h / 2));
 
-	auto img = Get_Img(imgId);
 	auto paint = nvgImagePattern(inf.nvg, 0 - ox, 0 - oy, img->w, img->h, 0, img->hnd, alpha);
 	paint.shader = shaderId;
 	nvgGlobalCompositeBlendFuncSeparate(inf.nvg, NVG_SRC_ALPHA, NVG_ONE_MINUS_SRC_ALPHA, NVG_ONE, NVG_ONE_MINUS_SRC_ALPHA);
@@ -117,7 +116,8 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float alp
 
 const void *RB_DrawImage(const void *data) {
 	auto cmd = (const drawImageCommand_t *)data;
-	DrawImage(cmd->x, cmd->y, cmd->w, cmd->h, cmd->ox, cmd->oy, cmd->alpha, cmd->flipBits, cmd->imgId, cmd->shaderId);
+	Image *image = Get_Img(cmd->imgId);
+	DrawImage(cmd->x, cmd->y, cmd->w, cmd->h, cmd->ox, cmd->oy, cmd->alpha, cmd->flipBits, image, cmd->shaderId);
 	return (const void *)(cmd + 1);
 }
 
@@ -176,8 +176,11 @@ const void *RB_DrawMapLayer(const void *data) {
 
 	assert(layer != nullptr);
 
-	for (unsigned int y = 0; y < map->height; y++) {
-		for (unsigned int x = 0; x < map->width; x++) {
+	unsigned int cellW = cmd->cellW == 0 ? map->width : cmd->cellW;
+	unsigned int cellH = cmd->cellH == 0 ? map->height : cmd->cellH;
+
+	for (unsigned int y = cmd->cellY; y < cellH; y++) {
+		for (unsigned int x = cmd->cellX; x < cellW; x++) {
 			unsigned int raw = layer->content.gids[(y*map->width) + x];
 			unsigned int gid = raw & TMX_FLIP_BITS_REMOVAL;
 
@@ -189,13 +192,13 @@ const void *RB_DrawMapLayer(const void *data) {
 
 			tmx_tile *tile = map->tiles[gid];
 			tmx_tileset *ts = tile->tileset;
-			AssetHandle handle = (AssetHandle) tile->tileset->image->resource_image;
+			Asset *asset = (Asset*) tile->tileset->image->resource_image;
 
 			DrawImage(
 				cmd->x + x*ts->tile_width + (ts->tile_width / 2), cmd->y + y*ts->tile_height + (ts->tile_height / 2),
 				ts->tile_width, ts->tile_height,
 				tile->ul_x, tile->ul_y,
-				1.0, flipBits, handle, 0
+				1.0, flipBits, (Image*) asset->resource, 0
 			);
 		}
 	}

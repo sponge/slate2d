@@ -40,7 +40,8 @@ Scene * trap_Scene_Current() {
 
 void * tmx_img_load(const char *path) {
 	const char *fullpath = va("maps/%s", path);
-	return (void*) Asset_Create(ASSET_IMAGE, fullpath, fullpath);
+	AssetHandle handle = Asset_Create(ASSET_IMAGE, fullpath, fullpath);
+	return (void*)Asset_Get(ASSET_IMAGE, handle);
 }
 
 void tmx_img_free(void *address) {

@@ -1,8 +1,9 @@
 #include "assetloader.h"
 #include "console/console.h"
-#include <vector>
 
-std::vector<Asset> assets;
+#define MAX_ASSETS 256
+Asset assets[MAX_ASSETS];
+unsigned int nextAsset = 0;
 
 typedef struct AssetLoadHandler {
 	void*(*Load)(Asset &asset);
@@ -20,9 +21,10 @@ static AssetLoadHandler assetHandler[ASSET_MAX] = {
 };
 
 AssetHandle Asset_Find(const char *name) {
-	for (auto asset : assets) {
-		if (strcmp(asset.name, name) == 0) {
-			return asset.id;
+	for (int i = 0; i < MAX_ASSETS; i++) {
+		Asset *asset = &assets[i];
+		if (strcmp(asset->name, name) == 0) {
+			return asset->id;
 		}
 	}
 
@@ -30,8 +32,11 @@ AssetHandle Asset_Find(const char *name) {
 }
 
 Asset* Asset_Get(AssetType_t type, AssetHandle id) {
-	Asset* asset = &assets.at(id);
+	if (id > MAX_ASSETS) {
+		return nullptr;
+	}
 
+	Asset* asset = &assets[id];
 	if (type != ASSET_ANY && type != asset->type) {
 		return nullptr;
 	}
@@ -51,20 +56,25 @@ AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *pa
 		return found;
 	}
 
-	Asset asset;
-	asset.id = assets.size();
-	asset.type = assetType;
-	strncpy(asset.path, path, sizeof(asset.path));
-	strncpy(asset.name, name, sizeof(asset.name));
-	asset.resource = nullptr;
-	
-	assets.push_back(asset);
+	if (nextAsset >= MAX_ASSETS) {
+		return INVALID_ASSET;
+	}
 
-	return asset.id;
+	Asset *asset = &assets[nextAsset];
+	asset->id = nextAsset;
+	asset->type = assetType;
+	strncpy(asset->path, path, sizeof(asset->path));
+	strncpy(asset->name, name, sizeof(asset->name));
+	asset->resource = nullptr;
+
+	nextAsset++;
+	
+	return asset->id;
 }
 
 void Asset_LoadAll() {
-	for (auto &asset : assets) {
+	for (int i = 0; i < nextAsset; i++) {
+		Asset &asset = assets[i];
 		Com_Printf("asset_load: %s name:%s path:%s\n", assetStrings[asset.type], asset.name, asset.path);
 		void *resourcePtr = assetHandler[asset.type].Load(asset);
 		if (resourcePtr == nullptr) {
@@ -76,9 +86,5 @@ void Asset_LoadAll() {
 }
 
 void Asset_ClearAll() {
-	for (auto asset : assets) {
-		assetHandler[asset.type].Free(asset);
-	}
-
-	assets.clear();
+	memset(assets, 0, sizeof(Asset) * MAX_ASSETS);
 }

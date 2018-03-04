@@ -4,9 +4,12 @@
 #include <string.h>
 
 #include "tinyxml2.h"
+extern "C" {
 #include "tmx.h"
 #include "tsx.h"
 #include "tmx_utils.h"
+}
+
 
 using namespace tinyxml2;
 
@@ -929,11 +932,11 @@ static tmx_tileset* parse_root_tileset(XMLElement *ele, const char *filename) {
 	Public TMX load functions
 */
 
-tmx_map *parse_xml(tmx_tileset_manager *ts_mgr, const char *filename) {
+extern "C" tmx_map *parse_xml(tmx_tileset_manager *ts_mgr, const char *filename) {
 	assert(false); return 0;
 }
 
-tmx_map* parse_xml_buffer(tmx_tileset_manager *ts_mgr, const char *buffer, int len) {
+extern "C" tmx_map* parse_xml_buffer(tmx_tileset_manager *ts_mgr, const char *buffer, int len) {
 	XMLDocument *doc = new XMLDocument();
 	XMLError err = doc->Parse(buffer, len);
 	if (err != XML_SUCCESS) {
@@ -945,11 +948,11 @@ tmx_map* parse_xml_buffer(tmx_tileset_manager *ts_mgr, const char *buffer, int l
 	return res;
 }
 
-tmx_map* parse_xml_fd(tmx_tileset_manager *ts_mgr, int fd) {
+extern "C" tmx_map* parse_xml_fd(tmx_tileset_manager *ts_mgr, int fd) {
 	assert(false); return 0;
 }
 
-tmx_map* parse_xml_callback(tmx_tileset_manager *ts_mgr, tmx_read_functor callback, void *userdata) {
+extern "C" tmx_map* parse_xml_callback(tmx_tileset_manager *ts_mgr, tmx_read_functor callback, void *userdata) {
 	assert(false); return 0;
 }
 
@@ -957,18 +960,18 @@ tmx_map* parse_xml_callback(tmx_tileset_manager *ts_mgr, tmx_read_functor callba
 	Public TSX load functions
 */
 
-tmx_tileset* parse_tsx_xml(const char *filename) {
+extern "C" tmx_tileset* parse_tsx_xml(const char *filename) {
 	assert(false); return 0;
 }
 
-tmx_tileset* parse_tsx_xml_buffer(const char *buffer, int len) {
+extern "C" tmx_tileset* parse_tsx_xml_buffer(const char *buffer, int len) {
 	assert(false); return 0;
 }
 
-tmx_tileset* parse_tsx_xml_fd(int fd) {
+extern "C" tmx_tileset* parse_tsx_xml_fd(int fd) {
 	assert(false); return 0;
 }
 
-tmx_tileset* parse_tsx_xml_callback(tmx_read_functor callback, void *userdata) {
+extern "C" tmx_tileset* parse_tsx_xml_callback(tmx_read_functor callback, void *userdata) {
 	assert(false); return 0;
 }

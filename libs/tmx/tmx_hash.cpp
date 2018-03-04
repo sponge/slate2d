@@ -1,9 +1,12 @@
 #include <assert.h>
 #include <map>
 
+extern "C" {
 #include "tmx.h"
 #include "tsx.h"
 #include "tmx_utils.h"
+}
+
 
 typedef std::map<std::string, void *> tmx_hash;
 

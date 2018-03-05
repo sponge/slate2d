@@ -34,7 +34,7 @@ void GameScene::Render() {
 	DC_Clear();
 	DC_SetTransform(true, inf->width / inf->gameWidth, 0, 0, inf->width / inf->gameWidth, 0, 0);
 
-	DC_DrawMapLayer(0, 0.0f, -150.0f);
+	DC_DrawMapLayer(0, 0.0f, 0.0f - map->height * map->tile_height + inf->gameHeight);
 
 	DC_SetColor(COLOR_FILL, 255, 0, 0, 255);
 	DC_DrawRect(5, 3, 16, 16);
@@ -42,12 +42,12 @@ void GameScene::Render() {
 	DC_DrawImage(120, 120, 154, 16, 0, 0, 1.0, 0, dog, 0);
 	DC_DrawBmpText(32, 50, 1.0f, "Good Dog!", font);
 
-	DC_DrawSprite(spr, 265, 200, 200, 1.0f, 0, 3, 3);
-	DC_DrawSprite(spr, 265, 180, 200, 0.25f, 0, 3, 3); // FIXME: alpha is broke
+	DC_DrawSprite(spr, 265, 300, 150, 1.0f, 0, 3, 3);
+	DC_DrawSprite(spr, 265, 280, 150, 0.25f, 0, 3, 3); // FIXME: alpha is broke
 
 	DC_SetColor(COLOR_FILL, 60, 0, 90, 255);
-	DC_SetScissor(0, 0, 110, 210);
-	DC_DrawCircle(100, 200, 20);
+	DC_SetScissor(0, 0, 280, 110);
+	DC_DrawCircle(270, 100, 20);
 	DC_ResetScissor();
 
 	DC_SetColor(COLOR_STROKE, 0, 255, 0, 255);

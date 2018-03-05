@@ -73,9 +73,9 @@ AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *pa
 }
 
 void Asset_LoadAll() {
-	for (int i = 0; i < nextAsset; i++) {
+	for (int i = 0; i < MAX_ASSETS; i++) {
 		Asset &asset = assets[i];
-		if (asset.loaded) {
+		if (asset.type == ASSET_ANY || asset.loaded) {
 			continue;
 		}
 
@@ -100,4 +100,5 @@ void Asset_ClearAll() {
 		asset.resource = nullptr;
 	}
 	memset(assets, 0, sizeof(Asset) * MAX_ASSETS);
+	nextAsset = 0;
 }

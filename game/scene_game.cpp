@@ -74,4 +74,5 @@ void GameScene::Render() {
 GameScene::~GameScene()
 {
 	trap->Map_Free(map);
+	trap->Asset_ClearAll();
 }

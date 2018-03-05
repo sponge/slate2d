@@ -8,6 +8,7 @@ Sprite spr;
 tmx_map *map;
 
 void GameScene::Startup(ClientInfo* info) {
+	inf = info;
 	dog = trap->Asset_Create(ASSET_IMAGE, "dog", "gfx/dog.png");
 	sprites = trap->Asset_Create(ASSET_IMAGE, "sprites", "gfx/sprites.gif");
 	music = trap->Asset_Create(ASSET_MOD, "music", "music/frantic_-_dog_doesnt_care.it");
@@ -31,7 +32,7 @@ void GameScene::Update(float dt) {
 
 void GameScene::Render() {
 	DC_Clear();
-	DC_SetTransform(true, 3, 0, 0, 3, 0, 0);
+	DC_SetTransform(true, inf->width / inf->gameWidth, 0, 0, inf->width / inf->gameWidth, 0, 0);
 
 	DC_DrawMapLayer(0, 0.0f, -150.0f);
 
@@ -50,7 +51,7 @@ void GameScene::Render() {
 	DC_ResetScissor();
 
 	DC_SetColor(COLOR_STROKE, 0, 255, 0, 255);
-	DC_DrawLine(0, 0, 600, 300);
+	DC_DrawLine(0, 0, 320, 180);
 
 	DC_SetColor(COLOR_STROKE, 130, 140, 150, 255);
 	DC_DrawRect(10, 30, 64, 64, OUTLINE);

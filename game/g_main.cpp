@@ -32,6 +32,10 @@ void Cmd_Map_f(void) {
 }
 
 static void Init(void *clientInfo, void *imGuiContext) {
+	ClientInfo *inf = (ClientInfo*)clientInfo;
+	inf->gameWidth = 320;
+	inf->gameHeight = 180;
+
 	trap->Cmd_AddCommand("map", Cmd_Map_f);
 
 	trap->Cmd_AddCommand("+p1up",     []() { trap->IN_KeyDown(&in_1_up); });

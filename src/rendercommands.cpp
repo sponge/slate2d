@@ -30,7 +30,6 @@ const void *RB_SetTransform(const void *data) {
 	}
 
 	nvgTransform(inf.nvg, cmd->transform[0], cmd->transform[1], cmd->transform[2], cmd->transform[3], cmd->transform[4], cmd->transform[5]);
-	nvgStrokeWidth(inf.nvg, 1 / cmd->transform[0]);
 
 	return (const void *)(cmd + 1);
 }

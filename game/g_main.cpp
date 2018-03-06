@@ -3,7 +3,6 @@
 #include "draw.h"
 #include <stdio.h>
 #include "scene_game.h"
-#include "js.h"
 
 gameImportFuncs_t *trap;
 kbutton_t in_1_left, in_1_right, in_1_up, in_1_run, in_1_down, in_1_jump, in_1_attack, in_1_menu;
@@ -57,8 +56,6 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	trap->Cmd_AddCommand("-p1menu",   []() { trap->IN_KeyUp(&in_1_menu); });
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
-
-	JS_Init();
 
 	trap->SendConsoleCommand("map dognew");
 }

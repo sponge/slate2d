@@ -1,1 +1,0 @@
-module.exports = "you're about to get eaten by a pig";

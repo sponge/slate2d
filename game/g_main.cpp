@@ -3,6 +3,7 @@
 #include "draw.h"
 #include <stdio.h>
 #include "scene_game.h"
+#include "wrenapi.h"
 
 gameImportFuncs_t *trap;
 kbutton_t in_1_left, in_1_right, in_1_up, in_1_run, in_1_down, in_1_jump, in_1_attack, in_1_menu;
@@ -57,6 +58,8 @@ static void Init(void *clientInfo, void *imGuiContext) {
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
+	Wren_Init();
+
 	trap->SendConsoleCommand("map dognew");
 }
 
@@ -67,7 +70,7 @@ static void Console(const char *line) {
 // technically the scene manager will handle every frame for gameplay scenes,
 // but anything that needs an event loop type pump can go here
 static void Frame(float dt) {
-
+	Wren_Frame(dt);
 }
 
 static gameExportFuncs_t GAMEfuncs = {

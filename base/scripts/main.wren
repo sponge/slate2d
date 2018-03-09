@@ -1,10 +1,12 @@
+import "engine" for Trap, Scene
+
 class Game is Scene {
    construct new() {
 
    }
 
    update(dt) {
-      Trap.print("dt "+dt.toString)
+      Trap.print("dt "+dt.toString+"\n")
    }
 
    draw() {

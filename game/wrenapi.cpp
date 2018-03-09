@@ -1,5 +1,6 @@
 #include "wrenapi.h"
 #include "public.h"
+#include "game.h"
 #include "wren/wren.hpp"
 #include <cstring>
 
@@ -24,8 +25,20 @@ static void wren_error(WrenVM* lvm, WrenErrorType type,	const char* module, int 
 	trap->Print("%s:%i - %s\n", module, line, message);
 }
 
-char* wrenLoadModuleFn(WrenVM* lvm, const char* name) {
-	return nullptr;
+char* wren_loadModuleFn(WrenVM* lvm, const char* name) {
+	static char *script;
+	if (script != nullptr) {
+		free(script);
+	}
+
+	const char *path = va("scripts/%s.wren", name);
+	int sz = trap->FS_ReadFile(path, (void**)&script);
+	if (sz <= 0) {
+		return nullptr;
+	}
+	else {
+		return script; // FIXME: leak? how do i free script
+	}
 }
 
 typedef struct {
@@ -37,12 +50,12 @@ typedef struct {
 } wrenMethodDef;
 
 static const wrenMethodDef methods[] = {
-	{ "main", "Trap", true, "print(_)", trap_print },
-	{ "main", "Trap", true, "console(_)", trap_console},
+	{ "engine", "Trap", true, "print(_)", trap_print },
+	{ "engine", "Trap", true, "console(_)", trap_console},
 };
 static const int methodsCount = sizeof(methods) / sizeof(wrenMethodDef);
 
-WrenForeignMethodFn bindForeignMethodFn(WrenVM* lvm, const char* module, const char* className, bool isStatic, const char* signature) {
+WrenForeignMethodFn wren_bindForeignMethodFn(WrenVM* lvm, const char* module, const char* className, bool isStatic, const char* signature) {
 	for (int i = 0; i < methodsCount; i++) {
 		const wrenMethodDef &m = methods[i];
 		if (strcmp(module, m.module) == 0 && strcmp(className, m.className) == 0 && isStatic == m.isStatic && strcmp(signature, m.signature) == 0) {
@@ -53,31 +66,14 @@ WrenForeignMethodFn bindForeignMethodFn(WrenVM* lvm, const char* module, const c
 	return nullptr;
 }
 
-static const char *wren_api = "\n\
-class Trap { \n\
-	foreign static print(text) \n\
-	foreign static console(text) \n\
-} \n\
-\n\
-class Scene { \n\
-	construct new() {} \n\
-	update(dt) {} \n\
-	draw() {} \n\
-} \n\
-";
-
 void Wren_Init() {
 	WrenConfiguration config;
 	wrenInitConfiguration(&config);
 	config.errorFn = wren_error;
-	config.bindForeignMethodFn = bindForeignMethodFn;
+	config.bindForeignMethodFn = wren_bindForeignMethodFn;
+	config.loadModuleFn = wren_loadModuleFn;
 
 	vm = wrenNewVM(&config);
-
-	// compile our internal api and bind all the native functions
-	if (wrenInterpret(vm, wren_api) != WREN_RESULT_SUCCESS) {
-		trap->Error(ERR_FATAL, "can't load tic api");
-	}
 
 	// load scripts/main.wren
 	char *mainStr;

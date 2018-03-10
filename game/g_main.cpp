@@ -28,8 +28,8 @@ void Cmd_Map_f(void) {
 		return;
 	}
 
-	auto newScene = new GameScene(filename);
-	trap->Scene_Replace(0, newScene);
+	//auto newScene = new GameScene(filename);
+	//trap->Scene_Replace(0, newScene);
 }
 
 static void Init(void *clientInfo, void *imGuiContext) {

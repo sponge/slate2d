@@ -19,10 +19,10 @@ class Game is Scene {
 
       Trap.assetLoadAll()
 
-	   Trap.sndPlay(_music, 1.0, 0.0, true)
-	   Trap.sndPlay(_speech, 1.0, 0.0, false)
+      Trap.sndPlay(_music, 1.0, 0.0, true)
+      Trap.sndPlay(_speech, 1.0, 0.0, false)
 
-	   _spr = Trap.createSprite(_sprites, 8, 8, 0, 0)
+      _spr = Trap.createSprite(_sprites, 8, 8, 0, 0)
    }
 
    update(dt) {

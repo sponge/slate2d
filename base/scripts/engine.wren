@@ -1,6 +1,6 @@
 class Trap {
-	foreign static print(text)
-	foreign static console(text)
+   foreign static print(text)
+   foreign static console(text)
 
    foreign static assetCreate(type, name, path)
    foreign static assetFind(name)
@@ -30,7 +30,7 @@ class Draw {
 }
 
 class Scene {
-	construct new() {}
-	update(dt) {}
-	draw() {}
+   construct new() {}
+   update(dt) {}
+   draw() {}
 } 

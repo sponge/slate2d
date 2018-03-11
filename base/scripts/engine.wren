@@ -1,14 +1,15 @@
 class Trap {
    foreign static print(text)
    foreign static console(text)
-
-   foreign static assetCreate(type, name, path)
-   foreign static assetFind(name)
-   foreign static assetLoadAll()
-   foreign static assetClearAll()
-   foreign static assetBmpfntSet(assetHandle, glyphs, charSpacing, spaceWidth, lineHeight)
-
    foreign static sndPlay(assetHandle, volume, pan, loop)
+}
+
+class Asset {
+   foreign static create(type, name, path)
+   foreign static find(name)
+   foreign static loadAll()
+   foreign static clearAll()
+   foreign static bmpfntSet(assetHandle, glyphs, charSpacing, spaceWidth, lineHeight)
    foreign static createSprite(assetHandle, w, h, marginX, marginY)
 }
 

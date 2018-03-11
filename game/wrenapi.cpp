@@ -208,13 +208,14 @@ typedef struct {
 static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "print(_)", trap_print },
 	{ "engine", "Trap", true, "console(_)", trap_console },
-	{ "engine", "Trap", true, "assetCreate(_,_,_)", trap_asset_create },
-	{ "engine", "Trap", true, "assetFind(_)", trap_asset_find },
-	{ "engine", "Trap", true, "assetLoadAll()", trap_asset_loadall },
-	{ "engine", "Trap", true, "assetClearAll()", trap_asset_clearall },
-	{ "engine", "Trap", true, "assetBmpfntSet(_,_,_,_,_)", trap_asset_bmpfnt_set },
 	{ "engine", "Trap", true, "sndPlay(_,_,_,_)", trap_snd_play },
-	{ "engine", "Trap", true, "createSprite(_,_,_,_,_)", trap_create_sprite },
+
+	{ "engine", "Asset", true, "create(_,_,_)", trap_asset_create },
+	{ "engine", "Asset", true, "find(_)", trap_asset_find },
+	{ "engine", "Asset", true, "loadAll()", trap_asset_loadall },
+	{ "engine", "Asset", true, "clearAll()", trap_asset_clearall },
+	{ "engine", "Asset", true, "bmpfntSet(_,_,_,_,_)", trap_asset_bmpfnt_set },
+	{ "engine", "Asset", true, "createSprite(_,_,_,_,_)", trap_create_sprite },
 
 	{ "engine", "Draw", true, "setColor(_,_,_,_,_)", wren_dc_setcolor },
 	{ "engine", "Draw", true, "setTransform(_,_,_,_,_,_,_)", wren_dc_settransform },

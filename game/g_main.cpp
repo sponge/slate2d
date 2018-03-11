@@ -8,6 +8,7 @@
 gameImportFuncs_t *trap;
 kbutton_t in_1_left, in_1_right, in_1_up, in_1_run, in_1_down, in_1_jump, in_1_attack, in_1_menu;
 ClientInfo *inf;
+WrenVM *vm;
 
 void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 
@@ -59,7 +60,7 @@ static void Init(void *clientInfo, void *imGuiContext) {
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
-	Wren_Init();
+	vm = Wren_Init();
 
 	trap->SendConsoleCommand("map dognew");
 }
@@ -71,7 +72,7 @@ static void Console(const char *line) {
 // technically the scene manager will handle every frame for gameplay scenes,
 // but anything that needs an event loop type pump can go here
 static void Frame(float dt) {
-	Wren_Frame(dt, inf->width, inf->height);
+	Wren_Frame(vm, dt, inf->width, inf->height);
 }
 
 static gameExportFuncs_t GAMEfuncs = {

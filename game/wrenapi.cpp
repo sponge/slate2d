@@ -5,9 +5,6 @@
 #include <cstring>
 #include "wren/wren.hpp"
 
-WrenVM *vm;
-WrenHandle *instanceHnd, *updateHnd, *drawHnd;
-
 #pragma region Native Functions
 
 // trap module
@@ -246,24 +243,26 @@ WrenForeignMethodFn wren_bindForeignMethodFn(WrenVM* lvm, const char* module, co
 	return nullptr;
 }
 
-void Wren_Init() {
+WrenVM *Wren_Init() {
 	WrenConfiguration config;
 	wrenInitConfiguration(&config);
 	config.errorFn = wren_error;
 	config.bindForeignMethodFn = wren_bindForeignMethodFn;
 	config.loadModuleFn = wren_loadModuleFn;
 
-	vm = wrenNewVM(&config);
+	WrenVM *vm = wrenNewVM(&config);
 
 	// load scripts/main.wren
 	char *mainStr;
 	int mainSz = trap->FS_ReadFile("scripts/main.wren", (void**)&mainStr);
 	if (mainSz <= 0) {
 		trap->Error(ERR_FATAL, "couldn't load scripts/main.wren");
+		return nullptr;
 	}
 
 	if (wrenInterpret(vm, mainStr) != WREN_RESULT_SUCCESS) {
 		trap->Error(ERR_FATAL, "can't compile scripts/main.wren");
+		return nullptr;
 	}
 	free(mainStr);
 
@@ -274,22 +273,24 @@ void Wren_Init() {
 
 	if (game_class == nullptr) {
 		trap->Error(ERR_FATAL, "couldn't find Game class");
-		return;
+		return nullptr;
 	}
+
+	wrenHandles_t *hnd = new wrenHandles_t();
 
 	// make a new instance of the Game class and grab handles to update/draw
 	WrenHandle *newHnd = wrenMakeCallHandle(vm, "new()");
-	updateHnd = wrenMakeCallHandle(vm, "update(_)");
-	drawHnd = wrenMakeCallHandle(vm, "draw(_,_)");
+	hnd->updateHnd = wrenMakeCallHandle(vm, "update(_)");
+	hnd->drawHnd = wrenMakeCallHandle(vm, "draw(_,_)");
 
-	if (updateHnd == nullptr) {
+	if (hnd->updateHnd == nullptr) {
 		trap->Error(ERR_FATAL, "couldn't find update(_) on Game class (did you subclass Scene?)");
-		return;
+		return nullptr;
 	}
 
-	if (drawHnd == nullptr) {
-		trap->Error(ERR_FATAL, "couldn't find draw() on Game class (did you subclass Scene?)");
-		return;
+	if (hnd->drawHnd == nullptr) {
+		trap->Error(ERR_FATAL, "couldn't find draw(_,_) on Game class (did you subclass Scene?)");
+		return nullptr;
 	}
 
 	// instantiate a new Game
@@ -299,21 +300,26 @@ void Wren_Init() {
 
 	if (wrenGetSlotCount(vm) == 0) {
 		trap->Error(ERR_FATAL, "couldn't instantiate new Game class");
-		return;
+		return nullptr;
 	}
 
-	instanceHnd = wrenGetSlotHandle(vm, 0);
+	hnd->instanceHnd = wrenGetSlotHandle(vm, 0);
+
+	wrenSetUserData(vm, hnd);
+
+	return vm;
 }
 
-void Wren_Frame(float dt, int w, int h) {
+void Wren_Frame(WrenVM *vm, float dt, int w, int h) {
+	wrenHandles_t* hnd = (wrenHandles_t*) wrenGetUserData(vm);
 	wrenEnsureSlots(vm, 2);
-	wrenSetSlotHandle(vm, 0, instanceHnd);
+	wrenSetSlotHandle(vm, 0, hnd->instanceHnd);
 	wrenSetSlotDouble(vm, 1, dt);
-	wrenCall(vm, updateHnd);
+	wrenCall(vm, hnd->updateHnd);
 
 	wrenEnsureSlots(vm, 3);
-	wrenSetSlotHandle(vm, 0, instanceHnd);
+	wrenSetSlotHandle(vm, 0, hnd->instanceHnd);
 	wrenSetSlotDouble(vm, 1, w);
 	wrenSetSlotDouble(vm, 2, h);
-	wrenCall(vm, drawHnd);
+	wrenCall(vm, hnd->drawHnd);
 }

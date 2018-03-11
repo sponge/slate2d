@@ -1,4 +1,8 @@
 #pragma once
 
-void Wren_Init();
-void Wren_Frame(float dt, int w, int h);
+struct WrenVM *Wren_Init();
+void Wren_Frame(struct WrenVM *vm, float dt, int w, int h);
+
+typedef struct {
+	struct WrenHandle *instanceHnd, *updateHnd, *drawHnd;
+} wrenHandles_t;

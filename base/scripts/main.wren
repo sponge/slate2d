@@ -1,18 +1,13 @@
-import "engine" for Trap, Draw, Scene
-
-var ASSET_IMAGE = 1
-var ASSET_SPEECH = 2
-var ASSET_SOUND = 3
-var ASSET_MOD = 4
-var ASSET_BITMAPFONT = 6
+import "engine" for Trap, Draw, Scene, AssetType
 
 class Game is Scene {
    construct new() {
-      _dog = Trap.assetCreate(ASSET_IMAGE, "dog", "gfx/dog.png")
-      _sprites = Trap.assetCreate(ASSET_IMAGE, "sprites", "gfx/sprites.gif")
-      _music = Trap.assetCreate(ASSET_MOD, "music", "music/frantic_-_dog_doesnt_care.it")
-      _speech = Trap.assetCreate(ASSET_SPEECH, "speech", "great job! you are a good dog!")
-      _font = Trap.assetCreate(ASSET_BITMAPFONT, "font", "gfx/good_neighbors.png")
+      Trap.print(AssetType.IMAGE.toString)
+      _dog = Trap.assetCreate(AssetType.IMAGE, "dog", "gfx/dog.png")
+      _sprites = Trap.assetCreate(AssetType.IMAGE, "sprites", "gfx/sprites.gif")
+      _music = Trap.assetCreate(AssetType.MOD, "music", "music/frantic_-_dog_doesnt_care.it")
+      _speech = Trap.assetCreate(AssetType.SPEECH, "speech", "great job! you are a good dog!")
+      _font = Trap.assetCreate(AssetType.BITMAPFONT, "font", "gfx/good_neighbors.png")
       Trap.assetBmpfntSet(_font, "!\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", -1, 7, 16)
 
       Trap.assetLoadAll()

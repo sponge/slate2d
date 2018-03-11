@@ -30,6 +30,17 @@ class Draw {
    foreign static clear()
 }
 
+class AssetType {
+   static ANY { 0 }
+   static IMAGE { 1 }
+   static SPEECH { 2 }
+   static SOUND { 3 }
+   static MOD { 4 }
+   static FONT { 5 }
+   static BITMAPFONT { 6 }
+   static MAX { 7 }
+}
+
 class Scene {
    construct new() {}
    update(dt) {}

@@ -7,6 +7,7 @@
 
 gameImportFuncs_t *trap;
 kbutton_t in_1_left, in_1_right, in_1_up, in_1_run, in_1_down, in_1_jump, in_1_attack, in_1_menu;
+ClientInfo *inf;
 
 void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 
@@ -33,7 +34,7 @@ void Cmd_Map_f(void) {
 }
 
 static void Init(void *clientInfo, void *imGuiContext) {
-	ClientInfo *inf = (ClientInfo*)clientInfo;
+	inf = (ClientInfo*)clientInfo;
 	inf->gameWidth = 320;
 	inf->gameHeight = 180;
 
@@ -70,7 +71,7 @@ static void Console(const char *line) {
 // technically the scene manager will handle every frame for gameplay scenes,
 // but anything that needs an event loop type pump can go here
 static void Frame(float dt) {
-	Wren_Frame(dt);
+	Wren_Frame(dt, inf->width, inf->height);
 }
 
 static gameExportFuncs_t GAMEfuncs = {

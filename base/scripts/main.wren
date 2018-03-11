@@ -8,8 +8,6 @@ var ASSET_BITMAPFONT = 6
 
 class Game is Scene {
    construct new() {
-      Trap.print("constructor!")
-
       _dog = Trap.assetCreate(ASSET_IMAGE, "dog", "gfx/dog.png")
       _sprites = Trap.assetCreate(ASSET_IMAGE, "sprites", "gfx/sprites.gif")
       _music = Trap.assetCreate(ASSET_MOD, "music", "music/frantic_-_dog_doesnt_care.it")
@@ -28,9 +26,11 @@ class Game is Scene {
    update(dt) {
    }
 
-   draw() {
+   draw(w, h) {
       Draw.clear()
+      Draw.setTransform(true, h / 180, 0, 0, h / 180, 0, 0)
       Draw.rect(0, 0, 180, 180, false)
+      Draw.sprite(_spr, 265, 200, 150, 1.0, 0, 3, 3)
       Draw.submit()
    }
 }

@@ -25,6 +25,7 @@ class Draw {
    foreign static circle(x, y, radius, outline)
    foreign static tri(x1, y1, x2, y2, x3, y3, outline)
    foreign static mapLayer(layer, x, y, cellX, cellY, cellW, cellH)
+   foreign static sprite(spr, id, x, y, alpha, flipBits, w, h)
    foreign static submit()
    foreign static clear()
 }
@@ -32,5 +33,5 @@ class Draw {
 class Scene {
    construct new() {}
    update(dt) {}
-   draw() {}
+   draw(w, h) {}
 } 

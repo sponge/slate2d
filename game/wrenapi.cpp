@@ -154,7 +154,8 @@ void wren_dc_drawmaplayer(WrenVM *lvm) {
 }
 
 void wren_dc_drawsprite(WrenVM *lvm) {
-	Sprite *sprite = (Sprite*)wrenGetSlotBytes(lvm, 1, nullptr);
+	int sz = 0;
+	Sprite *sprite = (Sprite*)wrenGetSlotBytes(lvm, 1, &sz);
 	int id = (int)wrenGetSlotDouble(lvm, 2);
 	float x = (float)wrenGetSlotDouble(lvm, 3);
 	float y = (float)wrenGetSlotDouble(lvm, 4);
@@ -278,7 +279,7 @@ void Wren_Init() {
 	// make a new instance of the Game class and grab handles to update/draw
 	WrenHandle *newHnd = wrenMakeCallHandle(vm, "new()");
 	updateHnd = wrenMakeCallHandle(vm, "update(_)");
-	drawHnd = wrenMakeCallHandle(vm, "draw()");
+	drawHnd = wrenMakeCallHandle(vm, "draw(_,_)");
 
 	if (updateHnd == nullptr) {
 		trap->Error(ERR_FATAL, "couldn't find update(_) on Game class (did you subclass Scene?)");
@@ -303,13 +304,15 @@ void Wren_Init() {
 	instanceHnd = wrenGetSlotHandle(vm, 0);
 }
 
-void Wren_Frame(float dt) {
+void Wren_Frame(float dt, int w, int h) {
 	wrenEnsureSlots(vm, 2);
 	wrenSetSlotHandle(vm, 0, instanceHnd);
 	wrenSetSlotDouble(vm, 1, dt);
 	wrenCall(vm, updateHnd);
 
-	wrenEnsureSlots(vm, 1);
+	wrenEnsureSlots(vm, 3);
 	wrenSetSlotHandle(vm, 0, instanceHnd);
+	wrenSetSlotDouble(vm, 1, w);
+	wrenSetSlotDouble(vm, 2, h);
 	wrenCall(vm, drawHnd);
 }

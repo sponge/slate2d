@@ -3,12 +3,11 @@
 #include "draw.h"
 #include <stdio.h>
 #include "scene_game.h"
-#include "wrenapi.h"
+#include "scene_wren.h"
 
 gameImportFuncs_t *trap;
 kbutton_t in_1_left, in_1_right, in_1_up, in_1_run, in_1_down, in_1_jump, in_1_attack, in_1_menu;
 ClientInfo *inf;
-WrenVM *vm;
 
 void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 
@@ -30,8 +29,8 @@ void Cmd_Map_f(void) {
 		return;
 	}
 
-	//auto newScene = new GameScene(filename);
-	//trap->Scene_Replace(0, newScene);
+	auto newScene = new WrenScene(filename);
+	trap->Scene_Replace(0, newScene);
 }
 
 static void Init(void *clientInfo, void *imGuiContext) {
@@ -60,8 +59,6 @@ static void Init(void *clientInfo, void *imGuiContext) {
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
-	vm = Wren_Init();
-
 	trap->SendConsoleCommand("map dognew");
 }
 
@@ -72,7 +69,7 @@ static void Console(const char *line) {
 // technically the scene manager will handle every frame for gameplay scenes,
 // but anything that needs an event loop type pump can go here
 static void Frame(float dt) {
-	Wren_Frame(vm, dt, inf->width, inf->height);
+
 }
 
 static gameExportFuncs_t GAMEfuncs = {

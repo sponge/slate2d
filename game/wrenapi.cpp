@@ -310,13 +310,16 @@ WrenVM *Wren_Init() {
 	return vm;
 }
 
-void Wren_Frame(WrenVM *vm, float dt, int w, int h) {
-	wrenHandles_t* hnd = (wrenHandles_t*) wrenGetUserData(vm);
+void Wren_Update(WrenVM *vm, float dt) {
+	wrenHandles_t* hnd = (wrenHandles_t*)wrenGetUserData(vm);
 	wrenEnsureSlots(vm, 2);
 	wrenSetSlotHandle(vm, 0, hnd->instanceHnd);
 	wrenSetSlotDouble(vm, 1, dt);
 	wrenCall(vm, hnd->updateHnd);
+}
 
+void Wren_Draw(WrenVM *vm, int w, int h) {
+	wrenHandles_t* hnd = (wrenHandles_t*)wrenGetUserData(vm);
 	wrenEnsureSlots(vm, 3);
 	wrenSetSlotHandle(vm, 0, hnd->instanceHnd);
 	wrenSetSlotDouble(vm, 1, w);

@@ -72,7 +72,6 @@ int FS_ReadFile(const char *path, void **buffer) {
 		return sz;
 	}
 	
-	// FIXME: should it be +1? i seem to get junk at the end of files if i don't do this.
 	*buffer = malloc(sz+1);
 	memset(*buffer, 0, sz + 1);
 

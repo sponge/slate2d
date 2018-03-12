@@ -17,5 +17,6 @@ void WrenScene::Render() {
 
 WrenScene::~WrenScene()
 {
-	// FIXME: lots of wren stuff
+	Wren_Scene_Shutdown(vm);
+	Wren_FreeVM(vm);
 }

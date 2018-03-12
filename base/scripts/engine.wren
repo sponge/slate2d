@@ -56,4 +56,5 @@ class Scene {
    construct new(args) {}
    update(dt) {}
    draw(w, h) {}
+   shutdown() {}
 } 

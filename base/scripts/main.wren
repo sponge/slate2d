@@ -63,4 +63,9 @@ class Game is Scene {
 
       Draw.submit()
    }
+
+   shutdown() {
+      Trap.mapFree()
+      Asset.clearAll()
+   }
 }

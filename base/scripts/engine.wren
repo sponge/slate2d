@@ -13,6 +13,15 @@ class Asset {
    foreign static clearAll()
    foreign static bmpfntSet(assetHandle, glyphs, charSpacing, spaceWidth, lineHeight)
    foreign static createSprite(assetHandle, w, h, marginX, marginY)
+
+   static Any { 0 }
+   static Image { 1 }
+   static Speech { 2 }
+   static Sound { 3 }
+   static Mod { 4 }
+   static Font { 5 }
+   static BitmapFont { 6 }
+   static Max { 7 }
 }
 
 class Draw {
@@ -33,15 +42,14 @@ class Draw {
    foreign static clear()
 }
 
-class AssetType {
-   static ANY { 0 }
-   static IMAGE { 1 }
-   static SPEECH { 2 }
-   static SOUND { 3 }
-   static MOD { 4 }
-   static FONT { 5 }
-   static BITMAPFONT { 6 }
-   static MAX { 7 }
+class Fill {
+   static Solid { false }
+   static Outline { true }
+}
+
+class Color {
+   static Fill { 0 }
+   static Stroke { 1 }
 }
 
 class Scene {

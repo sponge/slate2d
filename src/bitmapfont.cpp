@@ -88,6 +88,11 @@ void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int charSpacing, in
 		return;
 	}
 
+	if (asset->loaded == true) {
+		Com_Error(ERR_FATAL, "BMPFNT_Set: trying to set already loaded font");
+		return;
+	}
+
 	auto font = new BitmapFont();
 	memcpy_s(font->glyphs, sizeof(font->glyphs), glyphs, strlen(glyphs));
 	font->charSpacing = charSpacing;

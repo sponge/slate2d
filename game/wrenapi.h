@@ -1,6 +1,6 @@
 #pragma once
 
-struct WrenVM *Wren_Init();
+struct WrenVM *Wren_Init(const char *constructorStr);
 void Wren_Update(WrenVM *vm, float dt);
 void Wren_Draw(struct WrenVM *vm, int w, int h);
 

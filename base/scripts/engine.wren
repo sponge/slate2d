@@ -2,6 +2,8 @@ class Trap {
    foreign static print(text)
    foreign static console(text)
    foreign static sndPlay(assetHandle, volume, pan, loop)
+   foreign static mapLoad(name)
+   foreign static mapFree()
 }
 
 class Asset {
@@ -43,7 +45,7 @@ class AssetType {
 }
 
 class Scene {
-   construct new() {}
+   construct new(args) {}
    update(dt) {}
    draw(w, h) {}
 } 

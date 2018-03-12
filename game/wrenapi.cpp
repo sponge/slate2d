@@ -7,6 +7,8 @@
 
 #pragma region Native Functions
 
+static tmx_map *map; // FIXME: bad!
+
 // trap module
 
 void trap_print(WrenVM *lvm) {
@@ -23,6 +25,16 @@ void trap_error(WrenVM *lvm) {
 	int err = (int) wrenGetSlotDouble(lvm, 1);
 	const char *str = wrenGetSlotString(lvm, 2);
 	trap->Error(err, va("%s",str));
+}
+
+void trap_map_load(WrenVM *lvm) {
+	const char *str = wrenGetSlotString(lvm, 1);
+
+	map = trap->Map_Load(str);
+}
+
+void trap_map_free(WrenVM *lvm) {
+	trap->Map_Free(map);
 }
 
 void trap_asset_create(WrenVM *lvm) {
@@ -47,7 +59,7 @@ void trap_asset_clearall(WrenVM *lvm) {
 }
 
 void trap_asset_bmpfnt_set(WrenVM *lvm) {
-	AssetHandle assetHandle = (AssetHandle)(int)wrenGetSlotDouble(lvm, 1);
+	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(lvm, 1);
 	const char *glyphs = wrenGetSlotString(lvm, 2);
 	int charSpacing = (int)wrenGetSlotDouble(lvm, 3);
 	int intWidth = (int)wrenGetSlotDouble(lvm, 4);
@@ -57,7 +69,7 @@ void trap_asset_bmpfnt_set(WrenVM *lvm) {
 }
 
 void trap_snd_play(WrenVM *lvm) {
-	AssetHandle assetHandle = (AssetHandle)(int)wrenGetSlotDouble(lvm, 1);
+	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(lvm, 1);
 	float volume = (float) wrenGetSlotDouble(lvm, 2);
 	float pan = (float) wrenGetSlotDouble(lvm, 3);
 	bool loop = (float) wrenGetSlotBool(lvm, 4);
@@ -66,7 +78,7 @@ void trap_snd_play(WrenVM *lvm) {
 }
 
 void trap_create_sprite(WrenVM *lvm) {
-	AssetHandle assetHandle = (AssetHandle)(int)wrenGetSlotDouble(lvm, 1);
+	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(lvm, 1);
 	int width = (int)wrenGetSlotDouble(lvm, 2);
 	int height = (int)wrenGetSlotDouble(lvm, 3);
 	int marginX = (int)wrenGetSlotDouble(lvm, 4);
@@ -123,31 +135,79 @@ void wren_dc_drawrect(WrenVM *lvm) {
 }
 
 void wren_dc_drawtext(WrenVM *lvm) {
+	float x = (float)wrenGetSlotDouble(lvm, 1);
+	float y = (float)wrenGetSlotDouble(lvm, 2);
+	const char *text = wrenGetSlotString(lvm, 3);
+	int align = (int)wrenGetSlotDouble(lvm, 4);
 
+	DC_DrawText(x, y, text, align);
 }
 
 void wren_dc_drawbmptext(WrenVM *lvm) {
+	float x = (float)wrenGetSlotDouble(lvm, 1);
+	float y = (float)wrenGetSlotDouble(lvm, 2);
+	float scale = (float)wrenGetSlotDouble(lvm, 3);
+	const char *text = wrenGetSlotString(lvm, 4);
+	AssetHandle fntId = (AssetHandle)wrenGetSlotDouble(lvm, 5);
 
+	DC_DrawBmpText(x, y, scale, text, fntId);
 }
 
 void wren_dc_drawimage(WrenVM *lvm) {
+	float x = (float)wrenGetSlotDouble(lvm, 1);
+	float y = (float)wrenGetSlotDouble(lvm, 2);
+	float w = (float)wrenGetSlotDouble(lvm, 3);
+	float h = (float)wrenGetSlotDouble(lvm, 4);
+	float ox = (float)wrenGetSlotDouble(lvm, 5);
+	float oy = (float)wrenGetSlotDouble(lvm, 6);
+	float alpha = (float)wrenGetSlotDouble(lvm, 7);
+	byte flipBits = (byte)wrenGetSlotDouble(lvm, 8);
+	AssetHandle imgId = (AssetHandle)wrenGetSlotDouble(lvm, 9);
+	int shaderId = (int)wrenGetSlotDouble(lvm, 10);
 
+	DC_DrawImage(x, y, w, h, ox, oy, alpha, flipBits, imgId, shaderId);
 }
 
 void wren_dc_drawline(WrenVM *lvm) {
+	float x1 = (float)wrenGetSlotDouble(lvm, 1);
+	float y1 = (float)wrenGetSlotDouble(lvm, 2);
+	float x2 = (float)wrenGetSlotDouble(lvm, 3);
+	float y2 = (float)wrenGetSlotDouble(lvm, 4);
 
+	DC_DrawLine(x1, y1, x2, y2);
 }
 
 void wren_dc_drawcircle(WrenVM *lvm) {
+	float x = (float)wrenGetSlotDouble(lvm, 1);
+	float y = (float)wrenGetSlotDouble(lvm, 2);
+	float radius = (float)wrenGetSlotDouble(lvm, 3);
+	bool outline = wrenGetSlotBool(lvm, 4);
 
+	DC_DrawCircle(x, y, radius, outline);
 }
 
 void wren_dc_drawtri(WrenVM *lvm) {
+	float x1 = (float)wrenGetSlotDouble(lvm, 1);
+	float y1 = (float)wrenGetSlotDouble(lvm, 2);
+	float x2 = (float)wrenGetSlotDouble(lvm, 3);
+	float y2 = (float)wrenGetSlotDouble(lvm, 4);
+	float x3 = (float)wrenGetSlotDouble(lvm, 5);
+	float y3 = (float)wrenGetSlotDouble(lvm, 6);
+	bool outline = wrenGetSlotBool(lvm, 7);
 
+	DC_DrawTri(x1, y1, x2, y2, x3, y3, outline);
 }
 
 void wren_dc_drawmaplayer(WrenVM *lvm) {
+	int layer = (int)wrenGetSlotDouble(lvm, 1);
+	float x = (float)wrenGetSlotDouble(lvm, 2);
+	float y = (float)wrenGetSlotDouble(lvm, 3);
+	unsigned int cellX = (unsigned int)wrenGetSlotDouble(lvm, 4);
+	unsigned int cellY = (unsigned int)wrenGetSlotDouble(lvm, 5);
+	unsigned int cellW = (unsigned int)wrenGetSlotDouble(lvm, 6);
+	unsigned int cellH = (unsigned int)wrenGetSlotDouble(lvm, 7);
 
+	DC_DrawMapLayer(layer, x, y, cellX, cellY, cellW, cellH);
 }
 
 void wren_dc_drawsprite(WrenVM *lvm) {
@@ -157,9 +217,9 @@ void wren_dc_drawsprite(WrenVM *lvm) {
 	float x = (float)wrenGetSlotDouble(lvm, 3);
 	float y = (float)wrenGetSlotDouble(lvm, 4);
 	float alpha = (float)wrenGetSlotDouble(lvm, 5);
-	float flipBits = (float)wrenGetSlotDouble(lvm, 6);
-	float w = (float)wrenGetSlotDouble(lvm, 7);
-	float h = (float)wrenGetSlotDouble(lvm, 8);
+	byte flipBits = (byte)wrenGetSlotDouble(lvm, 6);
+	int w = (int)wrenGetSlotDouble(lvm, 7);
+	int h = (int)wrenGetSlotDouble(lvm, 8);
 
 	DC_DrawSprite(*sprite, id, x, y, alpha, flipBits, w, h);
 }
@@ -181,7 +241,7 @@ static void wren_error(WrenVM* lvm, WrenErrorType type,	const char* module, int 
 char* wren_loadModuleFn(WrenVM* lvm, const char* name) {
 	static char *script;
 	if (script != nullptr) {
-		free(script);
+		//free(script);
 	}
 
 	const char *path = va("scripts/%s.wren", name);
@@ -206,6 +266,9 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "print(_)", trap_print },
 	{ "engine", "Trap", true, "console(_)", trap_console },
 	{ "engine", "Trap", true, "sndPlay(_,_,_,_)", trap_snd_play },
+	{ "engine", "Trap", true, "mapLoad(_)", trap_map_load },
+	{ "engine", "Trap", true, "mapFree()", trap_map_free },
+
 
 	{ "engine", "Asset", true, "create(_,_,_)", trap_asset_create },
 	{ "engine", "Asset", true, "find(_)", trap_asset_find },
@@ -243,7 +306,7 @@ WrenForeignMethodFn wren_bindForeignMethodFn(WrenVM* lvm, const char* module, co
 	return nullptr;
 }
 
-WrenVM *Wren_Init() {
+WrenVM *Wren_Init(const char *constructorStr) {
 	WrenConfiguration config;
 	wrenInitConfiguration(&config);
 	config.errorFn = wren_error;
@@ -279,7 +342,7 @@ WrenVM *Wren_Init() {
 	wrenHandles_t *hnd = new wrenHandles_t();
 
 	// make a new instance of the Game class and grab handles to update/draw
-	WrenHandle *newHnd = wrenMakeCallHandle(vm, "new()");
+	WrenHandle *newHnd = wrenMakeCallHandle(vm, "new(_)");
 	hnd->updateHnd = wrenMakeCallHandle(vm, "update(_)");
 	hnd->drawHnd = wrenMakeCallHandle(vm, "draw(_,_)");
 
@@ -294,7 +357,9 @@ WrenVM *Wren_Init() {
 	}
 
 	// instantiate a new Game
+	wrenEnsureSlots(vm, 2);
 	wrenSetSlotHandle(vm, 0, game_class);
+	wrenSetSlotString(vm, 1, constructorStr);
 	wrenCall(vm, newHnd);
 	wrenReleaseHandle(vm, newHnd);
 

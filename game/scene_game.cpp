@@ -32,18 +32,18 @@ void GameScene::Update(float dt) {
 
 void GameScene::Render() {
 	DC_Clear();
-	DC_SetTransform(true, inf->width / inf->gameWidth, 0, 0, inf->width / inf->gameWidth, 0, 0);
+	DC_SetTransform(inf->width / inf->gameWidth, 0, 0, inf->width / inf->gameWidth, 0, 0, true);
 
 	DC_DrawMapLayer(0, 0.0f, 0.0f - map->height * map->tile_height + inf->gameHeight);
 
 	DC_SetColor(COLOR_FILL, 255, 0, 0, 255);
 	DC_DrawRect(5, 3, 16, 16);
 
-	DC_DrawImage(120, 120, 154, 16, 0, 0, 1.0, 0, dog, 0);
-	DC_DrawBmpText(32, 50, 1.0f, "Good Dog!", font);
+	DC_DrawImage(dog, 120, 120, 154, 16);
+	DC_DrawBmpText(font, 32, 50, "Good Dog!");
 
-	DC_DrawSprite(spr, 265, 300, 150, 1.0f, 0, 3, 3);
-	DC_DrawSprite(spr, 265, 280, 150, 0.25f, 0, 3, 3); // FIXME: alpha is broke
+	DC_DrawSprite(spr, 265, 300, 150, 1.0f, 1.0f, 0, 3, 3);
+	DC_DrawSprite(spr, 265, 280, 150, 0.25f, 1.0f, 0, 3, 3);
 
 	DC_SetColor(COLOR_FILL, 60, 0, 90, 255);
 	DC_SetScissor(0, 0, 280, 110);

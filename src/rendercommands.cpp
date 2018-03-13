@@ -80,7 +80,7 @@ const void *RB_DrawBmpText(const void *data) {
 	return (const void *)(cmd + 1);
 }
 
-void DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, byte flipBits, Image *img, unsigned int shaderId) {
+void DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, float scale, byte flipBits, Image *img, unsigned int shaderId) {
 	float flipX = flipBits & FLIP_H ? -1.0f : 1.0f;
 	float flipY = flipBits & FLIP_V ? -1.0f : 1.0f;
 	bool flipDiag = flipBits & FLIP_DIAG;
@@ -88,6 +88,7 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float alp
 	nvgSave(inf.nvg);
 
 	nvgTranslate(inf.nvg, x, y);
+	nvgScale(inf.nvg, scale, scale);
 
 	if (flipDiag) {
 		nvgTransform(inf.nvg, 0, 1, 1, 0, 0, 0);
@@ -116,7 +117,9 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float alp
 const void *RB_DrawImage(const void *data) {
 	auto cmd = (const drawImageCommand_t *)data;
 	Image *image = Get_Img(cmd->imgId);
-	DrawImage(cmd->x, cmd->y, cmd->w, cmd->h, cmd->ox, cmd->oy, cmd->alpha, cmd->flipBits, image, cmd->shaderId);
+	float w = cmd->w == 0 ? image->w : cmd->w;
+	float h = cmd->h == 0 ? image->h : cmd->h;
+	DrawImage(cmd->x, cmd->y, w, h, cmd->ox, cmd->oy, cmd->alpha, cmd->scale, cmd->flipBits, image, cmd->shaderId);
 	return (const void *)(cmd + 1);
 }
 
@@ -197,7 +200,7 @@ const void *RB_DrawMapLayer(const void *data) {
 				cmd->x + x*ts->tile_width + (ts->tile_width / 2), cmd->y + y*ts->tile_height + (ts->tile_height / 2),
 				ts->tile_width, ts->tile_height,
 				tile->ul_x, tile->ul_y,
-				1.0, flipBits, (Image*) asset->resource, 0
+				1.0f, 1.0f, flipBits, (Image*) asset->resource, 0
 			);
 		}
 	}

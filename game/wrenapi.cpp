@@ -11,33 +11,33 @@ static tmx_map *map; // FIXME: bad!
 
 // trap module
 
-void trap_print(WrenVM *vm) {
+void wren_trap_print(WrenVM *vm) {
 	const char *str = wrenGetSlotString(vm, 1);
 	trap->Print("%s", str);
 }
 
-void trap_console(WrenVM *vm) {
+void wren_trap_console(WrenVM *vm) {
 	const char *str = wrenGetSlotString(vm, 1);
 	trap->SendConsoleCommand(str);
 }
 
-void trap_error(WrenVM *vm) {
+void wren_trap_error(WrenVM *vm) {
 	int err = (int) wrenGetSlotDouble(vm, 1);
 	const char *str = wrenGetSlotString(vm, 2);
 	trap->Error(err, va("%s",str));
 }
 
-void trap_map_load(WrenVM *vm) {
+void wren_trap_map_load(WrenVM *vm) {
 	const char *str = wrenGetSlotString(vm, 1);
 
 	map = trap->Map_Load(str);
 }
 
-void trap_map_free(WrenVM *vm) {
+void wren_trap_map_free(WrenVM *vm) {
 	trap->Map_Free(map);
 }
 
-void trap_asset_create(WrenVM *vm) {
+void wren_trap_asset_create(WrenVM *vm) {
 	AssetType_t assetType = (AssetType_t)(int)wrenGetSlotDouble(vm, 1);
 	const char *name = wrenGetSlotString(vm, 2);
 	const char *path = wrenGetSlotString(vm, 3);
@@ -45,20 +45,20 @@ void trap_asset_create(WrenVM *vm) {
 	wrenSetSlotDouble(vm, 0, trap->Asset_Create(assetType, name, path));
 }
 
-void trap_asset_find(WrenVM *vm) {
+void wren_trap_asset_find(WrenVM *vm) {
 	const char *name = wrenGetSlotString(vm, 1);
 	wrenSetSlotDouble(vm, 0, trap->Asset_Find(name));
 }
 
-void trap_asset_loadall(WrenVM *vm) {
+void wren_trap_asset_loadall(WrenVM *vm) {
 	trap->Asset_LoadAll();
 }
 
-void trap_asset_clearall(WrenVM *vm) {
+void wren_trap_asset_clearall(WrenVM *vm) {
 	trap->Asset_ClearAll();
 }
 
-void trap_asset_bmpfnt_set(WrenVM *vm) {
+void wren_trap_asset_bmpfnt_set(WrenVM *vm) {
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	const char *glyphs = wrenGetSlotString(vm, 2);
 	int charSpacing = (int)wrenGetSlotDouble(vm, 3);
@@ -68,7 +68,7 @@ void trap_asset_bmpfnt_set(WrenVM *vm) {
 	trap->Asset_BMPFNT_Set(assetHandle, glyphs, charSpacing, intWidth, lineHeight);
 }
 
-void trap_snd_play(WrenVM *vm) {
+void wren_trap_snd_play(WrenVM *vm) {
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	float volume = (float) wrenGetSlotDouble(vm, 2);
 	float pan = (float) wrenGetSlotDouble(vm, 3);
@@ -77,7 +77,7 @@ void trap_snd_play(WrenVM *vm) {
 	trap->Snd_Play(assetHandle, volume, pan, loop);
 }
 
-void trap_create_sprite(WrenVM *vm) {
+void wren_trap_create_sprite(WrenVM *vm) {
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	int width = (int)wrenGetSlotDouble(vm, 2);
 	int height = (int)wrenGetSlotDouble(vm, 3);
@@ -100,15 +100,15 @@ void wren_dc_setcolor(WrenVM *vm) {
 }
 
 void wren_dc_settransform(WrenVM *vm) {
-	bool absolute = wrenGetSlotBool(vm, 1);
-	byte a = (byte) wrenGetSlotDouble(vm, 2);
-	byte b = (byte) wrenGetSlotDouble(vm, 3);
-	byte c = (byte) wrenGetSlotDouble(vm, 4);
-	byte d = (byte) wrenGetSlotDouble(vm, 5);
-	byte e = (byte) wrenGetSlotDouble(vm, 6);
-	byte f = (byte) wrenGetSlotDouble(vm, 7);
+	byte a = (byte) wrenGetSlotDouble(vm, 1);
+	byte b = (byte) wrenGetSlotDouble(vm, 2);
+	byte c = (byte) wrenGetSlotDouble(vm, 3);
+	byte d = (byte) wrenGetSlotDouble(vm, 4);
+	byte e = (byte) wrenGetSlotDouble(vm, 5);
+	byte f = (byte) wrenGetSlotDouble(vm, 6);
+	bool absolute = wrenGetSlotBool(vm, 7);
 
-	DC_SetTransform(absolute, a, b, c, d, e, f);
+	DC_SetTransform(a, b, c, d, e, f, absolute);
 }
 
 void wren_dc_setscissor(WrenVM *vm) {
@@ -144,28 +144,29 @@ void wren_dc_drawtext(WrenVM *vm) {
 }
 
 void wren_dc_drawbmptext(WrenVM *vm) {
-	float x = (float)wrenGetSlotDouble(vm, 1);
-	float y = (float)wrenGetSlotDouble(vm, 2);
-	float scale = (float)wrenGetSlotDouble(vm, 3);
+	AssetHandle fntId = (AssetHandle)wrenGetSlotDouble(vm, 1);
+	float x = (float)wrenGetSlotDouble(vm, 2);
+	float y = (float)wrenGetSlotDouble(vm, 3);
 	const char *text = wrenGetSlotString(vm, 4);
-	AssetHandle fntId = (AssetHandle)wrenGetSlotDouble(vm, 5);
+	float scale = (float)wrenGetSlotDouble(vm, 5);
 
-	DC_DrawBmpText(x, y, scale, text, fntId);
+	DC_DrawBmpText(fntId, x, y, text, scale);
 }
 
 void wren_dc_drawimage(WrenVM *vm) {
-	float x = (float)wrenGetSlotDouble(vm, 1);
-	float y = (float)wrenGetSlotDouble(vm, 2);
-	float w = (float)wrenGetSlotDouble(vm, 3);
-	float h = (float)wrenGetSlotDouble(vm, 4);
-	float ox = (float)wrenGetSlotDouble(vm, 5);
-	float oy = (float)wrenGetSlotDouble(vm, 6);
-	float alpha = (float)wrenGetSlotDouble(vm, 7);
+	AssetHandle imgId = (AssetHandle)wrenGetSlotDouble(vm, 1);
+	float x = (float)wrenGetSlotDouble(vm, 2);
+	float y = (float)wrenGetSlotDouble(vm, 3);
+	float w = (float)wrenGetSlotDouble(vm, 4);
+	float h = (float)wrenGetSlotDouble(vm, 5);
+	float alpha = (float)wrenGetSlotDouble(vm, 6);
+	float scale = (float)wrenGetSlotDouble(vm, 7);
 	byte flipBits = (byte)wrenGetSlotDouble(vm, 8);
-	AssetHandle imgId = (AssetHandle)wrenGetSlotDouble(vm, 9);
-	int shaderId = (int)wrenGetSlotDouble(vm, 10);
+	float ox = (float)wrenGetSlotDouble(vm, 9);
+	float oy = (float)wrenGetSlotDouble(vm, 10);
+	int shaderId = (int)wrenGetSlotDouble(vm, 11);
 
-	DC_DrawImage(x, y, w, h, ox, oy, alpha, flipBits, imgId, shaderId);
+	DC_DrawImage(imgId, x, y, w, h, alpha, scale, flipBits, ox, oy, shaderId);
 }
 
 void wren_dc_drawline(WrenVM *vm) {
@@ -217,11 +218,12 @@ void wren_dc_drawsprite(WrenVM *vm) {
 	float x = (float)wrenGetSlotDouble(vm, 3);
 	float y = (float)wrenGetSlotDouble(vm, 4);
 	float alpha = (float)wrenGetSlotDouble(vm, 5);
-	byte flipBits = (byte)wrenGetSlotDouble(vm, 6);
-	int w = (int)wrenGetSlotDouble(vm, 7);
-	int h = (int)wrenGetSlotDouble(vm, 8);
+	float scale = (float)wrenGetSlotDouble(vm, 6);
+	byte flipBits = (byte)wrenGetSlotDouble(vm, 7);
+	int w = (int)wrenGetSlotDouble(vm, 8);
+	int h = (int)wrenGetSlotDouble(vm, 9);
 
-	DC_DrawSprite(*sprite, id, x, y, alpha, flipBits, w, h);
+	DC_DrawSprite(*sprite, id, x, y, alpha, scale, flipBits, w, h);
 }
 
 void wren_dc_submit(WrenVM *vm) {
@@ -263,19 +265,19 @@ typedef struct {
 } wrenMethodDef;
 
 static const wrenMethodDef methods[] = {
-	{ "engine", "Trap", true, "print(_)", trap_print },
-	{ "engine", "Trap", true, "console(_)", trap_console },
-	{ "engine", "Trap", true, "sndPlay(_,_,_,_)", trap_snd_play },
-	{ "engine", "Trap", true, "mapLoad(_)", trap_map_load },
-	{ "engine", "Trap", true, "mapFree()", trap_map_free },
+	{ "engine", "Trap", true, "print(_)", wren_trap_print },
+	{ "engine", "Trap", true, "console(_)", wren_trap_console },
+	{ "engine", "Trap", true, "sndPlay(_,_,_,_)", wren_trap_snd_play },
+	{ "engine", "Trap", true, "mapLoad(_)", wren_trap_map_load },
+	{ "engine", "Trap", true, "mapFree()", wren_trap_map_free },
 
 
-	{ "engine", "Asset", true, "create(_,_,_)", trap_asset_create },
-	{ "engine", "Asset", true, "find(_)", trap_asset_find },
-	{ "engine", "Asset", true, "loadAll()", trap_asset_loadall },
-	{ "engine", "Asset", true, "clearAll()", trap_asset_clearall },
-	{ "engine", "Asset", true, "bmpfntSet(_,_,_,_,_)", trap_asset_bmpfnt_set },
-	{ "engine", "Asset", true, "createSprite(_,_,_,_,_)", trap_create_sprite },
+	{ "engine", "Asset", true, "create(_,_,_)", wren_trap_asset_create },
+	{ "engine", "Asset", true, "find(_)", wren_trap_asset_find },
+	{ "engine", "Asset", true, "loadAll()", wren_trap_asset_loadall },
+	{ "engine", "Asset", true, "clearAll()", wren_trap_asset_clearall },
+	{ "engine", "Asset", true, "bmpfntSet(_,_,_,_,_)", wren_trap_asset_bmpfnt_set },
+	{ "engine", "Asset", true, "createSprite(_,_,_,_,_)", wren_trap_create_sprite },
 
 	{ "engine", "Draw", true, "setColor(_,_,_,_,_)", wren_dc_setcolor },
 	{ "engine", "Draw", true, "setTransform(_,_,_,_,_,_,_)", wren_dc_settransform },
@@ -284,12 +286,12 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Draw", true, "rect(_,_,_,_,_)", wren_dc_drawrect },
 	{ "engine", "Draw", true, "text(_,_,_,_)", wren_dc_drawtext },
 	{ "engine", "Draw", true, "bmpText(_,_,_,_,_)", wren_dc_drawbmptext },
-	{ "engine", "Draw", true, "image(_,_,_,_,_,_,_,_,_,_)", wren_dc_drawimage },
+	{ "engine", "Draw", true, "image(_,_,_,_,_,_,_,_,_,_,_)", wren_dc_drawimage },
 	{ "engine", "Draw", true, "line(_,_,_,_)", wren_dc_drawline },
 	{ "engine", "Draw", true, "circle(_,_,_,_)", wren_dc_drawcircle },
 	{ "engine", "Draw", true, "tri(_,_,_,_,_,_,_)", wren_dc_drawtri },
 	{ "engine", "Draw", true, "mapLayer(_,_,_,_,_,_,_)", wren_dc_drawmaplayer },
-	{ "engine", "Draw", true, "sprite(_,_,_,_,_,_,_,_)", wren_dc_drawsprite },
+	{ "engine", "Draw", true, "sprite(_,_,_,_,_,_,_,_,_)", wren_dc_drawsprite },
 	{ "engine", "Draw", true, "submit()", wren_dc_submit },
 	{ "engine", "Draw", true, "clear()", wren_dc_clear },
 };

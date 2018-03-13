@@ -14,8 +14,8 @@ class Game is Scene {
 
       Asset.loadAll()
 
-      Trap.sndPlay(_music, 1.0, 0.0, true)
-      Trap.sndPlay(_speech, 1.0, 0.0, false)
+      //Trap.sndPlay(_music, 1.0, 0.0, true)
+      //Trap.sndPlay(_speech, 1.0, 0.0, false)
 
       _spr = Asset.createSprite(_sprites, 8, 8, 0, 0)
    }
@@ -25,7 +25,7 @@ class Game is Scene {
 
    draw(w, h) {
       Draw.clear()
-      Draw.setTransform(true, h / 180, 0, 0, h / 180, 0, 0)
+      Draw.setTransform(h / 180, 0, 0, h / 180, 0, 0, true)
 
       Draw.mapLayer(0, 0, 0, 0, 0, 0, 0)
 
@@ -55,11 +55,13 @@ class Game is Scene {
       Draw.setColor(Color.Stroke, 0, 255, 255, 255)
       Draw.tri(150, 180, 170, 170, 180, 180, Fill.Solid)
 
-      Draw.image(120, 120, 154, 16, 0, 0, 1.0, 0, _dog, 0)
-      Draw.bmpText(32, 50, 1.0, "Good Dog!", _font)
+      Draw.image(_dog, 120, 120)
+      Draw.bmpText(_font, 32, 50, "Good Dog!", 1.0)
 
-      Draw.sprite(_spr, 265, 300, 150, 1.0, 0, 3, 3)
-      Draw.sprite(_spr, 265, 280, 150, 0.25, 0, 3, 3) // FIXME: alpha is broke
+      Draw.sprite(_spr, 265, 300, 150, 1.0, 1.0, 0, 3, 3)
+      Draw.sprite(_spr, 265, 280, 150, 0.5, 1.0, 0, 3, 3)
+
+      Draw.sprite(_spr, 1, 300, 32, 1.0, 2.0, 0, 1, 1)
 
       Draw.submit()
    }

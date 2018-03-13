@@ -151,7 +151,7 @@ typedef struct {
 
 typedef struct {
 	byte commandId;
-	float x, y, w, h, ox, oy, angle, alpha;
+	float x, y, w, h, ox, oy, angle, alpha, scale;
 	byte flipBits;
 	unsigned int imgId;
 	unsigned int shaderId;

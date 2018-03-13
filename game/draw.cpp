@@ -45,7 +45,7 @@ void DC_SetColor(byte which, byte color[4]) {
 	DC_SetColor(which, color[0], color[1], color[2], color[3]);
 }
 
-void DC_SetTransform(bool absolute, float a, float b, float c, float d, float e, float f) {
+void DC_SetTransform(float a, float b, float c, float d, float e, float f, bool absolute) {
 	GET_COMMAND(setTransformCommand_t, RC_SET_TRANSFORM)
 	cmd->absolute = absolute;
 	cmd->transform[0] = a;
@@ -85,7 +85,7 @@ void DC_DrawText(float x, float y, const char *text, int align) {
 	cmd->y = y;
 }
 
-void DC_DrawBmpText(float x, float y, float scale, const char *text, unsigned int fntId) {
+void DC_DrawBmpText(unsigned int fntId, float x, float y, const char *text, float scale) {
 	GET_COMMAND(drawBmpTextCommand_t, RC_DRAW_BMPTEXT)
 	cmd->fntId = fntId;
 	strncpy(&cmd->text[0], text, sizeof(cmd->text));
@@ -94,7 +94,7 @@ void DC_DrawBmpText(float x, float y, float scale, const char *text, unsigned in
 	cmd->scale = scale;
 }
 
-void DC_DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, byte flipBits, unsigned int imgId, unsigned int shaderId) {
+void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h, float alpha, float scale, byte flipBits, float ox, float oy, unsigned int shaderId) {
 	GET_COMMAND(drawImageCommand_t, RC_DRAW_IMAGE)
 	cmd->x = x;
 	cmd->y = y;
@@ -103,6 +103,7 @@ void DC_DrawImage(float x, float y, float w, float h, float ox, float oy, float 
 	cmd->ox = ox;
 	cmd->oy = oy;
 	cmd->alpha = alpha;
+	cmd->scale = scale;
 	cmd->flipBits = flipBits;
 	cmd->imgId = imgId;
 	cmd->shaderId = shaderId;
@@ -163,7 +164,7 @@ const Sprite DC_CreateSprite(unsigned int asset, int width, int height, int marg
 	};
 }
 
-void DC_DrawSprite(const Sprite spr, int id, float x, float y, float alpha, byte flipBits, int w, int h) {
+void DC_DrawSprite(const Sprite spr, int id, float x, float y, float alpha, float scale, byte flipBits, int w, int h) {
 	if (id > spr.maxId) {
 		return;
 	}
@@ -172,12 +173,18 @@ void DC_DrawSprite(const Sprite spr, int id, float x, float y, float alpha, byte
 		for (int tx = 0; tx < w; tx++) {
 			int currentId = id + (ty * spr.cols) + tx;
 			DC_DrawImage(
+				spr.asset,
 				x + (tx*spr.spriteWidth),
 				y + (ty*spr.spriteHeight),
 				spr.spriteWidth,
 				spr.spriteHeight,
+				alpha,
+				scale,
+				0,
 				(currentId % spr.cols) * spr.spriteWidth,
-				(currentId / spr.cols) * spr.spriteHeight, 1.0f, flipBits, spr.asset, 0);
+				(currentId / spr.cols) * spr.spriteHeight,
+				0
+			);
 		}
 	}
 }

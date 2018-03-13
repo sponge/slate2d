@@ -26,18 +26,26 @@ class Asset {
 
 class Draw {
    foreign static setColor(which, r, g, b, a)
-   foreign static setTransform(absolute, a, b, c, d, e, f)
+   foreign static setTransform(a, b, c, d, e, f, absolute)
    foreign static setScissor(x, y, w, h)
    foreign static resetScissor()
    foreign static rect(x, y, w, h, outline)
    foreign static text(x, y, text, align)
-   foreign static bmpText(x, y, scale, text, fntId)
-   foreign static image(x, y, w, h, ox, oy, alpha, flipBits, imgId, shaderId)
+   foreign static bmpText(fntId, x, y, text, scale)
+   foreign static image(imgId, x, y, w, h, alpha, scale, flipBits, ox, oy, shaderId)
+   static image(imgId, x, y, w, h, alpha, scale, flipBits, ox, oy) { Draw.image(imgId, x, y, w, h, alpha, scale, flipBits, ox, oy, 0) }
+   static image(imgId, x, y, w, h, alpha, scale, flipBits) { Draw.image(imgId, x, y, w, h, alpha, scale, flipBits, 0, 0, 0) }
+   static image(imgId, x, y, w, h, alpha, scale) { Draw.image(imgId, x, y, w, h, alpha, scale, 0, 0, 0, 0) }
+   static image(imgId, x, y, w, h, alpha) { Draw.image(imgId, x, y, w, h, alpha, 1.0, 0, 0, 0) }
+   static image(imgId, x, y, w, h) { Draw.image(imgId, x, y, w, h, 1.0, 1.0, 0, 0, 0) }
+   static image(imgId, x, y) { Draw.image(imgId, x, y, 0.0, 0.0, 1.0, 1.0, 0, 0, 0) }
    foreign static line(x1, y1, x2, y2)
    foreign static circle(x, y, radius, outline)
    foreign static tri(x1, y1, x2, y2, x3, y3, outline)
    foreign static mapLayer(layer, x, y, cellX, cellY, cellW, cellH)
-   foreign static sprite(spr, id, x, y, alpha, flipBits, w, h)
+   static mapLayer(layer, x, y, cellX, cellY) { Trap.mapLayer(layer, x, y, cellX, cellY, 0, 0) }
+   static mapLayer(layer, x, y) { Trap.mapLayer(layer, x, y, 0, 0, 0, 0) }
+   foreign static sprite(spr, id, x, y, alpha, scale, flipBits, w, h)
    foreign static submit()
    foreign static clear()
 }

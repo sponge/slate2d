@@ -59,7 +59,7 @@ class Game is Scene {
       Draw.bmpText(_font, 32, 50, "Good Dog!", 1.0)
 
       Draw.sprite(_spr, 265, 300, 150, 1.0, 1.0, 0, 3, 3)
-      Draw.sprite(_spr, 265, 280, 150, 0.5, 1.0, 0, 3, 3)
+      Draw.sprite(_spr, 265, 295, 150, 0.5, 1.0, 0, 3, 3)
 
       Draw.sprite(_spr, 1, 300, 32, 1.0, 2.0, 0, 1, 1)
 

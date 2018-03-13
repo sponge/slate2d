@@ -56,12 +56,14 @@ class Game is Scene {
       Draw.tri(150, 180, 170, 170, 180, 180, Fill.Solid)
 
       Draw.image(_dog, 120, 120)
-      Draw.bmpText(_font, 32, 50, "Good Dog!", 1.0)
+      Draw.bmpText(_font, 32, 50, "Good Dog!")
 
       Draw.sprite(_spr, 265, 300, 150, 1.0, 1.0, 0, 3, 3)
       Draw.sprite(_spr, 265, 295, 150, 0.5, 1.0, 0, 3, 3)
 
       Draw.sprite(_spr, 1, 300, 32, 1.0, 2.0, 0, 1, 1)
+      Draw.sprite(_spr, 1, 275, 32)
+
 
       Draw.submit()
    }

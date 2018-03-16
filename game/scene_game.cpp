@@ -3,10 +3,6 @@
 #include "draw.h"
 #include "public.h"
 
-AssetHandle dog, sprites, music, speech, font;
-Sprite spr;
-tmx_map *map;
-
 void GameScene::Startup(ClientInfo* info) {
 	inf = info;
 	dog = trap->Asset_Create(ASSET_IMAGE, "dog", "gfx/dog.png");

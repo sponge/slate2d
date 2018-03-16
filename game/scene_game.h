@@ -1,5 +1,6 @@
 #pragma once
 #include "shared.h"
+#include "draw.h"
 
 class GameScene : public Scene {
 public:
@@ -12,4 +13,7 @@ public:
 private:
 	ClientInfo* inf;
 	const char *mapFileName;
+	AssetHandle dog, sprites, music, speech, font;
+	Sprite spr;
+	struct _tmx_map *map;
 };

@@ -2,6 +2,7 @@
 #include <tmx.h>
 #include "draw.h"
 #include "public.h"
+#include "map.h"
 
 void GameScene::Startup(ClientInfo* info) {
 	inf = info;
@@ -16,10 +17,18 @@ void GameScene::Startup(ClientInfo* info) {
 
 	trap->Asset_LoadAll();
 
-	trap->Snd_Play(music, 1.0f, 0.0f, true);
-	trap->Snd_Play(speech, 1.0f, 0.0f, false);
+	//trap->Snd_Play(music, 1.0f, 0.0f, true);
+	//trap->Snd_Play(speech, 1.0f, 0.0f, false);
 
 	spr = DC_CreateSprite(sprites, 8, 8, 0, 0);
+
+	int objLayer = Map_GetLayerByName(map, "objects");
+	if (objLayer != -1) {
+		tmx_object *obj = Map_SpawnLayer(map, objLayer, nullptr);
+		while (obj != nullptr) {
+			obj = Map_SpawnLayer(map, objLayer, obj);
+		}
+	}
 }
 
 void GameScene::Update(float dt) {

@@ -1,5 +1,6 @@
 class Trap {
    foreign static print(text)
+   static printLn(text) { print(text.toString + "\n")}
    foreign static console(text)
    foreign static sndPlay(assetHandle, volume, pan, loop)
    foreign static mapLoad(name)
@@ -46,6 +47,7 @@ class Draw {
    foreign static mapLayer(layer, x, y, cellX, cellY, cellW, cellH)
    static mapLayer(layer, x, y, cellX, cellY) { mapLayer(layer, x, y, cellX, cellY, 0, 0) }
    static mapLayer(layer, x, y) { mapLayer(layer, x, y, 0, 0, 0, 0) }
+   static mapLayer(layer) { mapLayer(layer, 0, 0, 0, 0, 0, 0) }
    foreign static sprite(spr, id, x, y, alpha, scale, flipBits, w, h)
    static sprite(spr, id, x, y, alpha, scale, flipBits) { sprite(spr, id, x, y, alpha, scale, flipBits, 1, 1) }
    static sprite(spr, id, x, y, alpha, scale) { sprite(spr, id, x, y, alpha, scale, 0, 1, 1) }
@@ -71,4 +73,9 @@ class Scene {
    update(dt) {}
    draw(w, h) {}
    shutdown() {}
-} 
+}
+
+class TileMap {
+   foreign static layerByName(name)
+   foreign static objectsInLayer(id)
+}

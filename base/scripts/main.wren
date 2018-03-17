@@ -1,4 +1,4 @@
-import "engine" for Trap, Draw, Scene, Asset, Fill, Color
+import "engine" for Trap, Draw, Scene, Asset, Fill, Color, TileMap
 
 class Game is Scene {
    construct new(mapName) {
@@ -18,6 +18,12 @@ class Game is Scene {
       //Trap.sndPlay(_speech, 1.0, 0.0, false)
 
       _spr = Asset.createSprite(_sprites, 8, 8, 0, 0)
+
+      _worldLayer = TileMap.layerByName("fg")
+
+      var objectLayer = TileMap.layerByName("objects")
+      var objs = TileMap.objectsInLayer(objectLayer)
+      Trap.printLn(objs)
    }
 
    update(dt) {
@@ -27,7 +33,7 @@ class Game is Scene {
       Draw.clear()
       Draw.setTransform(h / 180, 0, 0, h / 180, 0, 0, true)
 
-      Draw.mapLayer(0, 0, 0, 0, 0, 0, 0)
+      Draw.mapLayer(_worldLayer)
 
       Draw.setColor(Color.Fill, 255, 0, 0, 255)
       Draw.rect(5, 3, 16, 16, Fill.Outline)

@@ -4,13 +4,11 @@
 #include "draw.h"
 #include <cstring>
 #include "wren/wren.hpp"
-
-#pragma region Native Functions
+#include "map.h"
 
 static tmx_map *map; // FIXME: bad!
 
-// trap module
-
+#pragma region Trap Module
 void wren_trap_print(WrenVM *vm) {
 	const char *str = wrenGetSlotString(vm, 1);
 	trap->Print("%s", str);
@@ -37,7 +35,18 @@ void wren_trap_map_free(WrenVM *vm) {
 	trap->Map_Free(map);
 }
 
-void wren_trap_asset_create(WrenVM *vm) {
+void wren_trap_snd_play(WrenVM *vm) {
+	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
+	float volume = (float)wrenGetSlotDouble(vm, 2);
+	float pan = (float)wrenGetSlotDouble(vm, 3);
+	bool loop = (float)wrenGetSlotBool(vm, 4);
+
+	trap->Snd_Play(assetHandle, volume, pan, loop);
+}
+#pragma endregion
+
+#pragma region Asset Module
+void wren_asset_create(WrenVM *vm) {
 	AssetType_t assetType = (AssetType_t)(int)wrenGetSlotDouble(vm, 1);
 	const char *name = wrenGetSlotString(vm, 2);
 	const char *path = wrenGetSlotString(vm, 3);
@@ -45,20 +54,20 @@ void wren_trap_asset_create(WrenVM *vm) {
 	wrenSetSlotDouble(vm, 0, trap->Asset_Create(assetType, name, path));
 }
 
-void wren_trap_asset_find(WrenVM *vm) {
+void wren_asset_find(WrenVM *vm) {
 	const char *name = wrenGetSlotString(vm, 1);
 	wrenSetSlotDouble(vm, 0, trap->Asset_Find(name));
 }
 
-void wren_trap_asset_loadall(WrenVM *vm) {
+void wren_asset_loadall(WrenVM *vm) {
 	trap->Asset_LoadAll();
 }
 
-void wren_trap_asset_clearall(WrenVM *vm) {
+void wren_asset_clearall(WrenVM *vm) {
 	trap->Asset_ClearAll();
 }
 
-void wren_trap_asset_bmpfnt_set(WrenVM *vm) {
+void wren_asset_bmpfnt_set(WrenVM *vm) {
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	const char *glyphs = wrenGetSlotString(vm, 2);
 	int charSpacing = (int)wrenGetSlotDouble(vm, 3);
@@ -68,16 +77,7 @@ void wren_trap_asset_bmpfnt_set(WrenVM *vm) {
 	trap->Asset_BMPFNT_Set(assetHandle, glyphs, charSpacing, intWidth, lineHeight);
 }
 
-void wren_trap_snd_play(WrenVM *vm) {
-	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
-	float volume = (float) wrenGetSlotDouble(vm, 2);
-	float pan = (float) wrenGetSlotDouble(vm, 3);
-	bool loop = (float) wrenGetSlotBool(vm, 4);
-
-	trap->Snd_Play(assetHandle, volume, pan, loop);
-}
-
-void wren_trap_create_sprite(WrenVM *vm) {
+void wren_create_sprite(WrenVM *vm) {
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	int width = (int)wrenGetSlotDouble(vm, 2);
 	int height = (int)wrenGetSlotDouble(vm, 3);
@@ -87,9 +87,9 @@ void wren_trap_create_sprite(WrenVM *vm) {
 	Sprite spr = DC_CreateSprite(assetHandle, width, height, marginX, marginY);
 	wrenSetSlotBytes(vm, 0, (const char*)&spr, sizeof(spr));
 }
+#pragma endregion
 
-// draw module
-
+#pragma region Draw Module
 void wren_dc_setcolor(WrenVM *vm) {
 	double which = wrenGetSlotDouble(vm, 1);
 	byte r = (byte) wrenGetSlotDouble(vm, 2);
@@ -226,6 +226,17 @@ void wren_dc_drawsprite(WrenVM *vm) {
 	DC_DrawSprite(*sprite, id, x, y, alpha, scale, flipBits, w, h);
 }
 
+void wren_asset_create_sprite(WrenVM *vm) {
+	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
+	int width = (int)wrenGetSlotDouble(vm, 2);
+	int height = (int)wrenGetSlotDouble(vm, 3);
+	int marginX = (int)wrenGetSlotDouble(vm, 4);
+	int marginY = (int)wrenGetSlotDouble(vm, 5);
+
+	Sprite spr = DC_CreateSprite(assetHandle, width, height, marginX, marginY);
+	wrenSetSlotBytes(vm, 0, (const char*)&spr, sizeof(spr));
+}
+
 void wren_dc_submit(WrenVM *vm) {
 	DC_Submit();
 }
@@ -233,10 +244,65 @@ void wren_dc_submit(WrenVM *vm) {
 void wren_dc_clear(WrenVM *vm) {
 	DC_Clear();
 }
-
 #pragma endregion
 
-static void wren_error(WrenVM* vm, WrenErrorType type,	const char* module, int line, const char* message) {
+#pragma region Map Module
+void wren_map_getlayerbyname(WrenVM *vm) {
+	const char *name = wrenGetSlotString(vm, 1);
+
+	int id = Map_GetLayerByName(map, name);
+
+	wrenSetSlotDouble(vm, 0, id);
+}
+
+void wren_map_getobjectsinlayer(WrenVM *vm) {
+	// FIXME: clobbering something here such that (null):-1 - Null does not implement 'draw(_,_)'.
+	int id = (int) wrenGetSlotDouble(vm, 1);
+	int totalSlots = 1;
+	int s = 1;
+
+	static const char *keys[] = { "name", "type", "x", "y", "visible", "rotation" };
+	static const int keySz = sizeof(keys) / sizeof(*keys);
+
+	totalSlots += keySz + 1;
+	wrenEnsureSlots(vm, totalSlots);
+
+	wrenSetSlotNewList(vm, 0);
+
+	for (int i = 0; i < keySz; i++) {
+		wrenSetSlotString(vm, s, keys[i]);
+		s++;
+	}
+
+	tmx_object *obj = Map_SpawnLayer(map, id, nullptr);
+	while (obj != nullptr) {
+		totalSlots += keySz + 1;
+		wrenEnsureSlots(vm, totalSlots);
+
+		int mapSlot = s;
+		wrenSetSlotNewMap(vm, mapSlot);
+		wrenInsertInList(vm, 0, -1, mapSlot);
+		s++;
+
+		wrenSetSlotString(vm, s++, obj->name == nullptr ? "" : obj->name);
+		wrenSetSlotString(vm, s++, obj->type == nullptr ? "" : obj->type);
+		wrenSetSlotDouble(vm, s++, obj->x);
+		wrenSetSlotDouble(vm, s++, obj->y);
+		wrenSetSlotBool(vm, s++, obj->visible);
+		wrenSetSlotDouble(vm, s++, obj->rotation);
+
+		for (int i = 0; i < keySz; i++) {
+			wrenInsertInMap(vm, mapSlot, i + 1, mapSlot + 1 + i);
+		}
+
+		obj = Map_SpawnLayer(map, id, obj);
+	}
+
+
+}
+#pragma endregion
+
+static void wren_error(WrenVM* vm, WrenErrorType type, const char* module, int line, const char* message) {
 	trap->Print("%s:%i - %s\n", module, line, message);
 }
 
@@ -271,13 +337,12 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "mapLoad(_)", wren_trap_map_load },
 	{ "engine", "Trap", true, "mapFree()", wren_trap_map_free },
 
-
-	{ "engine", "Asset", true, "create(_,_,_)", wren_trap_asset_create },
-	{ "engine", "Asset", true, "find(_)", wren_trap_asset_find },
-	{ "engine", "Asset", true, "loadAll()", wren_trap_asset_loadall },
-	{ "engine", "Asset", true, "clearAll()", wren_trap_asset_clearall },
-	{ "engine", "Asset", true, "bmpfntSet(_,_,_,_,_)", wren_trap_asset_bmpfnt_set },
-	{ "engine", "Asset", true, "createSprite(_,_,_,_,_)", wren_trap_create_sprite },
+	{ "engine", "Asset", true, "create(_,_,_)", wren_asset_create },
+	{ "engine", "Asset", true, "find(_)", wren_asset_find },
+	{ "engine", "Asset", true, "loadAll()", wren_asset_loadall },
+	{ "engine", "Asset", true, "clearAll()", wren_asset_clearall },
+	{ "engine", "Asset", true, "bmpfntSet(_,_,_,_,_)", wren_asset_bmpfnt_set },
+	{ "engine", "Asset", true, "createSprite(_,_,_,_,_)", wren_asset_create_sprite },
 
 	{ "engine", "Draw", true, "setColor(_,_,_,_,_)", wren_dc_setcolor },
 	{ "engine", "Draw", true, "setTransform(_,_,_,_,_,_,_)", wren_dc_settransform },
@@ -294,6 +359,9 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Draw", true, "sprite(_,_,_,_,_,_,_,_,_)", wren_dc_drawsprite },
 	{ "engine", "Draw", true, "submit()", wren_dc_submit },
 	{ "engine", "Draw", true, "clear()", wren_dc_clear },
+
+	{ "engine", "TileMap", true, "layerByName(_)", wren_map_getlayerbyname },
+	{ "engine", "TileMap", true, "objectsInLayer(_)", wren_map_getobjectsinlayer },
 };
 static const int methodsCount = sizeof(methods) / sizeof(wrenMethodDef);
 

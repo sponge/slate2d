@@ -59,7 +59,7 @@ static void Init(void *clientInfo, void *imGuiContext) {
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
-	trap->SendConsoleCommand("map dognew");
+	trap->SendConsoleCommand("map 8x8");
 }
 
 static void Console(const char *line) {

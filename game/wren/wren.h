@@ -232,6 +232,7 @@ typedef enum
   WREN_TYPE_LIST,
   WREN_TYPE_NULL,
   WREN_TYPE_STRING,
+  WREN_TYPE_MAP,
 
   // The object is of a type that isn't accessible by the C API.
   WREN_TYPE_UNKNOWN
@@ -405,6 +406,9 @@ void* wrenSetSlotNewForeign(WrenVM* vm, int slot, int classSlot, size_t size);
 // Stores a new empty list in [slot].
 void wrenSetSlotNewList(WrenVM* vm, int slot);
 
+// Stores a new empty list in [slot]
+void wrenSetSlotNewMap(WrenVM* vm, int slot);
+
 // Stores null in [slot].
 void wrenSetSlotNull(WrenVM* vm, int slot);
 
@@ -434,6 +438,32 @@ void wrenGetListElement(WrenVM* vm, int listSlot, int index, int elementSlot);
 // As in Wren, negative indexes can be used to insert from the end. To append
 // an element, use `-1` for the index.
 void wrenInsertInList(WrenVM* vm, int listSlot, int index, int elementSlot);
+
+// Takes the value stored at [valueSlot] and inserts it into the map stored
+// at [mapSlot] associated with the key at [keySlot].
+void wrenInsertInMap(WrenVM* vm, int mapSlot, int keySlot, int valueSlot);
+
+// Deletes the value associated with key at [keySlot] from map stored at
+// [mapSlot]
+void wrenRemoveFromMap(WrenVM* vm, int mapSlot, int keySlot);
+
+// Return true if the map at [mapSlot] has a key equal to the one stored
+// at [keyStore]
+bool wrenExistsInMap(WrenVM* vm, int mapSlot, int keySlot);
+
+// Read element associated with key stored at [keySlot] from map stored at
+// [mapSlot] and place it in slot [elementSlot]
+void wrenGetInMap(WrenVM* vm, int mapSlot, int keySlot, int elementSlot);
+
+// Count the number of elements in the map stored at [slot]
+int wrenGetMapCount(WrenVM* vm, int slot);
+
+// Build a list of keys that exist in the map stored at [mapSlot],
+// and store this list in [listSlot]
+void wrenGetMapKeys(WrenVM* vm, int mapSlot, int listSlot);
+
+// Swap the value/object stored at [slotX] with value/object stored at [slotY]
+void wrenSwapSlot(WrenVM* vm, int slotX, int slotY);
 
 // Looks up the top level variable with [name] in [module] and stores it in
 // [slot].

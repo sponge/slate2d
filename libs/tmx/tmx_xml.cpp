@@ -544,34 +544,38 @@ static int parse_tile(XMLElement *ele, tmx_tileset *tileset, const char *filenam
 	const char *value;
 
 	value = ele->Attribute("id");
-	if (value) {
-		int to_move;
-		unsigned int id = atoi(value);
-		/* Insertion sort */
-		auto len = tileset->user_data.integer;
-		for (to_move = 0; (len - 1) - to_move >= 0; to_move++) {
-			if (tileset->tiles[(len - 1) - to_move].id < id) {
-				break;
-			}
-		}
-		if (to_move > 0) {
-			memmove((tileset->tiles) + (len - to_move + 1), (tileset->tiles) + (len - to_move), to_move * sizeof(tmx_tile));
-		}
-		res = &(tileset->tiles[len - to_move]);
-
-		if ((unsigned int)(tileset->user_data.integer) == tileset->tilecount) {
-			tileset->user_data.integer = 0;
-		}
-		else {
-			tileset->user_data.integer += 1;
-		}
-		/* --- */
-		res->id = id;
-		res->tileset = tileset;
-	}
-	else {
+	if (!value) {
 		tmx_err(E_MISSEL, "xml parser: missing 'id' attribute in the 'tile' element");
 		assert(false); return 0;
+	}
+
+	int to_move;
+	unsigned int id = atoi(value);
+	/* Insertion sort */
+	auto len = tileset->user_data.integer;
+	for (to_move = 0; (len - 1) - to_move >= 0; to_move++) {
+		if (tileset->tiles[(len - 1) - to_move].id < id) {
+			break;
+		}
+	}
+	if (to_move > 0) {
+		memmove((tileset->tiles) + (len - to_move + 1), (tileset->tiles) + (len - to_move), to_move * sizeof(tmx_tile));
+	}
+	res = &(tileset->tiles[len - to_move]);
+
+	if ((unsigned int)(tileset->user_data.integer) == tileset->tilecount) {
+		tileset->user_data.integer = 0;
+	}
+	else {
+		tileset->user_data.integer += 1;
+	}
+	/* --- */
+	res->id = id;
+	res->tileset = tileset;
+
+	value = ele->Attribute("type");
+	if (value) {
+		res->type = tmx_copyString(value);
 	}
 
 	auto subEle = ele->FirstChildElement();

@@ -264,7 +264,7 @@ void wren_map_getobjectsinlayer(WrenVM *vm) {
 	static const char *keys[] = { "name", "type", "x", "y", "visible", "rotation" };
 	static const int keySz = sizeof(keys) / sizeof(*keys);
 
-	totalSlots += keySz + 1;
+	totalSlots += keySz;
 	wrenEnsureSlots(vm, totalSlots);
 
 	wrenSetSlotNewList(vm, 0);
@@ -297,8 +297,6 @@ void wren_map_getobjectsinlayer(WrenVM *vm) {
 
 		obj = Map_SpawnLayer(map, id, obj);
 	}
-
-
 }
 #pragma endregion
 
@@ -402,9 +400,9 @@ WrenVM *Wren_Init(const char *constructorStr) {
 	// make sure we can find a new Game class
 	wrenEnsureSlots(vm, 1);
 	wrenGetVariable(vm, "main", "Game", 0);
-	WrenHandle *game_class = wrenGetSlotHandle(vm, 0);
+	WrenHandle *gameClass = wrenGetSlotHandle(vm, 0);
 
-	if (game_class == nullptr) {
+	if (gameClass == nullptr) {
 		trap->Error(ERR_FATAL, "couldn't find Game class");
 		return nullptr;
 	}
@@ -428,12 +426,12 @@ WrenVM *Wren_Init(const char *constructorStr) {
 	}
 
 	// instantiate a new Game
-	wrenEnsureSlots(vm, 2);
-	wrenSetSlotHandle(vm, 0, game_class);
+	wrenEnsureSlots(vm, 8192); // FIXME: crash when expanding stack from inside constructor
+	wrenSetSlotHandle(vm, 0, gameClass);
 	wrenSetSlotString(vm, 1, constructorStr);
 	wrenCall(vm, newHnd);
 	wrenReleaseHandle(vm, newHnd);
-	wrenReleaseHandle(vm, game_class);
+	wrenReleaseHandle(vm, gameClass);
 
 	if (wrenGetSlotCount(vm) == 0) {
 		trap->Error(ERR_FATAL, "couldn't instantiate new Game class");

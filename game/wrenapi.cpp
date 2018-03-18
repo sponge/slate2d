@@ -438,6 +438,7 @@ WrenForeignMethodFn wren_bindForeignMethodFn(WrenVM* vm, const char* module, con
 }
 #pragma endregion
 
+#pragma region Public functions
 WrenVM *Wren_Init(const char *constructorStr) {
 	WrenConfiguration config;
 	wrenInitConfiguration(&config);
@@ -544,3 +545,4 @@ void Wren_FreeVM(WrenVM *vm) {
 
 	wrenFreeVM(vm);
 }
+#pragma endregion

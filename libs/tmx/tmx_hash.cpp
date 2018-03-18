@@ -16,7 +16,7 @@ void* mk_hashtable(unsigned int initial_size) {
 
 void hashtable_set(void *hashtable, const char *key, void *val, hashtable_entry_deallocator deallocator) {
 	assert(deallocator == NULL);
-	tmx_hash map = *((tmx_hash*)hashtable);
+	tmx_hash &map = *((tmx_hash*)hashtable);
 	map[key] = val;
 }
 
@@ -36,7 +36,15 @@ void free_hashtable(void *hashtable, hashtable_entry_deallocator deallocator) {
 }
 
 void hashtable_foreach(void *hashtable, hashtable_foreach_functor functor, void *userdata) {
-	assert(false);
+	if (hashtable == nullptr) {
+		return;
+	}
+
+	tmx_hash* map = (tmx_hash*)hashtable;
+
+	for (auto item = map->begin(); item != map->end(); ++item) {
+		functor(item->second, userdata, item->first.c_str());
+	}
 }
 
 void property_deallocator(void *val, const char *key UNUSED) {

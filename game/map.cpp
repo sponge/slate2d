@@ -15,7 +15,7 @@ int Map_GetLayerByName(tmx_map *map, const char *name) {
 	return -1;
 }
 
-tmx_object *Map_SpawnLayer(tmx_map *map, int id, tmx_object *current) {
+tmx_object *Map_LayerObjects(tmx_map *map, int id, tmx_object *current) {
 	if (current == nullptr) {
 		int i = 0;
 		tmx_layer *layer = map->ly_head;

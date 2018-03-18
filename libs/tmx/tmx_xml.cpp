@@ -278,7 +278,7 @@ static int parse_object(XMLElement *ele, tmx_object *obj) {
 	}
 
 	auto subEle = ele->FirstChildElement();
-	while (subEle) {
+	while (subEle && subEle->ClosingType() != XMLElement::ElementClosingType::CLOSED) {
 		auto name = subEle->Value();
 		if (!strcmp(name, "properties")) {
 			if (!parse_properties(subEle, &(obj->properties))) {

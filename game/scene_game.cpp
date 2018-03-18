@@ -24,9 +24,9 @@ void GameScene::Startup(ClientInfo* info) {
 
 	int objLayer = Map_GetLayerByName(map, "objects");
 	if (objLayer != -1) {
-		tmx_object *obj = Map_SpawnLayer(map, objLayer, nullptr);
+		tmx_object *obj = Map_LayerObjects(map, objLayer, nullptr);
 		while (obj != nullptr) {
-			obj = Map_SpawnLayer(map, objLayer, obj);
+			obj = Map_LayerObjects(map, objLayer, obj);
 		}
 	}
 }

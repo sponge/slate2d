@@ -5,6 +5,8 @@
 #include <cstring>
 #include "wren/wren.hpp"
 #include "map.h"
+#include <string>
+#include <map>
 
 static tmx_map *map; // FIXME: bad!
 
@@ -256,46 +258,90 @@ void wren_map_getlayerbyname(WrenVM *vm) {
 }
 
 void wren_map_getobjectsinlayer(WrenVM *vm) {
-	// FIXME: clobbering something here such that (null):-1 - Null does not implement 'draw(_,_)'.
 	int id = (int) wrenGetSlotDouble(vm, 1);
-	int totalSlots = 1;
-	int s = 1;
+	int totalSlots = 1; // total num of slots for wrenEnsureSlots
+	int s = 1; // current slot we're on
 
-	static const char *keys[] = { "name", "type", "x", "y", "visible", "rotation" };
+	static const char *keys[] = { "name", "type", "x", "y", "visible", "rotation", "properties" };
 	static const int keySz = sizeof(keys) / sizeof(*keys);
 
+	// reserve keys
 	totalSlots += keySz;
 	wrenEnsureSlots(vm, totalSlots);
 
+	// return value is a list of map objects
 	wrenSetSlotNewList(vm, 0);
 
+	// store the keys starting from slot 1 since they can be reused
 	for (int i = 0; i < keySz; i++) {
-		wrenSetSlotString(vm, s, keys[i]);
-		s++;
+		wrenSetSlotString(vm, s++, keys[i]);
 	}
 
-	tmx_object *obj = Map_SpawnLayer(map, id, nullptr);
+	tmx_object *obj = Map_LayerObjects(map, id, nullptr);
 	while (obj != nullptr) {
+		// ensure enough slots for map object + map values
 		totalSlots += keySz + 1;
 		wrenEnsureSlots(vm, totalSlots);
 
-		int mapSlot = s;
+		// make a new map, push it to the end of the return value list
+		int mapSlot = s++;
 		wrenSetSlotNewMap(vm, mapSlot);
 		wrenInsertInList(vm, 0, -1, mapSlot);
-		s++;
 
+		// slots for property values, same order as keys[]
 		wrenSetSlotString(vm, s++, obj->name == nullptr ? "" : obj->name);
-		wrenSetSlotString(vm, s++, obj->type == nullptr ? "" : obj->type);
+		const char *defaultedType = Map_GetObjectType(map, obj);
+		wrenSetSlotString(vm, s++, defaultedType == nullptr ? "" : defaultedType);
 		wrenSetSlotDouble(vm, s++, obj->x);
 		wrenSetSlotDouble(vm, s++, obj->y);
 		wrenSetSlotBool(vm, s++, obj->visible);
 		wrenSetSlotDouble(vm, s++, obj->rotation);
 
+		// properties is a nested map, we'll populate it after we deal with the object
+		int propSlot = s++;
+		wrenSetSlotNewMap(vm, propSlot);
+
 		for (int i = 0; i < keySz; i++) {
+			// i + 1 because 0 is return value. keys are at the top, values are placed after the map
 			wrenInsertInMap(vm, mapSlot, i + 1, mapSlot + 1 + i);
 		}
 
-		obj = Map_SpawnLayer(map, id, obj);
+		// loop through properties
+		if (obj->properties != nullptr) {
+			auto &props = *(std::map<std::string, void *>*) obj->properties;
+
+			for (auto item : props) {
+				// add 2 slots for key, value
+				totalSlots += 2;
+				wrenEnsureSlots(vm, totalSlots);
+
+				auto prop = (tmx_property*)item.second;
+				wrenSetSlotString(vm, s++, prop->name);
+				switch (prop->type) {
+					case PT_INT:
+						wrenSetSlotDouble(vm, s++, prop->value.integer);
+						break;
+					case PT_FLOAT:
+						wrenSetSlotDouble(vm, s++, prop->value.decimal);
+						break;
+					case PT_BOOL:
+						wrenSetSlotBool(vm, s++, prop->value.boolean);
+						break;
+					case PT_COLOR:
+						wrenSetSlotDouble(vm, s++, prop->value.color);
+						break;
+					case PT_NONE:
+					case PT_STRING:
+					case PT_FILE:
+					default:
+						wrenSetSlotString(vm, s++, prop->value.string);
+						break;
+				}
+				wrenInsertInMap(vm, propSlot, s - 2, s - 1);
+			}
+		}
+
+		obj = Map_LayerObjects(map, id, obj);
 	}
 }
 #pragma endregion
@@ -407,10 +453,10 @@ WrenVM *Wren_Init(const char *constructorStr) {
 		return nullptr;
 	}
 
-	wrenHandles_t *hnd = new wrenHandles_t();
-
 	// make a new instance of the Game class and grab handles to update/draw
 	WrenHandle *newHnd = wrenMakeCallHandle(vm, "new(_)");
+
+	wrenHandles_t *hnd = new wrenHandles_t();
 	hnd->updateHnd = wrenMakeCallHandle(vm, "update(_)");
 	hnd->drawHnd = wrenMakeCallHandle(vm, "draw(_,_)");
 	hnd->shutdownHnd = wrenMakeCallHandle(vm, "shutdown()");
@@ -476,7 +522,7 @@ void Wren_FreeVM(WrenVM *vm) {
 	wrenReleaseHandle(vm, hnd->updateHnd);
 	wrenReleaseHandle(vm, hnd->shutdownHnd);
 	wrenReleaseHandle(vm, hnd->instanceHnd);
-	free(hnd);
+	delete hnd;
 
 	wrenFreeVM(vm);
 }

@@ -39,7 +39,11 @@
  </layer>
  <objectgroup name="objects">
   <object id="9" name="instance name" gid="2" x="48.8721" y="148.691" width="8" height="8"/>
-  <object id="10" x="37.859" y="98.1288" width="26.1097" height="13.9252"/>
+  <object id="10" x="37.859" y="98.1288" width="26.1097" height="13.9252">
+   <properties>
+    <property name="inlineprop" value="hello"/>
+   </properties>
+  </object>
   <object id="11" gid="4" x="12.3185" y="114.748" width="8" height="8"/>
  </objectgroup>
 </map>

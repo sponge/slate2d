@@ -24,6 +24,9 @@ class Game is Scene {
       var objectLayer = TileMap.layerByName("objects")
       var objs = TileMap.objectsInLayer(objectLayer)
       Trap.printLn(objs)
+
+      var tiles = TileMap.getTileProperties()
+      Trap.printLn(tiles)
    }
 
    update(dt) {

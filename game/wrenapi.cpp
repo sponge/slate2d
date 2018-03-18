@@ -360,6 +360,36 @@ void wren_map_getobjectsinlayer(WrenVM *vm) {
 		obj = Map_LayerObjects(map, id, obj);
 	}
 }
+
+void wren_map_gettileproperties(WrenVM *vm) {
+	int totalSlots = 2; // total num of slots for wrenEnsureSlots
+	int s = 1; // current slot we're on
+
+	// return value is a list of map objects
+	wrenSetSlotNewList(vm, 0);
+
+	wrenEnsureSlots(vm, totalSlots);
+	wrenSetSlotString(vm, s++, "type");
+
+	for (int gid = 0; gid < map->tilecount; gid++) {
+		tmx_tile *tile = Map_GetTile(map, gid);
+		if (tile == nullptr) {
+			continue;
+		}
+
+		totalSlots += 3;
+		wrenEnsureSlots(vm, totalSlots);
+
+		int propSlot = s++;
+		wrenSetSlotNewMap(vm, propSlot);
+		wrenInsertInList(vm, 0, -1, propSlot);
+
+		wrenSetSlotString(vm, s++, tile->type == nullptr ? "" : tile->type);
+		wrenInsertInMap(vm, propSlot, 1, s - 1);
+
+		parseProperties(vm, propSlot, &totalSlots, &s, tile->properties);
+	}
+}
 #pragma endregion
 
 #pragma region Wren config callbacks
@@ -423,6 +453,7 @@ static const wrenMethodDef methods[] = {
 
 	{ "engine", "TileMap", true, "layerByName(_)", wren_map_getlayerbyname },
 	{ "engine", "TileMap", true, "objectsInLayer(_)", wren_map_getobjectsinlayer },
+	{ "engine", "TileMap", true, "getTileProperties()", wren_map_gettileproperties },
 };
 static const int methodsCount = sizeof(methods) / sizeof(wrenMethodDef);
 

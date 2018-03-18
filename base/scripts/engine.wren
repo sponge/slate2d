@@ -78,4 +78,5 @@ class Scene {
 class TileMap {
    foreign static layerByName(name)
    foreign static objectsInLayer(id)
+   foreign static getTileProperties()
 }

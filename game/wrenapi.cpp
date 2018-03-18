@@ -249,6 +249,47 @@ void wren_dc_clear(WrenVM *vm) {
 #pragma endregion
 
 #pragma region Map Module
+
+void parseProperties(WrenVM *vm, int propSlot, int *totalSlotsIn, int *sIn, void *properties) {
+	int &s = *sIn;
+	int &totalSlots = *totalSlotsIn;
+
+	// loop through properties
+	if (properties != nullptr) {
+		auto &props = *(std::map<std::string, void *>*) properties;
+
+		for (auto item : props) {
+			// add 2 slots for key, value
+			totalSlots += 2;
+			wrenEnsureSlots(vm, totalSlots);
+
+			auto prop = (tmx_property*)item.second;
+			wrenSetSlotString(vm, s++, prop->name);
+			switch (prop->type) {
+			case PT_INT:
+				wrenSetSlotDouble(vm, s++, prop->value.integer);
+				break;
+			case PT_FLOAT:
+				wrenSetSlotDouble(vm, s++, prop->value.decimal);
+				break;
+			case PT_BOOL:
+				wrenSetSlotBool(vm, s++, prop->value.boolean);
+				break;
+			case PT_COLOR:
+				wrenSetSlotDouble(vm, s++, prop->value.color);
+				break;
+			case PT_NONE:
+			case PT_STRING:
+			case PT_FILE:
+			default:
+				wrenSetSlotString(vm, s++, prop->value.string);
+				break;
+			}
+			wrenInsertInMap(vm, propSlot, s - 2, s - 1);
+		}
+	}
+}
+
 void wren_map_getlayerbyname(WrenVM *vm) {
 	const char *name = wrenGetSlotString(vm, 1);
 
@@ -301,44 +342,19 @@ void wren_map_getobjectsinlayer(WrenVM *vm) {
 		int propSlot = s++;
 		wrenSetSlotNewMap(vm, propSlot);
 
+		// apply the default properties first if it is a tile
+		if (obj->obj_type == OT_TILE) {
+			tmx_tile *baseTile = Map_GetTile(map, obj->content.gid);
+			if (baseTile != nullptr) {
+				parseProperties(vm, propSlot, &totalSlots, &s, baseTile->properties);
+			}
+		}
+		// add the object
+		parseProperties(vm, propSlot, &totalSlots, &s, obj->properties);
+
 		for (int i = 0; i < keySz; i++) {
 			// i + 1 because 0 is return value. keys are at the top, values are placed after the map
 			wrenInsertInMap(vm, mapSlot, i + 1, mapSlot + 1 + i);
-		}
-
-		// loop through properties
-		if (obj->properties != nullptr) {
-			auto &props = *(std::map<std::string, void *>*) obj->properties;
-
-			for (auto item : props) {
-				// add 2 slots for key, value
-				totalSlots += 2;
-				wrenEnsureSlots(vm, totalSlots);
-
-				auto prop = (tmx_property*)item.second;
-				wrenSetSlotString(vm, s++, prop->name);
-				switch (prop->type) {
-					case PT_INT:
-						wrenSetSlotDouble(vm, s++, prop->value.integer);
-						break;
-					case PT_FLOAT:
-						wrenSetSlotDouble(vm, s++, prop->value.decimal);
-						break;
-					case PT_BOOL:
-						wrenSetSlotBool(vm, s++, prop->value.boolean);
-						break;
-					case PT_COLOR:
-						wrenSetSlotDouble(vm, s++, prop->value.color);
-						break;
-					case PT_NONE:
-					case PT_STRING:
-					case PT_FILE:
-					default:
-						wrenSetSlotString(vm, s++, prop->value.string);
-						break;
-				}
-				wrenInsertInMap(vm, propSlot, s - 2, s - 1);
-			}
 		}
 
 		obj = Map_LayerObjects(map, id, obj);
@@ -346,6 +362,7 @@ void wren_map_getobjectsinlayer(WrenVM *vm) {
 }
 #pragma endregion
 
+#pragma region Wren config callbacks
 static void wren_error(WrenVM* vm, WrenErrorType type, const char* module, int line, const char* message) {
 	trap->Print("%s:%i - %s\n", module, line, message);
 }
@@ -419,6 +436,7 @@ WrenForeignMethodFn wren_bindForeignMethodFn(WrenVM* vm, const char* module, con
 
 	return nullptr;
 }
+#pragma endregion
 
 WrenVM *Wren_Init(const char *constructorStr) {
 	WrenConfiguration config;

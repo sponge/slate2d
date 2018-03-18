@@ -16,6 +16,10 @@ int Map_GetLayerByName(tmx_map *map, const char *name) {
 }
 
 tmx_object *Map_LayerObjects(tmx_map *map, int id, tmx_object *current) {
+	if (id < 0) {
+		return nullptr;
+	}
+
 	if (current == nullptr) {
 		int i = 0;
 		tmx_layer *layer = map->ly_head;
@@ -45,4 +49,12 @@ const char *Map_GetObjectType(tmx_map *map, tmx_object *obj) {
 	}
 
 	return nullptr;
+}
+
+tmx_tile *Map_GetTile(tmx_map *map, unsigned int gid) {
+	if (gid > map->tilecount) {
+		return nullptr;
+	}
+
+	return map->tiles[gid];
 }

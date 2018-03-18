@@ -278,7 +278,7 @@ static int parse_object(XMLElement *ele, tmx_object *obj) {
 	}
 
 	auto subEle = ele->FirstChildElement();
-	while (subEle && subEle->ClosingType() != XMLElement::ElementClosingType::CLOSED) {
+	while (subEle) {
 		auto name = subEle->Value();
 		if (!strcmp(name, "properties")) {
 			if (!parse_properties(subEle, &(obj->properties))) {
@@ -299,7 +299,7 @@ static int parse_object(XMLElement *ele, tmx_object *obj) {
 				obj->obj_type = OT_TEXT;
 			}
 			else {
-				assert(false); return 0;
+				break;
 			}
 
 			if (obj->obj_type == OT_POLYGON || obj->obj_type == OT_POLYLINE) {

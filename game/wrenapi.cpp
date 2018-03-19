@@ -344,7 +344,7 @@ void wren_map_getobjectsinlayer(WrenVM *vm) {
 
 		// apply the default properties first if it is a tile
 		if (obj->obj_type == OT_TILE) {
-			tmx_tile *baseTile = Map_GetTile(map, obj->content.gid);
+			tmx_tile *baseTile = Map_GetTileInfo(map, obj->content.gid);
 			if (baseTile != nullptr) {
 				parseProperties(vm, propSlot, &totalSlots, &s, baseTile->properties);
 			}
@@ -372,7 +372,7 @@ void wren_map_gettileproperties(WrenVM *vm) {
 	wrenSetSlotString(vm, s++, "type");
 
 	for (int gid = 0; gid < map->tilecount; gid++) {
-		tmx_tile *tile = Map_GetTile(map, gid);
+		tmx_tile *tile = Map_GetTileInfo(map, gid);
 		if (tile == nullptr) {
 			continue;
 		}

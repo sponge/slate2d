@@ -65,11 +65,11 @@ tmx_tile *Map_GetTileInfo(tmx_map *map, unsigned int gid) {
 	return map->tiles[gid];
 }
 
-unsigned int Map_GetTile(tmx_map *map, unsigned int layer, unsigned int x, unsigned int y) {
-	tmx_layer *ly = Map_GetLayer(map, layer);
-	if (ly->type != L_LAYER) {
+unsigned int Map_GetTile(tmx_map *map, int id, unsigned int x, unsigned int y) {
+	tmx_layer *layer = Map_GetLayer(map, id);
+	if (layer->type != L_LAYER) {
 		return 0;
 	}
 	
-	return (ly->content.gids[(y*map->width) + x]) & TMX_FLIP_BITS_REMOVAL;
+	return (layer->content.gids[(y*map->width) + x]) & TMX_FLIP_BITS_REMOVAL;
 }

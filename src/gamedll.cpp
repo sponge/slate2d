@@ -80,6 +80,11 @@ tmx_map * trap_Map_Load(const char *filename) {
 		return nullptr;
 	}
 
+	if (map->orient != O_ORT) {
+		Com_Error(ERR_DROP, "Non orthagonal tiles not supported");
+		return nullptr;
+	}
+
 	return map;
 }
 

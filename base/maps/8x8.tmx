@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" tiledversion="1.1.3" orientation="orthogonal" renderorder="right-down" width="48" height="32" tilewidth="8" tileheight="8" infinite="0" nextobjectid="12">
+ <properties>
+  <property name="mapprop" type="int" value="69"/>
+  <property name="some color" type="color" value="#ffff557f"/>
+ </properties>
  <tileset firstgid="1" source="tilesets/advplat.tsx"/>
  <layer name="fg" width="48" height="32">
+  <properties>
+   <property name="another layer prop" type="int" value="999"/>
+   <property name="custom layer prop" value="very"/>
+  </properties>
   <data encoding="csv">
 83,83,83,83,83,83,83,71,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,0,0,0,0,0,0,0,0,
 83,83,83,83,83,83,83,71,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,83,0,0,0,0,0,0,0,0,

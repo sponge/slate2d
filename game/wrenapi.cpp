@@ -27,16 +27,6 @@ void wren_trap_error(WrenVM *vm) {
 	trap->Error(err, va("%s",str));
 }
 
-void wren_trap_map_load(WrenVM *vm) {
-	const char *str = wrenGetSlotString(vm, 1);
-
-	map = trap->Map_Load(str);
-}
-
-void wren_trap_map_free(WrenVM *vm) {
-	trap->Map_Free(map);
-}
-
 void wren_trap_snd_play(WrenVM *vm) {
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	float volume = (float)wrenGetSlotDouble(vm, 2);
@@ -290,6 +280,16 @@ void parseProperties(WrenVM *vm, int propSlot, int *totalSlotsIn, int *sIn, void
 	}
 }
 
+void wren_map_load(WrenVM *vm) {
+	const char *str = wrenGetSlotString(vm, 1);
+
+	map = trap->Map_Load(str);
+}
+
+void wren_map_free(WrenVM *vm) {
+	trap->Map_Free(map);
+}
+
 void wren_map_getlayerbyname(WrenVM *vm) {
 	const char *name = wrenGetSlotString(vm, 1);
 
@@ -361,6 +361,83 @@ void wren_map_getobjectsinlayer(WrenVM *vm) {
 	}
 }
 
+void wren_map_getmapproperties(WrenVM *vm) {
+	static const char *keys[] = { "width", "height", "tileWidth", "tileHeight", "backgroundColor", "properties" };
+	static const int keySz = sizeof(keys) / sizeof(*keys);
+
+	int totalSlots = 1; // total num of slots for wrenEnsureSlots
+	int s = 1; // current slot we're on
+
+	// reserve keys
+	totalSlots += keySz * 2;
+	wrenEnsureSlots(vm, totalSlots);
+
+	// return value is a map
+	wrenSetSlotNewMap(vm, 0);
+
+	// store the keys starting from slot 1
+	for (int i = 0; i < keySz; i++) {
+		wrenSetSlotString(vm, s++, keys[i]);
+	}
+
+	// values
+	wrenSetSlotDouble(vm, s++, map->width);
+	wrenSetSlotDouble(vm, s++, map->height);
+	wrenSetSlotDouble(vm, s++, map->tile_width);
+	wrenSetSlotDouble(vm, s++, map->tile_height);
+	wrenSetSlotDouble(vm, s++, map->backgroundcolor);
+
+	int propSlot = s++;
+	wrenSetSlotNewMap(vm, propSlot);
+
+	parseProperties(vm, propSlot, &totalSlots, &s, map->properties);
+
+	for (int i = 0; i < keySz; i++) {
+		wrenInsertInMap(vm, 0, 1 + i, 1 + keySz + i);
+	}
+}
+
+void wren_map_getlayerproperties(WrenVM *vm) {
+	int id = (int)wrenGetSlotDouble(vm, 1);
+	tmx_layer *layer = Map_GetLayer(map, id);
+
+	if (layer == nullptr) {
+		return;
+	}
+
+	static const char *keys[] = { "name", "visible", "opacity", "offsetX", "offsetY", "properties" };
+	static const int keySz = sizeof(keys) / sizeof(*keys);
+
+	int totalSlots = 1; // total num of slots for wrenEnsureSlots
+	int s = 1; // current slot we're on
+
+	// reserve keys
+	totalSlots += keySz * 2;
+	wrenEnsureSlots(vm, totalSlots);
+
+	// return value is a map
+	wrenSetSlotNewMap(vm, 0);
+
+	// store the keys starting from slot 1
+	for (int i = 0; i < keySz; i++) {
+		wrenSetSlotString(vm, s++, keys[i]);
+	}
+
+	wrenSetSlotString(vm, s++, layer->name == nullptr ? "" : layer->name);
+	wrenSetSlotBool(vm, s++, layer->visible);
+	wrenSetSlotDouble(vm, s++, layer->opacity);
+	wrenSetSlotDouble(vm, s++, layer->offsetx);
+	wrenSetSlotDouble(vm, s++, layer->offsety);
+	int propSlot = s++;
+	wrenSetSlotNewMap(vm, propSlot);
+
+	parseProperties(vm, propSlot, &totalSlots, &s, layer->properties);
+
+	for (int i = 0; i < keySz; i++) {
+		wrenInsertInMap(vm, 0, 1 + i, 1 + keySz + i);
+	}
+}
+
 void wren_map_gettileproperties(WrenVM *vm) {
 	int totalSlots = 2; // total num of slots for wrenEnsureSlots
 	int s = 1; // current slot we're on
@@ -389,6 +466,16 @@ void wren_map_gettileproperties(WrenVM *vm) {
 
 		parseProperties(vm, propSlot, &totalSlots, &s, tile->properties);
 	}
+}
+
+void wren_map_gettile(WrenVM *vm) {
+	int layer = (int)wrenGetSlotDouble(vm, 1);
+	unsigned int x = (unsigned int)wrenGetSlotDouble(vm, 2);
+	unsigned int y = (unsigned int)wrenGetSlotDouble(vm, 3);
+	
+	int gid = Map_GetTile(map, layer, x, y);
+
+	wrenSetSlotDouble(vm, 0, gid);
 }
 #pragma endregion
 
@@ -425,8 +512,6 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "print(_)", wren_trap_print },
 	{ "engine", "Trap", true, "console(_)", wren_trap_console },
 	{ "engine", "Trap", true, "sndPlay(_,_,_,_)", wren_trap_snd_play },
-	{ "engine", "Trap", true, "mapLoad(_)", wren_trap_map_load },
-	{ "engine", "Trap", true, "mapFree()", wren_trap_map_free },
 
 	{ "engine", "Asset", true, "create(_,_,_)", wren_asset_create },
 	{ "engine", "Asset", true, "find(_)", wren_asset_find },
@@ -451,9 +536,14 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Draw", true, "submit()", wren_dc_submit },
 	{ "engine", "Draw", true, "clear()", wren_dc_clear },
 
+	{ "engine", "TileMap", true, "load(_)", wren_map_load },
+	{ "engine", "TileMap", true, "free()", wren_map_free },
 	{ "engine", "TileMap", true, "layerByName(_)", wren_map_getlayerbyname },
 	{ "engine", "TileMap", true, "objectsInLayer(_)", wren_map_getobjectsinlayer },
+	{ "engine", "TileMap", true, "getMapProperties()", wren_map_getmapproperties },
+	{ "engine", "TileMap", true, "getLayerProperties(_)", wren_map_getlayerproperties },
 	{ "engine", "TileMap", true, "getTileProperties()", wren_map_gettileproperties },
+	{ "engine", "TileMap", true, "getTile(_,_,_)", wren_map_gettile },
 };
 static const int methodsCount = sizeof(methods) / sizeof(wrenMethodDef);
 

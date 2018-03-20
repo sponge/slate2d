@@ -3,8 +3,6 @@ class Trap {
    static printLn(text) { print(text.toString + "\n")}
    foreign static console(text)
    foreign static sndPlay(assetHandle, volume, pan, loop)
-   foreign static mapLoad(name)
-   foreign static mapFree()
 }
 
 class Asset {
@@ -68,15 +66,20 @@ class Color {
    static Stroke { 1 }
 }
 
+class TileMap {
+   foreign static load(name)
+   foreign static free()
+   foreign static layerByName(name)
+   foreign static objectsInLayer(id)
+   foreign static getMapProperties()
+   foreign static getLayerProperties(id)
+   foreign static getTileProperties()
+   foreign static getTile(id, x, y)
+}
+
 class Scene {
    construct new(args) {}
    update(dt) {}
    draw(w, h) {}
    shutdown() {}
-}
-
-class TileMap {
-   foreign static layerByName(name)
-   foreign static objectsInLayer(id)
-   foreign static getTileProperties()
 }

@@ -10,7 +10,7 @@ class Game is Scene {
       _font = Asset.create(Asset.BitmapFont, "font", "gfx/good_neighbors.png")
       Asset.bmpfntSet(_font, "!\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", -1, 7, 16)
 
-      Trap.mapLoad(mapName)
+      TileMap.load(mapName)
 
       Asset.loadAll()
 
@@ -27,6 +27,15 @@ class Game is Scene {
 
       var tiles = TileMap.getTileProperties()
       Trap.printLn(tiles)
+
+      var gid = TileMap.getTile(_worldLayer, 0, 20)
+      Trap.printLn(gid)
+
+      var mapProps = TileMap.getMapProperties()
+      Trap.printLn(mapProps)
+
+      var layerProps = TileMap.getLayerProperties(_worldLayer)
+      Trap.printLn(layerProps)
    }
 
    update(dt) {
@@ -78,7 +87,7 @@ class Game is Scene {
    }
 
    shutdown() {
-      Trap.mapFree()
+      TileMap.free()
       Asset.clearAll()
    }
 }

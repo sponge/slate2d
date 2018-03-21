@@ -181,8 +181,8 @@ int main(int argc, char *argv[]) {
 	while (!quit) {
 		auto now = clock::now();
 		auto dt = std::chrono::duration<float>(now - last).count();
-		com_frameTime = std::chrono::duration<float>(now - start).count() * 1000 * 1000;
-		frame_msec = dt * 1000 * 1000;
+		com_frameTime = std::chrono::duration<float>(now - start).count() * 1000;
+		frame_msec = dt * 1000;
 		last = now;
 
 		while (SDL_PollEvent(&ev)) {

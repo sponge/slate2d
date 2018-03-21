@@ -184,12 +184,12 @@ void IN_KeyUp(kbutton_t *b) {
 
 /*
 ===============
-CL_KeyState
+IN_KeyState
 
 Returns the fraction of the frame that the key was down
 ===============
 */
-float CL_KeyState(kbutton_t *key) {
+float IN_KeyState(kbutton_t *key) {
 	float		val;
 	int			msec;
 
@@ -222,4 +222,26 @@ float CL_KeyState(kbutton_t *key) {
 	}
 
 	return val;
+}
+
+bool IN_KeyPressed(kbutton_t *key, unsigned int delay, unsigned int repeat) {
+	if (key->active == false) {
+		return false;
+	}
+
+	unsigned int firstTrigger = key->downtime + delay;
+
+	if (com_frameTime >= firstTrigger && com_frameTime - frame_msec < firstTrigger) {
+		return true;
+	}
+
+	int heldTime = com_frameTime - key->downtime - delay;
+
+	if (heldTime < 0) {
+		return false;
+	}
+
+	// FIXME: this doesn't always work for reasons??
+	return ((heldTime - frame_msec) % repeat) >= (heldTime % repeat);
+	
 }

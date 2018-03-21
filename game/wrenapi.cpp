@@ -35,6 +35,30 @@ void wren_trap_snd_play(WrenVM *vm) {
 
 	trap->Snd_Play(assetHandle, volume, pan, loop);
 }
+
+void wren_trap_in_keystate(WrenVM *vm) {
+	int key = (int)wrenGetSlotDouble(vm, 1);
+
+	if (key < 0 || key > MAX_KEYS) {
+		wrenSetSlotBool(vm, 0, false);
+		return;
+	}
+
+	wrenSetSlotBool(vm, 0, trap->IN_KeyState(&buttons[key]) > 0.0f);
+}
+
+void wren_trap_in_keypressed(WrenVM *vm) {
+	int key = (int)wrenGetSlotDouble(vm, 1);
+	int delay = (int)wrenGetSlotDouble(vm, 2);
+	int repeat = (int)wrenGetSlotDouble(vm, 3);
+
+	if (key < 0 || key > MAX_KEYS) {
+		wrenSetSlotBool(vm, 0, false);
+		return;
+	}
+
+	wrenSetSlotBool(vm, 0, trap->IN_KeyPressed(&buttons[key], delay, repeat));
+}
 #pragma endregion
 
 #pragma region Asset Module
@@ -448,7 +472,7 @@ void wren_map_gettileproperties(WrenVM *vm) {
 	wrenEnsureSlots(vm, totalSlots);
 	wrenSetSlotString(vm, s++, "type");
 
-	for (int gid = 0; gid < map->tilecount; gid++) {
+	for (unsigned int gid = 0; gid < map->tilecount; gid++) {
 		tmx_tile *tile = Map_GetTileInfo(map, gid);
 		if (tile == nullptr) {
 			continue;
@@ -512,6 +536,8 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "print(_)", wren_trap_print },
 	{ "engine", "Trap", true, "console(_)", wren_trap_console },
 	{ "engine", "Trap", true, "sndPlay(_,_,_,_)", wren_trap_snd_play },
+	{ "engine", "Trap", true, "keyActive(_)", wren_trap_in_keystate },
+	{ "engine", "Trap", true, "keyPressed(_,_,_)", wren_trap_in_keypressed },
 
 	{ "engine", "Asset", true, "create(_,_,_)", wren_asset_create },
 	{ "engine", "Asset", true, "find(_)", wren_asset_find },

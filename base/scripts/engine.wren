@@ -3,6 +3,8 @@ class Trap {
    static printLn(text) { print(text.toString + "\n")}
    foreign static console(text)
    foreign static sndPlay(assetHandle, volume, pan, loop)
+   foreign static keyActive(key)
+   foreign static keyPressed(key, delay, repeat)
 }
 
 class Asset {

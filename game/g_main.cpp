@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "scene_game.h"
 #include "scene_wren.h"
+#include "game.h"
 
 gameImportFuncs_t *trap;
 kbutton_t buttons[12];

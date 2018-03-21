@@ -20,7 +20,7 @@ class Game is Scene {
       _spr = Asset.createSprite(_sprites, 8, 8, 0, 0)
 
       _bgLayer = TileMap.layerByName("bg")
-      _worldLayer = TileMap.layerByName("fg")
+      _worldLayer = TileMap.layerByName("world")
 
       var objectLayer = TileMap.layerByName("objects")
       var objs = TileMap.objectsInLayer(objectLayer)

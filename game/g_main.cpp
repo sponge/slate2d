@@ -41,30 +41,30 @@ static void Init(void *clientInfo, void *imGuiContext) {
 
 	trap->Cmd_AddCommand("map", Cmd_Map_f);
 
-	trap->Cmd_AddCommand("+p1up",     []() { trap->IN_KeyDown(&buttons[0]); });
-	trap->Cmd_AddCommand("-p1up",     []() { trap->IN_KeyUp(&buttons[0]); });
-	trap->Cmd_AddCommand("+p1down",   []() { trap->IN_KeyDown(&buttons[1]); });
-	trap->Cmd_AddCommand("-p1down",   []() { trap->IN_KeyUp(&buttons[1]); });
-	trap->Cmd_AddCommand("+p1left",   []() { trap->IN_KeyDown(&buttons[2]); });
-	trap->Cmd_AddCommand("-p1left",   []() { trap->IN_KeyUp(&buttons[2]); });
-	trap->Cmd_AddCommand("+p1right",  []() { trap->IN_KeyDown(&buttons[3]); });
-	trap->Cmd_AddCommand("-p1right",  []() { trap->IN_KeyUp(&buttons[3]); });
-	trap->Cmd_AddCommand("+p1a",    []() { trap->IN_KeyDown(&buttons[4]); });
-	trap->Cmd_AddCommand("-p1a",    []() { trap->IN_KeyUp(&buttons[4]); });
-	trap->Cmd_AddCommand("+p1b",   []() { trap->IN_KeyDown(&buttons[5]); });
-	trap->Cmd_AddCommand("-p1b",   []() { trap->IN_KeyUp(&buttons[5]); });
-	trap->Cmd_AddCommand("+p1x", []() { trap->IN_KeyDown(&buttons[6]); });
-	trap->Cmd_AddCommand("-p1x", []() { trap->IN_KeyUp(&buttons[6]); });
-	trap->Cmd_AddCommand("+p1y",   []() { trap->IN_KeyDown(&buttons[7]); });
-	trap->Cmd_AddCommand("-p1y",   []() { trap->IN_KeyUp(&buttons[7]); });
-	trap->Cmd_AddCommand("+p1l", []() { trap->IN_KeyDown(&buttons[8]); });
-	trap->Cmd_AddCommand("-p1l", []() { trap->IN_KeyUp(&buttons[8]); });
-	trap->Cmd_AddCommand("+p1r", []() { trap->IN_KeyDown(&buttons[9]); });
-	trap->Cmd_AddCommand("-p1r", []() { trap->IN_KeyUp(&buttons[9]); });
-	trap->Cmd_AddCommand("+p1start", []() { trap->IN_KeyDown(&buttons[10]); });
-	trap->Cmd_AddCommand("-p1start", []() { trap->IN_KeyUp(&buttons[10]); });
-	trap->Cmd_AddCommand("+p1select", []() { trap->IN_KeyDown(&buttons[11]); });
-	trap->Cmd_AddCommand("-p1select", []() { trap->IN_KeyUp(&buttons[11]); });
+	trap->Cmd_AddCommand("+p1up",		[]() { trap->IN_KeyDown(&buttons[0]); });
+	trap->Cmd_AddCommand("-p1up",		[]() { trap->IN_KeyUp(&buttons[0]); });
+	trap->Cmd_AddCommand("+p1down",		[]() { trap->IN_KeyDown(&buttons[1]); });
+	trap->Cmd_AddCommand("-p1down",		[]() { trap->IN_KeyUp(&buttons[1]); });
+	trap->Cmd_AddCommand("+p1left",		[]() { trap->IN_KeyDown(&buttons[2]); });
+	trap->Cmd_AddCommand("-p1left",		[]() { trap->IN_KeyUp(&buttons[2]); });
+	trap->Cmd_AddCommand("+p1right",	[]() { trap->IN_KeyDown(&buttons[3]); });
+	trap->Cmd_AddCommand("-p1right",	[]() { trap->IN_KeyUp(&buttons[3]); });
+	trap->Cmd_AddCommand("+p1a",		[]() { trap->IN_KeyDown(&buttons[4]); });
+	trap->Cmd_AddCommand("-p1a",		[]() { trap->IN_KeyUp(&buttons[4]); });
+	trap->Cmd_AddCommand("+p1b",		[]() { trap->IN_KeyDown(&buttons[5]); });
+	trap->Cmd_AddCommand("-p1b",		[]() { trap->IN_KeyUp(&buttons[5]); });
+	trap->Cmd_AddCommand("+p1x",		[]() { trap->IN_KeyDown(&buttons[6]); });
+	trap->Cmd_AddCommand("-p1x",		[]() { trap->IN_KeyUp(&buttons[6]); });
+	trap->Cmd_AddCommand("+p1y",		[]() { trap->IN_KeyDown(&buttons[7]); });
+	trap->Cmd_AddCommand("-p1y",		[]() { trap->IN_KeyUp(&buttons[7]); });
+	trap->Cmd_AddCommand("+p1l",		[]() { trap->IN_KeyDown(&buttons[8]); });
+	trap->Cmd_AddCommand("-p1l",		[]() { trap->IN_KeyUp(&buttons[8]); });
+	trap->Cmd_AddCommand("+p1r",		[]() { trap->IN_KeyDown(&buttons[9]); });
+	trap->Cmd_AddCommand("-p1r",		[]() { trap->IN_KeyUp(&buttons[9]); });
+	trap->Cmd_AddCommand("+p1start",	[]() { trap->IN_KeyDown(&buttons[10]); });
+	trap->Cmd_AddCommand("-p1start",	[]() { trap->IN_KeyUp(&buttons[10]); });
+	trap->Cmd_AddCommand("+p1select",	[]() { trap->IN_KeyDown(&buttons[11]); });
+	trap->Cmd_AddCommand("-p1select",	[]() { trap->IN_KeyUp(&buttons[11]); });
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 

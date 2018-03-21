@@ -41,7 +41,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer name="fg" width="48" height="32">
+ <layer name="world" width="48" height="32">
   <properties>
    <property name="another layer prop" type="int" value="999"/>
    <property name="custom layer prop" value="very"/>

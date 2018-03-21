@@ -73,6 +73,7 @@ typedef struct {
 
 typedef struct {
 	int			down[2];		// key nums holding it down
+	unsigned	firstdowntime;
 	unsigned	downtime;		// msec timestamp
 	unsigned	msec;			// msec down this frame if both a down and up happened
 	bool		active;			// current state

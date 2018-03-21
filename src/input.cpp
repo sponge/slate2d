@@ -133,6 +133,7 @@ void IN_KeyDown(kbutton_t *b) {
 	// save timestamp for partial frame summing
 	c = Cmd_Argv(2);
 	b->downtime = atoi(c);
+	b->firstdowntime = b->downtime;
 
 	b->active = true;
 	b->wasPressed = true;
@@ -229,13 +230,13 @@ bool IN_KeyPressed(kbutton_t *key, unsigned int delay, unsigned int repeat) {
 		return false;
 	}
 
-	unsigned int firstTrigger = key->downtime + delay;
+	unsigned int firstTrigger = key->firstdowntime + delay;
 
 	if (com_frameTime >= firstTrigger && com_frameTime - frame_msec < firstTrigger) {
 		return true;
 	}
 
-	int heldTime = com_frameTime - key->downtime - delay;
+	int heldTime = com_frameTime - key->firstdowntime - delay;
 
 	if (heldTime < 0) {
 		return false;

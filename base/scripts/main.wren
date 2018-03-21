@@ -1,4 +1,4 @@
-import "engine" for Trap, Draw, Scene, Asset, Fill, Color, TileMap
+import "engine" for Trap, Button, Draw, Scene, Asset, Fill, Color, TileMap
 
 class Game is Scene {
    construct new(mapName) {
@@ -39,10 +39,12 @@ class Game is Scene {
    }
 
    update(dt) {
-      var a = Trap.keyPressed(0, 1000, 500)
+      var a = Trap.keyPressed(Button.Up, 1000, 500)
       if (a) {
          Trap.printLn("up pressed")
       }
+
+      _upActive = Trap.keyActive(Button.Up)
    }
 
    draw(w, h) {
@@ -86,9 +88,9 @@ class Game is Scene {
       Draw.sprite(_spr, 1, 300, 32, 1.0, 2.0, 0, 1, 1)
       Draw.sprite(_spr, 1, 275, 32)
 
-      // if (Trap.keyActive(0)) {
-      //    Draw.rect(100, 0, 100, 100, Fill.Solid)
-      // }
+      if (_upActive) {
+         Draw.rect(100, 0, 100, 100, Fill.Solid)
+      }
 
 
       Draw.submit()

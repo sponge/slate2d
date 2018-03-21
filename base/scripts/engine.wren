@@ -7,6 +7,21 @@ class Trap {
    foreign static keyPressed(key, delay, repeat)
 }
 
+class Button {
+   static Up { 0 }
+   static Down { 1 }
+   static Left { 2 }
+   static Right { 3 }
+   static A { 4 }
+   static B { 5 }
+   static X { 6 }
+   static Y { 7 }
+   static L { 8 }
+   static R { 9 }
+   static Start { 10 }
+   static Select { 11 }
+}
+
 class Asset {
    foreign static create(type, name, path)
    foreign static find(name)

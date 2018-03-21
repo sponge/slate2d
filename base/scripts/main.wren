@@ -19,6 +19,7 @@ class Game is Scene {
 
       _spr = Asset.createSprite(_sprites, 8, 8, 0, 0)
 
+      _bgLayer = TileMap.layerByName("bg")
       _worldLayer = TileMap.layerByName("fg")
 
       var objectLayer = TileMap.layerByName("objects")
@@ -51,6 +52,7 @@ class Game is Scene {
       Draw.clear()
       Draw.setTransform(h / 180, 0, 0, h / 180, 0, 0, true)
 
+      Draw.mapLayer(_bgLayer)
       Draw.mapLayer(_worldLayer)
 
       Draw.setColor(Color.Fill, 255, 0, 0, 255)

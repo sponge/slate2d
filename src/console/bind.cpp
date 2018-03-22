@@ -21,8 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 #include "console.h"
 #include <SDL/SDL_keyboard.h>
+#include <SDL/SDL_mouse.h>
 
-qkey_t		keys[SDL_NUM_SCANCODES];
+qkey_t		keys[SDL_NUM_SCANCODES + NUM_MOUSE_BUTTONS];
 
 typedef struct {
 	const char	*name;
@@ -74,6 +75,12 @@ keyname_t keynames[] =
 	{ "PGUP", SDL_SCANCODE_PAGEUP },
 	{ "HOME", SDL_SCANCODE_HOME },
 	{ "END", SDL_SCANCODE_END },
+
+	{ "MOUSE1", SDL_NUM_SCANCODES + MOUSE_BUTTON_LEFT },
+	{ "MOUSE2", SDL_NUM_SCANCODES + MOUSE_BUTTON_RIGHT },
+	{ "MOUSE3", SDL_NUM_SCANCODES + MOUSE_BUTTON_MIDDLE },
+	{ "MOUSE4", SDL_NUM_SCANCODES + MOUSE_BUTTON_X1 },
+	{ "MOUSE5", SDL_NUM_SCANCODES + MOUSE_BUTTON_X2 },
 
 	// FIXME: mouse
 	// FIXME: controller api

@@ -1,3 +1,6 @@
+#include <SDL/SDL_keyboard.h>
+#include <SDL/SDL_mouse.h>
+
 #include "console/console.h"
 #include "input.h"
 #include "main.h"
@@ -96,6 +99,21 @@ bool KeyEvent(int key, bool down, unsigned time) {
 		Cbuf_AddText(kb);
 		Cbuf_AddText("\n");
 		return true;
+	}
+}
+
+bool MouseEvent(int button, bool down, unsigned time) {
+	switch (button) {
+	case SDL_BUTTON_LEFT:
+		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_LEFT, down, com_frameTime);
+	case SDL_BUTTON_RIGHT:
+		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_RIGHT, down, com_frameTime);
+	case SDL_BUTTON_MIDDLE:
+		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_MIDDLE, down, com_frameTime);
+	case SDL_BUTTON_X1:
+		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_X1, down, com_frameTime);
+	case SDL_BUTTON_X2:
+		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_X2, down, com_frameTime);
 	}
 }
 

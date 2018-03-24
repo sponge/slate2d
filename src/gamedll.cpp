@@ -124,6 +124,7 @@ static gameImportFuncs_t GAMEtraps = {
 	IN_KeyUp,
 	IN_KeyState,
 	IN_KeyPressed,
+	IN_MousePosition,
 	SubmitRenderCommands,
 	R_RegisterShader,
 	Asset_Create,

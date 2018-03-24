@@ -86,6 +86,13 @@ void Com_Printf(const char *fmt, ...);
 #define	BIG_INFO_STRING		8192  // used for system info key only
 #define MAX_QPATH 1024
 
+#define NUM_MOUSE_BUTTONS 5
+#define MOUSE_BUTTON_LEFT 0
+#define MOUSE_BUTTON_RIGHT 1
+#define MOUSE_BUTTON_MIDDLE 2
+#define MOUSE_BUTTON_X1 3
+#define MOUSE_BUTTON_X2 4
+
 void Cvar_Init(void);
 cvar_t *Cvar_FindVar(const char *var_name);
 float Cvar_VariableValue(const char *var_name);
@@ -108,7 +115,7 @@ typedef struct {
     char		*binding;
 } qkey_t;
 
-extern	qkey_t		keys[512];
+extern	qkey_t		keys[512 + NUM_MOUSE_BUTTONS];
 
 void CL_InitKeyCommands(void);
 int Key_StringToKeynum(const char *str);

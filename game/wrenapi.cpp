@@ -59,6 +59,19 @@ void wren_trap_in_keypressed(WrenVM *vm) {
 
 	wrenSetSlotBool(vm, 0, trap->IN_KeyPressed(&buttons[key], delay, repeat));
 }
+
+void wren_trap_mouse_position(WrenVM *vm) {
+	MousePosition mousePos = trap->IN_MousePosition();
+
+	wrenEnsureSlots(vm, 3);
+	wrenSetSlotNewList(vm, 0);
+
+	wrenSetSlotDouble(vm, 1, mousePos.x);
+	wrenSetSlotDouble(vm, 2, mousePos.y);
+
+	wrenInsertInList(vm, 0, 0, 1);
+	wrenInsertInList(vm, 0, 0, 2);
+}
 #pragma endregion
 
 #pragma region Asset Module
@@ -538,6 +551,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "sndPlay(_,_,_,_)", wren_trap_snd_play },
 	{ "engine", "Trap", true, "keyActive(_)", wren_trap_in_keystate },
 	{ "engine", "Trap", true, "keyPressed(_,_,_)", wren_trap_in_keypressed },
+	{ "engine", "Trap", true, "mousePosition()", wren_trap_mouse_position },
 
 	{ "engine", "Asset", true, "create(_,_,_)", wren_asset_create },
 	{ "engine", "Asset", true, "find(_)", wren_asset_find },

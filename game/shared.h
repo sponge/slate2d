@@ -238,3 +238,7 @@ typedef struct {
 	unsigned int hnd;
 	int w, h;
 } Image;
+
+typedef struct {
+	int x, y;
+} MousePosition;

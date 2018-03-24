@@ -200,6 +200,14 @@ int main(int argc, char *argv[]) {
 			if (ev.type == SDL_KEYDOWN) {
 				KeyEvent(ev.key.keysym.scancode, true, com_frameTime);
 			}
+
+			if (ev.type == SDL_MOUSEBUTTONUP) {
+				MouseEvent(ev.button.button, false, com_frameTime);
+			}
+
+			if (ev.type == SDL_MOUSEBUTTONDOWN) {
+				MouseEvent(ev.button.button, true, com_frameTime);
+			}
 		}
 		
 		Cbuf_Execute();

@@ -611,7 +611,7 @@ WrenVM *Wren_Init(const char *constructorStr) {
 
 	// load scripts/main.wren
 	char *mainStr;
-	int mainSz = trap->FS_ReadFile("scripts/gate.wren", (void**)&mainStr);
+	int mainSz = trap->FS_ReadFile("scripts/main.wren", (void**)&mainStr);
 	if (mainSz <= 0) {
 		trap->Error(ERR_FATAL, "couldn't load scripts/main.wren");
 		return nullptr;

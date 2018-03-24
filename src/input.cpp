@@ -265,13 +265,7 @@ bool IN_KeyPressed(kbutton_t *key, unsigned int delay, unsigned int repeat) {
 }
 
 MousePosition IN_MousePosition() {
-	int x = 0;
-	int y = 0;
-
-	SDL_GetMouseState(&x, &y);
-
 	MousePosition mousePos;
-	mousePos.x = x;
-	mousePos.y = y;
+	SDL_GetMouseState(&mousePos.x, &mousePos.y);
 	return mousePos;
 }

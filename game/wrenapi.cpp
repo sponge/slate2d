@@ -66,11 +66,11 @@ void wren_trap_mouse_position(WrenVM *vm) {
 	wrenEnsureSlots(vm, 3);
 	wrenSetSlotNewList(vm, 0);
 
-    wrenSetSlotDouble(vm, 1, mousePos.x);
-    wrenSetSlotDouble(vm, 2, mousePos.y);
+	wrenSetSlotDouble(vm, 1, mousePos.x);
+	wrenSetSlotDouble(vm, 2, mousePos.y);
 
-    wrenInsertInList(vm, 0, 0, 1);
-    wrenInsertInList(vm, 0, 0, 2);
+	wrenInsertInList(vm, 0, 0, 1);
+	wrenInsertInList(vm, 0, 0, 2);
 }
 #pragma endregion
 
@@ -611,7 +611,7 @@ WrenVM *Wren_Init(const char *constructorStr) {
 
 	// load scripts/main.wren
 	char *mainStr;
-	int mainSz = trap->FS_ReadFile("scripts/main.wren", (void**)&mainStr);
+	int mainSz = trap->FS_ReadFile("scripts/gate.wren", (void**)&mainStr);
 	if (mainSz <= 0) {
 		trap->Error(ERR_FATAL, "couldn't load scripts/main.wren");
 		return nullptr;

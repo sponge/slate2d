@@ -261,6 +261,17 @@ bool IN_KeyPressed(kbutton_t *key, unsigned int delay, unsigned int repeat) {
 	}
 
 	// FIXME: this doesn't always work for reasons??
-	return ((heldTime - frame_msec) % repeat) >= (heldTime % repeat);
-	
+	return ((heldTime - frame_msec) % repeat) >= (heldTime % repeat);	
+}
+
+MousePosition IN_MousePosition() {
+	int x = 0;
+	int y = 0;
+
+	SDL_GetMouseState(&x, &y);
+
+	MousePosition mousePos;
+	mousePos.x = x;
+	mousePos.y = y;
+	return mousePos;
 }

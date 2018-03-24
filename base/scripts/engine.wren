@@ -5,6 +5,7 @@ class Trap {
    foreign static sndPlay(assetHandle, volume, pan, loop)
    foreign static keyActive(key)
    foreign static keyPressed(key, delay, repeat)
+   foreign static mousePosition()
 }
 
 class Button {

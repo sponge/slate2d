@@ -82,7 +82,6 @@ keyname_t keynames[] =
 	{ "MOUSE4", SDL_NUM_SCANCODES + MOUSE_BUTTON_X1 },
 	{ "MOUSE5", SDL_NUM_SCANCODES + MOUSE_BUTTON_X2 },
 
-	// FIXME: mouse
 	// FIXME: controller api
 	{ "KP_1",			SDL_SCANCODE_KP_1 },
 	{ "KP_2",			SDL_SCANCODE_KP_2 },

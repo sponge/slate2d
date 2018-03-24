@@ -35,6 +35,7 @@ typedef struct gameImportFuncs_s {
 	void (*IN_KeyUp)(kbutton_t *b);
 	float (*IN_KeyState)(kbutton_t *key);
 	bool (*IN_KeyPressed)(kbutton_t *key, unsigned int delay, unsigned int repeat);
+	MousePosition (*IN_MousePosition)();
 
 	void(*SubmitRenderCommands)(renderCommandList_t *list);
 	int(*R_RegisterShader)(const char *name, const char *vshader, const char *fshader);

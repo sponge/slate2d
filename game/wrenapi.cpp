@@ -10,6 +10,8 @@
 
 static tmx_map *map; // FIXME: bad!
 
+#define MAIN_SCRIPT "scripts/main.wren"
+
 #pragma region Trap Module
 void wren_trap_print(WrenVM *vm) {
 	const char *str = wrenGetSlotString(vm, 1);
@@ -609,16 +611,16 @@ WrenVM *Wren_Init(const char *constructorStr) {
 
 	WrenVM *vm = wrenNewVM(&config);
 
-	// load scripts/main.wren
+	// load MAIN_SCRIPT
 	char *mainStr;
-	int mainSz = trap->FS_ReadFile("scripts/main.wren", (void**)&mainStr);
+	int mainSz = trap->FS_ReadFile(MAIN_SCRIPT, (void**)&mainStr);
 	if (mainSz <= 0) {
-		trap->Error(ERR_FATAL, "couldn't load scripts/main.wren");
+		trap->Error(ERR_DROP, "couldn't load " MAIN_SCRIPT);
 		return nullptr;
 	}
 
 	if (wrenInterpret(vm, mainStr) != WREN_RESULT_SUCCESS) {
-		trap->Error(ERR_FATAL, "can't compile scripts/main.wren");
+		trap->Error(ERR_DROP, "can't compile " MAIN_SCRIPT);
 		return nullptr;
 	}
 	free(mainStr);
@@ -629,7 +631,7 @@ WrenVM *Wren_Init(const char *constructorStr) {
 	WrenHandle *gameClass = wrenGetSlotHandle(vm, 0);
 
 	if (gameClass == nullptr) {
-		trap->Error(ERR_FATAL, "couldn't find Game class");
+		trap->Error(ERR_DROP, "couldn't find Game class");
 		return nullptr;
 	}
 
@@ -642,12 +644,12 @@ WrenVM *Wren_Init(const char *constructorStr) {
 	hnd->shutdownHnd = wrenMakeCallHandle(vm, "shutdown()");
 
 	if (hnd->updateHnd == nullptr) {
-		trap->Error(ERR_FATAL, "couldn't find update(_) on Game class (did you subclass Scene?)");
+		trap->Error(ERR_DROP, "couldn't find update(_) on Game class (did you subclass Scene?)");
 		return nullptr;
 	}
 
 	if (hnd->drawHnd == nullptr) {
-		trap->Error(ERR_FATAL, "couldn't find draw(_,_) on Game class (did you subclass Scene?)");
+		trap->Error(ERR_DROP, "couldn't find draw(_,_) on Game class (did you subclass Scene?)");
 		return nullptr;
 	}
 
@@ -660,7 +662,7 @@ WrenVM *Wren_Init(const char *constructorStr) {
 	wrenReleaseHandle(vm, gameClass);
 
 	if (wrenGetSlotCount(vm) == 0) {
-		trap->Error(ERR_FATAL, "couldn't instantiate new Game class");
+		trap->Error(ERR_DROP, "couldn't instantiate new Game class");
 		return nullptr;
 	}
 

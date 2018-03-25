@@ -33,7 +33,7 @@ static int parse_property(XMLElement *ele, tmx_property *prop) {
 	prop->name = tmx_copyString(name);
 
 	if (type != nullptr) { /* type */
-		prop->type = parse_property_type(value);
+		prop->type = parse_property_type(type);
 	}
 	else {
 		prop->type = PT_STRING;
@@ -162,7 +162,7 @@ static int parse_text(XMLElement *ele, tmx_text *text) {
 
 	value = ele->Attribute("wrap");
 	if (value != nullptr) {
-		text->color = (int)atoi(value);
+		text->wrap = (int)atoi(value);
 	}
 
 	value = ele->Attribute("bold");
@@ -180,7 +180,7 @@ static int parse_text(XMLElement *ele, tmx_text *text) {
 		text->underline = (int)atoi(value);
 	}
 
-	value = ele->Attribute("strokeout");
+	value = ele->Attribute("strikeout");
 	if (value != nullptr) {
 		text->strikeout = (int)atoi(value);
 	}

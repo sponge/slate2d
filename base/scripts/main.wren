@@ -49,6 +49,7 @@ class Game is Scene {
    }
 
    draw(w, h) {
+      Trap.dbgWin("window", "contents")
       Draw.clear()
       Draw.setTransform(h / 180, 0, 0, h / 180, 0, 0, true)
 

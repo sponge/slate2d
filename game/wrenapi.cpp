@@ -7,6 +7,7 @@
 #include "map.h"
 #include <string>
 #include <map>
+#include <imgui.h>
 
 static tmx_map *map; // FIXME: bad!
 
@@ -16,6 +17,15 @@ static tmx_map *map; // FIXME: bad!
 void wren_trap_print(WrenVM *vm) {
 	const char *str = wrenGetSlotString(vm, 1);
 	trap->Print("%s", str);
+}
+
+void wren_trap_dbgwin(WrenVM *vm) {
+	const char *title = wrenGetSlotString(vm, 1);
+	const char *text = wrenGetSlotString(vm, 2);
+
+	ImGui::Begin(title, nullptr, 0);
+	ImGui::Text("%s", text);
+	ImGui::End();
 }
 
 void wren_trap_console(WrenVM *vm) {
@@ -549,6 +559,8 @@ typedef struct {
 
 static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "print(_)", wren_trap_print },
+	{ "engine", "Trap", true, "dbgWin(_,_)", wren_trap_dbgwin },
+
 	{ "engine", "Trap", true, "console(_)", wren_trap_console },
 	{ "engine", "Trap", true, "sndPlay(_,_,_,_)", wren_trap_snd_play },
 	{ "engine", "Trap", true, "keyActive(_)", wren_trap_in_keystate },

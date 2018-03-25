@@ -1,6 +1,7 @@
 class Trap {
    foreign static print(text)
    static printLn(text) { print(text.toString + "\n")}
+   foreign static dbgWin(title, text)
    foreign static console(text)
    foreign static sndPlay(assetHandle, volume, pan, loop)
    foreign static keyActive(key)

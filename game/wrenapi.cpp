@@ -700,6 +700,10 @@ void Wren_Draw(WrenVM *vm, int w, int h) {
 	wrenCall(vm, hnd->drawHnd);
 }
 
+void Wren_Eval(WrenVM *vm, const char *code) {
+	wrenInterpret(vm, code);
+}
+
 void Wren_Scene_Shutdown(WrenVM *vm) {
 	wrenHandles_t* hnd = (wrenHandles_t*)wrenGetUserData(vm);
 	wrenEnsureSlots(vm, 1);

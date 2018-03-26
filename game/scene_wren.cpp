@@ -20,3 +20,8 @@ WrenScene::~WrenScene()
 	Wren_Scene_Shutdown(vm);
 	Wren_FreeVM(vm);
 }
+
+void WrenScene::WrenEval(const char *str)
+{
+	Wren_Eval(vm, str);
+}

@@ -9,6 +9,8 @@ public:
 	void Render() override;
 	~WrenScene();
 
+	void WrenEval(const char *str);
+
 private:
 	ClientInfo* inf;
 	const char *mainScriptName;

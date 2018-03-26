@@ -9,6 +9,7 @@
 gameImportFuncs_t *trap;
 kbutton_t buttons[12];
 ClientInfo *inf;
+WrenScene *wrenScene;
 
 void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 
@@ -38,8 +39,8 @@ void Cmd_Map_f(void) {
 		return;
 	}
 
-	auto newScene = new WrenScene("scripts/main.wren", filename);
-	trap->Scene_Replace(0, newScene);
+	wrenScene = new WrenScene("scripts/main.wren", filename);
+	trap->Scene_Replace(0, wrenScene);
 }
 
 static void Init(void *clientInfo, void *imGuiContext) {
@@ -77,7 +78,9 @@ static void Init(void *clientInfo, void *imGuiContext) {
 }
 
 static void Console(const char *line) {
-
+	//if (wrenScene != nullptr) {
+	//	wrenScene->WrenEval(line);
+	//}
 }
 
 // technically the scene manager will handle every frame for gameplay scenes,

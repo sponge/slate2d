@@ -4,7 +4,7 @@ class Game is Scene {
    construct new(mapName) {
       Trap.print(mapName+"\n")
       _dog = Asset.create(Asset.Image, "dog", "gfx/dog.png")
-      _sprites = Asset.create(Asset.Image, "sprites", "gfx/sprites.gif")
+      _sprites = Asset.create(Asset.Image, "sprites", "maps/tilesets/plat.gif")
       _music = Asset.create(Asset.Mod, "music", "music/frantic_-_dog_doesnt_care.it")
       _speech = Asset.create(Asset.Speech, "speech", "great job! you are a good dog!")
       _font = Asset.create(Asset.BitmapFont, "font", "gfx/good_neighbors.png")

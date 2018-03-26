@@ -9,6 +9,11 @@ void* Img_Load(Asset &asset) {
 	void *buffer;
 	auto sz = FS_ReadFile(asset.path, &buffer);
 
+	if (sz == -1) {
+		Com_Error(ERR_DROP, "Couldn't read image %s", asset.path);
+		return nullptr;
+	}
+
 	Image * img = new Image();
 	img->nvg = inf.nvg;
 	img->hnd = nvgCreateImageMem(img->nvg, NVG_IMAGE_NEAREST, (unsigned char *)buffer, sz);

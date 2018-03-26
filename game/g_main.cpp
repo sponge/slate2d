@@ -12,6 +12,14 @@ ClientInfo *inf;
 
 void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 
+void Cmd_Scene_f(void) {
+	const char *mainScriptName = trap->Cmd_Argv(1);
+	const char *sceneParams = trap->Cmd_ArgsFrom(2);
+
+	auto newScene = new WrenScene(mainScriptName, sceneParams);
+	trap->Scene_Replace(0, newScene);
+}
+
 // map (name) - load a map and switch to the game scene
 void Cmd_Map_f(void) {
 	auto mapname = trap->Cmd_Argv(1);
@@ -30,16 +38,13 @@ void Cmd_Map_f(void) {
 		return;
 	}
 
-	auto newScene = new WrenScene(filename);
+	auto newScene = new WrenScene("scripts/main.wren", filename);
 	trap->Scene_Replace(0, newScene);
 }
 
 static void Init(void *clientInfo, void *imGuiContext) {
-	inf = (ClientInfo*)clientInfo;
-	inf->gameWidth = 320;
-	inf->gameHeight = 180;
-
 	trap->Cmd_AddCommand("map", Cmd_Map_f);
+	trap->Cmd_AddCommand("scene", Cmd_Scene_f);
 
 	trap->Cmd_AddCommand("+p1up",		[]() { trap->IN_KeyDown(&buttons[0]); });
 	trap->Cmd_AddCommand("-p1up",		[]() { trap->IN_KeyUp(&buttons[0]); });

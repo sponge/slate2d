@@ -4,7 +4,7 @@
 
 void WrenScene::Startup(ClientInfo* info) {
 	inf = info;
-	vm = Wren_Init(mapFileName);
+	vm = Wren_Init(mainScriptName, mapFileName);
 }
 
 void WrenScene::Update(float dt) {

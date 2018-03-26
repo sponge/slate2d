@@ -83,7 +83,6 @@ typedef struct {
 typedef struct {
 	struct NVGcontext *nvg;
 	int width, height;
-	int gameWidth, gameHeight;
 } ClientInfo;
 
 // SCENE

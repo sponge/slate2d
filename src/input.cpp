@@ -115,6 +115,8 @@ bool MouseEvent(int button, bool down, unsigned time) {
 	case SDL_BUTTON_X2:
 		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_X2, down, com_frameTime);
 	}
+
+	return false;
 }
 
 void IN_KeyDown(kbutton_t *b) {

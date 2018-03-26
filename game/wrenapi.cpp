@@ -11,8 +11,6 @@
 
 static tmx_map *map; // FIXME: bad!
 
-#define MAIN_SCRIPT "scripts/main.wren"
-
 #pragma region Trap Module
 void wren_trap_print(WrenVM *vm) {
 	const char *str = wrenGetSlotString(vm, 1);
@@ -614,7 +612,7 @@ WrenForeignMethodFn wren_bindForeignMethodFn(WrenVM* vm, const char* module, con
 #pragma endregion
 
 #pragma region Public functions
-WrenVM *Wren_Init(const char *constructorStr) {
+WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	WrenConfiguration config;
 	wrenInitConfiguration(&config);
 	config.errorFn = wren_error;
@@ -623,16 +621,16 @@ WrenVM *Wren_Init(const char *constructorStr) {
 
 	WrenVM *vm = wrenNewVM(&config);
 
-	// load MAIN_SCRIPT
+	// load passed in script name as our main function
 	char *mainStr;
-	int mainSz = trap->FS_ReadFile(MAIN_SCRIPT, (void**)&mainStr);
+	int mainSz = trap->FS_ReadFile(mainScriptName, (void**)&mainStr);
 	if (mainSz <= 0) {
-		trap->Error(ERR_DROP, "couldn't load " MAIN_SCRIPT);
+		trap->Error(ERR_DROP, "couldn't load %s", mainScriptName);
 		return nullptr;
 	}
 
 	if (wrenInterpret(vm, mainStr) != WREN_RESULT_SUCCESS) {
-		trap->Error(ERR_DROP, "can't compile " MAIN_SCRIPT);
+		trap->Error(ERR_DROP, "can't compile %s", mainScriptName);
 		return nullptr;
 	}
 	free(mainStr);

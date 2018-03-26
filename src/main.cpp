@@ -110,8 +110,6 @@ int main(int argc, char *argv[]) {
 
 	inf.width = vid_width->integer;
 	inf.height = vid_height->integer;
-	inf.gameWidth = 320;
-	inf.gameHeight = 180;
 	window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, inf.width, inf.height, SDL_WINDOW_OPENGL);
 
 	if (window == NULL) {

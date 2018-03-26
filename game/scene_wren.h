@@ -3,7 +3,7 @@
 
 class WrenScene : public Scene {
 public:
-	WrenScene(const char *mapFileName) : mapFileName(mapFileName) {};
+	WrenScene(const char *mainScriptName, const char *mapFileName) : mainScriptName(mainScriptName), mapFileName(mapFileName) {};
 	void Startup(ClientInfo* i) override;
 	void Update(float dt) override;
 	void Render() override;
@@ -11,6 +11,7 @@ public:
 
 private:
 	ClientInfo* inf;
+	const char *mainScriptName;
 	const char *mapFileName;
 	struct WrenVM *vm;
 };

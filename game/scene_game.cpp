@@ -37,9 +37,9 @@ void GameScene::Update(float dt) {
 
 void GameScene::Render() {
 	DC_Clear();
-	DC_SetTransform((float)(inf->width / inf->gameWidth), 0, 0, (float)(inf->width / inf->gameWidth), 0, 0, true);
+	DC_SetTransform((float)(inf->width / 320), 0, 0, (float)(inf->width / 320), 0, 0, true);
 
-	DC_DrawMapLayer(0, 0.0f, 0.0f - map->height * map->tile_height + inf->gameHeight);
+	DC_DrawMapLayer(0, 0.0f, 0.0f - map->height * map->tile_height + 180);
 
 	DC_SetColor(COLOR_FILL, 255, 0, 0, 255);
 	DC_DrawRect(5, 3, 16, 16);

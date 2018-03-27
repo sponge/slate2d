@@ -30,6 +30,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../main.h"
 #include "../files.h"
 
+#if defined(_WIN32) && defined(DEBUG)
+#include <intrin.h>
+#endif
+
 int			cmd_wait;
 cmd_t		cmd_text;
 byte		cmd_text_buf[MAX_CMD_BUFFER];
@@ -50,9 +54,7 @@ void __cdecl Com_Error(int level, const char *error, ...) {
 	Com_Printf("%s\n", errorMessage);
 
 #if defined(_WIN32) && defined(DEBUG)
-	__asm {
-		int 0x03
-	}
+	__debugbreak();
 #endif
 	
 	if (level == ERR_FATAL) {

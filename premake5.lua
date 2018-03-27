@@ -9,7 +9,7 @@ solution "game"
     buildoptions {"-Wno-unused-parameter"}
 
   configuration { "windows" }
-    platforms { "x86" }
+    platforms { "x86", "x64" }
     disablewarnings { "4100" }
 
   configuration { "linux" }
@@ -38,12 +38,20 @@ solution "game"
     cppdialect "C++14"
 
     configuration { "windows" }
-      libdirs { "libs/sdl/lib/Win32" }
       links { "SDL2", "SDL2main", "opengl32" }
       defines { "_CRT_SECURE_NO_WARNINGS" }
-      postbuildcommands {
-        '{COPY} "%{wks.location}../libs/sdl/lib/win32/SDL2.dll" "%{cfg.targetdir}"'
-      }
+
+      filter "platforms:x86"
+        libdirs { "libs/sdl/lib/Win32" }
+        postbuildcommands {
+          '{COPY} "%{wks.location}../libs/sdl/lib/win32/SDL2.dll" "%{cfg.targetdir}"'
+        }
+
+      filter "platforms:x64"
+        libdirs { "libs/sdl/lib/x64" }
+        postbuildcommands {
+          '{COPY} "%{wks.location}../libs/sdl/lib/x64/SDL2.dll" "%{cfg.targetdir}"'
+        }
 
     configuration { "macosx" }
       links { "OpenGL.framework", "SDL2.framework", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework" }

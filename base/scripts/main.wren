@@ -104,3 +104,24 @@ class Game is Scene {
       Asset.clearAll()
    }
 }
+
+class Main {
+   static scene { __scene }
+
+   static init(mapName) {
+      __scene = Game.new(mapName)
+   }
+
+   static update(dt) {
+      __scene.update(dt)
+   }
+
+   static draw(w, h) {
+      __scene.draw(w, h)
+   }
+
+   static shutdown() {
+      __scene.shutdown()
+      __scene = null
+   }
+}

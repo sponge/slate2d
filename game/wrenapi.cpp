@@ -637,7 +637,7 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 
 	// make sure we can find a new Game class
 	wrenEnsureSlots(vm, 1);
-	wrenGetVariable(vm, "main", "Game", 0);
+	wrenGetVariable(vm, "main", "Main", 0);
 	WrenHandle *gameClass = wrenGetSlotHandle(vm, 0);
 
 	if (gameClass == nullptr) {
@@ -646,20 +646,21 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	}
 
 	// make a new instance of the Game class and grab handles to update/draw
-	WrenHandle *newHnd = wrenMakeCallHandle(vm, "new(_)");
+	WrenHandle *newHnd = wrenMakeCallHandle(vm, "init(_)");
 
 	wrenHandles_t *hnd = new wrenHandles_t();
+	hnd->instanceHnd = gameClass;
 	hnd->updateHnd = wrenMakeCallHandle(vm, "update(_)");
 	hnd->drawHnd = wrenMakeCallHandle(vm, "draw(_,_)");
 	hnd->shutdownHnd = wrenMakeCallHandle(vm, "shutdown()");
 
 	if (hnd->updateHnd == nullptr) {
-		trap->Error(ERR_DROP, "couldn't find update(_) on Game class (did you subclass Scene?)");
+		trap->Error(ERR_DROP, "couldn't find static update(_) on Main");
 		return nullptr;
 	}
 
 	if (hnd->drawHnd == nullptr) {
-		trap->Error(ERR_DROP, "couldn't find draw(_,_) on Game class (did you subclass Scene?)");
+		trap->Error(ERR_DROP, "couldn't find static draw(_,_) on Main");
 		return nullptr;
 	}
 
@@ -669,14 +670,12 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	wrenSetSlotString(vm, 1, constructorStr);
 	wrenCall(vm, newHnd);
 	wrenReleaseHandle(vm, newHnd);
-	wrenReleaseHandle(vm, gameClass);
+	//wrenReleaseHandle(vm, gameClass);
 
 	if (wrenGetSlotCount(vm) == 0) {
 		trap->Error(ERR_DROP, "couldn't instantiate new Game class");
 		return nullptr;
 	}
-
-	hnd->instanceHnd = wrenGetSlotHandle(vm, 0);
 
 	wrenSetUserData(vm, hnd);
 

@@ -350,7 +350,7 @@ void wren_map_getobjectsinlayer(WrenVM *vm) {
 	int totalSlots = 1; // total num of slots for wrenEnsureSlots
 	int s = 1; // current slot we're on
 
-	static const char *keys[] = { "name", "type", "x", "y", "visible", "rotation", "properties" };
+	static const char *keys[] = { "name", "type", "x", "y", "width", "height", "visible", "rotation", "properties" };
 	static const int keySz = sizeof(keys) / sizeof(*keys);
 
 	// reserve keys
@@ -382,6 +382,8 @@ void wren_map_getobjectsinlayer(WrenVM *vm) {
 		wrenSetSlotString(vm, s++, defaultedType == nullptr ? "" : defaultedType);
 		wrenSetSlotDouble(vm, s++, obj->x);
 		wrenSetSlotDouble(vm, s++, obj->y);
+        wrenSetSlotDouble(vm, s++, obj->width);
+        wrenSetSlotDouble(vm, s++, obj->height);
 		wrenSetSlotBool(vm, s++, obj->visible);
 		wrenSetSlotDouble(vm, s++, obj->rotation);
 

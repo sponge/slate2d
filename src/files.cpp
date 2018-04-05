@@ -34,7 +34,7 @@ void FS_FreeList(void * listVar) {
 void FS_Init(const char *argv0) {
 	PHYSFS_init(argv0);
 	auto fs_basepath = Cvar_Get("fs_basepath", PHYSFS_getBaseDir(), CVAR_INIT);
-	auto fs_game = Cvar_Get("fs_game", "base", CVAR_INIT);
+	auto fs_game = Cvar_Get("fs_game", "mybase", CVAR_INIT);
 
 	PHYSFS_mount(va("%s/%s", fs_basepath->string, fs_game->string), "/", 1);
 

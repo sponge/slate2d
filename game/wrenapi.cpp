@@ -382,8 +382,8 @@ void wren_map_getobjectsinlayer(WrenVM *vm) {
 		wrenSetSlotString(vm, s++, defaultedType == nullptr ? "" : defaultedType);
 		wrenSetSlotDouble(vm, s++, obj->x);
 		wrenSetSlotDouble(vm, s++, obj->y);
-        wrenSetSlotDouble(vm, s++, obj->width);
-        wrenSetSlotDouble(vm, s++, obj->height);
+		wrenSetSlotDouble(vm, s++, obj->width);
+		wrenSetSlotDouble(vm, s++, obj->height);
 		wrenSetSlotBool(vm, s++, obj->visible);
 		wrenSetSlotDouble(vm, s++, obj->rotation);
 

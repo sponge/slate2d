@@ -250,20 +250,21 @@ bool IN_KeyPressed(kbutton_t *key, unsigned int delay, unsigned int repeat) {
 		return false;
 	}
 
-	unsigned int firstTrigger = key->firstdowntime + delay;
+	double firstTrigger = key->firstdowntime + delay;
 
 	if (com_frameTime >= firstTrigger && com_frameTime - frame_msec < firstTrigger) {
 		return true;
 	}
 
-	int heldTime = com_frameTime - key->firstdowntime - delay;
+	double heldTime = com_frameTime - key->firstdowntime - delay;
 
 	if (heldTime < 0) {
 		return false;
 	}
 
-	// FIXME: this doesn't always work for reasons??
-	return ((heldTime - frame_msec) % repeat) >= (heldTime % repeat);	
+	double repeatCount = SDL_floor(heldTime / repeat);
+	double lastRepeatCount = SDL_floor((heldTime - frame_msec) / repeat);
+	return lastRepeatCount != repeatCount;
 }
 
 MousePosition IN_MousePosition() {

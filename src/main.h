@@ -4,8 +4,7 @@
 
 extern bool consoleActive;
 
-extern unsigned com_frameTime;
-extern unsigned frame_msec;
+extern double com_frameTime, frame_msec;
 extern kbutton_t buttons[12];
 
 void DropToMenu();

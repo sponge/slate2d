@@ -33,7 +33,7 @@
 SoLoud::Soloud soloud;
 ClientInfo inf;
 SceneManager *sm;
-unsigned frame_msec, com_frameTime;
+double frame_msec, com_frameTime;
 tmx_map *map;
 //float frame_accum;
 

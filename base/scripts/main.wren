@@ -37,6 +37,9 @@ class Game is Scene {
 
       var layerProps = TileMap.getLayerProperties(_worldLayer)
       Trap.printLn(layerProps)
+
+      var len = Asset.measureBmpText(_font, "hello world")
+      Trap.printLn("length of text is %(len)")
    }
 
    update(dt) {

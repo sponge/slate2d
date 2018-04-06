@@ -102,7 +102,7 @@ void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int charSpacing, in
 	asset->resource = (void*)font;
 }
 
-int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string) {
+int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
 	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
 	BitmapFont *font = (BitmapFont*)asset->resource;
 
@@ -131,7 +131,7 @@ int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string) {
 
 	}
 
-	return currX;
+	return currX * scale;
 }
 
 int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, const char *string) {

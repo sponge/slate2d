@@ -102,7 +102,6 @@ void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int charSpacing, in
 	asset->resource = (void*)font;
 }
 
-// TODO: Use the scale.
 int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
 	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
 	BitmapFont *font = (BitmapFont*)asset->resource;
@@ -132,7 +131,7 @@ int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
 
 	}
 
-	return currX;
+	return currX * scale;
 }
 
 int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, const char *string) {
@@ -160,9 +159,9 @@ int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, cons
 		BitmapGlyph &glyph = font->offsets[string[i]];
 
 		nvgSave(inf.nvg);
-		nvgScale(inf.nvg, scale, scale);
 
 		nvgTranslate(inf.nvg, currX, currY);
+		nvgScale(inf.nvg, scale, scale);
 
 		auto paint = nvgImagePattern(inf.nvg, 0 - glyph.start, 0, font->w, font->h, 0, font->hnd, 1.0);
 		nvgBeginPath(inf.nvg);
@@ -172,7 +171,7 @@ int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, cons
 
 		nvgRestore(inf.nvg);
 
-		currX += glyph.end - glyph.start + font->charSpacing;
+		currX += (glyph.end - glyph.start + font->charSpacing) * scale;
 
 		i++;
 	}

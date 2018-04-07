@@ -130,7 +130,7 @@ class Main {
    }
 
    static console(line) {
-      Meta.eval("Trap.printLn(%(line))")
+      Meta.eval(line)
    }
 
    static shutdown() {

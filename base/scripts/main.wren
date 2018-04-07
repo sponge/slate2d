@@ -50,6 +50,10 @@ class Game is Scene {
       }
 
       _upActive = Trap.keyActive(Button.Up)
+
+      for (i in 0..11) {
+         if (Trap.keyPressed(i, 0, 1000)) { Trap.printLn("button %(i)") }
+      }
    }
 
    draw(w, h) {

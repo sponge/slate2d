@@ -115,7 +115,7 @@ typedef struct {
     char		*binding;
 } qkey_t;
 
-extern	qkey_t		keys[512 + NUM_MOUSE_BUTTONS];
+extern qkey_t		keys[512 + NUM_MOUSE_BUTTONS + (15 * 1)];
 
 void CL_InitKeyCommands(void);
 int Key_StringToKeynum(const char *str);

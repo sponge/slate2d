@@ -1,5 +1,6 @@
 #include <SDL/SDL_keyboard.h>
 #include <SDL/SDL_mouse.h>
+#include <SDL/SDL_gamecontroller.h>
 
 #include "console/console.h"
 #include "input.h"
@@ -117,6 +118,12 @@ bool MouseEvent(int button, bool down, unsigned time) {
 	}
 
 	return false;
+}
+
+bool JoyEvent(int controller, int button, bool down, unsigned time) {
+	int keyId = SDL_NUM_SCANCODES + NUM_MOUSE_BUTTONS + (controller * SDL_CONTROLLER_BUTTON_MAX) + button;
+
+	return KeyEvent(keyId, down, time);
 }
 
 void IN_KeyDown(kbutton_t *b) {

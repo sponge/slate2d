@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
 
 	Com_StartupVariable(nullptr);
 
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0) {
 		Com_Error(ERR_FATAL, "There was an error initing SDL2: %s", SDL_GetError());
 	}
 
@@ -135,6 +135,16 @@ int main(int argc, char *argv[]) {
 
 	if (glewInit() != GLEW_OK) {
 		Com_Error(ERR_FATAL, "Could not init glew.");
+	}
+
+	for (int joystickIndex = 0; joystickIndex < SDL_NumJoysticks(); joystickIndex++) {
+		if (!SDL_IsGameController(joystickIndex)) {
+			continue;
+		}
+
+		SDL_GameControllerOpen(joystickIndex);
+		Com_Printf("Opening controller %i\n", joystickIndex);
+		break;
 	}
 
 	soloud.init();
@@ -207,6 +217,14 @@ int main(int argc, char *argv[]) {
 
 			if (ev.type == SDL_MOUSEBUTTONDOWN) {
 				MouseEvent(ev.button.button, true, com_frameTime);
+			}
+
+			if (ev.type == SDL_CONTROLLERBUTTONDOWN) {
+				JoyEvent(ev.jbutton.which, ev.jbutton.button, true, com_frameTime);
+			}
+
+			if (ev.type == SDL_CONTROLLERBUTTONUP) {
+				JoyEvent(ev.jbutton.which, ev.jbutton.button, false, com_frameTime);
 			}
 		}
 		

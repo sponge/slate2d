@@ -682,6 +682,7 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	hnd->updateHnd = wrenMakeCallHandle(vm, "update(_)");
 	hnd->drawHnd = wrenMakeCallHandle(vm, "draw(_,_)");
 	hnd->shutdownHnd = wrenMakeCallHandle(vm, "shutdown()");
+	hnd->consoleHnd = wrenMakeCallHandle(vm, "console(_)");
 
 	if (hnd->updateHnd == nullptr) {
 		trap->Error(ERR_DROP, "couldn't find static update(_) on Main");
@@ -728,6 +729,14 @@ void Wren_Draw(WrenVM *vm, int w, int h) {
 	wrenCall(vm, hnd->drawHnd);
 }
 
+void Wren_Console(WrenVM *vm, const char *str) {
+	wrenHandles_t* hnd = (wrenHandles_t*)wrenGetUserData(vm);
+	wrenEnsureSlots(vm, 2);
+	wrenSetSlotHandle(vm, 0, hnd->instanceHnd);
+	wrenSetSlotString(vm, 1, str);
+	wrenCall(vm, hnd->consoleHnd);
+}
+
 void Wren_Eval(WrenVM *vm, const char *code) {
 	wrenInterpret(vm, code);
 }
@@ -746,6 +755,8 @@ void Wren_FreeVM(WrenVM *vm) {
 	wrenReleaseHandle(vm, hnd->updateHnd);
 	wrenReleaseHandle(vm, hnd->shutdownHnd);
 	wrenReleaseHandle(vm, hnd->instanceHnd);
+	wrenReleaseHandle(vm, hnd->consoleHnd);
+
 	delete hnd;
 
 	wrenFreeVM(vm);

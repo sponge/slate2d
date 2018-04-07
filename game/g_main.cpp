@@ -78,9 +78,10 @@ static void Init(void *clientInfo, void *imGuiContext) {
 }
 
 static void Console(const char *line) {
-	//if (wrenScene != nullptr) {
-	//	wrenScene->WrenEval(line);
-	//}
+	if (wrenScene != nullptr) {
+		wrenScene->Console(line);
+		//wrenScene->WrenEval(line);
+	}
 }
 
 // technically the scene manager will handle every frame for gameplay scenes,

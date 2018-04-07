@@ -1,4 +1,5 @@
 import "engine" for Trap, Button, Draw, Scene, Asset, Fill, Color, TileMap
+import "meta" for Meta
 
 class Game is Scene {
    construct new(mapName) {
@@ -126,6 +127,10 @@ class Main {
 
    static draw(w, h) {
       __scene.draw(w, h)
+   }
+
+   static console(line) {
+      Meta.eval("Trap.printLn(%(line))")
    }
 
    static shutdown() {

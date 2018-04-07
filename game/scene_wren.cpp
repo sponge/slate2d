@@ -25,3 +25,8 @@ void WrenScene::WrenEval(const char *str)
 {
 	Wren_Eval(vm, str);
 }
+
+void WrenScene::Console(const char *str)
+{
+	Wren_Console(vm, str);
+}

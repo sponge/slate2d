@@ -45,9 +45,12 @@ void DC_SetColor(byte which, byte color[4]) {
 	DC_SetColor(which, color[0], color[1], color[2], color[3]);
 }
 
-void DC_SetTransform(float a, float b, float c, float d, float e, float f, bool absolute) {
-	GET_COMMAND(setTransformCommand_t, RC_SET_TRANSFORM)
-	cmd->absolute = absolute;
+void DC_ResetTransform() {
+	GET_COMMAND(resetTransformCommand_t, RC_RESET_TRANSFORM)
+}
+
+void DC_Transform(float a, float b, float c, float d, float e, float f) {
+	GET_COMMAND(transformCommand_t, RC_TRANSFORM)
 	cmd->transform[0] = a;
 	cmd->transform[1] = b;
 	cmd->transform[2] = c;

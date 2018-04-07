@@ -46,7 +46,8 @@ class Asset {
 
 class Draw {
    foreign static setColor(which, r, g, b, a)
-   foreign static setTransform(a, b, c, d, e, f, absolute)
+   foreign static resetTransform()
+   foreign static transform(a, b, c, d, e, f)
    foreign static rotate(angle)
    foreign static translate(x, y)
    foreign static setScissor(x, y, w, h)

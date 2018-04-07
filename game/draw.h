@@ -1,7 +1,8 @@
 #pragma once
 
 void DC_SetColor(byte which, byte r, byte g, byte b, byte a);
-void DC_SetTransform(float a, float b, float c, float d, float e, float f, bool absolute = false);
+void DC_ResetTransform();
+void DC_Transform(float a, float b, float c, float d, float e, float f);
 void DC_Rotate(float angle);
 void DC_Translate(float x, float y);
 void DC_SetScissor(float x, float y, float w, float h);

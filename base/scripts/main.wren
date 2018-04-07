@@ -54,7 +54,8 @@ class Game is Scene {
    draw(w, h) {
       Trap.dbgWin("window", "contents")
       Draw.clear()
-      Draw.setTransform(h / 180, 0, 0, h / 180, 0, 0, true)
+      Draw.resetTransform()
+      Draw.transform(h / 180, 0, 0, h / 180, 0, 0)
 
       Draw.mapLayer(_bgLayer)
       Draw.mapLayer(_worldLayer)

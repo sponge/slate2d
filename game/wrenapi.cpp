@@ -147,16 +147,19 @@ void wren_dc_setcolor(WrenVM *vm) {
 	DC_SetColor(which != 0.0f ? OUTLINE : FILL, r, g, b, a);
 }
 
-void wren_dc_settransform(WrenVM *vm) {
+void wren_dc_reset_transform(WrenVM *vm) {
+	DC_ResetTransform();
+}
+
+void wren_dc_transform(WrenVM *vm) {
 	float a = (float) wrenGetSlotDouble(vm, 1);
 	float b = (float) wrenGetSlotDouble(vm, 2);
 	float c = (float) wrenGetSlotDouble(vm, 3);
 	float d = (float) wrenGetSlotDouble(vm, 4);
 	float e = (float) wrenGetSlotDouble(vm, 5);
 	float f = (float) wrenGetSlotDouble(vm, 6);
-	bool absolute = wrenGetSlotBool(vm, 7);
 
-	DC_SetTransform(a, b, c, d, e, f, absolute);
+	DC_Transform(a, b, c, d, e, f);
 }
 
 void wren_dc_rotate(WrenVM *vm) {
@@ -596,7 +599,8 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Asset", true, "createSprite(_,_,_,_,_)", wren_asset_create_sprite },
 
 	{ "engine", "Draw", true, "setColor(_,_,_,_,_)", wren_dc_setcolor },
-	{ "engine", "Draw", true, "setTransform(_,_,_,_,_,_,_)", wren_dc_settransform },
+	{ "engine", "Draw", true, "resetTransform()", wren_dc_reset_transform },
+	{ "engine", "Draw", true, "transform(_,_,_,_,_,_)", wren_dc_transform },
 	{ "engine", "Draw", true, "rotate(_)", wren_dc_rotate },
 	{ "engine", "Draw", true, "translate(_,_)", wren_dc_translate },
 	{ "engine", "Draw", true, "setScissor(_,_,_,_)", wren_dc_setscissor },

@@ -56,6 +56,17 @@ void DC_SetTransform(float a, float b, float c, float d, float e, float f, bool 
 	cmd->transform[5] = f;
 }
 
+void DC_Rotate(float angle) {
+	GET_COMMAND(rotateCommand_t, RC_ROTATE);
+	cmd->angle = angle;
+}
+
+void DC_Translate(float x, float y) {
+	GET_COMMAND(translateCommand_t, RC_TRANSLATE);
+	cmd->x = x;
+	cmd->y = y;
+}
+
 void DC_SetScissor(float x, float y, float w, float h) {
 	GET_COMMAND(setScissorCommand_t, RC_SET_SCISSOR)
 	cmd->x = x;

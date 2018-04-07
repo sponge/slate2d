@@ -264,6 +264,9 @@ bool IN_KeyPressed(kbutton_t *key, unsigned int delay, unsigned int repeat) {
 
 	double repeatCount = SDL_floor(heldTime / repeat);
 	double lastRepeatCount = SDL_floor((heldTime - frame_msec) / repeat);
+	//Com_Printf("current:%0.5f last:%0.5f", heldTime / repeat, (heldTime - frame_msec) / repeat);
+	//Com_Printf(lastRepeatCount != repeatCount ? " TRIGGER\n" : "\n");
+
 	return lastRepeatCount != repeatCount;
 }
 

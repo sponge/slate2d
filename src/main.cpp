@@ -77,6 +77,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	Com_StartupVariable("fs_basepath");
+	Com_StartupVariable("fs_game");
 	FS_Init(argv[0]);
 
 	Cbuf_Init();
@@ -87,7 +88,7 @@ int main(int argc, char *argv[]) {
 	CL_InitKeyCommands();
 
 	if (!FS_Exists("default.cfg")) {
-		Com_Error(ERR_FATAL, "Filesystem error, check fs_basepath is set correctly.\n");
+		Com_Error(ERR_FATAL, "Filesystem error, check fs_basepath is set correctly. (Could not find default.cfg)");
 	}
 
 	Cbuf_AddText("exec default.cfg\n");
@@ -99,7 +100,7 @@ int main(int argc, char *argv[]) {
 	Com_StartupVariable(nullptr);
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		Com_Error(ERR_FATAL, "There was an error initing SDL2: %s\n", SDL_GetError());
+		Com_Error(ERR_FATAL, "There was an error initing SDL2: %s", SDL_GetError());
 	}
 
 	atexit(SDL_Quit);
@@ -113,7 +114,7 @@ int main(int argc, char *argv[]) {
 	window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, inf.width, inf.height, SDL_WINDOW_OPENGL);
 
 	if (window == NULL) {
-		Com_Error(ERR_FATAL, "There was an error creating the window: %s\n", SDL_GetError());
+		Com_Error(ERR_FATAL, "There was an error creating the window: %s", SDL_GetError());
 	}
 
 	SDL_SetWindowFullscreen(window, vid_fullscreen->integer == 2 ? SDL_WINDOW_FULLSCREEN : vid_fullscreen->integer == 1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
@@ -123,16 +124,16 @@ int main(int argc, char *argv[]) {
 	SDL_GL_SetSwapInterval(vid_swapinterval->integer);
 
 	if (context == NULL) {
-		Com_Error(ERR_FATAL, "There was an error creating OpenGL context: %s\n", SDL_GetError());
+		Com_Error(ERR_FATAL, "There was an error creating OpenGL context: %s", SDL_GetError());
 	}
 
 	const unsigned char *version = glGetString(GL_VERSION);
 	if (version == NULL) {
-		Com_Error(ERR_FATAL, "There was an error with OpenGL configuration.\n");
+		Com_Error(ERR_FATAL, "There was an error with OpenGL configuration.");
 	}
 
 	if (glewInit() != GLEW_OK) {
-		Com_Error(ERR_FATAL, "Could not init glew.\n");
+		Com_Error(ERR_FATAL, "Could not init glew.");
 	}
 
 	soloud.init();
@@ -235,7 +236,8 @@ int main(int argc, char *argv[]) {
 
 		SDL_GL_SwapWindow(window);
 
-		if (SDL_GL_GetSwapInterval() == 0) {
+		// sleep a little so we don't burn up cpu/gpu on insanely fast frames (>1000fps)
+		if (frame_msec < 1.0) {
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 	}

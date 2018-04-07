@@ -31,31 +31,68 @@ void FS_FreeList(void * listVar) {
 	PHYSFS_freeList(listVar);
 }
 
-void FS_Init(const char *argv0) {
-	PHYSFS_init(argv0);
-	auto fs_basepath = Cvar_Get("fs_basepath", PHYSFS_getBaseDir(), CVAR_INIT);
-	auto fs_game = Cvar_Get("fs_game", "base", CVAR_INIT);
-
-	PHYSFS_mount(va("%s/%s", fs_basepath->string, fs_game->string), "/", 1);
-
-	const char *archiveExt = "pk3";
-	char **rc = PHYSFS_enumerateFiles("/");
-	char **i;
+void FS_AddPaksFromList(char **list, const char *basePath, const char *gamePath) {
+	static const char *archiveExt = "pk3";
 	size_t extlen = strlen(archiveExt);
+
+	char **i;
 	char *ext;
 
-	for (i = rc; *i != NULL; i++) {
+	for (i = list; *i != NULL; i++) {
 		size_t l = strlen(*i);
 		if ((l > extlen) && ((*i)[l - extlen - 1] == '.')) {
 			ext = (*i) + (l - extlen);
 			if (strcasecmp(ext, archiveExt) == 0) {
-				PHYSFS_mount(va("%s/%s/%s", fs_basepath->string, fs_game->string, *i), "/", 0);
+				PHYSFS_mount(va("%s/%s/%s", basePath, gamePath, *i), "/", 1);
 			}
 		}
 	}
+}
 
-	PHYSFS_freeList(rc);
+void FS_Init(const char *argv0) {
+	PHYSFS_init(argv0);
+	auto fs_basepath = Cvar_Get("fs_basepath", PHYSFS_getBaseDir(), CVAR_INIT);
+	auto fs_basegame = Cvar_Get("fs_basegame", "base", CVAR_INIT);
+	auto fs_game = Cvar_Get("fs_game", "", CVAR_INIT);
 
+	bool modLoaded = strlen(fs_game->string) > 0;
+
+	char **baseFiles, **gameFiles;
+
+	// get the file listing for the basegame dir, then immediately unmount
+	const char *fullBasePath = va("%s/%s", fs_basepath->string, fs_basegame->string);
+	PHYSFS_mount(fullBasePath, "/", 1);
+	baseFiles = PHYSFS_enumerateFiles("/");
+	PHYSFS_removeFromSearchPath(fullBasePath);
+
+	// if fs_game is set, do the same thing for the fs_game dir
+	if (modLoaded) {
+		const char *fullGamePath = va("%s/%s", fs_basepath->string, fs_game->string);
+		PHYSFS_mount(fullGamePath, "/", 1);
+		gameFiles = PHYSFS_enumerateFiles("/");
+		PHYSFS_removeFromSearchPath(fullGamePath);
+	}
+
+	// mount the mod dir first, then mount mod PK3s
+	if (modLoaded) {
+		PHYSFS_mount(va("%s/%s", fs_basepath->string, fs_game->string), "/", 1);
+		FS_AddPaksFromList(gameFiles, fs_basepath->string, fs_game->string);
+		PHYSFS_freeList(gameFiles);
+	}
+
+	// then mount the base game dir, then the mount base game PK3s
+	PHYSFS_mount(va("%s/%s", fs_basepath->string, fs_basegame->string), "/", 1);
+	FS_AddPaksFromList(baseFiles, fs_basepath->string, fs_basegame->string);
+	PHYSFS_freeList(baseFiles);
+
+	// print all the files we've found in order of priority
+	Com_Printf("Current filesystem search path:\n");
+	for (char **foundPath = PHYSFS_getSearchPath(); *foundPath != NULL; foundPath++) {
+		Com_Printf("%s\n", *foundPath);
+	}
+	Com_Printf("\n");
+
+	// add command handler for dir to view virtual filesystem
 	Cmd_AddCommand("dir", Cmd_Dir_f);
 }
 

@@ -77,6 +77,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	Com_StartupVariable("fs_basepath");
+	Com_StartupVariable("fs_basegame");
 	Com_StartupVariable("fs_game");
 	FS_Init(argv[0]);
 

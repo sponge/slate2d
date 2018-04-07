@@ -44,11 +44,6 @@ class Game is Scene {
    }
 
    update(dt) {
-      var a = Trap.keyPressed(Button.Up, 1000, 500)
-      if (a) {
-         Trap.printLn("up pressed")
-      }
-
       _upActive = Trap.keyActive(Button.Up)
 
       for (i in 0..11) {

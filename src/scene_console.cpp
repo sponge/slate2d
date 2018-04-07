@@ -5,16 +5,8 @@
 #include "cvar_main.h"
 #include "console/console.h"
 
-cvar_t *r_showfps;
-bool consoleActive;
-
-void Cmd_ToggleConsole_f(void) {
-	consoleActive = !consoleActive;
-}
-
 void ConsoleScene::Startup(ClientInfo* info) {
 	inf = info;
-	Cmd_AddCommand("toggleconsole", Cmd_ToggleConsole_f);
 }
 
 void ConsoleScene::Update(float dt) {

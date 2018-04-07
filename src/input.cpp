@@ -51,6 +51,10 @@ void CL_AddKeyUpCommands(int key, char *kb, unsigned time) {
 	}
 }
 
+const char *IN_BindForKey(int key) {
+	return keys[key].binding == nullptr ? "" : keys[key].binding;
+}
+
 bool KeyEvent(int key, bool down, unsigned time) {
 	// send the bound action
 	auto kb = keys[key].binding;

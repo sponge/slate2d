@@ -39,6 +39,14 @@ tmx_map *map;
 
 gameExportFuncs_t * gexports;
 SDL_Window *window;
+ConsoleScene *consoleScene;
+
+void Cmd_ToggleConsole_f(void) {
+	if (consoleScene == nullptr) {
+		return;
+	}
+	consoleScene->consoleActive = !consoleScene->consoleActive;
+}
 
 void Cmd_Vid_Restart_f(void) {
 	inf.width = vid_width->integer;
@@ -84,6 +92,7 @@ int main(int argc, char *argv[]) {
 	Cbuf_Init();
 	Cmd_Init();
 	Cmd_AddCommand("vid_restart", Cmd_Vid_Restart_f);
+	Cmd_AddCommand("toggleconsole", Cmd_ToggleConsole_f);
 	Cvar_Init();
 	RegisterMainCvars();
 	CL_InitKeyCommands();
@@ -168,7 +177,7 @@ int main(int argc, char *argv[]) {
 
 	sm = new SceneManager(inf);
 
-	auto consoleScene = new ConsoleScene();
+	consoleScene = new ConsoleScene();
 	consoleScene->Startup(&inf);
 
 	int ver = 0;
@@ -203,19 +212,22 @@ int main(int argc, char *argv[]) {
 				break;
 			}
 
-			if (ev.type == SDL_KEYUP) {
+			if (ev.type == SDL_KEYUP && !consoleScene->consoleActive) {
 				KeyEvent(ev.key.keysym.scancode, false, com_frameTime);
 			}
 
 			if (ev.type == SDL_KEYDOWN) {
+				if (consoleScene->consoleActive && strcmp("toggleconsole", IN_BindForKey(ev.key.keysym.scancode))) {
+					break;
+				}
 				KeyEvent(ev.key.keysym.scancode, true, com_frameTime);
 			}
 
-			if (ev.type == SDL_MOUSEBUTTONUP) {
+			if (ev.type == SDL_MOUSEBUTTONUP && !consoleScene->consoleActive) {
 				MouseEvent(ev.button.button, false, com_frameTime);
 			}
 
-			if (ev.type == SDL_MOUSEBUTTONDOWN) {
+			if (ev.type == SDL_MOUSEBUTTONDOWN && !consoleScene->consoleActive) {
 				MouseEvent(ev.button.button, true, com_frameTime);
 			}
 

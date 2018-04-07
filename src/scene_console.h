@@ -9,6 +9,8 @@ public:
 	void Update(float dt) override;
 	void Render() override;
 
+	bool consoleActive;
+
 private:
 	ClientInfo* inf;
 };

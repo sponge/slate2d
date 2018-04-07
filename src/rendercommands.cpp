@@ -34,6 +34,22 @@ const void *RB_SetTransform(const void *data) {
 	return (const void *)(cmd + 1);
 }
 
+const void *RB_Rotate(const void *data) {
+	auto cmd = (const rotateCommand_t *)data;
+
+	nvgRotate(inf.nvg, cmd->angle);
+
+	return (const void *)(cmd + 1);
+}
+
+const void *RB_Translate(const void *data) {
+	auto cmd = (const translateCommand_t *)data;
+
+	nvgTranslate(inf.nvg, cmd->x, cmd->y);
+
+	return (const void *)(cmd + 1);
+}
+
 const void *RB_SetScissor(const void *data) {
 	auto cmd = (const setScissorCommand_t *)data;
 	if (cmd->w <= 0 || cmd->h <= 0) {
@@ -221,6 +237,14 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 
 		case RC_SET_TRANSFORM:
 			data = RB_SetTransform(data);
+			break;
+
+		case RC_ROTATE:
+			data = RB_Rotate(data);
+			break;
+
+		case RC_TRANSLATE:
+			data = RB_Translate(data);
 			break;
 
 		case RC_SET_SCISSOR:

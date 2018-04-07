@@ -7,6 +7,9 @@
 #include "../../game/public.h"
 extern gameExportFuncs_t * gexports;
 
+// FIXME: this gets real slow real quick
+#define CONSOLE_MAX_LINES 200
+
 #define IM_ARRAYSIZE(_ARR)  ((int)(sizeof(_ARR)/sizeof(*_ARR)))
 
 ConsoleUI::ConsoleUI() {
@@ -37,6 +40,10 @@ void ConsoleUI::AddLog(const char* fmt, ...) {
 	va_end(args);
 	Items.push_back(Strdup(buf));
 	ScrollToBottom = true;
+
+	if (Items.size() > CONSOLE_MAX_LINES) {
+		Items.erase(Items.begin());
+	}
 }
 
 void ConsoleUI::Draw(const char* title, bool* p_open) {

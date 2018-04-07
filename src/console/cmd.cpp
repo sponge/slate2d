@@ -29,6 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "console.h"
 #include "../main.h"
 #include "../files.h"
+#include <SDL/SDL.h>
 
 #if defined(_WIN32) && defined(DEBUG)
 #include <intrin.h>
@@ -55,6 +56,10 @@ void __cdecl Com_Error(int level, const char *error, ...) {
 
 #if defined(_WIN32) && defined(DEBUG)
 	__debugbreak();
+#else
+	if (level == ERR_FATAL) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Fatal Error", errorMessage, NULL);
+	}
 #endif
 	
 	if (level == ERR_FATAL) {

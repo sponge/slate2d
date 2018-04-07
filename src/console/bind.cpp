@@ -119,7 +119,7 @@ keyname_t keynames[] =
 
 	{ "PAUSE", SDL_SCANCODE_PAUSE },
 
-	{ "SEMICOLON", ';' },	// because a raw semicolon seperates commands
+	{ "SEMICOLON", SDL_SCANCODE_SEMICOLON },	// because a raw semicolon seperates commands
 
 	{ NULL,0 }
 };
@@ -151,7 +151,12 @@ int Key_StringToKeynum(const char *str) {
 		else if (str[0] == '0') {
 			return SDL_SCANCODE_0;
 		}
-		return toupper(str[0]) - 61;
+		else if (str[0] >= 'a' && str[0] <= 'z') {
+			return toupper(str[0]) - 61;
+		}
+		else {
+			return SDL_GetScancodeFromName(str);
+		}
 	}
 
 	// check for hex code

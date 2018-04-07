@@ -148,15 +148,26 @@ void wren_dc_setcolor(WrenVM *vm) {
 }
 
 void wren_dc_settransform(WrenVM *vm) {
-	byte a = (byte) wrenGetSlotDouble(vm, 1);
-	byte b = (byte) wrenGetSlotDouble(vm, 2);
-	byte c = (byte) wrenGetSlotDouble(vm, 3);
-	byte d = (byte) wrenGetSlotDouble(vm, 4);
-	byte e = (byte) wrenGetSlotDouble(vm, 5);
-	byte f = (byte) wrenGetSlotDouble(vm, 6);
+	float a = (float) wrenGetSlotDouble(vm, 1);
+	float b = (float) wrenGetSlotDouble(vm, 2);
+	float c = (float) wrenGetSlotDouble(vm, 3);
+	float d = (float) wrenGetSlotDouble(vm, 4);
+	float e = (float) wrenGetSlotDouble(vm, 5);
+	float f = (float) wrenGetSlotDouble(vm, 6);
 	bool absolute = wrenGetSlotBool(vm, 7);
 
 	DC_SetTransform(a, b, c, d, e, f, absolute);
+}
+
+void wren_dc_rotate(WrenVM *vm) {
+	float angle = (float) wrenGetSlotDouble(vm, 1);
+	DC_Rotate(angle);
+}
+
+void wren_dc_translate(WrenVM *vm) {
+	float x = (float) wrenGetSlotDouble(vm, 1);
+	float y = (float) wrenGetSlotDouble(vm, 2);
+	DC_Translate(x, y);
 }
 
 void wren_dc_setscissor(WrenVM *vm) {
@@ -586,6 +597,8 @@ static const wrenMethodDef methods[] = {
 
 	{ "engine", "Draw", true, "setColor(_,_,_,_,_)", wren_dc_setcolor },
 	{ "engine", "Draw", true, "setTransform(_,_,_,_,_,_,_)", wren_dc_settransform },
+	{ "engine", "Draw", true, "rotate(_)", wren_dc_rotate },
+	{ "engine", "Draw", true, "translate(_,_)", wren_dc_translate },
 	{ "engine", "Draw", true, "setScissor(_,_,_,_)", wren_dc_setscissor },
 	{ "engine", "Draw", true, "resetScissor()", wren_dc_resetscissor },
 	{ "engine", "Draw", true, "rect(_,_,_,_,_)", wren_dc_drawrect },

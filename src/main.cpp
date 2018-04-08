@@ -151,8 +151,8 @@ int main(int argc, char *argv[]) {
 			continue;
 		}
 
-		SDL_GameControllerOpen(joystickIndex);
-		Com_Printf("Opening controller %i\n", joystickIndex);
+		SDL_GameController *controller = SDL_GameControllerOpen(joystickIndex);
+		Com_Printf("Opening controller %i: %s\n", joystickIndex, SDL_GameControllerName(controller));
 		break;
 	}
 

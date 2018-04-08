@@ -6,6 +6,9 @@
 #include <ctype.h>
 #include "../../game/shared.h"
 
+#include <SDL/SDL_scancode.h>
+#include <SDL/SDL_gamecontroller.h>
+
 // IMGUI CONSOLE
 
 struct ConsoleUI
@@ -115,7 +118,8 @@ typedef struct {
     char		*binding;
 } qkey_t;
 
-extern qkey_t		keys[512 + NUM_MOUSE_BUTTONS + (15 * 1)];
+#define MAX_CONTROLLERS 4
+extern qkey_t		keys[SDL_NUM_SCANCODES + NUM_MOUSE_BUTTONS + (SDL_CONTROLLER_BUTTON_MAX * MAX_CONTROLLERS)];
 
 void CL_InitKeyCommands(void);
 int Key_StringToKeynum(const char *str);

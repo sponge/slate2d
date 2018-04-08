@@ -146,16 +146,6 @@ int main(int argc, char *argv[]) {
 		Com_Error(ERR_FATAL, "Could not init glew.");
 	}
 
-	for (int joystickIndex = 0; joystickIndex < SDL_NumJoysticks(); joystickIndex++) {
-		if (!SDL_IsGameController(joystickIndex)) {
-			continue;
-		}
-
-		SDL_GameController *controller = SDL_GameControllerOpen(joystickIndex);
-		Com_Printf("Opening controller %i: %s\n", joystickIndex, SDL_GameControllerName(controller));
-		break;
-	}
-
 	soloud.init();
 
 	SDL_GL_MakeCurrent(window, context);
@@ -221,6 +211,21 @@ int main(int argc, char *argv[]) {
 					break;
 				}
 				KeyEvent(ev.key.keysym.scancode, true, com_frameTime);
+			}
+
+			if (ev.type == SDL_CONTROLLERDEVICEADDED) {
+				if (ev.cdevice.which > MAX_CONTROLLERS) {
+					break;
+				}
+
+				SDL_GameController *controller = SDL_GameControllerOpen(ev.cdevice.which);
+				Com_Printf("Using controller at device index %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
+			}
+
+			if (ev.type == SDL_CONTROLLERDEVICEREMOVED) {
+				SDL_GameController* controller = SDL_GameControllerFromInstanceID(ev.cdevice.which);
+				Com_Printf("Closing controller instance %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
+				SDL_GameControllerClose(controller);
 			}
 
 			if (ev.type == SDL_MOUSEBUTTONUP && !consoleScene->consoleActive) {

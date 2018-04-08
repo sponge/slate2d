@@ -60,6 +60,11 @@ bool KeyEvent(int key, bool down, unsigned time) {
 	auto kb = keys[key].binding;
 	char	cmd[1024];
 
+	if (key > sizeof(keys) / sizeof(keys[0])) {
+		Com_Printf("key number %i is out of bounds!\n", key);
+		return false;
+	}
+
 	if (!kb) {
 		return false;
 	}
@@ -125,6 +130,11 @@ bool MouseEvent(int button, bool down, unsigned time) {
 }
 
 bool JoyEvent(int controller, int button, bool down, unsigned time) {
+	if (controller >= MAX_CONTROLLERS) {
+		Com_Printf("ignoring controller %i > MAX_CONTROLLERS\n", controller);
+		return false;
+	}
+
 	int keyId = SDL_NUM_SCANCODES + NUM_MOUSE_BUTTONS + (controller * SDL_CONTROLLER_BUTTON_MAX) + button;
 
 	return KeyEvent(keyId, down, time);

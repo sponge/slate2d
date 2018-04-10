@@ -22,7 +22,6 @@ void wren_trap_dbgwin(WrenVM *vm) {
 	const char *key = wrenGetSlotString(vm, 2);
 	const char *value = wrenGetSlotString(vm, 3);
 
-
 	ImGui::Begin(title, nullptr, 0);
 
 	float width = ImGui::GetWindowContentRegionWidth();

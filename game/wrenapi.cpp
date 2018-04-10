@@ -19,10 +19,23 @@ void wren_trap_print(WrenVM *vm) {
 
 void wren_trap_dbgwin(WrenVM *vm) {
 	const char *title = wrenGetSlotString(vm, 1);
-	const char *text = wrenGetSlotString(vm, 2);
+	const char *key = wrenGetSlotString(vm, 2);
+	const char *value = wrenGetSlotString(vm, 3);
+
 
 	ImGui::Begin(title, nullptr, 0);
-	ImGui::Text("%s", text);
+
+	float width = ImGui::GetWindowContentRegionWidth();
+	float keyWidth = ImGui::CalcTextSize(key).x;
+	float valWidth = ImGui::CalcTextSize(value).x;
+
+	ImGui::Text("%s", key);
+	if (keyWidth + valWidth + 20 < width) {
+		ImGui::SameLine();
+	}
+	ImGui::SetCursorPosX(width - valWidth);
+	ImGui::Text("%s", value);
+	ImGui::Separator();
 	ImGui::End();
 }
 
@@ -582,7 +595,7 @@ typedef struct {
 
 static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "print(_)", wren_trap_print },
-	{ "engine", "Trap", true, "dbgWin(_,_)", wren_trap_dbgwin },
+	{ "engine", "Trap", true, "printWin_(_,_,_)", wren_trap_dbgwin },
 
 	{ "engine", "Trap", true, "console(_)", wren_trap_console },
 	{ "engine", "Trap", true, "sndPlay(_,_,_,_)", wren_trap_snd_play },

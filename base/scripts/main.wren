@@ -1,5 +1,6 @@
 import "engine" for Trap, Button, Draw, Scene, Asset, Fill, Color, TileMap
 import "meta" for Meta
+import "random" for Random
 
 class Game is Scene {
    construct new(mapName) {
@@ -14,6 +15,8 @@ class Game is Scene {
       TileMap.load(mapName)
 
       Asset.loadAll()
+
+      _rnd = Random.new()
 
       //Trap.sndPlay(_music, 1.0, 0.0, true)
       //Trap.sndPlay(_speech, 1.0, 0.0, false)
@@ -52,7 +55,17 @@ class Game is Scene {
    }
 
    draw(w, h) {
-      Trap.dbgWin("window", "contents")
+      Trap.printWin("window name", "contents", "some value")
+      Trap.printWin("window name", "some longer text", "a")
+      Trap.printWin("window name", "a pretty large key name", "a pretty large value")
+      Trap.printWin("window name", "a list", [1,2,3])
+      Trap.printWin("window name", "number", 1.0)
+      Trap.printWin("window name", "random number", _rnd.int())
+
+      for (i in 0..20) {
+         Trap.printWin("window name", "scrolling test", i)
+      }
+
       Draw.clear()
       Draw.resetTransform()
       Draw.transform(h / 180, 0, 0, h / 180, 0, 0)

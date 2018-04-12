@@ -7,6 +7,7 @@ cvar_t *vid_swapinterval;
 cvar_t *vid_fullscreen;
 cvar_t *vid_showfps;
 cvar_t *com_sleepShortFrame;
+cvar_t *com_pause;
 
 static cvarTable_t mainCvarTable[] = {
     { &com_errorMessage, "com_errorMessage", "", CVAR_ROM},
@@ -16,6 +17,8 @@ static cvarTable_t mainCvarTable[] = {
     { &vid_fullscreen, "vid_fullscreen", "0", 0 },
     { &vid_showfps, "vid_showfps", "1", 0 },
 	{ &com_sleepShortFrame, "com_sleepShortFrame", "1", 0 },
+	{ &com_pause, "com_pause", "0", 0 },
+
 };
 
 static int mainCvarTableSize = sizeof( mainCvarTable ) / sizeof( mainCvarTable[0] );

@@ -36,10 +36,20 @@ SceneManager *sm;
 double frame_msec, com_frameTime;
 tmx_map *map;
 //float frame_accum;
+bool frameAdvance = false;
 
 gameExportFuncs_t * gexports;
 SDL_Window *window;
 ConsoleScene *consoleScene;
+
+void Cmd_FrameAdvance_f(void) {
+	if (!com_pause->integer) {
+		Cvar_Set("com_pause", "1");
+	}
+	else {
+		frameAdvance = true;
+	}
+}
 
 void Cmd_ToggleConsole_f(void) {
 	if (consoleScene == nullptr) {
@@ -93,6 +103,7 @@ int main(int argc, char *argv[]) {
 	Cmd_Init();
 	Cmd_AddCommand("vid_restart", Cmd_Vid_Restart_f);
 	Cmd_AddCommand("toggleconsole", Cmd_ToggleConsole_f);
+	Cmd_AddCommand("frame_advance", Cmd_FrameAdvance_f);
 	Cvar_Init();
 	RegisterMainCvars();
 	CL_InitKeyCommands();
@@ -261,9 +272,16 @@ int main(int argc, char *argv[]) {
 		nvgBeginFrame(inf.nvg, inf.width, inf.height, 1.0);
 
 		gexports->Frame(dt);
-		sm->Update(dt);
 		consoleScene->Update(dt);
 
+		if (!com_pause->integer || frameAdvance) {
+			sm->Update(dt);
+			frameAdvance = false;
+		}
+
+		// FIXME: maybe eventually take dc_clear/dc_submit out of wren and handle it in the engine
+		// so we can just render the last submitted frame without calling render on all the scenes
+		// but doing so would make it easier to cheat changing state in your draw function
 		sm->Render();
 		consoleScene->Render();
 

@@ -10,3 +10,4 @@ extern cvar_t *vid_height;
 extern cvar_t *vid_swapinterval;
 extern cvar_t *vid_fullscreen;
 extern cvar_t *vid_showfps;
+extern cvar_t *com_pause;

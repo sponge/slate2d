@@ -17,6 +17,8 @@ class Game is Scene {
       Asset.loadAll()
 
       _rnd = Random.new()
+      _rndNum = 0
+      _time = 0
 
       //Trap.sndPlay(_music, 1.0, 0.0, true)
       //Trap.sndPlay(_speech, 1.0, 0.0, false)
@@ -52,6 +54,10 @@ class Game is Scene {
       for (i in 0..11) {
          if (Trap.keyPressed(i, 0, 1000)) { Trap.printLn("button %(i)") }
       }
+
+      _time = _time + dt
+
+      _rndNum = _rnd.int()
    }
 
    draw(w, h) {
@@ -60,7 +66,7 @@ class Game is Scene {
       Trap.printWin("window name", "a pretty large key name", "a pretty large value")
       Trap.printWin("window name", "a list", [1,2,3])
       Trap.printWin("window name", "number", 1.0)
-      Trap.printWin("window name", "random number", _rnd.int())
+      Trap.printWin("window name", "random number", _rndNum)
 
       for (i in 0..20) {
          Trap.printWin("window name", "scrolling test", i)
@@ -73,8 +79,11 @@ class Game is Scene {
       Draw.mapLayer(_bgLayer)
       Draw.mapLayer(_worldLayer)
 
-      Draw.setColor(Color.Fill, 255, 0, 0, 255)
-      Draw.rect(5, 3, 16, 16, Fill.Outline)
+      Draw.mapLayer(_worldLayer, 4, 4, 0, 14, 8, 99)
+      Draw.mapLayer(_bgLayer, 4, 4, 0, 14, 8, 99)
+
+      Draw.setColor(Color.Stroke, 255, 0, 0, 255)
+      Draw.rect(120 + _time.sin * 80, 3, 16, 16, Fill.Outline)
 
       Draw.setColor(Color.Fill, 60, 0, 90, 255)
       Draw.setScissor(0, 0, 280, 110)

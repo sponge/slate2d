@@ -1,4 +1,5 @@
 #include "rendercommands.h"
+#include <algorithm>
 #include <nanovg.h>
 #include <tmx.h>
 #include "assetloader.h"
@@ -201,8 +202,11 @@ const void *RB_DrawMapLayer(const void *data) {
 	unsigned int cellW = cmd->cellW == 0 ? map->width : cmd->cellW;
 	unsigned int cellH = cmd->cellH == 0 ? map->height : cmd->cellH;
 
-	for (unsigned int y = cmd->cellY; y < cellH; y++) {
-		for (unsigned int x = cmd->cellX; x < cellW; x++) {
+	unsigned int endX = std::min(cmd->cellX + cellW, map->width);
+	unsigned int endY = std::min(cmd->cellY + cellH, map->height);
+
+	for (unsigned int y = cmd->cellY; y < endY; y++) {
+		for (unsigned int x = cmd->cellX; x < endX; x++) {
 			unsigned int raw = layer->content.gids[(y*map->width) + x];
 			unsigned int gid = raw & TMX_FLIP_BITS_REMOVAL;
 
@@ -217,9 +221,13 @@ const void *RB_DrawMapLayer(const void *data) {
 			Asset *asset = (Asset*) tile->tileset->image->resource_image;
 
 			DrawImage(
-				cmd->x + x*ts->tile_width + (ts->tile_width / 2), cmd->y + y*ts->tile_height + (ts->tile_height / 2),
-				ts->tile_width, ts->tile_height,
-				tile->ul_x, tile->ul_y,
+			//  offset + current x/y         +  center of tile       - start tile offset         
+				cmd->x + x * ts->tile_width  + (ts->tile_width / 2)  - (cmd->cellX * ts->tile_width),
+				cmd->y + y * ts->tile_height + (ts->tile_height / 2) - (cmd->cellY * ts->tile_height),
+				ts->tile_width,
+				ts->tile_height,
+				tile->ul_x,
+				tile->ul_y,
 				1.0f, 1.0f, flipBits, (Image*) asset->resource, 0
 			);
 		}

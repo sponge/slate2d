@@ -273,7 +273,9 @@ int main(int argc, char *argv[]) {
 		SDL_GL_SwapWindow(window);
 
 		// sleep a little so we don't burn up cpu/gpu on insanely fast frames (>1000fps)
-		if (frame_msec < 1.0) {
+		// in a perfect world you should be able to do com_maxFps but we lose the cpu benefits
+		// by having to burn through a really tight loop to measure
+		if (com_sleepShortFrame->integer && frame_msec < 1.0f) {
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 	}

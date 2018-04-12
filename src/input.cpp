@@ -232,8 +232,14 @@ Returns the fraction of the frame that the key was down
 ===============
 */
 float IN_KeyState(kbutton_t *key) {
+	// q3 would do this fraction stuff but i'm not sure if it even works anymore
+	// just return if it's down or not since it was breaking slomo
+
+	return key->active ? 1.0f : 0.0f;
+
+#if 0
 	float		val;
-	int			msec;
+	double		msec;
 
 	msec = key->msec;
 	key->msec = 0;
@@ -249,13 +255,8 @@ float IN_KeyState(kbutton_t *key) {
 		key->downtime = com_frameTime;
 	}
 
-#if 0
-	if (msec) {
-		Com_Printf("%i ", msec);
-	}
-#endif
-
 	val = (float)msec / frame_msec;
+
 	if (val < 0) {
 		val = 0;
 	}
@@ -264,6 +265,7 @@ float IN_KeyState(kbutton_t *key) {
 	}
 
 	return val;
+#endif
 }
 
 bool IN_KeyPressed(kbutton_t *key, unsigned int delay, unsigned int repeat) {

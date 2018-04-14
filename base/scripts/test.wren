@@ -57,6 +57,7 @@ class Game is Scene {
 
       _time = _time + dt
 
+      Trap.printWin("update only print", "key", 123)
       _rndNum = _rnd.int()
    }
 

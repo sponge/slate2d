@@ -101,10 +101,3 @@ class TileMap {
    foreign static getTileProperties()
    foreign static getTile(id, x, y)
 }
-
-class Scene {
-   construct new(args) {}
-   update(dt) {}
-   draw(w, h) {}
-   shutdown() {}
-}

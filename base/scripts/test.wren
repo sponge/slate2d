@@ -1,8 +1,8 @@
-import "engine" for Trap, Button, Draw, Scene, Asset, Fill, Color, TileMap
+import "engine" for Trap, Button, Draw, Asset, Fill, Color, TileMap
 import "meta" for Meta
 import "random" for Random
 
-class Game is Scene {
+class Game {
    construct new(mapName) {
       Trap.print(mapName+"\n")
       _dog = Asset.create(Asset.Image, "dog", "gfx/dog.png")

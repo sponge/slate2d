@@ -122,8 +122,6 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float alp
 		nvgScale(inf.nvg, flipX, flipY);
 	}
 
-	nvgTranslate(inf.nvg, -(w / 2), -(h / 2));
-
 	auto paint = nvgImagePattern(inf.nvg, 0 - ox, 0 - oy, img->w, img->h, 0, img->hnd, alpha);
 	paint.shader = shaderId;
 	nvgGlobalCompositeBlendFuncSeparate(inf.nvg, NVG_SRC_ALPHA, NVG_ONE_MINUS_SRC_ALPHA, NVG_ONE, NVG_ONE_MINUS_SRC_ALPHA);
@@ -221,9 +219,9 @@ const void *RB_DrawMapLayer(const void *data) {
 			Asset *asset = (Asset*) tile->tileset->image->resource_image;
 
 			DrawImage(
-			//  offset + current x/y         +  center of tile       - start tile offset         
-				cmd->x + x * ts->tile_width  + (ts->tile_width / 2)  - (cmd->cellX * ts->tile_width),
-				cmd->y + y * ts->tile_height + (ts->tile_height / 2) - (cmd->cellY * ts->tile_height),
+			//  offset + current x/y         - start tile offset         
+				cmd->x + x * ts->tile_width  - (cmd->cellX * ts->tile_width),
+				cmd->y + y * ts->tile_height - (cmd->cellY * ts->tile_height),
 				ts->tile_width,
 				ts->tile_height,
 				tile->ul_x,

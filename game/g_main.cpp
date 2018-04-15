@@ -26,6 +26,8 @@ void Cmd_Map_f(void) {
 	auto mapname = trap->Cmd_Argv(1);
 	char filename[256];
 
+	trap->Cvar_Set("com_lastErrorStack", "");
+
 	if (trap->Cmd_Argc() != 2) {
 		trap->Print("map <mapname> : load a map\n");
 		return;
@@ -75,6 +77,7 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
 	trap->SendConsoleCommand("scene scripts/test.wren maps/8x8.tmx");
+	//trap->SendConsoleCommand("map 8x8");
 }
 
 static void Console(const char *line) {

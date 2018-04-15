@@ -48,14 +48,16 @@ void __cdecl Com_Error(int level, const char *error, ...) {
 		return;
 	}
 
-	va_start (argptr,error);
-	vsprintf (errorMessage,error,argptr);
-	va_end (argptr);
+	va_start(argptr, error);
+	vsprintf(errorMessage, error, argptr);
+	va_end(argptr);
 
 	Com_Printf("%s\n", errorMessage);
 
 #if defined(_WIN32) && defined(DEBUG)
-	__debugbreak();
+	if (level == ERR_FATAL) {
+		__debugbreak();
+	}
 #else
 	if (level == ERR_FATAL) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Fatal Error", errorMessage, NULL);

@@ -1,13 +1,16 @@
 import "meta" for Meta
+
+// including most everything here for syntax validation
 import "game" for Game
 import "timer" for Timer
 import "debug" for Debug
-
 import "math" for Math
 import "collision" for CollisionPool, Collision, TriggerInfo
 import "tilecollider" for TileCollider
 import "camera" for Camera
 import "entity" for Entity
+import "player" for Player
+import "world" for World
 
 class Main {
    static scene { __scene }

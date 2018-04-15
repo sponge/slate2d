@@ -37,6 +37,7 @@ double frame_msec, com_frameTime;
 tmx_map *map;
 //float frame_accum;
 bool frameAdvance = false;
+bool errorVisible = false;
 
 gameExportFuncs_t * gexports;
 SDL_Window *window;
@@ -69,6 +70,7 @@ void Cmd_Vid_Restart_f(void) {
 
 void DropToMenu() {
 	sm->Clear();
+	errorVisible = true;
 }
 
 int main(int argc, char *argv[]) {
@@ -259,6 +261,20 @@ int main(int argc, char *argv[]) {
 		Cbuf_Execute();
 
 		ImGui_ImplSdlGL3_NewFrame(window);
+
+		if (errorVisible) {
+			ImGui::SetNextWindowPosCenter();
+			ImGui::Begin("Error", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
+			ImGui::Text("%s", com_errorMessage->string);
+			ImGui::Text("%s", com_lastErrorStack->string);
+			ImGui::NewLine();
+			if (ImGui::Button("Close")) {
+				errorVisible = false;
+				Cvar_Set("com_errorMessage", nullptr);
+				Cvar_Set("com_lastErrorStack", nullptr);
+			}
+			ImGui::End();
+		}
 
 		/*
 		frame_accum += dt;

@@ -1,6 +1,7 @@
 #include "cvar_main.h"
 
 cvar_t *com_errorMessage;
+cvar_t *com_lastErrorStack;
 cvar_t *vid_width;
 cvar_t *vid_height;
 cvar_t *vid_swapinterval;
@@ -10,7 +11,8 @@ cvar_t *com_sleepShortFrame;
 cvar_t *com_pause;
 
 static cvarTable_t mainCvarTable[] = {
-    { &com_errorMessage, "com_errorMessage", "", CVAR_ROM},
+    { &com_errorMessage, "com_errorMessage", "", CVAR_ROM },
+	{ &com_lastErrorStack, "com_lastErrorStack", "", CVAR_ROM },
     { &vid_width, "vid_width", "1280", 0 },
     { &vid_height, "vid_height", "720", 0 },
     { &vid_swapinterval, "vid_swapInterval", "0", 0 },

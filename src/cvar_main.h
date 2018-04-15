@@ -4,6 +4,7 @@
 void RegisterMainCvars( void );
 
 extern cvar_t *com_errorMessage;
+extern cvar_t *com_lastErrorStack;
 extern cvar_t *com_sleepShortFrame;
 extern cvar_t *vid_width;
 extern cvar_t *vid_height;

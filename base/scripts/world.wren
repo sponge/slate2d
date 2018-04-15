@@ -1,4 +1,21 @@
+import "engine" for Trap, Button, Draw, Asset, Fill, Color, TileMap
+
 class World {
+   construct new(mapName) {
+      Trap.printLn(mapName)
+   }
+
+   update(dt) {
+
+   }
+
+   draw(w, h) {
+
+   }
+
+   shutdown() {
+
+   }
    /*
    time { _time }
    tileCollider { _tileCollider }

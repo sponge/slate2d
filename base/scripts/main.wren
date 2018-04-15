@@ -1,7 +1,6 @@
 import "meta" for Meta
 
 // including most everything here for syntax validation
-import "game" for Game
 import "timer" for Timer
 import "debug" for Debug
 import "math" for Math
@@ -50,7 +49,7 @@ class Main {
 
    static loadLevel(mapName) {
       Timer.clear()
-      __scene = Game.new(mapName)
+      __scene = World.new(mapName)
       System.gc()
    }
 }

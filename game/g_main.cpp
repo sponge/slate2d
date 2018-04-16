@@ -27,6 +27,7 @@ void Cmd_Map_f(void) {
 	char filename[256];
 
 	trap->Cvar_Set("com_lastErrorStack", "");
+	trap->Cvar_Set("com_errorMessage", "");
 
 	if (trap->Cmd_Argc() != 2) {
 		trap->Print("map <mapname> : load a map\n");

@@ -262,7 +262,10 @@ int main(int argc, char *argv[]) {
 
 		ImGui_ImplSdlGL3_NewFrame(window);
 
-		if (errorVisible) {
+		if (errorVisible && strlen(com_errorMessage->string) == 0) {
+			errorVisible = 0;
+		}
+		else if (errorVisible) {
 			ImGui::SetNextWindowPosCenter();
 			ImGui::Begin("Error", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
 			ImGui::Text("%s", com_errorMessage->string);

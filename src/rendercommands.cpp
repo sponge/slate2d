@@ -197,6 +197,10 @@ const void *RB_DrawMapLayer(const void *data) {
 
 	assert(layer != nullptr);
 
+	if (layer->type != L_LAYER) {
+		goto done;
+	}
+
 	unsigned int cellW = cmd->cellW == 0 ? map->width : cmd->cellW;
 	unsigned int cellH = cmd->cellH == 0 ? map->height : cmd->cellH;
 
@@ -231,6 +235,7 @@ const void *RB_DrawMapLayer(const void *data) {
 		}
 	}
 
+done:
 	return (const void *)(cmd + 1);
 }
 

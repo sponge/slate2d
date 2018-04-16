@@ -3,6 +3,7 @@ class Trap {
    static printLn(text) { print(text.toString + "\n")}
    static printWin(windowTitle, key, value) { printWin_(windowTitle.toString, key.toString, value.toString) }
    foreign static printWin_(windowTitle, key, value)
+   foreign static error(level, text)
    foreign static console(text)
    foreign static sndPlay(assetHandle, volume, pan, loop)
    foreign static keyActive(key)

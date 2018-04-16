@@ -578,14 +578,27 @@ void wren_map_getlayernames(WrenVM *vm) {
 #pragma endregion
 
 #pragma region Wren config callbacks
-static int lastErrorType = 0;
+static bool clearNextError = true;
 static void wren_error(WrenVM* vm, WrenErrorType type, const char* module, int line, const char* message) {
-	if (type == WREN_ERROR_COMPILE || type == WREN_ERROR_STACK_TRACE || (type == WREN_ERROR_RUNTIME && lastErrorType != WREN_ERROR_RUNTIME)) {
-		cvar_t *stack = trap->Cvar_Get("com_lastErrorStack", "", 0);
-		trap->Cvar_Set("com_lastErrorStack", va("%s\n(%s:%i) %s", stack->string, module, line, message));
+	if (type == WREN_ERROR_STACK_COMPLETE) {
+		clearNextError = true;
+		return;
 	}
-	trap->Print("(%s:%i) %s\n", module, line, message);
-	lastErrorType = type;
+
+	if (clearNextError) {
+		trap->Cvar_Set("com_lastErrorStack", "");
+		clearNextError = false;
+	}
+
+	cvar_t *stack = trap->Cvar_Get("com_lastErrorStack", "", 0);
+	if (line == -1) {
+		trap->Cvar_Set("com_lastErrorStack", va("%s\n%s", stack->string, message));
+		trap->Print("%s\n", message);
+	}
+	else {
+		trap->Cvar_Set("com_lastErrorStack", va("%s\n(%s:%i) %s", stack->string, module, line, message));
+		trap->Print("(%s:%i) %s\n", module, line, message);
+	}
 }
 
 char* wren_loadModuleFn(WrenVM* vm, const char* name) {
@@ -615,7 +628,7 @@ typedef struct {
 static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "print(_)", wren_trap_print },
 	{ "engine", "Trap", true, "printWin_(_,_,_)", wren_trap_dbgwin },
-
+	{ "engine", "Trap", true, "error(_,_)", wren_trap_error },
 	{ "engine", "Trap", true, "console(_)", wren_trap_console },
 	{ "engine", "Trap", true, "sndPlay(_,_,_,_)", wren_trap_snd_play },
 	{ "engine", "Trap", true, "keyActive(_)", wren_trap_in_keystate },

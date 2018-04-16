@@ -48,6 +48,7 @@ class Asset {
 
 class Draw {
    foreign static setColor(which, r, g, b, a)
+   static setColor(which, rgba) { setColor(which, rgba[0], rgba[1], rgba[2], rgba[3])}
    foreign static resetTransform()
    foreign static transform(a, b, c, d, e, f)
    foreign static rotate(angle)

@@ -14,6 +14,7 @@ class Level {
    maxY { _maxY }
    layers { _layers }
    worldLayer { _worldLayer }
+   backgroundColor { _backgroundColor }
 
    construct new(mapName) {
       TileMap.load(mapName)
@@ -23,10 +24,8 @@ class Level {
       _h = mapProps["height"]
       _tw = mapProps["tileWidth"]
       _th = mapProps["tileHeight"]
-
       _maxX = _w * _tw
       _maxY = _h * _th
-
       _layers = TileMap.layerNames()
 
       _worldLayer = TileMap.layerByName("world")
@@ -34,6 +33,11 @@ class Level {
          Trap.error(2, "can't find layer named world")
          return
       }
+
+      var rgba = mapProps["backgroundColor"]
+      Trap.printLn(rgba)
+      _backgroundColor = [(rgba>>16)&0xFF, (rgba>>8)&0xFF, (rgba)&0xFF, (rgba>>24)&0xFF]
+      Trap.printLn(_backgroundColor)
    }
 
    getTile(x, y) {
@@ -147,6 +151,10 @@ class World {
    draw(w, h) {
       Draw.clear()
       Draw.resetTransform()
+
+      Draw.setColor(Color.Fill, level.backgroundColor)
+      Draw.rect(0, 0, w, h, Fill.Solid)
+
       Draw.transform(h / _cam.h, 0, 0, h / _cam.h, 0, 0)
       Draw.translate(0 - _cam.x, 0 - _cam.y)
 

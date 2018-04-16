@@ -35,9 +35,7 @@ class Level {
       }
 
       var rgba = mapProps["backgroundColor"]
-      Trap.printLn(rgba)
       _backgroundColor = [(rgba>>16)&0xFF, (rgba>>8)&0xFF, (rgba)&0xFF, (rgba>>24)&0xFF]
-      Trap.printLn(_backgroundColor)
    }
 
    getTile(x, y) {

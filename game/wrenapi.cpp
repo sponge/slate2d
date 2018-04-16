@@ -561,6 +561,20 @@ void wren_map_gettile(WrenVM *vm) {
 
 	wrenSetSlotDouble(vm, 0, gid);
 }
+
+void wren_map_getlayernames(WrenVM *vm) {
+	int i = 0;
+
+	wrenSetSlotNewList(vm, 0);
+	tmx_layer *layer = Map_GetLayer(map, i);
+	while (layer != nullptr) {
+		wrenEnsureSlots(vm, i + 2);
+		wrenSetSlotString(vm, i + 1, layer->name);
+		wrenInsertInList(vm, 0, -1, i + 1);
+		i++;
+		layer = layer->next;
+	}
+}
 #pragma endregion
 
 #pragma region Wren config callbacks
@@ -638,6 +652,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "TileMap", true, "load(_)", wren_map_load },
 	{ "engine", "TileMap", true, "free()", wren_map_free },
 	{ "engine", "TileMap", true, "layerByName(_)", wren_map_getlayerbyname },
+	{ "engine", "TileMap", true, "layerNames()", wren_map_getlayernames },
 	{ "engine", "TileMap", true, "objectsInLayer(_)", wren_map_getobjectsinlayer },
 	{ "engine", "TileMap", true, "getMapProperties()", wren_map_getmapproperties },
 	{ "engine", "TileMap", true, "getLayerProperties(_)", wren_map_getlayerproperties },

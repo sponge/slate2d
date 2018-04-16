@@ -95,6 +95,7 @@ class TileMap {
    foreign static load(name)
    foreign static free()
    foreign static layerByName(name)
+   foreign static layerNames()
    foreign static objectsInLayer(id)
    foreign static getMapProperties()
    foreign static getLayerProperties(id)

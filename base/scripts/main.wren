@@ -1,5 +1,5 @@
 import "meta" for Meta
-import "engine" for Trap
+import "engine" for Trap, Draw
 
 import "timer" for Timer
 import "debug" for Debug
@@ -26,13 +26,19 @@ class Main {
          return
       }
 
+      Debug.persist(true)
+      Debug.clearPersist()
+
       __scene.update(1)
       Timer.tick(1)
    }
 
    static draw(w, h) {
+      Debug.persist(false)
+      Draw.clear()
       __scene.draw(w, h)
       Debug.draw()
+      Draw.submit()
    }
 
    static console(line) {

@@ -147,7 +147,7 @@ class World {
    }
 
    draw(w, h) {
-      Draw.clear()
+      
       Draw.resetTransform()
 
       Draw.setColor(Color.Fill, level.backgroundColor)
@@ -165,8 +165,6 @@ class World {
             ent.draw(_ticks)
          }
       }
-
-      Draw.submit()
 
       /*
       if (_drawHud && _player != null) {

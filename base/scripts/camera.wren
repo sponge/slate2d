@@ -3,6 +3,8 @@ import "math" for Math
 class Camera {
    x { _x }
    y { _y }
+   w { _w }
+   h { _h }
    tx { _txRange.min }
    ty { _tyRange.min }
    tw { _txRange.max - _txRange.min }

@@ -1,7 +1,8 @@
 import "entity" for Entity
-import "player" for Player
 import "timer" for Timer
 import "main" for Main
+import "engine" for Trap, Draw
+import "debug" for Debug
 
 // FIXME: duped
 var DIM_HORIZ = 1
@@ -40,12 +41,12 @@ class Flame is Entity {
    }  
 
    isHurting() {
-      var cyc = (world.time + _delay) % 480
+      var cyc = (world.ticks + _delay) % 480
       return cyc > 300
    }
 
    isFiringUp() {
-      var cyc = (world.time + _delay) % 480
+      var cyc = (world.ticks + _delay) % 480
       return cyc > 240 && cyc < 300
    }
 
@@ -53,7 +54,7 @@ class Flame is Entity {
    trigger { true }
 
    touch(other, side) {
-      if (other is Player == false) {
+      if (other.isPlayer == false) {
          return
       }
 
@@ -80,12 +81,12 @@ class Flame is Entity {
          var f = flicker ? 1 : 0
          var flip = _tile == 2 ? 2 + f : f
          // FIXME: draw
-         // TIC.spr(spr, cx - 1, cy, 1, 1, flip, 0, 1, 2)
+         // TIC.spr(spr, x - 1, y, 1, 1, flip, 0, 1, 2)
       } else {
          var f = flicker ? 2 : 0
          var flip = _tile == 3 ? 1 + f : f
          // FIXME: draw
-         // TIC.spr(spr, cx, cy - 1, 1, 1, flip, 1, 1, 2)         
+         // TIC.spr(spr, x, y - 1, 1, 1, flip, 1, 1, 2)         
       }
    }
 }
@@ -106,7 +107,7 @@ class Spring is Entity {
    }
 
    // springs dont activate immediately, they activate a few frames later
-   framesUntilTrigger { _activateTime == -1 ? _delay : _delay - ((world.time - _activateTime) / _delay).floor }
+   framesUntilTrigger { _activateTime == -1 ? _delay : _delay - ((world.ticks - _activateTime) / _delay).floor }
 
    // they work like platforms, only collide from the top going down
    canCollide(other, side, d) {
@@ -115,12 +116,12 @@ class Spring is Entity {
 
    // start the animation
    touch(other, side) {
-      if (other is Player == false) {
+      if (other.isPlayer == false) {
          return
       }
 
       if (_activateTime == -1) {
-         _activateTime = world.time
+         _activateTime = world.ticks
       }
    }
 
@@ -138,10 +139,10 @@ class Spring is Entity {
    }
 
    think(dt) {
-      if (_thinkTime == world.time) {
+      if (_thinkTime == world.ticks) {
          return
       }
-      _thinkTime = world.time
+      _thinkTime = world.ticks
 
       if (_activateTime == -1) {
          _activated = false
@@ -162,8 +163,7 @@ class Spring is Entity {
 
    draw(t) {
       var frm = _activateTime == -1 ? _delay : framesUntilTrigger
-      // FIXME: draw
-      // TIC.spr(263 - frm, cx, cy, 0)      
+      drawSprite(263 - frm, x, y)      
    }
 }
 
@@ -176,13 +176,13 @@ class Cannon is Entity {
       _dim = ti % 2 == 0 ? DIM_VERT : DIM_HORIZ
       _d = ti == 0 || ti == 3 ? -0.5 : 0.5
 
-      _fireTime = world.time + 60
+      _fireTime = world.ticks + 60
    }
 
    canCollide(other, side, d) { true }
 
    think(dt) {
-      if (world.time < _fireTime) {
+      if (world.ticks < _fireTime) {
          return
       }
 
@@ -190,7 +190,7 @@ class Cannon is Entity {
       var dist = (world.player.x - x).abs
       if (dist <= 16 || dist > 200) {
          // don't wait a full cycle to retry
-         _fireTime = world.time + 60
+         _fireTime = world.ticks + 60
          return
       }
 
@@ -202,12 +202,12 @@ class Cannon is Entity {
       world.entities.add(ball)
 
       // recharge
-      _fireTime = world.time + 300
+      _fireTime = world.ticks + 300
    }
 
    draw(t) {
       // FIXME: draw
-      // TIC.spr(_tile, cx, cy, 13)      
+      // TIC.spr(_tile, x, y, 13)      
    }
 }
 
@@ -220,7 +220,7 @@ class Spike is Entity {
    canCollide(other, side, d) { true }
 
    touch(other, side) {
-      if (other is Player == false) {
+      if (other.isPlayer == false) {
          return
       }
 
@@ -229,7 +229,7 @@ class Spike is Entity {
 
    draw(t) {
       // FIXME: draw
-      // TIC.spr(242, cx, cy, 0)      
+      // TIC.spr(242, x, y, 0)      
    }
 }
 
@@ -247,41 +247,40 @@ class FallingPlatform is Entity {
    }
 
    touch(other, side) {
-      if (other is Player == false) {
+      if (other.isPlayer == false) {
          return
       }
 
       // if a player touches us, wait a bit and then start falling
       if (_fallTime == 0) {
-         _fallTime = other.world.time + 10
+         _fallTime = other.world.ticks + 10
          dy = _fallSpeed
       }
    }
 
    think(dt) {
-      if (_movedTime == world.time) {
+      if (_movedTime == world.ticks) {
          return
       }
-      _movedTime = world.time
+      _movedTime = world.ticks
 
       // die if we've fallen off the level
-      if ( y > (world.level.y + world.level.h + 2) * 8) {
+      if ( y > world.level.maxY + world.level.th * 2) {
          active = false
          return
       }
 
       // keep moving down
-      if (_fallTime > 0 && world.time > _fallTime) {
+      if (_fallTime > 0 && world.ticks > _fallTime) {
          y = y + dy
       }
 
    }
 
    draw(t) {
-      // FIXME: draw
-      // TIC.spr(244, cx, cy, 0)
-      // TIC.spr(244, cx+8, cy, 0)
-      // TIC.spr(244, cx+16, cy, 0)
+      drawSprite(244, x, y)
+      drawSprite(244, x+8, y)
+      drawSprite(244, x+16, y)
    }
 }
 
@@ -367,10 +366,10 @@ class MovingPlatform is Entity {
 
    think(dt) {
       // don't move twice in a frame in case a player called us
-      if (_movedTime == world.time) {
+      if (_movedTime == world.ticks) {
          return
       }
-      _movedTime = world.time
+      _movedTime = world.ticks
 
       // figure out if we need a new destination
       setNextPoint()
@@ -384,7 +383,7 @@ class MovingPlatform is Entity {
       var chky = check(DIM_VERT, dy)
 
       // if the platform is going to lift the player up, attach them to this and lift them
-      if (chky.entity is Player && chky.entity.groundEnt != this && intersects(chky.entity) == false) {
+      if (chky.entity.isPlayer && chky.entity.groundEnt != this && intersects(chky.entity) == false) {
          chky.entity.groundEnt = this
          chky.entity.y = chky.entity.y + chky.entity.check(DIM_VERT, dy).delta
          // Debug.text("attach")
@@ -401,7 +400,7 @@ class MovingPlatform is Entity {
 
    draw(t) {
       // FIXME: draw
-      // TIC.spr(272, cx, cy, 0, 1, 0, 0, 3, 1)
+      // TIC.spr(272, x, y, 0, 1, 0, 0, 3, 1)
    }
 }
 
@@ -411,7 +410,7 @@ class Coin is Entity {
       world.totalCoins = world.totalCoins + 1
    }
 
-   canCollide(other, side, d) { other is Player == true }
+   canCollide(other, side, d) { other.isPlayer == true }
    trigger { true }
 
    touch(other, side) {
@@ -420,8 +419,7 @@ class Coin is Entity {
    }
 
    draw(t) {
-      // FIXME: draw
-      // TIC.spr(256 + (t / 8 % 4).floor, cx, cy, 0)
+      drawSprite(256 + (t / 8 % 4).floor, x, y)
    }
 }
 
@@ -430,12 +428,11 @@ class LevelExit is Entity {
       super(world, ti, ox, oy, 8, 8)
    }
 
-   canCollide(other, side, d) { other is Player == true }
+   canCollide(other, side, d) { other.isPlayer == true }
    trigger { true }
 
    draw(t) {
-      // FIXME: draw
-      // TIC.spr(268 + (t / 7 % 2).floor, cx, cy, 0)
+      drawSprite(268 + (t / 7 % 2).floor, x, y)
    }
 
    touch(other, side) {
@@ -444,7 +441,9 @@ class LevelExit is Entity {
       world.entities.add(ExitBanner.new(world))
       world.drawHud = false
       Timer.runLater(360, Fn.new {
-         Main.intro(world.levelNum + 1)
+         // FIXME: do something here
+         Trap.error(2, "you beat the level!")
+         // Main.intro(world.levelNum + 1)
       })
    }
 }
@@ -483,7 +482,7 @@ class Cannonball is Entity {
    touch(other, side) {
       active = false
       // don't hurt from the top
-      if (other is Player && side != DIR_TOP) {
+      if (other.isPlayer && side != DIR_TOP) {
          other.hurt(this, 1)
       }
    }
@@ -516,12 +515,12 @@ class Cannonball is Entity {
       }
       
       // die if we go off the level
-      if ( y > (world.level.y + world.level.h + 2) * 8 || y < world.level.y) {
+      if ( y > world.level.maxY + world.level.th * 2 || y < 0) {
          touch(null, 0)
          return
       }
 
-      if ( x > (world.level.x + world.level.w) * 8 || x < world.level.x) {
+      if ( x > world.level.maxX || x < 0) {
          touch(null, 0)
          return
       }
@@ -529,7 +528,7 @@ class Cannonball is Entity {
 
    draw(t) {
       // FIXME: draw
-      // TIC.spr(270, cx, cy, 13)      
+      // TIC.spr(270, x, y, 13)      
    }
 }
 
@@ -549,14 +548,14 @@ class StunShot is Cannonball {
 
    touch(other, side) {
       if (_endTime == 0) {
-         _endTime = world.time
+         _endTime = world.ticks
          parent.shotsActive = parent.shotsActive - 1
       }
    }
 
    think(dt) {
-      if (_endTime > 0 && world.time > _endTime) {
-         if (world.time >= _endTime + 15) {
+      if (_endTime > 0 && world.ticks > _endTime) {
+         if (world.ticks >= _endTime + 15) {
             active = false
          }
          return
@@ -565,14 +564,14 @@ class StunShot is Cannonball {
       super(dt)
       _totalDistance = _totalDistance + dx.abs
       if (_totalDistance > 100) {
-         _endTime = world.time
+         _endTime = world.ticks
          parent.shotsActive = parent.shotsActive - 1
       }
    }
 
    draw(t) {
-      var anim = _endTime > 0 ? ((world.time - _endTime) / 5).floor + 1 : 0
+      var anim = _endTime > 0 ? ((world.ticks - _endTime) / 5).floor + 1 : 0
       // FIXME: draw
-      // TIC.spr(275 + anim, cx, cy, 0)      
+      // TIC.spr(275 + anim, x, y, 0)      
    }
 }

@@ -1,5 +1,7 @@
 import "math" for Math
 import "collision" for CollisionPool
+import "engine" for Draw
+import "debug" for Debug
 
 // FIXME: duped
 var DIM_HORIZ = 1
@@ -19,10 +21,6 @@ class Entity {
    w=(w) { _w = w }
    h { _h }
    h=(h) { _h = h }
-   cx { _cx }
-   cx=(cx) { _cx = cx }
-   cy { _cy }
-   cy=(cy) { _cy = cy }
    dx { _dx }
    dx=(dx) { _dx = dx }
    dy { _dy }
@@ -30,6 +28,7 @@ class Entity {
    active { _active }
    active=(a) { _active = a }
 
+   isPlayer { false }
    world { _world }
    resolve { _baseResolve }
    baseResolve { _baseResolve }
@@ -44,8 +43,6 @@ class Entity {
       _h = h
       _dx = 0
       _dy = 0
-      _cx = 0
-      _cy = 0
 
       // allow multiple entities to use this so they all react to the world similarly
       _baseResolve = Fn.new { |side, tile, tx, ty, ldx, ldy|
@@ -58,8 +55,8 @@ class Entity {
             return false
          }
 
-         if (tile >= 4 && tile <= 6) {
-            //Debug.text("plat", "%(ty), %(side == DIR_BOTTOM) && %(y+h) <= %(ty*8) && %(y+h+ldy) > %(ty*8)")
+         if (tile >= 5 && tile <= 7) {
+            //Debug.text("collision", "plat", "%(ty), %(side == DIR_BOTTOM) && %(y+h) <= %(ty*8) && %(y+h+ldy) > %(ty*8)")
             return side == DIR_BOTTOM && _y+_h <= ty*8 && _y+_h+ldy > ty*8
          }
 
@@ -147,6 +144,14 @@ class Entity {
       for (trigger in collision.triggers) {
          trigger.entity.touch(this, collision.side)
       }
+   }
+
+   drawSprite(id, x, y) {
+      Draw.sprite(world.spr, id, x, y)
+   }
+
+   drawSprite(id, x, y, alph) {
+      Draw.sprite(world.spr, id, x, y, alpha)
    }
 
    // return true or false based on if the receiving entity wants to collide this frame

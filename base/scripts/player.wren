@@ -1,5 +1,6 @@
 import "entity" for Entity
-import "engine" for Trap, Button, Draw, Color
+import "engine" for Trap, Button, Draw, Color, Fill
+import "debug" for Debug
 import "main" for Main
 import "timer" for Timer
 import "math" for Math
@@ -23,6 +24,7 @@ class Player is Entity {
    health { _health }
    shotsActive { _shotsActive }
    shotsActive=(i) { _shotsActive = i }
+   isPlayer { true }
    
    construct new(world, ti, ox, oy) {
       super(world, ti, ox, oy - 4, 7, 12)
@@ -67,17 +69,18 @@ class Player is Entity {
    die() {
       active = false
       Timer.runLater(60, Fn.new {
-         Main.intro(world.levelNum)
+         // FIXME: do something here
+         // Main.intro(world)
       })
    }
 
    hurt(other, amount) {
-      if (world.time < _invulnTime) {
+      if (world.ticks < _invulnTime) {
          return
       }
 
       _health = _health - amount
-      _invulnTime = world.time + 120
+      _invulnTime = world.ticks + 120
 
       if (_health <= 0) {
          die()
@@ -95,7 +98,7 @@ class Player is Entity {
 
       // snap to the ground if we're near it (needed for sticking to falling platforms)
       if (dy >= 0 && grav.delta < 1) {
-         // if (grav.delta > 0) { Debug.text("snap") }
+         // if (grav.delta > 0) { Debug.text("player", "snap") }
          y = y + grav.delta
          _grounded = true
          _groundEnt = grav.entity
@@ -109,8 +112,8 @@ class Player is Entity {
       // if we're on a platform, move the platform first
       if (_groundEnt && _groundEnt.platform) {
          _groundEnt.think(dt)
-         // Debug.text("y+h", y+h)
-         // Debug.text("platy", _groundEnt.y)
+         // Debug.text("player", "y+h", y+h)
+         // Debug.text("player", "platy", _groundEnt.y)
          if (_groundEnt is Spring) {
             // this will kill the ability to jump too, even if the spring isn't ready to activate yet
             dy = _groundEnt.checkSpring()
@@ -120,7 +123,7 @@ class Player is Entity {
 
          y = y + check(DIM_VERT, _groundEnt.dy).delta
          x = x + check(DIM_HORIZ, _groundEnt.dx).delta
-         // Debug.text("y+h", y+h)
+         // Debug.text("player", "y+h", y+h)
       }
 
       // set direction for bullets
@@ -191,6 +194,7 @@ class Player is Entity {
       dy = Math.min(dy, _terminalVelocity)
 
       // move x first, then move y. don't do it at the same time, else buggy behavior
+      var chkx = null
       if (_groundEnt is Spring == false) {
          var chkx = check(DIM_HORIZ, dx)
          x = x + chkx.delta
@@ -223,26 +227,25 @@ class Player is Entity {
       // update camera
       world.cam.window(x, y, 20)
 
-      if ( y > (world.level.y + world.level.h) * 8) {
+      if (y > world.level.maxY) {
          _health = 0
          die()
       }
 
-      // Debug.text("grnd", _groundEnt)
-      // Debug.text("entx", chkx.entity)
-      // Debug.text("enty", chky.entity)
-      // Debug.text("x", x)
-      // Debug.text("y", y)
-      // Debug.text("dx", dx)
-      // Debug.text("dy", dy)
-      // Debug.text("spd", speed)
-      // Debug.text("jmp", _jumpHeldFrames)
-      // Debug.text("gnd", _grounded)
-
+      Debug.text("player", "grnd", _groundEnt)
+      Debug.text("player", "entx", chkx != null ? chkx.entity : null)
+      Debug.text("player", "enty", chky.entity)
+      Debug.text("player", "x", x)
+      Debug.text("player", "y", y)
+      Debug.text("player", "dx", dx)
+      Debug.text("player", "dy", dy)
+      Debug.text("player", "spd", speed)
+      Debug.text("player", "jmp", _jumpHeldFrames)
+      Debug.text("player", "gnd", _grounded)
    }
 
    draw(t) {
-      var color = world.time < _invulnTime ? Draw.setColor(222, 238, 214, Color.Fill) : Draw.setColor(218, 212, 94, Color.Fill)
-      Draw.rect(cx, cy, w, h, color)
+      var color = world.ticks < _invulnTime ? Draw.setColor(Color.Fill, 222, 238, 214, 255) : Draw.setColor(Color.Fill, 218, 212, 94, 255)
+      Draw.rect(x, y, w, h, Fill.Solid)
    }
 }

@@ -1,28 +1,74 @@
 import "engine" for Trap, Button, Draw, Asset, Fill, Color, TileMap
+import "debug" for Debug
+import "collision" for TileCollider
+import "camera" for Camera
+import "entities" for LevelExit, Coin, MovingPlatform, FallingPlatform, Spring, Spike, Cannon, Flame
+import "player" for Player
+
+class Level {
+   w { _w }
+   h { _h }
+   tw { _tw }
+   th { _th }
+   maxX { _maxX }
+   maxY { _maxY }
+   layers { _layers }
+   worldLayer { _worldLayer }
+
+   construct new(mapName) {
+      TileMap.load(mapName)
+      var mapProps = TileMap.getMapProperties()
+
+      _w = mapProps["width"]
+      _h = mapProps["height"]
+      _tw = mapProps["tileWidth"]
+      _th = mapProps["tileHeight"]
+
+      _maxX = _w * _tw
+      _maxY = _h * _th
+
+      _layers = TileMap.layerNames()
+
+      _worldLayer = TileMap.layerByName("world")
+      if (_worldLayer == -1) {
+         Trap.error(2, "can't find layer named world")
+         return
+      }
+   }
+
+   getTile(x, y) {
+      if (x < 0 || x > _w) {
+         return 1
+      }
+
+      if (y < 0 || y > _h) {
+         return 0
+      }
+
+      return TileMap.getTile(_worldLayer, x, y)
+   }
+
+   objects() {
+      var merged = []
+
+      for (layer in _layers) {
+         var id = TileMap.layerByName(layer)
+         var objects = TileMap.objectsInLayer(id)
+         for (obj in objects) {
+            merged.add(obj)
+         }
+      }
+
+      return merged
+   }
+}
 
 class World {
-   construct new(mapName) {
-      Trap.printLn(mapName)
-   }
-
-   update(dt) {
-
-   }
-
-   draw(w, h) {
-
-   }
-
-   shutdown() {
-
-   }
-   /*
-   time { _time }
+   ticks { _ticks }
    tileCollider { _tileCollider }
    cam { _cam }
    entities { _entities }
    level { _level }
-   levelNum { _levelNum }
    coins { _coins }
    coins=(c) { _coins = c }
    totalCoins { _totalCoins }
@@ -30,91 +76,64 @@ class World {
    drawHud { _drawHud }
    drawHud=(b) { _drawHud = b }
    player { _player }
-
-   construct new(i) {
-      _getTile = Fn.new { |x, y|
-         if (x < _level.x || x >= _level.x + _level.w) {
-            return 1
-         }
-
-         return TIC.mget(x,y)
-      }
-      _tileCollider = TileCollider.new(_getTile, 8, 8)
-
+   spr { _spr }
+   
+   construct new(mapName) {
+      _getTile = Fn.new { |x, y| _level.getTile(x, y) }
+      _level = Level.new(mapName)
+      _tileCollider = TileCollider.new(_getTile, _level.tw, _level.th)
       _entities = []
       _coins = 0
       _totalCoins = 0
-      _time = 0
+      _ticks = 0
       _drawHud = true
-      _levels = [
-         Level.new(0, 0, 43, 17),
-         Level.new(45, 0, 30, 17)
-      ]
-
-      _level = _levels[i]
-      _levelNum = i
-      _cam = Camera.new(8, 8, 240, 136)
-      _cam.constrain(_level.x*8, _level.y*8, _level.w*8, _level.h*8)
+      _cam = Camera.new(8, 8, 320, 180)
+      _cam.constrain(0, 0, _level.maxX, _level.maxY)
       
+      var objects = _level.objects()
 
       var entmappings = {
-         255: Player,
-         254: LevelExit,
-         253: Coin,
-         248: MovingPlatform,
-         247: MovingPlatform,
-         246: MovingPlatform,
-         245: MovingPlatform,
-         244: FallingPlatform,
-         243: Spring,
-         242: Spike,
-         241: Cannon,
-         240: Cannon,
-         239: Cannon,
-         238: Cannon,
-         14: Flame,
-         13: Flame,
-         12: Flame,
-         11: Flame,
-         10: Flame,
-         9: Flame,
-         8: Flame,
-         7: Flame,
+         "Player": Player,
+         "LevelExit": LevelExit,
+         "Coin": Coin,
+         "MovingPlatform": MovingPlatform,
+         "FallingPlatform": FallingPlatform,
+         "Spring": Spring,
+         "Spike": Spike,
+         "Cannon": Cannon,
+         "Flame": Flame,
       }
 
-      for (y in _level.y.._level.y+_level.h) {
-         for (x in _level.x.._level.x+_level.w) {
-            var i = TIC.mget(x, y)
-            var e = entmappings[i]
-            if (e != null) {
-               var ent = e.new(this, i, x*8, y*8)
-               if (ent is Player) {
-                  _entities.insert(0, ent)
-                   _player = ent
-               } else {
-                  _entities.add(ent)
-               }
+      for (obj in objects) {
+         var eType = entmappings[obj["type"]]
+         if (eType != null) {
+            // FIXME: 2nd param, ti, unneeded
+            var ent = eType.new(this, 1, obj["x"], obj["y"] - level.th)
+            if (ent is Player) {
+               _entities.insert(0, ent)
+               _player = ent
+            } else {
+               _entities.add(ent)
             }
-
          }
       }
 
-      _remap = Fn.new { |i, x, y|
-         if (i >= 224) {
-            return 0
-         }
-         return i
-      }
+      var sprites = Asset.create(Asset.Image, "sprites", "maps/tilesets/plat.gif")
+
+      Asset.loadAll()
+
+      _spr = Asset.createSprite(sprites, 8, 8, 0, 0)
+
    }
 
    update(dt) {
-      _time = _time + dt
-      //Debug.text("time", time)
-      //Debug.text("ents", _entities.count)
+      _ticks = _ticks + dt
+      Debug.text("world", "time", _ticks)
+      Debug.text("world", "ents", _entities.count)
 
       for (ent in _entities) {
          if (ent.active) {
-            ent.think(dt)
+            ent.think(1/60)
          }
       }
 
@@ -125,17 +144,25 @@ class World {
       }
    }
 
-   draw(t) {
-      TIC.cls(2)
-      TIC.map(_cam.tx, _cam.ty, _cam.tw, _cam.th, 0 - _cam.x % 8, 0 - _cam.y % 8, 2, 1, _remap)
+   draw(w, h) {
+      Draw.clear()
+      Draw.resetTransform()
+      Draw.transform(h / _cam.h, 0, 0, h / _cam.h, 0, 0)
+      Draw.translate(0 - _cam.x, 0 - _cam.y)
+
+      for (i in 0..level.layers.count-1) {
+         Draw.mapLayer(i)
+      }
 
       for (ent in _entities) {
          if (ent.active) {
-            cam.entToCamera(ent)
-            ent.draw(t)
+            ent.draw(_ticks)
          }
       }
 
+      Draw.submit()
+
+      /*
       if (_drawHud && _player != null) {
          TIC.rect(0, 0, 240, 12, 1)
          if (_totalCoins > 0) {
@@ -153,6 +180,10 @@ class World {
             TIC.spr(i < pct ? 283 : 267, 11 + i * 6, 2, 0)
          }
       }
+      */
    }
-   */
+
+   shutdown() {
+
+   }
 }

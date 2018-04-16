@@ -1,14 +1,9 @@
 import "meta" for Meta
+import "engine" for Trap
 
-// including most everything here for syntax validation
 import "timer" for Timer
 import "debug" for Debug
-import "math" for Math
-import "collision" for CollisionPool, Collision, TriggerInfo
-import "tilecollider" for TileCollider
-import "camera" for Camera
-import "entity" for Entity
-import "player" for Player
+import "collision" for CollisionPool
 import "world" for World
 
 class Main {
@@ -18,12 +13,20 @@ class Main {
       CollisionPool.init()
       Timer.init()
       Debug.init()
+      __accumTime = 0
       
       loadLevel(mapName)
    }
 
    static update(dt) {
-      __scene.update(dt)
+      __accumTime = __accumTime + dt
+      if (__accumTime >= 1/60) {
+         __accumTime = __accumTime - 1/60
+      } else {
+         return
+      }
+
+      __scene.update(1)
       Timer.tick(1)
    }
 

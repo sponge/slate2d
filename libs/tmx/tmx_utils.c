@@ -499,10 +499,15 @@ int parse_boolean(const char *boolean) {
 	return 0;
 }
 
-/* "#337FA2" -> 0x337FA2 */
-int get_color_rgb(const char *c) {
+/* "#337FA2" -> 0xFF337FA2 */
+unsigned int get_color_rgb(const char *c) {
+	unsigned int result = 0;
+	if (strlen(c) == 7) {
+		result += (255 << 24);
+	}
 	if (*c == '#') c++;
-	return (int)strtol(c, NULL, 16);
+	result += (unsigned int)strtol(c, NULL, 16);
+	return result;
 }
 
 int count_char_occurences(const char *str, char c) {

@@ -78,7 +78,7 @@ enum tmx_horizontal_align parse_horizontal_align(const char *horalign);
 enum tmx_vertical_align parse_vertical_align(const char *veralign);
 enum tmx_layer_type parse_layer_type(const char *nodename);
 int parse_boolean(const char *boolean);
-int get_color_rgb(const char *c);
+unsigned int get_color_rgb(const char *c);
 
 int count_char_occurences(const char *str, char c);
 char* str_trim(char *str);

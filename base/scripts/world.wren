@@ -183,7 +183,8 @@ class World {
          Draw.bmpText(_fixedFont, 4, 4, "S")
          var pct = (_player.pMeter / _player.pMeterCapacity * 40 / 8).floor
          for (i in 0..4) {
-            Draw.sprite(_spr, i < pct ? 283 : 267, 14 + i * 6, 4)
+            var num = _player.pMeter == _player.pMeterCapacity ? 299 : i < pct ? 283 : 267
+            Draw.sprite(_spr, num, 14 + i * 6, 4)
             //TIC.spr(, 11 + i * 6, 2, 0)
          }
 

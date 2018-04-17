@@ -27,7 +27,7 @@ class Game {
       _rndNum = 0
       _time = 0
 
-      //Trap.sndPlay(_music, 1.0, 0.0, true)
+      Trap.sndPlay(_music, 1.0, 0.0, true)
       //Trap.sndPlay(_speech, 1.0, 0.0, false)
 
       _spr = Asset.createSprite(_sprites, 8, 8, 0, 0)

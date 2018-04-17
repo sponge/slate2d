@@ -13,6 +13,8 @@ class Level {
    maxX { _maxX }
    maxY { _maxY }
    layers { _layers }
+   music { _music }
+   title { _title }
    worldLayer { _worldLayer }
    backgroundColor { _backgroundColor }
 
@@ -36,6 +38,9 @@ class Level {
 
       var rgba = mapProps["backgroundColor"]
       _backgroundColor = [(rgba>>16)&0xFF, (rgba>>8)&0xFF, (rgba)&0xFF, (rgba>>24)&0xFF]
+
+      _music = mapProps["properties"]["music"]
+      _title = mapProps["properties"]["title"]
    }
 
    getTile(x, y) {
@@ -127,10 +132,25 @@ class World {
 
       var sprites = Asset.create(Asset.Image, "sprites", "maps/tilesets/plat.gif")
 
+      _music = Asset.create(Asset.Mod, "music", level.music)
+      _deathMusic = Asset.create(Asset.Mod, "deathmusic", "music/victory_ditty_24.mod")
+      _victoryMusic = Asset.create(Asset.Mod, "victorymusic", "music/jingles_22.mod")
+
       Asset.loadAll()
 
       _spr = Asset.createSprite(sprites, 8, 8, 0, 0)
 
+      _musicHnd = Trap.sndPlay(_music, 1.0, 0.0, true)
+   }
+
+   playMusic(type) {
+      Trap.sndStop(_musicHnd)
+
+      if (type == "death") {
+         _musicHnd = Trap.sndPlay(_deathMusic)
+      } else if (type == "victory") {
+         _musicHnd = Trap.sndPlay(_victoryMusic)
+      }
    }
 
    update(dt) {

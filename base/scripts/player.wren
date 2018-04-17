@@ -1,5 +1,5 @@
 import "entity" for Entity
-import "engine" for Trap, Button, Draw, Color, Fill
+import "engine" for Trap, Button, Draw, Color, Fill, Asset
 import "debug" for Debug
 import "main" for Main
 import "timer" for Timer
@@ -64,12 +64,17 @@ class Player is Entity {
          0.25: 2.46875,
             0: 2.40625
       }
+
+      _jumpSound = Asset.create(Asset.Sound, "player_jump", "sound/jump.wav")
+      _shootSound = Asset.create(Asset.Sound, "player_shoot", "sound/shoot.wav")
    }
 
    die() {
       active = false
-      Timer.runLater(60, Fn.new {
+      world.playMusic("death")
+      Timer.runLater(240, Fn.new {
          // FIXME: do something here
+         Trap.error(2, "you died!")
          // Main.intro(world)
       })
    }
@@ -151,6 +156,7 @@ class Player is Entity {
                if (dx.abs >= speed) {
                   dy = -_jumpHeights[speed]
                   _jumpHeld = true
+                  Trap.sndPlay(_jumpSound)
                   break
                }
             }
@@ -222,6 +228,7 @@ class Player is Entity {
          var shot = StunShot.new(this, world, 271, _facing > 0 ? x + 6 : x - 8, y + 1)
          shot.dx = shot.dx * _facing
          world.entities.add(shot)
+         Trap.sndPlay(_shootSound)
       }
 
       // update camera

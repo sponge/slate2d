@@ -1,7 +1,7 @@
 import "entity" for Entity
 import "timer" for Timer
 import "main" for Main
-import "engine" for Trap, Draw, Color, Fill
+import "engine" for Trap, Draw, Color, Fill, Asset
 import "debug" for Debug
 
 // FIXME: duped
@@ -454,6 +454,7 @@ class Coin is Entity {
    construct new(world, ti, ox, oy) {
       super(world, ti, ox, oy, 8, 8)
       world.totalCoins = world.totalCoins + 1
+      _collect = Asset.create(Asset.Sound, "coin_collect", "sound/coin.wav")
    }
 
    canCollide(other, side, d) { other.isPlayer == true }
@@ -462,6 +463,7 @@ class Coin is Entity {
    touch(other, side) {
       active = false
       world.coins = world.coins + 1
+      Trap.sndPlay(_collect)
    }
 
    draw(t) {
@@ -486,7 +488,8 @@ class LevelExit is Entity {
       other.disableControls = true
       world.entities.add(ExitBanner.new(world))
       world.drawHud = false
-      Timer.runLater(360, Fn.new {
+      world.playMusic("victory")
+      Timer.runLater(300, Fn.new {
          // FIXME: do something here
          Trap.error(2, "you beat the level!")
          // Main.intro(world.levelNum + 1)

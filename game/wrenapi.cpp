@@ -121,11 +121,12 @@ void wren_asset_clearall(WrenVM *vm) {
 void wren_asset_bmpfnt_set(WrenVM *vm) {
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	const char *glyphs = wrenGetSlotString(vm, 2);
-	int charSpacing = (int)wrenGetSlotDouble(vm, 3);
-	int intWidth = (int)wrenGetSlotDouble(vm, 4);
-	int lineHeight = (int)wrenGetSlotDouble(vm, 5);
+	int glyphWidth = (int)wrenGetSlotDouble(vm, 3);
+	int charSpacing = (int)wrenGetSlotDouble(vm, 4);
+	int intWidth = (int)wrenGetSlotDouble(vm, 5);
+	int lineHeight = (int)wrenGetSlotDouble(vm, 6);
 
-	trap->Asset_BMPFNT_Set(assetHandle, glyphs, charSpacing, intWidth, lineHeight);
+	trap->Asset_BMPFNT_Set(assetHandle, glyphs, glyphWidth, charSpacing, intWidth, lineHeight);
 }
 
 void wren_asset_measurebmptext(WrenVM *vm) {
@@ -639,7 +640,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Asset", true, "find(_)", wren_asset_find },
 	{ "engine", "Asset", true, "loadAll()", wren_asset_loadall },
 	{ "engine", "Asset", true, "clearAll()", wren_asset_clearall },
-	{ "engine", "Asset", true, "bmpfntSet(_,_,_,_,_)", wren_asset_bmpfnt_set },
+	{ "engine", "Asset", true, "bmpfntSet(_,_,_,_,_,_)", wren_asset_bmpfnt_set },
 	{ "engine", "Asset", true, "measureBmpText(_,_,_)", wren_asset_measurebmptext },
 	{ "engine", "Asset", true, "createSprite(_,_,_,_,_)", wren_asset_create_sprite },
 

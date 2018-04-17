@@ -11,7 +11,7 @@ void GameScene::Startup(ClientInfo* info) {
 	music = trap->Asset_Create(ASSET_MOD, "music", "music/frantic_-_dog_doesnt_care.it");
 	speech = trap->Asset_Create(ASSET_SPEECH, "speech", "great job! you are a good dog!");
 	font = trap->Asset_Create(ASSET_BITMAPFONT, "font", "gfx/good_neighbors.png");
-	trap->Asset_BMPFNT_Set(font, "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", -1, 7, 16);
+	trap->Asset_BMPFNT_Set(font, "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 0, -1, 7, 16);
 
 	map = trap->Map_Load(mapFileName);
 

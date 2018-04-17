@@ -35,6 +35,18 @@ void* BMPFNT_Load(Asset &asset) {
 
 	BitmapFont *font = (BitmapFont*)asset.resource;
 
+	if (font->glyphWidth > 0) {
+		while (font->glyphs[currGlyph] != 0) {
+			byte glyph = (byte)font->glyphs[currGlyph];
+			font->offsets[glyph].start = currGlyph * font->glyphWidth;
+			font->offsets[glyph].end = (currGlyph + 1) * font->glyphWidth;
+
+			currGlyph++;
+		}
+
+		goto end;
+	}
+
 	for (int x = 0; x < w; x++) {
 		for (int y = 0; y < h; y++) {
 			// find the alpha channel of the current pixel
@@ -80,7 +92,7 @@ void BMPFNT_Free(Asset &asset) {
 	free(font);
 }
 
-void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int charSpacing, int spaceWidth, int lineHeight) {
+void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight) {
 	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
 
 	if (asset == nullptr) {
@@ -96,6 +108,7 @@ void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int charSpacing, in
 	auto font = new BitmapFont();
 	memcpy_s(font->glyphs, sizeof(font->glyphs), glyphs, strlen(glyphs));
 	font->charSpacing = charSpacing;
+	font->glyphWidth = glyphWidth;
 	font->spaceWidth = spaceWidth;
 	font->lineHeight = lineHeight;
 	

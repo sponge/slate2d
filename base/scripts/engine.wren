@@ -31,7 +31,7 @@ class Asset {
    foreign static find(name)
    foreign static loadAll()
    foreign static clearAll()
-   foreign static bmpfntSet(assetHandle, glyphs, charSpacing, spaceWidth, lineHeight)
+   foreign static bmpfntSet(assetHandle, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight)
    foreign static measureBmpText(fntId, text, scale)
    static measureBmpText(fntId, text) { measureBmpText(fntId, text, 1.0) }
    foreign static createSprite(assetHandle, w, h, marginX, marginY)

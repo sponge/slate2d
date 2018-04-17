@@ -25,7 +25,7 @@ typedef struct {
 typedef struct BitmapFont {
 	struct NVGcontext *nvg;
 	unsigned int hnd;
-	int charSpacing, spaceWidth, lineHeight;
+	int charSpacing, glyphWidth, spaceWidth, lineHeight;
 	int w, h;
 	unsigned char glyphs[256];
 	BitmapGlyph offsets[256];
@@ -33,7 +33,7 @@ typedef struct BitmapFont {
 
 void* BMPFNT_Load(Asset &asset);
 void BMPFNT_Free(Asset &asset);
-void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int charSpacing, int spaceWidth, int lineHeight);
+void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight);
 
 // audio assets
 

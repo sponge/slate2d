@@ -9,8 +9,15 @@ class Game {
       _sprites = Asset.create(Asset.Image, "sprites", "maps/tilesets/plat.gif")
       _music = Asset.create(Asset.Mod, "music", "music/frantic_-_dog_doesnt_care.it")
       _speech = Asset.create(Asset.Speech, "speech", "great job! you are a good dog!")
+
       _font = Asset.create(Asset.BitmapFont, "font", "gfx/good_neighbors.png")
-      Asset.bmpfntSet(_font, "!\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", -1, 7, 16)
+      Asset.bmpfntSet(_font, "!\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 0, -1, 7, 16)
+
+      _fixedFont = Asset.create(Asset.BitmapFont, "fixedfont", "gfx/panicbomber.png")
+      Asset.bmpfntSet(_fixedFont, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
+
+      _fixedFontBlue = Asset.create(Asset.BitmapFont, "fixedfontblue", "gfx/panicbomber_blue.png")
+      Asset.bmpfntSet(_fixedFontBlue, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
 
       TileMap.load(mapName)
 
@@ -114,6 +121,9 @@ class Game {
       Draw.bmpText(_font, 32, 50, "Good Dog!", 3.0)
       Draw.bmpText(_font, 32, 50, "Good Dog!", 2.0)
       Draw.bmpText(_font, 32, 50, "Good Dog!")
+
+      Draw.bmpText(_fixedFont, 32, 34, "The Journey Of The")
+      Draw.bmpText(_fixedFontBlue, 32, 42, "~Most Exceptional~")
 
 
       Draw.sprite(_spr, 265, 300, 150, 1.0, 1.0, 0, 3, 3)

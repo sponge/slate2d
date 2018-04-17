@@ -37,8 +37,8 @@ class Camera {
    }
 
    move(x, y) {
-      _x = x.floor
-      _y = y.floor
+      _x = x
+      _y = y
 
       if (_conw > 0 && _conh > 0) {
          //Debug.text("max", "%(_conx) %(_x) %(_conx+_conw-_w)")

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.4" orientation="orthogonal" renderorder="right-down" width="60" height="23" tilewidth="8" tileheight="8" infinite="0" backgroundcolor="#30346d" nextobjectid="21">
+<map version="1.0" tiledversion="1.1.4" orientation="orthogonal" renderorder="right-down" width="60" height="23" tilewidth="8" tileheight="8" infinite="0" backgroundcolor="#30346d" nextobjectid="22">
  <tileset firstgid="1" name="plat" tilewidth="8" tileheight="8" tilecount="512" columns="16">
   <image source="tilesets/plat.gif" width="128" height="256"/>
   <tile id="4">
@@ -106,6 +106,6 @@
  </objectgroup>
  <objectgroup name="more objects">
   <object id="19" gid="255" x="168" y="160" width="8" height="8"/>
-  <object id="20" gid="256" x="16" y="160" width="8" height="8"/>
+  <object id="20" gid="256" x="16" y="168" width="8" height="8"/>
  </objectgroup>
 </map>

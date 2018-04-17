@@ -120,6 +120,12 @@ class World {
          }
       }
 
+      _fixedFont = Asset.create(Asset.BitmapFont, "fixedfont", "gfx/panicbomber.png")
+      Asset.bmpfntSet(_fixedFont, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
+
+      _fixedFontBlue = Asset.create(Asset.BitmapFont, "fixedfontblue", "gfx/panicbomber_blue.png")
+      Asset.bmpfntSet(_fixedFontBlue, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
+
       var sprites = Asset.create(Asset.Image, "sprites", "maps/tilesets/plat.gif")
 
       Asset.loadAll()
@@ -130,8 +136,8 @@ class World {
 
    update(dt) {
       _ticks = _ticks + dt
-      Debug.text("world", "time", _ticks)
-      Debug.text("world", "ents", _entities.count)
+      // Debug.text("world", "time", _ticks)
+      // Debug.text("world", "ents", _entities.count)
 
       for (ent in _entities) {
          if (ent.active) {
@@ -150,10 +156,13 @@ class World {
       
       Draw.resetTransform()
 
+      Draw.transform(h / _cam.h, 0, 0, h / _cam.h, 0, 0)
+      
+      Draw.setScissor(0, 16, _cam.w, _cam.h - 16)
+
       Draw.setColor(Color.Fill, level.backgroundColor)
       Draw.rect(0, 0, w, h, Fill.Solid)
 
-      Draw.transform(h / _cam.h, 0, 0, h / _cam.h, 0, 0)
       Draw.translate(0 - _cam.x, 0 - _cam.y)
 
       for (i in 0..level.layers.count-1) {
@@ -166,25 +175,27 @@ class World {
          }
       }
 
-      /*
+      Draw.resetScissor()
+
+      Draw.translate(_cam.x, _cam.y)
       if (_drawHud && _player != null) {
-         TIC.rect(0, 0, 240, 12, 1)
-         if (_totalCoins > 0) {
-            TIC.spr(256, 100, 1, 0)
-            TIC.print("%(_coins)/%(_totalCoins)", 110, 3, _coins == _totalCoins ? 14 : 15, true)
-         }
-         TIC.print("S", 4, 3, 15, true)
 
-         for (i in 0..2) {
-            TIC.spr(i < _player.health ? 265 : 281, 198+(i*14), 2, 0, 1, 0, 0, 2, 1)
-         }
-
+         Draw.bmpText(_fixedFont, 4, 4, "S")
          var pct = (_player.pMeter / _player.pMeterCapacity * 40 / 8).floor
          for (i in 0..4) {
-            TIC.spr(i < pct ? 283 : 267, 11 + i * 6, 2, 0)
+            Draw.sprite(_spr, i < pct ? 283 : 267, 14 + i * 6, 4)
+            //TIC.spr(, 11 + i * 6, 2, 0)
+         }
+
+         if (_totalCoins > 0) {
+            Draw.sprite(_spr, 256, 140, 4)
+            Draw.bmpText(_totalCoins == _coins ? _fixedFontBlue : _fixedFont, 150, 4, "%(_coins)/%(_totalCoins)")
+         }
+
+         for (i in 0..2) {
+            Draw.sprite(_spr, i < _player.health ? 265 : 281, 275+(i*14), 4, 1, 1, 0, 2, 1)
          }
       }
-      */
    }
 
    shutdown() {

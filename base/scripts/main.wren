@@ -1,5 +1,5 @@
 import "meta" for Meta
-import "engine" for Trap, Draw
+import "engine" for Trap, Draw, Asset
 
 import "timer" for Timer
 import "debug" for Debug
@@ -48,6 +48,8 @@ class Main {
    static shutdown() {
       __scene.shutdown()
       __scene = null
+
+      Asset.clearAll()
    }
 
    static loadIntro(mapName) {

@@ -232,16 +232,16 @@ class Player is Entity {
          die()
       }
 
-      Debug.text("player", "grnd", _groundEnt)
-      Debug.text("player", "entx", chkx != null ? chkx.entity : null)
-      Debug.text("player", "enty", chky.entity)
-      Debug.text("player", "x", x)
-      Debug.text("player", "y", y)
-      Debug.text("player", "dx", dx)
-      Debug.text("player", "dy", dy)
-      Debug.text("player", "spd", speed)
-      Debug.text("player", "jmp", _jumpHeldFrames)
-      Debug.text("player", "gnd", _grounded)
+      // Debug.text("player", "grnd", _groundEnt)
+      // Debug.text("player", "entx", chkx != null ? chkx.entity : null)
+      // Debug.text("player", "enty", chky.entity)
+      // Debug.text("player", "x", x)
+      // Debug.text("player", "y", y)
+      // Debug.text("player", "dx", dx)
+      // Debug.text("player", "dy", dy)
+      // Debug.text("player", "spd", speed)
+      // Debug.text("player", "jmp", _jumpHeldFrames)
+      // Debug.text("player", "gnd", _grounded)
    }
 
    draw(t) {

@@ -48,7 +48,8 @@ typedef struct gameImportFuncs_s {
 	int (*Asset_BMPFNT_TextWidth)(AssetHandle assetHandle, const char *string, float scale);
 	Image* (*Get_Img)(AssetHandle id);
 
-	void (*Snd_Play)(AssetHandle asset, float volume, float pan, bool loop);
+	unsigned int(*Snd_Play)(AssetHandle asset, float volume, float pan, bool loop);
+	void(*Snd_Stop)(unsigned int handle);
 } gameImportFuncs_t;
 
 typedef struct gameExportFuncs_s {

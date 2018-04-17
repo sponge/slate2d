@@ -58,16 +58,20 @@ void Mod_Free(Asset &asset) {
 	delete mod;
 }
 
-void Snd_Play(AssetHandle assetHandle, float volume, float pan, bool loop) {
+unsigned int Snd_Play(AssetHandle assetHandle, float volume, float pan, bool loop) {
 	Asset* asset = Asset_Get(ASSET_ANY, assetHandle);
 	if (asset->type != ASSET_SOUND && asset->type != ASSET_SPEECH && asset->type != ASSET_MOD) {
 		assert(false);
-		return;
+		return 0;
 	}
 
 	assert(asset != nullptr && asset->resource != nullptr);
 
 	SoLoud::AudioSource *src = (SoLoud::AudioSource*) asset->resource;
 	src->setLooping(loop);
-	soloud.play(*src, volume, pan);
+	return soloud.play(*src, volume, pan);
+}
+
+void Snd_Stop(unsigned int handle) {
+	soloud.stop(handle);
 }

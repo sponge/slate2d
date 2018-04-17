@@ -135,6 +135,7 @@ static gameImportFuncs_t GAMEtraps = {
 	BMPFNT_TextWidth,
 	Get_Img,
 	Snd_Play,
+	Snd_Stop
 };
 
 void Sys_LoadDll(const char * module, void ** exports, int * version) {

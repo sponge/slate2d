@@ -6,6 +6,8 @@ class Trap {
    foreign static error(level, text)
    foreign static console(text)
    foreign static sndPlay(assetHandle, volume, pan, loop)
+   static sndPlay(assetHandle) { sndPlay(assetHandle, 1.0, 0, false) }
+   foreign static sndStop(handle)
    foreign static keyActive(key)
    foreign static keyPressed(key, delay, repeat)
    foreign static mousePosition()

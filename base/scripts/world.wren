@@ -87,6 +87,7 @@ class World {
    construct new(mapName) {
       _getTile = Fn.new { |x, y| _level.getTile(x, y) }
       _nextScene = null
+      _mapName = mapName
       _level = Level.new(mapName)
       _tileCollider = TileCollider.new(_getTile, _level.tw, _level.th)
       _entities = []

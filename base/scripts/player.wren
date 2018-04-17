@@ -73,9 +73,7 @@ class Player is Entity {
       active = false
       world.playMusic("death")
       Timer.runLater(240, Fn.new {
-         // FIXME: do something here
-         Trap.error(2, "you died!")
-         // Main.intro(world)
+         world.reloadLevel()
       })
    }
 

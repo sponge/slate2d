@@ -101,7 +101,7 @@ void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int
 	}
 
 	if (asset->loaded == true) {
-		Com_Printf("WARNING: BMPFNT_Set: trying to set already loaded font");
+		Com_Printf("WARNING: BMPFNT_Set: trying to set already loaded font\n");
 		return;
 	}
 

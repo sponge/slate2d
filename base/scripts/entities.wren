@@ -130,8 +130,8 @@ class Flamethrower is Entity {
 class Spring is Entity {
    platform { true }
 
-   construct new(world, ti, ox, oy) {
-      super(world, ti, ox, oy, 8, 8)
+   construct new(world, obj, ox, oy) {
+      super(world, obj, ox, oy, 8, 8)
       _activateTime = -1
       _thinkTime = 0
       _baseY = oy
@@ -282,8 +282,8 @@ class Spike is Entity {
 
 class FallingPlatform is Entity {
    platform { true }
-   construct new(world, ti, ox, oy) {
-      super(world, ti, ox, oy, 24, 4)
+   construct new(world, obj, ox, oy) {
+      super(world, obj, ox, oy, 24, 4)
 
       _fallTime = 0
       _fallSpeed = 1
@@ -451,8 +451,8 @@ class MovingPlatform is Entity {
 }
 
 class Coin is Entity {
-   construct new(world, ti, ox, oy) {
-      super(world, ti, ox, oy, 8, 8)
+   construct new(world, obj, ox, oy) {
+      super(world, obj, ox, oy, 8, 8)
       world.totalCoins = world.totalCoins + 1
       _collect = Asset.create(Asset.Sound, "coin_collect", "sound/coin.wav")
    }
@@ -472,8 +472,14 @@ class Coin is Entity {
 }
 
 class LevelExit is Entity {
-   construct new(world, ti, ox, oy) {
-      super(world, ti, ox, oy, 8, 8)
+   construct new(world, obj, ox, oy) {
+      super(world, obj, ox, oy, 8, 8)
+
+      _nextLevel = obj["properties"]["next"]
+
+      if (_nextLevel is String == false) {
+         Trap.error(2, "LevelExit without next string property at %(ox), %(oy)")
+      }
    }
 
    canCollide(other, side, d) { other.isPlayer == true }
@@ -487,12 +493,9 @@ class LevelExit is Entity {
       active = false
       other.disableControls = true
       world.entities.add(ExitBanner.new(world))
-      world.drawHud = false
       world.playMusic("victory")
       Timer.runLater(300, Fn.new {
-         // FIXME: do something here
-         Trap.error(2, "you beat the level!")
-         // Main.intro(world.levelNum + 1)
+         world.changeScene("intro", _nextLevel)
       })
    }
 }
@@ -584,8 +587,8 @@ class StunShot is Cannonball {
    trigger { true }
    canCollide(other, side, d) { other != parent }
 
-   construct new(player, world, ti, ox, oy) {
-      super(world, ti, ox, oy, 6, 6)
+   construct new(player, world, obj, ox, oy) {
+      super(world, obj, ox, oy, 6, 6)
       dx = 2
       dy = 0
       parent = player

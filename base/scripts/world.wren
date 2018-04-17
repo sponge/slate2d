@@ -71,6 +71,7 @@ class Level {
 }
 
 class World {
+   nextScene { _nextScene }
    ticks { _ticks }
    tileCollider { _tileCollider }
    cam { _cam }
@@ -80,20 +81,18 @@ class World {
    coins=(c) { _coins = c }
    totalCoins { _totalCoins }
    totalCoins=(c) { _totalCoins = c }
-   drawHud { _drawHud }
-   drawHud=(b) { _drawHud = b }
    player { _player }
    spr { _spr }
    
    construct new(mapName) {
       _getTile = Fn.new { |x, y| _level.getTile(x, y) }
+      _nextScene = null
       _level = Level.new(mapName)
       _tileCollider = TileCollider.new(_getTile, _level.tw, _level.th)
       _entities = []
       _coins = 0
       _totalCoins = 0
       _ticks = 0
-      _drawHud = true
       _cam = Camera.new(8, 8, 320, 180)
       _cam.constrain(0, 0, _level.maxX, _level.maxY)
       
@@ -141,6 +140,14 @@ class World {
       _spr = Asset.createSprite(sprites, 8, 8, 0, 0)
 
       _musicHnd = Trap.sndPlay(_music, 1.0, 0.0, true)
+   }
+
+   reloadLevel() {
+      _nextScene = ["intro", _mapName]
+   }
+
+   changeScene(name, params) {
+      _nextScene = [name, params]
    }
 
    playMusic(type) {
@@ -197,8 +204,7 @@ class World {
       Draw.resetScissor()
 
       Draw.translate(_cam.x, _cam.y)
-      if (_drawHud && _player != null) {
-
+      if (_player != null) {
          Draw.bmpText(_fixedFont, 4, 4, "S")
          var pct = (_player.pMeter / _player.pMeterCapacity * 40 / 8).floor
          for (i in 0..4) {

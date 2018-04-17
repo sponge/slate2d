@@ -5,6 +5,7 @@ import "timer" for Timer
 import "debug" for Debug
 import "collision" for CollisionPool
 import "world" for World
+import "intro" for Intro
 
 class Main {
    static scene { __scene }
@@ -15,10 +16,16 @@ class Main {
       Debug.init()
       __accumTime = 0
       
-      loadLevel(mapName)
+      loadScene("intro", mapName)
+      //loadScene("world", mapName)
    }
 
    static update(dt) {
+      if (__scene.nextScene != null) {
+         Trap.printLn("got scene transfer: %(__scene)")
+         loadScene(__scene.nextScene[0], __scene.nextScene[1])
+      }
+
       __accumTime = __accumTime + dt
       if (__accumTime >= 1/60) {
          __accumTime = __accumTime - 1/60
@@ -46,21 +53,26 @@ class Main {
    }
 
    static shutdown() {
+      if (__scene == null) {
+         return
+      }
+
       __scene.shutdown()
       __scene = null
 
       Asset.clearAll()
    }
 
-   static loadIntro(mapName) {
-      // Timer.clear()
-      // __scene = Intro.new(mapName)
-      // System.gc()
-   }
-
-   static loadLevel(mapName) {
+   static loadScene(scene, params) {
       Timer.clear()
-      __scene = World.new(mapName)
+      shutdown()
+
+      if (scene == "intro") {
+         __scene = Intro.new(params)
+      } else if (scene == "world") {
+         __scene = World.new(params)
+      }
+
       System.gc()
    }
 }

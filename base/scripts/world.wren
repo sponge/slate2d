@@ -185,7 +185,6 @@ class World {
          for (i in 0..4) {
             var num = _player.pMeter == _player.pMeterCapacity ? 299 : i < pct ? 283 : 267
             Draw.sprite(_spr, num, 14 + i * 6, 4)
-            //TIC.spr(, 11 + i * 6, 2, 0)
          }
 
          if (_totalCoins > 0) {

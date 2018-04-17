@@ -22,7 +22,7 @@ class Intro {
       _fixedFontBlue = Asset.create(Asset.BitmapFont, "fixedfontblue", "gfx/panicbomber_blue.png")
       Asset.bmpfntSet(_fixedFontBlue, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
 
-      _music = Asset.create(Asset.Mod, "deathmusic", "music/intro.mod")
+      _music = Asset.create(Asset.Mod, "intromusic", "music/intro.mod")
 
       Asset.loadAll()
 

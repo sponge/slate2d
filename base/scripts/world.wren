@@ -2,7 +2,7 @@ import "engine" for Trap, Button, Draw, Asset, Fill, Color, TileMap
 import "debug" for Debug
 import "collision" for TileCollider
 import "camera" for Camera
-import "entities" for LevelExit, Coin, MovingPlatform, FallingPlatform, Spring, Spike, Cannon, Flame
+import "entities" for LevelExit, Coin, MovingPlatform, FallingPlatform, Spring, Spike, Cannon, Flamethrower
 import "player" for Player
 
 class Level {
@@ -103,14 +103,13 @@ class World {
          "Spring": Spring,
          "Spike": Spike,
          "Cannon": Cannon,
-         "Flame": Flame,
+         "Flamethrower": Flamethrower
       }
 
       for (obj in objects) {
          var eType = entmappings[obj["type"]]
          if (eType != null) {
-            // FIXME: 2nd param, ti, unneeded
-            var ent = eType.new(this, 1, obj["x"], obj["y"] - level.th)
+            var ent = eType.new(this, obj, obj["x"], obj["y"] - level.th)
             if (ent is Player) {
                _entities.insert(0, ent)
                _player = ent

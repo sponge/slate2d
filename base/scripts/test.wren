@@ -124,13 +124,27 @@ class Game {
 
       Draw.bmpText(_fixedFont, 32, 34, "The Journey Of The")
       Draw.bmpText(_fixedFontBlue, 32, 42, "~Most Exceptional~")
+      Draw.bmpText(_fixedFontBlue, 32, 100, "Type Y to start")
 
 
       Draw.sprite(_spr, 265, 300, 150, 1.0, 1.0, 0, 3, 3)
       Draw.sprite(_spr, 265, 295, 150, 0.5, 1.0, 0, 3, 3)
 
-      Draw.sprite(_spr, 1, 300, 32, 1.0, 2.0, 0, 1, 1)
-      Draw.sprite(_spr, 1, 275, 32)
+      Draw.sprite(_spr, 17, 250, 32)
+
+      Draw.sprite(_spr, 17, 275, 0, 1.0, 1.0, 0, 2, 1)
+      Draw.sprite(_spr, 17, 275, 8, 1.0, 1.0, 1, 2, 1)
+      Draw.sprite(_spr, 17, 275, 16, 1.0, 1.0, 2, 2, 1)
+      Draw.sprite(_spr, 17, 275, 24, 1.0, 1.0, 3, 2, 1)
+      Draw.sprite(_spr, 17, 275, 32, 1.0, 1.0, 4, 2, 1)
+      Draw.sprite(_spr, 17, 275, 48, 1.0, 1.0, 5, 2, 1)
+      Draw.sprite(_spr, 17, 275, 64, 1.0, 1.0, 6, 2, 1)
+      Draw.sprite(_spr, 17, 275, 80, 1.0, 1.0, 7, 2, 1)
+
+      Draw.sprite(_spr, 17, 275, 96, 1.0, 2.0, 7, 2, 1)
+
+
+      
 
       if (_upActive) {
          Draw.rect(100, 0, 100, 100, Fill.Solid)

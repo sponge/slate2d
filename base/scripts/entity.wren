@@ -33,7 +33,7 @@ class Entity {
    resolve { _baseResolve }
    baseResolve { _baseResolve }
    
-   construct new(world, ti, x, y, w, h) {
+   construct new(world, obj, x, y, w, h) {
       _world = world
       _trigger = false
       _active = true
@@ -150,7 +150,7 @@ class Entity {
       Draw.sprite(world.spr, id, x, y)
    }
 
-   drawSprite(id, x, y, alph) {
+   drawSprite(id, x, y, alpha) {
       Draw.sprite(world.spr, id, x, y, alpha)
    }
 

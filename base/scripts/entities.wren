@@ -1,7 +1,7 @@
 import "entity" for Entity
 import "timer" for Timer
 import "main" for Main
-import "engine" for Trap, Draw
+import "engine" for Trap, Draw, Color, Fill
 import "debug" for Debug
 
 // FIXME: duped
@@ -16,28 +16,27 @@ var DIR_BOTTOM = 8
 // flames actually spawn out of a tile in the tilemap range. the flamethrower is solid
 // but we spawn the flame and toggle it on and off instead to cut back on entities used
 class Flame is Entity {
-   construct new(world, ti, ox, oy) {
-      _dim = ti % 2 == 0 ? DIM_HORIZ : DIM_VERT
+   construct new(world, dim, dir, delayed, ox, oy) {
+      _dim = dim
+      _flipped = false
       var w = _dim == DIM_HORIZ ? 16 : 6
       var h = _dim == DIM_HORIZ ? 6 : 16
       
-      ti = ti - 7
       _delay = 0
-      if (ti > 3) {
-         ti = ti - 4
+      if (delayed) {
          _delay = 240
       }
-      _tile = ti
 
-      if (ti == 0 || ti == 3) {
+      if (dir == "up" || dir == "left") {
          ox = ox + (_dim == DIM_HORIZ ? -16 : 1)
          oy = oy + (_dim == DIM_HORIZ ? 1 : -16)
       } else {
          ox = ox + (_dim == DIM_HORIZ ? 8 : 1)
          oy = oy + (_dim == DIM_HORIZ ? 1 : 8)
+         _flipped = true
       }
 
-      super(world, ti, ox, oy, w, h)
+      super(world, null, ox, oy, w, h)
    }  
 
    isHurting() {
@@ -75,19 +74,53 @@ class Flame is Entity {
          }     
       }
 
+      // Draw.setColor(Color.Fill, 255, 0, 0, 255)
+      // Draw.rect(x, y, w, h, Fill.Solid)
+
       var flicker = (t / 3 % 2).floor == 0
 
       if (_dim == DIM_VERT) {
+         // FIXME: flip
          var f = flicker ? 1 : 0
-         var flip = _tile == 2 ? 2 + f : f
-         // FIXME: draw
-         // TIC.spr(spr, x - 1, y, 1, 1, flip, 0, 1, 2)
+         var flip = _flipped ? 2+f : 0+f
+         Draw.sprite(world.spr, spr, x-1, y, 1, 1, flip, 1, 2)
       } else {
          var f = flicker ? 2 : 0
-         var flip = _tile == 3 ? 1 + f : f
-         // FIXME: draw
-         // TIC.spr(spr, x, y - 1, 1, 1, flip, 1, 1, 2)         
+         var flip = _flipped ? 4+1+f : 4+f
+         Draw.sprite(world.spr, spr, x, y-1, 1, 1, flip, 1, 2)
       }
+   }
+}
+
+class Flamethrower is Entity {
+   construct new(world, obj, ox, oy) {
+      super(world, obj, ox, oy, 8, 8)
+
+      var dir = obj["properties"]["direction"]
+      if (dir == "up") {
+         _tile = 7
+         _dim = DIM_VERT
+      } else if (dir == "right") {
+         _tile = 8
+         _dim = DIM_HORIZ
+      } else if (dir == "down") {
+         _tile = 9
+         _dim = DIM_VERT
+      } else if (dir == "left") {
+         _tile = 10
+         _dim = DIM_HORIZ
+      } else {
+         Trap.error(2, "Flamethrower at %(ox),%(oy) has no valid direction")
+      }
+
+      var altCycle = obj["properties"]["altCycle"] ? true : false
+
+      var ent = Flame.new(world, _dim, dir, altCycle, ox, oy)
+      world.entities.add(ent)
+   }
+   
+   draw(t) {
+      drawSprite(_tile, x, y)
    }
 }
 
@@ -168,13 +201,29 @@ class Spring is Entity {
 }
 
 class Cannon is Entity {
-   construct new(world, ti, ox, oy) {
-      super(world, ti, ox, oy, 8, 8)
-      _tile = ti
+   construct new(world, obj, ox, oy) {
+      super(world, obj, ox, oy, 8, 8)
 
-      ti = ti - 238
-      _dim = ti % 2 == 0 ? DIM_VERT : DIM_HORIZ
-      _d = ti == 0 || ti == 3 ? -0.5 : 0.5
+      var dir = obj["properties"]["direction"]
+      if (dir == "up") {
+         _tile = 238
+         _dim = DIM_VERT
+         _d = -0.5
+      } else if (dir == "right") {
+         _tile = 239
+         _dim = DIM_HORIZ
+         _d = 0.5
+      } else if (dir == "down") {
+         _tile = 240
+         _dim = DIM_VERT
+         _d = 0.5
+      } else if (dir == "left") {
+         _tile = 241
+         _dim = DIM_HORIZ
+         _d = -0.5
+      } else {
+         Trap.error(2, "Cannon at %(ox),%(oy) has no valid direction")
+      }
 
       _fireTime = world.ticks + 60
    }
@@ -206,15 +255,14 @@ class Cannon is Entity {
    }
 
    draw(t) {
-      // FIXME: draw
-      // TIC.spr(_tile, x, y, 13)      
+      drawSprite(_tile, x, y)      
    }
 }
 
 // spikes just hurt players when touched
 class Spike is Entity {
-   construct new(world, ti, ox, oy) {
-      super(world, ti, ox, oy, 8, 8)
+   construct new(world, obj, ox, oy) {
+      super(world, obj, ox, oy, 8, 8)
    }
 
    canCollide(other, side, d) { true }
@@ -228,8 +276,7 @@ class Spike is Entity {
    }
 
    draw(t) {
-      // FIXME: draw
-      // TIC.spr(242, x, y, 0)      
+      drawSprite(242, x, y)
    }
 }
 
@@ -399,8 +446,7 @@ class MovingPlatform is Entity {
    }
 
    draw(t) {
-      // FIXME: draw
-      // TIC.spr(272, x, y, 0, 1, 0, 0, 3, 1)
+      Draw.sprite(world.spr, 272, x, y, 0, 1, 0, 0, 3, 1)
    }
 }
 
@@ -469,8 +515,8 @@ class Cannonball is Entity {
    parent { _parent }
    parent=(ent) { _parent = ent }
 
-   construct new(world, ti, ox, oy) {
-      super(world, ti, ox, oy, 8, 8)
+   construct new(world, obj, ox, oy) {
+      super(world, obj, ox, oy, 8, 8)
       dx = -0.5
       dy = 0
       _parent = null
@@ -482,7 +528,7 @@ class Cannonball is Entity {
    touch(other, side) {
       active = false
       // don't hurt from the top
-      if (other.isPlayer && side != DIR_TOP) {
+      if (other && other.isPlayer && side != DIR_TOP) {
          other.hurt(this, 1)
       }
    }
@@ -527,8 +573,7 @@ class Cannonball is Entity {
    }
 
    draw(t) {
-      // FIXME: draw
-      // TIC.spr(270, x, y, 13)      
+      drawSprite(270, x, y)      
    }
 }
 
@@ -571,7 +616,6 @@ class StunShot is Cannonball {
 
    draw(t) {
       var anim = _endTime > 0 ? ((world.ticks - _endTime) / 5).floor + 1 : 0
-      // FIXME: draw
-      // TIC.spr(275 + anim, x, y, 0)      
+      drawSprite(275 + anim, x, y)
    }
 }

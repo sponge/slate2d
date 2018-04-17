@@ -111,8 +111,15 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float alp
 	nvgTranslate(inf.nvg, x, y);
 	nvgScale(inf.nvg, scale, scale);
 
+	// FIXME: this got real ugly with the move back to top left. can this be improved?
 	if (flipDiag) {
 		nvgTransform(inf.nvg, 0, 1, 1, 0, 0, 0);
+		if (flipX == -1) {
+			nvgTranslate(inf.nvg, 0, 0 + h);
+		}
+		if (flipY == -1) {
+			nvgTranslate(inf.nvg, 0 + w, 0);
+		}
 	}
 
 	if ((flipX == -1) ^ (flipY == -1) && flipDiag) {
@@ -120,6 +127,14 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float alp
 	}
 	else {
 		nvgScale(inf.nvg, flipX, flipY);
+		if (!flipDiag) {
+			if (flipX == -1) {
+				nvgTranslate(inf.nvg, 0 - w, 0);
+			}
+			if (flipY == -1) {
+				nvgTranslate(inf.nvg, 0, 0 - h);
+			}
+		}
 	}
 
 	auto paint = nvgImagePattern(inf.nvg, 0 - ox, 0 - oy, img->w, img->h, 0, img->hnd, alpha);

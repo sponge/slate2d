@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.4" orientation="orthogonal" renderorder="right-down" width="60" height="23" tilewidth="8" tileheight="8" infinite="0" backgroundcolor="#30346d" nextobjectid="22">
+<map version="1.0" tiledversion="1.1.4" orientation="orthogonal" renderorder="right-down" width="60" height="23" tilewidth="8" tileheight="8" infinite="0" backgroundcolor="#30346d" nextobjectid="39">
  <tileset firstgid="1" name="plat" tilewidth="8" tileheight="8" tilecount="512" columns="16">
   <image source="tilesets/plat.gif" width="128" height="256"/>
   <tile id="4">
@@ -17,10 +17,70 @@
     <property name="platform" type="bool" value="true"/>
    </properties>
   </tile>
-  <tile id="238" type="Cannon"/>
-  <tile id="239" type="Cannon"/>
-  <tile id="240" type="Cannon"/>
-  <tile id="241" type="Cannon"/>
+  <tile id="7" type="Flamethrower">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </tile>
+  <tile id="8" type="Flamethrower">
+   <properties>
+    <property name="direction" value="right"/>
+   </properties>
+  </tile>
+  <tile id="9" type="Flamethrower">
+   <properties>
+    <property name="direction" value="down"/>
+   </properties>
+  </tile>
+  <tile id="10" type="Flamethrower">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </tile>
+  <tile id="11" type="Flamethrower">
+   <properties>
+    <property name="altCycle" type="bool" value="true"/>
+    <property name="direction" value="up"/>
+   </properties>
+  </tile>
+  <tile id="12" type="Flamethrower">
+   <properties>
+    <property name="altCycle" type="bool" value="true"/>
+    <property name="direction" value="right"/>
+   </properties>
+  </tile>
+  <tile id="13" type="Flamethrower">
+   <properties>
+    <property name="altCycle" type="bool" value="true"/>
+    <property name="direction" value="down"/>
+   </properties>
+  </tile>
+  <tile id="14" type="Flamethrower">
+   <properties>
+    <property name="altCycle" type="bool" value="true"/>
+    <property name="direction" value="left"/>
+   </properties>
+  </tile>
+  <tile id="238" type="Cannon">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
+  </tile>
+  <tile id="239" type="Cannon">
+   <properties>
+    <property name="direction" value="right"/>
+   </properties>
+  </tile>
+  <tile id="240" type="Cannon">
+   <properties>
+    <property name="direction" value="down"/>
+   </properties>
+  </tile>
+  <tile id="241" type="Cannon">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </tile>
   <tile id="242" type="Spike"/>
   <tile id="243" type="Spring"/>
   <tile id="244" type="FallingPlatform"/>
@@ -72,10 +132,10 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -103,6 +163,19 @@
   <object id="16" gid="254" x="72" y="136" width="8" height="8"/>
   <object id="17" gid="254" x="80" y="136" width="8" height="8"/>
   <object id="18" gid="254" x="112" y="120" width="8" height="8"/>
+  <object id="22" gid="243" x="40" y="112" width="8" height="8"/>
+  <object id="23" gid="239" x="56" y="48" width="8" height="8"/>
+  <object id="24" gid="240" x="64" y="56" width="8" height="8"/>
+  <object id="26" gid="241" x="56" y="64" width="8" height="8"/>
+  <object id="27" gid="242" x="48" y="56" width="8" height="8"/>
+  <object id="30" gid="8" x="96" y="32" width="8" height="8"/>
+  <object id="31" gid="9" x="104" y="40" width="8" height="8"/>
+  <object id="32" gid="10" x="96" y="48" width="8" height="8"/>
+  <object id="33" gid="11" x="88" y="40" width="8" height="8"/>
+  <object id="34" gid="12" x="152" y="32" width="8" height="8"/>
+  <object id="35" gid="13" x="160" y="40" width="8" height="8"/>
+  <object id="37" gid="14" x="152" y="48" width="8" height="8"/>
+  <object id="38" gid="15" x="144" y="40" width="8" height="8"/>
  </objectgroup>
  <objectgroup name="more objects">
   <object id="19" gid="255" x="168" y="160" width="8" height="8"/>

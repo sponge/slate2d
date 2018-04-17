@@ -193,23 +193,18 @@ void DC_DrawSprite(const Sprite spr, int id, float x, float y, float alpha, floa
 		return;
 	}
 
-	for (int ty = 0; ty < h; ty++) {
-		for (int tx = 0; tx < w; tx++) {
-			int currentId = id + (ty * spr.cols) + tx;
-			DC_DrawImage(
-				spr.asset,
-				x + (tx*spr.spriteWidth),
-				y + (ty*spr.spriteHeight),
-				spr.spriteWidth,
-				spr.spriteHeight,
-				alpha,
-				scale,
-				0,
-				(currentId % spr.cols) * spr.spriteWidth,
-				(currentId / spr.cols) * spr.spriteHeight,
-				0
-			);
-		}
-	}
+	DC_DrawImage(
+		spr.asset,
+		x,
+		y,
+		spr.spriteWidth * w,
+		spr.spriteHeight * h,
+		alpha,
+		scale,
+		flipBits,
+		(id % spr.cols) * spr.spriteWidth,
+		(id / spr.cols) * spr.spriteHeight,
+		0
+	);
 }
 

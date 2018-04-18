@@ -16,6 +16,9 @@ void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 void Cmd_Scene_f(void) {
 	const char *mainScriptName = trap->Cmd_Argv(1);
 	const char *sceneParams = trap->Cmd_ArgsFrom(2);
+	if (strlen(sceneParams) == 0) {
+		sceneParams = nullptr;
+	}
 
 	auto newScene = new WrenScene(mainScriptName, sceneParams);
 	trap->Scene_Replace(0, newScene);

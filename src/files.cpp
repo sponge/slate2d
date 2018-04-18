@@ -1,6 +1,10 @@
 #include <physfs.h>
 #include "console/console.h"
 
+cvar_t *fs_basepath;
+cvar_t *fs_basegame;
+cvar_t *fs_game;
+
 void Cmd_Dir_f() {
 	const char *path = Cmd_Argc() > 1 ? Cmd_Argv(1) : "/";
 	char **rc = PHYSFS_enumerateFiles(path);
@@ -51,9 +55,9 @@ void FS_AddPaksFromList(char **list, const char *basePath, const char *gamePath)
 
 void FS_Init(const char *argv0) {
 	PHYSFS_init(argv0);
-	auto fs_basepath = Cvar_Get("fs_basepath", PHYSFS_getBaseDir(), CVAR_INIT);
-	auto fs_basegame = Cvar_Get("fs_basegame", "base", CVAR_INIT);
-	auto fs_game = Cvar_Get("fs_game", "", CVAR_INIT);
+	fs_basepath = Cvar_Get("fs_basepath", PHYSFS_getBaseDir(), CVAR_INIT);
+	fs_basegame = Cvar_Get("fs_basegame", "base", CVAR_INIT);
+	fs_game = Cvar_Get("fs_game", "", CVAR_INIT);
 
 	bool modLoaded = strlen(fs_game->string) > 0;
 

@@ -139,7 +139,21 @@ static gameImportFuncs_t GAMEtraps = {
 };
 
 void Sys_LoadDll(const char * module, void ** exports, int * version) {
-	auto gameDLL = SDL_LoadObject(module);
+	void *gameDLL;
+
+	gameDLL = SDL_LoadObject(va("%s/%s/%s", fs_basepath->string, fs_game->string, module));
+
+	if (gameDLL == nullptr) {
+		gameDLL = SDL_LoadObject(va("%s/%s/%s", fs_basepath->string, fs_basegame->string, module));
+	}
+
+	if (gameDLL == nullptr) {
+		gameDLL = SDL_LoadObject(va("%s/%s", fs_basepath->string, module));
+	}
+
+	if (gameDLL == nullptr) {
+		gameDLL = SDL_LoadObject(module);
+	}
 
 	void(*gameDllEntry)(void ** exports, const void * imports, int * version) = (void(*)(void **, const void *, int *)) SDL_LoadFunction(gameDLL, "dllEntry");
 

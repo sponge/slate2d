@@ -17,7 +17,7 @@ class Main {
       __accumTime = 0
       
       loadScene("intro", mapName)
-      //loadScene("world", mapName)
+      // loadScene("world", mapName)
    }
 
    static update(dt) {

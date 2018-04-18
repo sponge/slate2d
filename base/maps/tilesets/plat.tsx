@@ -16,68 +16,79 @@
    <property name="platform" type="bool" value="true"/>
   </properties>
  </tile>
- <tile id="7">
+ <tile id="7" type="Flamethrower">
   <properties>
    <property name="direction" value="up"/>
   </properties>
  </tile>
- <tile id="8">
+ <tile id="8" type="Flamethrower">
   <properties>
    <property name="direction" value="right"/>
   </properties>
  </tile>
- <tile id="9">
+ <tile id="9" type="Flamethrower">
   <properties>
    <property name="direction" value="down"/>
   </properties>
  </tile>
- <tile id="10">
+ <tile id="10" type="Flamethrower">
   <properties>
    <property name="direction" value="left"/>
   </properties>
  </tile>
- <tile id="11">
+ <tile id="11" type="Flamethrower">
   <properties>
    <property name="altCycle" type="bool" value="true"/>
    <property name="direction" value="up"/>
   </properties>
  </tile>
- <tile id="12">
+ <tile id="12" type="Flamethrower">
   <properties>
    <property name="altCycle" type="bool" value="true"/>
    <property name="direction" value="right"/>
   </properties>
  </tile>
- <tile id="13">
+ <tile id="13" type="Flamethrower">
   <properties>
    <property name="altCycle" type="bool" value="true"/>
    <property name="direction" value="down"/>
   </properties>
  </tile>
- <tile id="14">
+ <tile id="14" type="Flamethrower">
   <properties>
    <property name="altCycle" type="bool" value="true"/>
    <property name="direction" value="left"/>
   </properties>
  </tile>
- <tile id="238">
+ <tile id="238" type="Cannon">
   <properties>
    <property name="direction" value="up"/>
   </properties>
  </tile>
- <tile id="239">
+ <tile id="239" type="Cannon">
   <properties>
    <property name="direction" value="right"/>
   </properties>
  </tile>
- <tile id="240">
+ <tile id="240" type="Cannon">
   <properties>
    <property name="direction" value="down"/>
   </properties>
  </tile>
- <tile id="241">
+ <tile id="241" type="Cannon">
   <properties>
    <property name="direction" value="left"/>
   </properties>
  </tile>
+ <tile id="242" type="Spike"/>
+ <tile id="243" type="Spring"/>
+ <tile id="244" type="FallingPlatform"/>
+ <tile id="245" type="MovingPlatform">
+  <properties>
+   <property name="path" value=""/>
+  </properties>
+ </tile>
+ <tile id="253" type="Coin"/>
+ <tile id="254" type="LevelExit"/>
+ <tile id="255" type="Player"/>
 </tileset>

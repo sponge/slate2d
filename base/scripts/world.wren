@@ -4,6 +4,7 @@ import "collision" for TileCollider
 import "camera" for Camera
 import "entities" for LevelExit, Coin, MovingPlatform, FallingPlatform, Spring, Spike, Cannon, Flamethrower
 import "player" for Player
+import "timer" for Timer
 
 class Level {
    w { _w }
@@ -89,6 +90,7 @@ class World {
       _nextScene = null
       _mapName = mapName
       _level = Level.new(mapName)
+      _levelWon = false
       _tileCollider = TileCollider.new(_getTile, _level.tw, _level.th)
       _entities = []
       _coins = 0
@@ -124,6 +126,9 @@ class World {
          }
       }
 
+      _font = Asset.create(Asset.BitmapFont, "font", "gfx/good_neighbors.png")
+      Asset.bmpfntSet(_font, "!\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 0, -1, 7, 16)
+
       _fixedFont = Asset.create(Asset.BitmapFont, "fixedfont", "gfx/panicbomber.png")
       Asset.bmpfntSet(_fixedFont, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
 
@@ -141,6 +146,15 @@ class World {
       _spr = Asset.createSprite(sprites, 8, 8, 0, 0)
 
       _musicHnd = Trap.sndPlay(_music, 1.0, 0.0, true)
+   }
+
+   winLevel(nextLevel) {
+      _player.disableControls = true
+      _levelWon = true
+      playMusic("victory")
+      Timer.runLater(300, Fn.new {
+         changeScene("intro", nextLevel)
+      })
    }
 
    reloadLevel() {
@@ -220,6 +234,26 @@ class World {
 
          for (i in 0..2) {
             Draw.sprite(_spr, i < _player.health ? 265 : 281, 275+(i*14), 4, 1, 1, 0, 2, 1)
+         }
+      }
+
+      if (_levelWon) {
+         Draw.setColor(Color.Fill, 52, 101, 36, 255)
+         Draw.rect(0, 70, 320, 56, Fill.Solid)
+
+         var str1 = "Level Cleared"
+         var str2 = "Now, lets move on to the next one!"
+         Draw.bmpText(_fixedFont, (_cam.w - (str1.count*8)) / 2, 88, str1)
+         Draw.bmpText(_fixedFontBlue, (_cam.w - (str2.count*8)) / 2, 104, str2)
+
+         var str = "Good Dog!"
+         var x = (_cam.w - Asset.measureBmpText(_font, str)) / 2
+         var y = 60
+         var i = 0
+         for (letter in "Good Dog!") {
+            Draw.bmpText(_font, x, y + (_ticks/10 + i).sin * 4, letter)
+            x = x + Asset.measureBmpText(_font, letter)
+            i = i + 1
          }
       }
    }

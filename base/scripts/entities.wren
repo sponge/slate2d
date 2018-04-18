@@ -80,7 +80,6 @@ class Flame is Entity {
       var flicker = (t / 3 % 2).floor == 0
 
       if (_dim == DIM_VERT) {
-         // FIXME: flip
          var f = flicker ? 1 : 0
          var flip = _flipped ? 2+f : 0+f
          Draw.sprite(world.spr, spr, x-1, y, 1, 1, flip, 1, 2)
@@ -335,31 +334,36 @@ class MovingPlatform is Entity {
    resolve { _resolve }
    platform { true }
     
-   construct new(world, ti, ox, oy) {
-      super(world, ti, ox, oy, 24, 0)
+   construct new(world, obj, ox, oy) {
+      super(world, obj, ox, oy, 24, 0)
       _dist = 0 // how far before we reach our target
       _d = 0 // speed
       _dim = 0 // what axis we're moving on
+      _resolve = Fn.new { |side, tile, tx, ty, ldx, ldy| false } // never collide with any tile during movement
 
-      // passed into tilecollider to find the next turn 
-      _targetResolve = Fn.new { |side, tile, tx, ty, ldx, ldy|
-         // don't collide with our current turn tile
-         if (tx == _ignoreX && ty == _ignoreY) {
-            return false
-         }
+      _route = []
+      _currentRoute = -1
 
-         if (tile >= 245 && tile <= 252) {
-            return true
-         }
-
-         return false
+      if (obj["properties"]["path"] is String == false) {
+         Trap.error(2, "MovingPlatform without path string property at %(ox), %(oy)")
       }
 
-      // never collide with any tile during movement
-      _resolve = Fn.new { |side, tile, tx, ty, ldx, ldy| false }
+      var split = obj["properties"]["path"].split(" ")
+      for (node in split) {
+         var dir = (node[0] == "u") ? DIR_TOP : (node[0] == "l") ? DIR_LEFT : (node[0] == "r") ? DIR_RIGHT : (node[0] == "d") ? DIR_BOTTOM : null
+         if (dir == null) {
+            Trap.error(2, "Invalid direction \"%(node[0])\" in MovingPlatform at %(ox), %(oy)")
+            return
+         }
+         var amt = Num.fromString(node[1..-1])
+         if (amt == null) {
+            Trap.error(2, "Invalid amount \"%(node[1..-1])\" in MovingPlatform at %(ox), %(oy)")
+            return            
+         }
 
-      // set initial direction based on spawn and then the first destination
-      setDirection(ti)
+         _route.add([dir, amt])
+      }
+
       setNextPoint()
    }
 
@@ -369,46 +373,20 @@ class MovingPlatform is Entity {
       return side == DIR_TOP && other.y+other.h <= y && other.y+other.h+d > y
    }
 
-   setDirection(ti) {
-      ti = ti - 245
-      // spawns also act as turns.
-      if (ti > 3) {
-         ti = ti - 4
-      }
-
-      _dim = ti % 2 == 0 ? DIM_VERT : DIM_HORIZ
-      _d = ti == 0 || ti == 3 ? -0.5 : 0.5
-   }
-
    setNextPoint() {
-      // FIXME: tic call
-      /*
-      // if we've still got time to go, or we couldn't find a valid target
-      if (_d == 0 || _dim == 0 || _dist > 0) {
+      // // if we've still got time to go, or we couldn't find a valid target
+      if (_dist > 0) {
          return
       }
 
-      // we need a new destination. don't consider the one we're on top of now
-      _ignoreX = x / 8
-      _ignoreY = y / 8
+      _currentRoute = (_currentRoute + 1) % _route.count
 
-      // but we do need to know which way we're about to go!
-      var t = TIC.mget(_ignoreX, _ignoreY)
-      setDirection(t)
+      var dir = _route[_currentRoute][0]
+      var amt = _route[_currentRoute][1]
 
-      // go a long way out to find how far our next target is
-      _dist = world.tileCollider.query(x, y, 1, 1, _dim, _d*2048, _targetResolve)
-
-      // if we don't have a destination, just freeze it in place
-      if (_dist.abs == _d*2048) {
-         _dim = 0
-         _d = 0
-         return
-      }
-
-      // offset for size of platform
-      _dist = _dist.abs + (_d > 0 ? 1 : 8)
-      */
+      _d = (dir == DIR_TOP || dir == DIR_LEFT) ? -0.5 : 0.5
+      _dim = (dir == DIR_TOP || dir == DIR_BOTTOM) ? DIM_VERT : DIM_HORIZ
+      _dist = amt * world.level.tw
    }
 
    think(dt) {
@@ -430,7 +408,7 @@ class MovingPlatform is Entity {
       var chky = check(DIM_VERT, dy)
 
       // if the platform is going to lift the player up, attach them to this and lift them
-      if (chky.entity.isPlayer && chky.entity.groundEnt != this && intersects(chky.entity) == false) {
+      if (chky.entity && chky.entity.isPlayer && chky.entity.groundEnt != this && intersects(chky.entity) == false) {
          chky.entity.groundEnt = this
          chky.entity.y = chky.entity.y + chky.entity.check(DIM_VERT, dy).delta
          // Debug.text("attach")
@@ -446,7 +424,9 @@ class MovingPlatform is Entity {
    }
 
    draw(t) {
-      Draw.sprite(world.spr, 272, x, y, 0, 1, 0, 0, 3, 1)
+      drawSprite(244, x, y)
+      drawSprite(244, x+8, y)
+      drawSprite(244, x+16, y)
    }
 }
 
@@ -491,29 +471,7 @@ class LevelExit is Entity {
 
    touch(other, side) {
       active = false
-      other.disableControls = true
-      world.entities.add(ExitBanner.new(world))
-      world.playMusic("victory")
-      Timer.runLater(300, Fn.new {
-         world.changeScene("intro", _nextLevel)
-      })
-   }
-}
-
-class ExitBanner is Entity {
-   construct new(world) {
-      super(world, 0, 0, 0, 0, 0)
-   }
-
-   draw(t) {
-      // FIXME: draw
-      // TIC.rect(0, 40, 240, 56, 5)
-      // TIC.print("Level Cleared", 45, 45, 15, false, 2)
-      // TIC.print("Now, lets move on to the next one!", 27, 60)
-      // if (world.totalCoins > 0) {
-      //    var pct = (world.coins / world.totalCoins *100).floor
-      //    TIC.print("Coins ........ %(pct)\%", 60, 75, 15, true)
-      // }
+      world.winLevel(_nextLevel)
    }
 }
 

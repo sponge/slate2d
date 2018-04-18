@@ -149,14 +149,14 @@ typedef struct {
 	byte commandId;
 	int align;
 	float x, y;
-	char text[32];
+	char text[64];
 } drawTextCommand_t;
 
 typedef struct {
 	byte commandId;
 	unsigned int fntId;
 	float x, y, scale;
-	char text[32];
+	char text[64];
 } drawBmpTextCommand_t;
 
 #define FLIP_H 1

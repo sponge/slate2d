@@ -65,13 +65,19 @@ class Player is Entity {
             0: 2.40625
       }
 
+      _jumpHnd = null
+
       _jumpSound = Asset.create(Asset.Sound, "player_jump", "sound/jump.wav")
       _shootSound = Asset.create(Asset.Sound, "player_shoot", "sound/shoot.wav")
+      _hurtSound = Asset.create(Asset.Sound, "player_hurt", "sound/hurt.wav")
+      _dieSound = Asset.create(Asset.Sound, "player_die", "sound/die.wav")
    }
 
    die() {
       active = false
       world.playMusic("death")
+      Trap.sndStop(_jumpHnd)
+      Trap.sndPlay(_dieSound)
       Timer.runLater(240, Fn.new {
          world.reloadLevel()
       })
@@ -87,7 +93,10 @@ class Player is Entity {
 
       if (_health <= 0) {
          die()
-      }   
+      } else {
+         Trap.sndStop(_jumpHnd)
+         Trap.sndPlay(_hurtSound)
+      }
    }
 
    think(dt) {
@@ -154,7 +163,7 @@ class Player is Entity {
                if (dx.abs >= speed) {
                   dy = -_jumpHeights[speed]
                   _jumpHeld = true
-                  Trap.sndPlay(_jumpSound)
+                  _jumpHnd = Trap.sndPlay(_jumpSound)
                   break
                }
             }

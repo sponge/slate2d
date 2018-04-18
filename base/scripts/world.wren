@@ -186,9 +186,11 @@ class World {
          }
       }
 
-      for (i in _entities.count-1..0) {
-         if (_entities[i].active == false) {
-            _entities.removeAt(i)
+      if (_entities.count > 0) {
+         for (i in _entities.count-1..0) {
+            if (_entities[i].active == false) {
+               _entities.removeAt(i)
+            }
          }
       }
    }

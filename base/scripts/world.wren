@@ -140,6 +140,7 @@ class World {
       _music = Asset.create(Asset.Mod, "music", level.music)
       _deathMusic = Asset.create(Asset.Mod, "deathmusic", "music/victory_ditty_24.mod")
       _victoryMusic = Asset.create(Asset.Mod, "victorymusic", "music/jingles_22.mod")
+      _winSpeech = Asset.create(Asset.Speech, "speech", "great job! you are a good dog!")
 
       Asset.loadAll()
 
@@ -152,6 +153,7 @@ class World {
       _player.disableControls = true
       _levelWon = true
       playMusic("victory")
+      Trap.sndPlay(_winSpeech)
       Timer.runLater(300, Fn.new {
          changeScene("intro", nextLevel)
       })

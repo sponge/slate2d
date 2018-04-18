@@ -153,9 +153,11 @@ class World {
       _player.disableControls = true
       _levelWon = true
       playMusic("victory")
-      Trap.sndPlay(_winSpeech)
+      Trap.sndPlay(_winSpeech, 4.0, 0, false)
       Timer.runLater(300, Fn.new {
-         changeScene("intro", nextLevel)
+         if (player.health > 0) {
+            changeScene("intro", nextLevel)
+         }
       })
    }
 
@@ -242,19 +244,35 @@ class World {
       }
 
       if (_levelWon) {
-         Draw.setColor(Color.Fill, 52, 101, 36, 255)
+
+         if (player.health == 0) {
+            Draw.setColor(Color.Fill, 149, 0, 0, 255)
+         } else {
+            Draw.setColor(Color.Fill, 52, 101, 36, 255)
+
+         }
          Draw.rect(0, 70, 320, 56, Fill.Solid)
 
-         var str1 = "Level Cleared"
-         var str2 = "Now, lets move on to the next one!"
+         var str1 = ""
+         var str2 = ""
+         var bounce = ""
+         if (player.health == 0) {
+            str1 = "Oh no..."
+            str2 = "...you seem to have died instead..."
+            bounce = "BAD DOG!"
+         } else {
+            str1 = "Level Cleared"
+            str2 = "Now, lets move on to the next one!"
+            bounce = "Good Dog!"
+         }
+         
          Draw.bmpText(_fixedFont, (_cam.w - (str1.count*8)) / 2, 88, str1)
          Draw.bmpText(_fixedFontBlue, (_cam.w - (str2.count*8)) / 2, 104, str2)
 
-         var str = "Good Dog!"
-         var x = (_cam.w - Asset.measureBmpText(_font, str)) / 2
+         var x = (_cam.w - Asset.measureBmpText(_font, bounce)) / 2
          var y = 60
          var i = 0
-         for (letter in "Good Dog!") {
+         for (letter in bounce) {
             Draw.bmpText(_font, x, y + (_ticks/10 + i).sin * 4, letter)
             x = x + Asset.measureBmpText(_font, letter)
             i = i + 1

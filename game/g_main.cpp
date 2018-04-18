@@ -77,8 +77,9 @@ static void Init(void *clientInfo, void *imGuiContext) {
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
-	trap->SendConsoleCommand("scene scripts/test.wren maps/8x8.tmx");
-	//trap->SendConsoleCommand("map 8x8");
+
+	wrenScene = new WrenScene("scripts/main.wren", nullptr);
+	trap->Scene_Replace(0, wrenScene);
 }
 
 static void Console(const char *line) {

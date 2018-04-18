@@ -751,7 +751,12 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	// instantiate a new Game
 	wrenEnsureSlots(vm, 8192); // FIXME: crash when expanding stack from inside constructor
 	wrenSetSlotHandle(vm, 0, gameClass);
-	wrenSetSlotString(vm, 1, constructorStr);
+	if (constructorStr == nullptr) {
+		wrenSetSlotNull(vm, 1);
+	}
+	else {
+		wrenSetSlotString(vm, 1, constructorStr);
+	}
 	wrenCall(vm, newHnd);
 	wrenReleaseHandle(vm, newHnd);
 	//wrenReleaseHandle(vm, gameClass);

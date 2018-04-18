@@ -2,7 +2,8 @@ import "engine" for Trap, Button, Draw, Asset, Fill, Color, TileMap
 import "meta" for Meta
 import "random" for Random
 
-class Game {
+class Title {
+   nextScene { null }
    construct new(mapName) {
       Trap.print(mapName+"\n")
       _dog = Asset.create(Asset.Image, "dog", "gfx/dog.png")
@@ -91,7 +92,7 @@ class Game {
       Draw.mapLayer(_bgLayer, 4, 4, 0, 14, 8, 99)
 
       Draw.setColor(Color.Stroke, 255, 0, 0, 255)
-      Draw.rect(120 + _time.sin * 80, 3, 16, 16, Fill.Outline)
+      Draw.rect(120 + (_time/80).sin * 80, 3, 16, 16, Fill.Outline)
 
       Draw.setColor(Color.Fill, 60, 0, 90, 255)
       Draw.setScissor(0, 0, 280, 110)
@@ -141,15 +142,11 @@ class Game {
       Draw.sprite(_spr, 17, 275, 64, 1.0, 1.0, 6, 2, 1)
       Draw.sprite(_spr, 17, 275, 80, 1.0, 1.0, 7, 2, 1)
 
-      Draw.sprite(_spr, 17, 275, 96, 1.0, 2.0, 7, 2, 1)
-
-
-      
+      Draw.sprite(_spr, 17, 275, 96, 1.0, 2.0, 7, 2, 1)      
 
       if (_upActive) {
          Draw.rect(100, 0, 100, 100, Fill.Solid)
       }
-
 
       Draw.submit()
    }
@@ -157,30 +154,5 @@ class Game {
    shutdown() {
       TileMap.free()
       Asset.clearAll()
-   }
-}
-
-class Main {
-   static scene { __scene }
-
-   static init(mapName) {
-      __scene = Game.new(mapName)
-   }
-
-   static update(dt) {
-      __scene.update(dt)
-   }
-
-   static draw(w, h) {
-      __scene.draw(w, h)
-   }
-
-   static console(line) {
-      Meta.eval(line)
-   }
-
-   static shutdown() {
-      __scene.shutdown()
-      __scene = null
    }
 }

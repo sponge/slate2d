@@ -6,6 +6,8 @@ import "debug" for Debug
 import "collision" for CollisionPool
 import "world" for World
 import "intro" for Intro
+import "test" for Title
+
 
 class Main {
    static scene { __scene }
@@ -15,9 +17,13 @@ class Main {
       Timer.init()
       Debug.init()
       __accumTime = 0
-      
-      loadScene("intro", mapName)
-      // loadScene("world", mapName)
+
+      if (mapName == null) {
+         loadScene("title", null)
+      } else {
+         loadScene("intro", mapName)
+         // loadScene("world", mapName)
+      }
    }
 
    static update(dt) {
@@ -71,6 +77,8 @@ class Main {
          __scene = Intro.new(params)
       } else if (scene == "world") {
          __scene = World.new(params)
+      } else if (scene == "title") {
+         __scene = Title.new("maps/8x8.tmx")
       }
 
       System.gc()

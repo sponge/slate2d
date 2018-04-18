@@ -152,11 +152,14 @@ typedef struct {
 	char text[64];
 } drawTextCommand_t;
 
+// strSz is the size of the string. the actual string lives
+// in the buffer right after this command so it can be any
+// reasonable size.
 typedef struct {
 	byte commandId;
 	unsigned int fntId;
 	float x, y, scale;
-	char text[64];
+	unsigned int strSz;
 } drawBmpTextCommand_t;
 
 #define FLIP_H 1

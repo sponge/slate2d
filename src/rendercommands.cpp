@@ -95,10 +95,11 @@ const void *RB_DrawText(const void *data) {
 
 const void *RB_DrawBmpText(const void *data) {
 	auto cmd = (const drawBmpTextCommand_t *)data;
+	const char *text = (const char *)cmd + sizeof(drawBmpTextCommand_t);
 
-	BMPFNT_DrawText(cmd->fntId, cmd->x, cmd->y, cmd->scale, cmd->text);
+	BMPFNT_DrawText(cmd->fntId, cmd->x, cmd->y, cmd->scale, text);
 
-	return (const void *)(cmd + 1);
+	return (const void *)(text + cmd->strSz);
 }
 
 void DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, float scale, byte flipBits, Image *img, unsigned int shaderId) {

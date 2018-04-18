@@ -107,15 +107,14 @@ void DC_DrawText(float x, float y, const char *text, int align) {
 void DC_DrawBmpText(unsigned int fntId, float x, float y, const char *text, float scale) {
 	GET_COMMAND(drawBmpTextCommand_t, RC_DRAW_BMPTEXT)
 
-	if (strlen(text) > sizeof(cmd->text)) {
-		trap->Print("WARNING: DC_DrawBmpText text is longer than buffer, string will be clipped: %s", text);
-	}
-
 	cmd->fntId = fntId;
-	strncpy(&cmd->text[0], text, sizeof(cmd->text));
 	cmd->x = x;
 	cmd->y = y;
 	cmd->scale = scale;
+	cmd->strSz = strlen(text) + 1;
+
+	void *strStart = R_GetCommandBuffer(cmd->strSz);
+	strncpy((char*)strStart, text, strlen(text));
 }
 
 void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h, float alpha, float scale, byte flipBits, float ox, float oy, unsigned int shaderId) {

@@ -136,6 +136,8 @@ class Spring is Entity {
       _baseY = oy
       _delay = 3
       _activated = false
+
+      _sound = Asset.create(Asset.Sound, "spring", "sound/spring.wav")
    }
 
    // springs dont activate immediately, they activate a few frames later
@@ -162,6 +164,7 @@ class Spring is Entity {
       dy = 0
       _activateTime = -1
       _activated = true
+      Trap.sndPlay(_sound)
    }
 
    // if we're activated this frame, return the bounce amount
@@ -225,6 +228,9 @@ class Cannon is Entity {
       }
 
       _fireTime = world.ticks + 60
+
+      _sound = Asset.create(Asset.Sound, "cannon_shoot", "sound/cannon_shoot.wav")
+
    }
 
    canCollide(other, side, d) { true }
@@ -248,6 +254,7 @@ class Cannon is Entity {
       ball.dx = _dim == DIM_HORIZ ? _d : 0
       ball.dy = _dim == DIM_VERT ? _d : 0
       world.entities.add(ball)
+      Trap.sndPlay(_sound)
 
       // recharge
       _fireTime = world.ticks + 300

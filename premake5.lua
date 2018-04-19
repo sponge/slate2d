@@ -37,6 +37,9 @@ solution "game"
     links { "nanovg", "tmx", "imgui", "physfs", "glew", "soloud", "libmodplug" }
     cppdialect "C++14"
 
+    configuration "Release"
+      kind "WindowedApp"
+
     configuration { "windows" }
       links { "SDL2", "SDL2main", "opengl32" }
       defines { "_CRT_SECURE_NO_WARNINGS" }

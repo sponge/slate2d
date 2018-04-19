@@ -207,6 +207,11 @@ int main(int argc, char *argv[]) {
 		frame_msec = dt * 1000;
 		last = now;
 
+		if (s_volume->modified) {
+			soloud.setGlobalVolume(s_volume->value);
+			s_volume->modified = false;
+		}
+
 		while (SDL_PollEvent(&ev)) {
 			ImGui_ImplSdlGL3_ProcessEvent(&ev);
 

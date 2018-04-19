@@ -60,6 +60,12 @@ void wren_trap_snd_play(WrenVM *vm) {
 }
 
 void wren_trap_snd_stop(WrenVM *vm) {
+	// let's handle this one specifically because otherwise you have to
+	// track null yourself. wish i could macro all of this.
+	if (wrenGetSlotType(vm, 1) != WREN_TYPE_NUM) {
+		return;
+	}
+
 	unsigned int handle = (unsigned int)wrenGetSlotDouble(vm, 1);
 	trap->Snd_Stop(handle);
 }

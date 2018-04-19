@@ -40,6 +40,7 @@ class Player is Entity {
       _invulnTime = 0
       _facing = 1
       _shotsActive = 0
+      _nextShotTime = 0
 
       // values from https://cdn.discordapp.com/attachments/191015116655951872/332350193540268033/smw_physics.png
       _friction = 0.03125
@@ -102,7 +103,7 @@ class Player is Entity {
    think(dt) {
       var dir = _disableControls ? 0 : Trap.keyActive(Button.Left) ? -1 : Trap.keyActive(Button.Right) ? 1 : 0
       var jumpPress = _disableControls ? false : Trap.keyActive(Button.A)
-      var shootPress = _disableControls ? false : Trap.keyPressed(Button.B, 0, 60)
+      var shootPress = _disableControls ? false : Trap.keyActive(Button.B)
       var speed = 0
 
       // track if on the ground this frame
@@ -231,10 +232,11 @@ class Player is Entity {
          dy = 0
       }
 
-      if (shootPress && _shotsActive < 3) {
+      if (shootPress && _shotsActive < 3 && world.ticks > _nextShotTime) {
          var shot = StunShot.new(this, world, 271, _facing > 0 ? x + 6 : x - 8, y + 1)
          shot.dx = shot.dx * _facing
          world.entities.add(shot)
+         _nextShotTime = world.ticks + 30
          Trap.sndPlay(_shootSound)
       }
 

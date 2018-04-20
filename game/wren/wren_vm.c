@@ -76,6 +76,10 @@ WrenVM* wrenNewVM(WrenConfiguration* config)
 
   wrenSymbolTableInit(&vm->methodNames);
 
+  vm->classInfoMax = 256;
+  vm->classInfo = (ClassInfo*)reallocate(NULL, vm->classInfoMax * sizeof(ClassInfo));
+  vm->classInfoCount = 0;
+  
   vm->modules = wrenNewMap(vm);
   wrenInitializeCore(vm);
   return vm;

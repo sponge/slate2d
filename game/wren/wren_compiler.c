@@ -252,62 +252,7 @@ typedef struct sLoop
   struct sLoop* enclosing;
 } Loop;
 
-// The different signature syntaxes for different kinds of methods.
-typedef enum
-{
-  // A name followed by a (possibly empty) parenthesized parameter list. Also
-  // used for binary operators.
-  SIG_METHOD,
-  
-  // Just a name. Also used for unary operators.
-  SIG_GETTER,
-  
-  // A name followed by "=".
-  SIG_SETTER,
-  
-  // A square bracketed parameter list.
-  SIG_SUBSCRIPT,
-  
-  // A square bracketed parameter list followed by "=".
-  SIG_SUBSCRIPT_SETTER,
-  
-  // A constructor initializer function. This has a distinct signature to
-  // prevent it from being invoked directly outside of the constructor on the
-  // metaclass.
-  SIG_INITIALIZER
-} SignatureType;
 
-typedef struct
-{
-  const char* name;
-  int length;
-  SignatureType type;
-  int arity;
-} Signature;
-
-// Bookkeeping information for compiling a class definition.
-typedef struct
-{
-  // The name of the class.
-  ObjString* name;
-  
-  // Symbol table for the fields of the class.
-  SymbolTable fields;
-
-  // Symbols for the methods defined by the class. Used to detect duplicate
-  // method definitions.
-  IntBuffer methods;
-  IntBuffer staticMethods;
-
-  // True if the class being compiled is a foreign class.
-  bool isForeign;
-  
-  // True if the current method being compiled is static.
-  bool inStatic;
-
-  // The signature of the method being compiled.
-  Signature* signature;
-} ClassInfo;
 
 struct sCompiler
 {
@@ -3307,9 +3252,17 @@ static void classDefinition(Compiler* compiler, bool isForeign)
   }
   
   // Clear symbol tables for tracking field and method names.
-  wrenSymbolTableClear(compiler->parser->vm, &classInfo.fields);
-  wrenIntBufferClear(compiler->parser->vm, &classInfo.methods);
-  wrenIntBufferClear(compiler->parser->vm, &classInfo.staticMethods);
+  WrenVM *vm = compiler->parser->vm;
+  if (vm->classInfoCount < vm->classInfoMax) {
+	  //vm->classInfoMax = vm->classInfoMax << 1;
+	  //vm->classInfo = (ClassInfo*)reallocate(vm->classInfo, vm->classInfoMax * sizeof(ClassInfo*));
+	  vm->classInfo[vm->classInfoCount++] = classInfo;
+  } else {
+	  wrenSymbolTableClear(compiler->parser->vm, &classInfo.fields);
+	  wrenIntBufferClear(compiler->parser->vm, &classInfo.methods);
+	  wrenIntBufferClear(compiler->parser->vm, &classInfo.staticMethods);
+  }
+
   compiler->enclosingClass = NULL;
   popScope(compiler);
 }

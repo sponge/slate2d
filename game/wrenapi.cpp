@@ -108,6 +108,8 @@ void wren_trap_mouse_position(WrenVM *vm) {
 	wrenInsertInList(vm, 0, 0, 1);
 	wrenInsertInList(vm, 0, 0, 2);
 }
+
+extern void wren_trap_inspect_instance(WrenVM *vm);
 #pragma endregion
 
 #pragma region Asset Module
@@ -650,6 +652,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "keyActive(_)", wren_trap_in_keystate },
 	{ "engine", "Trap", true, "keyPressed(_,_,_)", wren_trap_in_keypressed },
 	{ "engine", "Trap", true, "mousePosition()", wren_trap_mouse_position },
+	{ "engine", "Trap", true, "inspect(_)", wren_trap_inspect_instance },
 
 	{ "engine", "Asset", true, "create(_,_,_)", wren_asset_create },
 	{ "engine", "Asset", true, "find(_)", wren_asset_find },

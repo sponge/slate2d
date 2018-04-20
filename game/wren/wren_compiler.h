@@ -54,4 +54,61 @@ void wrenBindMethodCode(ObjClass* classObj, ObjFn* fn);
 // its parents) so that they are not collected by the GC.
 void wrenMarkCompiler(WrenVM* vm, Compiler* compiler);
 
+// The different signature syntaxes for different kinds of methods.
+typedef enum
+{
+	// A name followed by a (possibly empty) parenthesized parameter list. Also
+	// used for binary operators.
+	SIG_METHOD,
+
+	// Just a name. Also used for unary operators.
+	SIG_GETTER,
+
+	// A name followed by "=".
+	SIG_SETTER,
+
+	// A square bracketed parameter list.
+	SIG_SUBSCRIPT,
+
+	// A square bracketed parameter list followed by "=".
+	SIG_SUBSCRIPT_SETTER,
+
+	// A constructor initializer function. This has a distinct signature to
+	// prevent it from being invoked directly outside of the constructor on the
+	// metaclass.
+	SIG_INITIALIZER
+} SignatureType;
+
+typedef struct
+{
+	const char* name;
+	int length;
+	SignatureType type;
+	int arity;
+} Signature;
+
+// Bookkeeping information for compiling a class definition.
+typedef struct
+{
+	// The name of the class.
+	ObjString* name;
+
+	// Symbol table for the fields of the class.
+	SymbolTable fields;
+
+	// Symbols for the methods defined by the class. Used to detect duplicate
+	// method definitions.
+	IntBuffer methods;
+	IntBuffer staticMethods;
+
+	// True if the class being compiled is a foreign class.
+	bool isForeign;
+
+	// True if the current method being compiled is static.
+	bool inStatic;
+
+	// The signature of the method being compiled.
+	Signature* signature;
+} ClassInfo;
+
 #endif

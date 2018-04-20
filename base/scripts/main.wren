@@ -8,7 +8,6 @@ import "world" for World
 import "intro" for Intro
 import "test" for Title
 
-
 class Main {
    static scene { __scene }
 
@@ -20,9 +19,9 @@ class Main {
 
       if (mapName == null) {
          loadScene("title", null)
+         // loadScene("world", "maps/plat.tmx")
       } else {
          loadScene("intro", mapName)
-         // loadScene("world", mapName)
       }
    }
 
@@ -52,6 +51,8 @@ class Main {
       __scene.draw(w, h)
       Debug.draw()
       Draw.submit()
+
+      Trap.inspect(__scene)
    }
 
    static console(line) {

@@ -28,6 +28,8 @@ class Title {
       _rndNum = 0
       _time = 0
 
+      _asdf = "hellooo world"
+
       Trap.sndPlay(_music, 1.0, 0.0, true)
       //Trap.sndPlay(_speech, 1.0, 0.0, false)
 

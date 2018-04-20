@@ -2,9 +2,18 @@ import "engine" for Trap, Button, Draw, Asset, Fill, Color, TileMap
 import "debug" for Debug
 import "collision" for TileCollider
 import "camera" for Camera
-import "entities" for LevelExit, Coin, MovingPlatform, FallingPlatform, Spring, Spike, Cannon, Flamethrower
 import "player" for Player
 import "timer" for Timer
+
+import "ent/flamethrower" for Flamethrower
+import "ent/levelexit" for LevelExit
+import "ent/spring" for Spring
+import "ent/cannonball" for Cannonball
+import "ent/coin" for Coin
+import "ent/movingplatform" for MovingPlatform
+import "ent/fallingplatform" for FallingPlatform
+import "ent/cannon" for Cannon
+import "ent/spike" for Spike
 
 class Level {
    w { _w }

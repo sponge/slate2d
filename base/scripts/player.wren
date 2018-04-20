@@ -4,8 +4,11 @@ import "debug" for Debug
 import "main" for Main
 import "timer" for Timer
 import "math" for Math
-import "entities" for Cannonball, StunShot, Spring
 import "collision" for Dim, Dir
+
+import "ent/spring" for Spring
+import "ent/cannonball" for Cannonball
+import "ent/stunshot" for StunShot
 
 class Player is Entity {
    disableControls=(b) { _disableControls = b }

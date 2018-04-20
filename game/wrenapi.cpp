@@ -22,8 +22,6 @@ void wren_trap_dbgwin(WrenVM *vm) {
 	const char *key = wrenGetSlotString(vm, 2);
 	const char *value = wrenGetSlotString(vm, 3);
 
-	ImGui::SetNextWindowSizeConstraints({ 250, 100 }, { 400, 550 });
-
 	ImGui::Begin(title, nullptr, ImGuiWindowFlags_HorizontalScrollbar);
 
 	float width = ImGui::GetWindowContentRegionWidth();

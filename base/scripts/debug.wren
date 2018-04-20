@@ -49,7 +49,6 @@ class Debug {
 
       __persist = false
 
-      __texts = []
       __rects = []
 
       __persistantTexts = []
@@ -62,9 +61,13 @@ class Debug {
    }
 
    // a key/val pair will appear in the window named "window"
+   // (we don't need to buffer non persistent text here since imgui is always drawn over)
    static text(window, key, val) {
-      var dest = __persist ? __persistantTexts : __texts
-      dest.add([window, key, val])
+      if (__persist) {
+         __persistantTexts.add([window, key, val])
+      } else {
+         Trap.printWin(window, key, val)
+      }
    }
 
    // a list or a map will have its contents printed in the window named "window"
@@ -72,12 +75,6 @@ class Debug {
       var range = collection is List ? 0..collection.count-1 : collection.keys
       for (i in range) {
          text(window, i, collection[i])
-      }
-   }
-
-   static drawTexts_(l) {
-      for (line in l) {
-         Trap.printWin(line[0], line[1], line[2])
       }
    }
 
@@ -90,13 +87,13 @@ class Debug {
 
    // draw out all stored stuff, and then clear per-frame draw items (when persist == false)
    static draw() {
-      drawTexts_(__persistantTexts)
-      drawTexts_(__texts)
+      for (line in __persistantTexts) {
+         Trap.printWin(line[0], line[1], line[2])
+      }
 
       drawRects_(__persistantRects)
       drawRects_(__rects)
       
-      __texts.clear()
       __rects.clear()
    }
 }

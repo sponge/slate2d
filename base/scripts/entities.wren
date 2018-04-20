@@ -3,15 +3,7 @@ import "timer" for Timer
 import "main" for Main
 import "engine" for Trap, Draw, Color, Fill, Asset
 import "debug" for Debug
-
-// FIXME: duped
-var DIM_HORIZ = 1
-var DIM_VERT = 2
-
-var DIR_LEFT = 1
-var DIR_RIGHT = 2
-var DIR_TOP = 4
-var DIR_BOTTOM = 8
+import "collision" for Dim, Dir
 
 // flames actually spawn out of a tile in the tilemap range. the flamethrower is solid
 // but we spawn the flame and toggle it on and off instead to cut back on entities used
@@ -19,8 +11,8 @@ class Flame is Entity {
    construct new(world, dim, dir, delayed, ox, oy) {
       _dim = dim
       _flipped = false
-      var w = _dim == DIM_HORIZ ? 16 : 6
-      var h = _dim == DIM_HORIZ ? 6 : 16
+      var w = _dim == Dim.H ? 16 : 6
+      var h = _dim == Dim.H ? 6 : 16
       
       _delay = 0
       if (delayed) {
@@ -28,11 +20,11 @@ class Flame is Entity {
       }
 
       if (dir == "up" || dir == "left") {
-         ox = ox + (_dim == DIM_HORIZ ? -16 : 1)
-         oy = oy + (_dim == DIM_HORIZ ? 1 : -16)
+         ox = ox + (_dim == Dim.H ? -16 : 1)
+         oy = oy + (_dim == Dim.H ? 1 : -16)
       } else {
-         ox = ox + (_dim == DIM_HORIZ ? 8 : 1)
-         oy = oy + (_dim == DIM_HORIZ ? 1 : 8)
+         ox = ox + (_dim == Dim.H ? 8 : 1)
+         oy = oy + (_dim == Dim.H ? 1 : 8)
          _flipped = true
       }
 
@@ -79,7 +71,7 @@ class Flame is Entity {
 
       var flicker = (t / 3 % 2).floor == 0
 
-      if (_dim == DIM_VERT) {
+      if (_dim == Dim.V) {
          var f = flicker ? 1 : 0
          var flip = _flipped ? 2+f : 0+f
          Draw.sprite(world.spr, spr, x-1, y, 1, 1, flip, 1, 2)
@@ -98,16 +90,16 @@ class Flamethrower is Entity {
       var dir = obj["properties"]["direction"]
       if (dir == "up") {
          _tile = 7
-         _dim = DIM_VERT
+         _dim = Dim.V
       } else if (dir == "right") {
          _tile = 8
-         _dim = DIM_HORIZ
+         _dim = Dim.H
       } else if (dir == "down") {
          _tile = 9
-         _dim = DIM_VERT
+         _dim = Dim.V
       } else if (dir == "left") {
          _tile = 10
-         _dim = DIM_HORIZ
+         _dim = Dim.H
       } else {
          Trap.error(2, "Flamethrower at %(ox),%(oy) has no valid direction")
       }
@@ -145,7 +137,7 @@ class Spring is Entity {
 
    // they work like platforms, only collide from the top going down
    canCollide(other, side, d) {
-      return side == DIR_TOP && other.y+other.h <= y && other.y+other.h+d > y
+      return side == Dir.Up && other.y+other.h <= y && other.y+other.h+d > y
    }
 
    // start the animation
@@ -209,19 +201,19 @@ class Cannon is Entity {
       var dir = obj["properties"]["direction"]
       if (dir == "up") {
          _tile = 238
-         _dim = DIM_VERT
+         _dim = Dim.V
          _d = -0.5
       } else if (dir == "right") {
          _tile = 239
-         _dim = DIM_HORIZ
+         _dim = Dim.H
          _d = 0.5
       } else if (dir == "down") {
          _tile = 240
-         _dim = DIM_VERT
+         _dim = Dim.V
          _d = 0.5
       } else if (dir == "left") {
          _tile = 241
-         _dim = DIM_HORIZ
+         _dim = Dim.H
          _d = -0.5
       } else {
          Trap.error(2, "Cannon at %(ox),%(oy) has no valid direction")
@@ -252,8 +244,8 @@ class Cannon is Entity {
       // spawn a cannonball, set parent to this so it doesn't immediately explode
       var ball = Cannonball.new(world, 270, x, y)
       ball.parent = this
-      ball.dx = _dim == DIM_HORIZ ? _d : 0
-      ball.dy = _dim == DIM_VERT ? _d : 0
+      ball.dx = _dim == Dim.H ? _d : 0
+      ball.dy = _dim == Dim.V ? _d : 0
       world.entities.add(ball)
       Trap.sndPlay(_sound)
 
@@ -297,7 +289,7 @@ class FallingPlatform is Entity {
    }
 
    canCollide(other, side, d) {
-      return side == DIR_TOP && other.y+other.h <= y && other.y+other.h+d > y
+      return side == Dir.Up && other.y+other.h <= y && other.y+other.h+d > y
    }
 
    touch(other, side) {
@@ -358,7 +350,7 @@ class MovingPlatform is Entity {
 
       var split = obj["properties"]["path"].split(" ")
       for (node in split) {
-         var dir = (node[0] == "u") ? DIR_TOP : (node[0] == "l") ? DIR_LEFT : (node[0] == "r") ? DIR_RIGHT : (node[0] == "d") ? DIR_BOTTOM : null
+         var dir = (node[0] == "u") ? Dir.Up : (node[0] == "l") ? Dir.Left : (node[0] == "r") ? Dir.Right : (node[0] == "d") ? Dir.Down : null
          if (dir == null) {
             Trap.error(2, "Invalid direction \"%(node[0])\" in MovingPlatform at %(ox), %(oy)")
             return
@@ -377,8 +369,8 @@ class MovingPlatform is Entity {
 
    // moving platforms work like one way. only collide if you're falling through from the top
    canCollide(other, side, d) {
-      //Debug.text("ret", "%(side) == %(DIR_TOP) && %(other.y)+%(other.h) <= %(y) && %(other.y)+%(other.h)+%(other.dy) > %(y)")
-      return side == DIR_TOP && other.y+other.h <= y && other.y+other.h+d > y
+      //Debug.text("ret", "%(side) == %(Dir.Up) && %(other.y)+%(other.h) <= %(y) && %(other.y)+%(other.h)+%(other.dy) > %(y)")
+      return side == Dir.Up && other.y+other.h <= y && other.y+other.h+d > y
    }
 
    setNextPoint() {
@@ -392,8 +384,8 @@ class MovingPlatform is Entity {
       var dir = _route[_currentRoute][0]
       var amt = _route[_currentRoute][1]
 
-      _d = (dir == DIR_TOP || dir == DIR_LEFT) ? -0.5 : 0.5
-      _dim = (dir == DIR_TOP || dir == DIR_BOTTOM) ? DIM_VERT : DIM_HORIZ
+      _d = (dir == Dir.Up || dir == Dir.Left) ? -0.5 : 0.5
+      _dim = (dir == Dir.Up || dir == Dir.Down) ? Dim.V : Dim.H
       _dist = amt * world.level.tw
    }
 
@@ -408,17 +400,17 @@ class MovingPlatform is Entity {
       setNextPoint()
 
       // calculate our movement vector
-      dx = (_dim == DIM_HORIZ ? _d : 0)
-      dy = (_dim == DIM_VERT ? _d : 0)
+      dx = (_dim == Dim.H ? _d : 0)
+      dy = (_dim == Dim.V ? _d : 0)
 
       // this is only used to detect if we run into a player. we always move our speed every frame
-      var chkx = check(DIM_HORIZ, dx)
-      var chky = check(DIM_VERT, dy)
+      var chkx = check(Dim.H, dx)
+      var chky = check(Dim.V, dy)
 
       // if the platform is going to lift the player up, attach them to this and lift them
       if (chky.entity && chky.entity.isPlayer && chky.entity.groundEnt != this && intersects(chky.entity) == false) {
          chky.entity.groundEnt = this
-         chky.entity.y = chky.entity.y + chky.entity.check(DIM_VERT, dy).delta
+         chky.entity.y = chky.entity.y + chky.entity.check(Dim.V, dy).delta
          // Debug.text("attach")
       }
 
@@ -500,7 +492,7 @@ class Cannonball is Entity {
    touch(other, side) {
       active = false
       // don't hurt from the top
-      if (other && other.isPlayer && side != DIR_TOP) {
+      if (other && other.isPlayer && side != Dir.Up) {
          other.hurt(this, 1)
       }
    }
@@ -508,7 +500,7 @@ class Cannonball is Entity {
    // move our speed every frame. if we hit something, activate touch on ourselves
    // and explode
    think(dt) {
-      var chkx = check(DIM_HORIZ, dx)
+      var chkx = check(Dim.H, dx)
       if (chkx.entity != null && chkx.entity != _parent) {
          touch(chkx.entity, chkx.side)
          return
@@ -520,7 +512,7 @@ class Cannonball is Entity {
          return
       }
       
-      var chky = check(DIM_VERT, dy)
+      var chky = check(Dim.V, dy)
       if (chky.entity != null && chky.entity != _parent) {
          touch(chky.entity, chky.side)
          return

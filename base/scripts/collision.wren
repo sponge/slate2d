@@ -1,11 +1,14 @@
-// FIXME: duped
-var DIM_HORIZ = 1
-var DIM_VERT = 2
+class Dir {
+   static Left { 1 }
+   static Right { 2 }
+   static Up { 4 }
+   static Down { 8 }
+}
 
-var DIR_LEFT = 1
-var DIR_RIGHT = 2
-var DIR_TOP = 4
-var DIR_BOTTOM = 8
+class Dim {
+   static H { 1 }
+   static V { 2 }
+}
 
 // don't bother releasing since nothing ever needs for more than a single frame.
 // just cycle through the 16
@@ -117,7 +120,7 @@ class TileCollider {
    }
 
    query(x, y, w, h, dim, d, resolveFn) {
-      if (dim == DIM_HORIZ) {
+      if (dim == Dim.H) {
          var origPos = x + d
          var xRange = getTileRange(_tw, x, w, d)
          var yRange = getTileRange(_th, y, h, 0)
@@ -127,7 +130,7 @@ class TileCollider {
                //Debug.rectb(tx*8, ty*8, 8, 8, 4)
                var tile = _getTile.call(tx, ty)
                if (tile > 0) {
-                  var dir = d < 0 ? DIR_LEFT : DIR_RIGHT
+                  var dir = d < 0 ? Dir.Left : Dir.Right
                   if (resolveFn.call(dir, tile, tx, ty, d, 0) == true) {
                      //Debug.rectb(tx*8, ty*8, 8, 8, 8)
                      var check = origPos..(tx + (d >= 0 ? 0 : 1)) *_tw - (d >= 0 ? w : 0)
@@ -148,7 +151,7 @@ class TileCollider {
                //Debug.rectb(tx*8, ty*8, 8, 8, 4)
                var tile = _getTile.call(tx, ty)
                if (tile > 0) {
-                  var dir = d < 0 ? DIR_TOP : DIR_BOTTOM
+                  var dir = d < 0 ? Dir.Up : Dir.Down
                   if (resolveFn.call(dir, tile, tx, ty, 0, d) == true) {
                      //Debug.rectb(tx*8, ty*8, 8, 8, 8)
                      var check = origPos..(ty + (d >= 0 ? 0 : 1)) *_th - (d >= 0 ? h : 0)

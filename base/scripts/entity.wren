@@ -1,16 +1,7 @@
 import "math" for Math
-import "collision" for CollisionPool
+import "collision" for CollisionPool, Dim, Dir
 import "engine" for Draw
 import "debug" for Debug
-
-// FIXME: duped
-var DIM_HORIZ = 1
-var DIM_VERT = 2
-
-var DIR_LEFT = 1
-var DIR_RIGHT = 2
-var DIR_TOP = 4
-var DIR_BOTTOM = 8
 
 class Entity {
    x { _x }
@@ -56,8 +47,8 @@ class Entity {
          }
 
          if (tile >= 5 && tile <= 7) {
-            //Debug.text("collision", "plat", "%(ty), %(side == DIR_BOTTOM) && %(y+h) <= %(ty*8) && %(y+h+ldy) > %(ty*8)")
-            return side == DIR_BOTTOM && _y+_h <= ty*8 && _y+_h+ldy > ty*8
+            //Debug.text("collision", "plat", "%(ty), %(side == Dir.Down) && %(y+h) <= %(ty*8) && %(y+h+ldy) > %(ty*8)")
+            return side == Dir.Down && _y+_h <= ty*8 && _y+_h+ldy > ty*8
          }
 
          return true
@@ -72,8 +63,8 @@ class Entity {
    // modified SAT, always resolves based on the axis passed in, not the nearest
    // always checks one dimension per call
    collide(other, dim, d) {
-      var ldx = dim == DIM_HORIZ ? d : 0
-      var ldy = dim == DIM_VERT ? d : 0
+      var ldx = dim == Dim.H ? d : 0
+      var ldy = dim == Dim.V ? d : 0
 
       var ox = this.x + (this.w / 2) + ldx - other.x - (other.w / 2)
       var px = (this.w / 2) + (other.w / 2) - ox.abs
@@ -89,7 +80,7 @@ class Entity {
          return d
       }
 
-      if (dim == DIM_HORIZ) {
+      if (dim == Dim.H) {
          var rx = ldx + px * Math.sign(ox)
          return rx 
       } else {
@@ -101,7 +92,7 @@ class Entity {
    // one place to try moving through the world. checks tiles in the way, and all entities
    // probably want some sort of spatial partitioning eventually, but rect intersects are cheap
    check(dim, d) {
-      var dir = dim == DIM_HORIZ ? (d > 0 ? DIR_RIGHT : DIR_LEFT) : (d > 0 ? DIR_TOP : DIR_BOTTOM)
+      var dir = dim == Dim.H ? (d > 0 ? Dir.Right : Dir.Left) : (d > 0 ? Dir.Up : Dir.Down)
       d = _world.tileCollider.query(_x, _y, _w, _h, dim, d, resolve)
 
       var colInfo = CollisionPool.get()

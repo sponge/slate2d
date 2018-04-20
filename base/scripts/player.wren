@@ -5,15 +5,7 @@ import "main" for Main
 import "timer" for Timer
 import "math" for Math
 import "entities" for Cannonball, StunShot, Spring
-
-// FIXME: duped
-var DIM_HORIZ = 1
-var DIM_VERT = 2
-
-var DIR_LEFT = 1
-var DIR_RIGHT = 2
-var DIR_TOP = 4
-var DIR_BOTTOM = 8
+import "collision" for Dim, Dir
 
 class Player is Entity {
    disableControls=(b) { _disableControls = b }
@@ -107,7 +99,7 @@ class Player is Entity {
       var speed = 0
 
       // track if on the ground this frame
-      var grav = check(DIM_VERT, 1)
+      var grav = check(Dim.V, 1)
 
       // snap to the ground if we're near it (needed for sticking to falling platforms)
       if (dy >= 0 && grav.delta < 1) {
@@ -134,8 +126,8 @@ class Player is Entity {
             _jumpHeld = jumpPress && _jumpHeldFrames < _earlyJumpFrames * 2
          }
 
-         y = y + check(DIM_VERT, _groundEnt.dy).delta
-         x = x + check(DIM_HORIZ, _groundEnt.dx).delta
+         y = y + check(Dim.V, _groundEnt.dy).delta
+         x = x + check(Dim.H, _groundEnt.dx).delta
          // Debug.text("player", "y+h", y+h)
       }
 
@@ -210,7 +202,7 @@ class Player is Entity {
       // move x first, then move y. don't do it at the same time, else buggy behavior
       var chkx = null
       if (_groundEnt is Spring == false) {
-         var chkx = check(DIM_HORIZ, dx)
+         var chkx = check(Dim.H, dx)
          x = x + chkx.delta
          triggerTouch(chkx)
 
@@ -220,11 +212,11 @@ class Player is Entity {
          }
       }
 
-      var chky = check(DIM_VERT, dy)
+      var chky = check(Dim.V, dy)
       y = y + chky.delta
       triggerTouch(chky)
 
-      if (chky.side == DIR_TOP && chky.triggerHas(Cannonball)) {
+      if (chky.side == Dir.Up && chky.triggerHas(Cannonball)) {
          dy = jumpPress ? -_enemyJumpHeld : -_enemyJump
          _jumpHeld = jumpPress
       } else if (chky.delta != dy) {

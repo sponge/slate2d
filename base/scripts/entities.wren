@@ -241,8 +241,9 @@ class Cannon is Entity {
       }
 
       // don't fire if we're too close or too far away
-      var dist = (world.player.x - x).abs
-      if (dist <= 16 || dist > 200) {
+      var distX = (world.player.x - x).abs
+      var distY = (world.player.y - y).abs
+      if ((distX <= 24 || distX > 200) && (distY <= 24 || distY > 200)) {
          // don't wait a full cycle to retry
          _fireTime = world.ticks + 60
          return

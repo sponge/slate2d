@@ -22,7 +22,9 @@ void wren_trap_dbgwin(WrenVM *vm) {
 	const char *key = wrenGetSlotString(vm, 2);
 	const char *value = wrenGetSlotString(vm, 3);
 
-	ImGui::Begin(title, nullptr, 0);
+	ImGui::SetNextWindowSizeConstraints({ 250, 100 }, { 400, 550 });
+
+	ImGui::Begin(title, nullptr, ImGuiWindowFlags_HorizontalScrollbar);
 
 	float width = ImGui::GetWindowContentRegionWidth();
 	float keyWidth = ImGui::CalcTextSize(key).x;
@@ -32,7 +34,9 @@ void wren_trap_dbgwin(WrenVM *vm) {
 	if (keyWidth + valWidth + 20 < width) {
 		ImGui::SameLine();
 	}
-	ImGui::SetCursorPosX(width - valWidth);
+	int x = width - valWidth;
+	x = x < 5 ? 5 : x;
+	ImGui::SetCursorPosX(x);
 	ImGui::Text("%s", value);
 	ImGui::Separator();
 	ImGui::End();

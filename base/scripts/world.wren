@@ -27,15 +27,16 @@ class Level {
    title { _title }
    worldLayer { _worldLayer }
    backgroundColor { _backgroundColor }
+   props { _mapProps }
 
    construct new(mapName) {
       TileMap.load(mapName)
-      var mapProps = TileMap.getMapProperties()
+      _mapProps = TileMap.getMapProperties()
 
-      _w = mapProps["width"]
-      _h = mapProps["height"]
-      _tw = mapProps["tileWidth"]
-      _th = mapProps["tileHeight"]
+      _w = _mapProps["width"]
+      _h = _mapProps["height"]
+      _tw = _mapProps["tileWidth"]
+      _th = _mapProps["tileHeight"]
       _maxX = _w * _tw
       _maxY = _h * _th
       _layers = TileMap.layerNames()
@@ -46,11 +47,11 @@ class Level {
          return
       }
 
-      var rgba = mapProps["backgroundColor"]
+      var rgba = _mapProps["backgroundColor"]
       _backgroundColor = [(rgba>>16)&0xFF, (rgba>>8)&0xFF, (rgba)&0xFF, (rgba>>24)&0xFF]
 
-      _music = mapProps["properties"]["music"]
-      _title = mapProps["properties"]["title"]
+      _music = _mapProps["properties"]["music"]
+      _title = _mapProps["properties"]["title"]
    }
 
    getTile(x, y) {
@@ -209,7 +210,6 @@ class World {
    }
 
    draw(w, h) {
-      
       Draw.resetTransform()
 
       Draw.transform(h / _cam.h, 0, 0, h / _cam.h, 0, 0)

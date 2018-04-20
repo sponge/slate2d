@@ -67,6 +67,14 @@ class Debug {
       dest.add([window, key, val])
    }
 
+   // a list or a map will have its contents printed in the window named "window"
+   static iter(window, collection) {
+      var range = collection is List ? 0..collection.count-1 : collection.keys
+      for (i in range) {
+         text(window, i, collection[i])
+      }
+   }
+
    static drawTexts_(l) {
       for (line in l) {
          Trap.printWin(line[0], line[1], line[2])

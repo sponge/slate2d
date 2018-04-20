@@ -55,7 +55,27 @@ class Main {
    }
 
    static console(line) {
-      Meta.eval(line)
+      var fiber
+      var isExpression
+      if (line.startsWith("eval ")) {
+         line = line["eval ".count..-1]
+         fiber = Meta.compile(line)
+      } else {
+         isExpression = true
+         fiber = Meta.compileExpression(line)
+      }
+
+      if (fiber == null) return
+      var result = fiber.try()
+      if (fiber.error != null) {
+         // TODO: Include callstack.
+         Trap.printLn("Runtime error: %(fiber.error)")
+         return
+      }
+
+      if (isExpression) {
+         Trap.printLn(result)
+      }
    }
 
    static shutdown() {

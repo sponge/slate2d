@@ -25,9 +25,9 @@ ClassInfo *findClass(WrenVM* vm, ObjClass *cl) {
 	if (cl == nullptr) {
 		return nullptr;
 	}
-	auto hash = cl->name->hash;
+	uint32_t hash = cl->name->hash;
 	for (int i = 0; i < vm->classInfoCount; i++) {
-		auto ci = &vm->classInfo[i];
+		ClassInfo *ci = &vm->classInfo[i];
 		if (hash == ci->name->hash) {
 			return ci;
 		}
@@ -81,8 +81,8 @@ void renderMapEntry(WrenVM *vm, MapEntry *entry) {
 // render out a list of methods, used for Class values, and at the header of all Instance values
 void renderMethodBuffer(WrenVM *vm, MethodBuffer methods) {
 	for (int i = 0; i < methods.count; i++) {
-		auto method = methods.data[i];
-		if (method.type != METHOD_NONE && method.type != METHOD_PRIMITIVE) {
+		Method *method = &methods.data[i];
+		if (method->type != METHOD_NONE && method->type != METHOD_PRIMITIVE) {
 			ImGui::TreeAdvanceToLabelPos();
 			ImGui::Text("%s", vm->methodNames.data[i].buffer);
 		}
@@ -210,8 +210,8 @@ void renderValue(WrenVM *vm, const char *name, Value value) {
 // take a value, loop through all it's methods, display them, loop through all of it's fields, and display them.
 // this can be recursively called from renderValue, but it's typically also the start of looping through something.
 void renderInstance(WrenVM *vm, Value value) {
-	auto *obj = AS_OBJ(value);
-	auto *instance = AS_INSTANCE(value);
+	ObjInstance *instance = AS_INSTANCE(value);
+	Obj *obj = &instance->obj;
 	
 	ClassInfo *classInfo = findClass(vm, obj->classObj);
 

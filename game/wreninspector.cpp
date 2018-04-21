@@ -207,10 +207,12 @@ void renderValue(WrenVM *vm, const char *name, Value value) {
 	}
 }
 
+// take a value, loop through all it's methods, display them, loop through all of it's fields, and display them.
+// this can be recursively called from renderValue, but it's typically also the start of looping through something.
 void renderInstance(WrenVM *vm, Value value) {
 	auto *obj = AS_OBJ(value);
 	auto *instance = AS_INSTANCE(value);
-
+	
 	ClassInfo *classInfo = findClass(vm, obj->classObj);
 
 	// this shouldn't happen but it might if you have > 64 classes since hardcoded limit from compiler hacks
@@ -261,24 +263,17 @@ void renderInstance(WrenVM *vm, Value value) {
 	}
 }
 
-void wren_trap_inspect_instance(WrenVM *vm) {
-	Value val = vm->apiStack[1];
-
-	if (!IS_OBJ(val)) {
-		ImGui::Begin("Inspect Error", nullptr, 0);
-		ImGui::Text("Cannot inspect primitive types.");
-		ImGui::End();
-		return;
-	}
-
-	auto *obj = AS_OBJ(val);
+void inspect(WrenVM *vm, Value val) {
+	Obj *obj = AS_OBJ(val);
 
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImColor(0, 0, 0, 255));
+
 	char windowTitle[64] = "";
 	snprintf(windowTitle, 64, "%s (%p)", obj->classObj->name->value, obj);
 	ImGui::Begin(windowTitle, nullptr, 0);
+
 	// if the top level object is an instance, don't draw a redundant node for it
-	if (IS_INSTANCE(val)) {
+	if (obj->type == OBJ_INSTANCE) {
 		renderInstance(vm, val);
 	}
 	// just render the value (a list or a map is most common)
@@ -288,4 +283,17 @@ void wren_trap_inspect_instance(WrenVM *vm) {
 
 	ImGui::End();
 	ImGui::PopStyleColor();
+}
+
+void wren_trap_inspect(WrenVM *vm) {
+	Value val = vm->apiStack[1];
+
+	if (!IS_OBJ(val)) {
+		ImGui::Begin("Inspect Error", nullptr, 0);
+		ImGui::Text("Cannot inspect primitive types.");
+		ImGui::End();
+		return;
+	}
+
+	inspect(vm, val);
 }

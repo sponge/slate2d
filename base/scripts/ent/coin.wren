@@ -1,5 +1,6 @@
 import "entity" for Entity
 import "engine" for Asset, Trap
+import "soundcontroller" for SoundController
 
 class Coin is Entity {
    construct new(world, obj, ox, oy) {
@@ -14,7 +15,7 @@ class Coin is Entity {
    touch(other, side) {
       active = false
       world.coins = world.coins + 1
-      Trap.sndPlay(_collect)
+      SoundController.playOnce(_collect)
    }
 
    draw(t) {

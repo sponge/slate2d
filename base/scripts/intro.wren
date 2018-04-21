@@ -1,5 +1,6 @@
 import "timer" for Timer
 import "engine" for Draw, Asset, TileMap, Trap
+import "soundcontroller" for SoundController
 
 class Intro {
    nextScene { _nextScene }
@@ -28,7 +29,7 @@ class Intro {
 
       _titleLen = Asset.measureBmpText(_font, _title)
 
-      Trap.sndPlay(_music)
+      SoundController.playMusic(_music)
 
       Timer.runLater(180, Fn.new {
          _nextScene = ["world", mapName]

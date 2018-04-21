@@ -1,6 +1,7 @@
 import "entity" for Entity
 import "collision" for Dim
 import "engine" for Trap, Asset
+import "soundcontroller" for SoundController
 
 import "ent/cannonball" for Cannonball
 
@@ -57,7 +58,7 @@ class Cannon is Entity {
       ball.dx = _dim == Dim.H ? _d : 0
       ball.dy = _dim == Dim.V ? _d : 0
       world.entities.add(ball)
-      Trap.sndPlay(_sound)
+      SoundController.playOnce(_sound, 0.5, 0, false)
 
       // recharge
       _fireTime = world.ticks + 300

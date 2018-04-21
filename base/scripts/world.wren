@@ -4,6 +4,7 @@ import "collision" for TileCollider
 import "camera" for Camera
 import "player" for Player
 import "timer" for Timer
+import "soundcontroller" for SoundController
 
 import "ent/flamethrower" for Flamethrower
 import "ent/levelexit" for LevelExit
@@ -151,19 +152,20 @@ class World {
       _deathMusic = Asset.create(Asset.Mod, "deathmusic", "music/victory_ditty_24.mod")
       _victoryMusic = Asset.create(Asset.Mod, "victorymusic", "music/jingles_22.mod")
       _winSpeech = Asset.create(Asset.Speech, "speech", "great job! you are a good dog!")
+      _loseSpeech = Asset.create(Asset.Speech, "losespeech", "bad dog bad dog bad dog bad dog bad dog bad dog")
 
       Asset.loadAll()
 
       _spr = Asset.createSprite(sprites, 8, 8, 0, 0)
 
-      _musicHnd = Trap.sndPlay(_music, 1.0, 0.0, true)
+      SoundController.playMusic(_music)
    }
 
    winLevel(nextLevel) {
       _player.disableControls = true
       _levelWon = true
-      playMusic("victory")
-      Trap.sndPlay(_winSpeech, 4.0, 0, false)
+      SoundController.playMusic(_victoryMusic)
+      SoundController.playOnce(_winSpeech, 4.0, 0, false)
       Timer.runLater(300, Fn.new {
          if (player.health > 0) {
             changeScene("intro", nextLevel)
@@ -179,14 +181,16 @@ class World {
       _nextScene = [name, params]
    }
 
-   playMusic(type) {
-      Trap.sndStop(_musicHnd)
-
-      if (type == "death") {
-         _musicHnd = Trap.sndPlay(_deathMusic)
-      } else if (type == "victory") {
-         _musicHnd = Trap.sndPlay(_victoryMusic)
+   playerDied(player) {
+      player.active = false
+      SoundController.stopAsset(_winSpeech)
+      SoundController.playMusic(_deathMusic)
+      if (_levelWon) {
+         SoundController.playOnce(_loseSpeech, 4.0, 0, false)
       }
+      Timer.runLater(240, Fn.new {
+         reloadLevel()
+      })
    }
 
    update(dt) {

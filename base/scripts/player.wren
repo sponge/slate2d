@@ -70,13 +70,9 @@ class Player is Entity {
    }
 
    die() {
-      active = false
-      world.playMusic("death")
       Trap.sndStop(_jumpHnd)
       Trap.sndPlay(_dieSound)
-      Timer.runLater(240, Fn.new {
-         world.reloadLevel()
-      })
+      world.playerDied(this)
    }
 
    hurt(other, amount) {

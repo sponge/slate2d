@@ -7,6 +7,7 @@ import "collision" for CollisionPool
 import "world" for World
 import "intro" for Intro
 import "test" for Title
+import "soundcontroller" for SoundController
 
 class Main {
    static scene { __scene }
@@ -15,6 +16,7 @@ class Main {
       CollisionPool.init()
       Timer.init()
       Debug.init()
+      SoundController.init()
       __accumTime = 0
 
       if (mapName == null) {

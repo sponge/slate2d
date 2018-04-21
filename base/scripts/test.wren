@@ -29,6 +29,9 @@ class Title {
       _time = 0
 
       _asdf = "hellooo world"
+      _testRange = 1..4
+      _testMap2 = {Meta: "class key", 1234: "number key", "a string": "string key", true: "bool key", _testRange: "range key", null: "a null"}
+      _testMap2["thing"] = "thing2"
 
       Trap.sndPlay(_music, 1.0, 0.0, true)
       //Trap.sndPlay(_speech, 1.0, 0.0, false)
@@ -78,6 +81,7 @@ class Title {
       Trap.printWin("window name", "a list", [1,2,3])
       Trap.printWin("window name", "number", 1.0)
       Trap.printWin("window name", "random number", _rndNum)
+      Trap.printWin("window name", "map", _testMap2["key1"])
 
       for (i in 0..20) {
          Trap.printWin("window name", "scrolling test", i)

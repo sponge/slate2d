@@ -1,4 +1,5 @@
 import "engine" for Trap, Button, Draw, Asset, Fill, Color, TileMap
+import "player" for Player
 import "meta" for Meta
 import "random" for Random
 
@@ -32,6 +33,8 @@ class Title {
       _testRange = 1..4
       _testMap2 = {Meta: "class key", 1234: "number key", "a string": "string key", true: "bool key", _testRange: "range key", null: "a null"}
       _testMap2["thing"] = "thing2"
+      _testClass = Player
+      _testClass2 = Trap
 
       Trap.sndPlay(_music, 1.0, 0.0, true)
       //Trap.sndPlay(_speech, 1.0, 0.0, false)

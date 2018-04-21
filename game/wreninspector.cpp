@@ -75,6 +75,20 @@ void renderMapEntry(WrenVM *vm, MapEntry *entry) {
 	renderValue(vm, keyStr, entry->value);
 }
 
+// render out a list of methods, used for Class values, and at the header of all Instance values
+void renderMethodBuffer(WrenVM *vm, MethodBuffer methods) {
+	for (int i = 0; i < methods.count; i++) {
+		auto method = methods.data[i];
+		if (method.type != METHOD_NONE && method.type != METHOD_PRIMITIVE) {
+			ImGui::TreeAdvanceToLabelPos();
+			ImGui::Text("%s", vm->methodNames.data[i].buffer);
+		}
+	}
+}
+
+// render a field's value into imgui. this could be a switch except some types will
+// not cast to an object so just do it the old fashioned way. there's some recursion
+// here to handle items that will expand
 void renderValue(WrenVM *vm, const char *name, Value value) {
 	if (IS_BOOL(value)) {
 		auto b = AS_BOOL(value);
@@ -84,8 +98,16 @@ void renderValue(WrenVM *vm, const char *name, Value value) {
 
 	else if (IS_CLASS(value)) {
 		auto c = AS_CLASS(value);
-		renderKey(name);
-		ImGui::TextColored(valueColor, "(class %s)", c->name->value);
+		ImGui::PushStyleColor(ImGuiCol_Text, treeColor);
+		// create a nested tree node, and recurse over the children
+		bool treeActive = ImGui::TreeNode((const void*)value, "%s: (class %s)", name, c->name->value);
+		ImGui::PopStyleColor();
+		ImGui::PushStyleColor(ImGuiCol_Text, methodColor);
+		if (treeActive) {
+			renderMethodBuffer(vm, c->methods);
+			ImGui::TreePop();
+		}
+		ImGui::PopStyleColor();
 	}
 
 	else if (IS_CLOSURE(value)) {
@@ -206,13 +228,7 @@ void renderInstance(WrenVM *vm, Value value) {
 		ImGui::PushStyleColor(ImGuiCol_Text, methodColor);
 		// loop through all methods and print the name if its open, which also includes arity tokens
 		if (ImGui::TreeNode((const void*)&obj->classObj->methods, "Methods")) {
-			for (int i = 0; i < obj->classObj->methods.count; i++) {
-				auto method = obj->classObj->methods.data[i];
-				if (method.type != METHOD_NONE && method.type != METHOD_PRIMITIVE) {
-					ImGui::Text("%s", vm->methodNames.data[i].buffer);
-				}
-
-			}
+			renderMethodBuffer(vm, obj->classObj->methods);
 			ImGui::TreePop();
 		}
 		ImGui::PopStyleColor();
@@ -245,19 +261,28 @@ void renderInstance(WrenVM *vm, Value value) {
 }
 
 void wren_trap_inspect_instance(WrenVM *vm) {
-	auto *obj = AS_OBJ(vm->apiStack[1]);
+	Value val = vm->apiStack[1];
+
+	if (!IS_OBJ(val)) {
+		ImGui::Begin("Inspect Error", nullptr, 0);
+		ImGui::Text("Cannot inspect primitive types.");
+		ImGui::End();
+		return;
+	}
+
+	auto *obj = AS_OBJ(val);
 
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImColor(0, 0, 0, 255));
 	char windowTitle[64] = "";
 	snprintf(windowTitle, 64, "%s (%p)", obj->classObj->name->value, obj);
 	ImGui::Begin(windowTitle, nullptr, 0);
 	// if the top level object is an instance, don't draw a redundant node for it
-	if (IS_INSTANCE(vm->apiStack[1])) {
-		renderInstance(vm, vm->apiStack[1]);
+	if (IS_INSTANCE(val)) {
+		renderInstance(vm, val);
 	}
 	// just render the value (a list or a map is most common)
 	else {
-		renderValue(vm, obj->classObj->name->value, vm->apiStack[1]);
+		renderValue(vm, obj->classObj->name->value, val);
 	}
 
 	ImGui::End();

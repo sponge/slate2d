@@ -22,6 +22,9 @@ static ImColor methodColor = ImColor(255, 255, 0);
 // this could probably be improved by searching per module, or just storing
 // the field names on the classes directly, but that was hard.
 ClassInfo *findClass(WrenVM* vm, ObjClass *cl) {
+	if (cl == nullptr) {
+		return nullptr;
+	}
 	auto hash = cl->name->hash;
 	for (int i = 0; i < vm->classInfoCount; i++) {
 		auto ci = &vm->classInfo[i];
@@ -216,13 +219,6 @@ void renderInstance(WrenVM *vm, Value value) {
 		return;
 	}
 
-	// print a warning since multiple super classes screw things up
-	if (obj->classObj->superclass->superclass != nullptr) {
-		ImColor red = ImColor(255, 0, 0);
-		ImGui::TextColored(red, "WARNING: multiple superclasses");
-		ImGui::TextColored(red, "fields may be misaligned");
-	}
-
 	// print a tree for all the methods in this class. this *does* take into account superclasses.
 	if (obj->classObj->methods.count > 0) {
 		ImGui::PushStyleColor(ImGuiCol_Text, methodColor);
@@ -235,25 +231,30 @@ void renderInstance(WrenVM *vm, Value value) {
 	}
 
 	// loop through all the fields and print the value (mondo big function above)
-	ClassInfo *parentClassInfo = findClass(vm, obj->classObj->superclass);
 	for (int i = 0; i < obj->classObj->numFields; i++) {
-		auto field = instance->fields[i];
-		const char *name;
+		Value field = instance->fields[i];
 
-		// FIXME: multiple parent parent classes break this. need to go backwards
-		// to find the right superclass that lines up with the current field
-		int parentFieldCount = parentClassInfo ? parentClassInfo->fields.count : 0;
-		if (parentClassInfo && i < parentFieldCount) {
-			name = parentClassInfo->fields.data[i].buffer;
+		// iterate through class heiarchy in reverse until we find the right class for the
+		// field we are currently on. this is a hot path and seemingly pretty slow in debug.
+		int fieldsLeft = obj->classObj->numFields - i;
+		ClassInfo *currentClass = classInfo;
+		ObjClass *currentObjClass = obj->classObj;
+
+		// we still have fields to go
+		while (currentObjClass != nullptr) {
+			// consume the fields of the current class, see if we overflow
+			fieldsLeft -= currentClass->fields.count;
+			if (fieldsLeft <= 0) {
+				break;
+			}
+			// still more fields to go, go up another level
+			currentObjClass = currentObjClass->superclass;
+			currentClass = findClass(vm, currentObjClass);
 		}
-		// this happens if you have multiple subclasses and we run over the amount of field definitions
-		else if (i - parentFieldCount >= classInfo->fields.count) {
-			name = "???";
-		}
-		// we've past the point of superclass members, take into account offset
-		else {
-			name = classInfo->fields.data[i - parentFieldCount].buffer;
-		}
+
+		// we hopefully have the field name at this point. if we're negative, that's how many
+		// fields we have progressed through the current class, so just * -1 to get the index
+		const char *name = currentClass == nullptr ? "???" : currentClass->fields.data[fieldsLeft * -1].buffer;
 
 		// just pass the value into a big function that will go through types
 		renderValue(vm, name, field);

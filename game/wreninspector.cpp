@@ -51,7 +51,7 @@ static int selectedType = 0;
 
 static void openEditor(Value *value) {
 	selectedVal = value;
-	selectedType = IS_BOOL(*value) ? EDIT_BOOL : IS_STRING(*value) ? EDIT_STRING : IS_NULL(*value) ? EDIT_NULL : EDIT_NUM;
+	selectedType = IS_BOOL(*value) ? EDIT_BOOL : IS_STRING(*value) ? EDIT_STRING : IS_RANGE(*value) ? EDIT_RANGE : IS_NULL(*value) ? EDIT_NULL : EDIT_NUM;
 	ImGui::OpenPopup("setvalue");
 }
 

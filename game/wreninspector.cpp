@@ -254,10 +254,16 @@ static void renderValue(WrenVM *vm, const char *name, Value &value) {
 		bool treeActive = ImGui::TreeNode((const void*)value, "%s: (class %s)", name, c->name->value);
 		ImGui::PopStyleColor();
 		if (treeActive) {
+			if (ImGui::SmallButton("Edit")) {
+				openEditor(&value);
+			}
 			ImGui::PushStyleColor(ImGuiCol_Text, methodColor);
 			renderMethodBuffer(vm, c->methods);
-			ImGui::TreePop();
 			ImGui::PopStyleColor();
+
+			renderEditor(vm);
+
+			ImGui::TreePop();
 		}
 	}
 
@@ -292,8 +298,11 @@ static void renderValue(WrenVM *vm, const char *name, Value &value) {
 		bool treeActive = ImGui::TreeNode((const void*)value, "%s: %s", name, in->obj.classObj->name->value);
 		ImGui::PopStyleColor();
 		if (treeActive) {
-			renderEditor(vm);
+			if (ImGui::SmallButton("Edit")) {
+				openEditor(&value);
+			}
 			renderInstance(vm, value);
+			renderEditor(vm);
 			ImGui::TreePop();
 		}
 	}
@@ -320,13 +329,18 @@ static void renderValue(WrenVM *vm, const char *name, Value &value) {
 		ImGui::PushStyleColor(ImGuiCol_Text, treeColor);
 		bool treeActive = ImGui::TreeNode((const void*)value, "%s: Map", name);
 		ImGui::PopStyleColor();
+
 		if (treeActive) {
-			renderEditor(vm);
+			if (ImGui::SmallButton("Edit")) {
+				openEditor(&value);
+			}
 			// loop through capacity and not count because map entries will be scattered
 			for (uint32_t i = 0; i < m->capacity; i++) {
 				MapEntry *entry = &m->entries[i];
 				renderMapEntry(vm, entry);
 			}
+			renderEditor(vm);
+
 			ImGui::TreePop();
 		}
 	}
@@ -343,13 +357,17 @@ static void renderValue(WrenVM *vm, const char *name, Value &value) {
 		// print the list contents, and recurse 
 		bool treeActive = ImGui::TreeNode((const void*)value, "%s: List (%i)", name, l->elements.count);
 		ImGui::PopStyleColor();
+
 		if (treeActive) {
-			renderEditor(vm);
+			if (ImGui::SmallButton("Edit")) {
+				openEditor(&value);
+			}
 			for (int i = 0; i < l->elements.count; i++) {
 				char itemName[64] = "";
 				snprintf(itemName, 64, "%i", i);
 				renderValue(vm, itemName, l->elements.data[i]);
 			}
+			renderEditor(vm);
 			ImGui::TreePop();
 		}
 	}
@@ -425,13 +443,13 @@ void inspect(WrenVM *vm, Value val) {
 	if (ImGui::Begin(windowTitle, nullptr, 0)) {
 		// if the top level object is an instance, don't draw a redundant node for it
 		if (obj->type == OBJ_INSTANCE) {
-			renderEditor(vm);
 			renderInstance(vm, val);
+			renderEditor(vm);
 		}
 		// just render the value (a list or a map is most common)
 		else {
-			renderEditor(vm);
 			renderValue(vm, obj->classObj->name->value, val);
+			renderEditor(vm);
 		}
 	}
 	ImGui::End();

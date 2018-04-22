@@ -197,14 +197,13 @@ int main(int argc, char *argv[]) {
 	Sys_LoadDll(lib, (void **)(&gexports), &ver);
 	gexports->Init((void*)&inf, (void*)ImGui::GetCurrentContext());
 
-	bool quit = false;
 	SDL_Event ev;
 	ImGuiIO& io = ImGui::GetIO();
 
 	auto start = clock::now();
 	auto last = clock::now();
 
-	while (!quit) {
+	while (true) {
 		auto now = clock::now();
 		auto dt = std::chrono::duration<float>(now - last).count();
 		com_frameTime = std::chrono::duration<float>(now - start).count() * 1000;
@@ -219,51 +218,61 @@ int main(int argc, char *argv[]) {
 		while (SDL_PollEvent(&ev)) {
 			ImGui_ImplSdlGL3_ProcessEvent(&ev);
 
-			if (ev.type == SDL_QUIT) {
-				quit = 1;
-				break;
-			}
+			switch (ev.type) {
+			case SDL_QUIT:
+				goto quit;
 
-			if (ev.type == SDL_KEYUP && !consoleScene->consoleActive) {
+			case SDL_KEYUP:
 				KeyEvent(ev.key.keysym.scancode, false, com_frameTime);
-			}
+				break;
 
-			if (ev.type == SDL_KEYDOWN) {
+			case SDL_KEYDOWN:
+				if (ev.key.keysym.sym == SDLK_BACKQUOTE) {
+					consoleScene->consoleActive = !consoleScene->consoleActive;
+					break;
+				}
 				if (io.WantCaptureKeyboard) {
 					break;
 				}
 				KeyEvent(ev.key.keysym.scancode, true, com_frameTime);
-			}
+				break;
 
-			if (ev.type == SDL_CONTROLLERDEVICEADDED) {
+			case SDL_CONTROLLERDEVICEADDED: {
 				if (ev.cdevice.which > MAX_CONTROLLERS) {
 					break;
 				}
 
 				SDL_GameController *controller = SDL_GameControllerOpen(ev.cdevice.which);
 				Com_Printf("Using controller at device index %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
+				break;
 			}
 
-			if (ev.type == SDL_CONTROLLERDEVICEREMOVED) {
+			case SDL_CONTROLLERDEVICEREMOVED: {
 				SDL_GameController* controller = SDL_GameControllerFromInstanceID(ev.cdevice.which);
 				Com_Printf("Closing controller instance %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
 				SDL_GameControllerClose(controller);
+				break;
 			}
 
-			if (ev.type == SDL_MOUSEBUTTONUP && !consoleScene->consoleActive) {
+			case SDL_MOUSEBUTTONUP:
 				MouseEvent(ev.button.button, false, com_frameTime);
-			}
+				break;
 
-			if (ev.type == SDL_MOUSEBUTTONDOWN && !consoleScene->consoleActive) {
+			case SDL_MOUSEBUTTONDOWN:
+				if (io.WantCaptureKeyboard || io.WantCaptureMouse) {
+					break;
+				}
 				MouseEvent(ev.button.button, true, com_frameTime);
-			}
+				break;
 
-			if (ev.type == SDL_CONTROLLERBUTTONDOWN) {
+
+			case SDL_CONTROLLERBUTTONDOWN:
 				JoyEvent(ev.jbutton.which, ev.jbutton.button, true, com_frameTime);
-			}
+				break;
 
-			if (ev.type == SDL_CONTROLLERBUTTONUP) {
+			case SDL_CONTROLLERBUTTONUP:
 				JoyEvent(ev.jbutton.which, ev.jbutton.button, false, com_frameTime);
+				break;
 			}
 		}
 		
@@ -327,6 +336,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
+quit:
 	ImGui_ImplSdlGL3_Shutdown();
 	ImGui::DestroyContext();
 	SDL_GL_DeleteContext(context);

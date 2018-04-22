@@ -163,7 +163,10 @@ int main(int argc, char *argv[]) {
 
 	SDL_GL_MakeCurrent(window, context);
 
+	ImGui::CreateContext();
 	ImGui_ImplSdlGL3_Init(window);
+
+	ImGui::StyleColorsDark();
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
 
 	struct NVGcontext* vg = nvgCreateGL3(NVG_STENCIL_STROKES);
@@ -196,6 +199,7 @@ int main(int argc, char *argv[]) {
 
 	bool quit = false;
 	SDL_Event ev;
+	ImGuiIO& io = ImGui::GetIO();
 
 	auto start = clock::now();
 	auto last = clock::now();
@@ -225,7 +229,7 @@ int main(int argc, char *argv[]) {
 			}
 
 			if (ev.type == SDL_KEYDOWN) {
-				if (consoleScene->consoleActive && strcmp("toggleconsole", IN_BindForKey(ev.key.keysym.scancode))) {
+				if (io.WantCaptureKeyboard) {
 					break;
 				}
 				KeyEvent(ev.key.keysym.scancode, true, com_frameTime);
@@ -311,6 +315,7 @@ int main(int argc, char *argv[]) {
 
 		nvgEndFrame(vg);
 		ImGui::Render();
+		ImGui_ImplSdlGL3_RenderDrawData(ImGui::GetDrawData());
 
 		SDL_GL_SwapWindow(window);
 
@@ -322,6 +327,8 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
+	ImGui_ImplSdlGL3_Shutdown();
+	ImGui::DestroyContext();
 	SDL_GL_DeleteContext(context);
 
 	return 0;

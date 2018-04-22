@@ -28,7 +28,7 @@ struct ConsoleUI
     static char* Strdup(const char *str) { size_t len = strlen(str) + 1; void* buff = malloc(len); return (char*)memcpy(buff, (const void*)str, len); }
 
     void ClearLog();
-    void AddLog(const char* fmt, ...) IM_PRINTFARGS(2);
+    void AddLog(const char* fmt, ...) IM_FMTARGS(2);
     void Draw(const char* title, bool* p_open);
     void ExecCommand(const char * command_line);
     static int TextEditCallbackStub(ImGuiTextEditCallbackData * data);

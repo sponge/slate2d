@@ -41,6 +41,8 @@ enum {
 	EDIT_NUM,
 	EDIT_STRING,
 	EDIT_BOOL,
+	EDIT_LIST,
+	EDIT_RANGE,
 	EDIT_NULL
 };
 
@@ -57,6 +59,9 @@ static void renderEditor(WrenVM *vm) {
 	static const size_t newStrSz = 64;
 	static char newStr[64];
 	static bool newBool;
+	static int listSize;
+	static int rangeFrom, rangeTo;
+	static bool rangeInclusive;
 
 	if (ImGui::BeginPopup("setvalue")) {
 		assert(selectedVal != nullptr);
@@ -64,7 +69,7 @@ static void renderEditor(WrenVM *vm) {
 		bool submitted = false;
 
 		ImGui::PushItemWidth(75.0);
-		ImGui::Combo("", &selectedType, "Num\0String\0Bool\0Null\0\0");
+		ImGui::Combo("", &selectedType, "Num\0String\0Bool\0List\0Range\0Null\0\0");
 		ImGui::PopItemWidth();
 
 		ImGui::SameLine();
@@ -73,47 +78,91 @@ static void renderEditor(WrenVM *vm) {
 			ImGui::SetKeyboardFocusHere(1);
 		}
 
-		if (selectedType == EDIT_NUM) {
-			submitted = ImGui::InputText("###Num", newStr, newStrSz, ImGuiInputTextFlags_EnterReturnsTrue|ImGuiInputTextFlags_CharsDecimal);
-		}
-		else if (selectedType == EDIT_STRING) {
+		switch (selectedType) {
+		case EDIT_NUM:
+			submitted = ImGui::InputText("###Num", newStr, newStrSz, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CharsDecimal);
+			break;
+		case EDIT_STRING:
 			submitted = ImGui::InputText("###String", newStr, newStrSz, ImGuiInputTextFlags_EnterReturnsTrue);
-		}
-		else if (selectedType == EDIT_BOOL) {
+			break;
+
+		case EDIT_BOOL:
 			ImGui::Checkbox("###Bool", &newBool);
 			ImGui::SameLine();
 			submitted = ImGui::Button("OK");
-		}
-		else if (selectedType == EDIT_NULL) {
+			break;
+
+		case EDIT_LIST:
+			ImGui::PushItemWidth(48);
+			submitted = ImGui::InputInt("Size", &listSize, 0, 0, ImGuiInputTextFlags_EnterReturnsTrue);
+			ImGui::PopItemWidth();
+			break;
+
+		case EDIT_RANGE:
+			ImGui::PushItemWidth(32);
+			ImGui::InputInt("From", &rangeFrom, 0);
+			ImGui::SameLine();
+			ImGui::InputInt("To", &rangeTo, 0);
+			ImGui::SameLine();
+			ImGui::PopItemWidth();
+			ImGui::Checkbox("Inclusive", &rangeInclusive);
 			ImGui::SameLine();
 			submitted = ImGui::Button("OK");
+			break;
+
+		case EDIT_NULL:
+			ImGui::SameLine();
+			submitted = ImGui::Button("OK");
+			break;
 		}
+
 
 		ImGui::SameLine();
 
 		if (submitted) {
 			Value newVal;
-			if (selectedType == EDIT_NUM) {
+			switch (selectedType) {
+			case EDIT_NUM: {
 				double dbl = atof(newStr);
 				newVal = NUM_VAL(dbl);
-			}
-			else if (selectedType == EDIT_STRING) {
-				newVal = wrenNewString(vm, newStr);
-			}
-			else if (selectedType == EDIT_BOOL) {
-				newVal = BOOL_VAL(newBool);
-			}
-			else {
-				newVal = NULL_VAL;
+				break;
 			}
 
-			newStr[0] = '\0';
-			newBool = false;
+			case EDIT_STRING:
+				newVal = wrenNewString(vm, newStr);
+				break;
+
+			case EDIT_BOOL:
+				newVal = BOOL_VAL(newBool);
+				break;
+
+			case EDIT_LIST: {
+				ObjList *list = wrenNewList(vm, listSize);
+				newVal = OBJ_VAL(list);
+				for (int i = 0; i < list->elements.count; i++) {
+					list->elements.data[i] = NULL_VAL;
+				}
+				break;
+			}
+				
+			case EDIT_RANGE:
+				newVal = wrenNewRange(vm, rangeFrom, rangeTo, rangeInclusive);
+				break;
+
+			default:
+			case EDIT_NULL:
+				newVal = NULL_VAL;
+				break;
+			}
 
 			*selectedVal = newVal;
-			selectedVal = nullptr;
-
 			ImGui::CloseCurrentPopup();
+
+			selectedVal = nullptr;
+			newStr[0] = '\0';
+			newBool = rangeInclusive = false;
+			rangeFrom = rangeTo = listSize = 0;
+
 		}
 
 		ImGui::EndPopup();

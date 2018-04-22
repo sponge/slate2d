@@ -9,7 +9,7 @@ extern "C" {
 
 // prototypes
 static ClassInfo *findClass(WrenVM* vm, ObjClass *cl);
-static bool renderValue(WrenVM *vm, const char *name, Value value, bool enableClick = false);
+static void renderValue(WrenVM *vm, const char *name, Value &value);
 static void renderInstance(WrenVM *vm, Value value);
 
 // colors for imgui
@@ -44,16 +44,23 @@ enum {
 	EDIT_NULL
 };
 
-static int selectedFieldNum = -1;
+static Value *selectedVal = nullptr;
 static int selectedType = 0;
 
-static void renderEditor(WrenVM *vm, ObjInstance *instance) {
-	static float newFloat;
+static void openEditor(Value *value) {
+	selectedVal = value;
+	selectedType = IS_BOOL(*value) ? EDIT_BOOL : IS_STRING(*value) ? EDIT_STRING : IS_NULL(*value) ? EDIT_NULL : EDIT_NUM;
+	ImGui::OpenPopup("setvalue");
+}
+
+static void renderEditor(WrenVM *vm) {
 	static const size_t newStrSz = 64;
 	static char newStr[64];
 	static bool newBool;
 
 	if (ImGui::BeginPopup("setvalue")) {
+		assert(selectedVal != nullptr);
+
 		bool submitted = false;
 
 		ImGui::PushItemWidth(75.0);
@@ -67,37 +74,44 @@ static void renderEditor(WrenVM *vm, ObjInstance *instance) {
 		}
 
 		if (selectedType == EDIT_NUM) {
-			submitted = ImGui::InputFloat("###Float", &newFloat, 0, 0, -1, ImGuiInputTextFlags_EnterReturnsTrue);
+			submitted = ImGui::InputText("###Num", newStr, newStrSz, ImGuiInputTextFlags_EnterReturnsTrue|ImGuiInputTextFlags_CharsDecimal);
 		}
 		else if (selectedType == EDIT_STRING) {
 			submitted = ImGui::InputText("###String", newStr, newStrSz, ImGuiInputTextFlags_EnterReturnsTrue);
 		}
 		else if (selectedType == EDIT_BOOL) {
 			ImGui::Checkbox("###Bool", &newBool);
+			ImGui::SameLine();
+			submitted = ImGui::Button("OK");
+		}
+		else if (selectedType == EDIT_NULL) {
+			ImGui::SameLine();
+			submitted = ImGui::Button("OK");
 		}
 
 		ImGui::SameLine();
 
 		if (submitted) {
-			Value val;
+			Value newVal;
 			if (selectedType == EDIT_NUM) {
-				val = NUM_VAL(newFloat);
+				double dbl = atof(newStr);
+				newVal = NUM_VAL(dbl);
 			}
 			else if (selectedType == EDIT_STRING) {
-				val = wrenNewString(vm, newStr);
+				newVal = wrenNewString(vm, newStr);
 			}
 			else if (selectedType == EDIT_BOOL) {
-				val = BOOL_VAL(newBool);
+				newVal = BOOL_VAL(newBool);
 			}
 			else {
-				val = NULL_VAL;
+				newVal = NULL_VAL;
 			}
 
-			newFloat = 0;
 			newStr[0] = '\0';
 			newBool = false;
 
-			instance->fields[selectedFieldNum] = val;
+			*selectedVal = newVal;
+			selectedVal = nullptr;
 
 			ImGui::CloseCurrentPopup();
 		}
@@ -108,17 +122,17 @@ static void renderEditor(WrenVM *vm, ObjInstance *instance) {
 
 // basically a macro to setup the indention and formatting. the key is clickable
 // to popup the value editor
-static bool renderKey(const char *key, bool enableClick = false) {
-	bool clicked = false;
-
+static void renderKey(const char *key, Value *val = nullptr) {
 	ImGui::PushStyleColor(ImGuiCol_Button, { 0, 0, 0, 0 });
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.26f, 0.59f, 0.98f, 0.5f));
 	ImGui::PushStyleColor(ImGuiCol_Text, labelColor);
 
 	ImGui::TreeAdvanceToLabelPos();
 
-	if (enableClick) {
-		clicked = ImGui::SmallButton(key);
+	if (val != nullptr) {
+		if (ImGui::SmallButton(key)) {
+			openEditor(val);
+		}
 	}
 	else {
 		ImGui::Text(key);
@@ -126,7 +140,6 @@ static bool renderKey(const char *key, bool enableClick = false) {
 
 	ImGui::PopStyleColor(3);
 	ImGui::SameLine();
-	return clicked;
 }
 
 // map entries can only be string, numbers, class objects, bools, range, or null.
@@ -178,11 +191,10 @@ static void renderMethodBuffer(WrenVM *vm, MethodBuffer methods) {
 // render a field's value into imgui. this could be a switch except some types will
 // not cast to an object so just do it the old fashioned way. there's some recursion
 // here to handle items that will expand
-static bool renderValue(WrenVM *vm, const char *name, Value value, bool enableClick) {
-	bool keyClicked = false;
+static void renderValue(WrenVM *vm, const char *name, Value &value) {
 	if (IS_BOOL(value)) {
 		auto b = AS_BOOL(value);
-		keyClicked = renderKey(name, enableClick);
+		renderKey(name, &value);
 		ImGui::TextColored(valueColor, "%s", b ? "true" : "false");
 	}
 
@@ -192,35 +204,35 @@ static bool renderValue(WrenVM *vm, const char *name, Value value, bool enableCl
 		// create a nested tree node, and recurse over the children
 		bool treeActive = ImGui::TreeNode((const void*)value, "%s: (class %s)", name, c->name->value);
 		ImGui::PopStyleColor();
-		ImGui::PushStyleColor(ImGuiCol_Text, methodColor);
 		if (treeActive) {
+			ImGui::PushStyleColor(ImGuiCol_Text, methodColor);
 			renderMethodBuffer(vm, c->methods);
 			ImGui::TreePop();
+			ImGui::PopStyleColor();
 		}
-		ImGui::PopStyleColor();
 	}
 
 	else if (IS_CLOSURE(value)) {
-		auto cl = AS_CLOSURE(value);
-		keyClicked = renderKey(name, enableClick);
+		//auto cl = AS_CLOSURE(value);
+		renderKey(name, &value);
 		ImGui::TextColored(valueColor, "%s", "(closure)");
 	}
 
 	else if (IS_FIBER(value)) {
-		auto f = AS_FIBER(value);
-		keyClicked = renderKey(name, enableClick);
+		//auto f = AS_FIBER(value);
+		renderKey(name, &value);
 		ImGui::TextColored(valueColor, "%s", "(Fiber)");
 	}
 
 	else if (IS_FN(value)) {
 		auto fi = AS_FN(value);
-		keyClicked = renderKey(name, enableClick);
+		renderKey(name, &value);
 		ImGui::TextColored(valueColor, "(Fn arity %i)", fi->arity);
 	}
 
 	else if (IS_FOREIGN(value)) {
 		auto fo = AS_FOREIGN(value);
-		keyClicked = renderKey(name, enableClick);
+		renderKey(name, &value);
 		ImGui::TextColored(valueColor, "(foreign %s)", fo->obj.classObj->name->value);
 	}
 
@@ -228,47 +240,51 @@ static bool renderValue(WrenVM *vm, const char *name, Value value, bool enableCl
 		auto in = AS_INSTANCE(value);
 		ImGui::PushStyleColor(ImGuiCol_Text, treeColor);
 		// create a nested tree node, and recurse over the children
-		if (ImGui::TreeNode((const void*)value, "%s: %s", name, in->obj.classObj->name->value)) {
+		bool treeActive = ImGui::TreeNode((const void*)value, "%s: %s", name, in->obj.classObj->name->value);
+		ImGui::PopStyleColor();
+		if (treeActive) {
+			renderEditor(vm);
 			renderInstance(vm, value);
 			ImGui::TreePop();
 		}
-		ImGui::PopStyleColor();
 	}
 
 	else if (IS_NULL(value)) {
-		keyClicked = renderKey(name, enableClick);
+		renderKey(name, &value);
 		ImGui::TextColored(valueColor, "(null)");
 	}
 
 	else if (IS_UNDEFINED(value)) {
-		keyClicked = renderKey(name, enableClick);
+		renderKey(name, &value);
 		ImGui::TextColored(valueColor, "(undefined)");
 	}
 
 	else if (IS_NUM(value)) {
 		auto num = AS_NUM(value);
-		keyClicked = renderKey(name, enableClick);
+		renderKey(name, &value);
 		// %g is weird with printing scientific notation, but will not print decimals if it's a whole number
-		ImGui::TextColored(valueColor, (num == floorf(num)) ? "%g" : "%f", num);
+		ImGui::TextColored(valueColor, (num == floor(num)) ? "%g" : "%f", num);
 	}
 
 	else if (IS_MAP(value)) {
 		auto m = AS_MAP(value);
 		ImGui::PushStyleColor(ImGuiCol_Text, treeColor);
-		if (ImGui::TreeNode((const void*)value, "%s: Map", name)) {
+		bool treeActive = ImGui::TreeNode((const void*)value, "%s: Map", name);
+		ImGui::PopStyleColor();
+		if (treeActive) {
+			renderEditor(vm);
 			// loop through capacity and not count because map entries will be scattered
-			for (int i = 0; i < m->capacity; i++) {
+			for (uint32_t i = 0; i < m->capacity; i++) {
 				MapEntry *entry = &m->entries[i];
 				renderMapEntry(vm, entry);
 			}
 			ImGui::TreePop();
 		}
-		ImGui::PopStyleColor();
 	}
 
 	else if (IS_STRING(value)) {
 		auto str = AS_CSTRING(value);
-		keyClicked = renderKey(name, enableClick);
+		renderKey(name, &value);
 		ImGui::TextColored(valueColor, "\"%s\"", str);
 	}
 
@@ -276,7 +292,10 @@ static bool renderValue(WrenVM *vm, const char *name, Value value, bool enableCl
 		auto l = AS_LIST(value);
 		ImGui::PushStyleColor(ImGuiCol_Text, treeColor);
 		// print the list contents, and recurse 
-		if (ImGui::TreeNode((const void*)value, "%s: List (%i)", name, l->elements.count)) {
+		bool treeActive = ImGui::TreeNode((const void*)value, "%s: List (%i)", name, l->elements.count);
+		ImGui::PopStyleColor();
+		if (treeActive) {
+			renderEditor(vm);
 			for (int i = 0; i < l->elements.count; i++) {
 				char itemName[64] = "";
 				snprintf(itemName, 64, "%i", i);
@@ -284,16 +303,13 @@ static bool renderValue(WrenVM *vm, const char *name, Value value, bool enableCl
 			}
 			ImGui::TreePop();
 		}
-		ImGui::PopStyleColor();
 	}
 
 	else if (IS_RANGE(value)) {
 		auto range = AS_RANGE(value);
-		keyClicked = renderKey(name, enableClick);
+		renderKey(name, &value);
 		ImGui::TextColored(valueColor, "%g%s%g", range->from, range->isInclusive ? ".." : "...", range->to);
 	}
-
-	return keyClicked;
 }
 
 // take a value, loop through all it's methods, display them, loop through all of it's fields, and display them.
@@ -321,12 +337,8 @@ static void renderInstance(WrenVM *vm, Value value) {
 		ImGui::PopStyleColor();
 	}
 
-	renderEditor(vm, instance);
-
 	// loop through all the fields and print the value (mondo big function above)
 	for (int i = 0; i < obj->classObj->numFields; i++) {
-		Value field = instance->fields[i];
-
 		// iterate through class heiarchy in reverse until we find the right class for the
 		// field we are currently on. this is a hot path and seemingly pretty slow in debug.
 		int fieldsLeft = obj->classObj->numFields - i;
@@ -350,13 +362,7 @@ static void renderInstance(WrenVM *vm, Value value) {
 		const char *name = currentClass == nullptr ? "???" : currentClass->fields.data[fieldsLeft * -1].buffer;
 
 		// just pass the value into a big function that will go through types
-		bool keyClicked = renderValue(vm, name, field, true);
-
-		if (keyClicked) {
-			ImGui::OpenPopup("setvalue");
-			selectedFieldNum = i;
-			selectedType = IS_BOOL(field) ? EDIT_BOOL : IS_STRING(field) ? EDIT_STRING : IS_NULL(field) ? EDIT_NULL : EDIT_NUM;
-		}
+		renderValue(vm, name, instance->fields[i]);
 	}
 }
 
@@ -370,10 +376,12 @@ void inspect(WrenVM *vm, Value val) {
 	if (ImGui::Begin(windowTitle, nullptr, 0)) {
 		// if the top level object is an instance, don't draw a redundant node for it
 		if (obj->type == OBJ_INSTANCE) {
+			renderEditor(vm);
 			renderInstance(vm, val);
 		}
 		// just render the value (a list or a map is most common)
 		else {
+			renderEditor(vm);
 			renderValue(vm, obj->classObj->name->value, val);
 		}
 	}

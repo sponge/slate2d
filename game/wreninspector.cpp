@@ -8,15 +8,15 @@ extern "C" {
 #include <stdio.h>
 
 // prototypes
-ClassInfo *findClass(WrenVM* vm, ObjClass *cl);
-void renderValue(WrenVM *vm, const char *name, Value value);
-void renderInstance(WrenVM *vm, Value value);
+static ClassInfo *findClass(WrenVM* vm, ObjClass *cl);
+static bool renderValue(WrenVM *vm, const char *name, Value value, bool enableClick = false);
+static void renderInstance(WrenVM *vm, Value value);
 
 // colors for imgui
-static ImColor labelColor = ImColor(128, 128, 128);
-static ImColor valueColor = ImColor(255, 255, 255);
-static ImColor treeColor = ImColor(128, 255, 128);
-static ImColor methodColor = ImColor(255, 255, 0);
+static ImVec4 labelColor = (ImVec4) ImColor(128, 128, 128);
+static ImVec4 valueColor = (ImVec4) ImColor(255, 255, 255);
+static ImVec4 treeColor = (ImVec4) ImColor(128, 255, 128);
+static ImVec4 methodColor = (ImVec4) ImColor(255, 255, 0);
 
 // loop through our list of stored classes that we hacked out of the compiler
 // this could probably be improved by searching per module, or just storing
@@ -36,17 +36,100 @@ ClassInfo *findClass(WrenVM* vm, ObjClass *cl) {
 	return nullptr;
 }
 
-// basically a macro to setup the indention and formatting
-void renderKey(const char *key) {
+// value editor
+enum {
+	EDIT_NUM,
+	EDIT_STRING,
+	EDIT_BOOL,
+	EDIT_NULL
+};
+
+static int selectedFieldNum = -1;
+static int selectedType = 0;
+
+static void renderEditor(WrenVM *vm, ObjInstance *instance) {
+	static float newFloat;
+	static const size_t newStrSz = 64;
+	static char newStr[64];
+	static bool newBool;
+
+	if (ImGui::BeginPopup("setvalue")) {
+		bool submitted = false;
+
+		ImGui::PushItemWidth(75.0);
+		ImGui::Combo("", &selectedType, "Num\0String\0Bool\0Null\0\0");
+		ImGui::PopItemWidth();
+
+		ImGui::SameLine();
+
+		if (selectedType == EDIT_NUM) {
+			submitted = ImGui::InputFloat("###Float", &newFloat, 0, 0, -1, ImGuiInputTextFlags_EnterReturnsTrue);
+		}
+		else if (selectedType == EDIT_STRING) {
+			submitted = ImGui::InputText("###String", newStr, newStrSz, ImGuiInputTextFlags_EnterReturnsTrue);
+		}
+		else if (selectedType == EDIT_BOOL) {
+			ImGui::Checkbox("###Bool", &newBool);
+		}
+
+		if (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
+			ImGui::SetKeyboardFocusHere(1);
+		}
+
+		ImGui::SameLine();
+
+		submitted = submitted == false ? ImGui::Button("OK") : true;
+		if (submitted) {
+			Value val;
+			if (selectedType == EDIT_NUM) {
+				val = NUM_VAL(newFloat);
+			}
+			else if (selectedType == EDIT_STRING) {
+				val = wrenNewString(vm, newStr);
+			}
+			else if (selectedType == EDIT_BOOL) {
+				val = BOOL_VAL(newBool);
+			}
+			else {
+				val = NULL_VAL;
+			}
+
+			instance->fields[selectedFieldNum] = val;
+
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
+// basically a macro to setup the indention and formatting. the key is clickable
+// to popup the value editor
+static bool renderKey(const char *key, bool enableClick = false) {
+	bool clicked = false;
+
+	ImGui::PushStyleColor(ImGuiCol_Button, { 0, 0, 0, 0 });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.26f, 0.59f, 0.98f, 0.5f));
+	ImGui::PushStyleColor(ImGuiCol_Text, labelColor);
+
 	ImGui::TreeAdvanceToLabelPos();
-	ImGui::TextColored(labelColor, "%s:", key);
+
+	if (enableClick) {
+		clicked = ImGui::SmallButton(key);
+	}
+	else {
+		ImGui::Text(key);
+	}
+
+	ImGui::PopStyleColor(3);
 	ImGui::SameLine();
+	return clicked;
 }
 
 // map entries can only be string, numbers, class objects, bools, range, or null.
 // unused key entries will be undefined. this is mostly here to generate strings
 // out of keys, and is a simpler verion of renderValue
-void renderMapEntry(WrenVM *vm, MapEntry *entry) {
+static void renderMapEntry(WrenVM *vm, MapEntry *entry) {
 	if (IS_UNDEFINED(entry->key)) {
 		return;
 	}
@@ -79,7 +162,7 @@ void renderMapEntry(WrenVM *vm, MapEntry *entry) {
 }
 
 // render out a list of methods, used for Class values, and at the header of all Instance values
-void renderMethodBuffer(WrenVM *vm, MethodBuffer methods) {
+static void renderMethodBuffer(WrenVM *vm, MethodBuffer methods) {
 	for (int i = 0; i < methods.count; i++) {
 		Method *method = &methods.data[i];
 		if (method->type != METHOD_NONE && method->type != METHOD_PRIMITIVE) {
@@ -92,10 +175,11 @@ void renderMethodBuffer(WrenVM *vm, MethodBuffer methods) {
 // render a field's value into imgui. this could be a switch except some types will
 // not cast to an object so just do it the old fashioned way. there's some recursion
 // here to handle items that will expand
-void renderValue(WrenVM *vm, const char *name, Value value) {
+static bool renderValue(WrenVM *vm, const char *name, Value value, bool enableClick) {
+	bool keyClicked = false;
 	if (IS_BOOL(value)) {
 		auto b = AS_BOOL(value);
-		renderKey(name);
+		keyClicked = renderKey(name, enableClick);
 		ImGui::TextColored(valueColor, "%s", b ? "true" : "false");
 	}
 
@@ -115,25 +199,25 @@ void renderValue(WrenVM *vm, const char *name, Value value) {
 
 	else if (IS_CLOSURE(value)) {
 		auto cl = AS_CLOSURE(value);
-		renderKey(name);
+		keyClicked = renderKey(name, enableClick);
 		ImGui::TextColored(valueColor, "%s", "(closure)");
 	}
 
 	else if (IS_FIBER(value)) {
 		auto f = AS_FIBER(value);
-		renderKey(name);
+		keyClicked = renderKey(name, enableClick);
 		ImGui::TextColored(valueColor, "%s", "(Fiber)");
 	}
 
 	else if (IS_FN(value)) {
 		auto fi = AS_FN(value);
-		renderKey(name);
+		keyClicked = renderKey(name, enableClick);
 		ImGui::TextColored(valueColor, "(Fn arity %i)", fi->arity);
 	}
 
 	else if (IS_FOREIGN(value)) {
 		auto fo = AS_FOREIGN(value);
-		renderKey(name);
+		keyClicked = renderKey(name, enableClick);
 		ImGui::TextColored(valueColor, "(foreign %s)", fo->obj.classObj->name->value);
 	}
 
@@ -149,18 +233,18 @@ void renderValue(WrenVM *vm, const char *name, Value value) {
 	}
 
 	else if (IS_NULL(value)) {
-		renderKey(name);
+		keyClicked = renderKey(name, enableClick);
 		ImGui::TextColored(valueColor, "(null)");
 	}
 
 	else if (IS_UNDEFINED(value)) {
-		renderKey(name);
+		keyClicked = renderKey(name, enableClick);
 		ImGui::TextColored(valueColor, "(undefined)");
 	}
 
 	else if (IS_NUM(value)) {
 		auto num = AS_NUM(value);
-		renderKey(name);
+		keyClicked = renderKey(name, enableClick);
 		// %g is weird with printing scientific notation, but will not print decimals if it's a whole number
 		ImGui::TextColored(valueColor, (num == floorf(num)) ? "%g" : "%f", num);
 	}
@@ -181,7 +265,7 @@ void renderValue(WrenVM *vm, const char *name, Value value) {
 
 	else if (IS_STRING(value)) {
 		auto str = AS_CSTRING(value);
-		renderKey(name);
+		keyClicked = renderKey(name, enableClick);
 		ImGui::TextColored(valueColor, "\"%s\"", str);
 	}
 
@@ -202,14 +286,16 @@ void renderValue(WrenVM *vm, const char *name, Value value) {
 
 	else if (IS_RANGE(value)) {
 		auto range = AS_RANGE(value);
-		renderKey(name);
+		keyClicked = renderKey(name, enableClick);
 		ImGui::TextColored(valueColor, "%g%s%g", range->from, range->isInclusive ? ".." : "...", range->to);
 	}
+
+	return keyClicked;
 }
 
 // take a value, loop through all it's methods, display them, loop through all of it's fields, and display them.
 // this can be recursively called from renderValue, but it's typically also the start of looping through something.
-void renderInstance(WrenVM *vm, Value value) {
+static void renderInstance(WrenVM *vm, Value value) {
 	ObjInstance *instance = AS_INSTANCE(value);
 	Obj *obj = &instance->obj;
 	
@@ -231,6 +317,8 @@ void renderInstance(WrenVM *vm, Value value) {
 		}
 		ImGui::PopStyleColor();
 	}
+
+	renderEditor(vm, instance);
 
 	// loop through all the fields and print the value (mondo big function above)
 	for (int i = 0; i < obj->classObj->numFields; i++) {
@@ -259,29 +347,35 @@ void renderInstance(WrenVM *vm, Value value) {
 		const char *name = currentClass == nullptr ? "???" : currentClass->fields.data[fieldsLeft * -1].buffer;
 
 		// just pass the value into a big function that will go through types
-		renderValue(vm, name, field);
+		bool keyClicked = renderValue(vm, name, field, true);
+
+		if (keyClicked) {
+			ImGui::OpenPopup("setvalue");
+			selectedFieldNum = i;
+			selectedType = IS_BOOL(field) ? EDIT_BOOL : IS_STRING(field) ? EDIT_STRING : IS_NULL(field) ? EDIT_NULL : EDIT_NUM;
+		}
 	}
 }
 
 void inspect(WrenVM *vm, Value val) {
 	Obj *obj = AS_OBJ(val);
 
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImColor(0, 0, 0, 255));
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 255));
 
 	char windowTitle[64] = "";
 	snprintf(windowTitle, 64, "%s (%p)", obj->classObj->name->value, obj);
-	ImGui::Begin(windowTitle, nullptr, 0);
-
-	// if the top level object is an instance, don't draw a redundant node for it
-	if (obj->type == OBJ_INSTANCE) {
-		renderInstance(vm, val);
+	if (ImGui::Begin(windowTitle, nullptr, 0)) {
+		// if the top level object is an instance, don't draw a redundant node for it
+		if (obj->type == OBJ_INSTANCE) {
+			renderInstance(vm, val);
+		}
+		// just render the value (a list or a map is most common)
+		else {
+			renderValue(vm, obj->classObj->name->value, val);
+		}
 	}
-	// just render the value (a list or a map is most common)
-	else {
-		renderValue(vm, obj->classObj->name->value, val);
-	}
-
 	ImGui::End();
+
 	ImGui::PopStyleColor();
 }
 

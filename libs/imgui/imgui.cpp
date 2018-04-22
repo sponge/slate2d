@@ -10520,12 +10520,7 @@ bool ImGui::InputScalarEx(const char* label, ImGuiDataType data_type, void* data
         extra_flags |= ImGuiInputTextFlags_CharsDecimal;
     extra_flags |= ImGuiInputTextFlags_AutoSelectAll;
 	if (InputText("", buf, IM_ARRAYSIZE(buf), extra_flags)) { // PushId(label) + "" gives us the expected ID from outside point of view
-		if ((extra_flags & ImGuiInputTextFlags_EnterReturnsTrue) != 0) {
-			value_changed = true;
-		}
-		else {
-			value_changed = DataTypeApplyOpFromText(buf, GImGui->InputTextState.InitialText.begin(), data_type, data_ptr, scalar_format);
-		}
+		value_changed = DataTypeApplyOpFromText(buf, GImGui->InputTextState.InitialText.begin(), data_type, data_ptr, scalar_format);
 	}
 
     // Step buttons

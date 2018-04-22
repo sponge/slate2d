@@ -93,6 +93,10 @@ static void renderEditor(WrenVM *vm, ObjInstance *instance) {
 				val = NULL_VAL;
 			}
 
+			newFloat = 0;
+			newStr[0] = '\0';
+			newBool = false;
+
 			instance->fields[selectedFieldNum] = val;
 
 			ImGui::CloseCurrentPopup();

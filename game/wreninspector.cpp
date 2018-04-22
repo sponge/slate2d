@@ -62,6 +62,10 @@ static void renderEditor(WrenVM *vm, ObjInstance *instance) {
 
 		ImGui::SameLine();
 
+		if (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
+			ImGui::SetKeyboardFocusHere(1);
+		}
+
 		if (selectedType == EDIT_NUM) {
 			submitted = ImGui::InputFloat("###Float", &newFloat, 0, 0, -1, ImGuiInputTextFlags_EnterReturnsTrue);
 		}
@@ -72,13 +76,8 @@ static void renderEditor(WrenVM *vm, ObjInstance *instance) {
 			ImGui::Checkbox("###Bool", &newBool);
 		}
 
-		if (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
-			ImGui::SetKeyboardFocusHere(1);
-		}
-
 		ImGui::SameLine();
 
-		submitted = submitted == false ? ImGui::Button("OK") : true;
 		if (submitted) {
 			Value val;
 			if (selectedType == EDIT_NUM) {

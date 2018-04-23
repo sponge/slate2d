@@ -26,7 +26,6 @@ class Entity {
    
    construct new(world, obj, x, y, w, h) {
       _world = world
-      _trigger = false
       _active = true
       _x = x
       _y = y

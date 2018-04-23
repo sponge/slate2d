@@ -15,6 +15,7 @@ import "ent/movingplatform" for MovingPlatform
 import "ent/fallingplatform" for FallingPlatform
 import "ent/cannon" for Cannon
 import "ent/spike" for Spike
+import "ent/walker" for Walker
 
 class Level {
    w { _w }
@@ -91,6 +92,7 @@ class World {
    level { _level }
    coins { _coins }
    coins=(c) { _coins = c }
+   gravity { _gravity }
    totalCoins { _totalCoins }
    totalCoins=(c) { _totalCoins = c }
    player { _player }
@@ -107,6 +109,7 @@ class World {
       _coins = 0
       _totalCoins = 0
       _ticks = 0
+      _gravity = 0.1875
       _cam = Camera.new(8, 8, 320, 180)
       _cam.constrain(0, 0, _level.maxX, _level.maxY)
       
@@ -121,7 +124,8 @@ class World {
          "Spring": Spring,
          "Spike": Spike,
          "Cannon": Cannon,
-         "Flamethrower": Flamethrower
+         "Flamethrower": Flamethrower,
+         "Walker": Walker
       }
 
       for (obj in objects) {

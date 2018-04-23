@@ -19,7 +19,7 @@ class CollisionPool {
       __max = 16
 
       for (i in 1..__max) {
-         __pool.add(Collision.new(0, null, 0))
+         __pool.add(Collision.new(0, null, 0, 0))
       }
    }
    
@@ -45,17 +45,19 @@ class TriggerInfo {
 // storage class for collision. don't alloc these directly, use CollisionPool
 class Collision {
    delta { _delta }
+   t { _t }
    entity { _entity }
    entity=(e) { _entity = e }
    side { _side }
    triggers { _triggers }
 
-   construct new(delta, entity, side) {
-      set(delta, entity, side)
+   construct new(delta, entity, side, t) {
+      set(delta, entity, side, t)
    }
 
    clear() {
       _delta = 0
+      _t = 0
       _entity = null
       _side = 0
       _triggers = []
@@ -93,10 +95,11 @@ class Collision {
       return false
    }
 
-   set(delta, entity, side) {
+   set(delta, entity, side, t) {
       _delta = delta
       _entity = entity
       _side = side
+      _t = t
 
       return this
    }

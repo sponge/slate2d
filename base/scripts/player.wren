@@ -44,8 +44,8 @@ class Player is Entity {
       _runSpeed = 1.125
       _maxSpeed = 1.5
       _pMeterCapacity = 112
-      _heldGravity = 0.09375
-      _gravity = 0.1875
+      _heldGravity = world.gravity / 2
+      _gravity = world.gravity
       _earlyJumpFrames = 6
       _lateJumpFrames = 6
       _terminalVelocity = 2
@@ -206,7 +206,7 @@ class Player is Entity {
          triggerTouch(chkx)
 
          // if we hit either direction in x, stop momentum
-         if (chkx.delta != dx) {
+         if (chkx.t < 1.0) {
             dx = 0
          }
       }
@@ -218,7 +218,7 @@ class Player is Entity {
       if (chky.side == Dir.Up && chky.triggerHas(Cannonball)) {
          dy = jumpPress ? -_enemyJumpHeld : -_enemyJump
          _jumpHeld = jumpPress
-      } else if (chky.delta != dy) {
+      } else if (chky.t < 1.0) {
          // either dir, nullify y movement
          dy = 0
       }

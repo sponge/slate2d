@@ -1,6 +1,6 @@
 import "math" for Math
 import "collision" for CollisionPool, Dim, Dir
-import "engine" for Draw
+import "engine" for Draw, Trap
 import "debug" for Debug
 
 class Entity {
@@ -91,14 +91,14 @@ class Entity {
 
    // one place to try moving through the world. checks tiles in the way, and all entities
    // probably want some sort of spatial partitioning eventually, but rect intersects are cheap
-   check(dim, d) {
-      var dir = dim == Dim.H ? (d > 0 ? Dir.Right : Dir.Left) : (d > 0 ? Dir.Up : Dir.Down)
-      d = _world.tileCollider.query(_x, _y, _w, _h, dim, d, resolve)
+   check(dim, wishAmt) {
+      var dir = dim == Dim.H ? (wishAmt > 0 ? Dir.Right : Dir.Left) : (wishAmt > 0 ? Dir.Up : Dir.Down)
+      var d = _world.tileCollider.query(_x, _y, _w, _h, dim, wishAmt, resolve)
 
       var colInfo = CollisionPool.get()
 
       if (d == 0) {
-         return colInfo.set(d, null, dir)
+         return colInfo.set(d, null, dir, 0)
       }
 
       var collideEnt = null
@@ -122,7 +122,7 @@ class Entity {
 
       colInfo.filterTriggers(d)
 
-      return colInfo.set(d, collideEnt, dir)
+      return colInfo.set(d, collideEnt, dir, d / wishAmt)
    }
 
    // called from subclassed entities when you want to activate all entities
@@ -137,13 +137,9 @@ class Entity {
       }
    }
 
-   drawSprite(id, x, y) {
-      Draw.sprite(world.spr, id, x, y)
-   }
-
-   drawSprite(id, x, y, alpha) {
-      Draw.sprite(world.spr, id, x, y, alpha)
-   }
+   drawSprite(id, x, y) { Draw.sprite(world.spr, id, x, y) }
+   drawSprite(id, x, y, alpha) { Draw.sprite(world.spr, id, x, y, alpha) }
+   drawSprite(id, x, y, alpha, scale, flipBits) { Draw.sprite(world.spr, id, x, y, alpha, scale, flipBits) }
 
    // return true or false based on if the receiving entity wants to collide this frame
    canCollide(other, side, d){ true } 

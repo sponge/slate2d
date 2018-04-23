@@ -11,7 +11,8 @@ class Trap {
    foreign static keyActive(key)
    foreign static keyPressed(key, delay, repeat)
    foreign static mousePosition()
-   foreign static inspect(obj)
+   foreign static inspect(obj, title)
+   static inspect(obj) { inspect(obj, null) }
 }
 
 class Button {

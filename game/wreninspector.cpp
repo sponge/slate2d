@@ -436,8 +436,6 @@ static void renderInstance(WrenVM *vm, Value value) {
 void inspect(WrenVM *vm, Value val, const char *title = nullptr) {
 	Obj *obj = AS_OBJ(val);
 
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 255));
-
 	if (title == nullptr) {
 		char windowTitle[64] = "";
 		snprintf(windowTitle, 64, "%s (%p)", obj->classObj->name->value, obj);
@@ -457,8 +455,6 @@ void inspect(WrenVM *vm, Value val, const char *title = nullptr) {
 		}
 	}
 	ImGui::End();
-
-	ImGui::PopStyleColor();
 }
 
 void wren_trap_inspect(WrenVM *vm) {

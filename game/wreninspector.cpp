@@ -251,7 +251,7 @@ static void renderValue(WrenVM *vm, const char *name, Value &value) {
 		auto c = AS_CLASS(value);
 		ImGui::PushStyleColor(ImGuiCol_Text, treeColor);
 		// create a nested tree node, and recurse over the children
-		bool treeActive = ImGui::TreeNode((const void*)value, "%s: (class %s)", name, c->name->value);
+		bool treeActive = ImGui::TreeNode(name, "%s: (class %s)", name, c->name->value);
 		ImGui::PopStyleColor();
 		if (treeActive) {
 			if (ImGui::SmallButton("Edit")) {
@@ -295,7 +295,7 @@ static void renderValue(WrenVM *vm, const char *name, Value &value) {
 		auto in = AS_INSTANCE(value);
 		ImGui::PushStyleColor(ImGuiCol_Text, treeColor);
 		// create a nested tree node, and recurse over the children
-		bool treeActive = ImGui::TreeNode((const void*)value, "%s: %s", name, in->obj.classObj->name->value);
+		bool treeActive = ImGui::TreeNode(name, "%s: %s", name, in->obj.classObj->name->value);
 		ImGui::PopStyleColor();
 		if (treeActive) {
 			if (ImGui::SmallButton("Edit")) {
@@ -327,7 +327,7 @@ static void renderValue(WrenVM *vm, const char *name, Value &value) {
 	else if (IS_MAP(value)) {
 		auto m = AS_MAP(value);
 		ImGui::PushStyleColor(ImGuiCol_Text, treeColor);
-		bool treeActive = ImGui::TreeNode((const void*)value, "%s: Map", name);
+		bool treeActive = ImGui::TreeNode(name, "%s: Map", name);
 		ImGui::PopStyleColor();
 
 		if (treeActive) {
@@ -355,7 +355,7 @@ static void renderValue(WrenVM *vm, const char *name, Value &value) {
 		auto l = AS_LIST(value);
 		ImGui::PushStyleColor(ImGuiCol_Text, treeColor);
 		// print the list contents, and recurse 
-		bool treeActive = ImGui::TreeNode((const void*)value, "%s: List (%i)", name, l->elements.count);
+		bool treeActive = ImGui::TreeNode(name, "%s: List (%i)", name, l->elements.count);
 		ImGui::PopStyleColor();
 
 		if (treeActive) {
@@ -433,14 +433,18 @@ static void renderInstance(WrenVM *vm, Value value) {
 	}
 }
 
-void inspect(WrenVM *vm, Value val) {
+void inspect(WrenVM *vm, Value val, const char *title = nullptr) {
 	Obj *obj = AS_OBJ(val);
 
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 255));
 
-	char windowTitle[64] = "";
-	snprintf(windowTitle, 64, "%s (%p)", obj->classObj->name->value, obj);
-	if (ImGui::Begin(windowTitle, nullptr, 0)) {
+	if (title == nullptr) {
+		char windowTitle[64] = "";
+		snprintf(windowTitle, 64, "%s (%p)", obj->classObj->name->value, obj);
+		title = windowTitle;
+	}
+
+	if (ImGui::Begin(title, nullptr, 0)) {
 		// if the top level object is an instance, don't draw a redundant node for it
 		if (obj->type == OBJ_INSTANCE) {
 			renderInstance(vm, val);
@@ -459,6 +463,9 @@ void inspect(WrenVM *vm, Value val) {
 
 void wren_trap_inspect(WrenVM *vm) {
 	Value val = vm->apiStack[1];
+	Value title = vm->apiStack[2];
+
+	const char *windowTitle = IS_STRING(title) ? AS_CSTRING(title) : nullptr;
 
 	if (!IS_OBJ(val)) {
 		ImGui::Begin("Inspect Error", nullptr, 0);
@@ -467,5 +474,5 @@ void wren_trap_inspect(WrenVM *vm) {
 		return;
 	}
 
-	inspect(vm, val);
+	inspect(vm, val, windowTitle);
 }

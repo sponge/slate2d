@@ -207,7 +207,7 @@ class World {
          if (ent.active) {
             ent.think(1/60)
 
-            if (ent.y > level.maxY + 50) {
+            if (ent.y > level.maxY + 10) {
                ent.die("world")
             }
          }

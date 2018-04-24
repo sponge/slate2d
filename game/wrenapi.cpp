@@ -105,8 +105,8 @@ void wren_trap_mouse_position(WrenVM *vm) {
 	wrenSetSlotDouble(vm, 1, mousePos.x);
 	wrenSetSlotDouble(vm, 2, mousePos.y);
 
-	wrenInsertInList(vm, 0, 0, 1);
-	wrenInsertInList(vm, 0, 0, 2);
+	wrenInsertInList(vm, 0, -1, 1);
+	wrenInsertInList(vm, 0, -1, 2);
 }
 
 extern void wren_trap_inspect(WrenVM *vm);

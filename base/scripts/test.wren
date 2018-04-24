@@ -35,6 +35,7 @@ class Title {
       _testMap2["thing"] = "thing2"
       _testClass = Player
       _testClass2 = Trap
+      _mouseCoords = null
 
       Trap.sndPlay(_music, 1.0, 0.0, true)
       //Trap.sndPlay(_speech, 1.0, 0.0, false)
@@ -72,6 +73,8 @@ class Title {
       }
 
       _time = _time + dt
+
+      _mouseCoords = Trap.mousePosition()
 
       Trap.printWin("update only print", "key", 123)
       _rndNum = _rnd.int()

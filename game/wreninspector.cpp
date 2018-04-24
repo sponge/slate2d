@@ -80,14 +80,14 @@ static void renderEditor(WrenVM *vm) {
 
 		switch (selectedType) {
 		case EDIT_NUM:
-			submitted = ImGui::InputText("###Num", newStr, newStrSz, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CharsDecimal);
+			submitted = ImGui::InputText("##Num", newStr, newStrSz, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CharsDecimal);
 			break;
 		case EDIT_STRING:
-			submitted = ImGui::InputText("###String", newStr, newStrSz, ImGuiInputTextFlags_EnterReturnsTrue);
+			submitted = ImGui::InputText("##String", newStr, newStrSz, ImGuiInputTextFlags_EnterReturnsTrue);
 			break;
 
 		case EDIT_BOOL:
-			ImGui::Checkbox("###Bool", &newBool);
+			ImGui::Checkbox("##Bool", &newBool);
 			ImGui::SameLine();
 			submitted = ImGui::Button("OK");
 			break;
@@ -433,26 +433,18 @@ static void renderInstance(WrenVM *vm, Value value) {
 	}
 }
 
-void inspect(WrenVM *vm, Value val, const char *title = nullptr) {
+void inspect(WrenVM *vm, Value &val, const char *rootTitle, const char *windowTitle = nullptr) {
 	Obj *obj = AS_OBJ(val);
 
-	if (title == nullptr) {
-		char windowTitle[64] = "";
-		snprintf(windowTitle, 64, "%s (%p)", obj->classObj->name->value, obj);
-		title = windowTitle;
+	if (windowTitle == nullptr) {
+		windowTitle = "Inspector";
 	}
 
-	if (ImGui::Begin(title, nullptr, 0)) {
-		// if the top level object is an instance, don't draw a redundant node for it
-		if (obj->type == OBJ_INSTANCE) {
-			renderInstance(vm, val);
-			renderEditor(vm);
-		}
-		// just render the value (a list or a map is most common)
-		else {
-			renderValue(vm, obj->classObj->name->value, val);
-			renderEditor(vm);
-		}
+	if (ImGui::Begin(windowTitle, nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
+		ImGui::PushID((void*)obj);
+		renderValue(vm, rootTitle, val);
+		renderEditor(vm);
+		ImGui::PopID();
 	}
 	ImGui::End();
 }
@@ -463,12 +455,30 @@ void wren_trap_inspect(WrenVM *vm) {
 
 	const char *windowTitle = IS_STRING(title) ? AS_CSTRING(title) : nullptr;
 
+	char nodeTitle[64] = "";
+
+	ObjFiber* fiber = vm->fiber;
+	// grab module info for title (adapted from wrenDebugPrintStackTrace);
+	for (int i = fiber->numFrames - 2; i >= 0; i--)
+	{
+		CallFrame* frame = &fiber->frames[i];
+		ObjFn* fn = frame->closure->fn;
+		if (fn->module == NULL) continue;
+		if (fn->module->name == NULL) continue;
+
+		// -1 because IP has advanced past the instruction that it just executed.
+		int line = fn->debug->sourceLines.data[frame->ip - fn->code.data - 1];
+		const char *moduleName = fn->module->name->value;
+		snprintf(nodeTitle, 64, "%s:%i", moduleName, line);
+		break;
+	}
+
 	if (!IS_OBJ(val)) {
-		ImGui::Begin("Inspect Error", nullptr, 0);
-		ImGui::Text("Cannot inspect primitive types.");
+		ImGui::Begin(windowTitle == nullptr ? "Inspector" : windowTitle, nullptr, ImGuiWindowFlags_HorizontalScrollbar);
+		ImGui::Text("%s: Can't inspect primitive types.", nodeTitle);
 		ImGui::End();
 		return;
 	}
 
-	inspect(vm, val, windowTitle);
+	inspect(vm, val, nodeTitle, windowTitle);
 }

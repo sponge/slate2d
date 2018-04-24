@@ -46,7 +46,7 @@ class Walker is Entity {
    }
 
    draw(t) {
-      Trap.inspect(this, "walker")
+      Trap.inspect(this)
       var offset = world.ticks / 8 % 2
       drawSprite(284 + offset, x, y, 1, 1, _flipped == 1 ? 1 : 0)
    }

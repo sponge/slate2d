@@ -91,8 +91,6 @@ class MovingPlatform is Entity {
 
       // subtract our distance remaining
       _dist = _dist - _d.abs
-
-      // Debug.text("p", "%(x),%(y) %(_dist)s")
    }
 
    draw(t) {

@@ -49,8 +49,6 @@ class Camera {
       _x = Math.max(_x, 0)
       _y = Math.max(_y, 0)
 
-      //Debug.text("cam", "%(_x) %(_y)")
-
       var tx = (_x / _tw).floor
       var ty = (_y / _th).floor
 

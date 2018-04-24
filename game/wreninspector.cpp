@@ -434,17 +434,21 @@ static void renderInstance(WrenVM *vm, Value value) {
 }
 
 void inspect(WrenVM *vm, Value &val, const char *rootTitle, const char *windowTitle = nullptr) {
-	Obj *obj = AS_OBJ(val);
-
 	if (windowTitle == nullptr) {
 		windowTitle = "Inspector";
 	}
 
 	if (ImGui::Begin(windowTitle, nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
-		ImGui::PushID((void*)obj);
-		renderValue(vm, rootTitle, val);
-		renderEditor(vm);
-		ImGui::PopID();
+		if (IS_OBJ(val)) {
+			Obj *obj = AS_OBJ(val);
+			ImGui::PushID((void*)obj);
+			renderValue(vm, rootTitle, val);
+			renderEditor(vm);
+			ImGui::PopID();
+		}
+		else {
+			ImGui::Text("%s: Can't inspect primitive types.", rootTitle);
+		}
 	}
 	ImGui::End();
 }
@@ -471,13 +475,6 @@ void wren_trap_inspect(WrenVM *vm) {
 		const char *moduleName = fn->module->name->value;
 		snprintf(nodeTitle, 64, "%s:%i", moduleName, line);
 		break;
-	}
-
-	if (!IS_OBJ(val)) {
-		ImGui::Begin(windowTitle == nullptr ? "Inspector" : windowTitle, nullptr, ImGuiWindowFlags_HorizontalScrollbar);
-		ImGui::Text("%s: Can't inspect primitive types.", nodeTitle);
-		ImGui::End();
-		return;
 	}
 
 	inspect(vm, val, nodeTitle, windowTitle);

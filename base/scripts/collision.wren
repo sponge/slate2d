@@ -85,9 +85,13 @@ class Collision {
    // returns true if the specified ent class is one that the collision ran into
    // should probably use properties or some sort of ECS-esque system but this
    // works good enough
-   triggerHas(classname) {
+   entHas(prop) {
+      return _entity && _entity.hasProp(prop)
+   }
+
+   triggerHas(prop) {
       for (t in _triggers) {
-         if (t.entity is classname) {
+         if (t.entity.hasProp(prop)) {
             return true
          }
       }

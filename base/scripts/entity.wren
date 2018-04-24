@@ -1,6 +1,6 @@
 import "math" for Math
 import "collision" for CollisionPool, Dim, Dir
-import "engine" for Draw, Trap
+import "engine" for Draw
 import "debug" for Debug
 
 class Entity {
@@ -18,6 +18,7 @@ class Entity {
    dy=(dy) { _dy = dy }
    active { _active }
    active=(a) { _active = a }
+   props { _props }
 
    isPlayer { false }
    world { _world }
@@ -27,6 +28,8 @@ class Entity {
    construct new(world, obj, x, y, w, h) {
       _world = world
       _active = true
+      _props = {}
+
       _x = x
       _y = y
       _w = w
@@ -136,6 +139,11 @@ class Entity {
       }
    }
 
+   // used as a simple way to reuse behavior across entities
+   hasProp(prop) {
+      return _props[prop] == null || _props[prop] == false ? false : true
+   }
+
    drawSprite(id, x, y) { Draw.sprite(world.spr, id, x, y) }
    drawSprite(id, x, y, alpha) { Draw.sprite(world.spr, id, x, y, alpha) }
    drawSprite(id, x, y, alpha, scale, flipBits) { Draw.sprite(world.spr, id, x, y, alpha, scale, flipBits) }
@@ -148,6 +156,8 @@ class Entity {
    platform { false }
    // called when another entity collides with you
    touch(other, side){}
+   // called when entity dies, by player or any other reason (world)
+   die(cause) { _active = false }
    // called every frame
    think(dt){}
    draw(t){}

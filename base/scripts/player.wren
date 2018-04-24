@@ -6,8 +6,6 @@ import "timer" for Timer
 import "math" for Math
 import "collision" for Dim, Dir
 
-import "ent/spring" for Spring
-import "ent/cannonball" for Cannonball
 import "ent/stunshot" for StunShot
 
 class Player is Entity {
@@ -69,7 +67,9 @@ class Player is Entity {
       _dieSound = Asset.create(Asset.Sound, "player_die", "sound/die.wav")
    }
 
-   die() {
+   die(cause) {
+      super(cause)
+      _health = 0
       Trap.sndStop(_jumpHnd)
       Trap.sndPlay(_dieSound)
       world.playerDied(this)
@@ -77,6 +77,10 @@ class Player is Entity {
 
    hurt(other, amount) {
       if (world.ticks < _invulnTime) {
+         return
+      }
+
+      if (world.levelWon) {
          return
       }
 
@@ -118,7 +122,7 @@ class Player is Entity {
          _groundEnt.think(dt)
          // Debug.text("player", "y+h", y+h)
          // Debug.text("player", "platy", _groundEnt.y)
-         if (_groundEnt is Spring) {
+         if (_groundEnt.hasProp("spring")) {
             // this will kill the ability to jump too, even if the spring isn't ready to activate yet
             dy = _groundEnt.checkSpring()
             _grounded = false
@@ -200,7 +204,7 @@ class Player is Entity {
 
       // move x first, then move y. don't do it at the same time, else buggy behavior
       var chkx = null
-      if (_groundEnt is Spring == false) {
+      if (!_groundEnt || _groundEnt.hasProp("spring") == false) {
          var chkx = check(Dim.H, dx)
          x = x + chkx.delta
          triggerTouch(chkx)
@@ -215,7 +219,7 @@ class Player is Entity {
       y = y + chky.delta
       triggerTouch(chky)
 
-      if (chky.side == Dir.Up && chky.triggerHas(Cannonball)) {
+      if (chky.side == Dir.Up && (chky.triggerHas("bouncy") || chky.entHas("bouncy"))) {
          dy = jumpPress ? -_enemyJumpHeld : -_enemyJump
          _jumpHeld = jumpPress
       } else if (chky.t < 1.0) {
@@ -233,11 +237,6 @@ class Player is Entity {
 
       // update camera
       world.cam.window(x, y, 20)
-
-      if (y > world.level.maxY) {
-         _health = 0
-         die()
-      }
 
       // Debug.text("player", "grnd", _groundEnt)
       // Debug.text("player", "entx", chkx != null ? chkx.entity : null)

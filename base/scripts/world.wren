@@ -200,9 +200,6 @@ class World {
 
    update(dt) {
       _ticks = _ticks + dt
-      // Debug.text("world", "time", _ticks)
-      // Debug.text("world", "ents", _entities.count)
-
       for (ent in _entities) {
          if (ent.active) {
             ent.think(1/60)

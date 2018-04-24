@@ -97,6 +97,7 @@ class World {
    totalCoins=(c) { _totalCoins = c }
    player { _player }
    spr { _spr }
+   levelWon { _levelWon }
    
    construct new(mapName) {
       _getTile = Fn.new { |x, y| _level.getTile(x, y) }
@@ -205,6 +206,10 @@ class World {
       for (ent in _entities) {
          if (ent.active) {
             ent.think(1/60)
+
+            if (ent.y > level.maxY + 50) {
+               ent.die("world")
+            }
          }
       }
 

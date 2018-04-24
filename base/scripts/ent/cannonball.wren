@@ -10,6 +10,8 @@ class Cannonball is Entity {
       dx = -0.5
       dy = 0
       _parent = null
+
+      props["bouncy"] = true
    }
 
    canCollide(other, side, d) { true }

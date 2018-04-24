@@ -9,6 +9,8 @@ class Walker is Entity {
       _flipped = -1
       _speed = 0.25
       _terminalVelocity = 2
+
+      props["bouncy"] = true
    }
 
    canCollide(other, side, d) { true }

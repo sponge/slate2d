@@ -16,6 +16,8 @@ class Spring is Entity {
       _delay = 3
       _activated = false
 
+      props["spring"] = true
+
       _sound = Asset.create(Asset.Sound, "spring", "sound/spring.wav")
    }
 

@@ -86,9 +86,9 @@ class Player is Entity {
 
       _health = _health - amount
       _invulnTime = world.ticks + 120
-
+      
       if (_health <= 0) {
-         die()
+         die(other)
       } else {
          Trap.sndStop(_jumpHnd)
          Trap.sndPlay(_hurtSound)

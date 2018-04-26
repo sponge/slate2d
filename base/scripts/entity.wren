@@ -157,7 +157,7 @@ class Entity {
    // called when another entity collides with you
    touch(other, side){}
    // called when entity dies, by player or any other reason (world)
-   die(cause) { _active = false }
+   die(other) { _active = false }
    // called every frame
    think(dt){}
    draw(t){}

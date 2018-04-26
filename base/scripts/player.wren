@@ -44,10 +44,11 @@ class Player is Entity {
       _pMeterCapacity = 112
       _heldGravity = world.gravity / 2
       _gravity = world.gravity
+      _earlyBounceFrames = 8
       _earlyJumpFrames = 6
       _lateJumpFrames = 6
       _terminalVelocity = 2
-      _enemyJumpHeld = 2.75
+      _enemyJumpHeld = 3.4
       _enemyJump = 1.9
       _jumpHeights = {
           1.5: 2.875,
@@ -126,7 +127,7 @@ class Player is Entity {
             // this will kill the ability to jump too, even if the spring isn't ready to activate yet
             dy = _groundEnt.checkSpring()
             _grounded = false
-            _jumpHeld = jumpPress && _jumpHeldFrames < _earlyJumpFrames * 2
+            _jumpHeld = jumpPress && _jumpHeldFrames < _earlyBounceFrames
          }
 
          y = y + check(Dim.V, _groundEnt.dy).delta
@@ -205,7 +206,7 @@ class Player is Entity {
       // move x first, then move y. don't do it at the same time, else buggy behavior
       var chkx = null
       if (!_groundEnt || _groundEnt.hasProp("spring") == false) {
-         var chkx = check(Dim.H, dx)
+         chkx = check(Dim.H, dx)
          x = x + chkx.delta
          triggerTouch(chkx)
 
@@ -219,8 +220,9 @@ class Player is Entity {
       y = y + chky.delta
       triggerTouch(chky)
 
-      if (chky.side == Dir.Up && (chky.triggerHas("bouncy") || chky.entHas("bouncy"))) {
-         dy = jumpPress ? -_enemyJumpHeld : -_enemyJump
+      if ((chky.side == Dir.Up && (chky.triggerHas("bouncy") || chky.entHas("bouncy"))) ||
+       (grav.side == Dir.Up && (grav.triggerHas("bouncy") || grav.entHas("bouncy"))) ) {
+         dy = _jumpHeldFrames <= _earlyBounceFrames ? -_enemyJumpHeld : -_enemyJump
          _jumpHeld = jumpPress
       } else if (chky.t < 1.0) {
          // either dir, nullify y movement
@@ -233,6 +235,10 @@ class Player is Entity {
          world.entities.add(shot)
          _nextShotTime = world.ticks + 30
          Trap.sndPlay(_shootSound)
+      }
+
+      if (y > world.level.maxY + 10) {
+         die(null)
       }
 
       // update camera

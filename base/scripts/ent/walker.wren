@@ -45,6 +45,10 @@ class Walker is Entity {
       if (checkX.t != 1.0) {
          _flipped = _flipped * -1
       }
+
+      if (y > world.level.maxY + 10) {
+         die(null)
+      }
    }
 
    draw(t) {

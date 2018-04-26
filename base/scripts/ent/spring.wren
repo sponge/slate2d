@@ -51,7 +51,7 @@ class Spring is Entity {
    // if we're activated this frame, return the bounce amount
    // otherwise return 0
    checkSpring() {
-      return _activated ? -3.6 : 0
+      return _activated ? -3.4 : 0
    }
 
    think(dt) {

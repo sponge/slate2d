@@ -203,10 +203,6 @@ class World {
       for (ent in _entities) {
          if (ent.active) {
             ent.think(1/60)
-
-            if (ent.y > level.maxY + 10) {
-               ent.die("world")
-            }
          }
       }
 

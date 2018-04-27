@@ -442,6 +442,7 @@ void inspect(WrenVM *vm, Value &val, const char *rootTitle, const char *windowTi
 		if (IS_OBJ(val)) {
 			Obj *obj = AS_OBJ(val);
 			ImGui::PushID((void*)obj);
+			ImGui::SetNextTreeNodeOpen(IS_INSTANCE(val) || IS_LIST(val) || IS_MAP(val));
 			renderValue(vm, rootTitle, val);
 			renderEditor(vm);
 			ImGui::PopID();

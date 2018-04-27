@@ -199,6 +199,7 @@ int main(int argc, char *argv[]) {
 
 	SDL_Event ev;
 	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
 	auto start = clock::now();
 	auto last = clock::now();

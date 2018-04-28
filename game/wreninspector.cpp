@@ -438,6 +438,8 @@ void inspect(WrenVM *vm, Value &val, const char *rootTitle, const char *windowTi
 		windowTitle = "Inspector";
 	}
 
+	ImGui::SetNextWindowPos({ 975, 64 }, ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize({ 250, 500 }, ImGuiCond_FirstUseEver);
 	if (ImGui::Begin(windowTitle, nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
 		if (IS_OBJ(val)) {
 			Obj *obj = AS_OBJ(val);

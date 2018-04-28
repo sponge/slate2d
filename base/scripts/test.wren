@@ -76,7 +76,6 @@ class Title {
 
       _mouseCoords = Trap.mousePosition()
 
-      Trap.printWin("update only print", "key", 123)
       _rndNum = _rnd.int()
    }
 

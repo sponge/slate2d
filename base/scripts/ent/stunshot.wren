@@ -17,7 +17,12 @@ class StunShot is Cannonball {
    touch(other, side) {
       if (_endTime == 0) {
          _endTime = world.ticks
+         x = x + dx * (dx > 0 ? 1 : 1)
          parent.shotsActive = parent.shotsActive - 1
+
+         if (other.props["shootable"]) {
+            other.shot(this, 180)
+         }
       }
    }
 

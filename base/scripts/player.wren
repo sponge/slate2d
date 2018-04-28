@@ -246,7 +246,13 @@ class Player is Entity {
    }
 
    draw(t) {
-      var color = world.ticks < _invulnTime ? Draw.setColor(Color.Fill, 222, 238, 214, 255) : Draw.setColor(Color.Fill, 218, 212, 94, 255)
+      if (world.ticks < _invulnTime) {
+         if (world.ticks % 9 < 3) {
+            return
+         }
+      }
+
+      var color = Draw.setColor(Color.Fill, 218, 212, 94, 255)
       Draw.rect(x, y, w, h, Fill.Solid)
    }
 }

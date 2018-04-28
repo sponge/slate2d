@@ -9,8 +9,14 @@ class Walker is Entity {
       _flipped = -1
       _speed = 0.25
       _terminalVelocity = 2
+      _stunTime = 0
 
       props["bouncy"] = true
+      props["shootable"] = true
+   }
+   
+   shot(other, time) {
+      _stunTime = world.ticks + time
    }
 
    canCollide(other, side, d) { true }
@@ -36,14 +42,16 @@ class Walker is Entity {
       }
       y = y + checkY.delta
 
-      var checkX = check(Dim.H, _speed * _flipped)
-      if (checkX.entity && checkX.entity.isPlayer) {
-         checkX.entity.hurt(this, 1)
-      }
-      x = x + checkX.delta
+      if (world.ticks > _stunTime) {
+         var checkX = check(Dim.H, _speed * _flipped)
+         if (checkX.entity && checkX.entity.isPlayer) {
+            checkX.entity.hurt(this, 1)
+         }
+         x = x + checkX.delta
 
-      if (checkX.t != 1.0) {
-         _flipped = _flipped * -1
+         if (checkX.t != 1.0) {
+            _flipped = _flipped * -1
+         }
       }
 
       if (y > world.level.maxY + 10) {
@@ -52,8 +60,12 @@ class Walker is Entity {
    }
 
    draw(t) {
-      Trap.inspect(this)
+      var drawX = x
+      if (world.ticks < _stunTime) {
+         drawX = x + (world.ticks).sin / 2
+      }
+
       var offset = world.ticks / 8 % 2
-      drawSprite(284 + offset, x, y, 1, 1, _flipped == 1 ? 1 : 0)
+      drawSprite(284 + offset, drawX, y, 1, 1, _flipped == 1 ? 1 : 0)
    }
 }

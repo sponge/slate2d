@@ -230,6 +230,7 @@ int main(int argc, char *argv[]) {
 			case SDL_KEYDOWN:
 				if (ev.key.keysym.sym == SDLK_BACKQUOTE) {
 					consoleScene->consoleActive = !consoleScene->consoleActive;
+					ImGui::SetWindowFocus(nullptr);
 					break;
 				}
 				if (io.WantCaptureKeyboard) {

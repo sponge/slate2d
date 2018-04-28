@@ -22,7 +22,7 @@ void wren_trap_dbgwin(WrenVM *vm) {
 	const char *key = wrenGetSlotString(vm, 2);
 	const char *value = wrenGetSlotString(vm, 3);
 
-	ImGui::Begin(title, nullptr, ImGuiWindowFlags_HorizontalScrollbar);
+	ImGui::Begin(title, nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoFocusOnAppearing);
 
 	float width = ImGui::GetWindowContentRegionWidth();
 	float keyWidth = ImGui::CalcTextSize(key).x;

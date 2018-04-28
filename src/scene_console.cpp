@@ -22,7 +22,7 @@ void ConsoleScene::Render() {
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
 		ImGui::SetNextWindowPos(ImVec2(inf->width - 80, 0));
 		ImGui::SetNextWindowSize(ImVec2(80, 0));
-		ImGui::Begin("##fps", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoInputs);
+		ImGui::Begin("##fps", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
 		if (vid_showfps->integer) {
 			ImGui::Text("%.0f FPS\n%.3f ms", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
 		}

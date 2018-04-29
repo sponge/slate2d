@@ -93,6 +93,11 @@
    <property name="flip" type="bool" value="false"/>
   </properties>
  </tile>
+ <tile id="247" type="Snail">
+  <properties>
+   <property name="flip" type="bool" value="false"/>
+  </properties>
+ </tile>
  <tile id="253" type="Coin"/>
  <tile id="254" type="LevelExit"/>
  <tile id="255" type="Player"/>

@@ -16,6 +16,7 @@ import "ent/fallingplatform" for FallingPlatform
 import "ent/cannon" for Cannon
 import "ent/spike" for Spike
 import "ent/walker" for Walker
+import "ent/snail" for Snail
 
 class Level {
    w { _w }
@@ -126,7 +127,8 @@ class World {
          "Spike": Spike,
          "Cannon": Cannon,
          "Flamethrower": Flamethrower,
-         "Walker": Walker
+         "Walker": Walker,
+         "Snail": Snail
       }
 
       for (obj in objects) {

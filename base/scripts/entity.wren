@@ -8,6 +8,8 @@ class Entity {
    x=(x) { _x = x }
    y { _y }
    y=(y) { _y = y }
+   centerX { _x + w / 2 }
+   centerY { _y + h / 2 }
    w { _w }
    w=(w) { _w = w }
    h { _h }

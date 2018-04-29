@@ -20,7 +20,7 @@ class StunShot is Cannonball {
          x = x + dx * (dx > 0 ? 1 : 1)
          parent.shotsActive = parent.shotsActive - 1
 
-         if (other.props["shootable"]) {
+         if (other && other.props["shootable"]) {
             other.shot(this, 180)
          }
       }

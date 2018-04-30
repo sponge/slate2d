@@ -108,10 +108,6 @@ class Entity {
 
       var colInfo = CollisionPool.get()
 
-      if (d == 0) {
-         return colInfo.set(d, null, dir, 0)
-      }
-
       var collideEnt = null
 
       for (ent in _world.entities) {

@@ -4,6 +4,8 @@ import "engine" for Draw
 import "debug" for Debug
 
 class Entity {
+   name { _name }
+   name=(n) { _name = n }
    x { _x }
    x=(x) { _x = x }
    y { _y }
@@ -31,7 +33,7 @@ class Entity {
       _world = world
       _active = true
       _props = {}
-
+      _name = obj ? obj["name"] : ""
       _x = x
       _y = y
       _w = w
@@ -158,6 +160,8 @@ class Entity {
    platform { false }
    // called when another entity collides with you
    touch(other, side){}
+   // called when an entity is targeted by an activator
+   activate(activator){}
    // called when entity dies, by player or any other reason (world)
    die(other) { _active = false }
    // called every frame

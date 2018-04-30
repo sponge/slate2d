@@ -17,6 +17,8 @@ import "ent/cannon" for Cannon
 import "ent/spike" for Spike
 import "ent/walker" for Walker
 import "ent/snail" for Snail
+import "ent/gate" for Gate
+import "ent/switch" for Switch
 
 class Level {
    w { _w }
@@ -128,7 +130,9 @@ class World {
          "Cannon": Cannon,
          "Flamethrower": Flamethrower,
          "Walker": Walker,
-         "Snail": Snail
+         "Snail": Snail,
+         "Gate": Gate,
+         "Switch": Switch
       }
 
       for (obj in objects) {

@@ -98,6 +98,12 @@
    <property name="flip" type="bool" value="false"/>
   </properties>
  </tile>
+ <tile id="248" type="Switch">
+  <properties>
+   <property name="target" value=""/>
+  </properties>
+ </tile>
+ <tile id="249" type="Gate"/>
  <tile id="253" type="Coin"/>
  <tile id="254" type="LevelExit"/>
  <tile id="255" type="Player"/>

@@ -21,7 +21,7 @@ class Main {
 
       if (mapName == null) {
          loadScene("title", null)
-         // loadScene("world", "maps/plat.tmx")
+         // loadScene("world", "maps/plat2.tmx")
       } else {
          loadScene("intro", mapName)
       }

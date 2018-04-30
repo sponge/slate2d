@@ -53,7 +53,7 @@ class Cannon is Entity {
       }
 
       // spawn a cannonball, set parent to this so it doesn't immediately explode
-      var ball = Cannonball.new(world, 270, x, y)
+      var ball = Cannonball.new(world, null, x, y)
       ball.parent = this
       ball.dx = _dim == Dim.H ? _d : 0
       ball.dy = _dim == Dim.V ? _d : 0

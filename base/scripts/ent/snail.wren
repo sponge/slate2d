@@ -34,8 +34,10 @@ class Snail is Entity {
       }
 
       if (_shell) {
-         if (side == Dir.Up || side == Dir.Down) {
-            dx = centerX > other.centerX ? _shellSpeed : -_shellSpeed
+         if (side == Dir.Up) {
+            dx = dx != 0 ? 0 : centerX > other.centerX ? _shellSpeed : -_shellSpeed
+         } else if (side == Dir.Down) {
+            dy = other.dy * 2
          } else {
             dx = side == Dir.Left ? -_shellSpeed : _shellSpeed
          }

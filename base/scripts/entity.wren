@@ -23,6 +23,10 @@ class Entity {
    active { _active }
    active=(a) { _active = a }
    props { _props }
+   groundEnt { _groundEnt }
+   groundEnt=(ent) { _groundEnt = ent }
+   grounded { _grounded }
+   grounded=(b) { _grounded = b }
 
    isPlayer { false }
    world { _world }
@@ -40,6 +44,8 @@ class Entity {
       _h = h
       _dx = 0
       _dy = 0
+      _grounded = false
+      _groundEnt = null
 
       // allow multiple entities to use this so they all react to the world similarly
       _baseResolve = Fn.new { |side, tile, tx, ty, ldx, ldy|
@@ -143,6 +149,49 @@ class Entity {
       }
    }
 
+   // if an entity is less than a from the ground, snap to the ground (needed to stick to falling platforms)
+   snapGround() {
+      var grav = check(Dim.V, 1)
+
+      if (dy >= 0 && grav.delta < 1) {
+         // if (grav.delta > 0) { Debug.text("player", "snap") }
+         y = y + grav.delta
+         grounded = true
+         groundEnt = grav.entity
+         dy = 0
+         // trigger touch on things you're standing on, since gravity won't trigger it
+         triggerTouch(grav)
+      } else {
+         grounded = false
+         groundEnt = null
+      }
+
+      return grav
+   }
+
+   // if an entity is on a platform, move the platform first then update position
+   runPlatform(dt) {
+      // if we're on a platform, move the platform first
+      // Debug.text("platform", "ent", groundEnt)
+      // Debug.text("platform", "isPlatform", groundEnt ? groundEnt.platform : false)
+
+      if (groundEnt && groundEnt.platform) {
+         groundEnt.think(dt)
+         // Debug.text("platform", "before y+h", y+h)
+         // Debug.text("platform", "platy", groundEnt.y)
+         if (groundEnt.hasProp("spring")) {
+            // this will kill the ability to jump too, even if the spring isn't ready to activate yet
+            dy = groundEnt.checkSpring()
+            grounded = false
+         }
+
+         y = y + check(Dim.V, groundEnt.dy).delta
+         x = x + check(Dim.H, groundEnt.dx).delta
+         // Debug.text("platform", "y+h", y+h)
+      }
+   }
+
+
    // used as a simple way to reuse behavior across entities
    hasProp(prop) {
       return _props[prop] == null || _props[prop] == false ? false : true
@@ -162,6 +211,8 @@ class Entity {
    touch(other, side){}
    // called when an entity is targeted by an activator
    activate(activator){}
+   // called when an entity is hurt by another entity
+   hurt(other, amt){}
    // called when entity dies, by player or any other reason (world)
    die(other) { _active = false }
    // called every frame

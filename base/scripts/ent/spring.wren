@@ -1,6 +1,7 @@
 import "entity" for Entity
 import "engine" for Asset, Trap
 import "collision" for Dir
+import "debug" for Debug
 
 // springs work like moving platforms, and will be called from the player's think early on
 // this would probably be cleaner if i could query to see if any entities are standing on the spring
@@ -31,10 +32,6 @@ class Spring is Entity {
 
    // start the animation
    touch(other, side) {
-      if (other.isPlayer == false) {
-         return
-      }
-
       if (_activateTime == -1) {
          _activateTime = world.ticks
       }
@@ -74,6 +71,13 @@ class Spring is Entity {
          // the player will stick to us
          dy = 2
          y = _baseY + (_delay - framesUntilTrigger) * 2
+      }
+
+      // if we run before entities standing on us, go ahead and move them now
+      for (ent in world.entities) {
+         if (ent.groundEnt == this) {
+            ent.y = y - ent.h
+         }
       }
    }
 

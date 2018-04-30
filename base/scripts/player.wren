@@ -12,8 +12,6 @@ class Player is Entity {
    disableControls=(b) { _disableControls = b }
    pMeter { _pMeter }
    pMeterCapacity { _pMeterCapacity }
-   groundEnt { _groundEnt }
-   groundEnt=(ent) { _groundEnt = ent }
    health { _health }
    shotsActive { _shotsActive }
    shotsActive=(i) { _shotsActive = i }
@@ -22,12 +20,12 @@ class Player is Entity {
    construct new(world, ti, ox, oy) {
       super(world, ti, ox, oy - 4, 7, 12)
 
-      _grounded = true
+      grounded = true
       _fallingFrames = 0
       _pMeter = 0
       _jumpHeld = false
       _jumpHeldFrames = 0
-      _groundEnt = null
+      groundEnt = null
       _disableControls = false
       _health = 3
       _invulnTime = 0
@@ -103,43 +101,17 @@ class Player is Entity {
       var speed = 0
 
       // track if on the ground this frame
-      var grav = check(Dim.V, 1)
-
-      // snap to the ground if we're near it (needed for sticking to falling platforms)
-      if (dy >= 0 && grav.delta < 1) {
-         // if (grav.delta > 0) { Debug.text("player", "snap") }
-         y = y + grav.delta
-         _grounded = true
-         _groundEnt = grav.entity
-         // trigger touch on things you're standing on, since gravity won't trigger it
-         triggerTouch(grav)
-      } else {
-         _grounded = false
-         _groundEnt = null
-      }
-
-      // if we're on a platform, move the platform first
-      if (_groundEnt && _groundEnt.platform) {
-         _groundEnt.think(dt)
-         // Debug.text("player", "y+h", y+h)
-         // Debug.text("player", "platy", _groundEnt.y)
-         if (_groundEnt.hasProp("spring")) {
-            // this will kill the ability to jump too, even if the spring isn't ready to activate yet
-            dy = _groundEnt.checkSpring()
-            _grounded = false
-            _jumpHeld = jumpPress && _jumpHeldFrames < _earlyBounceFrames
-         }
-
-         y = y + check(Dim.V, _groundEnt.dy).delta
-         x = x + check(Dim.H, _groundEnt.dx).delta
-         // Debug.text("player", "y+h", y+h)
+      var ground = snapGround()
+      runPlatform(dt)
+      if (groundEnt && groundEnt.hasProp("spring")) {
+         _jumpHeld = jumpPress && _jumpHeldFrames < _earlyBounceFrames
       }
 
       // set direction for bullets
       _facing = dir != 0 ? dir : _facing
 
       // track frames since leaving platform for late jump presses
-      _fallingFrames = _grounded ? 0 : _fallingFrames + 1
+      _fallingFrames = grounded ? 0 : _fallingFrames + 1
 
       // let players jump a few frames early but don't let them hold the button down
       _jumpHeldFrames = jumpPress ? _jumpHeldFrames + 1 : 0
@@ -148,14 +120,14 @@ class Player is Entity {
       }
 
       // apply gravity if not on the ground. different gravity values depending on holding jump
-      dy = _grounded ? 0 : dy + (_jumpHeld ? _heldGravity : _gravity)
+      dy = grounded ? 0 : dy + (_jumpHeld ? _heldGravity : _gravity)
 
       // if jump is held, and player has let go of it since last jump
       if (jumpPress && !_jumpHeld) {
          // allow the jump if:
          // - they're on the ground, and haven't been holding for too long
          // - they're not on the ground, but have recently been on the ground
-         if ((_grounded && _jumpHeldFrames < _earlyJumpFrames) || (!_grounded && _fallingFrames < _lateJumpFrames)) {
+         if ((grounded && _jumpHeldFrames < _earlyJumpFrames) || (!grounded && _fallingFrames < _lateJumpFrames)) {
             for (speed in _jumpHeights.keys) {
                if (dx.abs >= speed) {
                   dy = -_jumpHeights[speed]
@@ -169,7 +141,7 @@ class Player is Entity {
 
       // if not pushing anything, slow down if on the ground
       if (dir == 0) {
-         if (dx != 0 && _grounded) {
+         if (dx != 0 && grounded) {
             dx = dx + _friction * (dx > 0 ? -1 : 1)
          }
 
@@ -184,11 +156,11 @@ class Player is Entity {
       }
 
       // increment the p-meter if you're on the ground and going fast enough
-      if (dx.abs >= _runSpeed && _grounded) {
+      if (dx.abs >= _runSpeed && grounded) {
          _pMeter = _pMeter + 2
       // tick down the p-meter, but don't if you're at 100% and midair
       } else {
-         if (_grounded || _pMeter != _pMeterCapacity) {
+         if (grounded || _pMeter != _pMeterCapacity) {
             _pMeter = _pMeter - 1
          }
       }
@@ -205,7 +177,7 @@ class Player is Entity {
 
       // move x first, then move y. don't do it at the same time, else buggy behavior
       var chkx = null
-      if (!_groundEnt || _groundEnt.hasProp("spring") == false) {
+      if (!groundEnt || groundEnt.hasProp("spring") == false) {
          chkx = check(Dim.H, dx)
          x = x + chkx.delta
          triggerTouch(chkx)
@@ -221,7 +193,7 @@ class Player is Entity {
       triggerTouch(chky)
 
       if ((chky.side == Dir.Up && (chky.triggerHas("bouncy") || chky.entHas("bouncy"))) ||
-       (grav.side == Dir.Up && (grav.triggerHas("bouncy") || grav.entHas("bouncy"))) ) {
+       (ground.side == Dir.Up && (ground.triggerHas("bouncy") || ground.entHas("bouncy"))) ) {
          dy = _jumpHeldFrames <= _earlyBounceFrames ? -_enemyJumpHeld : -_enemyJump
          _jumpHeld = jumpPress
       } else if (chky.t < 1.0) {
@@ -230,7 +202,7 @@ class Player is Entity {
       }
 
       if (shootPress && _shotsActive < 3 && world.ticks > _nextShotTime) {
-         var shot = StunShot.new(this, world, 271, _facing > 0 ? x + 6 : x - 8, y + 1)
+         var shot = StunShot.new(this, world, null, _facing > 0 ? x + 6 : x - 8, y + 1)
          shot.dx = shot.dx * _facing
          world.entities.add(shot)
          _nextShotTime = world.ticks + 30

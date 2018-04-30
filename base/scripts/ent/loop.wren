@@ -1,22 +1,17 @@
 import "entity" for Entity
 import "engine" for Trap
 import "timer" for Timer
+import "ent/logicent" for LogicEnt
 
 // loops will activate all targets every (frequency) ticks
-class Loop is Entity {
+class Loop is LogicEnt {
    construct new(world, obj, ox, oy) {
       super(world, obj, ox, oy, 8, 8)
-      _world = world
       _startTime = 0
 
       _active = obj["properties"]["startActive"]
       if (_active is Bool == false) {
          Trap.error(2, "Loop startActive not bool at %(ox), %(oy)")
-      }
-
-      _target = obj["properties"]["target"]
-      if (_target is String == false || _target.count == 0) {
-         Trap.error(2, "Loop doesn't have valid target property at %(ox), %(oy)")
       }
 
       _frequency = obj["properties"]["frequency"]
@@ -28,7 +23,6 @@ class Loop is Entity {
    activate(activator) {
       _startTime = world.ticks
       _active = !_active
-
    }
 
    think(dt) {
@@ -37,13 +31,7 @@ class Loop is Entity {
       }
 
       if ((world.ticks - _startTime) % _frequency == 0) {
-         for (ent in world.entities) {
-            if (ent.name == _target) {
-               ent.activate(this)
-            }
-         }
+         activateTargets()
       }
    }
-
-   canCollide(other, side, d) { false }
 }

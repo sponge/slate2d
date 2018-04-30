@@ -21,6 +21,7 @@ import "ent/gate" for Gate
 import "ent/switch" for Switch
 import "ent/delay" for Delay
 import "ent/loop" for Loop
+import "ent/playertrigger" for PlayerTrigger
 
 class Level {
    w { _w }
@@ -137,6 +138,7 @@ class World {
          "Switch": Switch,
          "Delay": Delay,
          "Loop": Loop,
+         "PlayerTrigger": PlayerTrigger,
       }
 
       for (obj in objects) {

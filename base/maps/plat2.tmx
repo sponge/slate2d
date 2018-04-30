@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.4" orientation="orthogonal" renderorder="right-down" width="60" height="23" tilewidth="8" tileheight="8" infinite="0" backgroundcolor="#30346d" nextobjectid="70">
+<map version="1.0" tiledversion="1.1.4" orientation="orthogonal" renderorder="right-down" width="60" height="23" tilewidth="8" tileheight="8" infinite="0" backgroundcolor="#30346d" nextobjectid="73">
  <properties>
   <property name="music" value="music/dogs.mod"/>
   <property name="title" value="A Puzzle For The Ages"/>
@@ -89,6 +89,18 @@
    </properties>
   </object>
   <object id="69" name="Loop Set" gid="250" x="288" y="72" width="8" height="8">
+   <properties>
+    <property name="startVisible" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="70" type="PlayerTrigger" x="240" y="144" width="16" height="24">
+   <properties>
+    <property name="cooldown" type="int" value="60"/>
+    <property name="target" value="Asshole Spike"/>
+    <property name="triggerOnce" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="71" name="Asshole Spike" gid="243" x="272" y="168" width="8" height="8">
    <properties>
     <property name="startVisible" type="bool" value="false"/>
    </properties>

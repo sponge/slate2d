@@ -52,6 +52,19 @@ class Snail is Entity {
       var ground = snapGround()
       runPlatform(dt)
 
+      // give snail shells a little extra boost on springs
+      if (_shell) {
+         if (groundEnt && groundEnt.hasProp("spring")) {
+            var amt = groundEnt.checkSpring()
+            if (amt != 0) {
+               dy = amt * 1.3
+               dx = dx * 1.3
+            }
+         } else if (grounded && _shell) {
+            dx = dx == 0 ? 0 : dx > 0 ? _shellSpeed : - _shellSpeed
+         }
+      }
+
       if (!grounded) {
          dy = Math.min(dy + world.gravity, _terminalVelocity)
          var checkY = check(Dim.V, dy)

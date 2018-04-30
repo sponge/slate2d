@@ -60,6 +60,19 @@
    <property name="direction" value="left"/>
   </properties>
  </tile>
+ <tile id="224" type="Delay">
+  <properties>
+   <property name="delay" type="int" value="0"/>
+   <property name="target" value=""/>
+  </properties>
+ </tile>
+ <tile id="225" type="Loop">
+  <properties>
+   <property name="frequency" type="int" value="0"/>
+   <property name="startActive" type="bool" value="true"/>
+   <property name="target" value=""/>
+  </properties>
+ </tile>
  <tile id="238" type="Cannon">
   <properties>
    <property name="direction" value="up"/>
@@ -80,7 +93,11 @@
    <property name="direction" value="left"/>
   </properties>
  </tile>
- <tile id="242" type="Spike"/>
+ <tile id="242" type="Spike">
+  <properties>
+   <property name="startVisible" type="bool" value="true"/>
+  </properties>
+ </tile>
  <tile id="243" type="Spring"/>
  <tile id="244" type="FallingPlatform"/>
  <tile id="245" type="MovingPlatform">
@@ -103,7 +120,11 @@
    <property name="target" value=""/>
   </properties>
  </tile>
- <tile id="249" type="Gate"/>
+ <tile id="249" type="Gate">
+  <properties>
+   <property name="startVisible" type="bool" value="true"/>
+  </properties>
+ </tile>
  <tile id="253" type="Coin"/>
  <tile id="254" type="LevelExit"/>
  <tile id="255" type="Player"/>

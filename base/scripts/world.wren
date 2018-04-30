@@ -19,6 +19,8 @@ import "ent/walker" for Walker
 import "ent/snail" for Snail
 import "ent/gate" for Gate
 import "ent/switch" for Switch
+import "ent/delay" for Delay
+import "ent/loop" for Loop
 
 class Level {
    w { _w }
@@ -132,7 +134,9 @@ class World {
          "Walker": Walker,
          "Snail": Snail,
          "Gate": Gate,
-         "Switch": Switch
+         "Switch": Switch,
+         "Delay": Delay,
+         "Loop": Loop,
       }
 
       for (obj in objects) {

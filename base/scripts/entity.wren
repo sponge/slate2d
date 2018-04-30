@@ -5,7 +5,6 @@ import "debug" for Debug
 
 class Entity {
    name { _name }
-   name=(n) { _name = n }
    x { _x }
    x=(x) { _x = x }
    y { _y }

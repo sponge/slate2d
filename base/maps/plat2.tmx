@@ -58,42 +58,42 @@
     <property name="target" value="End Door"/>
    </properties>
   </object>
-  <object id="61" name="Spike Animation" gid="226" x="192" y="72" width="8" height="8">
+  <object id="61" name="Start Spikes" gid="226" x="192" y="72" width="8" height="8">
    <properties>
     <property name="frequency" type="int" value="60"/>
     <property name="startActive" type="bool" value="false"/>
-    <property name="target" value="Loop Set"/>
+    <property name="target" value="Loop"/>
    </properties>
   </object>
-  <object id="62" name="Loop Set" gid="243" x="208" y="72" width="8" height="8"/>
-  <object id="63" name="Loop Set" gid="243" x="208" y="80" width="8" height="8">
+  <object id="62" name="Loop" gid="243" x="208" y="72" width="8" height="8"/>
+  <object id="63" name="Loop" gid="243" x="208" y="80" width="8" height="8">
    <properties>
     <property name="startVisible" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="64" name="Loop Set" gid="243" x="224" y="72" width="8" height="8">
+  <object id="64" name="Loop" gid="243" x="224" y="72" width="8" height="8">
    <properties>
     <property name="startVisible" type="bool" value="false"/>
    </properties>
   </object>
-  <object id="65" name="Loop Set" gid="243" x="224" y="80" width="8" height="8">
+  <object id="65" name="Loop" gid="243" x="224" y="80" width="8" height="8">
    <properties>
     <property name="startVisible" type="bool" value="false"/>
    </properties>
   </object>
-  <object id="66" name="Loop Set" gid="250" x="240" y="72" width="8" height="8"/>
-  <object id="67" name="Loop Set" gid="250" x="248" y="72" width="8" height="8"/>
-  <object id="68" name="Loop Set" gid="250" x="280" y="72" width="8" height="8">
+  <object id="66" name="Loop" gid="250" x="240" y="72" width="8" height="8"/>
+  <object id="67" name="Loop" gid="250" x="248" y="72" width="8" height="8"/>
+  <object id="68" name="Loop" gid="250" x="280" y="72" width="8" height="8">
    <properties>
     <property name="startVisible" type="bool" value="false"/>
    </properties>
   </object>
-  <object id="69" name="Loop Set" gid="250" x="288" y="72" width="8" height="8">
+  <object id="69" name="Loop" gid="250" x="288" y="72" width="8" height="8">
    <properties>
     <property name="startVisible" type="bool" value="false"/>
    </properties>
   </object>
-  <object id="70" type="PlayerTrigger" x="240" y="144" width="16" height="24">
+  <object id="70" name="Trigger mean spike" type="PlayerTrigger" x="240" y="144" width="16" height="24">
    <properties>
     <property name="cooldown" type="int" value="60"/>
     <property name="target" value="Asshole Spike"/>

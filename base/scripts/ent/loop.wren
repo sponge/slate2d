@@ -9,8 +9,8 @@ class Loop is LogicEnt {
       super(world, obj, ox, oy, 8, 8)
       _startTime = 0
 
-      _active = obj["properties"]["startActive"]
-      if (_active is Bool == false) {
+      _enabled = obj["properties"]["startActive"]
+      if (_enabled is Bool == false) {
          Trap.error(2, "Loop startActive not bool at %(ox), %(oy)")
       }
 
@@ -22,11 +22,11 @@ class Loop is LogicEnt {
 
    activate(activator) {
       _startTime = world.ticks
-      _active = !_active
+      _enabled = !_enabled
    }
 
    think(dt) {
-      if (!_active) {
+      if (!_enabled) {
          return
       }
 

@@ -22,6 +22,7 @@ import "ent/switch" for Switch
 import "ent/delay" for Delay
 import "ent/loop" for Loop
 import "ent/playertrigger" for PlayerTrigger
+import "ent/counter" for Counter
 
 class Level {
    w { _w }
@@ -139,6 +140,7 @@ class World {
          "Delay": Delay,
          "Loop": Loop,
          "PlayerTrigger": PlayerTrigger,
+         "Counter": Counter
       }
 
       for (obj in objects) {

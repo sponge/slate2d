@@ -16,6 +16,11 @@ class MovingPlatform is Entity {
       _route = []
       _currentRoute = -1
 
+      _enabled = obj["properties"]["startActive"]
+      if (_enabled is Bool == false) {
+         Trap.error(2, "MovingPlatform startActive not bool at %(ox), %(oy)")
+      }
+
       if (obj["properties"]["path"] is String == false) {
          Trap.error(2, "MovingPlatform without path string property at %(ox), %(oy)")
       }
@@ -37,6 +42,10 @@ class MovingPlatform is Entity {
       }
 
       setNextPoint()
+   }
+
+   activate(activator) {
+      _enabled = !_enabled
    }
 
    // moving platforms work like one way. only collide if you're falling through from the top
@@ -67,6 +76,10 @@ class MovingPlatform is Entity {
          return
       }
       _movedTime = world.ticks
+
+      if (!_enabled) {
+         return
+      }
 
       // figure out if we need a new destination
       setNextPoint()

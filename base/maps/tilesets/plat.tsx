@@ -73,6 +73,12 @@
    <property name="target" value=""/>
   </properties>
  </tile>
+ <tile id="226" type="Counter">
+  <properties>
+   <property name="count" type="int" value="0"/>
+   <property name="target" value=""/>
+  </properties>
+ </tile>
  <tile id="238" type="Cannon">
   <properties>
    <property name="direction" value="up"/>
@@ -103,6 +109,7 @@
  <tile id="245" type="MovingPlatform">
   <properties>
    <property name="path" value=""/>
+   <property name="startActive" type="bool" value="true"/>
   </properties>
  </tile>
  <tile id="246" type="Walker">

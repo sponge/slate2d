@@ -31,8 +31,7 @@ void ConsoleScene::Render() {
 			ImGui::TextColored({ 255, 255, 0, 255 }, "Paused");
 		}
 		ImGui::End();
-		ImGui::PopStyleVar();
-		ImGui::PopStyleVar();
+		ImGui::PopStyleVar(2);
 	}
 
 	if (!consoleActive) {

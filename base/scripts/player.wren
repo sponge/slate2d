@@ -6,8 +6,6 @@ import "timer" for Timer
 import "math" for Math
 import "collision" for Dim, Dir
 
-import "ent/stunshot" for StunShot
-
 class Player is Entity {
    disableControls=(b) { _disableControls = b }
    pMeter { _pMeter }
@@ -64,6 +62,8 @@ class Player is Entity {
       _shootSound = Asset.create(Asset.Sound, "player_shoot", "sound/shoot.wav")
       _hurtSound = Asset.create(Asset.Sound, "player_hurt", "sound/hurt.wav")
       _dieSound = Asset.create(Asset.Sound, "player_die", "sound/die.wav")
+
+      _stunProps = {"player": this}
    }
 
    die(cause) {
@@ -202,9 +202,8 @@ class Player is Entity {
       }
 
       if (shootPress && _shotsActive < 3 && world.ticks > _nextShotTime) {
-         var shot = StunShot.new(this, world, null, _facing > 0 ? x + 6 : x - 8, y + 1)
+         var shot = world.spawn("StunShot", _stunProps, _facing > 0 ? x + 6 : x - 8, y + 1)
          shot.dx = shot.dx * _facing
-         world.entities.add(shot)
          _nextShotTime = world.ticks + 30
          Trap.sndPlay(_shootSound)
       }

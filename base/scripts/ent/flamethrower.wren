@@ -2,8 +2,8 @@ import "collision" for Dim
 import "entity" for Entity
 import "engine" for Draw, Trap
 
-// flames actually spawn out of a tile in the tilemap range. the flamethrower is solid
-// but we spawn the flame and toggle it on and off instead to cut back on entities used
+// flames are always active in the world, while the flamethrower entity is just a box
+// that does nothing except spawn the Flame
 class Flame is Entity {
    construct new(world, dim, dir, delayed, ox, oy) {
       _dim = dim
@@ -80,6 +80,7 @@ class Flame is Entity {
    }
 }
 
+// flamethrowers just sit and be solid. the fun stuff is in Flame
 class Flamethrower is Entity {
    construct new(world, obj, ox, oy) {
       super(world, obj, ox, oy, 8, 8)

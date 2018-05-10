@@ -23,6 +23,7 @@ import "ent/delay" for Delay
 import "ent/loop" for Loop
 import "ent/playertrigger" for PlayerTrigger
 import "ent/counter" for Counter
+import "ent/stunshot" for StunShot
 
 class Level {
    w { _w }
@@ -120,10 +121,8 @@ class World {
       _gravity = 0.1875
       _cam = Camera.new(8, 8, 320, 180)
       _cam.constrain(0, 0, _level.maxX, _level.maxY)
-      
-      var objects = _level.objects()
 
-      var entmappings = {
+       _entmappings = {
          "Player": Player,
          "LevelExit": LevelExit,
          "Coin": Coin,
@@ -140,20 +139,14 @@ class World {
          "Delay": Delay,
          "Loop": Loop,
          "PlayerTrigger": PlayerTrigger,
-         "Counter": Counter
+         "Counter": Counter,
+         "StunShot": StunShot
       }
+      
+      var objects = _level.objects()
 
       for (obj in objects) {
-         var eType = entmappings[obj["type"]]
-         if (eType != null) {
-            var ent = eType.new(this, obj, obj["x"], obj["y"] - level.th)
-            if (ent is Player) {
-               _entities.insert(0, ent)
-               _player = ent
-            } else {
-               _entities.add(ent)
-            }
-         }
+         spawn(obj["type"], obj, obj["x"], obj["y"] - level.th)
       }
 
       _font = Asset.create(Asset.BitmapFont, "font", "gfx/good_neighbors.png")
@@ -178,6 +171,22 @@ class World {
       _spr = Asset.createSprite(sprites, 8, 8, 0, 0)
 
       SoundController.playMusic(_music)
+   }
+
+   spawn(entClass, obj, x, y) {
+      var eType = _entmappings[entClass]
+      if (eType != null) {
+         var ent = eType.new(this, obj, x, y)
+         if (ent is Player) {
+            _entities.insert(0, ent)
+            _player = ent
+         } else {
+            _entities.add(ent)
+         }
+         return ent
+      }
+
+      return null
    }
 
    winLevel(nextLevel) {

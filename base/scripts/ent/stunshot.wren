@@ -4,11 +4,11 @@ class StunShot is Cannonball {
    trigger { true }
    canCollide(other, side, d) { other != parent }
 
-   construct new(player, world, obj, ox, oy) {
+   construct new(world, obj, ox, oy) {
       super(world, obj, ox, oy, 6, 6)
       dx = 2
       dy = 0
-      parent = player
+      parent = obj["player"]
       parent.shotsActive = parent.shotsActive + 1
       _totalDistance = 0
       _endTime = 0

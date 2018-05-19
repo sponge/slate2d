@@ -106,7 +106,7 @@ class Entity {
       var dir = dim == Dim.H ? (wishAmt > 0 ? Dir.Right : Dir.Left) : (wishAmt > 0 ? Dir.Up : Dir.Down)
       var d = _world.tileCollider.query(_x, _y, _w, _h, dim, wishAmt, resolve)
 
-      var colInfo = CollisionPool.get()
+      var collision = CollisionPool.get()
 
       var collideEnt = null
 
@@ -116,9 +116,10 @@ class Entity {
             if (tmp != d) {
                if (ent.canCollide(this, dir, d)) {
                   if (ent.trigger) {
-                     colInfo.addTrigger(d, ent)
+                     collision.triggers.add(d, ent)
                   } else {
                      collideEnt = ent
+                     collision.entities.add(d, ent)
                      d = tmp.abs < d.abs ? tmp : d
                   }
 
@@ -127,9 +128,7 @@ class Entity {
          }
       }
 
-      colInfo.filterTriggers(d)
-
-      return colInfo.set(d, collideEnt, dir, d / wishAmt)
+      return collision.set(d, collideEnt, dir, d / wishAmt)
    }
 
    // called from subclassed entities when you want to activate all entities
@@ -139,7 +138,7 @@ class Entity {
          collision.entity.touch(this, collision.side)
       }
 
-      for (trigger in collision.triggers) {
+      for (trigger in collision.triggers.list) {
          trigger.entity.touch(this, collision.side)
       }
    }
@@ -174,7 +173,7 @@ class Entity {
          groundEnt.think(dt)
          // Debug.text("platform", "before y+h", y+h)
          // Debug.text("platform", "platy", groundEnt.y)
-         if (groundEnt.hasProp("spring")) {
+         if (groundEnt.has("spring")) {
             // this will kill the ability to jump too, even if the spring isn't ready to activate yet
             dy = groundEnt.checkSpring()
             grounded = false
@@ -186,9 +185,13 @@ class Entity {
       }
    }
 
+   // safe to call if null
+   static has(ent, prop) {
+      return ent != null && ent.has(prop)
+   }
 
    // used as a simple way to reuse behavior across entities
-   hasProp(prop) {
+   has(prop) {
       return _props[prop] == null || _props[prop] == false ? false : true
    }
 

@@ -55,6 +55,11 @@ class Debug {
       __persistantRects = []
    }
 
+   // convenience function so we dont have to import trap
+   static printLn(text) {
+      Trap.printLn(text)
+   }
+
    // a line of text that will appear in the window named "window"
    static text(window, val) {
       text(window, val, "")

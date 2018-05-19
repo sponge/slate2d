@@ -51,7 +51,7 @@ class Walker is Entity {
          y = y + checkY.delta
       }
 
-      if (world.ticks > _stunTime && (!groundEnt || groundEnt.hasProp("spring") == false)) {
+      if (world.ticks > _stunTime && (!groundEnt || groundEnt.has("spring") == false)) {
          var checkX = check(Dim.H, dx)
          if (checkX.entity && checkX.entity.isPlayer) {
             checkX.entity.hurt(this, 1)

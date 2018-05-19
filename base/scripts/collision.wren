@@ -19,7 +19,7 @@ class CollisionPool {
       __max = 16
 
       for (i in 1..__max) {
-         __pool.add(Collision.new(0, null, 0, 0))
+         __pool.add(Collision.new())
       }
    }
    
@@ -33,12 +33,48 @@ class CollisionPool {
 
 // storage class since we need to know distance to trigger to filter
 // them out during movement
-class TriggerInfo {
+class CollisionInfo {
    delta { _delta }
    entity { _entity }
    construct new(delta, entity) {
       _delta = delta
       _entity = entity
+   }
+}
+
+// list wrapper since we want to support colliding with triggers and
+// regular entities every frame.
+class CollisionList {
+   list { _list }
+
+   construct new() {
+      _list = []
+   }
+
+   add(delta, entity) {
+      _list.add(CollisionInfo.new(delta, entity))
+   }
+
+   filter(delta) {
+      if (_list.count == 0) {
+         return
+      }
+
+      for (i in _list.count-1..0) {
+         if (delta.abs < _list[i].delta.abs) {
+            _list.removeAt(i)
+         }
+      }
+   }
+
+   has(prop) {
+      for (t in _list) {
+         if (t.entity.has(prop)) {
+            return true
+         }
+      }
+
+      return false      
    }
 }
 
@@ -50,9 +86,9 @@ class Collision {
    entity=(e) { _entity = e }
    side { _side }
    triggers { _triggers }
+   entities { _entities }
 
-   construct new(delta, entity, side, t) {
-      set(delta, entity, side, t)
+   construct new() {
    }
 
    clear() {
@@ -60,43 +96,8 @@ class Collision {
       _t = 0
       _entity = null
       _side = 0
-      _triggers = []
-   }
-
-   // since we can trigger multiple entities per frame, we need to store
-   // all that we can possibly collide with, and then filter out ones that
-   // are too far away at the end.
-   addTrigger(delta, entity) {
-      _triggers.add(TriggerInfo.new(delta, entity))
-   }
-
-   filterTriggers(delta) {
-      if (_triggers.count == 0) {
-         return
-      }
-
-      for (i in _triggers.count-1..0) {
-         if (delta.abs < _triggers[i].delta.abs) {
-            _triggers.removeAt(i)
-         }
-      }
-   }
-
-   // returns true if the specified ent class is one that the collision ran into
-   // should probably use properties or some sort of ECS-esque system but this
-   // works good enough
-   entHas(prop) {
-      return _entity && _entity.hasProp(prop)
-   }
-
-   triggerHas(prop) {
-      for (t in _triggers) {
-         if (t.entity.hasProp(prop)) {
-            return true
-         }
-      }
-
-      return false
+      _triggers = CollisionList.new()
+      _entities = CollisionList.new()
    }
 
    set(delta, entity, side, t) {
@@ -104,6 +105,9 @@ class Collision {
       _entity = entity
       _side = side
       _t = t
+
+      _triggers.filter(delta)
+      _entities.filter(delta)
 
       return this
    }

@@ -54,7 +54,7 @@ class Snail is Entity {
 
       // give snail shells a little extra boost on springs
       if (_shell) {
-         if (groundEnt && groundEnt.hasProp("spring")) {
+         if (groundEnt && groundEnt.has("spring")) {
             var amt = groundEnt.checkSpring()
             if (amt != 0) {
                dy = amt * 1.3
@@ -74,7 +74,7 @@ class Snail is Entity {
          y = y + checkY.delta
       }
 
-      if (world.ticks > _stunTime && (!groundEnt || groundEnt.hasProp("spring") == false)) {
+      if (world.ticks > _stunTime && (!groundEnt || groundEnt.has("spring") == false)) {
          var checkX = check(Dim.H, dx)
          if (dx != 0 && checkX.entity) {
             checkX.entity.hurt(this, 1)

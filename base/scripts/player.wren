@@ -103,7 +103,7 @@ class Player is Entity {
       // track if on the ground this frame
       var ground = snapGround()
       runPlatform(dt)
-      if (groundEnt && groundEnt.hasProp("spring")) {
+      if (groundEnt && groundEnt.has("spring")) {
          _jumpHeld = jumpPress && _jumpHeldFrames < _earlyBounceFrames
       }
 
@@ -177,7 +177,7 @@ class Player is Entity {
 
       // move x first, then move y. don't do it at the same time, else buggy behavior
       var chkx = null
-      if (!groundEnt || groundEnt.hasProp("spring") == false) {
+      if (!groundEnt || groundEnt.has("spring") == false) {
          chkx = check(Dim.H, dx)
          x = x + chkx.delta
          triggerTouch(chkx)
@@ -189,11 +189,12 @@ class Player is Entity {
       }
 
       var chky = check(Dim.V, dy)
+      _chky = chky
       y = y + chky.delta
       triggerTouch(chky)
 
-      if ((chky.side == Dir.Up && (chky.triggerHas("bouncy") || chky.entHas("bouncy"))) ||
-       (ground.side == Dir.Up && (ground.triggerHas("bouncy") || ground.entHas("bouncy"))) ) {
+      if ((chky.side == Dir.Up && (chky.triggers.has("bouncy") || Entity.has(chky.entity, "bouncy"))) ||
+       (ground.side == Dir.Up && (ground.triggers.has("bouncy") || Entity.has(ground.entity, "bouncy"))) ) {
          dy = _jumpHeldFrames <= _earlyBounceFrames ? -_enemyJumpHeld : -_enemyJump
          _jumpHeld = jumpPress
       } else if (chky.t < 1.0) {

@@ -81,14 +81,14 @@ class Entity {
       var px = (this.w / 2) + (other.w / 2) - ox.abs
 
       if (px <= 0) {
-         return d
+         return false
       }
       
       var oy = this.y + (this.h / 2) + ldy - other.y - (other.h / 2)
       var py = (this.h / 2) + (other.h / 2) - oy.abs
 
       if (py <= 0) {
-         return d
+         return false
       }
 
       if (dim == Dim.H) {
@@ -111,18 +111,27 @@ class Entity {
       var collideEnt = null
 
       for (ent in _world.entities) {
+         // skip entities that aren't active or have no size
          if (ent != this && ent.active && (ent.w > 0 || ent.h > 0)) {
-            var tmp = this.collide(ent, dim, d)
-            if (tmp != d) {
-               if (ent.canCollide(this, dir, d)) {
+            // try and move the full wishAmt instead of d,
+            // so we can catch standing on at the same time
+            var tmp = this.collide(ent, dim, wishAmt)
+            // if it's not false, it'll return the distance moved
+            if (tmp != false) {
+               // give the entity a chance to reject the collision
+               if (ent.canCollide(this, dir, wishAmt)) {
                   if (ent.trigger) {
-                     collision.triggers.add(d, ent)
+                     collision.triggers.add(tmp, ent)
                   } else {
-                     collideEnt = ent
-                     collision.entities.add(d, ent)
-                     d = tmp.abs < d.abs ? tmp : d
+                     collision.entities.add(tmp, ent)
+                     // store the minimum movement amount
+                     // FIXME: move away from returning a single entity?
+                     // also maybe this could be done in .set()?
+                     if (tmp.abs < d.abs) {
+                        collideEnt = ent
+                        d = tmp
+                     }
                   }
-
                }
             }
          }
@@ -134,8 +143,8 @@ class Entity {
    // called from subclassed entities when you want to activate all entities
    // the collision is moving into
    triggerTouch(collision) {
-      if (collision.entity != null) {
-         collision.entity.touch(this, collision.side)
+      for (entCollision in collision.entities.list) {
+         entCollision.entity.touch(this, collision.side)
       }
 
       for (trigger in collision.triggers.list) {
@@ -163,14 +172,11 @@ class Entity {
       return grav
    }
 
-   // if an entity is on a platform, move the platform first then update position
+   // if an entity is on a platform, update position
    runPlatform(dt) {
-      // if we're on a platform, move the platform first
       // Debug.text("platform", "ent", groundEnt)
       // Debug.text("platform", "isPlatform", groundEnt ? groundEnt.platform : false)
-
       if (groundEnt && groundEnt.platform) {
-         groundEnt.think(dt)
          // Debug.text("platform", "before y+h", y+h)
          // Debug.text("platform", "platy", groundEnt.y)
          if (groundEnt.has("spring")) {
@@ -179,6 +185,7 @@ class Entity {
             grounded = false
          }
 
+         // Debug.text("platform", "moving", groundEnt.dy)
          y = y + check(Dim.V, groundEnt.dy).delta
          x = x + check(Dim.H, groundEnt.dx).delta
          // Debug.text("platform", "y+h", y+h)

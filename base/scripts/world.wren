@@ -224,6 +224,12 @@ class World {
    update(dt) {
       _ticks = _ticks + dt
       for (ent in _entities) {
+         if (ent.active && ent.platform) {
+            ent.think(1/60)
+         }
+      }
+      
+      for (ent in _entities) {
          if (ent.active) {
             ent.think(1/60)
          }

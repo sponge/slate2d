@@ -100,9 +100,10 @@ class Player is Entity {
       var shootPress = _disableControls ? false : Trap.keyActive(Button.B)
       var speed = 0
 
+      runPlatform(dt)
+
       // track if on the ground this frame
       var ground = snapGround()
-      runPlatform(dt)
       if (groundEnt && groundEnt.has("spring")) {
          _jumpHeld = jumpPress && _jumpHeldFrames < _earlyBounceFrames
       }
@@ -189,7 +190,6 @@ class Player is Entity {
       }
 
       var chky = check(Dim.V, dy)
-      _chky = chky
       y = y + chky.delta
       triggerTouch(chky)
 

@@ -49,8 +49,9 @@ class Snail is Entity {
    }
 
    think(dt) {
-      var ground = snapGround()
       runPlatform(dt)
+
+      var ground = snapGround()
 
       // give snail shells a little extra boost on springs
       if (_shell) {

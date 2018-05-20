@@ -39,8 +39,9 @@ class Walker is Entity {
    }
 
    think(dt) {
-      var ground = snapGround()
       runPlatform(dt)
+
+      var ground = snapGround()
 
       if (!grounded) {
          dy = Math.min(dy + world.gravity, _terminalVelocity)

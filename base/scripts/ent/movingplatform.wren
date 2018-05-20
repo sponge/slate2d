@@ -1,6 +1,7 @@
 import "entity" for Entity
 import "collision" for Dim, Dir
 import "engine" for Trap
+import "debug" for Debug
 
 class MovingPlatform is Entity {
    resolve { _resolve }
@@ -92,12 +93,14 @@ class MovingPlatform is Entity {
       var chkx = check(Dim.H, dx)
       var chky = check(Dim.V, dy)
 
-      // if the platform is going to lift the player up, attach them to this and lift them
-      // FIXME: now that enemies can use moving platforms, this needs to be done to ALL entities touching a platform
-      if (chky.entity && chky.entity.isPlayer && chky.entity.groundEnt != this && intersects(chky.entity) == false) {
-         chky.entity.groundEnt = this
-         chky.entity.y = chky.entity.y + chky.entity.check(Dim.V, dy).delta
-         // Debug.text("attach")
+      // if the platform is going to lift the entity up, attach them to this and lift them
+      for (col in chky.entities.list) {
+         var ent = col.entity
+         if (ent.groundEnt != this && intersects(ent) == false) {
+            ent.groundEnt = this
+            ent.y = ent.y + ent.check(Dim.V, dy).delta
+            // Debug.printLn("attach")
+         }
       }
 
       x = x + dx

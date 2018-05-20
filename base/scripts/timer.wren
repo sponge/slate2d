@@ -25,7 +25,7 @@ class Timer {
          f.call(t)
       }
 
-      if (__fibers.count == 0) {
+      if (__fibers.isEmpty) {
          return
       }
       

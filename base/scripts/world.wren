@@ -223,16 +223,14 @@ class World {
 
    update(dt) {
       _ticks = _ticks + dt
-      for (ent in _entities) {
+      for (ent in _entities.where {|ent| ent.active && ent.platform}) {
          if (ent.active && ent.platform) {
             ent.think(1/60)
          }
       }
-      
-      for (ent in _entities) {
-         if (ent.active) {
-            ent.think(1/60)
-         }
+
+      for (ent in _entities.where {|ent| ent.active}) {
+         ent.think(1/60)
       }
 
       if (_entities.count > 0) {

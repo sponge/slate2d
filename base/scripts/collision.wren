@@ -56,7 +56,7 @@ class CollisionList {
    }
 
    filter(delta) {
-      if (_list.count == 0) {
+      if (_list.isEmpty) {
          return
       }
 

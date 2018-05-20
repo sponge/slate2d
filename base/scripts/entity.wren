@@ -110,27 +110,25 @@ class Entity {
 
       var collideEnt = null
 
-      for (ent in _world.entities) {
-         // skip entities that aren't active or have no size
-         if (ent != this && ent.active && (ent.w > 0 || ent.h > 0)) {
-            // try and move the full wishAmt instead of d,
-            // so we can catch standing on at the same time
-            var tmp = this.collide(ent, dim, wishAmt)
-            // if it's not false, it'll return the distance moved
-            if (tmp != false) {
-               // give the entity a chance to reject the collision
-               if (ent.canCollide(this, dir, wishAmt)) {
-                  if (ent.trigger) {
-                     collision.triggers.add(tmp, ent)
-                  } else {
-                     collision.entities.add(tmp, ent)
-                     // store the minimum movement amount
-                     // FIXME: move away from returning a single entity?
-                     // also maybe this could be done in .set()?
-                     if (tmp.abs < d.abs) {
-                        collideEnt = ent
-                        d = tmp
-                     }
+      // skip entities that aren't active or have no size
+      for (ent in _world.entities.where {|ent| ent != this && ent.active && (ent.w > 0 || ent.h > 0)}) {
+         // try and move the full wishAmt instead of d,
+         // so we can catch standing on at the same time
+         var tmp = this.collide(ent, dim, wishAmt)
+         // if it's not false, it'll return the distance moved
+         if (tmp != false) {
+            // give the entity a chance to reject the collision
+            if (ent.canCollide(this, dir, wishAmt)) {
+               if (ent.trigger) {
+                  collision.triggers.add(tmp, ent)
+               } else {
+                  collision.entities.add(tmp, ent)
+                  // store the minimum movement amount
+                  // FIXME: move away from returning a single entity?
+                  // also maybe this could be done in .set()?
+                  if (tmp.abs < d.abs) {
+                     collideEnt = ent
+                     d = tmp
                   }
                }
             }

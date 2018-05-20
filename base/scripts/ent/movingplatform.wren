@@ -72,12 +72,6 @@ class MovingPlatform is Entity {
    }
 
    think(dt) {
-      // don't move twice in a frame in case a player called us
-      if (_movedTime == world.ticks) {
-         return
-      }
-      _movedTime = world.ticks
-
       if (!_enabled) {
          return
       }

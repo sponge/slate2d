@@ -27,11 +27,6 @@ class FallingPlatform is Entity {
    }
 
    think(dt) {
-      if (_movedTime == world.ticks) {
-         return
-      }
-      _movedTime = world.ticks
-
       // die if we've fallen off the level
       if ( y > world.level.maxY + world.level.th * 2) {
          active = false

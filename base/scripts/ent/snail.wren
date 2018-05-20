@@ -2,6 +2,7 @@ import "entity" for Entity
 import "collision" for Dir, Dim
 import "engine" for Trap
 import "math" for Math
+import "debug" for Debug
 
 class Snail is Entity {
    construct new(world, obj, ox, oy) {
@@ -51,19 +52,20 @@ class Snail is Entity {
    think(dt) {
       runPlatform(dt)
 
+      // give snail shells a little extra boost on springs than they'd normally provide
+      if (_shell && groundEnt && groundEnt.has("spring")) {
+         var amt = groundEnt.checkSpring()
+         if (amt != 0) {
+            dy = amt * 1.3
+            dx = dx * 1.3
+         }
+      }
+
+      // check ground here otherwise snail won't get boost from springs
       var ground = snapGround()
 
-      // give snail shells a little extra boost on springs
-      if (_shell) {
-         if (groundEnt && groundEnt.has("spring")) {
-            var amt = groundEnt.checkSpring()
-            if (amt != 0) {
-               dy = amt * 1.3
-               dx = dx * 1.3
-            }
-         } else if (grounded && _shell) {
-            dx = dx == 0 ? 0 : dx > 0 ? _shellSpeed : - _shellSpeed
-         }
+      if (grounded && _shell) {
+         dx = dx == 0 ? 0 : dx > 0 ? _shellSpeed : - _shellSpeed
       }
 
       if (!grounded) {

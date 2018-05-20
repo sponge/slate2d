@@ -68,13 +68,7 @@ class CollisionList {
    }
 
    has(prop) {
-      for (t in _list) {
-         if (t.entity.has(prop)) {
-            return true
-         }
-      }
-
-      return false      
+      return _list.any { |info| info.entity.has(prop) }
    }
 }
 

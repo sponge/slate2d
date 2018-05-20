@@ -10,10 +10,10 @@ class Spring is Entity {
    platform { true }
 
    construct new(world, obj, ox, oy) {
-      super(world, obj, ox, oy, 8, 8)
-      _activateTime = -1
+      super(world, obj, ox, oy+1, 8, 7)
+      _activateTime = null
       _thinkTime = 0
-      _baseY = oy
+      _baseY = y
       _delay = 3
       _activated = false
 
@@ -23,7 +23,7 @@ class Spring is Entity {
    }
 
    // springs dont activate immediately, they activate a few frames later
-   framesUntilTrigger { _activateTime == -1 ? _delay : _delay - ((world.ticks - _activateTime) / _delay).floor }
+   framesUntilTrigger { _activateTime == null ? _delay : _delay - ((world.ticks - _activateTime) / _delay).floor }
 
    // they work like platforms, only collide from the top going down
    canCollide(other, side, d) {
@@ -32,17 +32,9 @@ class Spring is Entity {
 
    // start the animation
    touch(other, side) {
-      if (_activateTime == -1) {
+      if (_activateTime == null) {
          _activateTime = world.ticks
       }
-   }
-
-   trigger() {
-      y = _baseY
-      dy = 0
-      _activateTime = -1
-      _activated = true
-      Trap.sndPlay(_sound)
    }
 
    // if we're activated this frame, return the bounce amount
@@ -52,12 +44,8 @@ class Spring is Entity {
    }
 
    think(dt) {
-      if (_thinkTime == world.ticks) {
-         return
-      }
-      _thinkTime = world.ticks
-
-      if (_activateTime == -1) {
+      if (_activateTime == null) {
+         dy = 0
          _activated = false
          return
       }
@@ -65,24 +53,21 @@ class Spring is Entity {
       // set us up if we're set to activate. if there's a player on us, this think
       // will be run before the player calls checkSpring
       if (framesUntilTrigger <= 0) {
-         trigger()
+         y = _baseY
+         dy = -2 // shift entities up before springing them
+         _activateTime = null
+         _activated = true
+         Trap.sndPlay(_sound)
       } else {
          // since we work like a moving platform, move down and shrink
          // the player will stick to us
          dy = 2
          y = _baseY + (_delay - framesUntilTrigger) * 2
       }
-
-      // if we run before entities standing on us, go ahead and move them now
-      for (ent in world.entities) {
-         if (ent.groundEnt == this) {
-            ent.y = y - ent.h
-         }
-      }
    }
 
    draw(t) {
-      var frm = _activateTime == -1 ? _delay : framesUntilTrigger
+      var frm = _activateTime == null ? _delay : framesUntilTrigger
       drawSprite(263 - frm, x, y)      
    }
 }

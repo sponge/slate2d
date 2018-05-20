@@ -229,7 +229,7 @@ class World {
          }
       }
 
-      for (ent in _entities.where {|ent| ent.active}) {
+      for (ent in _entities.where {|ent| ent.active && !ent.platform}) {
          ent.think(1/60)
       }
 

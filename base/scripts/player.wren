@@ -18,12 +18,10 @@ class Player is Entity {
    construct new(world, ti, ox, oy) {
       super(world, ti, ox, oy - 4, 7, 12)
 
-      grounded = true
       _fallingFrames = 0
       _pMeter = 0
       _jumpHeld = false
       _jumpHeldFrames = 0
-      groundEnt = null
       _disableControls = false
       _health = 3
       _invulnTime = 0

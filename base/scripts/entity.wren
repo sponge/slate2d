@@ -43,7 +43,7 @@ class Entity {
       _h = h
       _dx = 0
       _dy = 0
-      _grounded = false
+      _grounded = true
       _groundEnt = null
 
       // allow multiple entities to use this so they all react to the world similarly

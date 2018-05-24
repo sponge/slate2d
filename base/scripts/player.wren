@@ -16,7 +16,7 @@ class Player is Entity {
    isPlayer { true }
    
    construct new(world, ti, ox, oy) {
-      super(world, ti, ox, oy - 4, 7, 12)
+      super(world, ti, ox, oy - 1, 7, 9)
 
       _fallingFrames = 0
       _pMeter = 0
@@ -56,6 +56,7 @@ class Player is Entity {
 
       _jumpHnd = null
 
+      _img = Asset.create(Asset.Image, "player", "gfx/notgooddog.png")
       _jumpSound = Asset.create(Asset.Sound, "player_jump", "sound/jump.wav")
       _shootSound = Asset.create(Asset.Sound, "player_shoot", "sound/shoot.wav")
       _hurtSound = Asset.create(Asset.Sound, "player_hurt", "sound/hurt.wav")
@@ -201,7 +202,7 @@ class Player is Entity {
       }
 
       if (shootPress && _shotsActive < 3 && world.ticks > _nextShotTime) {
-         var shot = world.spawn("StunShot", _stunProps, _facing > 0 ? x + 6 : x - 8, y + 1)
+         var shot = world.spawn("StunShot", _stunProps, _facing > 0 ? x + 6 : x - 8, y - 2)
          shot.dx = shot.dx * _facing
          _nextShotTime = world.ticks + 30
          Trap.sndPlay(_shootSound)
@@ -222,7 +223,8 @@ class Player is Entity {
          }
       }
 
-      var color = Draw.setColor(Color.Fill, 218, 212, 94, 255)
-      Draw.rect(x, y, w, h, Fill.Solid)
+      //var color = Draw.setColor(Color.Fill, 218, 212, 94, 255)
+      //Draw.rect(x, y, w, h, Fill.Solid)
+      Draw.image(_img, x-2, y-3, 12, 12, 1.0, 1.0, _facing > 0 ? 0 : 1)
    }
 }

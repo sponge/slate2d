@@ -44,6 +44,6 @@ class StunShot is Cannonball {
 
    draw(t) {
       var anim = _endTime > 0 ? ((world.ticks - _endTime) / 5).floor + 1 : 0
-      drawSprite(275 + anim, x, y)
+      drawSprite(275 + anim, x, y, 1.0, 1.0, dx < 0 ? 1 : 0)
    }
 }

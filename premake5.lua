@@ -33,7 +33,7 @@ solution "game"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
     sysincludedirs { "libs/sdl", "libs/nanovg", "libs/tmx", "libs/imgui", "libs/physfs", "libs/glew", "libs/soloud/include" }
     debugdir "."
-    targetdir "bin/%{cfg.buildcfg}"
+    targetdir "build/bin/%{cfg.buildcfg}"
     links { "nanovg", "tmx", "imgui", "physfs", "glew", "soloud", "libmodplug" }
     cppdialect "C++14"
 
@@ -68,7 +68,7 @@ solution "game"
     language "C++"
     files { "game/**.c", "game/**.cpp", "game/**.h", "game/**.hh" }
     sysincludedirs { "libs/tmx", "libs/imgui" }
-    targetdir "bin/%{cfg.buildcfg}"
+    targetdir "build/bin/%{cfg.buildcfg}"
     cppdialect "C++14"
     links { "tmx", "imgui" }
 

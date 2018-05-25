@@ -301,4 +301,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# custom stuff
+package/
 imgui.ini

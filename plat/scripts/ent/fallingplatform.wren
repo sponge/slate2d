@@ -1,10 +1,14 @@
 import "entity" for Entity
 import "collision" for Dir
+import "timer" for Timer
 
 class FallingPlatform is Entity {
    platform { true }
    construct new(world, obj, ox, oy) {
       super(world, obj, ox, oy, 24, 4)
+
+      _origX = ox
+      _origY = oy
 
       _fallTime = 0
       _fallSpeed = 1
@@ -29,6 +33,9 @@ class FallingPlatform is Entity {
    think(dt) {
       // die if we've fallen off the level
       if ( y > world.level.maxY + world.level.th * 2) {
+         Timer.runLater(180, Fn.new {
+            world.spawn("FallingPlatform", null, _origX, _origY)
+         })
          active = false
          return
       }

@@ -1,3 +1,9 @@
+newoption {
+  trigger = "emscripten",
+  description = "use with gmake2 to build emscripten ready makefile",
+  default = false
+}
+
 solution "game"
   configurations { "Debug", "Release" }
   location "build"
@@ -44,13 +50,13 @@ solution "game"
       links { "SDL2", "SDL2main", "opengl32" }
       defines { "_CRT_SECURE_NO_WARNINGS" }
 
-      filter "platforms:x86"
+      filter { "platforms:x86", "system:windows" }
         libdirs { "libs/sdl/lib/Win32" }
         postbuildcommands {
           '{COPY} "%{wks.location}../libs/sdl/lib/win32/SDL2.dll" "%{cfg.targetdir}"'
         }
 
-      filter "platforms:x64"
+      filter { "platforms:x64", "system:windows" }
         libdirs { "libs/sdl/lib/x64" }
         postbuildcommands {
           '{COPY} "%{wks.location}../libs/sdl/lib/x64/SDL2.dll" "%{cfg.targetdir}"'
@@ -63,6 +69,12 @@ solution "game"
     configuration { "linux" }
       linkoptions { "-stdlib=libc++" }
 
+    filter { "action:gmake2", "options:emscripten" }
+      targetextension ".bc"
+      removefiles { "src/imgui_impl_sdl_gl3.cpp" }
+      links { "game" }
+      postbuildcommands { "mkdir html; emcc -O2 --preload-file ../base --preload-file ../plat -s USE_SDL=2 %{cfg.targetdir}/engine.bc -o html/engine.html" }
+
   project "game"
     kind "SharedLib"
     language "C++"
@@ -71,6 +83,9 @@ solution "game"
     targetdir "build/bin/%{cfg.buildcfg}"
     cppdialect "C++14"
     links { "tmx", "imgui" }
+    filter { "action:gmake2", "options:emscripten" }
+        kind "StaticLib"
+        targetdir "build/%{cfg.buildcfg}"
 
   group "libraries"
 
@@ -124,6 +139,7 @@ solution "game"
       targetdir "build/%{cfg.buildcfg}"
       targetname "soloud_static"
       warnings "Off"
+      sysincludedirs { "libs/sdl" }
       defines { "MODPLUG_STATIC", "WITH_MODPLUG", "WITH_SDL2_STATIC" }
   		files {
         "libs/soloud/src/audiosource/**.c*",
@@ -156,3 +172,5 @@ solution "game"
       characterset "MBCS"
       configuration { "macosx" }
         defines { "HAVE_SETENV" }
+      filter { "action:gmake2", "options:emscripten" }
+        defines { "HAVE_STDINT_H", "HAVE_SETENV" } 

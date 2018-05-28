@@ -14,7 +14,6 @@
 #include "assetloader.h"
 
 extern SceneManager *sm;
-extern ClientInfo inf;
 extern tmx_map *map;
 extern ClientInfo inf;
 
@@ -53,7 +52,7 @@ void *tmx_fs(const char *filename, int *outSz) {
 
 	*outSz = FS_ReadFile(va("maps/%s",filename), &xml);
 
-	if (outSz < 0) {
+	if (*outSz < 0) {
 		Com_Error(ERR_DROP, "Couldn't load file while parsing map %s", filename);
 		return nullptr;
 	}
@@ -138,6 +137,12 @@ static gameImportFuncs_t GAMEtraps = {
 	Snd_Stop
 };
 
+#ifdef __EMSCRIPTEN__
+extern "C" void dllEntry(void ** exports, void * imports, int * version);
+void Sys_LoadDll(const char * module, void ** exports, int * version) {
+	dllEntry(exports, &GAMEtraps, version);
+}
+#else
 void Sys_LoadDll(const char * module, void ** exports, int * version) {
 	void *gameDLL;
 
@@ -164,3 +169,4 @@ void Sys_LoadDll(const char * module, void ** exports, int * version) {
 	gameDllEntry(exports, &GAMEtraps, version);
 
 }
+#endif

@@ -40,11 +40,11 @@
 #endif
 
 #include "imgui.h"
-#include "imgui_impl_sdl_gl3.h"
+#include "imgui_impl_sdl.h"
 
 // SDL,GL3W>
 #include <SDL/SDL.h>
-#include <SDL/SDL_syswm.h>
+//#include <SDL/SDL_syswm.h>
 
 #ifdef _WIN32
 #define GLEW_STATIC
@@ -70,7 +70,7 @@ static unsigned int g_VboHandle = 0,g_ElementsHandle = 0;
 // This is the main rendering function that you have to implement and provide to ImGui (via setting up 'RenderDrawListsFn' in the ImGuiIO structure)
 // Note that this implementation is little overcomplicated because we are saving/setting up/restoring every OpenGL state explicitly, in order to be able to run within any OpenGL engine that doesn't do so. 
 // If text or lines are blurry when integrating ImGui in your engine: in your Render function, try translating your projection matrix by (0.5f,0.5f) or (0.375f,0.375f)
-void ImGui_ImplSdlGL3_RenderDrawData(ImDrawData* draw_data)
+void ImGui_ImplSdl_RenderDrawData(ImDrawData* draw_data)
 {
     // Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
     ImGuiIO& io = ImGui::GetIO();
@@ -202,7 +202,7 @@ static void ImGui_ImplSdlGL3_SetClipboardText(void*, const char* text)
 // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
 // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
 // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-bool ImGui_ImplSdlGL3_ProcessEvent(SDL_Event* event)
+bool ImGui_ImplSdl_ProcessEvent(SDL_Event* event)
 {
     ImGuiIO& io = ImGui::GetIO();
     switch (event->type)
@@ -358,7 +358,7 @@ void    ImGui_ImplSdlGL3_InvalidateDeviceObjects()
     }
 }
 
-bool    ImGui_ImplSdlGL3_Init(SDL_Window* window, const char* glsl_version)
+bool    ImGui_ImplSdl_Init(SDL_Window* window, const char* glsl_version)
 {
     // Store GL version string so we can refer to it later in case we recreate shaders.
     if (glsl_version == NULL)

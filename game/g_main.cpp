@@ -8,9 +8,16 @@
 
 gameImportFuncs_t *trap;
 kbutton_t buttons[12];
+#ifdef __EMSCRIPTEN__
+extern ClientInfo *inf;
+#else
 ClientInfo *inf;
+#endif
 WrenScene *wrenScene;
 
+#ifdef __EMSCRIPTEN__
+extern
+#endif
 void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 
 void Cmd_Scene_f(void) {
@@ -123,6 +130,8 @@ varargs versions of all text functions.
 FIXME: make this buffer size safe someday
 ============
 */
+#ifndef __EMSCRIPTEN__
+
 const char	* __cdecl va(const char *format, ...) {
 	va_list		argptr;
 	static char		string[2][32000];	// in case va is called by nested functions
@@ -164,3 +173,4 @@ void Com_DefaultExtension(char *path, int maxSize, const char *extension) {
 	strncpy(oldPath, path, sizeof(oldPath));
 	snprintf(path, maxSize, "%s%s", oldPath, extension);
 }
+#endif

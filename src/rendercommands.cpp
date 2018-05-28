@@ -213,45 +213,41 @@ const void *RB_DrawMapLayer(const void *data) {
 
 	assert(layer != nullptr);
 
-	if (layer->type != L_LAYER) {
-		goto done;
-	}
+	if (layer->type == L_LAYER) {
+		unsigned int cellW = cmd->cellW == 0 ? map->width : cmd->cellW;
+		unsigned int cellH = cmd->cellH == 0 ? map->height : cmd->cellH;
 
-	unsigned int cellW = cmd->cellW == 0 ? map->width : cmd->cellW;
-	unsigned int cellH = cmd->cellH == 0 ? map->height : cmd->cellH;
+		unsigned int endX = std::min(cmd->cellX + cellW, map->width);
+		unsigned int endY = std::min(cmd->cellY + cellH, map->height);
 
-	unsigned int endX = std::min(cmd->cellX + cellW, map->width);
-	unsigned int endY = std::min(cmd->cellY + cellH, map->height);
+		for (unsigned int y = cmd->cellY; y < endY; y++) {
+			for (unsigned int x = cmd->cellX; x < endX; x++) {
+				unsigned int raw = layer->content.gids[(y*map->width) + x];
+				unsigned int gid = raw & TMX_FLIP_BITS_REMOVAL;
 
-	for (unsigned int y = cmd->cellY; y < endY; y++) {
-		for (unsigned int x = cmd->cellX; x < endX; x++) {
-			unsigned int raw = layer->content.gids[(y*map->width) + x];
-			unsigned int gid = raw & TMX_FLIP_BITS_REMOVAL;
+				if (gid == 0) {
+					continue;
+				}
 
-			if (gid == 0) {
-				continue;
+				byte flipBits = (raw & TMX_FLIPPED_HORIZONTALLY ? FLIP_H : 0) | (raw & TMX_FLIPPED_VERTICALLY ? FLIP_V : 0) | (raw & TMX_FLIPPED_DIAGONALLY ? FLIP_DIAG : 0);
+
+				tmx_tile *tile = map->tiles[gid];
+				tmx_tileset *ts = tile->tileset;
+				Asset *asset = (Asset*) tile->tileset->image->resource_image;
+
+				DrawImage(
+				//  offset + current x/y         - start tile offset         
+					cmd->x + x * ts->tile_width  - (cmd->cellX * ts->tile_width),
+					cmd->y + y * ts->tile_height - (cmd->cellY * ts->tile_height),
+					ts->tile_width,
+					ts->tile_height,
+					tile->ul_x,
+					tile->ul_y,
+					1.0f, 1.0f, flipBits, (Image*) asset->resource, 0
+				);
 			}
-
-			byte flipBits = (raw & TMX_FLIPPED_HORIZONTALLY ? FLIP_H : 0) | (raw & TMX_FLIPPED_VERTICALLY ? FLIP_V : 0) | (raw & TMX_FLIPPED_DIAGONALLY ? FLIP_DIAG : 0);
-
-			tmx_tile *tile = map->tiles[gid];
-			tmx_tileset *ts = tile->tileset;
-			Asset *asset = (Asset*) tile->tileset->image->resource_image;
-
-			DrawImage(
-			//  offset + current x/y         - start tile offset         
-				cmd->x + x * ts->tile_width  - (cmd->cellX * ts->tile_width),
-				cmd->y + y * ts->tile_height - (cmd->cellY * ts->tile_height),
-				ts->tile_width,
-				ts->tile_height,
-				tile->ul_x,
-				tile->ul_y,
-				1.0f, 1.0f, flipBits, (Image*) asset->resource, 0
-			);
 		}
 	}
-
-done:
 	return (const void *)(cmd + 1);
 }
 

@@ -1,7 +1,7 @@
 #include "scene_console.h"
 #include <nanovg.h>
 #include <imgui.h>
-#include "imgui_impl_sdl_gl3.h"
+#include "imgui_impl_sdl.h"
 #include "cvar_main.h"
 #include "console/console.h"
 

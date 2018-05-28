@@ -3,18 +3,32 @@
 #include <chrono>
 #include <thread>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
+#ifdef __EMSCRIPTEN__
+#include "GLES2/gl2.h"
+#include "GLES2/gl2ext.h"
+#define NO_SDL_GLEXT
+#else
 #define GLEW_STATIC
 #include <GL/glew.h>
+#endif
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
 #include <nanovg.h>
+#ifdef __EMSCRIPTEN__
+#define NANOVG_GLES2_IMPLEMENTATION
+#else
 #define NANOVG_GL3_IMPLEMENTATION
+#endif
 #include <nanovg_gl.h>
 
 #include <imgui.h>
-#include "imgui_impl_sdl_gl3.h"
+#include "imgui_impl_sdl.h"
 
 #include "files.h"
 #include "input.h"
@@ -73,10 +87,156 @@ void DropToMenu() {
 	errorVisible = true;
 }
 
-int main(int argc, char *argv[]) {
+static ImGuiIO io;
+static struct NVGcontext* vg;
+static bool loop = true;
+static std::chrono::time_point<std::chrono::steady_clock> start;
+static std::chrono::time_point<std::chrono::steady_clock> last;
+
+void main_loop() {
 	using clock = std::chrono::high_resolution_clock;
 	using namespace std::chrono_literals;
 
+	SDL_Event ev;
+	auto now = clock::now();
+	auto dt = std::chrono::duration<float>(now - last).count();
+	com_frameTime = std::chrono::duration<float>(now - start).count() * 1000;
+	frame_msec = dt * 1000;
+	last = now;
+
+	if (s_volume->modified) {
+		soloud.setGlobalVolume(s_volume->value);
+		s_volume->modified = false;
+	}
+
+	while (SDL_PollEvent(&ev)) {
+		ImGui_ImplSdl_ProcessEvent(&ev);
+
+		switch (ev.type) {
+		case SDL_QUIT:
+			loop = false;
+			return;
+
+		case SDL_KEYUP:
+			KeyEvent(ev.key.keysym.scancode, false, com_frameTime);
+			break;
+
+		case SDL_KEYDOWN:
+			if (ev.key.keysym.sym == SDLK_BACKQUOTE) {
+				consoleScene->consoleActive = !consoleScene->consoleActive;
+				ImGui::SetWindowFocus(nullptr);
+				break;
+			}
+			if (io.WantCaptureKeyboard) {
+				break;
+			}
+			KeyEvent(ev.key.keysym.scancode, true, com_frameTime);
+			break;
+
+		case SDL_CONTROLLERDEVICEADDED: {
+			if (ev.cdevice.which > MAX_CONTROLLERS) {
+				break;
+			}
+
+			SDL_GameController *controller = SDL_GameControllerOpen(ev.cdevice.which);
+			Com_Printf("Using controller at device index %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
+			break;
+		}
+
+		case SDL_CONTROLLERDEVICEREMOVED: {
+			SDL_GameController* controller = SDL_GameControllerFromInstanceID(ev.cdevice.which);
+			Com_Printf("Closing controller instance %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
+			SDL_GameControllerClose(controller);
+			break;
+		}
+
+		case SDL_MOUSEBUTTONUP:
+			MouseEvent(ev.button.button, false, com_frameTime);
+			break;
+
+		case SDL_MOUSEBUTTONDOWN:
+			if (io.WantCaptureKeyboard || io.WantCaptureMouse) {
+				break;
+			}
+			MouseEvent(ev.button.button, true, com_frameTime);
+			break;
+
+
+		case SDL_CONTROLLERBUTTONDOWN:
+			JoyEvent(ev.jbutton.which, ev.jbutton.button, true, com_frameTime);
+			break;
+
+		case SDL_CONTROLLERBUTTONUP:
+			JoyEvent(ev.jbutton.which, ev.jbutton.button, false, com_frameTime);
+			break;
+		}
+	}
+	
+	Cbuf_Execute();
+
+	ImGui_ImplSdl_NewFrame(window);
+
+	if (errorVisible && strlen(com_errorMessage->string) == 0) {
+		errorVisible = 0;
+	}
+	else if (errorVisible) {
+		ImGui::SetNextWindowPosCenter();
+		ImGui::Begin("Error", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::Text("%s", com_errorMessage->string);
+		ImGui::Text("%s", com_lastErrorStack->string);
+		ImGui::NewLine();
+		if (ImGui::Button("Close")) {
+			errorVisible = false;
+			Cvar_Set("com_errorMessage", nullptr);
+			Cvar_Set("com_lastErrorStack", nullptr);
+		}
+		ImGui::End();
+	}
+
+	/*
+	frame_accum += dt;
+	while (frame_accum >= 1 / 200.0f) {
+		sm->Update(1 / 200.0f);
+		frame_accum -= 1 / 200.0f;
+	}
+	*/
+
+	glClear(GL_COLOR_BUFFER_BIT);
+	nvgBeginFrame(inf.nvg, inf.width, inf.height, 1.0);
+
+	gexports->Frame(dt);
+	consoleScene->Update(dt);
+
+	if (!com_pause->integer || frameAdvance) {
+		sm->Update(dt);
+		frameAdvance = false;
+	}
+
+	// FIXME: maybe eventually take dc_clear/dc_submit out of wren and handle it in the engine
+	// so we can just render the last submitted frame without calling render on all the scenes
+	// but doing so would make it easier to cheat changing state in your draw function
+	sm->Render();
+	consoleScene->Render();
+
+	nvgEndFrame(vg);
+	ImGui::Render();
+	ImGui_ImplSdl_RenderDrawData(ImGui::GetDrawData());
+
+	SDL_GL_SwapWindow(window);
+
+	// sleep a little so we don't burn up cpu/gpu on insanely fast frames (>1000fps)
+	// in a perfect world you should be able to do com_maxFps but we lose the cpu benefits
+	// by having to burn through a really tight loop to measure
+	if (com_sleepShortFrame->integer && frame_msec < 1.0f) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+
+}
+
+int main(int argc, char *argv[]) {
+	using clock = std::chrono::high_resolution_clock;
+	using namespace std::chrono_literals;
+	
 	// handle command line parsing. combine into one string and pass it in.
 	if (argc > 1) {
 		int len, i;
@@ -127,10 +287,14 @@ int main(int argc, char *argv[]) {
 	}
 
 	atexit(SDL_Quit);
-
+#ifdef __EMSCRIPTEN__
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+#else
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile::SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+#endif
 
 	inf.width = vid_width->integer;
 	inf.height = vid_height->integer;
@@ -155,21 +319,26 @@ int main(int argc, char *argv[]) {
 		Com_Error(ERR_FATAL, "There was an error with OpenGL configuration.");
 	}
 
+#ifndef __EMSCRIPTEN__
 	if (glewInit() != GLEW_OK) {
 		Com_Error(ERR_FATAL, "Could not init glew.");
 	}
+#endif
 
 	soloud.init();
 
 	SDL_GL_MakeCurrent(window, context);
 
 	ImGui::CreateContext();
-	ImGui_ImplSdlGL3_Init(window);
+	ImGui_ImplSdl_Init(window);
 
 	ImGui::StyleColorsDark();
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
-
-	struct NVGcontext* vg = nvgCreateGL3(NVG_STENCIL_STROKES);
+#ifdef __EMSCRIPTEN__
+	vg = nvgCreateGLES2(NVG_STENCIL_STROKES);
+#else
+	vg = nvgCreateGL3(NVG_STENCIL_STROKES);
+#endif
 	inf.nvg = vg;
 
 	unsigned char *font;
@@ -191,155 +360,28 @@ int main(int argc, char *argv[]) {
 #ifdef _WIN32
 	static const char *lib = "game.dll";
 #elif defined MACOS
-	static const char *lib = "libgame.dylib";
+static const char *lib = "libgame.dylib";
+#else
+        static const char *lib = "libgame.so";
 #endif
 
 	Sys_LoadDll(lib, (void **)(&gexports), &ver);
 	gexports->Init((void*)&inf, (void*)ImGui::GetCurrentContext());
 
-	SDL_Event ev;
-	ImGuiIO& io = ImGui::GetIO();
+	io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-	auto start = clock::now();
-	auto last = clock::now();
-
-	while (true) {
-		auto now = clock::now();
-		auto dt = std::chrono::duration<float>(now - last).count();
-		com_frameTime = std::chrono::duration<float>(now - start).count() * 1000;
-		frame_msec = dt * 1000;
-		last = now;
-
-		if (s_volume->modified) {
-			soloud.setGlobalVolume(s_volume->value);
-			s_volume->modified = false;
-		}
-
-		while (SDL_PollEvent(&ev)) {
-			ImGui_ImplSdlGL3_ProcessEvent(&ev);
-
-			switch (ev.type) {
-			case SDL_QUIT:
-				goto quit;
-
-			case SDL_KEYUP:
-				KeyEvent(ev.key.keysym.scancode, false, com_frameTime);
-				break;
-
-			case SDL_KEYDOWN:
-				if (ev.key.keysym.sym == SDLK_BACKQUOTE) {
-					consoleScene->consoleActive = !consoleScene->consoleActive;
-					ImGui::SetWindowFocus(nullptr);
-					break;
-				}
-				if (io.WantCaptureKeyboard) {
-					break;
-				}
-				KeyEvent(ev.key.keysym.scancode, true, com_frameTime);
-				break;
-
-			case SDL_CONTROLLERDEVICEADDED: {
-				if (ev.cdevice.which > MAX_CONTROLLERS) {
-					break;
-				}
-
-				SDL_GameController *controller = SDL_GameControllerOpen(ev.cdevice.which);
-				Com_Printf("Using controller at device index %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
-				break;
-			}
-
-			case SDL_CONTROLLERDEVICEREMOVED: {
-				SDL_GameController* controller = SDL_GameControllerFromInstanceID(ev.cdevice.which);
-				Com_Printf("Closing controller instance %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
-				SDL_GameControllerClose(controller);
-				break;
-			}
-
-			case SDL_MOUSEBUTTONUP:
-				MouseEvent(ev.button.button, false, com_frameTime);
-				break;
-
-			case SDL_MOUSEBUTTONDOWN:
-				if (io.WantCaptureKeyboard || io.WantCaptureMouse) {
-					break;
-				}
-				MouseEvent(ev.button.button, true, com_frameTime);
-				break;
-
-
-			case SDL_CONTROLLERBUTTONDOWN:
-				JoyEvent(ev.jbutton.which, ev.jbutton.button, true, com_frameTime);
-				break;
-
-			case SDL_CONTROLLERBUTTONUP:
-				JoyEvent(ev.jbutton.which, ev.jbutton.button, false, com_frameTime);
-				break;
-			}
-		}
-		
-		Cbuf_Execute();
-
-		ImGui_ImplSdlGL3_NewFrame(window);
-
-		if (errorVisible && strlen(com_errorMessage->string) == 0) {
-			errorVisible = 0;
-		}
-		else if (errorVisible) {
-			ImGui::SetNextWindowPosCenter();
-			ImGui::Begin("Error", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
-			ImGui::Text("%s", com_errorMessage->string);
-			ImGui::Text("%s", com_lastErrorStack->string);
-			ImGui::NewLine();
-			if (ImGui::Button("Close")) {
-				errorVisible = false;
-				Cvar_Set("com_errorMessage", nullptr);
-				Cvar_Set("com_lastErrorStack", nullptr);
-			}
-			ImGui::End();
-		}
-
-		/*
-		frame_accum += dt;
-		while (frame_accum >= 1 / 200.0f) {
-			sm->Update(1 / 200.0f);
-			frame_accum -= 1 / 200.0f;
-		}
-		*/
-
-		glClear(GL_COLOR_BUFFER_BIT);
-		nvgBeginFrame(inf.nvg, inf.width, inf.height, 1.0);
-
-		gexports->Frame(dt);
-		consoleScene->Update(dt);
-
-		if (!com_pause->integer || frameAdvance) {
-			sm->Update(dt);
-			frameAdvance = false;
-		}
-
-		// FIXME: maybe eventually take dc_clear/dc_submit out of wren and handle it in the engine
-		// so we can just render the last submitted frame without calling render on all the scenes
-		// but doing so would make it easier to cheat changing state in your draw function
-		sm->Render();
-		consoleScene->Render();
-
-		nvgEndFrame(vg);
-		ImGui::Render();
-		ImGui_ImplSdlGL3_RenderDrawData(ImGui::GetDrawData());
-
-		SDL_GL_SwapWindow(window);
-
-		// sleep a little so we don't burn up cpu/gpu on insanely fast frames (>1000fps)
-		// in a perfect world you should be able to do com_maxFps but we lose the cpu benefits
-		// by having to burn through a really tight loop to measure
-		if (com_sleepShortFrame->integer && frame_msec < 1.0f) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		}
+	start = clock::now();
+	last = clock::now();
+#ifdef __EMSCRIPTEN__
+	emscripten_set_main_loop(main_loop, 0, 1);
+#else
+	while (loop) {
+		main_loop();
 	}
+#endif
 
-quit:
-	ImGui_ImplSdlGL3_Shutdown();
+	ImGui_ImplSdl_Shutdown();
 	ImGui::DestroyContext();
 	SDL_GL_DeleteContext(context);
 

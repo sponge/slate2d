@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <map>
+#include <string>
 
 extern "C" {
 #include "tmx.h"
@@ -17,17 +18,20 @@ void* mk_hashtable(unsigned int initial_size) {
 void hashtable_set(void *hashtable, const char *key, void *val, hashtable_entry_deallocator deallocator) {
 	assert(deallocator == NULL);
 	tmx_hash &map = *((tmx_hash*)hashtable);
-	map[key] = val;
+	std::string strKey = key;
+	map[strKey] = val;
 }
 
 void* hashtable_get(void *hashtable, const char *key) {
 	tmx_hash map = *((tmx_hash*)hashtable);
-	return map.at(key);
+	std::string strKey = key;
+	return map.at(strKey);
 }
 
 void hashtable_rm(void *hashtable, const char *key, hashtable_entry_deallocator deallocator) {
 	tmx_hash map = *((tmx_hash*)hashtable);
-	map.erase(key);
+	std::string strKey = key;
+	map.erase(strKey);
 }
 
 void free_hashtable(void *hashtable, hashtable_entry_deallocator deallocator) {

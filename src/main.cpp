@@ -368,8 +368,11 @@ static const char *lib = "libgame.dylib";
 	Sys_LoadDll(lib, (void **)(&gexports), &ver);
 	gexports->Init((void*)&inf, (void*)ImGui::GetCurrentContext());
 
+// not working in emscripten for some reason? assert on ImGuiKey_Space not being mapped
+#ifndef __EMSCRIPTEN__	
 	ImGuiIO &io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+#endif
 
 	start = clock::now();
 	last = clock::now();

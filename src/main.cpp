@@ -87,7 +87,6 @@ void DropToMenu() {
 	errorVisible = true;
 }
 
-static ImGuiIO io;
 static struct NVGcontext* vg;
 static bool loop = true;
 static std::chrono::time_point<std::chrono::steady_clock> start;
@@ -97,6 +96,7 @@ void main_loop() {
 	using clock = std::chrono::high_resolution_clock;
 	using namespace std::chrono_literals;
 
+	ImGuiIO &io = ImGui::GetIO();
 	SDL_Event ev;
 	auto now = clock::now();
 	auto dt = std::chrono::duration<float>(now - last).count();
@@ -368,7 +368,7 @@ static const char *lib = "libgame.dylib";
 	Sys_LoadDll(lib, (void **)(&gexports), &ver);
 	gexports->Init((void*)&inf, (void*)ImGui::GetCurrentContext());
 
-	io = ImGui::GetIO();
+	ImGuiIO &io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
 	start = clock::now();

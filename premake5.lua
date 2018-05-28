@@ -9,26 +9,26 @@ solution "game"
   location "build"
   warnings "Extra"
 
-  configuration { "macosx" }
+  filter { "system:macosx" }
     defines { "MACOS" }
     platforms { "x64" }
     buildoptions {"-Wno-unused-parameter"}
 
-  configuration { "windows" }
+  filter { "system:windows" }
     platforms { "x86", "x64" }
     disablewarnings { "4100" }
 
-  configuration { "linux" }
+  filter { "system:linux" }
     defines { "LINUX" }
     toolset "clang"
     platforms { "x64" }
   
-  configuration "Debug"
+  filter { "configurations:Debug" }
     defines { "DEBUG" }
     symbols "On"
     optimize "Off"
 
-  configuration "Release"
+  filter { "configurations:Release" }
     defines { "NDEBUG" }
     symbols "Off"
     optimize "Full"
@@ -44,10 +44,10 @@ solution "game"
     links { "nanovg", "tmx", "imgui", "physfs", "glew", "soloud", "libmodplug" }
     cppdialect "C++14"
 
-    configuration "Release"
+    filter { "configurations:Release" }
       kind "WindowedApp"
 
-    configuration { "windows" }
+    filter { "system:windows" }
       links { "SDL2", "SDL2main", "opengl32" }
       defines { "_CRT_SECURE_NO_WARNINGS" }
 
@@ -63,11 +63,11 @@ solution "game"
           '{COPY} "%{wks.location}../libs/sdl/lib/x64/SDL2.dll" "%{cfg.targetdir}"'
         }
 
-    configuration { "macosx" }
+    filter { "system:macosx" }
       links { "OpenGL.framework", "SDL2.framework", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework" }
       linkoptions {"-stdlib=libc++", "-F /Library/Frameworks"}
 
-    configuration { "linux" }
+    filter { "system:linux" }
       linkoptions { "-stdlib=libc++" }
 
     filter { "action:gmake2", "options:emscripten" }
@@ -107,7 +107,7 @@ solution "game"
       targetdir "build/%{cfg.buildcfg}"
       defines { "_CRT_SECURE_NO_WARNINGS" }
       cppdialect "C++14"
-      configuration { "macosx", "linux" }
+      filter { "system:macosx or system:linux" }
         buildoptions {"-stdlib=libc++"}
 
     project "imgui"
@@ -154,11 +154,11 @@ solution "game"
         "libs/soloud/include",
         "libs/sdl/SDL" 
       }
-      configuration { "windows" }
+      filter { "system:windows" }
         libdirs { "libs/sdl/lib/Win32" }
         links { "SDL2" }
 
-      configuration { "macosx" }
+      filter { "system:macosx" }
         links { "SDL2.framework" }
         linkoptions {"-F /Library/Frameworks"}
 
@@ -172,7 +172,7 @@ solution "game"
       targetname "libmodplug"
       warnings "Off"
       characterset "MBCS"
-      configuration { "macosx" }
+      filter { "system:macosx" }
         defines { "HAVE_SETENV" }
       filter { "action:gmake2", "options:emscripten" }
         defines { "HAVE_STDINT_H", "HAVE_SETENV" } 

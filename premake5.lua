@@ -37,6 +37,7 @@ solution "game"
     kind "ConsoleApp"
     language "C++"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
+    removefiles { "src/imgui_impl_sdl_es2.cpp" }
     sysincludedirs { "libs/sdl", "libs/nanovg", "libs/tmx", "libs/imgui", "libs/physfs", "libs/glew", "libs/soloud/include" }
     debugdir "."
     targetdir "build/bin/%{cfg.buildcfg}"
@@ -71,6 +72,7 @@ solution "game"
 
     filter { "action:gmake2", "options:emscripten" }
       targetextension ".bc"
+      files { "src/imgui_impl_sdl_es2.cpp" }
       removefiles { "src/imgui_impl_sdl_gl3.cpp" }
       links { "game" }
       postbuildcommands { "mkdir html; emcc -O2 --preload-file ../base --preload-file ../plat -s USE_SDL=2 %{cfg.targetdir}/engine.bc -o html/engine.html" }

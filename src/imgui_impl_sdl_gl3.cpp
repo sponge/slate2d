@@ -418,7 +418,7 @@ bool    ImGui_ImplSdl_Init(SDL_Window* window, const char* glsl_version)
     return true;
 }
 
-void ImGui_ImplSdlGL3_Shutdown()
+void ImGui_ImplSdl_Shutdown()
 {
     // Destroy SDL mouse cursors
     for (ImGuiMouseCursor cursor_n = 0; cursor_n < ImGuiMouseCursor_COUNT; cursor_n++)
@@ -429,7 +429,7 @@ void ImGui_ImplSdlGL3_Shutdown()
     ImGui_ImplSdlGL3_InvalidateDeviceObjects();
 }
 
-void ImGui_ImplSdlGL3_NewFrame(SDL_Window* window)
+void ImGui_ImplSdl_NewFrame(SDL_Window* window)
 {
     if (!g_FontTexture)
         ImGui_ImplSdlGL3_CreateDeviceObjects();

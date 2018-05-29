@@ -1,3 +1,7 @@
+#ifdef __EMSCRIPTEN__
+#define WREN_NAN_TAGGING 0
+#endif
+
 #include "wrenapi.h"
 #include "public.h"
 #include "game.h"

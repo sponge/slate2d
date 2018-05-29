@@ -86,8 +86,8 @@ solution "game"
     cppdialect "C++14"
     links { "tmx", "imgui" }
     filter { "action:gmake2", "options:emscripten" }
-        kind "StaticLib"
-        targetdir "build/%{cfg.buildcfg}"
+      kind "StaticLib"
+      targetdir "build/%{cfg.buildcfg}"
 
   group "libraries"
 
@@ -143,7 +143,7 @@ solution "game"
       warnings "Off"
       sysincludedirs { "libs/sdl" }
       defines { "MODPLUG_STATIC", "WITH_MODPLUG", "WITH_SDL2_STATIC" }
-  		files {
+      files {
         "libs/soloud/src/audiosource/**.c*",
         "libs/soloud/src/filter/**.c*",
         "libs/soloud/src/core/**.c*",

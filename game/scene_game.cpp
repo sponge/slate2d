@@ -15,12 +15,13 @@ void GameScene::Startup(ClientInfo* info) {
 
 	map = trap->Map_Load(mapFileName);
 
+	spr = trap->Asset_Create(ASSET_SPRITE, "spr", "");
+	trap->Asset_Sprite_Set(spr, sprites, 8, 8, 0, 0);
+
 	trap->Asset_LoadAll();
 
 	//trap->Snd_Play(music, 1.0f, 0.0f, true);
 	//trap->Snd_Play(speech, 1.0f, 0.0f, false);
-
-	spr = DC_CreateSprite(sprites, 8, 8, 0, 0);
 
 	int objLayer = Map_GetLayerByName(map, "objects");
 	if (objLayer != -1) {

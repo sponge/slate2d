@@ -18,14 +18,4 @@ void DC_DrawMapLayer(unsigned int layer, float x = 0, float y = 0, unsigned int 
 void DC_Submit();
 void DC_Clear();
 
-typedef struct {
-	unsigned int asset;
-	int maxId;
-	int imageWidth, imageHeight;
-	int spriteWidth, spriteHeight;
-	int marginX, marginY;
-	int rows, cols;
-} Sprite;
-
-const Sprite DC_CreateSprite(unsigned int asset, int width, int height, int marginX, int marginY);
-void DC_DrawSprite(const Sprite sprite, int id, float x, float y, float alpha = 1.0f, float scale = 1.0f, byte flipBits = 0, int w = 1, int h = 1);
+void DC_DrawSprite(unsigned int sprite, int id, float x, float y, float alpha = 1.0f, float scale = 1.0f, byte flipBits = 0, int w = 1, int h = 1);

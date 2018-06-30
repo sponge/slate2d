@@ -38,16 +38,17 @@ class Asset {
    foreign static bmpfntSet(assetHandle, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight)
    foreign static measureBmpText(fntId, text, scale)
    static measureBmpText(fntId, text) { measureBmpText(fntId, text, 1.0) }
-   foreign static createSprite(assetHandle, w, h, marginX, marginY)
+   foreign static spriteSet(assetHandle, imgHandle, w, h, marginX, marginY)
 
    static Any { 0 }
    static Image { 1 }
-   static Speech { 2 }
-   static Sound { 3 }
-   static Mod { 4 }
-   static Font { 5 }
-   static BitmapFont { 6 }
-   static Max { 7 }
+   static Sprite { 2 }
+   static Speech { 3 }
+   static Sound { 4 }
+   static Mod { 5 }
+   static Font { 6 }
+   static BitmapFont { 7 }
+   static Max { 8 }
 }
 
 class Draw {
@@ -78,10 +79,10 @@ class Draw {
    static mapLayer(layer, x, y) { mapLayer(layer, x, y, 0, 0, 0, 0) }
    static mapLayer(layer) { mapLayer(layer, 0, 0, 0, 0, 0, 0) }
    foreign static sprite(spr, id, x, y, alpha, scale, flipBits, w, h)
-   static sprite(spr, id, x, y, alpha, scale, flipBits) { sprite(spr, id, x, y, alpha, scale, flipBits, 1, 1) }
-   static sprite(spr, id, x, y, alpha, scale) { sprite(spr, id, x, y, alpha, scale, 0, 1, 1) }
-   static sprite(spr, id, x, y, alpha) { sprite(spr, id, x, y, alpha, 1.0, 0, 1, 1) }
-   static sprite(spr, id, x, y) { sprite(spr, id, x, y, 1.0, 1.0, 0, 1, 1) }
+   static sprite(sprId, id, x, y, alpha, scale, flipBits) { sprite(sprId, id, x, y, alpha, scale, flipBits, 1, 1) }
+   static sprite(sprId, id, x, y, alpha, scale) { sprite(sprId, id, x, y, alpha, scale, 0, 1, 1) }
+   static sprite(sprId, id, x, y, alpha) { sprite(sprId, id, x, y, alpha, 1.0, 0, 1, 1) }
+   static sprite(sprId, id, x, y) { sprite(sprId, id, x, y, 1.0, 1.0, 0, 1, 1) }
 
    foreign static submit()
    foreign static clear()

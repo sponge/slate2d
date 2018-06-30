@@ -132,6 +132,7 @@ static gameImportFuncs_t GAMEtraps = {
 	Asset_ClearAll,
 	BMPFNT_Set,
 	BMPFNT_TextWidth,
+	Sprite_Set,
 	Get_Img,
 	Snd_Play,
 	Snd_Stop

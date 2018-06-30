@@ -14,6 +14,10 @@ void* Img_Load(Asset &asset);
 void Img_Free(Asset &asset);
 Image* Get_Img(AssetHandle id);
 
+void* Sprite_Load(Asset &asset);
+void Sprite_Free(Asset &asset);
+void Sprite_Set(AssetHandle assetHandle, AssetHandle imageHandle, int width, int height, int marginX, int marginY);
+
 // bitmap font assets
 
 typedef struct {

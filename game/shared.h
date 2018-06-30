@@ -176,6 +176,17 @@ typedef struct {
 
 typedef struct {
 	byte commandId;
+	unsigned int spr;
+	int id;
+	float x, y;
+	float alpha;
+	float scale;
+	byte flipBits;
+	int w, h;
+} drawSpriteCommand_t;
+
+typedef struct {
+	byte commandId;
 	float x1, y1, x2, y2;
 } drawLineCommand_t;
 
@@ -209,6 +220,7 @@ typedef enum {
 	RC_DRAW_TEXT,
 	RC_DRAW_BMPTEXT,
 	RC_DRAW_IMAGE,
+	RC_DRAW_SPRITE,
 	RC_DRAW_LINE,
 	RC_DRAW_CIRCLE,
 	RC_DRAW_TRI,
@@ -224,6 +236,7 @@ typedef int AssetHandle;
 typedef enum {
 	ASSET_ANY,
 	ASSET_IMAGE,
+	ASSET_SPRITE,
 	ASSET_SPEECH,
 	ASSET_SOUND,
 	ASSET_MOD,
@@ -235,6 +248,7 @@ typedef enum {
 static const char* assetStrings[] = {
 	"ASSET_ANY",
 	"ASSET_IMAGE",
+	"ASSET_SPRITE",
 	"ASSET_SPEECH",
 	"ASSET_SOUND",
 	"ASSET_MOD",
@@ -257,6 +271,15 @@ typedef struct {
 	unsigned int hnd;
 	int w, h;
 } Image;
+
+typedef struct {
+	unsigned int asset;
+	int maxId;
+	int imageWidth, imageHeight;
+	int spriteWidth, spriteHeight;
+	int marginX, marginY;
+	int rows, cols;
+} Sprite;
 
 typedef struct {
 	int x, y;

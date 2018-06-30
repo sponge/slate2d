@@ -171,39 +171,16 @@ void DC_DrawMapLayer(unsigned int layer, float x, float y, unsigned int cellX, u
 	cmd->cellH = cellH;
 }
 
-const Sprite DC_CreateSprite(unsigned int asset, int width, int height, int marginX, int marginY) {
-	Image *img = trap->Get_Img(asset);
-	assert(img != nullptr);
-
-	int cols = (img->w / (width + marginX));
-	int rows = (img->h / (height + marginY));
-	return {
-		asset,
-		rows * cols - 1,
-		img->w, img->h,
-		width, height,
-		marginX, marginY,
-		rows, cols
-	};
-}
-
-void DC_DrawSprite(const Sprite spr, int id, float x, float y, float alpha, float scale, byte flipBits, int w, int h) {
-	if (id > spr.maxId) {
-		return;
-	}
-
-	DC_DrawImage(
-		spr.asset,
-		x,
-		y,
-		spr.spriteWidth * w,
-		spr.spriteHeight * h,
-		alpha,
-		scale,
-		flipBits,
-		(id % spr.cols) * spr.spriteWidth,
-		(id / spr.cols) * spr.spriteHeight,
-		0
-	);
+void DC_DrawSprite(unsigned int spr, int id, float x, float y, float alpha, float scale, byte flipBits, int w, int h) {
+	GET_COMMAND(drawSpriteCommand_t, RC_DRAW_SPRITE);
+	cmd->spr = spr;
+	cmd->id = id;
+	cmd->x = x;
+	cmd->y = y;
+	cmd->alpha = alpha;
+	cmd->scale = scale;
+	cmd->flipBits = flipBits;
+	cmd->w = w;
+	cmd->h = h;
 }
 

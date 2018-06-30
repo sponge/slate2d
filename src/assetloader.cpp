@@ -13,6 +13,7 @@ typedef struct AssetLoadHandler {
 static AssetLoadHandler assetHandler[ASSET_MAX] = {
 	{}, // ASSET_ANY
 	{Img_Load, Img_Free},
+	{Sprite_Load, Sprite_Free},
 	{Speech_Load, Speech_Free},
 	{Sound_Load, Sound_Free},
 	{Sound_Load, Mod_Free},

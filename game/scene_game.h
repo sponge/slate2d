@@ -13,7 +13,6 @@ public:
 private:
 	ClientInfo* inf;
 	const char *mapFileName;
-	AssetHandle dog, sprites, music, speech, font;
-	Sprite spr;
+	AssetHandle dog, sprites, music, speech, font, spr;
 	struct _tmx_map *map;
 };

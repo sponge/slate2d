@@ -162,8 +162,19 @@ void wren_create_sprite(WrenVM *vm) {
 	int marginX = (int)wrenGetSlotDouble(vm, 4);
 	int marginY = (int)wrenGetSlotDouble(vm, 5);
 
-	Sprite spr = DC_CreateSprite(assetHandle, width, height, marginX, marginY);
-	wrenSetSlotBytes(vm, 0, (const char*)&spr, sizeof(spr));
+	//Sprite spr = DC_CreateSprite(assetHandle, width, height, marginX, marginY);
+	//wrenSetSlotBytes(vm, 0, (const char*)&spr, sizeof(spr));
+}
+
+void wren_asset_sprite_set(WrenVM *vm) {
+	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
+	AssetHandle imgHandle = (AssetHandle)wrenGetSlotDouble(vm, 2);
+	int width = (int)wrenGetSlotDouble(vm, 3);
+	int height = (int)wrenGetSlotDouble(vm, 4);
+	int marginX = (int)wrenGetSlotDouble(vm, 5);
+	int marginY = (int)wrenGetSlotDouble(vm, 6);
+
+	trap->Asset_Sprite_Set(assetHandle, imgHandle, width, height, marginX, marginY);
 }
 #pragma endregion
 
@@ -305,7 +316,7 @@ void wren_dc_drawmaplayer(WrenVM *vm) {
 
 void wren_dc_drawsprite(WrenVM *vm) {
 	int sz = 0;
-	Sprite *sprite = (Sprite*)wrenGetSlotBytes(vm, 1, &sz);
+	AssetHandle sprId = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	int id = (int)wrenGetSlotDouble(vm, 2);
 	float x = (float)wrenGetSlotDouble(vm, 3);
 	float y = (float)wrenGetSlotDouble(vm, 4);
@@ -315,18 +326,7 @@ void wren_dc_drawsprite(WrenVM *vm) {
 	int w = (int)wrenGetSlotDouble(vm, 8);
 	int h = (int)wrenGetSlotDouble(vm, 9);
 
-	DC_DrawSprite(*sprite, id, x, y, alpha, scale, flipBits, w, h);
-}
-
-void wren_asset_create_sprite(WrenVM *vm) {
-	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
-	int width = (int)wrenGetSlotDouble(vm, 2);
-	int height = (int)wrenGetSlotDouble(vm, 3);
-	int marginX = (int)wrenGetSlotDouble(vm, 4);
-	int marginY = (int)wrenGetSlotDouble(vm, 5);
-
-	Sprite spr = DC_CreateSprite(assetHandle, width, height, marginX, marginY);
-	wrenSetSlotBytes(vm, 0, (const char*)&spr, sizeof(spr));
+	DC_DrawSprite(sprId, id, x, y, alpha, scale, flipBits, w, h);
 }
 
 void wren_dc_submit(WrenVM *vm) {
@@ -661,7 +661,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Asset", true, "clearAll()", wren_asset_clearall },
 	{ "engine", "Asset", true, "bmpfntSet(_,_,_,_,_,_)", wren_asset_bmpfnt_set },
 	{ "engine", "Asset", true, "measureBmpText(_,_,_)", wren_asset_measurebmptext },
-	{ "engine", "Asset", true, "createSprite(_,_,_,_,_)", wren_asset_create_sprite },
+	{ "engine", "Asset", true, "spriteSet(_,_,_,_,_,_)", wren_asset_sprite_set },
 
 	{ "engine", "Draw", true, "setColor(_,_,_,_,_)", wren_dc_setcolor },
 	{ "engine", "Draw", true, "resetTransform()", wren_dc_reset_transform },

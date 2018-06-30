@@ -21,6 +21,9 @@ class Title {
       _fixedFontBlue = Asset.create(Asset.BitmapFont, "fixedfontblue", "gfx/panicbomber_blue.png")
       Asset.bmpfntSet(_fixedFontBlue, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
 
+      _spr = Asset.create(Asset.Sprite, "spr", "")
+      Asset.spriteSet(_spr, _sprites, 8, 8, 0, 0)
+
       TileMap.load(mapName)
 
       Asset.loadAll()
@@ -39,8 +42,6 @@ class Title {
 
       Trap.sndPlay(_music, 1.0, 0.0, true)
       //Trap.sndPlay(_speech, 1.0, 0.0, false)
-
-      _spr = Asset.createSprite(_sprites, 8, 8, 0, 0)
 
       _bgLayer = TileMap.layerByName("bg")
       _worldLayer = TileMap.layerByName("world")

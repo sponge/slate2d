@@ -158,6 +158,34 @@ const void *RB_DrawImage(const void *data) {
 	return (const void *)(cmd + 1);
 }
 
+const void *RB_DrawSprite(const void *data) {
+	auto cmd = (const drawSpriteCommand_t *)data;
+	Asset *asset = Asset_Get(ASSET_SPRITE, cmd->spr);
+	Sprite *spr = (Sprite*)asset->resource;
+	Image *img = Get_Img(spr->asset);
+
+	if (cmd->id > spr->maxId) {
+		Com_Printf("WARNING: draw sprite %s out of index %i > %i\n", asset->name, cmd->id, spr->maxId);
+		return (const void *)(cmd + 1);
+	}
+
+	DrawImage(
+		cmd->x,
+		cmd->y,
+		spr->spriteWidth * cmd->w,
+		spr->spriteHeight * cmd->h,
+		(cmd->id % spr->cols) * spr->spriteWidth,
+		(cmd->id / spr->cols) * spr->spriteHeight,
+		cmd->alpha,
+		cmd->scale,
+		cmd->flipBits,
+		img,
+		0
+	);
+
+	return (const void *)(cmd + 1);
+}
+
 const void *RB_DrawLine(const void *data) {
 	auto cmd = (const drawLineCommand_t *)data;
 	nvgBeginPath(inf.nvg);
@@ -296,6 +324,10 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 
 		case RC_DRAW_IMAGE:
 			data = RB_DrawImage(data);
+			break;
+
+		case RC_DRAW_SPRITE:
+			data = RB_DrawSprite(data);
 			break;
 
 		case RC_DRAW_LINE:

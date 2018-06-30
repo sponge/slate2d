@@ -126,9 +126,10 @@ class World {
       _winSpeech = Asset.create(Asset.Speech, "speech", "great job! you are a good dog!")
       _loseSpeech = Asset.create(Asset.Speech, "losespeech", "bad dog bad dog bad dog bad dog bad dog bad dog")
 
-      Asset.loadAll()
+      _spr = Asset.create(Asset.Sprite, "spr", "")
+      Asset.spriteSet(_spr, sprites, 8, 8, 0, 0)
 
-      _spr = Asset.createSprite(sprites, 8, 8, 0, 0)
+      Asset.loadAll()
 
       SoundController.playMusic(_music)
    }

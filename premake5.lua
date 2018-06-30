@@ -75,7 +75,7 @@ solution "game"
       files { "src/imgui_impl_sdl_es2.cpp" }
       removefiles { "src/imgui_impl_sdl_gl3.cpp" }
       links { "game" }
-      postbuildcommands { "mkdir html; emcc -O2 --preload-file ../base --preload-file ../plat -s USE_SDL=2 %{cfg.targetdir}/engine.bc -o html/engine.html" }
+      postbuildcommands { "mkdir html; emcc -O2 --preload-file ../base --preload-file ../plat -s ALLOW_MEMORY_GROWTH=1 -s USE_SDL=2 %{cfg.targetdir}/engine.bc -o html/engine.html" }
 
   project "game"
     kind "SharedLib"
@@ -86,8 +86,8 @@ solution "game"
     cppdialect "C++14"
     links { "tmx", "imgui" }
     filter { "action:gmake2", "options:emscripten" }
-        kind "StaticLib"
-        targetdir "build/%{cfg.buildcfg}"
+      kind "StaticLib"
+      targetdir "build/%{cfg.buildcfg}"
 
   group "libraries"
 
@@ -143,7 +143,7 @@ solution "game"
       warnings "Off"
       sysincludedirs { "libs/sdl" }
       defines { "MODPLUG_STATIC", "WITH_MODPLUG", "WITH_SDL2_STATIC" }
-  		files {
+      files {
         "libs/soloud/src/audiosource/**.c*",
         "libs/soloud/src/filter/**.c*",
         "libs/soloud/src/core/**.c*",

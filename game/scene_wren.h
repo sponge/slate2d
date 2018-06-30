@@ -9,7 +9,6 @@ public:
 	void Render() override;
 	~WrenScene();
 
-	void WrenEval(const char *str);
 	void Console(const char *str);
 
 private:

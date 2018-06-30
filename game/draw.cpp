@@ -132,6 +132,19 @@ void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h, float 
 	cmd->shaderId = shaderId;
 }
 
+void DC_DrawSprite(unsigned int spr, int id, float x, float y, float alpha, float scale, byte flipBits, int w, int h) {
+	GET_COMMAND(drawSpriteCommand_t, RC_DRAW_SPRITE);
+	cmd->spr = spr;
+	cmd->id = id;
+	cmd->x = x;
+	cmd->y = y;
+	cmd->alpha = alpha;
+	cmd->scale = scale;
+	cmd->flipBits = flipBits;
+	cmd->w = w;
+	cmd->h = h;
+}
+
 void DC_DrawLine(float x1, float y1, float x2, float y2) {
 	GET_COMMAND(drawLineCommand_t, RC_DRAW_LINE);
 	cmd->x1 = x1;
@@ -170,17 +183,3 @@ void DC_DrawMapLayer(unsigned int layer, float x, float y, unsigned int cellX, u
 	cmd->cellW = cellW;
 	cmd->cellH = cellH;
 }
-
-void DC_DrawSprite(unsigned int spr, int id, float x, float y, float alpha, float scale, byte flipBits, int w, int h) {
-	GET_COMMAND(drawSpriteCommand_t, RC_DRAW_SPRITE);
-	cmd->spr = spr;
-	cmd->id = id;
-	cmd->x = x;
-	cmd->y = y;
-	cmd->alpha = alpha;
-	cmd->scale = scale;
-	cmd->flipBits = flipBits;
-	cmd->w = w;
-	cmd->h = h;
-}
-

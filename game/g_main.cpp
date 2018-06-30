@@ -87,7 +87,6 @@ static void Init(void *clientInfo, void *imGuiContext) {
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
-
 	wrenScene = new WrenScene("scripts/main.wren", nullptr);
 	trap->Scene_Replace(0, wrenScene);
 }
@@ -95,7 +94,6 @@ static void Init(void *clientInfo, void *imGuiContext) {
 static void Console(const char *line) {
 	if (wrenScene != nullptr) {
 		wrenScene->Console(line);
-		//wrenScene->WrenEval(line);
 	}
 }
 

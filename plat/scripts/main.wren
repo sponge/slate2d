@@ -20,8 +20,8 @@ class Main {
       __accumTime = 0
 
       if (mapName == null) {
-         // loadScene("title", null)
-         loadScene("world", "maps/plat2.tmx")
+         loadScene("title", null)
+         // loadScene("world", "maps/plat2.tmx")
       } else {
          loadScene("intro", mapName)
       }

@@ -15,6 +15,14 @@ class Trap {
    static inspect(obj) { inspect(obj, null) }
 }
 
+foreign class CVar {
+   construct get(name, defaultValue) {}
+   foreign bool()
+   foreign number()
+   foreign string()
+   foreign set(val)
+}
+
 class Button {
    static Up { 0 }
    static Down { 1 }

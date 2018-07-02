@@ -117,6 +117,64 @@ void wren_trap_mouse_position(WrenVM *vm) {
 extern void wren_trap_inspect(WrenVM *vm);
 #pragma endregion
 
+#pragma region CVar Module
+
+void wren_cvar_bool(WrenVM *vm) {
+	cvar_t** var = (cvar_t**)wrenGetSlotForeign(vm, 0);
+	if (*var == nullptr) {
+		return;
+	}
+
+	wrenSetSlotBool(vm, 0, (*var)->value > 0 || (*var)->string[0] != '0' || strlen((*var)->string) > 1);
+}
+
+void wren_cvar_number(WrenVM *vm) {
+	cvar_t** var = (cvar_t**)wrenGetSlotForeign(vm, 0);
+	if (*var == nullptr) {
+		return;
+	}
+
+	wrenSetSlotDouble(vm, 0, (*var)->value);
+}
+
+void wren_cvar_string(WrenVM *vm) {
+	cvar_t** var = (cvar_t**)wrenGetSlotForeign(vm, 0);
+	if (*var == nullptr) {
+		return;
+	}
+
+	wrenSetSlotString(vm, 0, (*var)->string);
+}
+
+void wren_cvar_set(WrenVM *vm) {
+	cvar_t** var = (cvar_t**)wrenGetSlotForeign(vm, 0);
+	if (*var == nullptr) {
+		return;
+	}
+
+	auto valType = wrenGetSlotType(vm, 1);
+
+	if (valType == WREN_TYPE_NUM) {
+		double value = wrenGetSlotDouble(vm, 1);
+		char cvarStr[MAX_CVAR_VALUE_STRING];
+		snprintf(cvarStr, MAX_CVAR_VALUE_STRING, "%d", value);
+		trap->Cvar_Set((*var)->name, cvarStr);
+	}
+	else if (valType == WREN_TYPE_BOOL) {
+		bool value = wrenGetSlotBool(vm, 1);
+		trap->Cvar_Set((*var)->name, value ? "1" : "0");
+	}
+	else if (valType == WREN_TYPE_STRING) {
+		const char *value = wrenGetSlotString(vm, 1);
+		trap->Cvar_Set((*var)->name, value);
+	}
+	else {
+		trap->Cvar_Set((*var)->name, "0");
+	}
+}
+
+#pragma endregion
+
 #pragma region Asset Module
 void wren_asset_create(WrenVM *vm) {
 	AssetType_t assetType = (AssetType_t)(int)wrenGetSlotDouble(vm, 1);
@@ -659,6 +717,11 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "mousePosition()", wren_trap_mouse_position },
 	{ "engine", "Trap", true, "inspect(_,_)", wren_trap_inspect },
 
+	{ "engine", "CVar", false, "bool()", wren_cvar_bool },
+	{ "engine", "CVar", false, "number()", wren_cvar_number },
+	{ "engine", "CVar", false, "string()", wren_cvar_string },
+	{ "engine", "CVar", false, "set(_)", wren_cvar_set },
+
 	{ "engine", "Asset", true, "create(_,_,_)", wren_asset_create },
 	{ "engine", "Asset", true, "find(_)", wren_asset_find },
 	{ "engine", "Asset", true, "loadAll()", wren_asset_loadall },
@@ -708,6 +771,53 @@ WrenForeignMethodFn wren_bindForeignMethodFn(WrenVM* vm, const char* module, con
 
 	return nullptr;
 }
+
+void cvarAllocate(WrenVM *vm) {
+	wrenEnsureSlots(vm, 3);
+
+	cvar_t** var = (cvar_t**)wrenSetSlotNewForeign(vm, 0, 0, sizeof(cvar_t*));
+	const char* name = wrenGetSlotString(vm, 1);
+
+	auto valType = wrenGetSlotType(vm, 2);
+
+	if (valType == WREN_TYPE_NUM) {
+		double value = wrenGetSlotDouble(vm, 2);
+		char cvarStr[MAX_CVAR_VALUE_STRING];
+		snprintf(cvarStr, MAX_CVAR_VALUE_STRING, "%g", value);
+		*var = trap->Cvar_Get(name, cvarStr, 0);
+	}
+	else if (valType == WREN_TYPE_BOOL) {
+		bool value = wrenGetSlotBool(vm, 2);
+		*var = trap->Cvar_Get(name, value ? "1" : "0", 0);
+	}
+	else if (valType == WREN_TYPE_STRING) {
+		const char *value = wrenGetSlotString(vm, 2);
+		*var = trap->Cvar_Get(name, value, 0);
+	}
+	else {
+		*var = trap->Cvar_Get(name, "0", 0);
+	}
+}
+
+void cvarFinalize(void *data) {
+
+}
+
+WrenForeignClassMethods wren_bindForeignClassFn(WrenVM* vm, const char* module, const char* className) {
+	WrenForeignClassMethods methods;
+
+	if (strcmp(className, "CVar") == 0) {
+		methods.allocate = cvarAllocate;
+		methods.finalize = cvarFinalize;
+	}
+	else {
+		methods.allocate = NULL;
+		methods.finalize = NULL;
+	}
+
+	return methods;
+}
+
 #pragma endregion
 
 #pragma region Public functions
@@ -717,6 +827,7 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	config.errorFn = wren_error;
 	config.bindForeignMethodFn = wren_bindForeignMethodFn;
 	config.loadModuleFn = wren_loadModuleFn;
+	config.bindForeignClassFn = wren_bindForeignClassFn;
 
 	WrenVM *vm = wrenNewVM(&config);
 

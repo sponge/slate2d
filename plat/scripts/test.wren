@@ -1,4 +1,4 @@
-import "engine" for Trap, Button, Draw, Asset, Fill, Color, TileMap
+import "engine" for Trap, CVar, Button, Draw, Asset, Fill, Color, TileMap
 import "player" for Player
 import "meta" for Meta
 import "random" for Random
@@ -6,6 +6,18 @@ import "random" for Random
 class Title {
    nextScene { null }
    construct new(mapName) {
+
+      _testcvar = CVar.get("vid_swapinterval", 1)
+      _newcvar = CVar.get("some_new_cvar", 0)
+      Trap.printLn("Printing cvar values")
+      Trap.printLn("-----------------------------------")
+      Trap.printLn(_testcvar.number())
+      Trap.printLn(_newcvar.number())
+      Trap.printLn(_newcvar.bool())
+      Trap.printLn(_newcvar.string())
+      Trap.printLn("-----------------------------------")
+      _newcvar.set("changed the value")
+      
       Trap.print(mapName+"\n")
       _dog = Asset.create(Asset.Image, "dog", "gfx/dog.png")
       _sprites = Asset.create(Asset.Image, "sprites", "maps/tilesets/plat.gif")

@@ -118,7 +118,8 @@ class World {
       _fixedFontBlue = Asset.create(Asset.BitmapFont, "fixedfontblue", "gfx/panicbomber_blue.png")
       Asset.bmpfntSet(_fixedFontBlue, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
 
-      var sprites = Asset.create(Asset.Image, "sprites", "maps/tilesets/plat.gif")
+      _spr = Asset.create(Asset.Sprite, "spr", "maps/tilesets/plat.gif")
+      Asset.spriteSet(_spr, 8, 8, 0, 0)
 
       _music = Asset.create(Asset.Mod, "music", level.music)
       _deathMusic = Asset.create(Asset.Mod, "deathmusic", "music/victory_ditty_24.mod")
@@ -126,8 +127,7 @@ class World {
       _winSpeech = Asset.create(Asset.Speech, "speech", "great job! you are a good dog!")
       _loseSpeech = Asset.create(Asset.Speech, "losespeech", "bad dog bad dog bad dog bad dog bad dog bad dog")
 
-      _spr = Asset.create(Asset.Sprite, "spr", "")
-      Asset.spriteSet(_spr, sprites, 8, 8, 0, 0)
+
 
       Asset.loadAll()
 

@@ -273,7 +273,7 @@ typedef struct {
 } Image;
 
 typedef struct {
-	unsigned int asset;
+	Image *image;
 	int maxId;
 	int imageWidth, imageHeight;
 	int spriteWidth, spriteHeight;

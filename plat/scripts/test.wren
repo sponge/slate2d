@@ -20,7 +20,6 @@ class Title {
       
       Trap.print(mapName+"\n")
       _dog = Asset.create(Asset.Image, "dog", "gfx/dog.png")
-      _sprites = Asset.create(Asset.Image, "sprites", "maps/tilesets/plat.gif")
       _music = Asset.create(Asset.Mod, "music", "music/frantic_-_dog_doesnt_care.it")
       _speech = Asset.create(Asset.Speech, "speech", "great job! you are a good dog!")
 
@@ -33,8 +32,8 @@ class Title {
       _fixedFontBlue = Asset.create(Asset.BitmapFont, "fixedfontblue", "gfx/panicbomber_blue.png")
       Asset.bmpfntSet(_fixedFontBlue, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
 
-      _spr = Asset.create(Asset.Sprite, "spr", "")
-      Asset.spriteSet(_spr, _sprites, 8, 8, 0, 0)
+      _spr = Asset.create(Asset.Sprite, "spr", "maps/tilesets/plat.gif")
+      Asset.spriteSet(_spr, 8, 8, 0, 0)
 
       TileMap.load(mapName)
 

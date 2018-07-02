@@ -230,13 +230,12 @@ void wren_create_sprite(WrenVM *vm) {
 
 void wren_asset_sprite_set(WrenVM *vm) {
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
-	AssetHandle imgHandle = (AssetHandle)wrenGetSlotDouble(vm, 2);
-	int width = (int)wrenGetSlotDouble(vm, 3);
-	int height = (int)wrenGetSlotDouble(vm, 4);
-	int marginX = (int)wrenGetSlotDouble(vm, 5);
-	int marginY = (int)wrenGetSlotDouble(vm, 6);
+	int width = (int)wrenGetSlotDouble(vm, 2);
+	int height = (int)wrenGetSlotDouble(vm, 3);
+	int marginX = (int)wrenGetSlotDouble(vm, 4);
+	int marginY = (int)wrenGetSlotDouble(vm, 5);
 
-	trap->Asset_Sprite_Set(assetHandle, imgHandle, width, height, marginX, marginY);
+	trap->Asset_Sprite_Set(assetHandle, width, height, marginX, marginY);
 }
 #pragma endregion
 
@@ -728,7 +727,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Asset", true, "clearAll()", wren_asset_clearall },
 	{ "engine", "Asset", true, "bmpfntSet(_,_,_,_,_,_)", wren_asset_bmpfnt_set },
 	{ "engine", "Asset", true, "measureBmpText(_,_,_)", wren_asset_measurebmptext },
-	{ "engine", "Asset", true, "spriteSet(_,_,_,_,_,_)", wren_asset_sprite_set },
+	{ "engine", "Asset", true, "spriteSet(_,_,_,_,_)", wren_asset_sprite_set },
 
 	{ "engine", "Draw", true, "setColor(_,_,_,_,_)", wren_dc_setcolor },
 	{ "engine", "Draw", true, "resetTransform()", wren_dc_reset_transform },

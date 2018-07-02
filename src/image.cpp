@@ -36,7 +36,7 @@ Image* Get_Img(AssetHandle id) {
 	return (Image*) asset->resource;
 }
 
-void Sprite_Set(AssetHandle assetHandle, AssetHandle imageHandle, int width, int height, int marginX, int marginY) {
+void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int marginY) {
 	Asset *asset = Asset_Get(ASSET_SPRITE, assetHandle);
 
 	if (asset == nullptr) {
@@ -55,26 +55,21 @@ void Sprite_Set(AssetHandle assetHandle, AssetHandle imageHandle, int width, int
 	spr->spriteHeight = height;
 	spr->marginX = marginX;
 	spr->marginY = marginY;
-	spr->asset = imageHandle;
 
 	asset->resource = (void*)spr;
 }
 
 void* Sprite_Load(Asset &asset) {
 	Sprite *spr = (Sprite*)asset.resource;
-	Asset *imgAsset = Asset_Get(ASSET_IMAGE, spr->asset);
 
-	assert(imgAsset != nullptr);
+	Image *img = (Image*)Img_Load(asset);
 
-	if (imgAsset->loaded == false) {
+	if (img == nullptr) {
 		Com_Error(ERR_DROP, "Sprite_Load: sprite loading before image");
 		return nullptr;
 	}
 
-	Image *img = (Image*)imgAsset->resource;
-	
-	spr->imageWidth = img->w;
-	spr->imageHeight = img->h;
+	spr->image = img;
 	spr->rows = (img->h / (spr->spriteHeight + spr->marginY));
 	spr->cols = (img->w / (spr->spriteWidth + spr->marginX));
 	spr->maxId = spr->rows * spr->cols - 1;
@@ -83,5 +78,8 @@ void* Sprite_Load(Asset &asset) {
 }
 
 void Sprite_Free(Asset &asset) {
+	Sprite *spr = (Sprite*)asset.resource;
+	nvgDeleteImage(spr->image->nvg, spr->image->h);
+	free(spr->image);
 	free(asset.resource);
 }

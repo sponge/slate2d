@@ -46,7 +46,7 @@ class Asset {
    foreign static bmpfntSet(assetHandle, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight)
    foreign static measureBmpText(fntId, text, scale)
    static measureBmpText(fntId, text) { measureBmpText(fntId, text, 1.0) }
-   foreign static spriteSet(assetHandle, imgHandle, w, h, marginX, marginY)
+   foreign static spriteSet(assetHandle, w, h, marginX, marginY)
 
    static Any { 0 }
    static Image { 1 }

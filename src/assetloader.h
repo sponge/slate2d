@@ -16,7 +16,7 @@ Image* Get_Img(AssetHandle id);
 
 void* Sprite_Load(Asset &asset);
 void Sprite_Free(Asset &asset);
-void Sprite_Set(AssetHandle assetHandle, AssetHandle imageHandle, int width, int height, int marginX, int marginY);
+void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int marginY);
 
 // bitmap font assets
 

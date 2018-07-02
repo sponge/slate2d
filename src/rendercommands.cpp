@@ -162,7 +162,7 @@ const void *RB_DrawSprite(const void *data) {
 	auto cmd = (const drawSpriteCommand_t *)data;
 	Asset *asset = Asset_Get(ASSET_SPRITE, cmd->spr);
 	Sprite *spr = (Sprite*)asset->resource;
-	Image *img = Get_Img(spr->asset);
+	Image *img = spr->image;
 
 	if (cmd->id > spr->maxId) {
 		Com_Printf("WARNING: draw sprite %s out of index %i > %i\n", asset->name, cmd->id, spr->maxId);

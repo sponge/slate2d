@@ -7,7 +7,6 @@
 void GameScene::Startup(ClientInfo* info) {
 	inf = info;
 	dog = trap->Asset_Create(ASSET_IMAGE, "dog", "gfx/dog.png");
-	sprites = trap->Asset_Create(ASSET_IMAGE, "sprites", "gfx/sprites.gif");
 	music = trap->Asset_Create(ASSET_MOD, "music", "music/frantic_-_dog_doesnt_care.it");
 	speech = trap->Asset_Create(ASSET_SPEECH, "speech", "great job! you are a good dog!");
 	font = trap->Asset_Create(ASSET_BITMAPFONT, "font", "gfx/good_neighbors.png");
@@ -15,8 +14,8 @@ void GameScene::Startup(ClientInfo* info) {
 
 	map = trap->Map_Load(mapFileName);
 
-	spr = trap->Asset_Create(ASSET_SPRITE, "spr", "");
-	trap->Asset_Sprite_Set(spr, sprites, 8, 8, 0, 0);
+	spr = trap->Asset_Create(ASSET_SPRITE, "spr", "gfx/sprites.gif");
+	trap->Asset_Sprite_Set(spr, 8, 8, 0, 0);
 
 	trap->Asset_LoadAll();
 

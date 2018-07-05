@@ -217,17 +217,6 @@ void wren_asset_measurebmptext(WrenVM *vm) {
 	wrenSetSlotDouble(vm, 0, width);
 }
 
-void wren_create_sprite(WrenVM *vm) {
-	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
-	int width = (int)wrenGetSlotDouble(vm, 2);
-	int height = (int)wrenGetSlotDouble(vm, 3);
-	int marginX = (int)wrenGetSlotDouble(vm, 4);
-	int marginY = (int)wrenGetSlotDouble(vm, 5);
-
-	//Sprite spr = DC_CreateSprite(assetHandle, width, height, marginX, marginY);
-	//wrenSetSlotBytes(vm, 0, (const char*)&spr, sizeof(spr));
-}
-
 void wren_asset_sprite_set(WrenVM *vm) {
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	int width = (int)wrenGetSlotDouble(vm, 2);
@@ -681,18 +670,15 @@ static void wren_error(WrenVM* vm, WrenErrorType type, const char* module, int l
 }
 
 char* wren_loadModuleFn(WrenVM* vm, const char* name) {
-	static char *script;
-	if (script != nullptr) {
-		//free(script);
-	}
-
+	char *script = nullptr;
 	const char *path = va("scripts/%s.wren", name);
 	int sz = trap->FS_ReadFile(path, (void**)&script);
 	if (sz <= 0) {
 		return nullptr;
 	}
 	else {
-		return script; // FIXME: leak? how do i free script
+		// wren will free this (see allocatedSource in wrenImportModule)
+		return script;
 	}
 }
 

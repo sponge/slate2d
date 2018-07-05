@@ -40,7 +40,6 @@ class Title {
       Asset.loadAll()
 
       _rnd = Random.new()
-      _rndNum = 0
       _time = 0
 
       _asdf = "hellooo world"
@@ -88,7 +87,6 @@ class Title {
 
       _mouseCoords = Trap.mousePosition()
 
-      _rndNum = _rnd.int()
    }
 
    draw(w, h) {
@@ -97,7 +95,6 @@ class Title {
       Trap.printWin("window name", "a pretty large key name", "a pretty large value")
       Trap.printWin("window name", "a list", [1,2,3])
       Trap.printWin("window name", "number", 1.0)
-      Trap.printWin("window name", "random number", _rndNum)
       Trap.printWin("window name", "map", _testMap2["key1"])
 
       for (i in 0..20) {

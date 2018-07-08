@@ -5,6 +5,7 @@ import "debug" for Debug
 
 import "intro" for Intro
 import "gameselect" for GameSelect
+import "gameinfo" for Game1Info, Game2Info, Game3Info, Game4Info, Game5Info, GameInfo
 
 class Main {
    static scene { __scene }
@@ -18,7 +19,13 @@ class Main {
 
       __scenes = {
          "intro": Intro,
-         "gameselect": GameSelect
+         "gameselect": GameSelect,
+         "game1": Game1Info,
+         "game2": Game2Info,
+         "game3": Game3Info,
+         "game4": Game4Info,
+         "game5": Game5Info,
+
       }
 
       loadScene("intro", null)

@@ -158,14 +158,14 @@ int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, cons
 	int i = 0;
 	while (string[i] != '\0') {
 		if (string[i] == '\n') {
-			currY += font->lineHeight;
+			currY += font->lineHeight * scale;
 			currX = x;
 			i++;
 			continue;
 		}
 		
 		if (string[i] == ' ') {
-			currX += font->spaceWidth;
+			currX += font->spaceWidth * scale;
 			i++;
 			continue;
 		}

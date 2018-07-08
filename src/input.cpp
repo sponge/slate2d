@@ -285,6 +285,10 @@ bool IN_KeyPressed(kbutton_t *key, unsigned int delay, unsigned int repeat) {
 		return false;
 	}
 
+	if (repeat < 0) {
+		return com_frameTime == key->firstdowntime - delay;
+	}
+
 	double repeatCount = SDL_floor(heldTime / repeat);
 	double lastRepeatCount = SDL_floor((heldTime - frame_msec) / repeat);
 	//Com_Printf("current:%0.5f last:%0.5f", heldTime / repeat, (heldTime - frame_msec) / repeat);

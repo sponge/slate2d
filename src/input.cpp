@@ -268,7 +268,7 @@ float IN_KeyState(kbutton_t *key) {
 #endif
 }
 
-bool IN_KeyPressed(kbutton_t *key, unsigned int delay, unsigned int repeat) {
+bool IN_KeyPressed(kbutton_t *key, unsigned int delay, int repeat) {
 	if (key->active == false) {
 		return false;
 	}
@@ -286,7 +286,7 @@ bool IN_KeyPressed(kbutton_t *key, unsigned int delay, unsigned int repeat) {
 	}
 
 	if (repeat < 0) {
-		return com_frameTime == key->firstdowntime - delay;
+		return false;
 	}
 
 	double repeatCount = SDL_floor(heldTime / repeat);

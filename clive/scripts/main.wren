@@ -1,8 +1,10 @@
 import "meta" for Meta
-import "engine" for Trap, Draw, Asset
+import "engine" for Trap, Draw, Asset, CVar
 import "timer" for Timer
 import "debug" for Debug
+
 import "intro" for Intro
+import "gameselect" for GameSelect
 
 class Main {
    static scene { __scene }
@@ -11,6 +13,13 @@ class Main {
       Timer.init()
       Debug.init()
       __accumTime = 0
+
+      __inspector = CVar.get("wren_inspector", 1)
+
+      __scenes = {
+         "intro": Intro,
+         "gameselect": GameSelect
+      }
 
       loadScene("intro", null)
    }
@@ -42,7 +51,9 @@ class Main {
       Debug.draw()
       Draw.submit()
 
-      Trap.inspect(__scene)
+      if (__inspector.bool()) {
+         Trap.inspect(__scene)
+      }
    }
 
    static console(line) {
@@ -84,7 +95,8 @@ class Main {
       Timer.clear()
       shutdown()
 
-      __scene = Intro.new(params)
+      var next = scene == null || __scenes[scene] == null ? "intro" : scene
+      __scene = __scenes[next].new(params)
 
       System.gc()
    }

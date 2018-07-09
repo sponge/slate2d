@@ -69,7 +69,9 @@ class Draw {
    foreign static setScissor(x, y, w, h)
    foreign static resetScissor()
    foreign static rect(x, y, w, h, outline)
-   foreign static text(x, y, text, align)
+   foreign static setTextStyle(fntId, size, lineHeight)
+   static setTextStyle(fntId, size) { setTextStyle(fntId, size, 1.0) }
+   foreign static text(x, y, w, text)
    foreign static bmpText(fntId, x, y, text, scale)
    static bmpText(fntId, x, y, text) { bmpText(fntId, x, y, text, 1.0) }
    foreign static image(imgId, x, y, w, h, alpha, scale, flipBits, ox, oy, shaderId)

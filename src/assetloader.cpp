@@ -17,7 +17,7 @@ static AssetLoadHandler assetHandler[ASSET_MAX] = {
 	{Speech_Load, Speech_Free},
 	{Sound_Load, Sound_Free},
 	{Sound_Load, Mod_Free},
-	{}, // font
+	{TTF_Load, TTF_Free},
 	{BMPFNT_Load, BMPFNT_Free}
 };
 

@@ -277,6 +277,14 @@ void wren_dc_resetscissor(WrenVM *vm) {
 	DC_ResetScissor();
 }
 
+void wren_dc_settextstyle(WrenVM *vm) {
+	AssetHandle fntId = (AssetHandle)wrenGetSlotDouble(vm, 1);
+	float size = (float)wrenGetSlotDouble(vm, 2);
+	float lineHeight = (float)wrenGetSlotDouble(vm, 3);
+
+	DC_SetTextStyle(fntId, size, lineHeight);
+}
+
 void wren_dc_drawrect(WrenVM *vm) {
 	float x = (float) wrenGetSlotDouble(vm, 1);
 	float y = (float) wrenGetSlotDouble(vm, 2);
@@ -290,10 +298,10 @@ void wren_dc_drawrect(WrenVM *vm) {
 void wren_dc_drawtext(WrenVM *vm) {
 	float x = (float)wrenGetSlotDouble(vm, 1);
 	float y = (float)wrenGetSlotDouble(vm, 2);
-	const char *text = wrenGetSlotString(vm, 3);
-	int align = (int)wrenGetSlotDouble(vm, 4);
+	float w = (float)wrenGetSlotDouble(vm, 3);
+	const char *text = wrenGetSlotString(vm, 4);
 
-	DC_DrawText(x, y, text, align);
+	DC_DrawText(x, y, w, text);
 }
 
 void wren_dc_drawbmptext(WrenVM *vm) {
@@ -723,6 +731,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Draw", true, "setScissor(_,_,_,_)", wren_dc_setscissor },
 	{ "engine", "Draw", true, "resetScissor()", wren_dc_resetscissor },
 	{ "engine", "Draw", true, "rect(_,_,_,_,_)", wren_dc_drawrect },
+	{ "engine", "Draw", true, "setTextStyle(_,_,_)", wren_dc_settextstyle },
 	{ "engine", "Draw", true, "text(_,_,_,_)", wren_dc_drawtext },
 	{ "engine", "Draw", true, "bmpText(_,_,_,_,_)", wren_dc_drawbmptext },
 	{ "engine", "Draw", true, "image(_,_,_,_,_,_,_,_,_,_,_)", wren_dc_drawimage },

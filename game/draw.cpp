@@ -91,17 +91,24 @@ void DC_DrawRect(float x, float y, float w, float h, bool outline) {
 	cmd->h = h;
 }
 
-void DC_DrawText(float x, float y, const char *text, int align) {
+void DC_SetTextStyle(unsigned int fntId, unsigned int size, float lineHeight) {
+	GET_COMMAND(setTextStyleCommand_t, RC_SET_TEXT_STYLE)
+
+	cmd->fntId = fntId;
+	cmd->size = size;
+	cmd->lineHeight = lineHeight;
+}
+
+void DC_DrawText(float x, float y, float w, const char *text) {
 	GET_COMMAND(drawTextCommand_t, RC_DRAW_TEXT)
 
-	if (strlen(text) > sizeof(cmd->text)) {
-		trap->Print("WARNING: DC_DrawBmpText text is longer than buffer, string will be clipped: %s", text);
-	}
-
-	strncpy(&cmd->text[0], text, sizeof(cmd->text));
-	cmd->align = align;
 	cmd->x = x;
 	cmd->y = y;
+	cmd->w = w;
+	cmd->strSz = strlen(text) + 1;
+
+	void *strStart = R_GetCommandBuffer(cmd->strSz);
+	strncpy((char*)strStart, text, strlen(text));
 }
 
 void DC_DrawBmpText(unsigned int fntId, float x, float y, const char *text, float scale) {

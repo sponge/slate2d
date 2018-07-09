@@ -18,6 +18,11 @@ void* Sprite_Load(Asset &asset);
 void Sprite_Free(Asset &asset);
 void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int marginY);
 
+// ttf font assets
+
+void* TTF_Load(Asset &asset);
+void TTF_Free(Asset &asset);
+
 // bitmap font assets
 
 typedef struct {

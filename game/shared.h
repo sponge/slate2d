@@ -146,15 +146,21 @@ typedef struct {
 } drawRectCommand_t;
 
 typedef struct {
-	byte commandId;
-	int align;
-	float x, y;
-	char text[64];
-} drawTextCommand_t;
+	byte	commandId;
+	unsigned int fntId;
+	unsigned int size;
+	float lineHeight;
+} setTextStyleCommand_t;
 
 // strSz is the size of the string. the actual string lives
 // in the buffer right after this command so it can be any
 // reasonable size.
+typedef struct {
+	byte commandId;
+	float x, y, w;
+	unsigned int strSz;
+} drawTextCommand_t;
+
 typedef struct {
 	byte commandId;
 	unsigned int fntId;
@@ -211,6 +217,7 @@ typedef struct {
 typedef enum {
 	RC_END_OF_LIST,
 	RC_SET_COLOR,
+	RC_SET_TEXT_STYLE,
 	RC_RESET_TRANSFORM,
 	RC_TRANSFORM,
 	RC_ROTATE,

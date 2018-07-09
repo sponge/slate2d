@@ -20,17 +20,17 @@ class GameInfo {
       _nextScene = null
       _time = 0
 
+      _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
       _boxHnd = Asset.create(Asset.Image, _boxPath, _boxPath)
-
       _font = Asset.create(Asset.BitmapFont, "buttonfont", "gfx/panicbomber_blue.png")
       Asset.bmpfntSet(_font, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
-
-      Asset.loadAll()
 
       _items = [
          TextButton.new("gameselect", 300, 650, 160, 40, "Back"),
          TextButton.new("play", 850, 650, 160, 40, "Play"),
       ]
+
+      Asset.loadAll()
    }
 
    update(dt) {
@@ -53,12 +53,15 @@ class GameInfo {
 
       Draw.image(_boxHnd, 20, 20)
 
-      Draw.bmpText(_font, 300, 20, _title, 4)
-      Draw.bmpText(_font, 300, 80, _year, 4)
+      Draw.setColor(Color.Fill, 133, 147, 239, 255)
+      Draw.setTextStyle(_bodyFont, 72)
+      Draw.text(300, 60, 800, _title)
 
-      Draw.bmpText(_font, 300, 150, _description, 2)
-
-
+      Draw.setColor(Color.Fill, 255, 255, 255, 255)
+      Draw.setTextStyle(_bodyFont, 36)
+      Draw.text(300, 100, 800, _year)
+      Draw.setTextStyle(_bodyFont, 24, 1.25)
+      Draw.text(300, 150, 800, _description)
 
       for (item in _items) {
           item.draw()
@@ -77,26 +80,9 @@ class Game1Info is GameInfo {
       boxPath = "gfx/box_1.png"
       year = "1982"
       title = "Battlement Defense 1"
-      description =
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Maecenas posuere facilisis fermentum. Pellentesque id magna
-at nunc ornare aliquet vel et massa. Phasellus eu interdum
-arcu. Sed in volutpat sapien. Vestibulum tellus lacus,
-hendrerit a sem id, semper cursus lacus. In eu tempor ante.
-Fusce congue odio et nisi cursus, in porta tellus semper.
-Ut nunc eros, molestie iaculis purus ac, fermentum aliquet
-nibh. Ut fermentum, magna sit amet suscipit dignissim,
-lectus urna volutpat neque, sed tempor quam urna vel felis.
-Vestibulum hendrerit hendrerit nisi, cursus laoreet massa
-pretium ac. Quisque porta elit felis, vitae accumsan diam
-fermentum a. Praesent ac rutrum velit. Praesent ornare
-efficitur bibendum. Nulla mollis risus vel vestibulum
-vehicula. Vivamus quis enim purus.
-
-Nulla rutrum urna quis sem vestibulum faucibus id quis
-mauris. Suspendisse euismod aliquam aliquam. Praesent
-elementum id urna non vestibulum. Nam lacus leo, egestas a
-porta vitae, vehicula in libero. Mauris vitae erat orci."
+      description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas posuere facilisis fermentum. Pellentesque id magna at nunc ornare aliquet vel et massa. Phasellus eu interdum arcu. Sed in volutpat sapien. Vestibulum tellus lacus, hendrerit a sem id, semper cursus lacus. In eu tempor ante. Fusce congue odio et nisi cursus, in porta tellus semper. Ut nunc eros, molestie iaculis purus ac, fermentum aliquet nibh. Ut fermentum, magna sit amet suscipit dignissim, lectus urna volutpat neque, sed tempor quam urna vel felis. Vestibulum hendrerit hendrerit nisi, cursus laoreet massa pretium ac. Quisque porta elit felis, vitae accumsan diam fermentum a. Praesent ac rutrum velit. Praesent ornare efficitur bibendum. Nulla mollis risus vel vestibulum vehicula. Vivamus quis enim purus.
+ 
+Nulla rutrum urna quis sem vestibulum faucibus id quis mauris. Suspendisse euismod aliquam aliquam. Praesent elementum id urna non vestibulum. Nam lacus leo, egestas a porta vitae, vehicula in libero. Mauris vitae erat orci."
 
       super(params)
    }
@@ -107,26 +93,9 @@ class Game2Info is GameInfo {
       boxPath = "gfx/box_1.png"
       year = "1985"
       title = "Battlement Defense 2"
-      description =
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Maecenas posuere facilisis fermentum. Pellentesque id magna
-at nunc ornare aliquet vel et massa. Phasellus eu interdum
-arcu. Sed in volutpat sapien. Vestibulum tellus lacus,
-hendrerit a sem id, semper cursus lacus. In eu tempor ante.
-Fusce congue odio et nisi cursus, in porta tellus semper.
-Ut nunc eros, molestie iaculis purus ac, fermentum aliquet
-nibh. Ut fermentum, magna sit amet suscipit dignissim,
-lectus urna volutpat neque, sed tempor quam urna vel felis.
-Vestibulum hendrerit hendrerit nisi, cursus laoreet massa
-pretium ac. Quisque porta elit felis, vitae accumsan diam
-fermentum a. Praesent ac rutrum velit. Praesent ornare
-efficitur bibendum. Nulla mollis risus vel vestibulum
-vehicula. Vivamus quis enim purus.
+      description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas posuere facilisis fermentum. Pellentesque id magna at nunc ornare aliquet vel et massa. Phasellus eu interdum arcu. Sed in volutpat sapien. Vestibulum tellus lacus, hendrerit a sem id, semper cursus lacus. In eu tempor ante. Fusce congue odio et nisi cursus, in porta tellus semper. Ut nunc eros, molestie iaculis purus ac, fermentum aliquet nibh. Ut fermentum, magna sit amet suscipit dignissim, lectus urna volutpat neque, sed tempor quam urna vel felis. Vestibulum hendrerit hendrerit nisi, cursus laoreet massa pretium ac. Quisque porta elit felis, vitae accumsan diam fermentum a. Praesent ac rutrum velit. Praesent ornare efficitur bibendum. Nulla mollis risus vel vestibulum vehicula. Vivamus quis enim purus.
 
-Nulla rutrum urna quis sem vestibulum faucibus id quis
-mauris. Suspendisse euismod aliquam aliquam. Praesent
-elementum id urna non vestibulum. Nam lacus leo, egestas a
-porta vitae, vehicula in libero. Mauris vitae erat orci."
+Nulla rutrum urna quis sem vestibulum faucibus id quis mauris. Suspendisse euismod aliquam aliquam. Praesent elementum id urna non vestibulum. Nam lacus leo, egestas a porta vitae, vehicula in libero. Mauris vitae erat orci."
 
       super(params)
    }
@@ -137,26 +106,9 @@ class Game3Info is GameInfo {
       boxPath = "gfx/box_1.png"
       year = "2013"
       title = "Battlement Revived"
-      description =
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Maecenas posuere facilisis fermentum. Pellentesque id magna
-at nunc ornare aliquet vel et massa. Phasellus eu interdum
-arcu. Sed in volutpat sapien. Vestibulum tellus lacus,
-hendrerit a sem id, semper cursus lacus. In eu tempor ante.
-Fusce congue odio et nisi cursus, in porta tellus semper.
-Ut nunc eros, molestie iaculis purus ac, fermentum aliquet
-nibh. Ut fermentum, magna sit amet suscipit dignissim,
-lectus urna volutpat neque, sed tempor quam urna vel felis.
-Vestibulum hendrerit hendrerit nisi, cursus laoreet massa
-pretium ac. Quisque porta elit felis, vitae accumsan diam
-fermentum a. Praesent ac rutrum velit. Praesent ornare
-efficitur bibendum. Nulla mollis risus vel vestibulum
-vehicula. Vivamus quis enim purus.
-
-Nulla rutrum urna quis sem vestibulum faucibus id quis
-mauris. Suspendisse euismod aliquam aliquam. Praesent
-elementum id urna non vestibulum. Nam lacus leo, egestas a
-porta vitae, vehicula in libero. Mauris vitae erat orci."
+      description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas posuere facilisis fermentum. Pellentesque id magna at nunc ornare aliquet vel et massa. Phasellus eu interdum arcu. Sed in volutpat sapien. Vestibulum tellus lacus, hendrerit a sem id, semper cursus lacus. In eu tempor ante. Fusce congue odio et nisi cursus, in porta tellus semper. Ut nunc eros, molestie iaculis purus ac, fermentum aliquet nibh. Ut fermentum, magna sit amet suscipit dignissim, lectus urna volutpat neque, sed tempor quam urna vel felis. Vestibulum hendrerit hendrerit nisi, cursus laoreet massa pretium ac. Quisque porta elit felis, vitae accumsan diam fermentum a. Praesent ac rutrum velit. Praesent ornare efficitur bibendum. Nulla mollis risus vel vestibulum vehicula. Vivamus quis enim purus.
+      
+Nulla rutrum urna quis sem vestibulum faucibus id quis mauris. Suspendisse euismod aliquam aliquam. Praesent elementum id urna non vestibulum. Nam lacus leo, egestas a porta vitae, vehicula in libero. Mauris vitae erat orci."
 
       super(params)
    }
@@ -167,26 +119,9 @@ class Game4Info is GameInfo {
       boxPath = "gfx/box_1.png"
       year = "2016"
       title = "Battlement ReDefended"
-      description =
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Maecenas posuere facilisis fermentum. Pellentesque id magna
-at nunc ornare aliquet vel et massa. Phasellus eu interdum
-arcu. Sed in volutpat sapien. Vestibulum tellus lacus,
-hendrerit a sem id, semper cursus lacus. In eu tempor ante.
-Fusce congue odio et nisi cursus, in porta tellus semper.
-Ut nunc eros, molestie iaculis purus ac, fermentum aliquet
-nibh. Ut fermentum, magna sit amet suscipit dignissim,
-lectus urna volutpat neque, sed tempor quam urna vel felis.
-Vestibulum hendrerit hendrerit nisi, cursus laoreet massa
-pretium ac. Quisque porta elit felis, vitae accumsan diam
-fermentum a. Praesent ac rutrum velit. Praesent ornare
-efficitur bibendum. Nulla mollis risus vel vestibulum
-vehicula. Vivamus quis enim purus.
+      description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas posuere facilisis fermentum. Pellentesque id magna at nunc ornare aliquet vel et massa. Phasellus eu interdum arcu. Sed in volutpat sapien. Vestibulum tellus lacus, hendrerit a sem id, semper cursus lacus. In eu tempor ante. Fusce congue odio et nisi cursus, in porta tellus semper. Ut nunc eros, molestie iaculis purus ac, fermentum aliquet nibh. Ut fermentum, magna sit amet suscipit dignissim, lectus urna volutpat neque, sed tempor quam urna vel felis. Vestibulum hendrerit hendrerit nisi, cursus laoreet massa pretium ac. Quisque porta elit felis, vitae accumsan diam fermentum a. Praesent ac rutrum velit. Praesent ornare efficitur bibendum. Nulla mollis risus vel vestibulum vehicula. Vivamus quis enim purus.
 
-Nulla rutrum urna quis sem vestibulum faucibus id quis
-mauris. Suspendisse euismod aliquam aliquam. Praesent
-elementum id urna non vestibulum. Nam lacus leo, egestas a
-porta vitae, vehicula in libero. Mauris vitae erat orci."
+Nulla rutrum urna quis sem vestibulum faucibus id quis mauris. Suspendisse euismod aliquam aliquam. Praesent elementum id urna non vestibulum. Nam lacus leo, egestas a porta vitae, vehicula in libero. Mauris vitae erat orci."
 
       super(params)
    }
@@ -197,26 +132,9 @@ class Game5Info is GameInfo {
       boxPath = "gfx/box_1.png"
       year = "2018"
       title = "Towers."
-      description =
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Maecenas posuere facilisis fermentum. Pellentesque id magna
-at nunc ornare aliquet vel et massa. Phasellus eu interdum
-arcu. Sed in volutpat sapien. Vestibulum tellus lacus,
-hendrerit a sem id, semper cursus lacus. In eu tempor ante.
-Fusce congue odio et nisi cursus, in porta tellus semper.
-Ut nunc eros, molestie iaculis purus ac, fermentum aliquet
-nibh. Ut fermentum, magna sit amet suscipit dignissim,
-lectus urna volutpat neque, sed tempor quam urna vel felis.
-Vestibulum hendrerit hendrerit nisi, cursus laoreet massa
-pretium ac. Quisque porta elit felis, vitae accumsan diam
-fermentum a. Praesent ac rutrum velit. Praesent ornare
-efficitur bibendum. Nulla mollis risus vel vestibulum
-vehicula. Vivamus quis enim purus.
+      description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas posuere facilisis fermentum. Pellentesque id magna at nunc ornare aliquet vel et massa. Phasellus eu interdum arcu. Sed in volutpat sapien. Vestibulum tellus lacus, hendrerit a sem id, semper cursus lacus. In eu tempor ante. Fusce congue odio et nisi cursus, in porta tellus semper. Ut nunc eros, molestie iaculis purus ac, fermentum aliquet nibh. Ut fermentum, magna sit amet suscipit dignissim, lectus urna volutpat neque, sed tempor quam urna vel felis. Vestibulum hendrerit hendrerit nisi, cursus laoreet massa pretium ac. Quisque porta elit felis, vitae accumsan diam fermentum a. Praesent ac rutrum velit. Praesent ornare efficitur bibendum. Nulla mollis risus vel vestibulum vehicula. Vivamus quis enim purus.
 
-Nulla rutrum urna quis sem vestibulum faucibus id quis
-mauris. Suspendisse euismod aliquam aliquam. Praesent
-elementum id urna non vestibulum. Nam lacus leo, egestas a
-porta vitae, vehicula in libero. Mauris vitae erat orci."
+Nulla rutrum urna quis sem vestibulum faucibus id quis mauris. Suspendisse euismod aliquam aliquam. Praesent elementum id urna non vestibulum. Nam lacus leo, egestas a porta vitae, vehicula in libero. Mauris vitae erat orci."
 
       super(params)
    }

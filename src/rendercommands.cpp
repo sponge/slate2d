@@ -82,15 +82,24 @@ const void *RB_DrawRect(const void *data) {
 	return (const void *)(cmd + 1);
 }
 
-const void *RB_DrawText(const void *data) {
-	auto cmd = (const drawTextCommand_t *)data;
+const void *RB_SetTextStyle(const void *data) {
+	auto cmd = (const setTextStyleCommand_t *)data;
 
-	nvgSave(inf.nvg);
-	nvgTextAlign(inf.nvg, cmd->align);
-	nvgText(inf.nvg, cmd->x, cmd->y, cmd->text, 0);
-	nvgRestore(inf.nvg);
+	nvgFontFaceId(inf.nvg, cmd->fntId);
+	nvgFontSize(inf.nvg, cmd->size);
 
 	return (const void *)(cmd + 1);
+}
+
+const void *RB_DrawText(const void *data) {
+	auto cmd = (const drawTextCommand_t *)data;
+	const char *text = (const char *)cmd + sizeof(drawTextCommand_t);
+
+	nvgSave(inf.nvg);
+	nvgTextBox(inf.nvg, cmd->x, cmd->y, cmd->w, text, 0);
+	nvgRestore(inf.nvg);
+
+	return (const void *)(text + cmd->strSz);
 }
 
 const void *RB_DrawBmpText(const void *data) {
@@ -312,6 +321,10 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 
 		case RC_DRAW_RECT:
 			data = RB_DrawRect(data);
+			break;
+
+		case RC_SET_TEXT_STYLE:
+			data = RB_SetTextStyle(data);
 			break;
 
 		case RC_DRAW_TEXT:

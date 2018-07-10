@@ -7,7 +7,7 @@ class GameSelect {
    nextScene { _nextScene }
    nextScene=(params) { _nextScene = params }
 
-   construct new(mapName) {
+   construct new(params) {
       _nextScene = null
       _time = 0
 

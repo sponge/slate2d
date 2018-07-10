@@ -9,10 +9,12 @@ import "gameinfo" for Game1Info, Game2Info, Game3Info, Game4Info, Game5Info, Gam
 
 import "game1/title" for Game1Title
 
+import "td" for TD
+
 class Main {
    static scene { __scene }
 
-   static init(mapName) {
+   static init(params) {
       Timer.init()
       Debug.init()
       __accumTime = 0
@@ -27,11 +29,15 @@ class Main {
          "game3": Game3Info,
          "game4": Game4Info,
          "game5": Game5Info,
-         "game1_title": Game1Title
-
+         "game1_title": Game1Title,
+         "td": TD
       }
 
-      loadScene("intro", null)
+      if (params != null) {
+         loadScene("td", params)
+      } else {
+         loadScene("intro", null)
+      }
    }
 
    static update(dt) {

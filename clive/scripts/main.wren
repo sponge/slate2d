@@ -7,6 +7,8 @@ import "intro" for Intro
 import "gameselect" for GameSelect
 import "gameinfo" for Game1Info, Game2Info, Game3Info, Game4Info, Game5Info, GameInfo
 
+import "game1/title" for Game1Title
+
 class Main {
    static scene { __scene }
 
@@ -25,6 +27,7 @@ class Main {
          "game3": Game3Info,
          "game4": Game4Info,
          "game5": Game5Info,
+         "game1_title": Game1Title
 
       }
 
@@ -33,7 +36,7 @@ class Main {
 
    static update(dt) {
       if (__scene.nextScene != null) {
-         Trap.printLn("got scene transfer: %(__scene)")
+         Trap.printLn("got scene transfer: %(__scene.nextScene)")
          loadScene(__scene.nextScene[0], __scene.nextScene[1])
       }
 

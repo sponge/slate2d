@@ -12,6 +12,8 @@ class GameInfo {
    year=(val) { _year = val }
    description { _description }
    description=(val) { _description = val }
+   gameScene { _gameScene }
+   gameScene=(val) { _gameScene = val }
 
    nextScene { _nextScene }
    nextScene=(params) { _nextScene = params }
@@ -27,7 +29,7 @@ class GameInfo {
 
       _items = [
          TextButton.new("gameselect", 300, 650, 160, 40, "Back"),
-         TextButton.new("play", 850, 650, 160, 40, "Play"),
+         TextButton.new(gameScene, 850, 650, 160, 40, "Play"),
       ]
 
       Asset.loadAll()
@@ -79,7 +81,8 @@ class Game1Info is GameInfo {
    construct new(params) {
       boxPath = "gfx/box_1.png"
       year = "1982"
-      title = "Battlement Defense 1"
+      title = "Battlement Defence 1"
+      gameScene = "game1_title"
       description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas posuere facilisis fermentum. Pellentesque id magna at nunc ornare aliquet vel et massa. Phasellus eu interdum arcu. Sed in volutpat sapien. Vestibulum tellus lacus, hendrerit a sem id, semper cursus lacus. In eu tempor ante. Fusce congue odio et nisi cursus, in porta tellus semper. Ut nunc eros, molestie iaculis purus ac, fermentum aliquet nibh. Ut fermentum, magna sit amet suscipit dignissim, lectus urna volutpat neque, sed tempor quam urna vel felis. Vestibulum hendrerit hendrerit nisi, cursus laoreet massa pretium ac. Quisque porta elit felis, vitae accumsan diam fermentum a. Praesent ac rutrum velit. Praesent ornare efficitur bibendum. Nulla mollis risus vel vestibulum vehicula. Vivamus quis enim purus.
  
 Nulla rutrum urna quis sem vestibulum faucibus id quis mauris. Suspendisse euismod aliquam aliquam. Praesent elementum id urna non vestibulum. Nam lacus leo, egestas a porta vitae, vehicula in libero. Mauris vitae erat orci."
@@ -92,7 +95,8 @@ class Game2Info is GameInfo {
    construct new(params) {
       boxPath = "gfx/box_1.png"
       year = "1985"
-      title = "Battlement Defense 2"
+      title = "Battlement Defence 2"
+      gameScene = "game2_title"
       description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas posuere facilisis fermentum. Pellentesque id magna at nunc ornare aliquet vel et massa. Phasellus eu interdum arcu. Sed in volutpat sapien. Vestibulum tellus lacus, hendrerit a sem id, semper cursus lacus. In eu tempor ante. Fusce congue odio et nisi cursus, in porta tellus semper. Ut nunc eros, molestie iaculis purus ac, fermentum aliquet nibh. Ut fermentum, magna sit amet suscipit dignissim, lectus urna volutpat neque, sed tempor quam urna vel felis. Vestibulum hendrerit hendrerit nisi, cursus laoreet massa pretium ac. Quisque porta elit felis, vitae accumsan diam fermentum a. Praesent ac rutrum velit. Praesent ornare efficitur bibendum. Nulla mollis risus vel vestibulum vehicula. Vivamus quis enim purus.
 
 Nulla rutrum urna quis sem vestibulum faucibus id quis mauris. Suspendisse euismod aliquam aliquam. Praesent elementum id urna non vestibulum. Nam lacus leo, egestas a porta vitae, vehicula in libero. Mauris vitae erat orci."
@@ -105,7 +109,8 @@ class Game3Info is GameInfo {
    construct new(params) {
       boxPath = "gfx/box_1.png"
       year = "2013"
-      title = "Battlement Revived"
+      title = "Battlement Defense Returns"
+      gameScene = "game3_title"
       description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas posuere facilisis fermentum. Pellentesque id magna at nunc ornare aliquet vel et massa. Phasellus eu interdum arcu. Sed in volutpat sapien. Vestibulum tellus lacus, hendrerit a sem id, semper cursus lacus. In eu tempor ante. Fusce congue odio et nisi cursus, in porta tellus semper. Ut nunc eros, molestie iaculis purus ac, fermentum aliquet nibh. Ut fermentum, magna sit amet suscipit dignissim, lectus urna volutpat neque, sed tempor quam urna vel felis. Vestibulum hendrerit hendrerit nisi, cursus laoreet massa pretium ac. Quisque porta elit felis, vitae accumsan diam fermentum a. Praesent ac rutrum velit. Praesent ornare efficitur bibendum. Nulla mollis risus vel vestibulum vehicula. Vivamus quis enim purus.
       
 Nulla rutrum urna quis sem vestibulum faucibus id quis mauris. Suspendisse euismod aliquam aliquam. Praesent elementum id urna non vestibulum. Nam lacus leo, egestas a porta vitae, vehicula in libero. Mauris vitae erat orci."
@@ -119,6 +124,7 @@ class Game4Info is GameInfo {
       boxPath = "gfx/box_1.png"
       year = "2016"
       title = "Battlement ReDefended"
+      gameScene = "game4_title"
       description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas posuere facilisis fermentum. Pellentesque id magna at nunc ornare aliquet vel et massa. Phasellus eu interdum arcu. Sed in volutpat sapien. Vestibulum tellus lacus, hendrerit a sem id, semper cursus lacus. In eu tempor ante. Fusce congue odio et nisi cursus, in porta tellus semper. Ut nunc eros, molestie iaculis purus ac, fermentum aliquet nibh. Ut fermentum, magna sit amet suscipit dignissim, lectus urna volutpat neque, sed tempor quam urna vel felis. Vestibulum hendrerit hendrerit nisi, cursus laoreet massa pretium ac. Quisque porta elit felis, vitae accumsan diam fermentum a. Praesent ac rutrum velit. Praesent ornare efficitur bibendum. Nulla mollis risus vel vestibulum vehicula. Vivamus quis enim purus.
 
 Nulla rutrum urna quis sem vestibulum faucibus id quis mauris. Suspendisse euismod aliquam aliquam. Praesent elementum id urna non vestibulum. Nam lacus leo, egestas a porta vitae, vehicula in libero. Mauris vitae erat orci."
@@ -132,6 +138,7 @@ class Game5Info is GameInfo {
       boxPath = "gfx/box_1.png"
       year = "2018"
       title = "Towers."
+      gameScene = "game5_title"
       description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas posuere facilisis fermentum. Pellentesque id magna at nunc ornare aliquet vel et massa. Phasellus eu interdum arcu. Sed in volutpat sapien. Vestibulum tellus lacus, hendrerit a sem id, semper cursus lacus. In eu tempor ante. Fusce congue odio et nisi cursus, in porta tellus semper. Ut nunc eros, molestie iaculis purus ac, fermentum aliquet nibh. Ut fermentum, magna sit amet suscipit dignissim, lectus urna volutpat neque, sed tempor quam urna vel felis. Vestibulum hendrerit hendrerit nisi, cursus laoreet massa pretium ac. Quisque porta elit felis, vitae accumsan diam fermentum a. Praesent ac rutrum velit. Praesent ornare efficitur bibendum. Nulla mollis risus vel vestibulum vehicula. Vivamus quis enim purus.
 
 Nulla rutrum urna quis sem vestibulum faucibus id quis mauris. Suspendisse euismod aliquam aliquam. Praesent elementum id urna non vestibulum. Nam lacus leo, egestas a porta vitae, vehicula in libero. Mauris vitae erat orci."

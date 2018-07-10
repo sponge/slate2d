@@ -28,8 +28,8 @@ class GameInfo {
       Asset.bmpfntSet(_font, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
 
       _items = [
-         TextButton.new("gameselect", 300, 650, 160, 40, "Back"),
-         TextButton.new(gameScene, 850, 650, 160, 40, "Play"),
+         TextButton.new("gameselect", 445, 650, 160, 40, "Back"),
+         TextButton.new(gameScene, 1070, 650, 160, 40, "Play"),
       ]
 
       Asset.loadAll()
@@ -53,17 +53,17 @@ class GameInfo {
       Draw.resetTransform()
       Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
 
-      Draw.image(_boxHnd, 20, 20)
+      Draw.image(_boxHnd, 40, 55)
 
       Draw.setColor(Color.Fill, 133, 147, 239, 255)
       Draw.setTextStyle(_bodyFont, 72)
-      Draw.text(300, 60, 800, _title)
+      Draw.text(465, 60, 780, _title)
 
       Draw.setColor(Color.Fill, 255, 255, 255, 255)
       Draw.setTextStyle(_bodyFont, 36)
-      Draw.text(300, 100, 800, _year)
+      Draw.text(465, 100, 780, _year)
       Draw.setTextStyle(_bodyFont, 24, 1.25)
-      Draw.text(300, 150, 800, _description)
+      Draw.text(465, 150, 780, _description)
 
       for (item in _items) {
           item.draw()
@@ -93,7 +93,7 @@ Nulla rutrum urna quis sem vestibulum faucibus id quis mauris. Suspendisse euism
 
 class Game2Info is GameInfo {
    construct new(params) {
-      boxPath = "gfx/box_1.png"
+      boxPath = "gfx/box_2.png"
       year = "1988"
       title = "Battlement Defence 2"
       gameScene = "game2_title"

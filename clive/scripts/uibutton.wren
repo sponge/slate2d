@@ -76,7 +76,7 @@ class GameSelectButton is UIButton {
          Draw.setColor(Color.Stroke, 255, 255, 0, 255)
          Draw.rect(x, y, w, h, Fill.Outline)
       }
-      Draw.image(_imgHnd, x + (_imgW / 2), y+10, _imgW, _imgH)
+      Draw.image(_imgHnd, x + (_imgW / 2), y+10, _imgW*2, _imgH*2, 1.0, 0.5)
       var textw = Asset.measureBmpText(_font, _label) * 2
       Draw.bmpText(_font, x+(w-textw)/2, y+_imgH+20, _label, 2)
    }

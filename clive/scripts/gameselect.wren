@@ -13,7 +13,7 @@ class GameSelect {
 
       _items = [
          GameSelectButton.new("game1", 30, 10, 370, 350, "Battlement Defence", "gfx/box_1.png"),
-         GameSelectButton.new("game2", 450, 10, 370, 350, "Battlement Defence 2", "gfx/box_1.png"),
+         GameSelectButton.new("game2", 450, 10, 370, 350, "Battlement Defence 2", "gfx/box_2.png"),
          GameSelectButton.new("game3", 870, 10, 370, 350, "Battlement Defense Returns", "gfx/box_1.png"),
 
          GameSelectButton.new("game4", 220, 360, 370, 350, "Battlement ReDefended", "gfx/box_1.png"),

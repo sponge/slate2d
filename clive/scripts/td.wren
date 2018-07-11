@@ -23,8 +23,8 @@ class Grid {
 
       // TEMP: copy the bushes out of the layer into the collision layer
       var wallLayer = TileMap.layerByName("walls")
-      for (xx in _x.._x+_w) {
-         for (yy in _y.._y+_h) {
+      for (xx in 0..._w) {
+         for (yy in 0..._h) {
             var t = TileMap.getTile(wallLayer, xx+_x, yy+_y) > 0
             if (t) {
                _tiles[yy*_w+xx] = t
@@ -53,10 +53,10 @@ class Grid {
 
       if (_showPathsCVar.bool()) {
          Draw.setColor(Color.Stroke, 255, 0, 0, 255)
-         Draw.rect(0, 0, _w * _tw + _tw, _h * _th + _th, Fill.Outline)
+         Draw.rect(0, 0, _w * _tw, _h * _th, Fill.Outline)
          Draw.setTextStyle(0, 6)
-         for (x in 0.._w) {
-            for (y in 0.._h) {
+         for (x in 0..._w) {
+            for (y in 0..._h) {
                var dist = _paths[y * _w + x]
                if (dist != null) {
                   var a = 127 - (dist * 4)
@@ -115,9 +115,7 @@ class Grid {
    }
 
    isBlocked(x, y) {
-      var wallLayer = TileMap.layerByName("walls")
-      return TileMap.getTile(wallLayer, x+_x, y+_y) > 0
-      //return x < 0 || x > _w || y < 0 || y > _h ? true : _tiles[y * _w + x] != null
+      return x < 0 || x >= _w || y < 0 || y >= _h ? true : _tiles[y * _w + x] != null
    }
 }
 

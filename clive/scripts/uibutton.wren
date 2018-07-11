@@ -60,24 +60,39 @@ class TextButton is UIButton {
 }
 
 class GameSelectButton is UIButton {
+   label { _label }
+
    construct new(id, x, y, w, h, label, img) {
       super(id, x, y, w, h)
       _imgHnd = Asset.create(Asset.Image, img, img)
-      _imgW = 192
-      _imgH = 300
-      _label = label
+      _imgW = 385
+      _imgH = 600
 
-      _font = Asset.create(Asset.BitmapFont, "buttonfont", "gfx/panicbomber_blue.png")
-      Asset.bmpfntSet(_font, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
+      _scale = 1 
+      _targetScale = 1
+
+      _label = label
+   }
+
+   lerp(a, b, t) {
+      return (1 - t) * a + t * b
+   }
+
+   update(dt, mx, my) {
+      super.update(dt, mx, my)
+      _scale = lerp(_scale, _targetScale, 0.2)
    }
 
    draw() {
       if (hover) {
-         Draw.setColor(Color.Stroke, 255, 255, 0, 255)
-         Draw.rect(x, y, w, h, Fill.Outline)
+         _targetScale = 1.25
+      } else {
+         _targetScale = 1
       }
-      Draw.image(_imgHnd, x + (_imgW / 2), y+10, _imgW*2, _imgH*2, 1.0, 0.5)
-      var textw = Asset.measureBmpText(_font, _label) * 2
-      Draw.bmpText(_font, x+(w-textw)/2, y+_imgH+20, _label, 2)
+
+      var scale = _scale * 0.5
+      var width = _imgW * scale
+      var height = _imgH * scale
+      Draw.image(_imgHnd, x + ((w - width) / 2), y+10, width * (1/scale), height * (1/scale), 1.0, scale)
    }
 }

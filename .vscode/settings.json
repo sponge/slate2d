@@ -9,4 +9,5 @@
         "bin/": true,
         "build/": true
     },
+    "editor.tabSize": 3
 }

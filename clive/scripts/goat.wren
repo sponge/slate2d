@@ -1,12 +1,13 @@
 import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap
 
 class Goat {
-  construct new(td, x, y) {
+  construct new(td, grid, x, y) {
     _td = td
+    _grid = grid
     _x = x
     _y = y
     _updateInterval = 0.2
-    _nextUpdate = td.time + _updateInterval
+    _nextUpdate = _td.time + _updateInterval
 
     _sprite = Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
   }
@@ -21,7 +22,7 @@ class Goat {
       ]
 
       var closest = neighbours.reduce([0, 0, Num.largest]) {|acc, val|
-        var dist = _td.getDistance(val[0], val[1])
+        var dist = _grid.getDistance(val[0], val[1])
         if (dist && dist < acc[2]) {
           return [val[0], val[1], dist]
         }
@@ -36,6 +37,6 @@ class Goat {
   }
 
   draw() {
-    Draw.image(_sprite, _x * 8 - 8, _y * 8 - 8)
+    Draw.image(_sprite, _x * _td.tw - _td.tw, _y * _td.th - _td.th)
   }
 }

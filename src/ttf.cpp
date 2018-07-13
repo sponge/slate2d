@@ -10,6 +10,9 @@ extern ClientInfo inf;
 void* TTF_Load(Asset &asset) {
 	int found = nvgFindFont(inf.nvg, asset.name);
 	if (found != -1) {
+		// a bit hacky, since we might return 0 for hnd which is a nullptr
+		// we'll just -1 inside the setfont call
+		found++;
 		return (void*)found;
 	}
 	unsigned char *font;
@@ -19,7 +22,9 @@ void* TTF_Load(Asset &asset) {
 	if (hnd < 0) {
 		return nullptr;
 	}
-	free(font);
+
+	// same hacky thing as the above
+	hnd++;
 
 	return (void*)hnd;
 }

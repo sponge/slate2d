@@ -69,7 +69,7 @@ class GameSelect {
 
       Draw.sprite(_banner, 0, w/2 - 225, 10, 1, 3)
 
-      Draw.setTextStyle(0, 48)
+      Draw.setTextStyle(_bodyFont, 48)
       // shadow
       Draw.setColor(Color.Fill, 0, 0, 0, 255)
       Draw.text(640, 153, 1000, _currentItem)

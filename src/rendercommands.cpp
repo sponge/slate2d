@@ -85,7 +85,14 @@ const void *RB_DrawRect(const void *data) {
 const void *RB_SetTextStyle(const void *data) {
 	auto cmd = (const setTextStyleCommand_t *)data;
 
-	nvgFontFaceId(inf.nvg, cmd->fntId);
+	Asset *asset = Asset_Get(ASSET_FONT, cmd->fntId);
+
+	assert(asset != nullptr);
+
+	// -1 since we +1 when loading fonts to avoid returning a nullptr
+	int font = (int)asset->resource - 1;
+
+	nvgFontFaceId(inf.nvg, font);
 	nvgFontSize(inf.nvg, cmd->size);
 
 	return (const void *)(cmd + 1);

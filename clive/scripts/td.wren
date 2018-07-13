@@ -2,6 +2,7 @@ import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar
 import "debug" for Debug
 import "grid" for Grid
 import "piecetray" for PieceTray
+import "tower" for Tower
 
 class TD {
    nextScene { _nextScene }
@@ -11,6 +12,7 @@ class TD {
    tw { _tw }
    time { _time }
    spr { _spr }
+   grid { _grid }
 
    construct new(mapName) {
       _nextScene = null
@@ -45,6 +47,14 @@ class TD {
       _grid.setGoal(29, 12) // FIXME: hardcoded
 
       _pieceTray = PieceTray.new(this, 272, 0, 48, 180)
+
+      _grid.setTower(12, 4, Tower.Fast)
+      _grid.setTower(14, 4, Tower.Fast)
+      _grid.setTower(16, 4, Tower.Fast)
+
+      _grid.setTower(12, 8, Tower.Fast)
+      _grid.setTower(14, 8, Tower.Fast)
+      _grid.setTower(16, 8, Tower.Fast)
 
       Asset.loadAll()
    }

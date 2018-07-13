@@ -1,24 +1,28 @@
 import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap
+import "entities/entity" for Entity
 
-class Goat {
+class Goat is Entity {
   construct new(td, grid, x, y) {
+    super(x, y, "goat")
     _td = td
     _grid = grid
-    _x = x
-    _y = y
     _updateInterval = 0.2
     _nextUpdate = _td.time + _updateInterval
 
     _sprite = Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
   }
 
+  hurt() {
+    die()
+  }
+
   update(dt) {
     if (_td.time >= _nextUpdate) {
       var neighbours = [
-        [_x + 1, _y],
-        [_x - 1, _y],
-        [_x, _y + 1],
-        [_x, _y - 1]
+        [x + 1, y],
+        [x - 1, y],
+        [x, y + 1],
+        [x, y - 1]
       ]
 
       var closest = neighbours.reduce([0, 0, Num.largest]) {|acc, val|
@@ -29,14 +33,14 @@ class Goat {
         return acc
       }
 
-      _x = closest[0]
-      _y = closest[1]
+      x = closest[0]
+      y = closest[1]
 
       _nextUpdate = _td.time + _updateInterval
     }
   }
 
   draw() {
-    Draw.image(_sprite, _x * _td.tw - _td.tw, _y * _td.th - _td.th)
+    Draw.image(_sprite, x * _td.tw - _td.tw, y * _td.th - _td.th)
   }
 }

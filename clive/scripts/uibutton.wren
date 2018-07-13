@@ -1,6 +1,7 @@
 import "engine" for Draw, Asset, Trap, Color, Fill, Button
 import "debug" for Debug
 import "math" for Math
+import "util" for Util
 
 class UIButton {
    x { _x }
@@ -74,13 +75,9 @@ class GameSelectButton is UIButton {
       _label = label
    }
 
-   lerp(a, b, t) {
-      return (1 - t) * a + t * b
-   }
-
    update(dt, mx, my) {
       super.update(dt, mx, my)
-      _scale = lerp(_scale, _targetScale, 0.2)
+      _scale = Util.lerp(_scale, _targetScale, 0.2)
    }
 
    draw() {

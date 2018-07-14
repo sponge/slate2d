@@ -13,6 +13,7 @@ class TD {
    time { _time }
    spr { _spr }
    grid { _grid }
+   scale { _scale }
 
    construct new(mapName) {
       _nextScene = null
@@ -70,6 +71,7 @@ class TD {
       Draw.clear()
       Draw.resetTransform()
       Draw.transform(h / 180, 0, 0, h / 180, 0, 0)
+      _scale = h / 180
 
       for (i in 0.._layers.count-1) {
          Draw.mapLayer(i)

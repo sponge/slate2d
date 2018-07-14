@@ -29,7 +29,8 @@ class UIButton {
    }
 
    draw() {
-
+      // Draw.setColor(Color.Stroke, 255, 0, 0, 255)
+      // Draw.rect(_x, _y, _w, _h, Fill.Outline)
    }
 
    clicked(mx, my) {

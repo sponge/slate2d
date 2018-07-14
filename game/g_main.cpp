@@ -8,11 +8,6 @@
 
 gameImportFuncs_t *trap;
 kbutton_t buttons[12];
-#ifdef __EMSCRIPTEN__
-extern ClientInfo *inf;
-#else
-ClientInfo *inf;
-#endif
 WrenScene *wrenScene;
 
 #ifdef __EMSCRIPTEN__

@@ -12,6 +12,7 @@
 #include <string>
 #include <map>
 #include <imgui.h>
+#include "scene_wren.h"
 
 static tmx_map *map; // FIXME: bad!
 
@@ -115,6 +116,20 @@ void wren_trap_mouse_position(WrenVM *vm) {
 }
 
 extern void wren_trap_inspect(WrenVM *vm);
+
+void wren_trap_get_resolution(WrenVM *vm) {
+	wrenEnsureSlots(vm, 3);
+	wrenSetSlotNewList(vm, 0);
+
+	// FIXME: hacky
+	WrenScene *scene = (WrenScene*)trap->Scene_Current();
+	wrenSetSlotDouble(vm, 1, scene->inf->width);
+	wrenSetSlotDouble(vm, 2, scene->inf->height);
+
+	wrenInsertInList(vm, 0, -1, 1);
+	wrenInsertInList(vm, 0, -1, 2);
+}
+
 #pragma endregion
 
 #pragma region CVar Module
@@ -709,6 +724,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "keyPressed(_,_,_)", wren_trap_in_keypressed },
 	{ "engine", "Trap", true, "mousePosition()", wren_trap_mouse_position },
 	{ "engine", "Trap", true, "inspect(_,_)", wren_trap_inspect },
+	{ "engine", "Trap", true, "getResolution()", wren_trap_get_resolution },
 
 	{ "engine", "CVar", false, "bool()", wren_cvar_bool },
 	{ "engine", "CVar", false, "number()", wren_cvar_number },

@@ -10,9 +10,9 @@ public:
 	~WrenScene();
 
 	void Console(const char *str);
+	ClientInfo* inf;
 
 private:
-	ClientInfo* inf;
 	const char *mainScriptName;
 	const char *mapFileName;
 	struct WrenVM *vm;

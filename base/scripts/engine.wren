@@ -13,6 +13,7 @@ class Trap {
    foreign static mousePosition()
    foreign static inspect(obj, title)
    static inspect(obj) { inspect(obj, null) }
+   foreign static getResolution()
 }
 
 foreign class CVar {

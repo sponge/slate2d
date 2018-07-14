@@ -32,7 +32,6 @@ class TD {
       _gridH = _mapProps["properties"]["gridh"]
 
       // setup rules based on gamemode key
-      // use a global static class here so other modules can easily access it?
       var gameMode = _mapProps["properties"]["gamemode"]
 
       if (gameMode == 1) {
@@ -44,10 +43,11 @@ class TD {
       }
 
       _grid = Grid.new(this, _gridX, _gridY, _gridW, _gridH, _tw, _th)
-      _grid.setGoal(29, 12) // FIXME: hardcoded
 
       _pieceTray = PieceTray.new(this, 272, 0, 48, 180)
 
+      // FIXME: hardcoded
+      _grid.setGoal(29, 12)
       _grid.setTower(12, 4, Tower.Fast)
       _grid.setTower(14, 4, Tower.Fast)
       _grid.setTower(16, 4, Tower.Fast)

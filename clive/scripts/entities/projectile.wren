@@ -1,5 +1,5 @@
 import "engine" for Draw, Trap
-import "util" for Util
+import "math" for Math
 import "entities/entity" for Entity
 
 class Projectile is Entity {
@@ -16,8 +16,8 @@ class Projectile is Entity {
    update(dt) {
       _time = _time + (dt * _speed)
       if (_time <= 1) {
-         x = Util.lerp(_sx, _target.x, _time)
-         y = Util.lerp(_sy, _target.y, _time)
+         x = Math.lerp(_sx, _target.x, _time)
+         y = Math.lerp(_sy, _target.y, _time)
       } else {
          _target.hurt()
          die()

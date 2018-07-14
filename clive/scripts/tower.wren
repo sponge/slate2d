@@ -1,6 +1,6 @@
 import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap
 import "entities/projectile" for Cannonball
-import "util" for Util
+import "math" for Math
 
 class Tower {
    static Slow { 0 }

@@ -42,8 +42,11 @@ class Grid {
    }
 
    // needs to go from screen space -> local
-   transformCoords(x, y) {
-      
+   getLocalMouse() {
+      var mouse = Trap.mousePosition()
+      mouse[0] = mouse[0] / _td.scale - (_x  * _tw)
+      mouse[1] = mouse[1] / _td.scale - (_y * _th)
+      return mouse 
    }
 
    setTower(x, y, type) {
@@ -90,6 +93,17 @@ class Grid {
             }
          }
       }
+
+      if (_td.pieceTray.activeTool != null) {
+         var localMouse = getLocalMouse()
+         var button = _td.pieceTray.activeTool
+         var tx = localMouse[0] - button.w/2
+         var ty = localMouse[1] - button.w/2
+         tx = tx - (tx % _tw)
+         ty = ty - (ty % _th)
+         _td.pieceTray.drawTool(tx, ty, button.id)
+      }
+
       Draw.translate(0 - _x * _tw, 0 - _y * _th)
    }
 

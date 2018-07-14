@@ -14,10 +14,13 @@ class TD {
    spr { _spr }
    grid { _grid }
    scale { _scale }
+   pieceTray { _pieceTray }
 
    construct new(mapName) {
       _nextScene = null
       _time = 0
+
+      _scale = Trap.getResolution()[1] / 180
 
       // load the requested map
       TileMap.load(mapName)
@@ -44,7 +47,6 @@ class TD {
       }
 
       _grid = Grid.new(this, _gridX, _gridY, _gridW, _gridH, _tw, _th)
-
       _pieceTray = PieceTray.new(this, 272, 0, 48, 180)
 
       // FIXME: hardcoded
@@ -70,8 +72,8 @@ class TD {
    draw(w, h) {
       Draw.clear()
       Draw.resetTransform()
-      Draw.transform(h / 180, 0, 0, h / 180, 0, 0)
       _scale = h / 180
+      Draw.transform(_scale, 0, 0, _scale, 0, 0)
 
       for (i in 0.._layers.count-1) {
          Draw.mapLayer(i)

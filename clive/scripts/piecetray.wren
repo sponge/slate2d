@@ -5,6 +5,7 @@ import "bagrandomizer" for BagRandomizer
 import "uibutton" for UIButton
 
 class PieceTray {
+   activeTool { _activeTool }
    construct new (td, x, y, w, h) {
       _td = td
       _x = x
@@ -12,6 +13,7 @@ class PieceTray {
       _w = w
       _h = h
 
+      // FIXME: include tower3 if gamemode calls for it
       _buttons = [
          UIButton.new("tower1", x+0, y+8, 16, 16),
          UIButton.new("tower2", x+24, y+8, 16, 16),
@@ -89,15 +91,20 @@ class PieceTray {
 
       for (button in _buttons) {
          if (button.clicked(mouse[0] / _td.scale, mouse[1] / _td.scale)) {
-            _activeTool = button.id
+            Debug.printLn("clicked tool %(button.id)")
+            _activeTool = button
          }
       }
    }
 
-   drawPiece(centerX, centerY, piece) {
+   drawPiece(px, py, piece) {
+      if (piece == null) {
+         return
+      }
+
       for (i in 0...9) {
-         var x = centerX + (i%3) * 8 - 8
-         var y = centerY + (i/3).floor * 8 - 8
+         var x = px + (i%3) * 8
+         var y = py + (i/3).floor * 8
 
          if (piece[i] > 0) {
             Draw.sprite(_td.spr, 4, x, y)
@@ -105,35 +112,34 @@ class PieceTray {
       }
    }
 
+   drawTool(x, y, id) {
+      if (id == "tower1") {
+         Draw.sprite(_td.spr, 0, x, y, 1, 1, 0, 2, 2)
+      } else if (id == "tower2") {
+         Draw.sprite(_td.spr, 2, x, y, 1, 1, 0, 2, 2)
+      } else if (id == "grass") {
+         Draw.sprite(_td.spr, 22, x, y, 1, 1, 0, 2, 2)
+      } else if (id == "piece1") {
+         drawPiece(x, y, _queuedPieces[0])
+      } else if (id == "piece2") {
+         drawPiece(x, y, _queuedPieces[1])
+      } else if (id == "piece3") {
+         drawPiece(x, y, _queuedPieces[2])
+      } else if (id == "piece4") {
+         drawPiece(x, y, _queuedPieces[3])
+      }
+   }
+
    draw() {
       // Draw.translate(_x, _y)
 
       Draw.setColor(Color.Stroke, 255, 255, 0, 255)
-      // Draw.rect(0, 0, _w, _h, Fill.Outline)
 
       // draw gold (number of currencies are game dependent, pass in from TD)
 
       for (button in _buttons) {
          button.draw()
-
-         if (button.id == "tower1") {
-            Draw.sprite(_td.spr, 0, button.x, button.y, 1, 1, 0, 2, 2)
-
-         } else if (button.id == "tower2") {
-            Draw.sprite(_td.spr, 2, button.x, button.y, 1, 1, 0, 2, 2)
-
-         } else if (button.id == "grass") {
-            Draw.sprite(_td.spr, 22, button.x, button.y, 1, 1, 0, 2, 2)
-         } else if (button.id == "piece1") {
-            drawPiece(button.x+8, button.y+8, _pieces[0])
-         } else if (button.id == "piece2") {
-            drawPiece(button.x+8, button.y+8, _pieces[1])
-         } else if (button.id == "piece3") {
-            drawPiece(button.x+8, button.y+8, _pieces[2])
-         } else if (button.id == "piece4") {
-            drawPiece(button.x+8, button.y+8, _pieces[3])
-         }
-
+         drawTool(button.x, button.y, button.id)
       }
 
       // Draw.translate(-_x, -_y)

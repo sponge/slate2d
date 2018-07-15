@@ -1,6 +1,7 @@
 import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar
 import "math" for Math
 import "entities/goat" for Goat
+import "entities/coin" for Coin
 import "tower" for Tower
 
 class Grid {
@@ -118,6 +119,8 @@ class Grid {
    }
 
    setGoal(x, y) {
+      _entities = _entities.where {|e| e.type != "coin" }.toList
+      _entities.add(Coin.new(_td, x, y))
       _goalX = x
       _goalY = y
       generatePaths()

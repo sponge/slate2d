@@ -12,6 +12,7 @@ class Game3Title {
       _nextScene = null
       _time = 0
       _mode = "glitch"
+      _countdownStartTime = 0
 
       SoundController.init()
 
@@ -21,6 +22,10 @@ class Game3Title {
       _count47 = Asset.create(Asset.Speech, "count47", "47")
       _count46 = Asset.create(Asset.Speech, "count46", "46")
       _goodmorning = Asset.create(Asset.Sound, "goodmorning", "sound/goodmorning.ogg")
+
+      _font = Asset.create(Asset.BitmapFont, "buttonfont", "gfx/game3/gradius.png")
+      Asset.bmpfntSet(_font, "0123456789___?___ABCDEFGHIJKLMNOPQRSTUVWXYZ-.____abcdefghijklmnopqrstuvwxyz", 8, 0, 8, 8)
+
 
       Asset.loadAll()
 
@@ -33,8 +38,11 @@ class Game3Title {
          [11, Fn.new { Trap.sndPlay(_count46) }],
          [13, Fn.new { Trap.sndPlay(_gettingready) }],
          [15, Fn.new { SoundController.playMusic(_goodmorning) }],
-         [17, Fn.new { _mode = "" }],  
-         [25, Fn.new {
+         [17, Fn.new {
+            _mode = "countdown"
+            _countdownStartTime = _time
+         }],  
+         [17 + (100/4), Fn.new {
             SoundController.stopMusic()
             _nextScene = ["td", "maps/e1m1.tmx"]
          }]       
@@ -57,6 +65,17 @@ class Game3Title {
 
       if (_mode == "glitch") {
          Draw.image(_glitch, 0, 0)
+      } else if (_mode == "countdown") {
+         var warming = "Warming up now"
+         var warmWidth = Asset.measureBmpText(_font, warming, 2)
+         Draw.bmpText(_font, 320 - warmWidth/2, 16, warming, 2)
+
+         var count = Math.clamp(0,(100 - (_time - _countdownStartTime) * 2).floor, 100).toString
+         Draw.bmpText(_font, 240, 136, count, 10)
+
+         var presented = "Presented By Clive"
+         var presentedWidth = Asset.measureBmpText(_font, presented, 2)
+         Draw.bmpText(_font, 320 - presentedWidth/2, 352-32, presented, 2)
       }
       
       Draw.submit()

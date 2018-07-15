@@ -94,6 +94,7 @@ const void *RB_SetTextStyle(const void *data) {
 
 	nvgFontFaceId(inf.nvg, font);
 	nvgFontSize(inf.nvg, cmd->size);
+	nvgTextAlign(inf.nvg, cmd->align);
 
 	return (const void *)(cmd + 1);
 }

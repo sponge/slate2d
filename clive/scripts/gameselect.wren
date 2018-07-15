@@ -1,5 +1,5 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Color, Fill, Button
+import "engine" for Draw, Asset, Trap, Color, Fill, Button, Align
 import "debug" for Debug
 import "uibutton" for GameSelectButton
 
@@ -69,13 +69,13 @@ class GameSelect {
 
       Draw.sprite(_banner, 0, w/2 - 225, 10, 1, 3)
 
-      Draw.setTextStyle(_bodyFont, 48)
+      Draw.setTextStyle(_bodyFont, 48, 1.0, Align.Center|Align.Top)
       // shadow
       Draw.setColor(Color.Fill, 0, 0, 0, 255)
-      Draw.text(640, 153, 1000, _currentItem)
+      Draw.text(0, 103, 1280, _currentItem)
       // text
       Draw.setColor(Color.Fill, 255, 255, 255, 255)
-      Draw.text(640, 150, 1000, _currentItem)
+      Draw.text(0, 100, 1280, _currentItem)
 
       Draw.submit()
    }

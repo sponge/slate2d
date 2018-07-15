@@ -8,7 +8,7 @@ void DC_Translate(float x, float y);
 void DC_SetScissor(float x, float y, float w, float h);
 void DC_ResetScissor();
 void DC_DrawRect(float x, float y, float w, float h, bool outline = false);
-void DC_SetTextStyle(unsigned int fntId, unsigned int size, float lineHeight);
+void DC_SetTextStyle(unsigned int fntId, unsigned int size, float lineHeight, int align);
 void DC_DrawText(float x, float y, float h, const char *text);
 void DC_DrawBmpText(unsigned int fntId, float x, float y, const char *text, float scale = 1.0f);
 void DC_DrawImage(unsigned int imgId, float x, float y, float w = 0.0f, float h = 0.0f, float alpha = 1.0f, float scale = 1.0f, byte flipBits = 0, float ox = 0.0f, float oy = 0.0f, unsigned int shaderId = 0);

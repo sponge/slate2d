@@ -70,7 +70,8 @@ class Draw {
    foreign static setScissor(x, y, w, h)
    foreign static resetScissor()
    foreign static rect(x, y, w, h, outline)
-   foreign static setTextStyle(fntId, size, lineHeight)
+   foreign static setTextStyle(fntId, size, lineHeight, align)
+   static setTextStyle(fntId, size, lineHeight) { setTextStyle(fntId, size, 1.0, 1) }
    static setTextStyle(fntId, size) { setTextStyle(fntId, size, 1.0) }
    foreign static text(x, y, w, text)
    foreign static bmpText(fntId, x, y, text, scale)
@@ -97,6 +98,16 @@ class Draw {
 
    foreign static submit()
    foreign static clear()
+}
+
+class Align {
+	static Left { 1<<0 }
+	static Center { 1<<1 }
+	static Right { 1<<2 }
+	static Top { 1<<3 }
+	static Middle { 1<<4 }
+	static Bottom { 1<<5 }
+	static Baseline { 1<<6 }
 }
 
 class Fill {

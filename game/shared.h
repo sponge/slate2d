@@ -150,6 +150,7 @@ typedef struct {
 	unsigned int fntId;
 	unsigned int size;
 	float lineHeight;
+	int align;
 } setTextStyleCommand_t;
 
 // strSz is the size of the string. the actual string lives

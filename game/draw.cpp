@@ -91,12 +91,13 @@ void DC_DrawRect(float x, float y, float w, float h, bool outline) {
 	cmd->h = h;
 }
 
-void DC_SetTextStyle(unsigned int fntId, unsigned int size, float lineHeight) {
+void DC_SetTextStyle(unsigned int fntId, unsigned int size, float lineHeight, int align) {
 	GET_COMMAND(setTextStyleCommand_t, RC_SET_TEXT_STYLE)
 
 	cmd->fntId = fntId;
 	cmd->size = size;
 	cmd->lineHeight = lineHeight;
+	cmd->align = align;
 }
 
 void DC_DrawText(float x, float y, float w, const char *text) {

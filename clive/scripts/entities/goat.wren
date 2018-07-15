@@ -40,6 +40,10 @@ class Goat is Entity {
       x = closest[0]
       y = closest[1]
 
+      if (x == _grid.goalX && y == _grid.goalY) {
+        _td.gameOver()
+      }
+
       _nextUpdate = _td.time + _updateInterval
     }
   }

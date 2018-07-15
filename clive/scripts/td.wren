@@ -62,6 +62,10 @@ class TD {
       Asset.loadAll()
    }
 
+   gameOver() {
+      _nextScene = ["gameover", _spr]
+   }
+
    update(dt) {
       _time = _time + dt
 

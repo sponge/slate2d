@@ -5,7 +5,9 @@ import "entities/coin" for Coin
 import "tower" for Tower
 
 class Grid {
-  entities { _entities }
+   entities { _entities }
+   goalX { _goalX }
+   goalY { _goalY }
 
    construct new (td, x, y, w, h, tw, th) {
       _td = td

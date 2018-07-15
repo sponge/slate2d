@@ -8,6 +8,7 @@ import "gameselect" for GameSelect
 import "gameinfo" for Game1Info, Game2Info, Game3Info, Game4Info, Game5Info, GameInfo
 
 import "game1/title" for Game1Title
+import "game3/title" for Game3Title
 
 import "td" for TD
 
@@ -30,6 +31,7 @@ class Main {
          "game4": Game4Info,
          "game5": Game5Info,
          "game1_title": Game1Title,
+         "game3_title": Game3Title,
          "td": TD
       }
 

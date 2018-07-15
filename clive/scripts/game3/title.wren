@@ -19,7 +19,7 @@ class Game3Title {
       _countdownSpeedupFactor = 3
       _enableSkip = false
       _skipWarningTime = null
-      _selfTestStr = "PROGRAM ROM... "
+      _selfTestStr = ""
 
       SoundController.init()
 
@@ -60,11 +60,11 @@ class Game3Title {
          [1 + 100/_countdownSpeedupFactor, Fn.new {
             SoundController.stopMusic()
             _mode = "selftest"
-            _actions = _selftestActions
          }],
       ]
 
       _selftestActions = [
+         [0.2, Fn.new { _selfTestStr = _selfTestStr + "PROGRAM ROM... "}],
          [0.2, Fn.new { _selfTestStr = _selfTestStr + "OK\n"}],
          [0.4, Fn.new { _selfTestStr = _selfTestStr + "RAM... "}],
          [0.3, Fn.new { _selfTestStr = _selfTestStr + "OK\n"}],
@@ -87,6 +87,12 @@ class Game3Title {
          _actions[0][1].call()
          _actions.removeAt(0)
          _currentActionTime = _time
+      }
+
+      // don't set this in the action because the above code will pop it
+      // causing it to lose the first step in the action list
+      if (_mode == "selftest" && _actions.count == 0) {
+         _actions = _selftestActions
       }
 
       if (_enableSkip && Trap.keyPressed(Button.B, 0, -1)) {

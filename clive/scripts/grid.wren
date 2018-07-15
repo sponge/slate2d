@@ -107,6 +107,11 @@ class Grid {
          ty = ty - button.h/2
 
          _td.pieceTray.drawTool(tx, ty, button.id)
+
+         if (!isBlocked(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
+            Trap.printLn("creating tower")
+            setTower(tx / _tw, ty / _th, button.id)
+         }
       }
 
       Draw.translate(0 - _x * _tw, 0 - _y * _th)

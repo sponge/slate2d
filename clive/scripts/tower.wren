@@ -1,10 +1,10 @@
 import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap
-import "entities/projectile" for Cannonball
+import "entities/projectile" for Cannonball, Arrow
 import "math" for Math
 
 class Tower {
-   static Slow { 0 }
-   static Fast { 1 }
+   static Fast { 0 }
+   static Slow { 1 }
    static Magic { 2 }
 
    x { _x }
@@ -18,7 +18,9 @@ class Tower {
       _range = 5
       _closest = null
       _nextShot = td.time
+      _fireRate = type == Tower.Fast ? 0.5 : 2
    }
+
 
    update(dt, creeps) {
       var closest = {}
@@ -37,14 +39,21 @@ class Tower {
       }
 
       if (_closest && _td.time > _nextShot) {
-         _nextShot = _td.time + 3
+         _nextShot = _td.time + _fireRate
          fireAt(_closest)
       }
    }
 
    fireAt(creep) {
-      var proj = Cannonball.new(_td, _x, _y, creep)
-      _td.grid.entities.add(proj)
+      if (_type == Tower.Slow) {
+         Trap.printLn("firing cannonball")
+         var proj = Cannonball.new(_td, _x, _y, creep)
+         _td.grid.entities.add(proj)
+      } else if (_type == Tower.Fast) {
+         Trap.printLn("firing arrow")
+         var proj = Arrow.new(_td, _x, _y, creep)
+         _td.grid.entities.add(proj)
+      }
    }
 
    draw() {

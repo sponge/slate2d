@@ -8,12 +8,16 @@ class Goat is Entity {
     _grid = grid
     _updateInterval = 0.2
     _nextUpdate = _td.time + _updateInterval
+    _hp = 10
 
     _sprite = Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
   }
 
-  hurt() {
-    die()
+  hurt(damage) {
+    _hp = _hp - damage
+    if (_hp <= 0 ) {
+      die()
+    }
   }
 
   update(dt) {
@@ -41,6 +45,10 @@ class Goat is Entity {
   }
 
   draw() {
-    Draw.image(_sprite, x * _td.tw - _td.tw, y * _td.th - _td.th)
+    var sprX = x * (_td.tw - 1)
+    var sprY = y * (_td.th - 1)
+    Draw.image(_sprite, sprX, sprY)
+    Draw.setColor(Color.Fill, 0, 255, 0, 255)
+    Draw.rect(sprX, sprY - 2, _td.tw * 2 * (_hp / 10), 2, false)
   }
 }

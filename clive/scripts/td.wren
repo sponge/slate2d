@@ -52,11 +52,11 @@ class TD {
       // FIXME: hardcoded
       _grid.setGoal(29, 12)
       _grid.setTower(12, 4, Tower.Fast)
-      _grid.setTower(14, 4, Tower.Fast)
+      _grid.setTower(14, 4, Tower.Slow)
       _grid.setTower(16, 4, Tower.Fast)
 
       _grid.setTower(12, 8, Tower.Fast)
-      _grid.setTower(14, 8, Tower.Fast)
+      _grid.setTower(14, 8, Tower.Slow)
       _grid.setTower(16, 8, Tower.Fast)
 
       Asset.loadAll()

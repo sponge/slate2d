@@ -3,6 +3,7 @@ import "math" for Math
 import "debug" for Debug
 import "bagrandomizer" for BagRandomizer
 import "uibutton" for UIButton
+import "tower" for Tower
 
 class PieceTray {
    activeTool { _activeTool }
@@ -15,8 +16,8 @@ class PieceTray {
 
       // FIXME: include tower3 if gamemode calls for it
       _buttons = [
-         UIButton.new("tower1", x+0, y+8, 16, 16),
-         UIButton.new("tower2", x+24, y+8, 16, 16),
+         UIButton.new(Tower.Fast, x+0, y+8, 16, 16),
+         UIButton.new(Tower.Slow, x+24, y+8, 16, 16),
          UIButton.new("grass", x+24, y+32, 16, 16),
          UIButton.new("piece1", x+8, y+56+32*0, 24, 24),
          UIButton.new("piece2", x+8, y+56+32*1, 24, 24),
@@ -97,7 +98,7 @@ class PieceTray {
       }
    }
 
-   drawPiece(px, py, piece) {
+   drawPiece(px, py, alpha, piece) {
       if (piece == null) {
          return
       }
@@ -107,27 +108,28 @@ class PieceTray {
          var y = py + (i/3).floor * 8
 
          if (piece[i] > 0) {
-            Draw.sprite(_td.spr, 4, x, y)
+            Draw.sprite(_td.spr, 4, x, y, alpha)
          }
       }
    }
 
    // also used by grid to draw the piece preview
    drawTool(x, y, id) {
-      if (id == "tower1") {
-         Draw.sprite(_td.spr, 0, x, y, 1, 1, 0, 2, 2)
-      } else if (id == "tower2") {
-         Draw.sprite(_td.spr, 2, x, y, 1, 1, 0, 2, 2)
+      var alpha = 1
+      if (id == Tower.Fast) {
+         Draw.sprite(_td.spr, 0, x, y, alpha, 1, 0, 2, 2)
+      } else if (id == Tower.Slow) {
+         Draw.sprite(_td.spr, 2, x, y, alpha, 1, 0, 2, 2)
       } else if (id == "grass") {
-         Draw.sprite(_td.spr, 22, x, y, 1, 1, 0, 2, 2)
+         Draw.sprite(_td.spr, 22, x, y, alpha, 1, 0, 2, 2)
       } else if (id == "piece1") {
-         drawPiece(x, y, _queuedPieces[0])
+         drawPiece(x, y, alpha, _queuedPieces[0])
       } else if (id == "piece2") {
-         drawPiece(x, y, _queuedPieces[1])
+         drawPiece(x, y, alpha, _queuedPieces[1])
       } else if (id == "piece3") {
-         drawPiece(x, y, _queuedPieces[2])
+         drawPiece(x, y, alpha, _queuedPieces[2])
       } else if (id == "piece4") {
-         drawPiece(x, y, _queuedPieces[3])
+         drawPiece(x, y, alpha, _queuedPieces[3])
       }
    }
 

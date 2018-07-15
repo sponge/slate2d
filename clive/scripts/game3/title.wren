@@ -48,7 +48,7 @@ class Game3Title {
    draw(w, h) {
       Draw.clear()
       Draw.resetTransform()
-      Draw.transform(h / 180, 0, 0, h / 180, 0, 0)
+      Draw.transform(h / 352, 0, 0, h / 352, 0, 0)
 
       if (_actions.count > 0 && _time >= _actions[0][0]) {
          _actions[0][1].call()

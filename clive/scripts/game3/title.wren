@@ -42,7 +42,7 @@ class Game3Title {
             _mode = "countdown"
             _countdownStartTime = _time
          }],  
-         [17 + (100/4), Fn.new {
+         [17 + (100/2), Fn.new {
             SoundController.stopMusic()
             _nextScene = ["td", "maps/e1m1.tmx"]
          }]       

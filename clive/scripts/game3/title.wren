@@ -16,9 +16,10 @@ class Game3Title {
 
       _mode = "glitch"
       _countdownStartTime = 0
-      _countdownSpeedupFactor = 2
+      _countdownSpeedupFactor = 3
       _enableSkip = false
       _skipWarningTime = null
+      _selfTestStr = "PROGRAM ROM... "
 
       SoundController.init()
 
@@ -56,10 +57,26 @@ class Game3Title {
             _countdownStartTime = _time
             _enableSkip = true
          }],  
-         [3 + 100/_countdownSpeedupFactor, Fn.new {
+         [1 + 100/_countdownSpeedupFactor, Fn.new {
             SoundController.stopMusic()
-            _mode = "title"
-         }]
+            _mode = "selftest"
+            _actions = _selftestActions
+         }],
+      ]
+
+      _selftestActions = [
+         [0.2, Fn.new { _selfTestStr = _selfTestStr + "OK\n"}],
+         [0.4, Fn.new { _selfTestStr = _selfTestStr + "RAM... "}],
+         [0.3, Fn.new { _selfTestStr = _selfTestStr + "OK\n"}],
+         [0.6, Fn.new { _selfTestStr = _selfTestStr + "WOM... "}],
+         [0.3, Fn.new { _selfTestStr = _selfTestStr + "OK\n"}],
+         [0.2, Fn.new { _selfTestStr = _selfTestStr + "MASTER ROM... "}],
+         [0.1, Fn.new { _selfTestStr = _selfTestStr + "OK\n"}],
+         [0.2, Fn.new { _selfTestStr = _selfTestStr + "SOUND RAM... "}],
+         [0.3, Fn.new { _selfTestStr = _selfTestStr + "OK\n"}],
+         [0.4, Fn.new { _selfTestStr = _selfTestStr + "SOUND ROM... "}],
+         [0.2, Fn.new { _selfTestStr = _selfTestStr + "OK\n"}],
+         [0.5, Fn.new { _mode = "title" }]
       ]
    }
 
@@ -76,12 +93,11 @@ class Game3Title {
          if (_mode == "title") {
             _nextScene = ["td", "maps/e1m1.tmx"]
          } else if (_skipWarningTime == null) {
-            Debug.printLn("enabling warning")
             _skipWarningTime = _time
          } else if (_skipWarningTime != null) {
             SoundController.stopMusic()
-            _mode = "title"
-            _actions = []
+            _mode = "selftest"
+            _actions = _selftestActions
          }
       }
 
@@ -116,6 +132,8 @@ class Game3Title {
             Draw.rect(0, y, 360, 64, Fill.Solid)
             Draw.bmpText(_font, 0, y, _warningMessage)
          }
+      } else if (_mode == "selftest") {
+         Draw.bmpText(_font, 8, 8, _selfTestStr)
       } else if (_mode == "title") {
          Draw.image(_title, 160-108, 16)
          Draw.setColor(Color.Fill, 255, 255, 255, 255)

@@ -79,6 +79,7 @@ class Grid {
          entity.draw()
       }
 
+      // debug show how far each step is until the goal
       if (_showPathsCVar.bool()) {
          Draw.setColor(Color.Stroke, 255, 0, 0, 255)
          Draw.rect(0, 0, _w * _tw, _h * _th, Fill.Outline)
@@ -94,13 +95,17 @@ class Grid {
          }
       }
 
+      // if something is selected, draw the piece shadow
+      // snap it to the nearest 8px boundary
       if (_td.pieceTray.activeTool != null) {
          var localMouse = getLocalMouse()
+         var tx = localMouse[0] - (localMouse[0] % _tw)
+         var ty = localMouse[1] - (localMouse[1] % _th)
+
          var button = _td.pieceTray.activeTool
-         var tx = localMouse[0] - button.w/2
-         var ty = localMouse[1] - button.w/2
-         tx = tx - (tx % _tw)
-         ty = ty - (ty % _th)
+         tx = tx - button.w/2
+         ty = ty - button.h/2
+
          _td.pieceTray.drawTool(tx, ty, button.id)
       }
 

@@ -112,6 +112,7 @@ class PieceTray {
       }
    }
 
+   // also used by grid to draw the piece preview
    drawTool(x, y, id) {
       if (id == "tower1") {
          Draw.sprite(_td.spr, 0, x, y, 1, 1, 0, 2, 2)

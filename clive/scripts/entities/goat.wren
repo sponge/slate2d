@@ -49,8 +49,8 @@ class Goat is Entity {
   }
 
   draw() {
-    var sprX = x * (_td.tw - 1)
-    var sprY = y * (_td.th - 1)
+    var sprX = (x - 1) * _td.tw
+    var sprY = (y - 1) * _td.th
     Draw.image(_sprite, sprX, sprY)
     Draw.setColor(Color.Fill, 0, 255, 0, 255)
     Draw.rect(sprX, sprY - 2, _td.tw * 2 * (_hp / 10), 2, false)

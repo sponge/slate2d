@@ -25,9 +25,9 @@ class GameSelect {
       x = x + width + spacing
       _items.add(GameSelectButton.new("game3", x, y, width, 350, "Battlement Defense Arcade", "gfx/box_3.png"))
       x = x + width + spacing
-      _items.add(GameSelectButton.new("game4", x, y, width, 350, "Battlement ReDefended", "gfx/box_1.png"))
+      _items.add(GameSelectButton.new("game4", x, y, width, 350, "Battlement Defense ReDefended", "gfx/box_4.png"))
       x = x + width + spacing
-      _items.add(GameSelectButton.new("game5", x, y, width, 350, "Battlement Towers.", "gfx/box_1.png"))
+      _items.add(GameSelectButton.new("game5", x, y, width, 350, "Towers.", "gfx/box_1.png"))
 
       _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
       Trap.printLn(_bodyFont)

@@ -56,7 +56,7 @@ class GameInfo {
       Draw.image(_boxHnd, 40, 55)
 
       Draw.setColor(Color.Fill, 133, 147, 239, 255)
-      Draw.setTextStyle(_bodyFont, 72)
+      Draw.setTextStyle(_bodyFont, 60)
       Draw.text(465, 60, 780, _title)
 
       Draw.setColor(Color.Fill, 255, 255, 255, 255)
@@ -121,9 +121,9 @@ Nulla rutrum urna quis sem vestibulum faucibus id quis mauris. Suspendisse euism
 
 class Game4Info is GameInfo {
    construct new(params) {
-      boxPath = "gfx/box_1.png"
+      boxPath = "gfx/box_4.png"
       year = "2016"
-      title = "Battlement ReDefended"
+      title = "Battlement Defense ReDefended"
       gameScene = "game4_title"
       description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas posuere facilisis fermentum. Pellentesque id magna at nunc ornare aliquet vel et massa. Phasellus eu interdum arcu. Sed in volutpat sapien. Vestibulum tellus lacus, hendrerit a sem id, semper cursus lacus. In eu tempor ante. Fusce congue odio et nisi cursus, in porta tellus semper. Ut nunc eros, molestie iaculis purus ac, fermentum aliquet nibh. Ut fermentum, magna sit amet suscipit dignissim, lectus urna volutpat neque, sed tempor quam urna vel felis. Vestibulum hendrerit hendrerit nisi, cursus laoreet massa pretium ac. Quisque porta elit felis, vitae accumsan diam fermentum a. Praesent ac rutrum velit. Praesent ornare efficitur bibendum. Nulla mollis risus vel vestibulum vehicula. Vivamus quis enim purus.
 

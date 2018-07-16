@@ -2,11 +2,13 @@ import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar
 import "math" for Math
 import "debug" for Debug
 import "bagrandomizer" for BagRandomizer
-import "uibutton" for UIButton
+import "uibutton" for TrayButton
 import "tower" for Tower
 
 class PieceTray {
    activeTool { _activeTool }
+   queuedPieces { _queuedPieces }
+   
    construct new (td, x, y, w, h) {
       _td = td
       _x = x
@@ -16,13 +18,13 @@ class PieceTray {
 
       // FIXME: include tower3 if gamemode calls for it
       _buttons = [
-         UIButton.new(Tower.Fast, x+0, y+8, 16, 16),
-         UIButton.new(Tower.Slow, x+24, y+8, 16, 16),
-         UIButton.new("grass", x+24, y+32, 16, 16),
-         UIButton.new("piece1", x+8, y+56+32*0, 24, 24),
-         UIButton.new("piece2", x+8, y+56+32*1, 24, 24),
-         UIButton.new("piece3", x+8, y+56+32*2, 24, 24),
-         UIButton.new("piece4", x+8, y+56+32*3, 24, 24)
+         TrayButton.new("tower1", "tower", Tower.Fast, x+0, y+8, 16, 16),
+         TrayButton.new("tower2", "tower", Tower.Slow, x+24, y+8, 16, 16),
+         TrayButton.new("grass",  "grass", 0, x+24, y+32, 16, 16),
+         TrayButton.new("piece0", "piece", 0, x+8, y+56+32*0, 24, 24),
+         TrayButton.new("piece1", "piece", 1, x+8, y+56+32*1, 24, 24),
+         TrayButton.new("piece2", "piece", 2, x+8, y+56+32*2, 24, 24),
+         TrayButton.new("piece3", "piece", 3, x+8, y+56+32*3, 24, 24)
       ]
 
       _pieces = [
@@ -116,19 +118,19 @@ class PieceTray {
    // also used by grid to draw the piece preview
    drawTool(x, y, id) {
       var alpha = 1
-      if (id == Tower.Fast) {
+      if (id == "tower1") {
          Draw.sprite(_td.spr, 0, x, y, alpha, 1, 0, 2, 2)
-      } else if (id == Tower.Slow) {
+      } else if (id == "tower2") {
          Draw.sprite(_td.spr, 2, x, y, alpha, 1, 0, 2, 2)
       } else if (id == "grass") {
          Draw.sprite(_td.spr, 22, x, y, alpha, 1, 0, 2, 2)
-      } else if (id == "piece1") {
+      } else if (id == "piece0") {
          drawPiece(x, y, alpha, _queuedPieces[0])
-      } else if (id == "piece2") {
+      } else if (id == "piece1") {
          drawPiece(x, y, alpha, _queuedPieces[1])
-      } else if (id == "piece3") {
+      } else if (id == "piece2") {
          drawPiece(x, y, alpha, _queuedPieces[2])
-      } else if (id == "piece4") {
+      } else if (id == "piece3") {
          drawPiece(x, y, alpha, _queuedPieces[3])
       }
    }

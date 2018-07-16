@@ -46,11 +46,9 @@ class Tower {
 
    fireAt(creep) {
       if (_type == Tower.Slow) {
-         Trap.printLn("firing cannonball")
          var proj = Cannonball.new(_td, _x, _y, creep)
          _td.grid.entities.add(proj)
       } else if (_type == Tower.Fast) {
-         Trap.printLn("firing arrow")
          var proj = Arrow.new(_td, _x, _y, creep)
          _td.grid.entities.add(proj)
       }

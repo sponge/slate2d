@@ -38,6 +38,17 @@ class UIButton {
    }
 }
 
+class TrayButton is UIButton {
+   category { _category }
+   variation { _variation }
+   
+   construct new(id, category, variation, x, y, w, h) {
+      super(id, x, y, w, h)
+      _category = category
+      _variation = variation
+   }
+}
+
 class TextButton is UIButton {
    construct new(id, x, y, w, h, label) {
       super(id, x, y, w, h)

@@ -1,5 +1,7 @@
 import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar, Align
 import "math" for Math
+import "debug" for Debug
+
 import "entities/goat" for Goat
 import "entities/coin" for Coin
 import "tower" for Tower
@@ -77,6 +79,8 @@ class Grid {
          entity.update(dt)
       }
       _entities = _entities.where {|c| !c.dead }.toList
+
+      // clicking on the grid to place pieces is handled in draw()
    }
 
    draw() {
@@ -108,21 +112,37 @@ class Grid {
 
       // if something is selected, draw the piece shadow
       // snap it to the nearest 8px boundary
+      // TODO: ugly gamejam code
       if (_td.pieceTray.activeTool != null) {
          var localMouse = getLocalMouse()
          var tx = localMouse[0] - (localMouse[0] % _tw)
          var ty = localMouse[1] - (localMouse[1] % _th)
 
          var button = _td.pieceTray.activeTool
-         tx = tx - button.w/2
-         ty = ty - button.h/2
 
-         _td.pieceTray.drawTool(tx, ty, button.id)
+         if (button.category == "tower") {
+            _td.pieceTray.drawTool(tx, ty, button.id)
 
-         if (!isBlocked(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
-            Trap.printLn("creating tower")
-            setTower(tx / _tw, ty / _th, button.id)
+            // if it's a valid placement, place the tower
+            if (!isBlocked(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
+               Trap.printLn("creating tower")
+               setTower(tx / _tw, ty / _th, button.variation)
+            }
+         } else if (button.category == "piece") {
+            // shift over by one so you are pointing at the middle of a 3x3 tile
+            tx = tx - _tw
+            ty = ty - _th
+            _td.pieceTray.drawTool(tx, ty, button.id)
+
+            // if there's a click, check for a valid placement and place the wall
+            if (Trap.keyPressed(Button.B, 0, -1)) {
+               var piece = _td.pieceTray.queuedPieces[button.variation]
+
+               Debug.printLn(piece)
+               Debug.printLn("clicked piece %(button.variation)")
+            }
          }
+
       }
 
       Draw.translate(0 - _x * _tw, 0 - _y * _th)

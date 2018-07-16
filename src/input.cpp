@@ -277,7 +277,6 @@ bool IN_KeyPressed(kbutton_t *key, unsigned int delay, int repeat) {
 	double firstTrigger = key->firstdowntime + delay;
 
 	if (com_frameTime >= firstTrigger && com_lastFrameTime < firstTrigger) {
-		Com_Printf("=== pressed this frame === %f >= %f, %f <= %f", com_frameTime, firstTrigger, com_lastFrameTime, firstTrigger);
 		return true;
 	}
 

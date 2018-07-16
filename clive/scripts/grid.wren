@@ -1,4 +1,4 @@
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar
+import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar, Align
 import "math" for Math
 import "entities/goat" for Goat
 import "entities/coin" for Coin
@@ -92,15 +92,15 @@ class Grid {
 
       // debug show how far each step is until the goal
       if (_showPathsCVar.bool()) {
-         Draw.setColor(Color.Stroke, 255, 0, 0, 255)
+         Draw.setColor(Color.Fill, 255, 255, 255, 50)
          Draw.rect(0, 0, _w * _tw, _h * _th, Fill.Outline)
-         Draw.setTextStyle(_font, 6)
+         Draw.setTextStyle(_font, 6, 1.0, Align.Center+Align.Top)
          for (x in 0..._w) {
             for (y in 0..._h) {
                var dist = _paths[y * _w + x]
                if (dist != null) {
                   var a = 127 - (dist * 4)
-                  Draw.text(x * _tw, y * _th + 6, 8, "%(dist)")
+                  Draw.text(x * _tw, y * _th, 8, "%(dist)")
                }
             }
          }

@@ -21,6 +21,7 @@ class TD {
       _time = 0
 
       _scale = Trap.getResolution()[1] / 180
+      _mapName = mapName
 
       // load the requested map
       TileMap.load(mapName)
@@ -63,7 +64,7 @@ class TD {
    }
 
    gameOver() {
-      _nextScene = ["gameover", _spr]
+      _nextScene = ["gameover", {"map":_mapName}]
    }
 
    update(dt) {

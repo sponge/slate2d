@@ -1,4 +1,4 @@
-import "engine" for Draw, Trap, Asset, Color
+import "engine" for Draw, Trap, Asset, Color, Button
 
 class GameOver {
    nextScene { _nextScene }
@@ -7,6 +7,8 @@ class GameOver {
       _nextScene = null
       _time = 0
       _scale = 4
+
+      _mapName = params["map"]
 
       _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
       _sprite = Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
@@ -22,6 +24,10 @@ class GameOver {
 
    update(dt) {
       _time = _time + dt
+
+      if (Trap.keyPressed(Button.B, 0, -1)) {
+         _nextScene = ["td", _mapName]
+      }
    }
 
    textColor() {

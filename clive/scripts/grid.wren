@@ -54,10 +54,18 @@ class Grid {
 
    setTower(x, y, type) {
      _towers.add(Tower.new(_td, x, y, type))
+     _tiles[y*_w+x] = 200
+     _tiles[y*_w+x+1] = 200
+     _tiles[(y+1)*_w+x] = 200
+     _tiles[(y+1)*_w+x+1] = 200
+   }
+
+   setWall(x, y, piece) {
+      // FIXME: do it
    }
 
    update(dt) {
-      generatePaths() // FIXME: should only do this when the map changes
+      generatePaths()
 
       var creeps = _entities.where{|e| e.type == "goat"}
 
@@ -172,13 +180,12 @@ class Grid {
    isBlocked(x, y) {
       var oob = x < 0 || x >= _w || y < 0 || y >= _h
 
-      if (!oob) {
-         var hasTile = _tiles[y * _w + x] != null
-         var hasEntity = _entities.any {|ent| ent.x == x && ent.y == y }
-         var hasTower = _towers.any {|ent|(ent.x == x || ent.x + 1== x ) && (ent.y == y || ent.y + 1 == y) }
-         return hasTile || hasEntity || hasTower
+      if (oob) {
+         return true
       }
 
-      return true
+      var hasTile = _tiles[y * _w + x] != null
+      var hasEntity = _entities.any {|ent| ent.x == x && ent.y == y }
+      return hasTile || hasEntity
    }
 }

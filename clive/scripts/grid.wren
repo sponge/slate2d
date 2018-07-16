@@ -138,8 +138,8 @@ class Grid {
             if (Trap.keyPressed(Button.B, 0, -1)) {
                var piece = _td.pieceTray.queuedPieces[button.variation]
 
-               Debug.printLn(piece)
-               Debug.printLn("clicked piece %(button.variation)")
+               //Debug.printLn(piece)
+               //Debug.printLn("clicked piece %(button.variation)")
             }
          }
 

@@ -5,13 +5,14 @@
 #include "console/console.h"
 #include "input.h"
 #include "main.h"
+#include <cmath>
 
 /*
 ===================
 CL_AddKeyUpCommands
 ===================
 */
-void CL_AddKeyUpCommands(int key, char *kb, unsigned time) {
+void CL_AddKeyUpCommands(int key, char *kb, double time) {
 	int i;
 	char button[1024], *buttonPtr;
 	char	cmd[1024];
@@ -28,7 +29,7 @@ void CL_AddKeyUpCommands(int key, char *kb, unsigned time) {
 			if (button[0] == '+') {
 				// button commands add keynum and time as parms so that multiple
 				// sources can be discriminated and subframe corrected
-				Com_sprintf(cmd, sizeof(cmd), "-%s %i %i\n", button + 1, key, time);
+				Com_sprintf(cmd, sizeof(cmd), "-%s %i %i\n", button + 1, key, (int)time);
 				Cbuf_AddText(cmd);
 				keyevent = true;
 			}
@@ -55,7 +56,7 @@ const char *IN_BindForKey(int key) {
 	return keys[key].binding == nullptr ? "" : keys[key].binding;
 }
 
-bool KeyEvent(int key, bool down, unsigned time) {
+bool KeyEvent(int key, bool down, double time) {
 	// send the bound action
 	auto kb = keys[key].binding;
 	char	cmd[1024];
@@ -84,7 +85,7 @@ bool KeyEvent(int key, bool down, unsigned time) {
 				if (button[0] == '+') {
 					// button commands add keynum and time as parms so that multiple
 					// sources can be discriminated and subframe corrected
-					Com_sprintf(cmd, sizeof(cmd), "%s %i %i\n", button, key, time);
+					Com_sprintf(cmd, sizeof(cmd), "%s %i %i\n", button, key, (int)time);
 					Cbuf_AddText(cmd);
 				}
 				else {
@@ -112,24 +113,24 @@ bool KeyEvent(int key, bool down, unsigned time) {
 	}
 }
 
-bool MouseEvent(int button, bool down, unsigned time) {
+bool MouseEvent(int button, bool down, double time) {
 	switch (button) {
 	case SDL_BUTTON_LEFT:
-		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_LEFT, down, com_frameTime);
+		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_LEFT, down, time);
 	case SDL_BUTTON_RIGHT:
-		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_RIGHT, down, com_frameTime);
+		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_RIGHT, down, time);
 	case SDL_BUTTON_MIDDLE:
-		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_MIDDLE, down, com_frameTime);
+		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_MIDDLE, down, time);
 	case SDL_BUTTON_X1:
-		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_X1, down, com_frameTime);
+		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_X1, down, time);
 	case SDL_BUTTON_X2:
-		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_X2, down, com_frameTime);
+		return KeyEvent(SDL_NUM_SCANCODES + MOUSE_BUTTON_X2, down, time);
 	}
 
 	return false;
 }
 
-bool JoyEvent(int controller, int button, bool down, unsigned time) {
+bool JoyEvent(int controller, int button, bool down, double time) {
 	if (controller >= MAX_CONTROLLERS) {
 		Com_Printf("ignoring controller %i > MAX_CONTROLLERS\n", controller);
 		return false;
@@ -174,7 +175,7 @@ void IN_KeyDown(kbutton_t *b) {
 	// save timestamp for partial frame summing
 	c = Cmd_Argv(2);
 	b->downtime = atoi(c);
-	b->firstdowntime = b->downtime;
+	b->firstdowntime = com_frameTime;
 
 	b->active = true;
 	b->wasPressed = true;
@@ -275,7 +276,7 @@ bool IN_KeyPressed(kbutton_t *key, unsigned int delay, int repeat) {
 
 	double firstTrigger = key->firstdowntime + delay;
 
-	if (com_frameTime >= firstTrigger && com_frameTime - frame_msec < firstTrigger) {
+	if (com_frameTime >= firstTrigger && com_lastFrameTime <= firstTrigger) {
 		return true;
 	}
 

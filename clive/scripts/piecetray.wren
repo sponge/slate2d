@@ -8,7 +8,7 @@ import "tower" for Tower
 class PieceTray {
    activeTool { _activeTool }
    queuedPieces { _queuedPieces }
-   
+
    construct new (td, x, y, w, h) {
       _td = td
       _x = x
@@ -94,7 +94,6 @@ class PieceTray {
 
       for (button in _buttons) {
          if (button.clicked(mouse[0] / _td.scale, mouse[1] / _td.scale)) {
-            Debug.printLn("clicked tool %(button.id)")
             _activeTool = button
          }
       }

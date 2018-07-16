@@ -47,7 +47,7 @@
 SoLoud::Soloud soloud;
 ClientInfo inf;
 SceneManager *sm;
-double frame_msec, com_frameTime;
+double frame_msec = 0, com_frameTime = 0, com_lastFrameTime = 0;
 tmx_map *map;
 //float frame_accum;
 bool frameAdvance = false;
@@ -100,6 +100,7 @@ void main_loop() {
 	SDL_Event ev;
 	auto now = clock::now();
 	auto dt = std::chrono::duration<float>(now - last).count();
+	com_lastFrameTime = com_frameTime;
 	com_frameTime = std::chrono::duration<float>(now - start).count() * 1000;
 	frame_msec = dt * 1000;
 	last = now;

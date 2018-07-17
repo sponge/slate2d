@@ -195,8 +195,9 @@ void wren_asset_create(WrenVM *vm) {
 	AssetType_t assetType = (AssetType_t)(int)wrenGetSlotDouble(vm, 1);
 	const char *name = wrenGetSlotString(vm, 2);
 	const char *path = wrenGetSlotString(vm, 3);
+	int flags = (int)wrenGetSlotDouble(vm, 4);
 
-	wrenSetSlotDouble(vm, 0, trap->Asset_Create(assetType, name, path));
+	wrenSetSlotDouble(vm, 0, trap->Asset_Create(assetType, name, path, flags));
 }
 
 void wren_asset_find(WrenVM *vm) {
@@ -732,7 +733,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "CVar", false, "string()", wren_cvar_string },
 	{ "engine", "CVar", false, "set(_)", wren_cvar_set },
 
-	{ "engine", "Asset", true, "create(_,_,_)", wren_asset_create },
+	{ "engine", "Asset", true, "create(_,_,_,_)", wren_asset_create },
 	{ "engine", "Asset", true, "find(_)", wren_asset_find },
 	{ "engine", "Asset", true, "loadAll()", wren_asset_loadall },
 	{ "engine", "Asset", true, "clearAll()", wren_asset_clearall },

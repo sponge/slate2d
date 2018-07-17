@@ -40,7 +40,7 @@ typedef struct gameImportFuncs_s {
 	void(*SubmitRenderCommands)(renderCommandList_t *list);
 	int(*R_RegisterShader)(const char *name, const char *vshader, const char *fshader);
 
-	AssetHandle (*Asset_Create)(AssetType_t assetType, const char *name, const char *path);
+	AssetHandle (*Asset_Create)(AssetType_t assetType, const char *name, const char *path, int flags);
 	AssetHandle (*Asset_Find)(const char *name);
 	void (*Asset_LoadAll)();
 	void (*Asset_ClearAll)();

@@ -271,6 +271,7 @@ typedef struct {
 	bool loaded;
 	char name[64];
 	char path[64];
+	int flags;
 	void *resource;
 } Asset;
 

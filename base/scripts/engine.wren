@@ -40,7 +40,8 @@ class Button {
 }
 
 class Asset {
-   foreign static create(type, name, path)
+   foreign static create(type, name, path, flags)
+   static create(type, name, path) { create(type, name, path, 0) }
    foreign static find(name)
    foreign static loadAll()
    foreign static clearAll()
@@ -98,6 +99,15 @@ class Draw {
 
    foreign static submit()
    foreign static clear()
+}
+
+class ImageFlags {
+   static GenerateMipmaps { 1<<0 }
+	static RepeatX { 1<<1 }
+	static RepeatY { 1<<2 }
+	static FlipY { 1<<3 }
+	static PremultipiedAlpha { 1<<4 }
+	static LinearFilter { 1<<5 }
 }
 
 class Align {

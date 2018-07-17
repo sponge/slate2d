@@ -4,7 +4,7 @@
 
 AssetHandle Asset_Find(const char *name);
 Asset* Asset_Get(AssetType_t type, AssetHandle id);
-AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *path);
+AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *path, int flags = 0);
 void Asset_LoadAll();
 void Asset_ClearAll();
 

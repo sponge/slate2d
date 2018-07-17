@@ -45,7 +45,7 @@ Asset* Asset_Get(AssetType_t type, AssetHandle id) {
 	return asset;
 }
 
-AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *path) {
+AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *path, int flags) {
 	Com_Printf("asset_create: %s name:%s path:%s\n", assetStrings[assetType], name, path);
 
 	if (assetType < 0 || assetType > ASSET_MAX) {
@@ -64,6 +64,7 @@ AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *pa
 	Asset *asset = &assets[nextAsset];
 	asset->id = nextAsset;
 	asset->type = assetType;
+	asset->flags = flags;
 	strncpy(asset->path, path, sizeof(asset->path));
 	strncpy(asset->name, name, sizeof(asset->name));
 	asset->resource = nullptr;

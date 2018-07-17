@@ -16,7 +16,12 @@ void* Img_Load(Asset &asset) {
 
 	Image * img = new Image();
 	img->nvg = inf.nvg;
-	img->hnd = nvgCreateImageMem(img->nvg, NVG_IMAGE_NEAREST, (unsigned char *)buffer, sz);
+
+	// flip nearest flag since we want nearest by default
+	int flags = asset.flags;
+	flags ^= NVG_IMAGE_NEAREST;
+
+	img->hnd = nvgCreateImageMem(img->nvg, flags, (unsigned char *)buffer, sz);
 	nvgImageSize(img->nvg, img->hnd, &img->w, &img->h);
 
 	free(buffer);

@@ -1,4 +1,4 @@
-import "engine" for Draw, Asset, Trap, Color, Fill, Button
+import "engine" for Draw, Asset, Trap, Color, Fill, Button, ImageFlags
 import "debug" for Debug
 import "math" for Math
 
@@ -76,7 +76,7 @@ class GameSelectButton is UIButton {
 
    construct new(id, x, y, w, h, label, img) {
       super(id, x, y, w, h)
-      _imgHnd = Asset.create(Asset.Image, img, img)
+      _imgHnd = Asset.create(Asset.Image, img, img, ImageFlags.LinearFilter)
       _imgW = 385
       _imgH = 600
 

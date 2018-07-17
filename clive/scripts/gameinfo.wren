@@ -1,5 +1,5 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Color, Fill, Button
+import "engine" for Draw, Asset, Trap, Color, Fill, Button, ImageFlags
 import "debug" for Debug
 import "uibutton" for TextButton
 
@@ -23,7 +23,7 @@ class GameInfo {
       _time = 0
 
       _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
-      _boxHnd = Asset.create(Asset.Image, _boxPath, _boxPath)
+      _boxHnd = Asset.create(Asset.Image, _boxPath, _boxPath, ImageFlags.LinearFilter)
       _font = Asset.create(Asset.BitmapFont, "buttonfont", "gfx/panicbomber_blue.png")
       Asset.bmpfntSet(_font, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
 
@@ -135,7 +135,7 @@ Nulla rutrum urna quis sem vestibulum faucibus id quis mauris. Suspendisse euism
 
 class Game5Info is GameInfo {
    construct new(params) {
-      boxPath = "gfx/box_1.png"
+      boxPath = "gfx/box_5.png"
       year = "2018"
       title = "Towers."
       gameScene = "game5_title"

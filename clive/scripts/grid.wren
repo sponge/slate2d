@@ -23,27 +23,16 @@ class Grid {
       _font = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
 
       _showPathsCVar = CVar.get("debug_pathfinding", false)
-      _tiles = {}
-      _paths = {}
+      _tiles = List.filled(_w*_h, 0)
+      _paths = List.filled(_w*_h, 0)
       _towers = []
       _entities = [
         Goat.new(td, this, 2, 6),
-        Goat.new(td, this, 2, 5),
-        Goat.new(td, this, 2, 4),
-        Goat.new(td, this, 2, 3),
-        Goat.new(td, this, 2, 2),
+      //   Goat.new(td, this, 2, 5),
+      //   Goat.new(td, this, 2, 4),
+      //   Goat.new(td, this, 2, 3),
+      //   Goat.new(td, this, 2, 2),
       ]
-
-      // TEMP: copy the bushes out of the layer into the collision layer
-      var wallLayer = TileMap.layerByName("walls")
-      for (xx in 0..._w) {
-         for (yy in 0..._h) {
-            var t = TileMap.getTile(wallLayer, xx+_x, yy+_y) > 0
-            if (t) {
-               _tiles[yy*_w+xx] = t
-            }
-         }
-      }
    }
 
    // needs to go from screen space -> local
@@ -56,14 +45,41 @@ class Grid {
 
    setTower(x, y, type) {
      _towers.add(Tower.new(_td, x, y, type))
+     // reserve space on tile grid for tower, but draw invisibly
      _tiles[y*_w+x] = 200
      _tiles[y*_w+x+1] = 200
      _tiles[(y+1)*_w+x] = 200
      _tiles[(y+1)*_w+x+1] = 200
    }
 
-   setWall(x, y, piece) {
-      // FIXME: do it
+   isPieceValid(x, y, piece) {
+      for (py in 0...3) {
+         for (px in 0...3) {
+            // if the piece has a block in that position, and that cell is blocked
+            if (piece[py*3+px] > 0 && isBlocked(px+x, py+y)) {
+               return false
+            }
+         }
+      }
+      return true
+   }
+
+   setWallPiece(x, y, piece) {
+      if (!isPieceValid(x, y, piece)) {
+         return false
+      }
+
+      for (py in 0...3) {
+         for (px in 0...3) {
+            if (piece[py*3+px] > 0) {
+               _tiles[(py+y)*_w + (px+x)] = 4
+            }
+         }
+      }
+
+      // TODO: probably setup the proper wall transitions here
+
+      return true
    }
 
    update(dt) {
@@ -96,30 +112,47 @@ class Grid {
 
       // debug show how far each step is until the goal
       if (_showPathsCVar.bool()) {
-         Draw.setColor(Color.Fill, 255, 255, 255, 50)
-         Draw.rect(0, 0, _w * _tw, _h * _th, Fill.Outline)
          Draw.setTextStyle(_font, 6, 1.0, Align.Center+Align.Top)
          for (x in 0..._w) {
             for (y in 0..._h) {
+               // checkerboard pattern
+               if ((y+x) % 2 == 0) {
+                  Draw.setColor(Color.Fill, 255, 255, 255, 10)
+                  Draw.rect(x*_tw, y*_th, _tw, _th, Fill.Solid)
+               }
                var dist = _paths[y * _w + x]
                if (dist != null) {
                   var a = 127 - (dist * 4)
+                  Draw.setColor(Color.Fill, 255, 255, 255, 40)
                   Draw.text(x * _tw, y * _th, 8, "%(dist)")
                }
             }
          }
       }
 
+      // draw all the tiles on the map but ignore any tiles >= 200 since
+      // those are reserved for blocking but non visible
+      for (y in 0..._h) {
+         for (x in 0..._w) {
+            var tid = _tiles[y*_w+x]
+            if (tid > 0 && tid < 200) {
+               Draw.sprite(_td.spr, tid, x*_tw, y*_th)
+            }
+         }
+      }
+
       // if something is selected, draw the piece shadow
       // snap it to the nearest 8px boundary
-      // TODO: ugly gamejam code
-      if (_td.pieceTray.activeTool != null) {
-         var localMouse = getLocalMouse()
+      // TODO: ugly gamejam code (this shouldn't all be in draw)
+      var localMouse = getLocalMouse()
+      if (Math.pointInRect(localMouse[0], localMouse[1], 0, 0, _w*_tw, _h*_th) && _td.pieceTray.activeTool != null) {
+         // tx and ty is misleadingly still pixels, just snapped to 8
          var tx = localMouse[0] - (localMouse[0] % _tw)
          var ty = localMouse[1] - (localMouse[1] % _th)
 
          var button = _td.pieceTray.activeTool
 
+         // treat towers and pieces differently
          if (button.category == "tower") {
             _td.pieceTray.drawTool(tx, ty, button.id)
 
@@ -134,12 +167,14 @@ class Grid {
             ty = ty - _th
             _td.pieceTray.drawTool(tx, ty, button.id)
 
-            // if there's a click, check for a valid placement and place the wall
+            // if there's a click, attempt to place the wall
             if (Trap.keyPressed(Button.B, 0, -1)) {
                var piece = _td.pieceTray.queuedPieces[button.variation]
-
-               //Debug.printLn(piece)
-               //Debug.printLn("clicked piece %(button.variation)")
+               var success = setWallPiece(tx/_tw, ty/_th, piece)
+               // call into the piece tray to deduct currency, generate new piece, etc
+               if (success) {
+                  _td.pieceTray.spendCurrent()
+               }
             }
          }
 
@@ -191,7 +226,7 @@ class Grid {
 
    expandFrontier(frontier, dist, curCoord, nextX, nextY) {
       var next = nextY * _w + nextX
-      if (!dist.containsKey(next) && !isBlocked(nextX, nextY)) {
+      if (dist[next] == null && !isBlocked(nextX, nextY)) {
          frontier.insert(-1, [nextX, nextY])
          dist[next] = dist[curCoord] + 1
       }
@@ -204,7 +239,7 @@ class Grid {
          return true
       }
 
-      var hasTile = _tiles[y * _w + x] != null
+      var hasTile = _tiles[y * _w + x] > 0
       var hasEntity = _entities.any {|ent| ent.x == x && ent.y == y }
       return hasTile || hasEntity
    }

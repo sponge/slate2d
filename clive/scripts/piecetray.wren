@@ -99,6 +99,15 @@ class PieceTray {
       }
    }
 
+   spendCurrent() {
+      // if it's a piece, we want to remove the piece and replace it with a new one
+      if (_activeTool.category == "piece") {
+         _queuedPieces[_activeTool.variation] = null
+         _activeTool = null
+      }
+
+   }
+
    drawPiece(px, py, alpha, piece) {
       if (piece == null) {
          return

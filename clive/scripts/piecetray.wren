@@ -16,6 +16,9 @@ class PieceTray {
       _w = w
       _h = h
 
+      _nextPieceGenTime = 0
+      _pieceRespawnTime = 2
+
       // FIXME: include tower3 if gamemode calls for it
       _buttons = [
          TrayButton.new("tower1", "tower", Tower.Fast, x+0, y+8, 16, 16),
@@ -87,8 +90,10 @@ class PieceTray {
       var mouse = Trap.mousePosition()
 
       for (i in (0..._queuedPieces.count)) {
-         if (_queuedPieces[i] == null) {
+         // TODO: can attempt to place null pieces
+         if (_queuedPieces[i] == null && _td.time > _nextPieceGenTime) {
             _queuedPieces[i] = _pieces[_pieceGen.next()]
+            _nextPieceGenTime = _td.time + _pieceRespawnTime
          }
       }
 
@@ -104,6 +109,7 @@ class PieceTray {
       if (_activeTool.category == "piece") {
          _queuedPieces[_activeTool.variation] = null
          _activeTool = null
+         _nextPieceGenTime = _td.time + _pieceRespawnTime
       }
 
    }

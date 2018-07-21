@@ -43,13 +43,19 @@ class TD {
          // TODO: this image is loaded twice since the tmx also loads this but we can't use the
          // same name to load the existing texture because it's an image, and not a sprite
          // so we'll just dupe this image since whatever it's so small
-         _spr = Asset.create(Asset.Sprite, "spr", "maps/tilesets/e1.png")
+         _spr = Asset.create(Asset.Sprite, "e1spr", "maps/tilesets/e1.png")
          Asset.spriteSet(_spr, 8, 8, 0, 0)
+      } else if (gameMode == 2) {
+         _spr = Asset.create(Asset.Sprite, "e2spr", "maps/tilesets/e2.png")
+         Asset.spriteSet(_spr, 8, 8, 0, 0)         
+      } else if (gameMode == 3) {
+         _spr = Asset.create(Asset.Sprite, "e3spr", "maps/tilesets/e3.png")
+         Asset.spriteSet(_spr, 8, 8, 0, 0)         
       }
 
       _grid = Grid.new(this, _gridX, _gridY, _gridW, _gridH, _tw, _th)
       _grid.setGoal(_mapProps["properties"]["goalx"], _mapProps["properties"]["goaly"])
-      
+
       _pieceTray = PieceTray.new(this, 272, 0, 48, 180)
 
       // FIXME: hardcoded

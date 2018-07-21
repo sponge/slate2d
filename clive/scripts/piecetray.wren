@@ -6,8 +6,9 @@ import "uibutton" for TrayButton
 import "tower" for Tower
 
 class PieceTray {
-   activeTool { _activeTool }
-   queuedPieces { _queuedPieces }
+   activeTool { _activeTool } // null, otherwise is a TrayButton
+   activePiece { _activePiece } // null, or a 3x3 array 
+   queuedPieces { _queuedPieces } // 4 element array contains the 3x3 piece arrays
 
    construct new (td, x, y, w, h) {
       _td = td
@@ -16,6 +17,7 @@ class PieceTray {
       _w = w
       _h = h
 
+      // properties for filling in pieces
       _nextPieceGenTime = 0
       _pieceRespawnTime = 2
 
@@ -84,11 +86,13 @@ class PieceTray {
       _pieceGen = BagRandomizer.new(_pieces.count)
       _queuedPieces = [null, null, null, null]
       _activeTool = null
+      _activePiece = null
    }
 
    update(dt) {
       var mouse = Trap.mousePosition()
 
+      // for each piece in the UI, populate it if it's empty and there's time
       for (i in (0..._queuedPieces.count)) {
          // TODO: can attempt to place null pieces
          if (_queuedPieces[i] == null && _td.time > _nextPieceGenTime) {
@@ -97,23 +101,47 @@ class PieceTray {
          }
       }
 
+      // if a button is clicked, set it as the active tool
       for (button in _buttons) {
          if (button.clicked(mouse[0] / _td.scale, mouse[1] / _td.scale)) {
             _activeTool = button
+            // track _activePiece here so we can rotate it
+            if (button.category == "piece") {
+               _activePiece = _queuedPieces[button.variation]
+            } else {
+               _activePiece = null
+            }
          }
       }
    }
 
+   // instruct the piece tray that the piece has been placed
    spendCurrent() {
       // if it's a piece, we want to remove the piece and replace it with a new one
       if (_activeTool.category == "piece") {
          _queuedPieces[_activeTool.variation] = null
          _activeTool = null
+         _activePiece = null
          _nextPieceGenTime = _td.time + _pieceRespawnTime
       }
-
    }
 
+   // rotate the active piece
+   rotateActivePiece() {
+      if (_activePiece == null) {
+         return
+      }
+
+      var newPiece = List.filled(9, 0)
+      for (y in 0...3) {
+         for (x in 0...3) {
+            newPiece[x*3+y] = _queuedPieces[_activeTool.variation][y*3+x]
+         }
+      }
+      _activePiece = newPiece
+   }
+
+   // pass in a piece array to draw it at px, py. used for piece shadows and ui
    drawPiece(px, py, alpha, piece) {
       if (piece == null) {
          return
@@ -129,7 +157,7 @@ class PieceTray {
       }
    }
 
-   // also used by grid to draw the piece preview
+   // used when looping through buttons to draw the correct element
    drawTool(x, y, id) {
       var alpha = 1
       if (id == "tower1") {

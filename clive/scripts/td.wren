@@ -48,10 +48,11 @@ class TD {
       }
 
       _grid = Grid.new(this, _gridX, _gridY, _gridW, _gridH, _tw, _th)
+      _grid.setGoal(_mapProps["properties"]["goalx"], _mapProps["properties"]["goaly"])
+      
       _pieceTray = PieceTray.new(this, 272, 0, 48, 180)
 
       // FIXME: hardcoded
-      _grid.setGoal(29, 12)
       _grid.setTower(12, 4, Tower.Fast)
       _grid.setTower(14, 4, Tower.Slow)
       _grid.setTower(16, 4, Tower.Fast)

@@ -165,10 +165,13 @@ class Grid {
             // shift over by one so you are pointing at the middle of a 3x3 tile
             tx = tx - _tw
             ty = ty - _th
-            _td.pieceTray.drawTool(tx, ty, button.id)
+            _td.pieceTray.drawPiece(tx, ty, 1.0, _td.pieceTray.activePiece)
 
+            // rotate piece
+            if (Trap.keyPressed(Button.A, 0, -1)) {
+               _td.pieceTray.rotateActivePiece()
             // if there's a click, attempt to place the wall
-            if (Trap.keyPressed(Button.B, 0, -1)) {
+            } else if (Trap.keyPressed(Button.B, 0, -1)) {
                var piece = _td.pieceTray.queuedPieces[button.variation]
                var success = setWallPiece(tx/_tw, ty/_th, piece)
                // call into the piece tray to deduct currency, generate new piece, etc

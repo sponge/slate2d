@@ -135,7 +135,10 @@ class PieceTray {
       var newPiece = List.filled(9, 0)
       for (y in 0...3) {
          for (x in 0...3) {
-            newPiece[x*3+y] = _queuedPieces[_activeTool.variation][y*3+x]
+            var rotateX = -y + 2
+            var rotateY = x
+            var tile = _activePiece[y*3+x]
+            newPiece[rotateY*3+rotateX] = tile
          }
       }
       _activePiece = newPiece

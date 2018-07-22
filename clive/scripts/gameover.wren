@@ -26,7 +26,7 @@ class GameOver {
       _time = _time + dt
 
       if (Trap.keyPressed(Button.B, 0, -1)) {
-         _nextScene = ["td", _mapName]
+         _nextScene = "td"
       }
    }
 

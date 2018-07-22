@@ -45,7 +45,7 @@ class GameSelect {
          item.update(dt, mouse[0], mouse[1])
          if (item.clicked(mouse[0], mouse[1])) {
             Trap.printLn("clicked %(item.id)")
-            _nextScene = [item.id, ""]
+            _nextScene = item.id
          }
 
          if (item.hover) {

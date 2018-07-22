@@ -49,7 +49,12 @@ class Main {
    static update(dt) {
       if (__scene.nextScene != null) {
          Trap.printLn("got scene transfer: %(__scene.nextScene)")
-         loadScene(__scene.nextScene[0], __scene.nextScene[1])
+         if (__scene.nextScene is String) {
+            loadScene(__scene.nextScene, null)
+         } else {
+            var params = __scene.nextScene.count > 1 ? __scene.nextScene[1] : null
+            loadScene(__scene.nextScene[0], params)
+         }
       }
 
       __accumTime = __accumTime + dt

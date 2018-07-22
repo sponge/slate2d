@@ -20,7 +20,7 @@ class Intro {
       _time = _time + dt
 
       if (Trap.keyPressed(Button.B, 0, -1)) {
-         nextScene = ["gameselect", ""]
+         nextScene = "gameselect"
       }
    }
 

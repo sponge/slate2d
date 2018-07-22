@@ -77,6 +77,10 @@ class TD {
    update(dt) {
       _time = _time + dt
 
+      if (Trap.keyPressed(Button.Start, 0, -1)) {
+         _nextScene = "gameselect"
+      }
+
       _grid.update(dt)
       _pieceTray.update(dt)
    }

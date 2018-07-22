@@ -51,11 +51,15 @@ class GameInfo {
    draw(w, h) {
       Draw.clear()
       Draw.resetTransform()
+
+      Draw.setColor(Color.Fill, 0, 57, 113, 255)
+      Draw.rect(0, 0, w, h, false)
+      
       Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
 
       Draw.image(_boxHnd, 40, 55)
 
-      Draw.setColor(Color.Fill, 133, 147, 239, 255)
+      Draw.setColor(Color.Fill, 176, 205, 234, 255)
       Draw.setTextStyle(_bodyFont, 60)
       Draw.text(465, 60, 780, _title)
 

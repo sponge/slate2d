@@ -71,8 +71,9 @@ class Grid {
 
       for (py in 0...3) {
          for (px in 0...3) {
-            if (piece[py*3+px] > 0) {
-               _tiles[(py+y)*_w + (px+x)] = 4
+            var tid = piece[py*3+px]
+            if (tid > 0) {
+               _tiles[(py+y)*_w + (px+x)] = tid
             }
          }
       }

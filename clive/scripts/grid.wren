@@ -173,7 +173,7 @@ class Grid {
             // if there's a click, attempt to place the wall
             } else if (Trap.keyPressed(Button.B, 0, -1)) {
                var piece = _td.pieceTray.queuedPieces[button.variation]
-               var success = setWallPiece(tx/_tw, ty/_th, piece)
+               var success = setWallPiece(tx/_tw, ty/_th, _td.pieceTray.activePiece)
                // call into the piece tray to deduct currency, generate new piece, etc
                if (success) {
                   _td.pieceTray.spendCurrent()

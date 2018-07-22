@@ -14,6 +14,6 @@ class Coin is Entity {
 
    draw() {
       var frame = (_time % 4).floor
-      Draw.sprite(_td.spr, 8 + (frame * 2), x * _td.tw, y * _td.th, 255, 1, 0, 2, 2)
+      Draw.sprite(_td.spr, 8 + (frame * 2), x * _td.tw, y * _td.th, 1.0, 1, 0, 2, 2)
    }
 }

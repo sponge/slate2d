@@ -4,6 +4,7 @@ import "timer" for Timer
 import "debug" for Debug
 
 import "intro" for Intro
+import "intromessage" for IntroMessage
 import "gameselect" for GameSelect
 import "gameinfo" for Game1Info, Game2Info, Game3Info, Game4Info, Game5Info, GameInfo
 import "gameover" for GameOver
@@ -26,6 +27,7 @@ class Main {
 
       __scenes = {
          "intro": Intro,
+         "intromessage": IntroMessage,
          "gameselect": GameSelect,
          "game1": Game1Info,
          "game2": Game2Info,

@@ -158,9 +158,10 @@ class Grid {
             _td.pieceTray.drawTool(tx, ty, button.id)
 
             // if it's a valid placement, place the tower
-            if (!isBlocked(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
+            if (_td.pieceTray.canAfford() && !isBlocked(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
                Trap.printLn("creating tower")
                setTower(tx / _tw, ty / _th, button.variation)
+               _td.pieceTray.spendCurrent()
             }
          } else if (button.category == "piece") {
             // shift over by one so you are pointing at the middle of a 3x3 tile
@@ -172,7 +173,7 @@ class Grid {
             if (Trap.keyPressed(Button.A, 0, -1)) {
                _td.pieceTray.rotateActivePiece()
             // if there's a click, attempt to place the wall
-            } else if (Trap.keyPressed(Button.B, 0, -1)) {
+            } else if (_td.pieceTray.canAfford() && Trap.keyPressed(Button.B, 0, -1)) {
                var piece = _td.pieceTray.queuedPieces[button.variation]
                var success = setWallPiece(tx/_tw, ty/_th, _td.pieceTray.activePiece)
                // call into the piece tray to deduct currency, generate new piece, etc

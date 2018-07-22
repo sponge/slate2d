@@ -15,6 +15,10 @@ class TD {
    grid { _grid }
    scale { _scale }
    pieceTray { _pieceTray }
+   gameMode { _gameMode }
+   font { _font }
+   costs { _costs }
+   currencies { _currencies }
 
    construct new(mapName) {
       _nextScene = null
@@ -37,21 +41,39 @@ class TD {
       _gridH = _mapProps["properties"]["gridh"]
 
       // setup rules based on gamemode key
-      var gameMode = _mapProps["properties"]["gamemode"]
+      _gameMode = _mapProps["properties"]["gamemode"]
 
-      if (gameMode == 1) {
+      if (_gameMode == 1) {
          // TODO: this image is loaded twice since the tmx also loads this but we can't use the
          // same name to load the existing texture because it's an image, and not a sprite
          // so we'll just dupe this image since whatever it's so small
          _spr = Asset.create(Asset.Sprite, "e1spr", "maps/tilesets/e1.png")
+         _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
          Asset.spriteSet(_spr, 8, 8, 0, 0)
-      } else if (gameMode == 2) {
+      } else if (_gameMode == 2) {
          _spr = Asset.create(Asset.Sprite, "e2spr", "maps/tilesets/e2.png")
+          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
          Asset.spriteSet(_spr, 8, 8, 0, 0)         
-      } else if (gameMode == 3) {
+      } else if (_gameMode == 3) {
          _spr = Asset.create(Asset.Sprite, "e3spr", "maps/tilesets/e3.png")
+         _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
          Asset.spriteSet(_spr, 8, 8, 0, 0)         
       }
+
+      // FIXME: make me per game
+      _costs = {
+         "tower1": [5,0,0],
+         "tower2": [5,0,0],
+         "grass": [2,0,0],
+         "piece0": [1,0,0],
+         "piece1": [1,0,0],
+         "piece2": [1,0,0],
+         "piece3": [1,0,0],
+      }
+
+      _currencies = List.filled(1, 10)
+
+      // end
 
       _grid = Grid.new(this, _gridX, _gridY, _gridW, _gridH, _tw, _th)
       _grid.setGoal(_mapProps["properties"]["goalx"], _mapProps["properties"]["goaly"])

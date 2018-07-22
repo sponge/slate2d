@@ -1,4 +1,4 @@
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar
+import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar, Align
 import "math" for Math
 import "debug" for Debug
 import "bagrandomizer" for BagRandomizer
@@ -26,10 +26,10 @@ class PieceTray {
          TrayButton.new("tower1", "tower", Tower.Fast, x+0, y+8, 16, 16),
          TrayButton.new("tower2", "tower", Tower.Slow, x+24, y+8, 16, 16),
          TrayButton.new("grass",  "grass", 0, x+24, y+32, 16, 16),
-         TrayButton.new("piece0", "piece", 0, x+8, y+56+32*0, 24, 24),
-         TrayButton.new("piece1", "piece", 1, x+8, y+56+32*1, 24, 24),
-         TrayButton.new("piece2", "piece", 2, x+8, y+56+32*2, 24, 24),
-         TrayButton.new("piece3", "piece", 3, x+8, y+56+32*3, 24, 24)
+         TrayButton.new("piece0", "piece", 0, x+8, y+48+32*0, 24, 24),
+         TrayButton.new("piece1", "piece", 1, x+8, y+48+32*1, 24, 24),
+         TrayButton.new("piece2", "piece", 2, x+8, y+48+32*2, 24, 24),
+         TrayButton.new("piece3", "piece", 3, x+8, y+48+32*3, 24, 24)
       ]
 
       _pieces = [
@@ -103,6 +103,7 @@ class PieceTray {
 
       // if a button is clicked, set it as the active tool
       for (button in _buttons) {
+         button.update(dt, mouse[0] / _td.scale, mouse[1] / _td.scale)
          if (button.clicked(mouse[0] / _td.scale, mouse[1] / _td.scale)) {
             _activeTool = button
             // track _activePiece here so we can rotate it
@@ -115,8 +116,23 @@ class PieceTray {
       }
    }
 
+   canAfford() {
+      for (i in 0..._td.currencies.count) {
+         if (_td.costs[_activeTool.id][i] > _td.currencies[i]) {
+            return false
+         }
+      }
+
+      return true
+   }
+
    // instruct the piece tray that the piece has been placed
    spendCurrent() {
+      // spend currency
+      for (i in 0..._td.currencies.count) {
+         _td.currencies[i] = _td.currencies[i] - _td.costs[_activeTool.id][i]
+      }
+
       // if it's a piece, we want to remove the piece and replace it with a new one
       if (_activeTool.category == "piece") {
          _queuedPieces[_activeTool.variation] = null
@@ -182,14 +198,24 @@ class PieceTray {
 
    draw() {
       // Draw.translate(_x, _y)
-
-      Draw.setColor(Color.Stroke, 255, 255, 0, 255)
+      Draw.setTextStyle(_td.font, 12, 1.0, Align.Left+Align.Top)
 
       // draw gold (number of currencies are game dependent, pass in from TD)
+      if (_activeTool == null || canAfford() == true) {
+         Draw.setColor(Color.Fill, 255, 255, 255, 255)
+      } else {
+         Draw.setColor(Color.Fill, 255, 0, 0, 255)
+      }
+      Draw.text(_x,_y-4,_w, "$:%(_td.currencies[0])")
 
+      Draw.setColor(Color.Fill, 255, 255, 255, 255)
       for (button in _buttons) {
          button.draw()
          drawTool(button.x, button.y, button.id)
+         if (button.hover) {
+            Draw.text(button.x, button.y+button.w-4, button.w, "$:%(_td.costs[button.id][0])")
+            //Draw.rect(button.x, button.y+button.h, button.w, button.h, Fill.Outline)
+         }
       }
 
       // Draw.translate(-_x, -_y)

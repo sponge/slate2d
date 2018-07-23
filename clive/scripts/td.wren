@@ -97,7 +97,10 @@ class TD {
       _grid.setTower(14, 8, Tower.Slow)
       _grid.setTower(16, 8, Tower.Fast)
 
-      Asset.loadAll()
+   onEntityDied(ent) {
+      if (ent.type == "goat") {
+         _currencies[0] = _currencies[0] + 3
+      }
    }
 
    gameOver() {

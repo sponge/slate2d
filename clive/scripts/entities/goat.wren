@@ -2,20 +2,21 @@ import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap
 import "entities/entity" for Entity
 
 class Goat is Entity {
-  construct new(td, grid, x, y) {
+  construct new(td, x, y) {
     super(x, y, "goat")
     _td = td
-    _grid = grid
+    _grid = _td.grid
     _updateInterval = 0.2
     _nextUpdate = _td.time + _updateInterval
     _hp = 10
 
-    _sprite = Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
+    _sprite = Asset.find("goat")
   }
 
   hurt(damage) {
     _hp = _hp - damage
     if (_hp <= 0 ) {
+      _td.onEntityDied(this)
       die()
     }
   }

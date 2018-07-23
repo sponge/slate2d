@@ -3,6 +3,8 @@ import "debug" for Debug
 import "grid" for Grid
 import "piecetray" for PieceTray
 import "tower" for Tower
+import "actionqueue" for ActionQueue
+import "entities/goat" for Goat
 
 class TD {
    nextScene { _nextScene }
@@ -25,6 +27,7 @@ class TD {
       _time = 0
 
       _mapName = mapName
+      _checkForWin = false // when true, check for all enemies dead to trigger win condition
 
       // load the requested map
       TileMap.load(mapName)
@@ -68,7 +71,9 @@ class TD {
 
        _scale = Trap.getResolution()[1] / _vHeight
 
-      // FIXME: make me per game
+      // FIXME: make me per game?
+      Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
+
       _costs = {
          "tower1": [5,0,0],
          "tower2": [5,0,0],
@@ -79,23 +84,28 @@ class TD {
          "piece3": [1,0,0],
       }
 
-      _currencies = List.filled(1, 10)
+      _currencies = List.filled(1, 40)
+
+      _actions = [
+         [5, Fn.new { _grid.addEntity(Goat.new(this, 1, 1)) }],
+         [1, Fn.new { _grid.addEntity(Goat.new(this, 1, 2)) }],
+         [1, Fn.new { _grid.addEntity(Goat.new(this, 1, 3)) }],
+         [1, Fn.new { _grid.addEntity(Goat.new(this, 1, 4)) }],
+         [1, Fn.new { _grid.addEntity(Goat.new(this, 1, 5)) }],
+         [1, Fn.new { _checkForWin = true }]
+      ]
 
       // end
+
+      _actionQueue = ActionQueue.new(_actions)
 
       _grid = Grid.new(this, _gridX, _gridY, _gridW, _gridH, _tw, _th)
       _grid.setGoal(_mapProps["properties"]["goalx"], _mapProps["properties"]["goaly"])
 
       _pieceTray = PieceTray.new(this, 272, 0, 48, 180)
 
-      // FIXME: hardcoded
-      _grid.setTower(12, 4, Tower.Fast)
-      _grid.setTower(14, 4, Tower.Slow)
-      _grid.setTower(16, 4, Tower.Fast)
-
-      _grid.setTower(12, 8, Tower.Fast)
-      _grid.setTower(14, 8, Tower.Slow)
-      _grid.setTower(16, 8, Tower.Fast)
+      Asset.loadAll()
+   }
 
    onEntityDied(ent) {
       if (ent.type == "goat") {
@@ -110,12 +120,21 @@ class TD {
    update(dt) {
       _time = _time + dt
 
+      _actionQueue.update(dt)
+
       if (Trap.keyPressed(Button.Start, 0, -1)) {
          _nextScene = "gameselect"
       }
 
       _grid.update(dt)
       _pieceTray.update(dt)
+
+      if (_checkForWin == true) {
+         var left = _grid.entities.where{|e| e.type == "goat"}.count
+         if (left == 0) {
+            _nextScene = "gameselect" // FIXME: send to win screen
+         }
+      }
    }
 
    draw(w, h) {

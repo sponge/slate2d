@@ -36,6 +36,10 @@ class Grid {
       return mouse 
    }
 
+   addEntity(ent) {
+      _entities.add(ent)
+   }
+
    setTower(x, y, type) {
      _towers.add(Tower.new(_td, x, y, type))
      // reserve space on tile grid for tower, but draw invisibly

@@ -25,7 +25,7 @@ class PieceTray {
       _buttons = [
          TrayButton.new("tower1", "tower", Tower.Fast, x+0, y+8, 16, 16),
          TrayButton.new("tower2", "tower", Tower.Slow, x+24, y+8, 16, 16),
-         TrayButton.new("grass",  "grass", 0, x+24, y+32, 16, 16),
+         TrayButton.new("grass",  "grass", 0, x+24, y+32, 8, 8),
          TrayButton.new("piece0", "piece", 0, x+8, y+48+32*0, 24, 24),
          TrayButton.new("piece1", "piece", 1, x+8, y+48+32*1, 24, 24),
          TrayButton.new("piece2", "piece", 2, x+8, y+48+32*2, 24, 24),
@@ -94,7 +94,6 @@ class PieceTray {
 
       // for each piece in the UI, populate it if it's empty and there's time
       for (i in (0..._queuedPieces.count)) {
-         // TODO: can attempt to place null pieces
          if (_queuedPieces[i] == null && _td.time > _nextPieceGenTime) {
             _queuedPieces[i] = _pieces[_pieceGen.next()]
             _nextPieceGenTime = _td.time + _pieceRespawnTime
@@ -105,11 +104,15 @@ class PieceTray {
       for (button in _buttons) {
          button.update(dt, mouse[0] / _td.scale, mouse[1] / _td.scale)
          if (button.clicked(mouse[0] / _td.scale, mouse[1] / _td.scale)) {
-            _activeTool = button
             // track _activePiece here so we can rotate it
             if (button.category == "piece") {
-               _activePiece = _queuedPieces[button.variation]
+               var piece = _queuedPieces[button.variation]
+               if (piece != null) {
+                  _activeTool = button
+                  _activePiece = piece
+               }
             } else {
+               _activeTool = button
                _activePiece = null
             }
          }
@@ -185,7 +188,7 @@ class PieceTray {
       } else if (id == "tower2") {
          Draw.sprite(_td.spr, 2, x, y, alpha, 1, 0, 2, 2)
       } else if (id == "grass") {
-         Draw.sprite(_td.spr, 22, x, y, alpha, 1, 0, 2, 2)
+         Draw.sprite(_td.spr, 22, x, y, alpha, 1, 0, 1, 1)
       } else if (id == "piece0") {
          drawPiece(x, y, alpha, _queuedPieces[0])
       } else if (id == "piece1") {
@@ -207,14 +210,15 @@ class PieceTray {
       } else {
          Draw.setColor(Color.Fill, 255, 0, 0, 255)
       }
-      Draw.text(_x,_y-4,_w, "$:%(_td.currencies[0])")
+      Draw.text(_x,_y-4,_w, "£%(_td.currencies[0])")
 
       Draw.setColor(Color.Fill, 255, 255, 255, 255)
       for (button in _buttons) {
          button.draw()
          drawTool(button.x, button.y, button.id)
-         if (button.hover) {
-            Draw.text(button.x, button.y+button.w-4, button.w, "$:%(_td.costs[button.id][0])")
+         // show the price hover for all towers and spawned pieces
+         if (button.hover && (button.category != "piece" || _queuedPieces[button.variation] != null)) {
+            Draw.text(button.x, button.y+button.w-4, 16, "£%(_td.costs[button.id][0])")
             //Draw.rect(button.x, button.y+button.h, button.w, button.h, Fill.Outline)
          }
       }

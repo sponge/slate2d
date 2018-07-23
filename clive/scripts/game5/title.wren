@@ -1,10 +1,15 @@
-import "engine" for Draw, Color, Trap, Asset, Align
+import "engine" for Draw, Color, Trap, Asset, Align, Button
 
 class Game5Title {
-   nextScene { null }
+   nextScene { _nextScene }
+   nextScene=(s) { _nextScene = s } 
+
+
    construct new(params) {
       _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
       _ripple = 0
+      _nextSceneTimer = null
+      _fadeTime = 2
       Asset.loadAll()
    }
 
@@ -13,13 +18,20 @@ class Game5Title {
       if (_ripple >= 255) {
          _ripple = 0
       }
+
+      if (Trap.keyPressed(Button.B, 0, -1) && _nextSceneTimer == null) {
+         _nextSceneTimer = _fadeTime
+      } else if (_nextSceneTimer != null && _nextSceneTimer <= 0) {
+         _nextScene = ["towers", ""]
+      } else if (_nextSceneTimer != null) {
+         _nextSceneTimer = _nextSceneTimer - dt
+      }
    }
 
    shutdown() {
    }
 
    drawSkewedRect(x, y, w, h, skew) {
-
       var o = skew.tan * w
       if (o <= 0) {
          Draw.tri(x, y, x+w, y-o, x, y-o, false)
@@ -64,5 +76,11 @@ class Game5Title {
 
       Draw.setTextStyle(_bodyFont, 48, 1.0, Align.Center|Align.Top)
       Draw.text(0, 600, 1280, "towers")
+
+      if (_nextSceneTimer != null) {
+         var alpha = (1 - (_nextSceneTimer/_fadeTime)) * 255
+         Draw.setColor(Color.Fill, 0, 0, 0, _nextSceneTimer > 0 ? alpha : 255)
+         Draw.rect(0, 0, 1280, 720, false)
+      }
    }
 }

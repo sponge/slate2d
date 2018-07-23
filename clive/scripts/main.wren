@@ -11,6 +11,7 @@ import "gameover" for GameOver
 import "game1/title" for Game1Title
 import "game3/title" for Game3Title
 import "game5/title" for Game5Title
+import "game5/towers" for Towers
 
 import "td" for TD
 
@@ -37,6 +38,7 @@ class Main {
          "game5_title": Game5Title,
          "td": TD,
          "gameover": GameOver,
+         "towers": Towers,
       }
 
       if (params != null) {

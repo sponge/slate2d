@@ -19,7 +19,7 @@ class PieceTray {
 
       // properties for filling in pieces
       _nextPieceGenTime = 0
-      _pieceRespawnTime = 2
+      _pieceRespawnTime = 1
 
       // FIXME: include tower3 if gamemode calls for it
       _buttons = [

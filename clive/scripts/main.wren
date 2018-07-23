@@ -4,11 +4,13 @@ import "timer" for Timer
 import "debug" for Debug
 
 import "intro" for Intro
+import "intromessage" for IntroMessage
 import "gameselect" for GameSelect
 import "gameinfo" for Game1Info, Game2Info, Game3Info, Game4Info, Game5Info, GameInfo
 import "gameover" for GameOver
 
 import "game1/title" for Game1Title
+import "game1/win" for Game1Win
 import "game3/title" for Game3Title
 import "game5/title" for Game5Title
 import "game5/towers" for Towers
@@ -27,6 +29,7 @@ class Main {
 
       __scenes = {
          "intro": Intro,
+         "intromessage": IntroMessage,
          "gameselect": GameSelect,
          "game1": Game1Info,
          "game2": Game2Info,
@@ -34,6 +37,7 @@ class Main {
          "game4": Game4Info,
          "game5": Game5Info,
          "game1_title": Game1Title,
+         "game1_win": Game1Win,
          "game3_title": Game3Title,
          "game5_title": Game5Title,
          "td": TD,
@@ -51,7 +55,12 @@ class Main {
    static update(dt) {
       if (__scene.nextScene != null) {
          Trap.printLn("got scene transfer: %(__scene.nextScene)")
-         loadScene(__scene.nextScene[0], __scene.nextScene[1])
+         if (__scene.nextScene is String) {
+            loadScene(__scene.nextScene, null)
+         } else {
+            var params = __scene.nextScene.count > 1 ? __scene.nextScene[1] : null
+            loadScene(__scene.nextScene[0], params)
+         }
       }
 
       __accumTime = __accumTime + dt

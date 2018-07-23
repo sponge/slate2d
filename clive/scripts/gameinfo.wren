@@ -22,13 +22,15 @@ class GameInfo {
       _nextScene = null
       _time = 0
 
+      _rightCol = 500
+
       _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
       _boxHnd = Asset.create(Asset.Image, _boxPath, _boxPath, ImageFlags.LinearFilter)
       _font = Asset.create(Asset.BitmapFont, "buttonfont", "gfx/panicbomber_blue.png")
       Asset.bmpfntSet(_font, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
 
       _items = [
-         TextButton.new("gameselect", 445, 650, 160, 40, "Back"),
+         TextButton.new("gameselect", _rightCol, 650, 160, 40, "Back"),
          TextButton.new(gameScene, 1070, 650, 160, 40, "Play"),
       ]
 
@@ -43,7 +45,7 @@ class GameInfo {
          item.update(dt, mouse[0], mouse[1])
          if (item.clicked(mouse[0], mouse[1])) {
             Trap.printLn("clicked %(item.id)")
-            _nextScene = [item.id, ""]
+            _nextScene = item.id
          }
       }
    }
@@ -51,19 +53,26 @@ class GameInfo {
    draw(w, h) {
       Draw.clear()
       Draw.resetTransform()
+
+      Draw.setColor(Color.Fill, 0, 57, 113, 255)
+      Draw.rect(0, 0, w, h, false)
+      
       Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
+
+      Draw.setColor(Color.Fill, 0, 0, 0, 200)
+      Draw.rect(0, 0, 425+40, 720, Fill.Solid)
 
       Draw.image(_boxHnd, 40, 55)
 
-      Draw.setColor(Color.Fill, 133, 147, 239, 255)
+      Draw.setColor(Color.Fill, 176, 205, 234, 255)
       Draw.setTextStyle(_bodyFont, 60)
-      Draw.text(465, 60, 780, _title)
+      Draw.text(_rightCol, 60, 780, _title)
 
       Draw.setColor(Color.Fill, 255, 255, 255, 255)
       Draw.setTextStyle(_bodyFont, 36)
-      Draw.text(465, 100, 780, _year)
+      Draw.text(_rightCol, 100, 780, _year)
       Draw.setTextStyle(_bodyFont, 24, 1.25)
-      Draw.text(465, 150, 780, _description)
+      Draw.text(_rightCol, 150, 740, _description)
 
       for (item in _items) {
           item.draw()

@@ -2,7 +2,6 @@ import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar, Align
 import "math" for Math
 import "debug" for Debug
 
-import "entities/goat" for Goat
 import "entities/coin" for Coin
 import "tower" for Tower
 
@@ -26,13 +25,7 @@ class Grid {
       _tiles = List.filled(_w*_h, 0)
       _paths = List.filled(_w*_h, 0)
       _towers = []
-      _entities = [
-        Goat.new(td, this, 2, 6),
-      //   Goat.new(td, this, 2, 5),
-      //   Goat.new(td, this, 2, 4),
-      //   Goat.new(td, this, 2, 3),
-      //   Goat.new(td, this, 2, 2),
-      ]
+      _entities = []
    }
 
    // needs to go from screen space -> local
@@ -41,6 +34,10 @@ class Grid {
       mouse[0] = mouse[0] / _td.scale - (_x  * _tw)
       mouse[1] = mouse[1] / _td.scale - (_y * _th)
       return mouse 
+   }
+
+   addEntity(ent) {
+      _entities.add(ent)
    }
 
    setTower(x, y, type) {
@@ -71,8 +68,9 @@ class Grid {
 
       for (py in 0...3) {
          for (px in 0...3) {
-            if (piece[py*3+px] > 0) {
-               _tiles[(py+y)*_w + (px+x)] = 4
+            var tid = piece[py*3+px]
+            if (tid > 0) {
+               _tiles[(py+y)*_w + (px+x)] = tid
             }
          }
       }
@@ -157,20 +155,23 @@ class Grid {
             _td.pieceTray.drawTool(tx, ty, button.id)
 
             // if it's a valid placement, place the tower
-            if (!isBlocked(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
-               Trap.printLn("creating tower")
+            if (_td.pieceTray.canAfford() && !isBlocked(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
                setTower(tx / _tw, ty / _th, button.variation)
+               _td.pieceTray.spendCurrent()
             }
          } else if (button.category == "piece") {
             // shift over by one so you are pointing at the middle of a 3x3 tile
             tx = tx - _tw
             ty = ty - _th
-            _td.pieceTray.drawTool(tx, ty, button.id)
+            _td.pieceTray.drawPiece(tx, ty, 1.0, _td.pieceTray.activePiece)
 
+            // rotate piece
+            if (Trap.keyPressed(Button.A, 0, -1)) {
+               _td.pieceTray.rotateActivePiece()
             // if there's a click, attempt to place the wall
-            if (Trap.keyPressed(Button.B, 0, -1)) {
+            } else if (_td.pieceTray.canAfford() && Trap.keyPressed(Button.B, 0, -1)) {
                var piece = _td.pieceTray.queuedPieces[button.variation]
-               var success = setWallPiece(tx/_tw, ty/_th, piece)
+               var success = setWallPiece(tx/_tw, ty/_th, _td.pieceTray.activePiece)
                // call into the piece tray to deduct currency, generate new piece, etc
                if (success) {
                   _td.pieceTray.spendCurrent()

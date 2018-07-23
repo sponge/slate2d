@@ -3,6 +3,7 @@ import "engine" for Draw, Asset, Trap, Color, Fill, Button, Align
 import "math" for Math
 import "soundcontroller" for SoundController
 import "debug" for Debug
+import "actionqueue" for ActionQueue
 
 class Game3Title {
    nextScene { _nextScene }
@@ -58,12 +59,12 @@ class Game3Title {
             _enableSkip = true
          }],  
          [1 + 100/_countdownSpeedupFactor, Fn.new {
-            SoundController.stopMusic()
             _mode = "selftest"
          }],
       ]
 
       _selftestActions = [
+         [0.0, Fn.new { SoundController.stopMusic() }],
          [0.2, Fn.new { _selfTestStr = _selfTestStr + "PROGRAM ROM... "}],
          [0.2, Fn.new { _selfTestStr = _selfTestStr + "OK\n"}],
          [0.4, Fn.new { _selfTestStr = _selfTestStr + "RAM... "}],
@@ -78,32 +79,29 @@ class Game3Title {
          [0.2, Fn.new { _selfTestStr = _selfTestStr + "OK\n"}],
          [0.5, Fn.new { _mode = "title" }]
       ]
+
+      _actionQueue = ActionQueue.new(_actions)
    }
 
    update(dt) {
       _time = _time + dt
 
-      if (_actions.count > 0 && _time - _currentActionTime >= _actions[0][0]) {
-         _actions[0][1].call()
-         _actions.removeAt(0)
-         _currentActionTime = _time
-      }
+      _actionQueue.update(dt)
 
       // don't set this in the action because the above code will pop it
       // causing it to lose the first step in the action list
-      if (_mode == "selftest" && _actions.count == 0) {
-         _actions = _selftestActions
+      if (_mode == "selftest" && _actionQueue.remaining == 0) {
+         _actionQueue = ActionQueue.new(_selftestActions)
       }
 
       if (_enableSkip && Trap.keyPressed(Button.B, 0, -1)) {
          if (_mode == "title") {
-            _nextScene = ["td", "maps/e1m1.tmx"]
+            _nextScene = ["td", "maps/e3m1.tmx"]
          } else if (_skipWarningTime == null) {
             _skipWarningTime = _time
          } else if (_skipWarningTime != null) {
-            SoundController.stopMusic()
             _mode = "selftest"
-            _actions = _selftestActions
+            _actionQueue = ActionQueue.new(_selftestActions)
          }
       }
 

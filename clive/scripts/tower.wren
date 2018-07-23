@@ -55,6 +55,6 @@ class Tower {
    }
 
    draw() {
-      Draw.sprite(_td.spr, _type * 2, _x * 8, _y * 8, 255, 1, 0, 2, 2)
+      Draw.sprite(_td.spr, _type * 2, _x * _td.tw, _y * _td.th, 1.0, 1, 0, 2, 2)
    }
 }

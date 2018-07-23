@@ -1,14 +1,12 @@
-import "engine" for Draw, Trap, Asset, Color, Button
+import "engine" for Draw, Trap, Asset, Color, Button, Align
 
-class GameOver {
+class Game1Win {
    nextScene { _nextScene }
 
    construct new(params) {
       _nextScene = null
       _time = 0
       _scale = 4
-
-      _mapName = params["map"]
 
       _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
       _sprite = Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
@@ -26,7 +24,7 @@ class GameOver {
       _time = _time + dt
 
       if (Trap.keyPressed(Button.B, 0, -1)) {
-         _nextScene = "td"
+         _nextScene = "gameselect"
       }
    }
 
@@ -41,39 +39,25 @@ class GameOver {
       return [r * mul, g * mul, b * mul, 255]
    }
 
-   drawCenteredText(x, y, string) {
-      var width = string.count * 8
-      Draw.text(x - width/2 , y, 800, string)
-   }
-
    draw(w, h) {
+      Draw.clear()
       Draw.transform(_scale, 0, 0, _scale, 0, 0)
-      w = w/4
-      h = h/4
+      w = w/_scale
+      h = h/_scale
 
-      Draw.setTextStyle(_font, 20)
+      Draw.setTextStyle(_font, 20, Align.Left+Align.Top)
       Draw.setColor(Color.Fill, textColor())
-      var y = h/2 + 48
-      drawCenteredText(w/2 , y, "THE POUND HAS COLLAPSED")
-      y = y + 16
-      drawCenteredText(w/2 , y, "GAME OVER")
+      var y = h/2 + 40
+      Draw.text(30, y, w, "TOP BANANA! YOU WON.")
+      Draw.text(60, y+16, w, "everything by clive")
+      y = y + 32
+      Draw.text(90, y, w, "THANKS MUM FOR THE PIES")
 
       Draw.setColor(Color.Fill, 255, 255, 0, 255)
       y = y + 16
-      drawCenteredText(w/2, y, "Please try again")
 
-      Draw.sprite(_spr, 8, w/2 - 8, h/2 - 32, 255, 1, 0, 2, 2)
-
-      for (i in 0...8) {
-         var rad = (i * ((Num.pi*2) / 8)) + _time
-         var radius = 48
-         var goatX = w/2 + rad.cos * radius - 8
-         var goatY = (h/2 - 24) + rad.sin * radius - 8
-         goatX = goatX - (goatX % 8)
-         goatY = goatY - (goatY % 8)
-         // Draw.rect(w/2 + rad.cos * radius, h/3 + rad.sin * radius, 8, 8, false)
-         Draw.image(_sprite, goatX, goatY)
-      }
+      var frame = (_time * 8% 4).floor
+      Draw.sprite(_spr, 8 + (frame * 2), w/2 - 8, h/2 - 32, 255, 1, 0, 2, 2)
 
       Draw.submit()
    }

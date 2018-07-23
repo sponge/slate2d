@@ -2,15 +2,15 @@ import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap
 import "entities/entity" for Entity
 
 class Goat is Entity {
-  construct new(td, grid, x, y) {
+  construct new(td, x, y) {
     super(x, y, "goat")
     _td = td
-    _grid = grid
+    _grid = _td.grid
     _updateInterval = 0.2
     _nextUpdate = _td.time + _updateInterval
     _hp = 10
 
-    _sprite = Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
+    _sprite = Asset.find("goat")
   }
 
   hurt(damage) {
@@ -18,6 +18,11 @@ class Goat is Entity {
     if (_hp <= 0 ) {
       die()
     }
+  }
+
+  die() {
+      _td.onEntityDied(this)
+      super()
   }
 
   update(dt) {
@@ -41,7 +46,8 @@ class Goat is Entity {
       y = closest[1]
 
       if (x == _grid.goalX && y == _grid.goalY) {
-        _td.gameOver()
+        _td.onTouchCoin()
+        die()
       }
 
       _nextUpdate = _td.time + _updateInterval

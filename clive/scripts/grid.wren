@@ -2,7 +2,6 @@ import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar, Align
 import "math" for Math
 import "debug" for Debug
 
-import "entities/goat" for Goat
 import "entities/coin" for Coin
 import "tower" for Tower
 
@@ -26,13 +25,7 @@ class Grid {
       _tiles = List.filled(_w*_h, 0)
       _paths = List.filled(_w*_h, 0)
       _towers = []
-      _entities = [
-        Goat.new(td, this, 2, 6),
-      //   Goat.new(td, this, 2, 5),
-      //   Goat.new(td, this, 2, 4),
-      //   Goat.new(td, this, 2, 3),
-      //   Goat.new(td, this, 2, 2),
-      ]
+      _entities = []
    }
 
    // needs to go from screen space -> local

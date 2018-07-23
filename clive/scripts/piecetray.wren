@@ -116,6 +116,7 @@ class PieceTray {
       }
    }
 
+   // returns true if there is enough money to build the active piece
    canAfford() {
       for (i in 0..._td.currencies.count) {
          if (_td.costs[_activeTool.id][i] > _td.currencies[i]) {

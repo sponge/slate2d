@@ -24,7 +24,6 @@ class TD {
       _nextScene = null
       _time = 0
 
-      _scale = Trap.getResolution()[1] / 180
       _mapName = mapName
 
       // load the requested map
@@ -43,6 +42,8 @@ class TD {
       // setup rules based on gamemode key
       _gameMode = _mapProps["properties"]["gamemode"]
 
+      _vHeight = 180
+
       if (_gameMode == 1) {
          // TODO: this image is loaded twice since the tmx also loads this but we can't use the
          // same name to load the existing texture because it's an image, and not a sprite
@@ -58,7 +59,14 @@ class TD {
          _spr = Asset.create(Asset.Sprite, "e3spr", "maps/tilesets/e3.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
          Asset.spriteSet(_spr, 8, 8, 0, 0)         
+      } else if (_gameMode == 4) {
+         _spr = Asset.create(Asset.Sprite, "e4spr", "maps/tilesets/e4.png")
+         _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
+         Asset.spriteSet(_spr, 32, 32, 0, 0)    
+         _vHeight = 720
       }
+
+       _scale = Trap.getResolution()[1] / _vHeight
 
       // FIXME: make me per game
       _costs = {
@@ -110,7 +118,7 @@ class TD {
    draw(w, h) {
       Draw.clear()
       Draw.resetTransform()
-      _scale = h / 180
+      _scale = h / _vHeight
       Draw.transform(_scale, 0, 0, _scale, 0, 0)
 
       for (i in 0.._layers.count-1) {

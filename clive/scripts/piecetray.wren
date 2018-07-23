@@ -167,8 +167,8 @@ class PieceTray {
       }
 
       for (i in 0...9) {
-         var x = px + (i%3) * 8
-         var y = py + (i/3).floor * 8
+         var x = px + (i%3) * _td.tw
+         var y = py + (i/3).floor * _td.th
 
          if (piece[i] > 0) {
             Draw.sprite(_td.spr, 4, x, y, alpha)

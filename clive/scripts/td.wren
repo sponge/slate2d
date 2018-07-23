@@ -28,6 +28,7 @@ class TD {
 
       _mapName = mapName
       _checkForWin = false // when true, check for all enemies dead to trigger win condition
+      _coinHealth = 3 // when 0, gameover is triggered
 
       // load the requested map
       TileMap.load(mapName)
@@ -115,6 +116,13 @@ class TD {
 
    gameOver() {
       _nextScene = ["gameover", {"map":_mapName}]
+   }
+
+   onTouchCoin() {
+      _coinHealth = _coinHealth - 1
+      if (_coinHealth == 0) {
+         gameOver()
+      }
    }
 
    update(dt) {

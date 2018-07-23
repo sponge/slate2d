@@ -16,9 +16,13 @@ class Goat is Entity {
   hurt(damage) {
     _hp = _hp - damage
     if (_hp <= 0 ) {
-      _td.onEntityDied(this)
       die()
     }
+  }
+
+  die() {
+      _td.onEntityDied(this)
+      super()
   }
 
   update(dt) {
@@ -42,7 +46,8 @@ class Goat is Entity {
       y = closest[1]
 
       if (x == _grid.goalX && y == _grid.goalY) {
-        _td.gameOver()
+        _td.onTouchCoin()
+        die()
       }
 
       _nextUpdate = _td.time + _updateInterval

@@ -1,4 +1,5 @@
 import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar
+import "timer" for Timer
 import "debug" for Debug
 import "grid" for Grid
 import "piecetray" for PieceTray
@@ -55,19 +56,23 @@ class TD {
          _spr = Asset.create(Asset.Sprite, "e1spr", "maps/tilesets/e1.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
          Asset.spriteSet(_spr, 8, 8, 0, 0)
+         _winScene = "game1_win"
       } else if (_gameMode == 2) {
          _spr = Asset.create(Asset.Sprite, "e2spr", "maps/tilesets/e2.png")
           _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
-         Asset.spriteSet(_spr, 8, 8, 0, 0)         
+         Asset.spriteSet(_spr, 8, 8, 0, 0)   
+         _winScene = "game1_win"      
       } else if (_gameMode == 3) {
          _spr = Asset.create(Asset.Sprite, "e3spr", "maps/tilesets/e3.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
-         Asset.spriteSet(_spr, 8, 8, 0, 0)         
+         Asset.spriteSet(_spr, 8, 8, 0, 0)     
+         _winScene = "game1_win"    
       } else if (_gameMode == 4) {
          _spr = Asset.create(Asset.Sprite, "e4spr", "maps/tilesets/e4.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
          Asset.spriteSet(_spr, 32, 32, 0, 0)    
          _vHeight = 720
+         _winScene = "game1_win"
       }
 
        _scale = Trap.getResolution()[1] / _vHeight
@@ -140,7 +145,10 @@ class TD {
       if (_checkForWin == true) {
          var left = _grid.entities.where{|e| e.type == "goat"}.count
          if (left == 0) {
-            _nextScene = "gameselect" // FIXME: send to win screen
+            Timer.runLater(3) {
+               _nextScene = _winScene
+            }
+            _checkForWin = false
          }
       }
    }

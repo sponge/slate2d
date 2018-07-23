@@ -10,6 +10,7 @@ import "gameinfo" for Game1Info, Game2Info, Game3Info, Game4Info, Game5Info, Gam
 import "gameover" for GameOver
 
 import "game1/title" for Game1Title
+import "game1/win" for Game1Win
 import "game3/title" for Game3Title
 import "game5/title" for Game5Title
 
@@ -35,6 +36,7 @@ class Main {
          "game4": Game4Info,
          "game5": Game5Info,
          "game1_title": Game1Title,
+         "game1_win": Game1Win,
          "game3_title": Game3Title,
          "game5_title": Game5Title,
          "td": TD,

@@ -156,7 +156,6 @@ class Grid {
 
             // if it's a valid placement, place the tower
             if (_td.pieceTray.canAfford() && !isBlocked(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
-               Trap.printLn("creating tower")
                setTower(tx / _tw, ty / _th, button.variation)
                _td.pieceTray.spendCurrent()
             }

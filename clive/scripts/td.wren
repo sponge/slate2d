@@ -22,6 +22,7 @@ class TD {
    font { _font }
    costs { _costs }
    currencies { _currencies }
+   currSymbol { _currSymbol }
 
    construct new(mapName) {
       _nextScene = null
@@ -47,7 +48,6 @@ class TD {
       // setup rules based on gamemode key
       _gameMode = _mapProps["properties"]["gamemode"]
 
-      _vHeight = 180
 
       if (_gameMode == 1) {
          // TODO: this image is loaded twice since the tmx also loads this but we can't use the
@@ -56,23 +56,30 @@ class TD {
          _spr = Asset.create(Asset.Sprite, "e1spr", "maps/tilesets/e1.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
          Asset.spriteSet(_spr, 8, 8, 0, 0)
+         _vHeight = 180
          _winScene = "game1_win"
+         _currSymbol = "£"
       } else if (_gameMode == 2) {
          _spr = Asset.create(Asset.Sprite, "e2spr", "maps/tilesets/e2.png")
           _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
-         Asset.spriteSet(_spr, 8, 8, 0, 0)   
-         _winScene = "game1_win"      
+         Asset.spriteSet(_spr, 8, 8, 0, 0)
+         _vHeight = 180
+         _winScene = "game1_win"
+         _currSymbol = "£"
       } else if (_gameMode == 3) {
          _spr = Asset.create(Asset.Sprite, "e3spr", "maps/tilesets/e3.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
-         Asset.spriteSet(_spr, 8, 8, 0, 0)     
-         _winScene = "game1_win"    
+         Asset.spriteSet(_spr, 8, 8, 0, 0)  
+         _vHeight = 180   
+         _winScene = "game1_win"
+         _currSymbol = "$"
       } else if (_gameMode == 4) {
          _spr = Asset.create(Asset.Sprite, "e4spr", "maps/tilesets/e4.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
          Asset.spriteSet(_spr, 32, 32, 0, 0)    
          _vHeight = 720
          _winScene = "game1_win"
+         _currSymbol = "$"
       }
 
        _scale = Trap.getResolution()[1] / _vHeight

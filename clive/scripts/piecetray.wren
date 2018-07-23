@@ -210,7 +210,7 @@ class PieceTray {
       } else {
          Draw.setColor(Color.Fill, 255, 0, 0, 255)
       }
-      Draw.text(_x,_y-4,_w, "£%(_td.currencies[0])")
+      Draw.text(_x,_y-4,_w, "%(_td.currSymbol)%(_td.currencies[0])")
 
       Draw.setColor(Color.Fill, 255, 255, 255, 255)
       for (button in _buttons) {
@@ -218,7 +218,7 @@ class PieceTray {
          drawTool(button.x, button.y, button.id)
          // show the price hover for all towers and spawned pieces
          if (button.hover && (button.category != "piece" || _queuedPieces[button.variation] != null)) {
-            Draw.text(button.x, button.y+button.w-4, 16, "£%(_td.costs[button.id][0])")
+            Draw.text(button.x, button.y+button.w-4, 16, "%(_td.currSymbol)%(_td.costs[button.id][0])")
             //Draw.rect(button.x, button.y+button.h, button.w, button.h, Fill.Outline)
          }
       }

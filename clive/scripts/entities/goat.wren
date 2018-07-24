@@ -6,6 +6,8 @@ import "math" for Math
 class Goat is Entity {
    construct new(td, x, y) {
       super(x, y, "goat")
+      _dx = 0
+      _dy = 0
       _td = td
       _grid = _td.grid
       _moveInterval = 0.2
@@ -41,6 +43,9 @@ class Goat is Entity {
 
    moveDestroy() {
       // FIXME: destroy wall
+      _grid.destroyWall(x+_dx,y+_dy)
+      x = x + _dx
+      y = y + _dy
       _nextUpdate = _td.time + _moveInterval
       _mode = "move"
    }
@@ -70,9 +75,11 @@ class Goat is Entity {
          var dy = xShorter ? Math.sign(_grid.goalY-y) : 0
 
          // FIXME: if wall is in the way
-         if (false) {
+         if (_grid.isWall(x+dx, y+dy)) {
             _nextUpdate = _td.time + _destroyInterval
             _mode = "destroy"
+            _dx = dx
+            _dy = dy
          } else {
             x = x + dx
             y = y + dy
@@ -87,8 +94,9 @@ class Goat is Entity {
          die()
       }
 
-      _nextUpdate = _td.time + _moveInterval
-      _mode = "move"
+      if (_mode == "move") {
+         _nextUpdate = _td.time + _moveInterval
+      }
    }
 
   draw() {

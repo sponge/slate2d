@@ -49,6 +49,19 @@ class Grid {
      _tiles[(y+1)*_w+x+1] = 200
    }
 
+   isWall(x,y) {
+      var tid = _tiles[y*_w+x]
+      return (tid >= 4 && tid <= 7) || (tid >= 20 && tid <= 21)
+   }
+
+   destroyWall(x,y) {
+      if (!isWall(x,y)) {
+         Debug.printLn("WARNING: tile %(x),%(y) wasn't a wall")
+         return
+      }
+      _tiles[y*_w+x] = 0
+   }
+
    isPieceValid(x, y, piece) {
       for (py in 0...3) {
          for (px in 0...3) {

@@ -26,10 +26,10 @@ class PieceTray {
          TrayButton.new("tower1", "tower", Tower.Fast, x+0, y+8, 16, 16),
          TrayButton.new("tower2", "tower", Tower.Slow, x+24, y+8, 16, 16),
          TrayButton.new("grass",  "grass", 0, x+24, y+32, 8, 8),
-         TrayButton.new("piece0", "piece", 0, x+8, y+48+32*0, 24, 24),
-         TrayButton.new("piece1", "piece", 1, x+8, y+48+32*1, 24, 24),
-         TrayButton.new("piece2", "piece", 2, x+8, y+48+32*2, 24, 24),
-         TrayButton.new("piece3", "piece", 3, x+8, y+48+32*3, 24, 24)
+         TrayButton.new("piece0", "piece", 0, x+16, y+48+32*0, 24, 24),
+         TrayButton.new("piece1", "piece", 1, x+16, y+48+32*1, 24, 24),
+         TrayButton.new("piece2", "piece", 2, x+16, y+48+32*2, 24, 24),
+         TrayButton.new("piece3", "piece", 3, x+16, y+48+32*3, 24, 24)
       ]
 
       _pieces = [

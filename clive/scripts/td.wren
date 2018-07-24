@@ -23,6 +23,7 @@ class TD {
    costs { _costs }
    currencies { _currencies }
    currSymbol { _currSymbol }
+   enableMagicTower { _enableMagicTower }
 
    construct new(mapName) {
       _nextScene = null
@@ -59,6 +60,7 @@ class TD {
          _vHeight = 180
          _winScene = "game1_win"
          _currSymbol = "£"
+         _enableMagicTower = false
       } else if (_gameMode == 2) {
          _spr = Asset.create(Asset.Sprite, "e2spr", "maps/tilesets/e2.png")
           _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
@@ -66,6 +68,7 @@ class TD {
          _vHeight = 180
          _winScene = "game1_win"
          _currSymbol = "£"
+         _enableMagicTower = true
       } else if (_gameMode == 3) {
          _spr = Asset.create(Asset.Sprite, "e3spr", "maps/tilesets/e3.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
@@ -73,6 +76,7 @@ class TD {
          _vHeight = 180   
          _winScene = "game1_win"
          _currSymbol = "$"
+         _enableMagicTower = true
       } else if (_gameMode == 4) {
          _spr = Asset.create(Asset.Sprite, "e4spr", "maps/tilesets/e4.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
@@ -80,6 +84,7 @@ class TD {
          _vHeight = 720
          _winScene = "game1_win"
          _currSymbol = "$"
+         _enableMagicTower = true
       }
 
        _scale = Trap.getResolution()[1] / _vHeight
@@ -90,6 +95,7 @@ class TD {
       _costs = {
          "tower1": [5,0,0],
          "tower2": [5,0,0],
+         "tower3": [8,0,0],
          "grass": [2,0,0],
          "piece0": [1,0,0],
          "piece1": [1,0,0],

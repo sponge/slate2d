@@ -32,6 +32,10 @@ class PieceTray {
          TrayButton.new("piece3", "piece", 3, x+16, y+48+32*3, 24, 24)
       ]
 
+      if (td.enableMagicTower) {
+         _buttons.add(TrayButton.new("tower3", "tower", Tower.Magic, x+0, y+32, 16, 16))
+      }
+
       _pieces = [
          [4,4,0, // U
           0,4,0,
@@ -187,6 +191,8 @@ class PieceTray {
          Draw.sprite(_td.spr, 0, x, y, alpha, 1, 0, 2, 2)
       } else if (id == "tower2") {
          Draw.sprite(_td.spr, 2, x, y, alpha, 1, 0, 2, 2)
+      } else if (id == "tower3") {
+         Draw.sprite(_td.spr, 37, x, y, alpha, 1, 0, 2, 2)
       } else if (id == "grass") {
          Draw.sprite(_td.spr, 22, x, y, alpha, 1, 0, 1, 1)
       } else if (id == "piece0") {

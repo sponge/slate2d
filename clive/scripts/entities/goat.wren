@@ -31,6 +31,10 @@ class Goat is Entity {
       super()
    }
 
+   freeze(time) {
+      _nextUpdate = _nextUpdate + time
+   }
+
    update(dt) {
       if (_td.time >= _nextUpdate) {
          if (_mode == "destroy") {

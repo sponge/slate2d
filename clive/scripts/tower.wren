@@ -1,5 +1,5 @@
 import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap
-import "entities/projectile" for Cannonball, Arrow
+import "entities/projectile" for Cannonball, Arrow, MagicBolt
 import "math" for Math
 
 class Tower {
@@ -51,10 +51,14 @@ class Tower {
       } else if (_type == Tower.Fast) {
          var proj = Arrow.new(_td, _x, _y, creep)
          _td.grid.entities.add(proj)
+      } else if (_type == Tower.Magic) {
+         var proj = MagicBolt.new(_td, _x, _y, creep)
+         _td.grid.entities.add(proj)
       }
    }
 
    draw() {
-      Draw.sprite(_td.spr, _type * 2, _x * _td.tw, _y * _td.th, 1.0, 1, 0, 2, 2)
+      var tid = _type == Tower.Magic ? 37 : _type * 2
+      Draw.sprite(_td.spr, tid, _x * _td.tw, _y * _td.th, 1.0, 1, 0, 2, 2)
    }
 }

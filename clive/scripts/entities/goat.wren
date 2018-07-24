@@ -11,7 +11,7 @@ class Goat is Entity {
       _td = td
       _grid = _td.grid
       _moveInterval = 0.2
-      _destroyInterval = 3
+      _destroyInterval = 2
       _nextUpdate = _td.time + _moveInterval
       _hp = 10
       _mode = "move"
@@ -37,8 +37,18 @@ class Goat is Entity {
             moveDestroy()
          } else if (_mode == "move") {
             moveStep()
+         } else if (_mode == "grass") {
+            moveGrass()
          }
       }
+   }
+
+   moveGrass() {
+      _grid.destroyGrass(x+_dx, y+_dy)
+      x = x + _dx
+      y = y + _dy
+      _nextUpdate = _td.time + _moveInterval
+      _mode = "move"
    }
 
    moveDestroy() {
@@ -71,22 +81,28 @@ class Goat is Entity {
       if (closest[0] == 0 && closest[1] == 0) {
          // move on the longer axis toward goal
          var xShorter = ((_grid.goalX-x).abs < (_grid.goalY-y).abs)
-         var dx = xShorter ? 0 : Math.sign(_grid.goalX-x)
-         var dy = xShorter ? Math.sign(_grid.goalY-y) : 0
+         _dx = xShorter ? 0 : Math.sign(_grid.goalX-x)
+         _dy = xShorter ? Math.sign(_grid.goalY-y) : 0
 
          // FIXME: if wall is in the way
-         if (_grid.isWall(x+dx, y+dy)) {
+         if (_grid.isWall(x+_dx, y+_dy)) {
             _nextUpdate = _td.time + _destroyInterval
             _mode = "destroy"
-            _dx = dx
-            _dy = dy
          } else {
-            x = x + dx
-            y = y + dy
+            x = x + _dx
+            y = y + _dy
          }
       } else {
-         x = closest[0]
-         y = closest[1]
+         // the goat has a path to the coin. check for grass or move normally
+         if (_grid.isGrass(x+_dx, y+_dy)) {
+            _nextUpdate = _td.time + _destroyInterval
+            _mode = "grass"
+            _dx = closest[0] - x
+            _dy = closest[1] - y
+         } else {
+            x = closest[0]
+            y = closest[1]
+         }
       }
 
       if (x == _grid.goalX && y == _grid.goalY) {

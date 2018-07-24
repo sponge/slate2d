@@ -49,9 +49,25 @@ class Grid {
      _tiles[(y+1)*_w+x+1] = 200
    }
 
+   setGrass(x, y) {
+      _tiles[y*_w+x] = 22
+   }
+
+   isGrass(x,y) {
+      return _tiles[y*_w+x] == 22
+   }
+
    isWall(x,y) {
       var tid = _tiles[y*_w+x]
       return (tid >= 4 && tid <= 7) || (tid >= 20 && tid <= 21)
+   }
+
+   destroyGrass(x,y) {
+      if (!isGrass(x,y)) {
+         Debug.printLn("WARNING: tile %(x),%(y) wasn't grass")
+         return
+      }
+      _tiles[y*_w+x] = 0
    }
 
    destroyWall(x,y) {
@@ -190,6 +206,14 @@ class Grid {
                   _td.pieceTray.spendCurrent()
                }
             }
+         } else if (button.category == "grass") {
+            _td.pieceTray.drawTool(tx, ty, button.id)
+
+            // if it's a valid placement, place the tower
+            if (_td.pieceTray.canAfford() && !isBlocked(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
+               setGrass(tx / _tw, ty / _th)
+               _td.pieceTray.spendCurrent()
+            }
          }
 
       }
@@ -240,20 +264,24 @@ class Grid {
 
    expandFrontier(frontier, dist, curCoord, nextX, nextY) {
       var next = nextY * _w + nextX
-      if (dist[next] == null && !isBlocked(nextX, nextY)) {
+      if (dist[next] == null && !isBlocked(nextX, nextY, true)) {
          frontier.insert(-1, [nextX, nextY])
          dist[next] = dist[curCoord] + 1
       }
    }
 
-   isBlocked(x, y) {
+   isBlocked(x, y) { isBlocked(x,y,false) }
+
+   isBlocked(x, y, ignoreGrass) {
       var oob = x < 0 || x >= _w || y < 0 || y >= _h
 
       if (oob) {
          return true
       }
 
-      var hasTile = _tiles[y * _w + x] > 0
+      var tid = _tiles[y * _w + x]
+      var hasTile = ignoreGrass ? (tid > 0 && tid != 22) : tid > 0
+      // WARNING: arrows and such are entities, but are not usually on the tile boundary
       var hasEntity = _entities.any {|ent| ent.x == x && ent.y == y }
       return hasTile || hasEntity
    }

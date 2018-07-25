@@ -43,7 +43,7 @@ class PieceTray {
       }
 
       _pieces = [
-         [4,4,0, // U
+         [4,4,0, // sideways U
           0,4,0,
           4,4,0],
 
@@ -59,11 +59,11 @@ class PieceTray {
           0,4,0,
           0,4,0],
 
-         [0,4,0, // 2x4
+         [0,4,0, // 2x1
           0,4,0,
           0,0,0],
 
-         [0,0,0, // 4x4
+         [0,0,0, // 1x1
           0,4,0,
           0,0,0],
 
@@ -89,7 +89,7 @@ class PieceTray {
 
          [0,4,0, // L
           0,4,0,
-          4,4,0],
+          0,4,4],
 
       ]
 
@@ -185,7 +185,7 @@ class PieceTray {
          var y = py + (i/3).floor * _td.th
 
          if (piece[i] > 0) {
-            Draw.sprite(_td.spr, 4, x, y, alpha)
+            Draw.sprite(_td.spr, piece[i], x, y, alpha)
          }
       }
    }

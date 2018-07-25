@@ -134,7 +134,7 @@ class TD {
    }
 
    gameOver() {
-      _nextScene = ["gameover", {"map":_mapName}]
+      _nextScene = ["gameover", {"map":_mapName, "mode": _gameMode}]
    }
 
    onTouchCoin() {

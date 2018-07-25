@@ -9,12 +9,17 @@ class GameOver {
       _scale = 4
 
       _mapName = params["map"]
+      _mode = params["mode"]
 
       _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
       _sprite = Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
       // TODO: should this be passed in? are we gonna re-use this game over?
-      _spr = Asset.create(Asset.Sprite, "spr", "maps/tilesets/e1.png")
-      Asset.spriteSet(_spr, 8, 8, 0, 0)
+      _spr = Asset.create(Asset.Sprite, "spr", "maps/tilesets/e%(_mode).png")
+      if (_mode != 4) {
+         Asset.spriteSet(_spr, 8, 8, 0, 0)
+      } else {
+         Asset.spriteSet(_spr, 32, 32, 0, 0)
+      }
 
       Asset.loadAll()
    }
@@ -62,7 +67,7 @@ class GameOver {
       y = y + 16
       drawCenteredText(w/2, y, "Please try again")
 
-      Draw.sprite(_spr, 8, w/2 - 8, h/2 - 32, 255, 1, 0, 2, 2)
+      Draw.sprite(_spr, 8, w/2 - 8, h/2 - 32, 1.0, 1, 0, 2, 2)
 
       for (i in 0...8) {
          var rad = (i * ((Num.pi*2) / 8)) + _time

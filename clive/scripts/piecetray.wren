@@ -214,7 +214,7 @@ class PieceTray {
 
    draw() {
       // Draw.translate(_x, _y)
-      Draw.setTextStyle(_td.font, 12, 1.0, Align.Left+Align.Top)
+      Draw.setTextStyle(_td.font, 12*_mult, 1.0, Align.Left+Align.Top)
 
       // draw gold (number of currencies are game dependent, pass in from TD)
       if (_activeTool == null || canAfford() == true) {
@@ -230,7 +230,7 @@ class PieceTray {
          drawTool(button.x, button.y, button.id)
          // show the price hover for all towers and spawned pieces
          if (button.hover && (button.category != "piece" || _queuedPieces[button.variation] != null)) {
-            Draw.text(button.x, button.y+button.w-4, 16, "%(_td.currSymbol)%(_td.costs[button.id][0])")
+            Draw.text(button.x, button.y+button.w-4, 16*_mult, "%(_td.currSymbol)%(_td.costs[button.id][0])")
             //Draw.rect(button.x, button.y+button.h, button.w, button.h, Fill.Outline)
          }
       }

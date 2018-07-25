@@ -24,6 +24,7 @@ class TD {
    currencies { _currencies }
    currSymbol { _currSymbol }
    enableMagicTower { _enableMagicTower }
+   vHeight { _vHeight }
 
    construct new(mapName) {
       _nextScene = null

@@ -11,29 +11,35 @@ class PieceTray {
    queuedPieces { _queuedPieces } // 4 element array contains the 3x3 piece arrays
 
    construct new (td, x, y, w, h) {
+      _mult = td.vHeight / 180
+      Debug.printLn(_mult)
+
       _td = td
-      _x = x
-      _y = y
-      _w = w
-      _h = h
+      _x = x * _mult
+      _y = y * _mult
+      _w = w * _mult
+      _h = h * _mult
 
       // properties for filling in pieces
       _nextPieceGenTime = 0
       _pieceRespawnTime = 1
 
-      // FIXME: include tower3 if gamemode calls for it
+      var grassSize = 8 * _mult
+      var towerSize = 16 * _mult
+      var pieceSize = 24 * _mult
+
       _buttons = [
-         TrayButton.new("tower1", "tower", Tower.Fast, x+0, y+8, 16, 16),
-         TrayButton.new("tower2", "tower", Tower.Slow, x+24, y+8, 16, 16),
-         TrayButton.new("grass",  "grass", 0, x+24, y+32, 8, 8),
-         TrayButton.new("piece0", "piece", 0, x+16, y+48+32*0, 24, 24),
-         TrayButton.new("piece1", "piece", 1, x+16, y+48+32*1, 24, 24),
-         TrayButton.new("piece2", "piece", 2, x+16, y+48+32*2, 24, 24),
-         TrayButton.new("piece3", "piece", 3, x+16, y+48+32*3, 24, 24)
+         TrayButton.new("tower1", "tower", Tower.Fast, _x+0*_mult, _y+8*_mult, towerSize, towerSize),
+         TrayButton.new("tower2", "tower", Tower.Slow, _x+24*_mult, _y+8*_mult, towerSize, towerSize),
+         TrayButton.new("grass",  "grass", 0, _x+24*_mult, _y+32*_mult, grassSize, grassSize),
+         TrayButton.new("piece0", "piece", 0, _x+16*_mult, _y+48*_mult+32*0*_mult, pieceSize, pieceSize),
+         TrayButton.new("piece1", "piece", 1, _x+16*_mult, _y+48*_mult+32*1*_mult, pieceSize, pieceSize),
+         TrayButton.new("piece2", "piece", 2, _x+16*_mult, _y+48*_mult+32*2*_mult, pieceSize, pieceSize),
+         TrayButton.new("piece3", "piece", 3, _x+16*_mult, _y+48*_mult+32*3*_mult, pieceSize, pieceSize)
       ]
 
       if (td.enableMagicTower) {
-         _buttons.add(TrayButton.new("tower3", "tower", Tower.Magic, x+0, y+32, 16, 16))
+         _buttons.add(TrayButton.new("tower3", "tower", Tower.Magic, _x+0*_mult, _y+32*_mult, towerSize, towerSize))
       }
 
       _pieces = [

@@ -12,7 +12,7 @@ class IntroMessage {
       _time = 0
 
       _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
-      _banner = Asset.create(Asset.Sprite, "banner", "gfx/welcome_banner.png")
+      _banner = Asset.create(Asset.Sprite, "welcome_banner", "gfx/welcome_banner.png")
       Asset.spriteSet(_banner, 150, 16, 0, 0)
 
       Asset.loadAll()

@@ -12,6 +12,8 @@ class IntroMessage {
       _time = 0
 
       _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
+      _banner = Asset.create(Asset.Sprite, "banner", "gfx/welcome_banner.png")
+      Asset.spriteSet(_banner, 150, 16, 0, 0)
 
       Asset.loadAll()
    }
@@ -34,10 +36,12 @@ class IntroMessage {
 
       Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
 
+      Draw.setColor(Color.Fill, 0, 0, 0, 200)
+      Draw.rect(108, 0, h/720*w-200, 720, Fill.Solid)
+
       Draw.setColor(Color.Fill, 255, 255, 255, 255)
 
-      Draw.setTextStyle(_bodyFont, 72, 1.0, Align.Center+Align.Top)
-      Draw.text(0, 16, h/720*w, "Welcome")
+      Draw.sprite(_banner, 0, w/2 - 225, 10, 1, 3)
 
       Draw.setTextStyle(_bodyFont, 24, 1.0, Align.Left+Align.Top)
       Draw.text(128, 128, h/720*w-256, "Thanks for purchasing Clive Sturridge's Battlement Defense Legacy Collection. What you are about to play is a museum-grade collection of games made by the iconic British programmer and designer, Clive Sturridge. His impact on the industry as a whole cannot be understated, making him worthy of his auteurship. For the first time ever, all his works are playable in one collection.

@@ -30,6 +30,8 @@ class TD {
    vHeight { _vHeight }
 
    construct new(mapName) {
+      Asset.clearAll()
+      
       _nextScene = null
       _time = 0
 

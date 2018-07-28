@@ -242,6 +242,21 @@ void wren_asset_sprite_set(WrenVM *vm) {
 
 	trap->Asset_Sprite_Set(assetHandle, width, height, marginX, marginY);
 }
+
+void wren_asset_image_size(WrenVM *vm) {
+	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
+
+	Image *img = trap->Get_Img(assetHandle);
+
+	wrenEnsureSlots(vm, 3);
+	wrenSetSlotNewList(vm, 0);
+
+	wrenSetSlotDouble(vm, 1, img->w);
+	wrenSetSlotDouble(vm, 2, img->h);
+
+	wrenInsertInList(vm, 0, -1, 1);
+	wrenInsertInList(vm, 0, -1, 2);
+}
 #pragma endregion
 
 #pragma region Draw Module
@@ -740,6 +755,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Asset", true, "bmpfntSet(_,_,_,_,_,_)", wren_asset_bmpfnt_set },
 	{ "engine", "Asset", true, "measureBmpText(_,_,_)", wren_asset_measurebmptext },
 	{ "engine", "Asset", true, "spriteSet(_,_,_,_,_)", wren_asset_sprite_set },
+	{ "engine", "Asset", true, "imageSize(_)", wren_asset_image_size },
 
 	{ "engine", "Draw", true, "setColor(_,_,_,_,_)", wren_dc_setcolor },
 	{ "engine", "Draw", true, "resetTransform()", wren_dc_reset_transform },

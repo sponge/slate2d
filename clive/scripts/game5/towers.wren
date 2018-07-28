@@ -182,6 +182,10 @@ class Towers {
    }
 
    update(dt) {
+      if (Trap.keyPressed(Button.Start, 0, -1)) {
+         _nextScene = "gameselect"
+      }
+      
       if (_platitudeTimer > 0) {
          _platitudeTimer = _platitudeTimer - dt
       } else {

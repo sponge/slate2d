@@ -54,6 +54,9 @@ class TD {
       _gridW = _mapProps["properties"]["gridw"]
       _gridH = _mapProps["properties"]["gridh"]
 
+      _musicPath = _mapProps["properties"]["music"]
+      _music = Asset.create(Asset.Sound, "game_bgm", _musicPath)
+
       // setup rules based on gamemode key
       _gameMode = _mapProps["properties"]["gamemode"]
 
@@ -131,6 +134,8 @@ class TD {
       _pieceTray = PieceTray.new(this, 272, 0, 48, 180)
 
       Asset.loadAll()
+
+      SoundController.playMusic(_music)
    }
 
    spawnGroup(count) {
@@ -150,6 +155,7 @@ class TD {
    }
 
    gameOver() {
+      SoundController.stopMusic()
       _nextScene = ["gameover", {"map":_mapName, "mode": _gameMode}]
    }
 
@@ -166,6 +172,7 @@ class TD {
       _actionQueue.update(dt)
 
       if (Trap.keyPressed(Button.Start, 0, -1)) {
+         SoundController.stopMusic()
          _nextScene = "gameselect"
       }
 
@@ -176,6 +183,7 @@ class TD {
          var left = _grid.entities.where{|e| e.type == "goat"}.count
          if (left == 0) {
             Timer.runLater(3) {
+               SoundController.stopMusic()
                _nextScene = _winScene
             }
             _checkForWin = false

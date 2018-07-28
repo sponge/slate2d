@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.4" orientation="orthogonal" renderorder="right-down" width="40" height="22" tilewidth="8" tileheight="8" infinite="0" nextobjectid="1">
+<map version="1.0" tiledversion="1.1.3" orientation="orthogonal" renderorder="right-down" width="40" height="22" tilewidth="8" tileheight="8" infinite="0" nextobjectid="1">
  <properties>
   <property name="gamemode" type="int" value="1"/>
   <property name="goalx" type="int" value="29"/>
-  <property name="goaly" type="int" value="8"/>
   <property name="gridh" type="int" value="16"/>
   <property name="gridw" type="int" value="32"/>
   <property name="gridx" type="int" value="1"/>
   <property name="gridy" type="int" value="5"/>
+  <property name="music" value="sound/game1_bgm.ogg"/>
  </properties>
  <tileset firstgid="1" source="tilesets/e1.tsx"/>
  <layer name="Tile Layer 1" width="40" height="22">

@@ -2,6 +2,7 @@ import "timer" for Timer
 import "engine" for Draw, Asset, Trap, Color, Fill, Button, Align
 import "debug" for Debug
 import "uibutton" for GameSelectButton
+import "soundcontroller" for SoundController
 
 class GameSelect {
    nextScene { _nextScene }
@@ -13,6 +14,8 @@ class GameSelect {
 
       _banner = Asset.create(Asset.Sprite, "banner", "gfx/gameselect_banner.png")
       Asset.spriteSet(_banner, 150, 16, 0, 0)
+
+      _music = Asset.create(Asset.Sound, "menu_bgm", "sound/menu_bgm.ogg")
 
       var y = 200
       var width = 200
@@ -34,6 +37,10 @@ class GameSelect {
       _currentItem = ""
 
       Asset.loadAll()
+
+      if (SoundController.isMusicPlaying() == false) {
+         SoundController.playMusic(_music)
+      }
    }
 
    update(dt) {

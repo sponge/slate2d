@@ -30,8 +30,6 @@ class GameInfo {
       _font = Asset.create(Asset.BitmapFont, "buttonfont", "gfx/panicbomber_blue.png")
       Asset.bmpfntSet(_font, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
 
-      _music = Asset.create(Asset.Sound, "menu_bgm", "sound/menu_bgm.ogg")
-
       _items = [
          TextButton.new("gameselect", _rightCol, 650, 160, 40, "Back"),
          TextButton.new(gameScene, 1070, 650, 160, 40, "Play"),
@@ -39,9 +37,7 @@ class GameInfo {
 
       Asset.loadAll()
 
-      if (SoundController.isMusicPlaying() == false) {
-         SoundController.playMusic(_music)
-      }
+
    }
 
    update(dt) {

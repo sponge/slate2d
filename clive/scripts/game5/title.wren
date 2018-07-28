@@ -1,4 +1,5 @@
 import "engine" for Draw, Color, Trap, Asset, Align, Button
+import "soundcontroller" for SoundController
 
 class Game5Title {
    nextScene { _nextScene }
@@ -10,6 +11,9 @@ class Game5Title {
       _ripple = 0
       _nextSceneTimer = null
       _fadeTime = 4
+      _fadeIn = 0
+
+      _sonar = Asset.create(Asset.Sound, "bgm", "sound/sonar.ogg")
       Asset.loadAll()
    }
 
@@ -17,10 +21,16 @@ class Game5Title {
       if (Trap.keyPressed(Button.Start, 0, -1)) {
          _nextScene = "gameselect"
       }
+
+      if (_fadeIn < 255) {
+         _fadeIn = _fadeIn + 1
+         _fadeIn = _fadeIn > 255 ? 255 :_fadeIn 
+      }
       
-      _ripple = _ripple + 3
+      _ripple = _ripple + 2
       if (_ripple >= 255) {
          _ripple = 0
+         SoundController.playOnce(_sonar)
       }
 
       if (Trap.keyPressed(Button.B, 0, -1) && _nextSceneTimer == null) {
@@ -80,6 +90,10 @@ class Game5Title {
 
       Draw.setTextStyle(_bodyFont, 48, 1.0, Align.Center|Align.Top)
       Draw.text(0, 600, 1280, "towers")
+      Draw.setTextStyle(_bodyFont, 32, 1.0, Align.Center|Align.Top)
+      Draw.text(0, 650, 1280, "by clive")
+
+      Draw.setTextStyle(_bodyFont, 48, 1.0, Align.Center|Align.Top)
 
       if (_nextSceneTimer != null) {
          var alpha = (1 - (_nextSceneTimer/_fadeTime)) * 255
@@ -93,5 +107,8 @@ class Game5Title {
          Draw.setColor(Color.Fill, 255, 255, 255, msgAlpha) 
          Draw.text(0, 360, 1280, "will you reach the top?")
       }
+
+      Draw.setColor(Color.Fill, 0, 0, 0, 255-_fadeIn)
+      Draw.rect(0, 0, 1280, 720, false)
    }
 }

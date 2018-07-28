@@ -56,7 +56,7 @@ class Main {
          loadScene("td", params)
       } else {
          Asset.clearAll()
-         loadScene("intro", null)
+         loadScene("game4_title", null)
       }
    }
 

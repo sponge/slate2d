@@ -143,10 +143,12 @@ class Game4Info is GameInfo {
       year = "2016"
       title = "Battlement Defense ReDefended"
       gameScene = "game4_title"
-      description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas posuere facilisis fermentum. Pellentesque id magna at nunc ornare aliquet vel et massa. Phasellus eu interdum arcu. Sed in volutpat sapien. Vestibulum tellus lacus, hendrerit a sem id, semper cursus lacus. In eu tempor ante. Fusce congue odio et nisi cursus, in porta tellus semper. Ut nunc eros, molestie iaculis purus ac, fermentum aliquet nibh. Ut fermentum, magna sit amet suscipit dignissim, lectus urna volutpat neque, sed tempor quam urna vel felis. Vestibulum hendrerit hendrerit nisi, cursus laoreet massa pretium ac. Quisque porta elit felis, vitae accumsan diam fermentum a. Praesent ac rutrum velit. Praesent ornare efficitur bibendum. Nulla mollis risus vel vestibulum vehicula. Vivamus quis enim purus.
-
-Nulla rutrum urna quis sem vestibulum faucibus id quis mauris. Suspendisse euismod aliquam aliquam. Praesent elementum id urna non vestibulum. Nam lacus leo, egestas a porta vitae, vehicula in libero. Mauris vitae erat orci."
-
+      description = "The 80s British Sensation would become the Crowdfunding Darling of 2012. Released in 2016, the reboot Battlement Defense Redefended would bring the series to a whole new generation of fans.
+ 
+Featuring new high-resolution sprites inspired by the Arcade classic, ReDefended was the first game to feature a digital audio soundtrack, composed by $8000 backer tier Guest Music Producer, \"noogiejeff.\"
+ 
+Despite numerous delays, Battlement Defense ReDefended would prove to be a hit amongst its 95,142 backers, proving that Clive's game design is truly timeless.
+"
       super(params)
    }
 }
@@ -157,10 +159,11 @@ class Game5Info is GameInfo {
       year = "2018"
       title = "Towers"
       gameScene = "game5_title"
-      description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas posuere facilisis fermentum. Pellentesque id magna at nunc ornare aliquet vel et massa. Phasellus eu interdum arcu. Sed in volutpat sapien. Vestibulum tellus lacus, hendrerit a sem id, semper cursus lacus. In eu tempor ante. Fusce congue odio et nisi cursus, in porta tellus semper. Ut nunc eros, molestie iaculis purus ac, fermentum aliquet nibh. Ut fermentum, magna sit amet suscipit dignissim, lectus urna volutpat neque, sed tempor quam urna vel felis. Vestibulum hendrerit hendrerit nisi, cursus laoreet massa pretium ac. Quisque porta elit felis, vitae accumsan diam fermentum a. Praesent ac rutrum velit. Praesent ornare efficitur bibendum. Nulla mollis risus vel vestibulum vehicula. Vivamus quis enim purus.
+      description = "Towers represents the beginning of a bold new direction for Clive. A distallation of the Battlement Defense series, Towers strips the game down to its core. It is a deconstructive experience of climbing, of overcoming adversity, of self doubt. Peer into the deep creative soul of Clive, and you may see Clive peering back into yours.
+ 
+The main idea everpresent through the series is the tower, and Towers is an exploration of this basic theory. The tower is both a tool used to overcome adversity, but it is also one used to hold back, to restrain. What lies at the top of the tower? Few people will ever rise to the top, and discover the secret of the Tower.
 
-Nulla rutrum urna quis sem vestibulum faucibus id quis mauris. Suspendisse euismod aliquam aliquam. Praesent elementum id urna non vestibulum. Nam lacus leo, egestas a porta vitae, vehicula in libero. Mauris vitae erat orci."
-
+"
       super(params)
    }
 }

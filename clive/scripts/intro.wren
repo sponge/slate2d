@@ -40,9 +40,9 @@ class Intro {
 
       Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
 
-      Draw.image(_logo, 216, 55)
+      Draw.image(_logo, 0, 0)
       if (_time.floor % 2 == 0) {
-         Draw.image(_clickToContinue, 494, 600)
+         Draw.image(_clickToContinue, 494, 620)
       }
 
       Draw.setColor(Color.Stroke, 255, 0, 0, 255)

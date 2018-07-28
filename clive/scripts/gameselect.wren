@@ -16,6 +16,7 @@ class GameSelect {
       Asset.spriteSet(_banner, 150, 16, 0, 0)
 
       _music = Asset.create(Asset.Sound, "menu_bgm", "sound/menu_bgm.ogg")
+      _click = Asset.create(Asset.Sound, "menu_click", "sound/menu_click.ogg")
 
       var y = 200
       var width = 200
@@ -52,6 +53,7 @@ class GameSelect {
          item.update(dt, mouse[0], mouse[1])
          if (item.clicked(mouse[0], mouse[1])) {
             Trap.printLn("clicked %(item.id)")
+            SoundController.playOnce(_click)
             _nextScene = item.id
          }
 

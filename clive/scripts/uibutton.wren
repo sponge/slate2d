@@ -1,6 +1,7 @@
 import "engine" for Draw, Asset, Trap, Color, Fill, Button, ImageFlags
 import "debug" for Debug
 import "math" for Math
+import "soundcontroller" for SoundController
 
 class UIButton {
    x { _x }
@@ -56,6 +57,17 @@ class TextButton is UIButton {
 
       _font = Asset.create(Asset.BitmapFont, "buttonfont", "gfx/panicbomber_blue.png")
       Asset.bmpfntSet(_font, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
+
+      _click = Asset.create(Asset.Sound, "menu_click", "sound/menu_click.ogg")
+   }
+
+   clicked(mx, my) {
+      var result = super(mx, my)
+      if (result) {
+         SoundController.playOnce(_click)
+      }
+
+      return result
    }
 
    draw() {

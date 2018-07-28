@@ -12,8 +12,9 @@ class Intro {
       _time = 0
 
       _logo = Asset.create(Asset.Image, "logo", "gfx/title_logo.png")
-      _click = Asset.create(Asset.Image, "logo_click", "gfx/title_click.png")
+      _clickToContinue = Asset.create(Asset.Image, "logo_click", "gfx/title_click.png")
       _music = Asset.create(Asset.Sound, "menu_bgm", "sound/menu_bgm.ogg")
+      _clickSound = Asset.create(Asset.Sound, "menu_click", "sound/menu_click.ogg")
 
       Asset.loadAll()
 
@@ -25,6 +26,7 @@ class Intro {
       _time = _time + dt
 
       if (Trap.keyPressed(Button.B, 0, -1)) {
+         SoundController.playOnce(_clickSound)
          nextScene = "intromessage"
       }
    }
@@ -40,7 +42,7 @@ class Intro {
 
       Draw.image(_logo, 216, 55)
       if (_time.floor % 2 == 0) {
-         Draw.image(_click, 494, 600)
+         Draw.image(_clickToContinue, 494, 600)
       }
 
       Draw.setColor(Color.Stroke, 255, 0, 0, 255)

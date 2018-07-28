@@ -31,7 +31,7 @@ class TD {
 
    construct new(mapName) {
       Asset.clearAll()
-      
+
       _nextScene = null
       _time = 0
 
@@ -61,6 +61,11 @@ class TD {
 
       // setup rules based on gamemode key
       _gameMode = _mapProps["properties"]["gamemode"]
+
+      Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")       // FIXME: make me per game?
+      Asset.create(Asset.Sound, "game_click", "sound/click.wav")
+      Asset.create(Asset.Sound, "game_plop", "sound/plop.wav")
+      _coinHurt = Asset.create(Asset.Sound, "coin_hurt", "sound/coin_hurt.wav")
 
       if (_gameMode == 1) {
          // TODO: this image is loaded twice since the tmx also loads this but we can't use the
@@ -100,9 +105,6 @@ class TD {
       }
 
        _scale = Trap.getResolution()[1] / _vHeight
-
-      // FIXME: make me per game?
-      Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
 
       _costs = {
          "tower1": [5,0,0],
@@ -164,6 +166,8 @@ class TD {
       _coinHealth = _coinHealth - 1
       if (_coinHealth == 0) {
          gameOver()
+      } else {
+         SoundController.playOnce(_coinHurt)
       }
    }
 

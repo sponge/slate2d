@@ -4,6 +4,7 @@ import "debug" for Debug
 import "bagrandomizer" for BagRandomizer
 import "uibutton" for TrayButton
 import "tower" for Tower
+import "soundcontroller" for SoundController
 
 class PieceTray {
    activeTool { _activeTool } // null, otherwise is a TrayButton
@@ -12,7 +13,6 @@ class PieceTray {
 
    construct new (td, x, y, w, h) {
       _mult = td.vHeight / 180
-      Debug.printLn(_mult)
 
       _td = td
       _x = x * _mult
@@ -23,6 +23,9 @@ class PieceTray {
       // properties for filling in pieces
       _nextPieceGenTime = 0
       _pieceRespawnTime = 1
+
+      _click = Asset.find("game_click")
+      _plop = Asset.find("game_plop")
 
       var grassSize = 8 * _mult
       var towerSize = 16 * _mult
@@ -115,6 +118,7 @@ class PieceTray {
          button.update(dt, mouse[0] / _td.scale, mouse[1] / _td.scale)
          if (button.clicked(mouse[0] / _td.scale, mouse[1] / _td.scale)) {
             // track _activePiece here so we can rotate it
+            SoundController.playOnce(_click)
             if (button.category == "piece") {
                var piece = _queuedPieces[button.variation]
                if (piece != null) {
@@ -154,6 +158,8 @@ class PieceTray {
          _activePiece = null
          _nextPieceGenTime = _td.time + _pieceRespawnTime
       }
+
+      SoundController.playOnce(_plop)
    }
 
    // rotate the active piece

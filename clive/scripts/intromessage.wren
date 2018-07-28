@@ -2,6 +2,7 @@ import "timer" for Timer
 import "engine" for Draw, Asset, Trap, Color, Fill, Button, ImageFlags, Align
 import "debug" for Debug
 import "uibutton" for TextButton
+import "soundcontroller" for SoundController
 
 class IntroMessage {
    nextScene { _nextScene }
@@ -14,6 +15,7 @@ class IntroMessage {
       _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
       _banner = Asset.create(Asset.Sprite, "welcome_banner", "gfx/welcome_banner.png")
       Asset.spriteSet(_banner, 150, 16, 0, 0)
+      _click = Asset.create(Asset.Sound, "menu_click", "sound/menu_click.ogg")
 
       Asset.loadAll()
    }
@@ -22,6 +24,7 @@ class IntroMessage {
       _time = _time + dt
 
       if (Trap.keyPressed(Button.B, 0, -1)) {
+         SoundController.playOnce(_click)
          nextScene = "gameselect"
       }
 

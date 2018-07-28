@@ -78,6 +78,7 @@ class TD {
          _spr = Asset.create(Asset.Sprite, "e1spr", "maps/tilesets/e1.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
          Asset.spriteSet(_spr, 8, 8, 0, 0)
+         Asset.create(Asset.Sound, "goat_die", "sound/goat1_die.wav")
          _vHeight = 180
          _winScene = "game1_win"
          _currSymbol = "£"
@@ -86,6 +87,7 @@ class TD {
          _spr = Asset.create(Asset.Sprite, "e2spr", "maps/tilesets/e2.png")
           _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
          Asset.spriteSet(_spr, 8, 8, 0, 0)
+         Asset.create(Asset.Sound, "goat_die", "sound/goat2_die.wav")
          _vHeight = 180
          _winScene = "game1_win"
          _currSymbol = "£"
@@ -93,7 +95,8 @@ class TD {
       } else if (_gameMode == 3) {
          _spr = Asset.create(Asset.Sprite, "e3spr", "maps/tilesets/e3.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
-         Asset.spriteSet(_spr, 8, 8, 0, 0)  
+         Asset.spriteSet(_spr, 8, 8, 0, 0)
+         Asset.create(Asset.Sound, "goat_die", "sound/goat3_die.wav")
          _vHeight = 180   
          _winScene = "game1_win"
          _currSymbol = "$"
@@ -101,7 +104,8 @@ class TD {
       } else if (_gameMode == 4) {
          _spr = Asset.create(Asset.Sprite, "e4spr", "maps/tilesets/e4.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
-         Asset.spriteSet(_spr, 32, 32, 0, 0)    
+         Asset.spriteSet(_spr, 32, 32, 0, 0)   
+         Asset.create(Asset.Sound, "goat_die", "sound/goat4_die.wav") 
          _vHeight = 720
          _winScene = "game1_win"
          _currSymbol = "$"

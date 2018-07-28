@@ -2,6 +2,7 @@ import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap
 import "entities/entity" for Entity
 import "debug" for Debug
 import "math" for Math
+import "soundcontroller" for SoundController
 
 class Goat is Entity {
    construct new(td, x, y) {
@@ -18,11 +19,13 @@ class Goat is Entity {
       _mode = "move"
 
       _sprite = Asset.find("goat")
+      _dieSound = Asset.find("goat_die")
    }
 
    hurt(damage) {
       _hp = _hp - damage
       if (_hp <= 0 ) {
+         SoundController.playOnce(_dieSound)
          die()
       }
    }

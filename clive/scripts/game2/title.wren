@@ -34,7 +34,10 @@ class Game2Title {
       _strWidth = Asset.measureBmpText(_font, _bounce)
       _lw = Asset.measureBmpText(_font, "a")
 
-      SoundController.playMusic(_music)
+      Timer.runLater(2) {
+         _drawIntro = true
+         SoundController.playMusic(_music)
+      }
    }
 
    drawCenteredText(font, x, y, str, scale) {
@@ -51,6 +54,10 @@ class Game2Title {
    }
 
    draw(w, h) {
+      if (_drawIntro != true) {
+         return
+      }
+
       Draw.clear()
       Draw.resetTransform()
       Draw.transform(h / 360, 0, 0, h / 360, 0, 0)

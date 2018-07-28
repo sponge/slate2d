@@ -15,7 +15,7 @@ class Game2Title {
       _font = Asset.create(Asset.BitmapFont, "cracktrofont", "gfx/game2/cracktrofont.png")
       Asset.bmpfntSet(_font, "abcdefghijklmnopqrstuvwxyz1234567890-+?:,./&!'\"_[]", 32, 0, 32, 32)
 
-      _smallFont = Asset.create(Asset.BitmapFont, "buttonfont", "gfx/game2/afterburner.png")
+      _smallFont = Asset.create(Asset.BitmapFont, "afterburnerfont", "gfx/game2/afterburner.png")
       Asset.bmpfntSet(_smallFont, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
 
       _music = Asset.create(Asset.Mod, "unreal", "sound/2ND_PM.S3M")

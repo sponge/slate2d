@@ -1,6 +1,7 @@
 import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap
 import "entities/projectile" for Cannonball, Arrow, MagicBolt
 import "math" for Math
+import "soundcontroller" for SoundController
 
 class Tower {
    static Fast { 0 }
@@ -19,6 +20,10 @@ class Tower {
       _closest = null
       _nextShot = td.time
       _fireRate = type == Tower.Fast ? 0.5 : 2
+
+      _slowShoot = Asset.find("cannon_shoot")
+      _fastShoot = Asset.find("arrow_shoot")
+      _magicShoot = Asset.find("magic_shoot")
    }
 
 
@@ -48,12 +53,15 @@ class Tower {
       if (_type == Tower.Slow) {
          var proj = Cannonball.new(_td, _x, _y, creep)
          _td.grid.entities.add(proj)
+         SoundController.playOnce(_slowShoot)
       } else if (_type == Tower.Fast) {
          var proj = Arrow.new(_td, _x, _y, creep)
          _td.grid.entities.add(proj)
+         SoundController.playOnce(_fastShoot)
       } else if (_type == Tower.Magic) {
          var proj = MagicBolt.new(_td, _x, _y, creep)
          _td.grid.entities.add(proj)
+         SoundController.playOnce(_magicShoot)
       }
    }
 

@@ -26,6 +26,7 @@ class PieceTray {
 
       _click = Asset.find("game_click")
       _plop = Asset.find("game_plop")
+      _rotate = Asset.find("game_rotate")
 
       var grassSize = 8 * _mult
       var towerSize = 16 * _mult
@@ -178,6 +179,8 @@ class PieceTray {
          }
       }
       _activePiece = newPiece
+
+      SoundController.playOnce(_rotate)
    }
 
    // pass in a piece array to draw it at px, py. used for piece shadows and ui

@@ -66,6 +66,10 @@ class TD {
       Asset.create(Asset.Sound, "game_click", "sound/click.wav")
       Asset.create(Asset.Sound, "game_plop", "sound/plop.wav")
       _coinHurt = Asset.create(Asset.Sound, "coin_hurt", "sound/coin_hurt.wav")
+      Asset.create(Asset.Sound, "game_rotate", "sound/rotate.wav")
+      Asset.create(Asset.Sound, "arrow_shoot", "sound/arrow_shoot.wav")
+      Asset.create(Asset.Sound, "cannon_shoot", "sound/cannon_shoot.wav")
+      Asset.create(Asset.Sound, "magic_shoot", "sound/magic_shoot.wav")
 
       if (_gameMode == 1) {
          // TODO: this image is loaded twice since the tmx also loads this but we can't use the

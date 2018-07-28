@@ -26,7 +26,7 @@ class SoundController {
 
    static playMusic(asset) {
       stopMusic()
-      __musicHnd = Trap.sndPlay(asset, 1.0, 0, true)
+      __musicHnd = Trap.sndPlay(asset, 0.75, 0, true)
    }
 
    static stopMusic() {

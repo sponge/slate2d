@@ -48,8 +48,10 @@ class Main {
       }
 
       if (params != null) {
+         Asset.clearAll()
          loadScene("td", params)
       } else {
+         Asset.clearAll()
          loadScene("intro", null)
       }
    }
@@ -123,7 +125,7 @@ class Main {
       __scene.shutdown()
       __scene = null
 
-      Asset.clearAll()
+      //Asset.clearAll()
    }
 
    static loadScene(scene, params) {

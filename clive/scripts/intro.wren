@@ -1,6 +1,7 @@
 import "timer" for Timer
 import "engine" for Draw, Asset, Trap, Color, Fill, Button
 import "debug" for Debug
+import "soundcontroller" for SoundController
 
 class Intro {
    nextScene { _nextScene }
@@ -10,10 +11,14 @@ class Intro {
       _nextScene = null
       _time = 0
 
-      _font = Asset.create(Asset.BitmapFont, "buttonfont", "gfx/panicbomber_blue.png")
-      Asset.bmpfntSet(_font, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
+      _logo = Asset.create(Asset.Image, "logo", "gfx/title_logo.png")
+      _click = Asset.create(Asset.Image, "logo_click", "gfx/title_click.png")
+      _music = Asset.create(Asset.Sound, "menu_bgm", "sound/menu_bgm.ogg")
 
       Asset.loadAll()
+
+      SoundController.stopMusic()
+      SoundController.playMusic(_music)
    }
 
    update(dt) {
@@ -27,15 +32,18 @@ class Intro {
    draw(w, h) {
       Draw.clear()
       Draw.resetTransform()
-      Draw.transform(h / 240, 0, 0, h / 240, 0, 0)
+
+      Draw.setColor(Color.Fill, 0, 57, 113, 255)
+      Draw.rect(0, 0, w, h, false)
+
+      Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
+
+      Draw.image(_logo, 216, 55)
+      if (_time.floor % 2 == 0) {
+         Draw.image(_click, 494, 600)
+      }
 
       Draw.setColor(Color.Stroke, 255, 0, 0, 255)
-      Draw.rect(160 + _time.sin * 80, 80, 16, 16, Fill.Outline)
-
-      Draw.bmpText(_font, 20, 65, "Welcome to the")
-      Draw.bmpText(_font, 20, 80, "Clive Sturridge's Battlement Defense")
-      Draw.bmpText(_font, 20, 90, "Legacy Collection")
-      Draw.bmpText(_font, 130, 120, "Click to begin")
 
       Draw.submit()
    }

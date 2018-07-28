@@ -48,7 +48,9 @@ class IntroMessage {
 
       Draw.setTextStyle(_bodyFont, 24, 1.0, Align.Left+Align.Top)
       Draw.text(128, 128, h/720*w-256, "Thanks for purchasing Clive Sturridge's Battlement Defense Legacy Collection. What you are about to play is a museum-grade collection of games made by the iconic British programmer and designer, Clive Sturridge. His impact on the industry as a whole cannot be understated, making him worthy of his auteurship. For the first time ever, all his works are playable in one collection.
-
+How to Play:
+Build towers and walls to stop goats from destroying the pound sterling. Distract goats by placing down grass to feed them, slowing them down. Survive all waves to restore the British economy!
+ 
 Controls:
 Left mouse: Place Selected Piece
 Right mouse: Rotate Wall Pieces

@@ -15,7 +15,7 @@ class FadeThing {
       _active = false
       _time = 0
       _textStyle = []
-      _type = Asset.Image
+      _type = null
    }
 
    isA(t) {
@@ -101,28 +101,45 @@ class Game4Title {
       _music = Asset.create(Asset.Sound, "game4_title", "sound/game4_title.ogg")
       _font = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
       _ks = Asset.create(Asset.Image, "ks", "gfx/game4/ks.png")
+      _title = Asset.create(Asset.Image, "title", "gfx/game4/title.png")
+
 
       Asset.loadAll()
 
       _things = {
          "presents": FadeThing.new(0, 310, "Clive Sturridge presents").setTextWidth(1280).setTextStyle(_font, 48, 1.0, Align.Center+Align.Top),
-         "agame": FadeThing.new(0, 310, "A Clive Sturridge Game").setTextWidth(640).setTextStyle(_font, 48, 1.0, Align.Center+Align.Top),
-         "byyou": FadeThing.new(0, 360, "...funded by you!").setTextWidth(640).setTextStyle(_font, 48, 1.0, Align.Center+Align.Top),
-         "ksimg": FadeThing.new(640, 280, _ks).isA(Asset.Image)
+         "agame": FadeThing.new(0, 270, "A Clive Sturridge Game").setTextWidth(640).setTextStyle(_font, 48, 1.0, Align.Center+Align.Top),
+         "byyou": FadeThing.new(0, 320, "...funded by you!").setTextWidth(640).setTextStyle(_font, 48, 1.0, Align.Center+Align.Top),
+         "ksimg": FadeThing.new(740, 200, _ks).isA(Asset.Image),
+         "noogie": FadeThing.new(0, 280, "With music by our\nGuest Music Producer Level Backer\nNoogieJeff").setTextWidth(1280).setTextStyle(_font, 48, 1.0, Align.Center+Align.Top),
+         "title": FadeThing.new(0, 0, _title).isA(Asset.Image)
       }
 
       _actions = [
-         [2, Fn.new {
+         [1, Fn.new {
             SoundController.playMusic(_music)
             _things["presents"].fadeIn(2)
          }],
-         [3, Fn.new { _things["presents"].fadeOut(2) }],
-         [2, Fn.new { _things["agame"].fadeIn(2) }],
-         [2, Fn.new { _things["byyou"].fadeIn(2) }],
-         [2, Fn.new { _things["ksimg"].fadeIn(2) }],
-
+         [3, Fn.new { _things["presents"].fadeOut(1) }],
+         [1, Fn.new { _things["agame"].fadeIn(1) }],
+         [1, Fn.new { _things["byyou"].fadeIn(1) }],
+         [1, Fn.new { _things["ksimg"].fadeIn(1) }],
+         [3, Fn.new { 
+            _things["agame"].fadeOut(1)
+            _things["byyou"].fadeOut(1)
+            _things["ksimg"].fadeOut(1)
+         }],
+         [1, Fn.new { _things["noogie"].fadeIn(1) }],
+         [3, Fn.new { _things["noogie"].fadeOut(1) }],
+         [1, Fn.new { _things["title"].fadeIn(1) }],
+         [5, Fn.new { _things["title"].fadeOut(1) }],
+         [1, Fn.new { startGame() }],
       ]
       _actionQueue = ActionQueue.new(_actions)
+   }
+
+   startGame() {
+      _nextScene = ["td", "maps/e4m1.tmx"]
    }
 
    update(dt) {
@@ -134,7 +151,7 @@ class Game4Title {
       }
 
       if (_time > 3 && Trap.keyPressed(Button.B, 0, -1)) {
-         _nextScene = ["td", "maps/e4m1.tmx"]
+         startGame()
       }
    }
 

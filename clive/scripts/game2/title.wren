@@ -27,7 +27,7 @@ class Game2Title {
 
       _bounce = "clive sturridge's battlement defence 2 for ms-dos. this one was "
       _bounce = _bounce + "real easy to crack, almost no protection at all. cmon clive. this marks our 25th release of 1988! "
-      _bounce = _bounce + "greetz go out to fairlight, hardclumping, razor1911, lilpp, the dream team, vinic "
+      _bounce = _bounce + "greetz go out to fairlight, hardclumping, razor1911, lilpp, the dream team, vinic. tcrf can sit and swivel! "
       _bounce = _bounce + "see you in the next release!"
 
 

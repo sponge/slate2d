@@ -7,6 +7,8 @@ import "tower" for Tower
 import "actionqueue" for ActionQueue
 import "entities/goat" for Goat
 import "soundcontroller" for SoundController
+import "random" for Random
+import "math" for Math
 
 class TD {
    nextScene { _nextScene }
@@ -34,6 +36,8 @@ class TD {
       _mapName = mapName
       _checkForWin = false // when true, check for all enemies dead to trigger win condition
       _coinHealth = 3 // when 0, gameover is triggered
+
+      _rnd = Random.new()
 
       SoundController.stopMusic()
 
@@ -109,11 +113,11 @@ class TD {
       _currencies = List.filled(1, 40)
 
       _actions = [
-         [5, Fn.new { _grid.addEntity(Goat.new(this, 1, 1)) }],
-         [1, Fn.new { _grid.addEntity(Goat.new(this, 1, 2)) }],
-         [1, Fn.new { _grid.addEntity(Goat.new(this, 1, 3)) }],
-         [1, Fn.new { _grid.addEntity(Goat.new(this, 1, 4)) }],
-         [1, Fn.new { _grid.addEntity(Goat.new(this, 1, 5)) }],
+         [5, Fn.new { spawnGroup(2) }],
+         [5, Fn.new { spawnGroup(3) }],
+         [5, Fn.new { spawnGroup(1) }],
+         [5, Fn.new { spawnGroup(2) }],
+         [7, Fn.new { spawnGroup(4) }],
          [1, Fn.new { _checkForWin = true }]
       ]
 
@@ -122,11 +126,21 @@ class TD {
       _actionQueue = ActionQueue.new(_actions)
 
       _grid = Grid.new(this, _gridX, _gridY, _gridW, _gridH, _tw, _th)
-      _grid.setGoal(_mapProps["properties"]["goalx"], _mapProps["properties"]["goaly"])
+      _grid.setGoal(_mapProps["properties"]["goalx"], _rnd.int(0, _gridH-2))
 
       _pieceTray = PieceTray.new(this, 272, 0, 48, 180)
 
       Asset.loadAll()
+   }
+
+   spawnGroup(count) {
+      var baseY = _rnd.int(0, _gridH)
+      for (i in 0...count) {
+         Timer.runLater(i*0.9) {
+            var goatY = Math.clamp(0, _rnd.int(baseY-5, baseY+5), _gridH - 1)
+            _grid.addEntity(Goat.new(this, 1, goatY))
+         }
+      }
    }
 
    onEntityDied(ent) {

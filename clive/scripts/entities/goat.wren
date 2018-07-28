@@ -10,10 +10,11 @@ class Goat is Entity {
       _dy = 0
       _td = td
       _grid = _td.grid
-      _moveInterval = 0.2
+      _moveInterval = 0.6
       _destroyInterval = 2
       _nextUpdate = _td.time + _moveInterval
-      _hp = 10
+      _startingHP = 15
+      _hp = _startingHP
       _mode = "move"
 
       _sprite = Asset.find("goat")
@@ -56,7 +57,6 @@ class Goat is Entity {
    }
 
    moveDestroy() {
-      // FIXME: destroy wall
       _grid.destroyWall(x+_dx,y+_dy)
       x = x + _dx
       y = y + _dy
@@ -124,6 +124,6 @@ class Goat is Entity {
     var sprY = (y - 1) * _td.th
     Draw.image(_sprite, sprX, sprY)
     Draw.setColor(Color.Fill, 0, 255, 0, 255)
-    Draw.rect(sprX, sprY - 2, _td.tw * 2 * (_hp / 10), 2, false)
+    Draw.rect(sprX, sprY - 2, _td.tw * 2 * (_hp / _startingHP), 2, false)
   }
 }

@@ -222,6 +222,7 @@ class Grid {
    }
 
    setGoal(x, y) {
+      Debug.printLn("setting goal to %(x),%(y)")
       _entities = _entities.where {|e| e.type != "coin" }.toList
       _entities.add(Coin.new(_td, x, y))
       _goalX = x

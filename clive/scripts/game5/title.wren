@@ -14,6 +14,10 @@ class Game5Title {
    }
 
    update(dt) {
+      if (Trap.keyPressed(Button.Start, 0, -1)) {
+         _nextScene = "gameselect"
+      }
+      
       _ripple = _ripple + 3
       if (_ripple >= 255) {
          _ripple = 0

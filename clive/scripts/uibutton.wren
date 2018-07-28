@@ -1,4 +1,4 @@
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, ImageFlags
+import "engine" for Draw, Asset, Trap, Color, Fill, Button, ImageFlags, Align
 import "debug" for Debug
 import "math" for Math
 import "soundcontroller" for SoundController
@@ -55,9 +55,7 @@ class TextButton is UIButton {
       super(id, x, y, w, h)
       _label = label
 
-      _font = Asset.create(Asset.BitmapFont, "buttonfont", "gfx/panicbomber_blue.png")
-      Asset.bmpfntSet(_font, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
-
+      _font = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
       _click = Asset.create(Asset.Sound, "menu_click", "sound/menu_click.ogg")
    }
 
@@ -78,8 +76,9 @@ class TextButton is UIButton {
       }
 
       Draw.rect(x, y, w, h, Fill.Solid)
-      var textw = Asset.measureBmpText(_font, _label) * 2
-      Draw.bmpText(_font, x+(w-textw)/2, y+(h/2)-8, _label, 2)
+      Draw.setColor(Color.Fill, 255, 255, 255, 255)
+      Draw.setTextStyle(_font, 36, 1.0, Align.Center+Align.Top)
+      Draw.text(x, y+2, w, _label)
    }
 }
 

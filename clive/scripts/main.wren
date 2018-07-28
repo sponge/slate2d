@@ -2,6 +2,7 @@ import "meta" for Meta
 import "engine" for Trap, Draw, Asset, CVar
 import "timer" for Timer
 import "debug" for Debug
+import "soundcontroller" for SoundController
 
 import "intro" for Intro
 import "intromessage" for IntroMessage
@@ -22,6 +23,7 @@ class Main {
    static scene { __scene }
 
    static init(params) {
+      SoundController.init()
       Timer.init()
       Debug.init()
       __accumTime = 0
@@ -57,7 +59,7 @@ class Main {
    }
 
    static update(dt) {
-      if (__scene.nextScene != null) {
+      if (__scene && __scene.nextScene != null) {
          Trap.printLn("got scene transfer: %(__scene.nextScene)")
          if (__scene.nextScene is String) {
             loadScene(__scene.nextScene, null)
@@ -77,14 +79,18 @@ class Main {
       Debug.persist(true)
       Debug.clearPersist()
 
-      __scene.update(1/60)
+      if (__scene != null) {
+         __scene.update(1/60)
+      }
       Timer.tick(1/60)
    }
 
    static draw(w, h) {
       Debug.persist(false)
       Draw.clear()
-      __scene.draw(w, h)
+      if (__scene != null) {
+         __scene.draw(w, h)
+      }
       Debug.draw()
       Draw.submit()
 

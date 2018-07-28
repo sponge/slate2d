@@ -1,6 +1,7 @@
 import "engine" for Asset, Draw, Align, Color, Trap, Button
 import "random" for Random
 import "bagrandomizer" for BagRandomizer
+import "soundcontroller" for SoundController
 
 class Platitudes {
    construct new() {
@@ -100,6 +101,15 @@ class Platitudes {
 //          "God never gives us more than we can bear (see death, misery, history of suffering)",
       ]
       _rnd = BagRandomizer.new(_p.count)
+
+      SoundController.stopMusic()
+      Asset.clearAll()
+
+      _music = Asset.create(Asset.Sound, "bgm", "sound/game5_bgm.ogg")
+
+      Asset.loadAll()
+
+      SoundController.playMusic(_music)
    }
 
    next() {
@@ -271,5 +281,9 @@ class Towers {
 
       Draw.setColor(Color.Fill, 0, 0, 0, 255 - _fade)
       Draw.rect(0, 0, 1280 ,720, false)
+   }
+
+   shutdown() {
+      SoundController.stopMusic()
    }
 }

@@ -6,6 +6,7 @@ import "piecetray" for PieceTray
 import "tower" for Tower
 import "actionqueue" for ActionQueue
 import "entities/goat" for Goat
+import "soundcontroller" for SoundController
 
 class TD {
    nextScene { _nextScene }
@@ -34,6 +35,8 @@ class TD {
       _checkForWin = false // when true, check for all enemies dead to trigger win condition
       _coinHealth = 3 // when 0, gameover is triggered
 
+      SoundController.stopMusic()
+
       // load the requested map
       TileMap.load(mapName)
       _layers = TileMap.layerNames()
@@ -49,7 +52,6 @@ class TD {
 
       // setup rules based on gamemode key
       _gameMode = _mapProps["properties"]["gamemode"]
-
 
       if (_gameMode == 1) {
          // TODO: this image is loaded twice since the tmx also loads this but we can't use the

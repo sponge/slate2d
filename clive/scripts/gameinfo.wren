@@ -2,6 +2,7 @@ import "timer" for Timer
 import "engine" for Draw, Asset, Trap, Color, Fill, Button, ImageFlags
 import "debug" for Debug
 import "uibutton" for TextButton
+import "soundcontroller" for SoundController
 
 class GameInfo {
    boxPath { _boxPath }
@@ -29,12 +30,18 @@ class GameInfo {
       _font = Asset.create(Asset.BitmapFont, "buttonfont", "gfx/panicbomber_blue.png")
       Asset.bmpfntSet(_font, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
 
+      _music = Asset.create(Asset.Sound, "menu_bgm", "sound/menu_bgm.ogg")
+
       _items = [
          TextButton.new("gameselect", _rightCol, 650, 160, 40, "Back"),
          TextButton.new(gameScene, 1070, 650, 160, 40, "Play"),
       ]
 
       Asset.loadAll()
+
+      if (SoundController.isMusicPlaying() == false) {
+         SoundController.playMusic(_music)
+      }
    }
 
    update(dt) {
@@ -45,6 +52,9 @@ class GameInfo {
          item.update(dt, mouse[0], mouse[1])
          if (item.clicked(mouse[0], mouse[1])) {
             Trap.printLn("clicked %(item.id)")
+            if (item.id != "gameselect") {
+               SoundController.stopMusic()
+            }
             _nextScene = item.id
          }
       }

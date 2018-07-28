@@ -20,6 +20,10 @@ class SoundController {
       __handlesByAsset[asset] = null
    }
 
+   static isMusicPlaying() {
+      return __musicHnd != null
+   }
+
    static playMusic(asset) {
       stopMusic()
       __musicHnd = Trap.sndPlay(asset, 1.0, 0, true)

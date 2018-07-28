@@ -6,10 +6,10 @@ class Game5Title {
 
 
    construct new(params) {
-      _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
+      _bodyFont = Asset.create(Asset.Font, "raleway", "fonts/Raleway-ExtraLight.ttf")
       _ripple = 0
       _nextSceneTimer = null
-      _fadeTime = 2
+      _fadeTime = 4
       Asset.loadAll()
    }
 
@@ -79,8 +79,15 @@ class Game5Title {
 
       if (_nextSceneTimer != null) {
          var alpha = (1 - (_nextSceneTimer/_fadeTime)) * 255
+         alpha = alpha > 255 ? 255 : alpha
          Draw.setColor(Color.Fill, 0, 0, 0, _nextSceneTimer > 0 ? alpha : 255)
          Draw.rect(0, 0, 1280, 720, false)
+         Draw.setTextStyle(_bodyFont, 48, 1.0, Align.Center|Align.Middle)
+
+         var msgAlpha =  ((_nextSceneTimer/_fadeTime) * Num.pi).sin * 255
+         msgAlpha = msgAlpha < 0 ? 0 : msgAlpha
+         Draw.setColor(Color.Fill, 255, 255, 255, msgAlpha) 
+         Draw.text(0, 360, 1280, "will you reach the top?")
       }
    }
 }

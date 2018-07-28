@@ -1,5 +1,5 @@
-import "engine" for Asset, Draw, Align, Color
-// import "random" for Random
+import "engine" for Asset, Draw, Align, Color, Trap, Button
+import "random" for Random
 import "bagrandomizer" for BagRandomizer
 
 class Platitudes {
@@ -107,6 +107,51 @@ class Platitudes {
    }
 }
 
+class Man {
+   y { _y }
+
+   construct new(x, y) {
+      _x = x
+      _y = y
+
+      _jumping = false
+      _jumpTime = 0.25
+      _jumpTimer = 0
+   }
+
+   jump() {
+      if (!_jumping) {
+         _jumping = true
+         _jumpTimer = _jumpTime
+         _y = _y - 4
+      }
+   }
+
+   update(dt) {
+     if (_jumping) {
+         _jumpTimer = _jumpTimer - dt
+         if (_jumpTimer <= 0) {
+            _jumping = false
+         }
+      }
+   }
+
+   draw(color) {
+      var width = 20
+      var height = 40
+      var baseY = _y
+      Draw.setColor(Color.Fill, color, color, color, 255)
+
+      if (_jumping) {
+         var jumpY = ((1 - (_jumpTimer / _jumpTime)) * Num.pi).sin * 10
+         Draw.rect(_x, baseY - jumpY, width, height, false)
+         Draw.setColor(Color.Fill, 0, 0, 0, 64)
+         Draw.rect(_x, baseY + height, width, 4, false)
+      } else {
+         Draw.rect(_x, baseY, width, height, false)
+      }
+   }
+}
 
 class Towers {
    nextScene { _nextScene }
@@ -114,11 +159,24 @@ class Towers {
 
    construct new(params) {
       _platitudes = Platitudes.new()
-      _currentPlatitude = _platitudes.next()
-      _platitudeTime = 10
-      _platitudeTimer = _platitudeTime
+      _currentPlatitude = ""
+      _platitudeTime = 12
+      _platitudeTimer = 10
 
-      _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
+      _fade = 0
+
+      _bodyFont = Asset.create(Asset.Font, "raleway", "fonts/Raleway-ExtraLight.ttf")
+
+      _player = Man.new(640, 680)
+
+      _rnd = Random.new()
+      _others = []
+      for (i in 0..40) {
+          _others.add(Man.new(640 + _rnd.int(-200, 200), _rnd.int(740, 1240)))
+      }
+      _focusedOther = 0
+      _focusTime = 10
+      _focusTimer = 0
 
       Asset.loadAll()
    }
@@ -130,19 +188,84 @@ class Towers {
          _platitudeTimer = _platitudeTime
          _currentPlatitude = _platitudes.next()
       }
+
+      if (_fade < 255) {
+         _fade = _fade + 1
+         _fade = _fade > 255 ? 255 : _fade
+      }
+
+      if (Trap.keyPressed(Button.B, 0, -1)) {
+         _player.jump()
+      }
+
+      for (other in _others) {
+         var r = (1 - ((other.y - 40) / 1200))
+         if (_rnd.int(r * 64) == 0 && r != 1) {
+             other.jump()
+         }
+         other.update(dt)
+      }
+
+      insertionSort(_others) {|el| el.y}
+
+      _player.update(dt)
+
+      _focusTimer = _focusTimer - dt
+      if (_focusTimer <= 0) {
+         _focusedOther = (_focusedOther + 1) % _others.count
+         _focusTimer = _focusTime
+      }
+   }
+
+   drawTower() {
+      var alpha = 0.5//(_height/_maxHeight) * 0.5 + 0.25
+      var width = 600
+      Draw.setColor(Color.Fill, 200, 200, 200, alpha*255)
+      Draw.rect(640-(width/2), 0, width, 720, false)
+   }
+
+   insertionSort(list, fn) {
+      var i = 1
+      while (i < list.count) {
+         var j = i
+         while (j > 0 && fn.call(list[j-1]) > fn.call(list[j])) {
+            var temp = list[j]
+            list[j] = list[j-1]
+            list[j-1] = temp
+            j = j - 1
+         }
+         i = i + 1
+      } 
    }
 
    draw(w, h) {
-      Draw.setTextStyle(_bodyFont, 48, 1.0, Align.Center|Align.Top)
-      Draw.text(20, 20, 1289, "towers by clive")
+      drawTower()
+//       drawMan()
+      _player.draw(255)
+
+      for (other in _others) {
+         other.draw(127)
+      }
+//       _others[_focusedOther].draw(((_focusTimer / _focusTime) * Num.pi).sin * 127)
+
+      Draw.setTextStyle(_bodyFont, 32, 1.0, Align.Center|Align.Middle)
 
       var platAlpha = 255
       if (_platitudeTimer < 2) {
          platAlpha = 255 * _platitudeTimer/2
+         platAlpha = platAlpha < 0 ? 0 : platAlpha
       } else if (_platitudeTimer > (_platitudeTime - 2)) {
          platAlpha = 255 - ((_platitudeTimer - (_platitudeTime - 2)) / 2) * 255
       }
       Draw.setColor(Color.Fill, 255, 255, 255, platAlpha)
-      Draw.text(20, 80, 1280, _currentPlatitude)
+      Draw.text(20, 360, 1280, _currentPlatitude)
+
+      Draw.setColor(Color.Fill, 255, 255, 255, 127)
+      Draw.text(20, 680, 1280, "Click to climb")
+      var m = ((680 - _player.y) / 680) * 1000
+      Draw.text(20, 40, 1280, "%(m.floor)m")
+
+      Draw.setColor(Color.Fill, 0, 0, 0, 255 - _fade)
+      Draw.rect(0, 0, 1280 ,720, false)
    }
 }

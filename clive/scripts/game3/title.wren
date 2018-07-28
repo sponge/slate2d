@@ -15,14 +15,12 @@ class Game3Title {
       _time = 0
       _currentActionTime = 0
 
-      _mode = "glitch"
+      _mode = ""
       _countdownStartTime = 0
       _countdownSpeedupFactor = 3
       _enableSkip = false
       _skipWarningTime = null
       _selfTestStr = ""
-
-      SoundController.init()
 
       _glitch = Asset.create(Asset.Image, "glitch", "gfx/game3/glitch.png")
       _title = Asset.create(Asset.Image, "game3_title", "gfx/game3/title.png")
@@ -33,7 +31,7 @@ class Game3Title {
       _goodmorning = Asset.create(Asset.Sound, "goodmorning", "sound/goodmorning.ogg")
 
       _teleText = Asset.create(Asset.Font, "teletext", "fonts/TeleTekst.ttf")
-      _font = Asset.create(Asset.BitmapFont, "buttonfont", "gfx/game3/gradius.png")
+      _font = Asset.create(Asset.BitmapFont, "gradius", "gfx/game3/gradius.png")
       Asset.bmpfntSet(_font, "0123456789=__?___ABCDEFGHIJKLMNOPQRSTUVWXYZ-.____abcdefghijklmnopqrstuvwxyz", 8, 0, 8, 8)
 
       Asset.loadAll()
@@ -45,6 +43,7 @@ class Game3Title {
 ========================================"
 
       _actions = [
+         [1, Fn.new { _mode = "glitch" }],
          [1, Fn.new { Trap.sndPlay(_gettingready) }],
          [2, Fn.new { Trap.sndPlay(_count48) }],
          [2, Fn.new { Trap.sndPlay(_gettingready) }],

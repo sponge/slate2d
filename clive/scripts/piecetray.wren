@@ -145,6 +145,11 @@ class PieceTray {
       return true
    }
 
+   deselectPiece() {
+      _activeTool = null
+      _activePiece = null
+   }
+
    // instruct the piece tray that the piece has been placed
    spendCurrent() {
       // spend currency

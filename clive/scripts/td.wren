@@ -29,13 +29,20 @@ class TD {
    enableMagicTower { _enableMagicTower }
    vHeight { _vHeight }
 
-   construct new(mapName) {
+   construct new(params) {
       Asset.clearAll()
 
       _nextScene = null
       _time = 0
 
-      _mapName = mapName
+      _extraGoats = 0
+      if (params is String) {
+         _mapName = params
+      } else {
+         _mapName = params["map"]
+         _extraGoats = params["extraGoats"]
+      }
+
       _checkForWin = false // when true, check for all enemies dead to trigger win condition
       _coinHealth = 3 // when 0, gameover is triggered
 
@@ -44,7 +51,7 @@ class TD {
       SoundController.stopMusic()
 
       // load the requested map
-      TileMap.load(mapName)
+      TileMap.load(_mapName)
       _layers = TileMap.layerNames()
 
       _mapProps = TileMap.getMapProperties()
@@ -98,7 +105,7 @@ class TD {
          Asset.spriteSet(_spr, 8, 8, 0, 0)
          Asset.create(Asset.Sound, "goat_die", "sound/goat3_die.wav")
          _vHeight = 180   
-         _winScene = "game1_win"
+         _winScene = "game3_win"
          _currSymbol = "$"
          _enableMagicTower = true
       } else if (_gameMode == 4) {
@@ -151,6 +158,7 @@ class TD {
    }
 
    spawnGroup(count) {
+      count = count + _extraGoats
       var baseY = _rnd.int(0, _gridH)
       for (i in 0...count) {
          Timer.runLater(i*0.9) {
@@ -195,7 +203,7 @@ class TD {
          var left = _grid.entities.where{|e| e.type == "goat"}.count
          if (left == 0) {
             Timer.runLater(3) {
-               _nextScene = _winScene
+               _nextScene = [_winScene, {"extraGoats": _extraGoats}]
             }
             _checkForWin = false
          }

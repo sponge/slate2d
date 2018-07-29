@@ -168,6 +168,11 @@ class Grid {
          }
       }
 
+      // if right click, deselect the current piece
+      if (_td.pieceTray.activeTool && _td.pieceTray.activeTool.category != "piece" && Trap.keyPressed(Button.A, 0, -1)) {
+         _td.pieceTray.deselectPiece()
+      }
+
       // if something is selected, draw the piece shadow
       // snap it to the nearest 8px boundary
       // TODO: ugly gamejam code (this shouldn't all be in draw)

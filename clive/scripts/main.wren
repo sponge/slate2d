@@ -15,6 +15,7 @@ import "game1/win" for Game1Win
 import "game2/title" for Game2Title
 import "game2/win" for Game2Win
 import "game3/title" for Game3Title
+import "game3/win" for Game3Win
 import "game4/title" for Game4Title
 import "game5/title" for Game5Title
 import "game5/towers" for Towers
@@ -46,6 +47,7 @@ class Main {
          "game2_title": Game2Title,
          "game2_win": Game2Win,
          "game3_title": Game3Title,
+         "game3_win": Game3Win,
          "game4_title": Game4Title,
          "game5_title": Game5Title,
          "td": TD,

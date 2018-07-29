@@ -10,6 +10,7 @@ import "soundcontroller" for SoundController
 import "random" for Random
 import "math" for Math
 import "uibutton" for CoinButton
+import "game4/slots" for SlotMachine
 
 class TD {
    nextScene { _nextScene }
@@ -126,7 +127,8 @@ class TD {
          _winScene = "game4_win"
          _currSymbol = "$"
          _enableMagicTower = true
-         _goatsDropMoney = true
+         _goatsDropMoney = false
+         _coinsPerKill = 0 // slot machine gives you money in game 4
       }
 
        _scale = Trap.getResolution()[1] / _vHeight
@@ -162,6 +164,10 @@ class TD {
 
       _pieceTray = PieceTray.new(this, 272, 0, 48, 180)
 
+      if (_gameMode == 4) {
+         _slots = SlotMachine.new(this, _tw*21, _th*1)
+      }
+
       _coins = []
 
       Asset.loadAll()
@@ -185,7 +191,7 @@ class TD {
          if (_goatsDropMoney) {
             _coins.add(CoinButton.new(this, (ent.x + _gridX) * _tw, (ent.y + _gridY) * _th))
          } else {
-            _currencies[0] = _currencies[0] + 3
+            _currencies[0] = _currencies[0] + _coinsPerKill
          }
       }
    }
@@ -236,6 +242,10 @@ class TD {
             }
          }
       }
+
+      if (_slots != null) {
+         _slots.update(dt)
+      }
    }
 
    draw(w, h) {
@@ -253,6 +263,10 @@ class TD {
 
       for (coin in _coins) {
          coin.draw()
+      }
+
+      if (_slots !=  null) {
+         _slots.draw()
       }
 
       Draw.submit()

@@ -6,6 +6,8 @@ class Game2Title {
 
    construct new(param) {
       _logo = Asset.create(Asset.Image, "reasonable_logo", "gfx/game2/logo.png")
+      _logoFade1 = Asset.create(Asset.Image, "reasonable_logo_fade1", "gfx/game2/logo_fade1.png")
+      _logoFade2 = Asset.create(Asset.Image, "reasonable_logo_fade2", "gfx/game2/logo_fade2.png")
       _music = Asset.create(Asset.Sound, "reasonable_logo_music", "sound/reasonable_logo.ogg")
 
       _time = 0
@@ -17,6 +19,7 @@ class Game2Title {
       _softwareWidth = 0
 
       _baseline = 100
+      _drawLogo = true
 
       Asset.loadAll()
 
@@ -48,22 +51,30 @@ class Game2Title {
       if (_time > 1.25) {
          _softwareWidth = _softwareWidth < 345 ? _softwareWidth + 3.5 : 345
       }
+
+      if (_time > 4.4) {
+         _drawLogo = false
+      } else if (_time > 4.2) {
+         _logo = _logoFade2
+      } else if (_time > 4.0) {
+         _logo = _logoFade1
+      }
    }
 
    drawRea(x, y) {
-      Draw.image(_logo, x, y, 113, 54)
+      Draw.image(_logo, x, y, 113, 60)
    }
 
    drawSon(x, y) {
-      Draw.image(_logo, x, y, 105, 54, 1, 1, 0, 113, 0)
+      Draw.image(_logo, x, y, 104, 60, 1, 1, 0, 113, 0)
    }
 
    drawA(x, y) {
-      Draw.image(_logo, x, y, 33, 54, 1, 1, 0, 220, 0)
+      Draw.image(_logo, x, y, 33, 60, 1, 1, 0, 220, 0)
    }
 
    drawBle(x, y) {
-      Draw.image(_logo, x, y, 91, 54, 1, 1, 0, 254, 0)
+      Draw.image(_logo, x, y, 91, 60, 1, 1, 0, 254, 0)
    }
 
    drawSoftware(x, y) {
@@ -78,15 +89,14 @@ class Game2Title {
       var x = 148 
       var y = 0
 
-      Draw.setColor(Color.Fill, 170, 170, 170, 255)
-      Draw.rect(x, _baseline + 60, 345, 2, false)
+      if (_drawLogo) {
+         drawSoftware(x, _baseline + 66)
 
-      drawSoftware(x, _baseline + 70)
-
-      drawRea(x, _reaY)
-      drawSon(x + 114, _sonY)
-      drawA(x + 114 + 105, _aY)
-      drawBle(x + 114 + 105 + 33, _bleY)
+         drawRea(x, _reaY)
+         drawSon(x + 113, _sonY)
+         drawA(x + 113 + 104, _aY)
+         drawBle(x + 113 + 104 + 33, _bleY)
+      }
 
       Draw.submit()
    }

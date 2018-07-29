@@ -177,6 +177,8 @@ class Towers {
       _fade = 0
 
       _bodyFont = Asset.create(Asset.Font, "raleway", "fonts/Raleway-ExtraLight.ttf")
+      _goatSfx = Asset.create(Asset.Sound, "towers_goat", "sound/towers_goat.ogg")
+      _goatSfxLong = Asset.create(Asset.Sound, "towers_goat_long", "sound/towers_goat2.ogg")
 
       _player = Man.new(640, 680)
 
@@ -189,6 +191,8 @@ class Towers {
       _focusTime = 10
       _focusTimer = 0
 
+      _time = 0
+      _nextGoatSound = _rnd.int(5, 10)
 
       _pauseMenu = PauseMenu.new(490, 260)
       _paused = false
@@ -197,8 +201,15 @@ class Towers {
    }
 
    update(dt) {
+      _time = _time + dt
+
       if (Trap.keyPressed(Button.Start, 0, -1)) {
          _paused = _paused ? false : true
+      }
+
+      if (_time > _nextGoatSound) {
+         _nextGoatSound = _time + _rnd.int(5, 15)
+         SoundController.playOnce(_rnd.sample([_goatSfx, _goatSfxLong]), _rnd.float(0.1, 0.3), _rnd.float(-1, 1), false)
       }
 
       if (_paused) {
@@ -237,9 +248,9 @@ class Towers {
       }
 
       for (other in _others) {
-         var r = (1 - ((other.y - 40) / 1200))
-         if (_rnd.int(r * 64) == 0 && r != 1) {
-             other.jump()
+         var r = ((1 - ((other.y - 40) / 1200)) * (Num.pi / 2)).tan
+         if (_rnd.int(r * 10) == 0) {
+            other.jump()
          }
          other.update(dt)
       }
@@ -296,12 +307,14 @@ class Towers {
          platAlpha = 255 - ((_platitudeTimer - (_platitudeTime - 2)) / 2) * 255
       }
       Draw.setColor(Color.Fill, 255, 255, 255, platAlpha)
-      Draw.text(20, 360, 1280, _currentPlatitude)
+      Draw.text(0, 360, 1280, _currentPlatitude)
 
       Draw.setColor(Color.Fill, 255, 255, 255, 127)
-      Draw.text(20, 680, 1280, "Click to climb")
+      Draw.text(0, 680, 1280, "Click to climb")
+
       var m = ((680 - _player.y) / 680) * 1000
-      Draw.text(20, 40, 1280, "%(m.floor)m")
+      Draw.setColor(Color.Fill, 255, 255, 255, 255)
+      Draw.text(0, 40, 1280, "%(1000 - m.floor)m to go")
 
       Draw.setColor(Color.Fill, 0, 0, 0, 255 - _fade)
       Draw.rect(0, 0, 1280 ,720, false)

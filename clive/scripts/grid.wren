@@ -53,11 +53,19 @@ class Grid {
       _tiles[y*_w+x] = 22
    }
 
+   isLegal(x, y) {
+      return x >= 0 && x < _w && y >= 0 && y < _h
+   }
+
    isGrass(x,y) {
-      return _tiles[y*_w+x] == 22
+      return isLegal(x, y) ? _tiles[y*_w+x] == 22 : false
    }
 
    isWall(x,y) {
+      if (!isLegal(x, y)) {
+         return false
+      }
+
       var tid = _tiles[y*_w+x]
       return (tid >= 4 && tid <= 7) || (tid >= 20 && tid <= 21)
    }

@@ -78,6 +78,35 @@ class Goat is Entity {
       _mode = "move"
    }
 
+   moveToGrass() {
+      var neighbours = [
+         [ 1,  0],
+         [-1,  0],
+         [ 0,  1],
+         [ 0, -1]
+      ]
+
+      for (offset in 1..3) {
+         for (n in neighbours) {
+            if (n[0] != 0 || n[1] != 0) {
+               var tileX = x + n[0] * offset
+               var tileY = y + n[1] * offset
+               if (_grid.isBlocked(tileX, tileY, true)) {
+                  // found something in the way, kill this direction
+                  n[0] = n[1] = 0
+               } else if (_grid.isGrass(tileX, tileY)) {
+                  // found grass, move towards it and return
+                  _dx = n[0]
+                  _dy = n[1]
+                  return true
+               }
+            }
+         }
+      }
+
+      return false
+   }
+
    moveStep() {
       var neighbours = [
          [x + 1, y],
@@ -86,6 +115,9 @@ class Goat is Entity {
          [x, y - 1]
       ]
 
+      var ogX = x
+      var ogY = y
+
       var closest = neighbours.reduce([0, 0, Num.largest]) {|acc, val|
          var dist = _grid.getDistance(val[0], val[1])
          if (dist && dist < acc[2]) {
@@ -93,6 +125,8 @@ class Goat is Entity {
          }
          return acc
       }
+
+      var movedToGrass = moveToGrass()
 
       // if there's no path, just run straight toward the coin and destroy
       // walls until you make one
@@ -106,7 +140,7 @@ class Goat is Entity {
          if (_grid.isWall(x+_dx, y+_dy)) {
             _nextUpdate = _td.time + _destroyInterval
             _mode = "destroy"
-         } else {
+         } else if (!_grid.isBlocked(x + _dx, y + _dy)) {
             x = x + _dx
             y = y + _dy
          }
@@ -115,8 +149,9 @@ class Goat is Entity {
          if (_grid.isGrass(x+_dx, y+_dy)) {
             _nextUpdate = _td.time + _destroyInterval
             _mode = "grass"
-            _dx = closest[0] - x
-            _dy = closest[1] - y
+         } else if (movedToGrass && !_grid.isBlocked(x + _dx, y + _dy)) {
+            x = x + _dx
+            y = y + _dy
          } else {
             x = closest[0]
             y = closest[1]

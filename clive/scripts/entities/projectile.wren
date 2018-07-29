@@ -32,7 +32,7 @@ class Projectile is Entity {
    }
 
    drawSprite(id) {
-      Draw.sprite(_td.spr, id, x * _td.tw, y * _td.th, 1.0, 1.0, 1)
+      Draw.sprite(_td.spr, id, x * _td.tw, y * _td.th, 1.0, 1.0, x < _sx ? 1 : 0)
    }
 }
 

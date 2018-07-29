@@ -116,7 +116,7 @@ class TD {
          Asset.create(Asset.Sound, "goat_die", "sound/goat4_die.wav")
          Asset.create(Asset.Image, "goat", "gfx/game4/goat.png")
          _vHeight = 720
-         _winScene = "game1_win"
+         _winScene = "game4_win"
          _currSymbol = "$"
          _enableMagicTower = true
       }

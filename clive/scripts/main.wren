@@ -17,6 +17,7 @@ import "game2/win" for Game2Win
 import "game3/title" for Game3Title
 import "game3/win" for Game3Win
 import "game4/title" for Game4Title
+import "game4/win" for Game4Win
 import "game5/title" for Game5Title
 import "game5/towers" for Towers
 import "game5/ending" for TowersEnding
@@ -50,6 +51,7 @@ class Main {
          "game3_title": Game3Title,
          "game3_win": Game3Win,
          "game4_title": Game4Title,
+         "game4_win": Game4Win,
          "game5_title": Game5Title,
          "td": TD,
          "gameover": GameOver,
@@ -62,7 +64,7 @@ class Main {
          loadScene("td", params)
       } else {
          Asset.clearAll()
-         loadScene("intro", null)
+         loadScene("game4_win", null)
       }
    }
 

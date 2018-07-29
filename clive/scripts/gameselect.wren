@@ -34,7 +34,6 @@ class GameSelect {
       _items.add(GameSelectButton.new("game5", x, y, width, 350, "Towers", "gfx/box_5.png"))
 
       _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
-      Trap.printLn(_bodyFont)
       _currentItem = ""
 
       Asset.loadAll()

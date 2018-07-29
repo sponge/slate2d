@@ -61,7 +61,6 @@ class SlotMachine {
                _reels[i] = icon
             }
 
-            Debug.printLn(_td)
             _td.currencies[0] = _td.currencies[0] + _coinsPerWin 
          }
       }

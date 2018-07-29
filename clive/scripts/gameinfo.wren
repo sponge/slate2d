@@ -110,7 +110,7 @@ class Game2Info is GameInfo {
       boxPath = "gfx/box_2.png"
       year = "1988"
       title = "Battlement Defence 2"
-      gameScene = "game2_title"
+      gameScene = "game2_cracktro"
       description = "Released under the Reasonable Software banner, Battlement Defence 2 would be ported to almost every platform available at the time. Founded in 1986 by Clive himself, Reasonable Software became a stalwart of the Amiga and Commodore era. This time in Clive's life would also see the releases of his other hit games, \"Real Talk Basketball\" and the shoot-em-up \"Iron L.A.D.E: Large Angle Dynamite Emitter\" 
  
 Unfortunately, the original release has been lost to time. Included in this collection is a very widespread version of the EGA DOS port of the game. Overall, Battlement Defence 2 would go on to sell over 450,000 units across all platforms.

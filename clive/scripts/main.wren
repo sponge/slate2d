@@ -12,6 +12,7 @@ import "gameover" for GameOver
 
 import "game1/title" for Game1Title
 import "game1/win" for Game1Win
+import "game2/cracktro" for Game2Cracktro
 import "game2/title" for Game2Title
 import "game2/win" for Game2Win
 import "game3/title" for Game3Title
@@ -46,6 +47,7 @@ class Main {
          "game5": Game5Info,
          "game1_title": Game1Title,
          "game1_win": Game1Win,
+         "game2_cracktro": Game2Cracktro,
          "game2_title": Game2Title,
          "game2_win": Game2Win,
          "game3_title": Game3Title,

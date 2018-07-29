@@ -33,17 +33,17 @@ class PieceTray {
       var pieceSize = 24 * _mult
 
       _buttons = [
-         TrayButton.new("tower1", "tower", Tower.Fast, _x+0*_mult, _y+8*_mult, towerSize, towerSize),
-         TrayButton.new("tower2", "tower", Tower.Slow, _x+24*_mult, _y+8*_mult, towerSize, towerSize),
-         TrayButton.new("grass",  "grass", 0, _x+24*_mult, _y+32*_mult, grassSize, grassSize),
-         TrayButton.new("piece0", "piece", 0, _x+16*_mult, _y+48*_mult+32*0*_mult, pieceSize, pieceSize),
-         TrayButton.new("piece1", "piece", 1, _x+16*_mult, _y+48*_mult+32*1*_mult, pieceSize, pieceSize),
-         TrayButton.new("piece2", "piece", 2, _x+16*_mult, _y+48*_mult+32*2*_mult, pieceSize, pieceSize),
-         TrayButton.new("piece3", "piece", 3, _x+16*_mult, _y+48*_mult+32*3*_mult, pieceSize, pieceSize)
+         TrayButton.new("tower1", "tower", Tower.Fast, _x+4*_mult, _y+8*_mult, towerSize, towerSize),
+         TrayButton.new("tower2", "tower", Tower.Slow, _x+28*_mult, _y+8*_mult, towerSize, towerSize),
+         TrayButton.new("grass",  "grass", 0, _x+28*_mult, _y+32*_mult, towerSize, towerSize),
+         TrayButton.new("piece0", "piece", 0, _x+12*_mult, _y+52*_mult+32*0*_mult, pieceSize, pieceSize),
+         TrayButton.new("piece1", "piece", 1, _x+12*_mult, _y+52*_mult+32*1*_mult, pieceSize, pieceSize),
+         TrayButton.new("piece2", "piece", 2, _x+12*_mult, _y+52*_mult+32*2*_mult, pieceSize, pieceSize),
+         TrayButton.new("piece3", "piece", 3, _x+12*_mult, _y+52*_mult+32*3*_mult, pieceSize, pieceSize)
       ]
 
       if (td.enableMagicTower) {
-         _buttons.add(TrayButton.new("tower3", "tower", Tower.Magic, _x+0*_mult, _y+32*_mult, towerSize, towerSize))
+         _buttons.add(TrayButton.new("tower3", "tower", Tower.Magic, _x+4*_mult, _y+32*_mult, towerSize, towerSize))
       }
 
       _pieces = [
@@ -215,6 +215,9 @@ class PieceTray {
          Draw.sprite(_td.spr, 37, x, y, alpha, 1, 0, 2, 2)
       } else if (id == "grass") {
          Draw.sprite(_td.spr, 22, x, y, alpha, 1, 0, 1, 1)
+         Draw.sprite(_td.spr, 22, x+_td.tw, y, alpha, 1, 0, 1, 1)
+         Draw.sprite(_td.spr, 22, x, y+_td.th, alpha, 1, 0, 1, 1)
+         Draw.sprite(_td.spr, 22, x+_td.tw, y+_td.th, alpha, 1, 0, 1, 1)
       } else if (id == "piece0") {
          drawPiece(x, y, alpha, _queuedPieces[0])
       } else if (id == "piece1") {

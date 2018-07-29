@@ -9,6 +9,7 @@ import "entities/goat" for Goat
 import "soundcontroller" for SoundController
 import "random" for Random
 import "math" for Math
+import "uibutton" for CoinButton
 
 class TD {
    nextScene { _nextScene }
@@ -45,6 +46,7 @@ class TD {
 
       _checkForWin = false // when true, check for all enemies dead to trigger win condition
       _coinHealth = 3 // when 0, gameover is triggered
+      _coinsPerKill = 3 // amount of coins for each kill
 
       _rnd = Random.new()
 
@@ -76,6 +78,7 @@ class TD {
       Asset.create(Asset.Sound, "arrow_shoot", "sound/arrow_shoot.wav")
       Asset.create(Asset.Sound, "cannon_shoot", "sound/cannon_shoot.wav")
       Asset.create(Asset.Sound, "magic_shoot", "sound/magic_shoot.wav")
+      _coinPickup = Asset.create(Asset.Sound, "coin_pickup", "sound/coin_pickup.wav")
 
       if (_gameMode == 1) {
          // TODO: this image is loaded twice since the tmx also loads this but we can't use the
@@ -90,6 +93,7 @@ class TD {
          _winScene = "game1_win"
          _currSymbol = "£"
          _enableMagicTower = false
+         _goatsDropMoney = false
       } else if (_gameMode == 2) {
          _spr = Asset.create(Asset.Sprite, "e2spr", "maps/tilesets/e2.png")
           _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
@@ -100,6 +104,7 @@ class TD {
          _winScene = "game2_win"
          _currSymbol = "£"
          _enableMagicTower = true
+         _goatsDropMoney = true
       } else if (_gameMode == 3) {
          _spr = Asset.create(Asset.Sprite, "e3spr", "maps/tilesets/e3.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
@@ -109,6 +114,7 @@ class TD {
          _winScene = "game3_win"
          _currSymbol = "$"
          _enableMagicTower = true
+         _goatsDropMoney = true
       } else if (_gameMode == 4) {
          _spr = Asset.create(Asset.Sprite, "e4spr", "maps/tilesets/e4.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
@@ -119,6 +125,7 @@ class TD {
          _winScene = "game4_win"
          _currSymbol = "$"
          _enableMagicTower = true
+         _goatsDropMoney = true
       }
 
        _scale = Trap.getResolution()[1] / _vHeight
@@ -154,6 +161,8 @@ class TD {
 
       _pieceTray = PieceTray.new(this, 272, 0, 48, 180)
 
+      _coins = []
+
       Asset.loadAll()
 
       SoundController.playMusic(_music)
@@ -172,7 +181,13 @@ class TD {
 
    onEntityDied(ent) {
       if (ent.type == "goat") {
-         _currencies[0] = _currencies[0] + 3
+         if (_goatsDropMoney) {
+            Debug.printLn(ent.y)
+            Debug.printLn(_th)
+            _coins.add(CoinButton.new(this, (ent.x + _gridX) * _tw, (ent.y + _gridY) * _th))
+         } else {
+            _currencies[0] = _currencies[0] + 3
+         }
       }
    }
 
@@ -191,6 +206,7 @@ class TD {
 
    update(dt) {
       _time = _time + dt
+      var mouse = Trap.mousePosition()
 
       _actionQueue.update(dt)
 
@@ -210,6 +226,17 @@ class TD {
             _checkForWin = false
          }
       }
+
+      if (_coins.count > 0) {
+         for (i in _coins.count-1..0) {
+            _coins[i].update(dt, mouse[0] / _scale, mouse[1] / _scale)
+            if (_coins[i].clicked(mouse[0] / _scale, mouse[1] / _scale)) {
+               _coins.removeAt(i)
+               _currencies[0] = _currencies[0] + _coinsPerKill
+               SoundController.playOnce(_coinPickup)
+            }
+         }
+      }
    }
 
    draw(w, h) {
@@ -224,6 +251,10 @@ class TD {
 
       _grid.draw()
       _pieceTray.draw()
+
+      for (coin in _coins) {
+         coin.draw()
+      }
 
       Draw.submit()
    }

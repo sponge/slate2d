@@ -115,3 +115,29 @@ class GameSelectButton is UIButton {
       Draw.image(_imgHnd, x + ((w - width) / 2), y+10, width * (1/scale), height * (1/scale), 1.0, scale)
    }
 }
+
+class CoinButton is UIButton {
+   construct new(td, x, y) {
+      super(id, x, y, td.tw / 2, td.th / 2)
+
+      _td = td
+      _time = 0
+   }
+
+   update(dt, mx, my) {
+      super.update(dt, mx, my)
+      _time = _time + dt
+   }
+
+   draw() {
+      // Draw.setColor(Color.Fill, 255, 0, 0, 255)
+      // Draw.rect(x, y, w, h, Fill.Solid)
+
+      if ((_time * 4).floor % 2 == 0) {
+         Draw.setColor(Color.Fill, 255, 255, 0, 255)
+      } else {
+         Draw.setColor(Color.Fill, 255, 128, 0, 255)
+      }
+      Draw.circle(x+w/2, y+h/2, 2, Fill.Solid)
+   }   
+}

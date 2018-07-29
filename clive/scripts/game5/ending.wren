@@ -39,7 +39,7 @@ Sir Clive Sturridge, 2018"
       _textY = _textY - 0.15
 
       if (_textY < -1400) {
-         _nextScene = "intro"
+         _nextScene = "gameselect"
       }
    }
 

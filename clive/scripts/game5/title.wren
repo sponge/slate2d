@@ -30,7 +30,7 @@ class Game5Title {
       _ripple = _ripple + 2
       if (_ripple >= 255) {
          _ripple = 0
-         SoundController.playOnce(_sonar)
+         SoundController.playOnce(_sonar, 0.5, 0, false)
       }
 
       if (Trap.keyPressed(Button.B, 0, -1) && _nextSceneTimer == null) {
@@ -43,6 +43,7 @@ class Game5Title {
    }
 
    shutdown() {
+      SoundController.stopAsset(_sonar)
    }
 
    drawSkewedRect(x, y, w, h, skew) {

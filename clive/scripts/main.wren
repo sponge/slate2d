@@ -18,6 +18,7 @@ import "game3/title" for Game3Title
 import "game4/title" for Game4Title
 import "game5/title" for Game5Title
 import "game5/towers" for Towers
+import "game5/ending" for TowersEnding
 
 import "td" for TD
 
@@ -51,6 +52,7 @@ class Main {
          "td": TD,
          "gameover": GameOver,
          "towers": Towers,
+         "towers_ending": TowersEnding,
       }
 
       if (params != null) {

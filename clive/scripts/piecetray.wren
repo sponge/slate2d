@@ -228,7 +228,7 @@ class PieceTray {
 
    draw() {
       // Draw.translate(_x, _y)
-      Draw.setTextStyle(_td.font, 12*_mult, 1.0, Align.Left+Align.Top)
+      Draw.setTextStyle(_td.font, 12*_mult, 1.0, Align.Center+Align.Top)
 
       // draw gold (number of currencies are game dependent, pass in from TD)
       if (_activeTool == null || canAfford() == true) {
@@ -236,7 +236,7 @@ class PieceTray {
       } else {
          Draw.setColor(Color.Fill, 255, 0, 0, 255)
       }
-      Draw.text(_x,_y-4,_w, "%(_td.currSymbol)%(_td.currencies[0])")
+      Draw.text(_x,_y-(4*_mult),_w, "%(_td.currSymbol)%(_td.currencies[0])")
 
       Draw.setColor(Color.Fill, 255, 255, 255, 255)
       for (button in _buttons) {

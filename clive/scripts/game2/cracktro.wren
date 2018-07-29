@@ -91,6 +91,6 @@ class Game2Cracktro {
    }
 
    shutdown() {
-
+      SoundController.stopMusic()
    }
 }

@@ -12,16 +12,21 @@ class GameOver {
       _mode = params["mode"]
 
       _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
-      _sprite = Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
       // TODO: should this be passed in? are we gonna re-use this game over?
       _spr = Asset.create(Asset.Sprite, "spr", "maps/tilesets/e%(_mode).png")
       if (_mode != 4) {
+         _sprite = Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
          Asset.spriteSet(_spr, 8, 8, 0, 0)
+         _sizeScale = 1
       } else {
+         _sprite = Asset.create(Asset.Image, "goat", "gfx/game4/goat.png")
          Asset.spriteSet(_spr, 32, 32, 0, 0)
+         _sizeScale = 0.25
       }
 
       Asset.loadAll()
+
+      _imgSize = Asset.imageSize(_sprite)
    }
 
    shutdown() {
@@ -67,7 +72,7 @@ class GameOver {
       y = y + 16
       drawCenteredText(w/2, y, "Please try again")
 
-      Draw.sprite(_spr, 8, w/2 - 8, h/2 - 32, 1.0, 1, 0, 2, 2)
+      Draw.sprite(_spr, 8, w/2 - 8, h/2 - 32, 1.0, 1 * _sizeScale, 0, 2, 2)
 
       for (i in 0...8) {
          var rad = (i * ((Num.pi*2) / 8)) + _time
@@ -77,7 +82,7 @@ class GameOver {
          goatX = goatX - (goatX % 8)
          goatY = goatY - (goatY % 8)
          // Draw.rect(w/2 + rad.cos * radius, h/3 + rad.sin * radius, 8, 8, false)
-         Draw.image(_sprite, goatX, goatY)
+         Draw.image(_sprite, goatX, goatY, _imgSize[0], _imgSize[1], 1.0, 1.0 * _sizeScale)
       }
 
       Draw.submit()

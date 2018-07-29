@@ -110,6 +110,7 @@ class TD {
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
          Asset.spriteSet(_spr, 8, 8, 0, 0)
          Asset.create(Asset.Sound, "goat_die", "sound/goat3_die.wav")
+         Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
          _vHeight = 180   
          _winScene = "game3_win"
          _currSymbol = "$"
@@ -182,8 +183,6 @@ class TD {
    onEntityDied(ent) {
       if (ent.type == "goat") {
          if (_goatsDropMoney) {
-            Debug.printLn(ent.y)
-            Debug.printLn(_th)
             _coins.add(CoinButton.new(this, (ent.x + _gridX) * _tw, (ent.y + _gridY) * _th))
          } else {
             _currencies[0] = _currencies[0] + 3

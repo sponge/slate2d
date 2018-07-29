@@ -9,8 +9,50 @@ import "entities/goat" for Goat
 import "soundcontroller" for SoundController
 import "random" for Random
 import "math" for Math
-import "uibutton" for CoinButton
+import "uibutton" for CoinButton, TextButton
 import "game4/slots" for SlotMachine
+
+class PauseMenu {
+   construct new(x, y) {
+      _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
+      _x = x
+      _y = y
+
+      _items = [
+         TextButton.new("resume", x+30, y+30+0, 240, 40, "Resume"),
+         TextButton.new("menu", x+30, y+30+50, 240, 40, "Back to Menu"),
+         TextButton.new("ending", x+30, y+30+100, 240, 40, "View Ending"),
+      ]
+   }
+
+   anyClicked() {
+      var mouse = Trap.mousePosition()
+      for (item in _items) {
+         if (item.clicked(mouse[0], mouse[1])) {
+            Trap.printLn("clicked %(item.id)")
+            return item.id
+         }
+      }
+
+      return null
+   }
+
+   update(dt) {
+      var mouse = Trap.mousePosition()
+
+      for (item in _items) {
+         item.update(dt, mouse[0], mouse[1])
+      }
+   }
+
+   draw() {
+      Draw.setColor(Color.Fill, 0, 57, 113, 255)
+      Draw.rect(_x, _y, 300, 200, false)
+      for (item in _items) {
+          item.draw()
+      }
+   }
+}
 
 class TD {
    nextScene { _nextScene }
@@ -30,12 +72,14 @@ class TD {
    currSymbol { _currSymbol }
    enableMagicTower { _enableMagicTower }
    vHeight { _vHeight }
+   paused { _paused }
 
    construct new(params) {
       Asset.clearAll()
 
       _nextScene = null
       _time = 0
+      _paused = false
 
       _extraGoats = 0
       if (params is String) {
@@ -170,6 +214,9 @@ class TD {
 
       _coins = []
 
+      // units here are virtual 720p (see transform before drawing)
+      _pauseMenu = PauseMenu.new(490, 260)
+
       Asset.loadAll()
 
       SoundController.playMusic(_music)
@@ -210,14 +257,30 @@ class TD {
    }
 
    update(dt) {
-      _time = _time + dt
       var mouse = Trap.mousePosition()
 
-      _actionQueue.update(dt)
-
       if (Trap.keyPressed(Button.Start, 0, -1)) {
-         _nextScene = "gameselect"
+         _paused = _paused ? false : true
       }
+
+      if (_paused) {
+         _pauseMenu.update(dt)
+
+         var pauseAction = _pauseMenu.anyClicked()
+         if (pauseAction == "menu") {
+            _nextScene = "gameselect"
+         } else if (pauseAction == "resume") {
+            _paused = false
+         } else if (pauseAction == "ending") {
+            _nextScene = [_winScene, {"extraGoats": _extraGoats}]
+         }
+
+         return
+      }
+
+      _time = _time + dt
+
+      _actionQueue.update(dt)
 
       _grid.update(dt)
       _pieceTray.update(dt)
@@ -267,6 +330,12 @@ class TD {
 
       if (_slots !=  null) {
          _slots.draw()
+      }
+
+      if (_paused) {
+         Draw.resetTransform()
+         Draw.transform(h/720, 0, 0, h/720, 0, 0)
+         _pauseMenu.draw()
       }
 
       Draw.submit()

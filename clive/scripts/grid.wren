@@ -169,7 +169,7 @@ class Grid {
       }
 
       // if right click, deselect the current piece
-      if (_td.pieceTray.activeTool && _td.pieceTray.activeTool.category != "piece" && Trap.keyPressed(Button.A, 0, -1)) {
+      if (!_td.paused && _td.pieceTray.activeTool && _td.pieceTray.activeTool.category != "piece" && Trap.keyPressed(Button.A, 0, -1)) {
          _td.pieceTray.deselectPiece()
       }
 
@@ -177,7 +177,7 @@ class Grid {
       // snap it to the nearest 8px boundary
       // TODO: ugly gamejam code (this shouldn't all be in draw)
       var localMouse = getLocalMouse()
-      if (Math.pointInRect(localMouse[0], localMouse[1], 0, 0, _w*_tw, _h*_th) && _td.pieceTray.activeTool != null) {
+      if (!_td.paused && Math.pointInRect(localMouse[0], localMouse[1], 0, 0, _w*_tw, _h*_th) && _td.pieceTray.activeTool != null) {
          // tx and ty is misleadingly still pixels, just snapped to 8
          var tx = localMouse[0] - (localMouse[0] % _tw)
          var ty = localMouse[1] - (localMouse[1] % _th)

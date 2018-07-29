@@ -2,6 +2,7 @@ import "engine" for Asset, Draw, Align, Color, Trap, Button
 import "random" for Random
 import "bagrandomizer" for BagRandomizer
 import "soundcontroller" for SoundController
+import "td" for PauseMenu
 
 class Platitudes {
    construct new() {
@@ -188,12 +189,31 @@ class Towers {
       _focusTime = 10
       _focusTimer = 0
 
+
+      _pauseMenu = PauseMenu.new(490, 260)
+      _paused = false
+
       Asset.loadAll()
    }
 
    update(dt) {
       if (Trap.keyPressed(Button.Start, 0, -1)) {
-         _nextScene = "gameselect"
+         _paused = _paused ? false : true
+      }
+
+      if (_paused) {
+         _pauseMenu.update(dt)
+
+         var pauseAction = _pauseMenu.anyClicked()
+         if (pauseAction == "menu") {
+            _nextScene = "gameselect"
+         } else if (pauseAction == "resume") {
+            _paused = false
+         } else if (pauseAction == "ending") {
+            _nextScene = "towers_ending"
+         }
+
+         return
       }
 
       if (_player.y <= 0) {
@@ -285,6 +305,12 @@ class Towers {
 
       Draw.setColor(Color.Fill, 0, 0, 0, 255 - _fade)
       Draw.rect(0, 0, 1280 ,720, false)
+
+      if (_paused) {
+         Draw.resetTransform()
+         Draw.transform(h/720, 0, 0, h/720, 0, 0)
+         _pauseMenu.draw()
+      }
    }
 
    shutdown() {

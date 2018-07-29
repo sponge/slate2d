@@ -133,7 +133,7 @@ class Man {
       if (!_jumping) {
          _jumping = true
          _jumpTimer = _jumpTime
-         _y = _y - 4
+         _y = _y - 6
       }
    }
 
@@ -182,7 +182,7 @@ class Towers {
       _rnd = Random.new()
       _others = []
       for (i in 0..40) {
-          _others.add(Man.new(640 + _rnd.int(-200, 200), _rnd.int(740, 1240)))
+          _others.add(Man.new(640 + _rnd.int(-220, 220), _rnd.int(740, 1240)))
       }
       _focusedOther = 0
       _focusTime = 10
@@ -194,6 +194,10 @@ class Towers {
    update(dt) {
       if (Trap.keyPressed(Button.Start, 0, -1)) {
          _nextScene = "gameselect"
+      }
+
+      if (_player.y <= 0) {
+         _nextScene = "towers_ending"
       }
       
       if (_platitudeTimer > 0) {
@@ -233,9 +237,9 @@ class Towers {
 
    drawTower() {
       var alpha = 0.5//(_height/_maxHeight) * 0.5 + 0.25
-      var width = 600
+      var width = 500
       Draw.setColor(Color.Fill, 200, 200, 200, alpha*255)
-      Draw.rect(640-(width/2), 0, width, 720, false)
+      Draw.rect(640-(width/2), 20, width, 720, false)
    }
 
    insertionSort(list, fn) {

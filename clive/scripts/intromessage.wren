@@ -15,6 +15,7 @@ class IntroMessage {
       _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
       _banner = Asset.create(Asset.Sprite, "welcome_banner", "gfx/welcome_banner.png")
       _controls = Asset.create(Asset.Image, "controls", "gfx/controls.png")
+      _gradient = Asset.create(Asset.Image, "menu_gradient", "gfx/menu_gradient.png")
 
       Asset.spriteSet(_banner, 150, 16, 0, 0)
       _click = Asset.create(Asset.Sound, "menu_click", "sound/menu_click.ogg")
@@ -38,6 +39,7 @@ class IntroMessage {
 
       Draw.setColor(Color.Fill, 0, 57, 113, 255)
       Draw.rect(0, 0, w, h, false)
+      Draw.image(_gradient, 0, 0, w, h)
 
       Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
 

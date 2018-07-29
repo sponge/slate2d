@@ -27,6 +27,7 @@ class GameInfo {
 
       _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
       _boxHnd = Asset.create(Asset.Image, _boxPath, _boxPath, ImageFlags.LinearFilter)
+      _gradient = Asset.create(Asset.Image, "menu_gradient", "gfx/menu_gradient.png")
 
       _items = [
          TextButton.new("gameselect", _rightCol, 650, 160, 40, "Back"),
@@ -34,8 +35,6 @@ class GameInfo {
       ]
 
       Asset.loadAll()
-
-
    }
 
    update(dt) {
@@ -60,6 +59,7 @@ class GameInfo {
 
       Draw.setColor(Color.Fill, 0, 57, 113, 255)
       Draw.rect(0, 0, w, h, false)
+      Draw.image(_gradient, 0, 0, w, h)
       
       Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
 

@@ -9,6 +9,7 @@ class Game2Title {
       _logoFade1 = Asset.create(Asset.Image, "reasonable_logo_fade1", "gfx/game2/logo_fade1.png")
       _logoFade2 = Asset.create(Asset.Image, "reasonable_logo_fade2", "gfx/game2/logo_fade2.png")
       _music = Asset.create(Asset.Sound, "reasonable_logo_music", "sound/reasonable_logo.ogg")
+      _titleBg = Asset.create(Asset.Image, "game2_title", "gfx/game2/title.png")
 
       _time = 0
 
@@ -18,8 +19,9 @@ class Game2Title {
       _bleY = -60
       _softwareWidth = 0
 
-      _baseline = 100
+      _baseline = 60
       _drawLogo = true
+      _drawTitle = false
 
       Asset.loadAll()
 
@@ -40,7 +42,7 @@ class Game2Title {
          _sonY = _sonY < _baseline ? _sonY + speed : _baseline
       }
 
-      if (_time > 0.65) {
+      if (_time > 0.70) {
          _aY = _aY < _baseline ? _aY + speed : _baseline
       }
 
@@ -52,7 +54,9 @@ class Game2Title {
          _softwareWidth = _softwareWidth < 345 ? _softwareWidth + 3.5 : 345
       }
 
-      if (_time > 4.4) {
+      if (_time > 5) {
+         _drawTitle = true
+      } else if (_time > 4.4) {
          _drawLogo = false
       } else if (_time > 4.2) {
          _logo = _logoFade2
@@ -84,9 +88,16 @@ class Game2Title {
    }
 
    draw(w, h) {
-      Draw.transform(h / 360, 0, 0, h / 360, 0, 0)
+      if (_drawTitle) {
+         Draw.transform(h / 180, 0, 0, h / 180, 0, 0)
+         Draw.image(_titleBg, 0, 0)
+         Draw.submit()
+         return
+      }
 
-      var x = 148 
+      Draw.transform(h / 240, 0, 0, h / 240, 0, 0)
+
+      var x = 41 
       var y = 0
 
       if (_drawLogo) {

@@ -69,7 +69,6 @@ class TD {
       // setup rules based on gamemode key
       _gameMode = _mapProps["properties"]["gamemode"]
 
-      Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")       // FIXME: make me per game?
       Asset.create(Asset.Sound, "game_click", "sound/click.wav")
       Asset.create(Asset.Sound, "game_plop", "sound/plop.wav")
       _coinHurt = Asset.create(Asset.Sound, "coin_hurt", "sound/coin_hurt.wav")
@@ -86,6 +85,7 @@ class TD {
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
          Asset.spriteSet(_spr, 8, 8, 0, 0)
          Asset.create(Asset.Sound, "goat_die", "sound/goat1_die.wav")
+         Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
          _vHeight = 180
          _winScene = "game1_win"
          _currSymbol = "£"
@@ -95,6 +95,7 @@ class TD {
           _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
          Asset.spriteSet(_spr, 8, 8, 0, 0)
          Asset.create(Asset.Sound, "goat_die", "sound/goat2_die.wav")
+         Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
          _vHeight = 180
          _winScene = "game2_win"
          _currSymbol = "£"
@@ -112,7 +113,8 @@ class TD {
          _spr = Asset.create(Asset.Sprite, "e4spr", "maps/tilesets/e4.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
          Asset.spriteSet(_spr, 32, 32, 0, 0)   
-         Asset.create(Asset.Sound, "goat_die", "sound/goat4_die.wav") 
+         Asset.create(Asset.Sound, "goat_die", "sound/goat4_die.wav")
+         Asset.create(Asset.Image, "goat", "gfx/game4/goat.png")
          _vHeight = 720
          _winScene = "game1_win"
          _currSymbol = "$"

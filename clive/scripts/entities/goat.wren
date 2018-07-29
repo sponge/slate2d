@@ -20,6 +20,8 @@ class Goat is Entity {
 
       _sprite = Asset.find("goat")
       _dieSound = Asset.find("goat_die")
+
+      _imgSize = Asset.imageSize(_sprite)
    }
 
    hurt(damage) {
@@ -130,8 +132,8 @@ class Goat is Entity {
   draw() {
     var sprX = (x - 1) * _td.tw
     var sprY = (y - 1) * _td.th
-    Draw.image(_sprite, sprX, sprY)
+    Draw.image(_sprite, sprX, sprY, _imgSize[0], _imgSize[1], 1.0)
     Draw.setColor(Color.Fill, 0, 255, 0, 255)
-    Draw.rect(sprX, sprY - 2, _td.tw * 2 * (_hp / _startingHP), 2, false)
+    Draw.rect(sprX, sprY - 2, _td.tw * 2 * (_hp / _startingHP), _td.th / 4, false)
   }
 }

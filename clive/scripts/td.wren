@@ -89,7 +89,7 @@ class TD {
          Asset.spriteSet(_spr, 8, 8, 0, 0)
          Asset.create(Asset.Sound, "goat_die", "sound/goat2_die.wav")
          _vHeight = 180
-         _winScene = "game1_win"
+         _winScene = "game2_win"
          _currSymbol = "£"
          _enableMagicTower = true
       } else if (_gameMode == 3) {

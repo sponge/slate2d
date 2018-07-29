@@ -16,9 +16,6 @@ class Game4Win {
       _font = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
 
       _britNames = BritNames.new()
-      for (i in 1...300) {
-         Debug.printLn(_britNames.next())
-      }
 
       _lines = [
          [0, 720, 1280, "Great job, soldier! Those goats won't be a problem no more!"],

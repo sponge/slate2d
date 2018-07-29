@@ -25,6 +25,10 @@ class Goat is Entity {
    }
 
    hurt(damage) {
+      if (_hp <= 0) {
+         return
+      }
+      
       _hp = _hp - damage
       if (_hp <= 0 ) {
          SoundController.playOnce(_dieSound)

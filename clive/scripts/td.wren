@@ -295,7 +295,7 @@ class TD {
          }
       }
 
-      if (_coins.count > 0 && _pieceTray.activeTool == null) {
+      if (_coins.count > 0) {
          for (i in _coins.count-1..0) {
             _coins[i].update(dt, mouse[0] / _scale, mouse[1] / _scale)
             if (_coins[i].clicked(mouse[0] / _scale, mouse[1] / _scale)) {

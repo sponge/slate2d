@@ -18,7 +18,7 @@ static cvarTable_t mainCvarTable[] = {
     { &vid_height, "vid_height", "720", 0 },
     { &vid_swapinterval, "vid_swapInterval", "0", 0 },
     { &vid_fullscreen, "vid_fullscreen", "0", 0 },
-    { &vid_showfps, "vid_showfps", "1", 0 },
+    { &vid_showfps, "vid_showfps", "0", 0 },
 	{ &com_sleepShortFrame, "com_sleepShortFrame", "1", 0 },
 	{ &com_pause, "com_pause", "0", 0 },
 	{ &s_volume, "s_volume", "1.0", 0 },

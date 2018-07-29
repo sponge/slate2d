@@ -104,7 +104,7 @@ class TD {
          _winScene = "game2_win"
          _currSymbol = "£"
          _enableMagicTower = true
-         _goatsDropMoney = true
+         _goatsDropMoney = false
       } else if (_gameMode == 3) {
          _spr = Asset.create(Asset.Sprite, "e3spr", "maps/tilesets/e3.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")

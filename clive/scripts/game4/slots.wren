@@ -24,6 +24,7 @@ class SlotMachine {
       _coinsPerWin = 6
 
       _icons = Asset.create(Asset.Sprite, "slotsicons", "gfx/game4/slots.png")
+      _bg = Asset.create(Asset.Image, "slots_bg", "gfx/game4/slots_bg.png")
       Asset.spriteSet(_icons, 32, 32, 0, 0)
       _spinButton = TextButton.new("spin", _x+_w-128, _y+32-4, 32*3, 40, "Spin")
 
@@ -67,8 +68,9 @@ class SlotMachine {
    }
 
    draw() {
-      Draw.setColor(Color.Fill, 90, 90, 90, 255)
+      Draw.setColor(Color.Fill, 0, 0, 0, 255)
       Draw.rect(_x, _y, _w, _h, Fill.Solid)
+      Draw.image(_bg, _x, _y)
       for (i in 0..._reels.count) {
          Draw.sprite(_icons, _reels[i], _x+32+(32*i), _y+32)
       }

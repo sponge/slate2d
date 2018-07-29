@@ -189,7 +189,7 @@ class Grid {
             _td.pieceTray.drawTool(tx, ty, button.id)
 
             // if it's a valid placement, place the tower
-            if (_td.pieceTray.canAfford() && !isBlocked(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
+            if (_td.pieceTray.canAfford() && !isNotValidPiecePlacement(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
                setTower(tx / _tw, ty / _th, button.variation)
                _td.pieceTray.spendCurrent()
             }
@@ -215,7 +215,7 @@ class Grid {
             _td.pieceTray.drawTool(tx, ty, button.id)
 
             // if it's a valid placement, place the tower
-            if (_td.pieceTray.canAfford() && !isBlocked(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
+            if (_td.pieceTray.canAfford() && !isNotValidPiecePlacement(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
                setGrass(tx / _tw, ty / _th)
                _td.pieceTray.spendCurrent()
             }
@@ -274,6 +274,14 @@ class Grid {
          frontier.insert(-1, [nextX, nextY])
          dist[next] = dist[curCoord] + 1
       }
+   }
+
+   isNotValidPiecePlacement(x, y) {
+      if (x < 2) {
+         return true
+      }
+
+      return isBlocked(x, y, false)
    }
 
    isBlocked(x, y) { isBlocked(x,y,false) }

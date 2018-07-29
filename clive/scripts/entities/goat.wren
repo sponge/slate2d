@@ -49,6 +49,11 @@ class Goat is Entity {
             moveGrass()
          }
       }
+
+      // seems to happen if you cram towers near the border
+      if (x < 1) {
+         x = 1
+      }
    }
 
    moveGrass() {

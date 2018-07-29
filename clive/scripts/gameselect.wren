@@ -15,6 +15,8 @@ class GameSelect {
       _banner = Asset.create(Asset.Sprite, "banner", "gfx/gameselect_banner.png")
       Asset.spriteSet(_banner, 150, 16, 0, 0)
 
+      _gradient = Asset.create(Asset.Image, "menu_gradient", "gfx/menu_gradient.png")
+
       _music = Asset.create(Asset.Sound, "menu_bgm", "sound/menu_bgm.ogg")
       _click = Asset.create(Asset.Sound, "menu_click", "sound/menu_click.ogg")
 
@@ -67,6 +69,7 @@ class GameSelect {
 
       Draw.setColor(Color.Fill, 0, 57, 113, 255)
       Draw.rect(0, 0, w, h, false)
+      Draw.image(_gradient, 0, 0, w, h)
 
       Draw.resetTransform()
       Draw.transform(h / 720, 0, 0, h / 720, 0, 0)

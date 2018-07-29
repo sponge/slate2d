@@ -75,7 +75,7 @@ solution "game"
       files { "src/imgui_impl_sdl_es2.cpp" }
       removefiles { "src/imgui_impl_sdl_gl3.cpp" }
       links { "game" }
-      postbuildcommands { "mkdir html; emcc -O2 --preload-file ../base --preload-file ../plat -s ALLOW_MEMORY_GROWTH=1 -s USE_SDL=2 %{cfg.targetdir}/engine.bc -o html/engine.html" }
+      postbuildcommands { "mkdir html; emcc -O2 --preload-file ../base --preload-file ../clive -s ALLOW_MEMORY_GROWTH=1 -s USE_SDL=2 %{cfg.targetdir}/engine.bc -o html/index.html --shell-file ../src/emshell.html" }
 
   project "game"
     kind "SharedLib"

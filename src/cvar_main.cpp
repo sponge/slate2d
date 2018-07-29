@@ -16,7 +16,7 @@ static cvarTable_t mainCvarTable[] = {
 	{ &com_lastErrorStack, "com_lastErrorStack", "", CVAR_ROM },
     { &vid_width, "vid_width", "1280", 0 },
     { &vid_height, "vid_height", "720", 0 },
-    { &vid_swapinterval, "vid_swapInterval", "0", 0 },
+    { &vid_swapinterval, "vid_swapInterval", "1", 0 },
     { &vid_fullscreen, "vid_fullscreen", "0", 0 },
     { &vid_showfps, "vid_showfps", "0", 0 },
 	{ &com_sleepShortFrame, "com_sleepShortFrame", "1", 0 },

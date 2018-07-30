@@ -131,7 +131,7 @@ class Grid {
       if (button != null) {
          if (button.category == "tower") {
             // if it's a valid placement, place the tower
-            if (_td.pieceTray.canAfford() && !isNotValidPiecePlacement(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
+            if (_td.pieceTray.canAfford() && !isNotValidPiecePlacement(tx / _tw, ty / _th, 2, 2) && Trap.keyPressed(Button.B, 0, -1)) {
                setTower(tx / _tw, ty / _th, button.variation)
                _td.pieceTray.spendCurrent()
             }
@@ -154,7 +154,7 @@ class Grid {
             }
          } else if (button.category == "grass") {
             // if it's a valid placement, place the tower
-            if (_td.pieceTray.canAfford() && !isNotValidPiecePlacement(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
+            if (_td.pieceTray.canAfford() && !isNotValidPiecePlacement(tx / _tw, ty / _th, 1, 1) && Trap.keyPressed(Button.B, 0, -1)) {
                setGrass(tx / _tw, ty / _th)
                _td.pieceTray.spendCurrent()
             }
@@ -296,12 +296,19 @@ class Grid {
       }
    }
 
-   isNotValidPiecePlacement(x, y) {
+   isNotValidPiecePlacement(x, y, w, h) {
       if (x < 2) {
          return true
       }
 
-      return isBlocked(x, y, false)
+      for (xOffset in 0..(w-1)) {
+         for (yOffset in 0..(h-1)) {
+            if (isBlocked(x + xOffset, y + yOffset, false)) {
+               return true
+            }
+         }
+      }
+      return false
    }
 
    isBlocked(x, y) { isBlocked(x,y,false) }

@@ -221,7 +221,6 @@ class Grid {
 
       // if something is selected, draw the piece shadow
       // snap it to the nearest 8px boundary
-      // TODO: ugly gamejam code (this shouldn't all be in draw)
       var localMouse = getLocalMouse()
       if (!_td.paused && Math.pointInRect(localMouse[0], localMouse[1], 0, 0, _w*_tw, _h*_th) && _td.pieceTray.activeTool != null) {
          // tx and ty is misleadingly still pixels, just snapped to 8

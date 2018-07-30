@@ -244,7 +244,7 @@ class TD {
       _pieceTray = PieceTray.new(this, 272, 0, 48, 180)
 
       if (_gameMode == 4) {
-         _slots = SlotMachine.new(this, _tw*21, _th*1)
+         _slots = SlotMachine.new(this, _tw*23, _th*1)
       }
 
       _coins = []

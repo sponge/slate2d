@@ -12,7 +12,7 @@ class SlotMachine {
       _td = td
       _x = x
       _y = y
-      _w = 384
+      _w = 320
       _h = 96
       _time = 0
       _reels = [0,0,0]
@@ -78,7 +78,7 @@ class SlotMachine {
       Draw.rect(_x, _y, _w, _h, Fill.Solid)
       Draw.image(_bg, _x, _y)
       for (i in 0..._reels.count) {
-         Draw.sprite(_icons, _reels[i], _x+32+(32*i), _y+32)
+         Draw.sprite(_icons, _reels[i], _x+36+(32*i), _y+32)
       }
 
       _spinButton.draw()

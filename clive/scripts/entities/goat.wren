@@ -136,7 +136,7 @@ class Goat is Entity {
 
       // if there's no path, just run straight toward the coin and destroy
       // walls until you make one
-      if (closest[0] == 0 && closest[1] == 0) {
+      if (!movedToGrass && closest[0] == 0 && closest[1] == 0) {
          // move on the longer axis toward goal
          var xShorter = ((_grid.goalX-x).abs < (_grid.goalY-y).abs)
          _dx = xShorter ? 0 : Math.sign(_grid.goalX-x)

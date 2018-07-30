@@ -120,17 +120,17 @@ class Game4Title {
             SoundController.playMusic(_music)
             _things["presents"].fadeIn(2)
          }],
-         [3, Fn.new { _things["presents"].fadeOut(1) }],
+         [4, Fn.new { _things["presents"].fadeOut(1) }],
          [1, Fn.new { _things["agame"].fadeIn(1) }],
-         [1, Fn.new { _things["byyou"].fadeIn(1) }],
+         [2, Fn.new { _things["byyou"].fadeIn(1) }],
          [1, Fn.new { _things["ksimg"].fadeIn(1) }],
-         [3, Fn.new { 
+         [6, Fn.new { 
             _things["agame"].fadeOut(1)
             _things["byyou"].fadeOut(1)
             _things["ksimg"].fadeOut(1)
          }],
          [1, Fn.new { _things["noogie"].fadeIn(1) }],
-         [3, Fn.new { _things["noogie"].fadeOut(1) }],
+         [4, Fn.new { _things["noogie"].fadeOut(1) }],
          [1, Fn.new { _things["title"].fadeIn(1) }],
          [5, Fn.new { _things["title"].fadeOut(1) }],
          [1, Fn.new { startGame() }],

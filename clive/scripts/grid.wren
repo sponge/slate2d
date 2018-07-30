@@ -180,14 +180,6 @@ class Grid {
    draw() {
       Draw.translate(_x * _tw, _y * _th)
 
-      for (tower in _towers) {
-        tower.draw()
-      }
-
-      for (entity in _entities) {
-         entity.draw()
-      }
-
       // debug show how far each step is until the goal
       if (_showPathsCVar.bool()) {
          Draw.setTextStyle(_font, 6, 1.0, Align.Center+Align.Top)
@@ -217,6 +209,14 @@ class Grid {
                Draw.sprite(_td.spr, tid, x*_tw, y*_th)
             }
          }
+      }
+
+      for (tower in _towers) {
+        tower.draw()
+      }
+
+      for (entity in _entities) {
+         entity.draw()
       }
 
       // if something is selected, draw the piece shadow

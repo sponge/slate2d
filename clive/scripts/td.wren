@@ -1,4 +1,4 @@
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar
+import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar, Align
 import "timer" for Timer
 import "debug" for Debug
 import "grid" for Grid
@@ -94,6 +94,7 @@ class TD {
       _coinsPerKill = 3 // amount of coins for each kill
 
       _rnd = Random.new()
+      _seenTip = false
 
       SoundController.stopMusic()
 
@@ -150,6 +151,7 @@ class TD {
          _currSymbol = "£"
          _enableMagicTower = true
          _goatsDropMoney = false
+         showTip(890, 130, "NEW: Slow down goats with Magic Tower")
       } else if (_gameMode == 3) {
          _spr = Asset.create(Asset.Sprite, "e3spr", "maps/tilesets/e3.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
@@ -173,9 +175,10 @@ class TD {
          _enableMagicTower = true
          _goatsDropMoney = false
          _coinsPerKill = 0 // slot machine gives you money in game 4
+         showTip(760, 140, "NEW: Take a spin to earn money!")
       }
 
-       _scale = Trap.getResolution()[1] / _vHeight
+      _scale = Trap.getResolution()[1] / _vHeight
 
       _costs = {
          "tower1": [5,0,0],
@@ -217,9 +220,26 @@ class TD {
       // units here are virtual 720p (see transform before drawing)
       _pauseMenu = PauseMenu.new(490, 260)
 
+      _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
+
       Asset.loadAll()
 
       SoundController.playMusic(_music)
+   }
+
+   showTip(x, y, text) {
+      if (_seenTip == true) {
+         return
+      }
+
+      _seenTip = true
+      _tipX = x
+      _tipY = y
+      _tipText = text
+      _drawTip = true
+      Timer.runLater(5) {
+         _drawTip = false
+      }
    }
 
    spawnGroup(count) {
@@ -236,7 +256,10 @@ class TD {
    onEntityDied(ent) {
       if (ent.type == "goat") {
          if (_goatsDropMoney) {
-            _coins.add(CoinButton.new(this, (ent.x + _gridX) * _tw, (ent.y + _gridY) * _th))
+            var x = (ent.x+_gridX)*_tw
+            var y = (ent.y+_gridY)*_th
+            showTip(x*_scale-90, y*_scale-70, "NEW: Click coins to earn money!")
+            _coins.add(CoinButton.new(this, x, y))
          } else {
             _currencies[0] = _currencies[0] + _coinsPerKill
          }
@@ -330,6 +353,17 @@ class TD {
 
       if (_slots !=  null) {
          _slots.draw()
+      }
+
+      if (_drawTip) {
+         Draw.resetTransform()
+         Draw.transform(h/720, 0, 0, h/720, 0, 0)
+         
+         Draw.setColor(Color.Fill, 0, 57, 113, 200)
+         Draw.rect(_tipX, _tipY, 200, 55, false)
+         Draw.setColor(Color.Fill, 255, 255, 255, 255)
+         Draw.setTextStyle(_bodyFont, 24, 1.0, Align.Center+Align.Top)
+         Draw.text(_tipX, _tipY, 200, _tipText)
       }
 
       if (_paused) {

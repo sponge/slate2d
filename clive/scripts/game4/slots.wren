@@ -28,6 +28,9 @@ class SlotMachine {
       Asset.spriteSet(_icons, 32, 32, 0, 0)
       _spinButton = TextButton.new("spin", _x+_w-128, _y+32-4, 32*3, 40, "Spin")
 
+      _spinSound = Asset.create(Asset.Sound, "slots_spin", "sound/slots_spin.ogg")
+      _winSound = Asset.create(Asset.Sound, "slots_win", "sound/slots_win.ogg")
+
       _rnd = Random.new()
    }
 
@@ -37,6 +40,7 @@ class SlotMachine {
 
       _spinButton.update(dt, mouse[0], mouse[1])
       if (_spinButton.clicked(mouse[0], mouse[1])) {
+         SoundController.playOnce(_spinSound, 2.0, 0, false)
          _spinning = true
          _stopTime = _time + 4
          var base = _rnd.int(0,_reelCount)
@@ -54,9 +58,11 @@ class SlotMachine {
       }
 
       if (_spinning && _time >= _stopTime) {
+         SoundController.stopAsset(_spinSound)
          _spinning = false
          _won = _rnd.int(0, 100) >= 40
          if (_won) {
+            SoundController.playOnce(_winSound)
             var icon = _rnd.int(0,_reelCount)
             for (i in 0..._reels.count) {
                _reels[i] = icon

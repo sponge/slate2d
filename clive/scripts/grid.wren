@@ -232,7 +232,7 @@ class Grid {
 
          // treat towers and pieces differently
          if (button.category == "tower") {
-            _td.pieceTray.drawTool(tx, ty, button.id)
+            _td.pieceTray.drawTool(tx, ty, button.id, true)
          } else if (button.category == "piece") {
             // shift over by one so you are pointing at the middle of a 3x3 tile
             tx = tx - _tw

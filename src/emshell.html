@@ -9,7 +9,7 @@
         margin: 0;
         padding: 0;
 	background-color: black;
-	color: white;
+	color: #def1ff;
 	font-family: sans-serif;
       }
       .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
@@ -17,19 +17,25 @@
       div.emscripten { text-align: center; }
       /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
       canvas.emscripten { border: 0px none; background-color: black; width: 100%;}
-
-      .spinner {
+      #status {
+        display: none;
+      }
+     .spinner {
         height: 50px;
         width: 50px;
-        margin: 0px auto;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-left: -25px;
+	margin-top: -25px;
         -webkit-animation: rotation .8s linear infinite;
         -moz-animation: rotation .8s linear infinite;
         -o-animation: rotation .8s linear infinite;
         animation: rotation 0.8s linear infinite;
-        border-left: 10px solid rgb(0,150,240);
-        border-right: 10px solid rgb(0,150,240);
-        border-bottom: 10px solid rgb(0,150,240);
-        border-top: 10px solid rgb(0,0,100);
+        border-left: 10px solid #003971;
+        border-right: 10px solid #003971;
+        border-bottom: 10px solid #003971;
+        border-top: 10px solid #def1ff;
         border-radius: 100%;
         background-color: transparent;
       }
@@ -54,7 +60,7 @@
   </head>
   <body>
     <figure style="overflow:visible;" id="spinner"><div class="spinner"></div></figure>
-    <div class="emscripten" id="status">Downloading...</div>
+    <div class="emscripten" id="status"></div>
     <div class="emscripten">
       <progress value="0" max="100" id="progress" hidden=1></progress>  
     </div>
@@ -131,6 +137,7 @@
       Module.setStatus('Downloading...');
       window.onerror = function() {
         Module.setStatus('Exception thrown, see JavaScript console');
+        statusElement.style.display = 'block';
         spinnerElement.style.display = 'none';
         Module.setStatus = function(text) {
           if (text) Module.printErr('[post-exception status] ' + text);

@@ -9,12 +9,13 @@ import "entities/goat" for Goat
 import "soundcontroller" for SoundController
 import "random" for Random
 import "math" for Math
+import "fonts" for Fonts
 import "uibutton" for CoinButton, TextButton, UIButton
 import "game4/slots" for SlotMachine
 
 class PauseMenu {
    construct new(x, y) {
-      _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
+      _bodyFont = Asset.create(Asset.Font, "body", Fonts.body)
       _x = x
       _y = y
 
@@ -251,7 +252,7 @@ class TD {
       // units here are virtual 720p (see transform before drawing)
       _pauseMenu = PauseMenu.new(490, 260)
 
-      _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
+      _bodyFont = Asset.create(Asset.Font, "body", Fonts.body)
 
       Asset.loadAll()
 

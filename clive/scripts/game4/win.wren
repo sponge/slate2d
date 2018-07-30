@@ -2,6 +2,7 @@ import "engine" for Draw, Trap, Asset, Color, Button, Align
 import "britnames" for BritNames
 import "debug" for Debug
 import "soundcontroller" for SoundController
+import "fonts" for Fonts
 
 class Game4Win {
    nextScene { _nextScene }
@@ -13,7 +14,7 @@ class Game4Win {
       _time = 0
 
       _music = Asset.create(Asset.Sound, "game4_title", "sound/game4_title.ogg")
-      _font = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
+      _font = Asset.create(Asset.Font, "body", Fonts.body)
 
       _britNames = BritNames.new()
 

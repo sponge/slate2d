@@ -78,8 +78,8 @@ class TextButton is UIButton {
 
       Draw.rect(x, y, w, h, Fill.Solid)
       Draw.setColor(Color.Fill, 255, 255, 255, 255)
-      Draw.setTextStyle(_font, 36, 1.0, Align.Center+Align.Top)
-      Draw.text(x, y+2, w, _label)
+      Draw.setTextStyle(_font, 48, 1.0, Align.Center+Align.Top)
+      Draw.text(x, y-2, w, _label)
    }
 }
 

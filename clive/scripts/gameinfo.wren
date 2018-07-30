@@ -27,6 +27,8 @@ class GameInfo {
       _rightCol = 500
 
       _bodyFont = Asset.create(Asset.Font, "body", Fonts.body)
+      _descriptionFont = Asset.create(Asset.Font, "description", Fonts.description)
+
       _boxHnd = Asset.create(Asset.Image, _boxPath, _boxPath, ImageFlags.LinearFilter)
       _gradient = Asset.create(Asset.Image, "menu_gradient", "gfx/menu_gradient.png")
 
@@ -70,13 +72,13 @@ class GameInfo {
       Draw.image(_boxHnd, 40, 55)
 
       Draw.setColor(Color.Fill, 176, 205, 234, 255)
-      Draw.setTextStyle(_bodyFont, 60)
+      Draw.setTextStyle(_bodyFont, 80)
       Draw.text(_rightCol, 60, 780, _title)
 
       Draw.setColor(Color.Fill, 255, 255, 255, 255)
-      Draw.setTextStyle(_bodyFont, 36)
+      Draw.setTextStyle(_bodyFont, 48)
       Draw.text(_rightCol, 100, 780, _year)
-      Draw.setTextStyle(_bodyFont, 36, 1.0)
+      Draw.setTextStyle(_descriptionFont, 32, 1.0)
       Draw.text(_rightCol, 150, 740, _description)
 
       for (item in _items) {

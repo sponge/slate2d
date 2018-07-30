@@ -2,6 +2,7 @@ import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap
 import "entities/projectile" for Cannonball, Arrow, MagicBolt
 import "math" for Math
 import "soundcontroller" for SoundController
+import "debug" for Debug
 
 class Tower {
    static Fast { 0 }
@@ -19,7 +20,7 @@ class Tower {
       _range = 5
       _closest = null
       _nextShot = td.time
-      _fireRate = type == Tower.Fast ? 0.5 : 2
+      _fireRate = type == Tower.Fast ? 0.5 : type == Tower.Slow ? 2 : 0.5
 
       _slowShoot = Asset.find("cannon_shoot")
       _fastShoot = Asset.find("arrow_shoot")
@@ -28,12 +29,18 @@ class Tower {
 
 
    update(dt, creeps) {
+      if (_td.time < _nextShot) {
+         return
+      }
+
       var closest = {}
 
       for (creep in creeps) {
-         var dist = ((_x - creep.x).pow(2) + (_y - creep.y).pow(2)).sqrt
-         if (closest["dist"] == null || dist < closest["dist"]) {
-            closest = { "dist": dist, "creep": creep }
+         if (_type != Tower.Magic || creep.frozen == false) {
+            var dist = ((_x - creep.x).pow(2) + (_y - creep.y).pow(2)).sqrt
+            if (closest["dist"] == null || dist < closest["dist"]) {
+               closest = { "dist": dist, "creep": creep }
+            }
          }
       }
 
@@ -43,7 +50,7 @@ class Tower {
          _closest = null
       }
 
-      if (_closest && _td.time > _nextShot) {
+      if (_closest) {
          _nextShot = _td.time + _fireRate
          fireAt(_closest)
       }

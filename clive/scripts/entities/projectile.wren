@@ -62,7 +62,7 @@ class MagicBolt is Projectile {
    }
 
    onHit() {
-      target.freeze(1)
+      target.freeze(2)
    }
 
    draw() {

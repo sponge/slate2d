@@ -90,7 +90,7 @@ class TD {
       }
 
       _checkForWin = false // when true, check for all enemies dead to trigger win condition
-      _coinHealth = 3 // when 0, gameover is triggered
+      _coinHealth = 5 // when 0, gameover is triggered
       _coinsPerKill = 3 // amount of coins for each kill
 
       _rnd = Random.new()
@@ -151,7 +151,7 @@ class TD {
          _currSymbol = "£"
          _enableMagicTower = true
          _goatsDropMoney = false
-         showTip(890, 130, "NEW: Slow down goats with Magic Tower")
+         showTip(890, 130, "NEW: Slow down goats with Freeze Tower")
       } else if (_gameMode == 3) {
          _spr = Asset.create(Asset.Sprite, "e3spr", "maps/tilesets/e3.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
@@ -181,8 +181,8 @@ class TD {
       _scale = Trap.getResolution()[1] / _vHeight
 
       _costs = {
-         "tower1": [5,0,0],
-         "tower2": [5,0,0],
+         "tower1": [8,0,0],
+         "tower2": [8,0,0],
          "tower3": [8,0,0],
          "grass": [2,0,0],
          "piece0": [1,0,0],
@@ -194,10 +194,11 @@ class TD {
       _currencies = List.filled(1, 40)
 
       _actions = [
-         [5, Fn.new { spawnGroup(2) }],
-         [5, Fn.new { spawnGroup(3) }],
-         [5, Fn.new { spawnGroup(1) }],
-         [5, Fn.new { spawnGroup(2) }],
+         [7, Fn.new { spawnGroup(2) }],
+         [7, Fn.new { spawnGroup(2) }],
+         [7, Fn.new { spawnGroup(1) }],
+         [7, Fn.new { spawnGroup(2) }],
+         [7, Fn.new { spawnGroup(3) }],
          [7, Fn.new { spawnGroup(4) }],
          [1, Fn.new { _checkForWin = true }]
       ]
@@ -256,9 +257,11 @@ class TD {
    onEntityDied(ent) {
       if (ent.type == "goat") {
          if (_goatsDropMoney) {
-            var x = (ent.x+_gridX)*_tw
-            var y = (ent.y+_gridY)*_th
-            showTip(x*_scale-90, y*_scale-70, "NEW: Click coins to earn money!")
+            var x = (ent.x+_gridX)*_tw + _rnd.int(-8,8)
+            var y = (ent.y+_gridY)*_th + _rnd.int(-8,8)
+            if (_extraGoats == 0) {
+               showTip(x*_scale-90, y*_scale-70, "NEW: Click coins to earn money!")
+            }
             _coins.add(CoinButton.new(this, x, y))
          } else {
             _currencies[0] = _currencies[0] + _coinsPerKill

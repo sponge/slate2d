@@ -5,6 +5,8 @@ import "math" for Math
 import "soundcontroller" for SoundController
 
 class Goat is Entity {
+   frozen { _frozen }
+
    construct new(td, x, y) {
       super(x, y, "goat")
       _dx = 0
@@ -17,6 +19,7 @@ class Goat is Entity {
       _startingHP = 15
       _hp = _startingHP
       _mode = "move"
+      _frozen = false
 
       _sprite = Asset.find("goat")
       _dieSound = Asset.find("goat_die")
@@ -43,10 +46,12 @@ class Goat is Entity {
 
    freeze(time) {
       _nextUpdate = _nextUpdate + time
+      _frozen = true
    }
 
    update(dt) {
       if (_td.time >= _nextUpdate) {
+         _frozen = false
          if (_mode == "destroy") {
             moveDestroy()
          } else if (_mode == "move") {

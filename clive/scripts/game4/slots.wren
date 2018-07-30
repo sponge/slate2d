@@ -21,7 +21,7 @@ class SlotMachine {
       _nextSpinTime = 0
       _stopTime = 0
 
-      _coinsPerWin = 6
+      _coinsPerWin = 9
 
       _icons = Asset.create(Asset.Sprite, "slotsicons", "gfx/game4/slots.png")
       _bg = Asset.create(Asset.Image, "slots_bg", "gfx/game4/slots_bg.png")
@@ -55,7 +55,7 @@ class SlotMachine {
 
       if (_spinning && _time >= _stopTime) {
          _spinning = false
-         _won = _rnd.int(0, 100) >= 50
+         _won = _rnd.int(0, 100) >= 40
          if (_won) {
             var icon = _rnd.int(0,_reelCount)
             for (i in 0..._reels.count) {

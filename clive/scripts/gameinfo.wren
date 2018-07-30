@@ -76,7 +76,7 @@ class GameInfo {
       Draw.setColor(Color.Fill, 255, 255, 255, 255)
       Draw.setTextStyle(_bodyFont, 36)
       Draw.text(_rightCol, 100, 780, _year)
-      Draw.setTextStyle(_bodyFont, 36, 1.25)
+      Draw.setTextStyle(_bodyFont, 36, 1.0)
       Draw.text(_rightCol, 150, 740, _description)
 
       for (item in _items) {

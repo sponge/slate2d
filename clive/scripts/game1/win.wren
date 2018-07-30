@@ -45,9 +45,9 @@ class Game1Win {
       w = w/_scale
       h = h/_scale
 
-      Draw.setTextStyle(_font, 20, Align.Left+Align.Top)
+      Draw.setTextStyle(_font, 20, 1.0, Align.Left+Align.Top)
       Draw.setColor(Color.Fill, textColor())
-      var y = h/2 + 40
+      var y = h/2 + 30
       Draw.text(30, y, w, "TOP BANANA! YOU WON.")
       Draw.text(60, y+16, w, "everything by clive")
       y = y + 32

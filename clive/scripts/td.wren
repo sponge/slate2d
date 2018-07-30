@@ -206,7 +206,7 @@ class TD {
          _enableMagicTower = true
          _goatsDropMoney = false
          _coinsPerKill = 0 // slot machine gives you money in game 4
-         showTip(760, 140, "NEW: Take a spin to earn money!")
+         showTip(760, 140, "NEW: Spin the slots to earn money!")
       }
 
       _scale = Trap.getResolution()[1] / _vHeight
@@ -291,7 +291,7 @@ class TD {
             var x = (ent.x+_gridX)*_tw + _rnd.int(-8,8)
             var y = (ent.y+_gridY)*_th + _rnd.int(-8,8)
             if (_extraGoats == 0) {
-               showTip(x*_scale-90, y*_scale-70, "NEW: Click coins to earn money!")
+               showTip(x*_scale-90, y*_scale-70, "NEW: Click dropped coins to earn money!")
             }
             _coins.add(CoinButton.new(this, x, y))
          } else {
@@ -395,9 +395,9 @@ class TD {
          Draw.transform(h/720, 0, 0, h/720, 0, 0)
          
          Draw.setColor(Color.Fill, 0, 57, 113, 200)
-         Draw.rect(_tipX, _tipY, 200, 55, false)
+         Draw.rect(_tipX, _tipY, 200, 65, false)
          Draw.setColor(Color.Fill, 255, 255, 255, 255)
-         Draw.setTextStyle(_bodyFont, 24, 1.0, Align.Center+Align.Top)
+         Draw.setTextStyle(_bodyFont, 36, 0.85, Align.Center+Align.Top)
          Draw.text(_tipX, _tipY, 200, _tipText)
       }
 

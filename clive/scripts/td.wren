@@ -16,6 +16,7 @@ import "game4/slots" for SlotMachine
 class PauseMenu {
    construct new(x, y) {
       _bodyFont = Asset.create(Asset.Font, "body", Fonts.body)
+
       _x = x
       _y = y
 
@@ -180,7 +181,7 @@ class TD {
          _currSymbol = "£"
          _enableMagicTower = true
          _goatsDropMoney = false
-         showTip(890, 130, "NEW: Slow down goats with Freeze Tower")
+         showTip(890, 130, "NEW: Slow goats with Freeze Tower")
       } else if (_gameMode == 3) {
          _spr = Asset.create(Asset.Sprite, "e3spr", "maps/tilesets/e3.png")
          _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
@@ -206,7 +207,7 @@ class TD {
          _enableMagicTower = true
          _goatsDropMoney = false
          _coinsPerKill = 0 // slot machine gives you money in game 4
-         showTip(760, 140, "NEW: Spin the slots to earn money!")
+         showTip(760, 140, "NEW: Spin slots to earn money!")
       }
 
       _scale = Trap.getResolution()[1] / _vHeight
@@ -253,6 +254,7 @@ class TD {
       _pauseMenu = PauseMenu.new(490, 260)
 
       _bodyFont = Asset.create(Asset.Font, "body", Fonts.body)
+      _descriptionFont = Asset.create(Asset.Font, "description", Fonts.description)
 
       Asset.loadAll()
 
@@ -291,7 +293,7 @@ class TD {
             var x = (ent.x+_gridX)*_tw + _rnd.int(-8,8)
             var y = (ent.y+_gridY)*_th + _rnd.int(-8,8)
             if (_extraGoats == 0) {
-               showTip(x*_scale-90, y*_scale-70, "NEW: Click dropped coins to earn money!")
+               showTip(x*_scale-90, y*_scale-70, "NEW: Click coins to earn money!")
             }
             _coins.add(CoinButton.new(this, x, y))
          } else {
@@ -397,7 +399,7 @@ class TD {
          Draw.setColor(Color.Fill, 0, 57, 113, 200)
          Draw.rect(_tipX, _tipY, 200, 65, false)
          Draw.setColor(Color.Fill, 255, 255, 255, 255)
-         Draw.setTextStyle(_bodyFont, 36, 0.85, Align.Center+Align.Top)
+         Draw.setTextStyle(_descriptionFont, 36, 0.85, Align.Center+Align.Top)
          Draw.text(_tipX, _tipY, 200, _tipText)
       }
 

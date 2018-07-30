@@ -13,7 +13,7 @@ class IntroMessage {
       _nextScene = null
       _time = 0
 
-      _bodyFont = Asset.create(Asset.Font, "body", Fonts.body)
+      _bodyFont = Asset.create(Asset.Font, "description", Fonts.description)
       _banner = Asset.create(Asset.Sprite, "welcome_banner", "gfx/welcome_banner.png")
       _help = Asset.create(Asset.Image, "help", "gfx/help.png")
       _gradient = Asset.create(Asset.Image, "menu_gradient", "gfx/menu_gradient.png")

@@ -88,6 +88,7 @@ solution "game"
     filter { "action:gmake2", "options:emscripten" }
       kind "StaticLib"
       targetdir "build/%{cfg.buildcfg}"
+      defines "WREN_NAN_TAGGING=0"
 
   group "libraries"
 

@@ -95,6 +95,7 @@ class Main {
          __scene.update(1/60)
       }
       Timer.tick(1/60)
+      Trap.clearKeyPressed()
    }
 
    static draw(w, h) {

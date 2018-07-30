@@ -62,6 +62,10 @@ class GameSelect {
             _currentItem = item.label
          }
       }
+
+      // if (Trap.keyPressed(Button.B, 0, -1)) {
+      //    Debug.printLn("hit")
+      // }
    }
 
    draw(w, h) {

@@ -276,6 +276,15 @@ bool IN_KeyPressed(kbutton_t *key, unsigned int delay, int repeat) {
 
 	double firstTrigger = key->firstdowntime + delay;
 
+	//Com_Printf("%i ft:%0.5f >= firstTrigger:%0.5f && lastft:%0.5f < firstTrigger:%0.5f - dt:%0.5f",
+	//	com_frameTime >= firstTrigger && com_lastFrameTime < firstTrigger,
+	//	com_frameTime,
+	//	firstTrigger,
+	//	com_lastFrameTime,
+	//	firstTrigger,
+	//	key->downtime
+	//);
+
 	if (com_frameTime >= firstTrigger && com_lastFrameTime < firstTrigger) {
 		return true;
 	}

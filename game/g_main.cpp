@@ -7,7 +7,7 @@
 #include "game.h"
 
 gameImportFuncs_t *trap;
-kbutton_t buttons[12];
+kbutton_t buttons[MAX_KEYS];
 WrenScene *wrenScene;
 
 #ifdef __EMSCRIPTEN__

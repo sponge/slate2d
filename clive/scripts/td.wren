@@ -9,7 +9,7 @@ import "entities/goat" for Goat
 import "soundcontroller" for SoundController
 import "random" for Random
 import "math" for Math
-import "uibutton" for CoinButton, TextButton
+import "uibutton" for CoinButton, TextButton, UIButton
 import "game4/slots" for SlotMachine
 
 class PauseMenu {
@@ -18,11 +18,37 @@ class PauseMenu {
       _x = x
       _y = y
 
+      _pauseButton = UIButton.new("pause", 1280-24, 0, 24, 24)
+
       _items = [
          TextButton.new("resume", x+30, y+30+0, 240, 40, "Resume"),
          TextButton.new("menu", x+30, y+30+50, 240, 40, "Back to Menu"),
          TextButton.new("ending", x+30, y+30+100, 240, 40, "View Ending"),
       ]
+   }
+   
+   pauseClicked() {
+      var mouse = Trap.mousePosition()
+      return _pauseButton.clicked(mouse[0], mouse[1])
+   }
+
+   pauseUpdate(dt) {
+      var mouse = Trap.mousePosition()
+      _pauseButton.update(dt, mouse[0], mouse[1])
+   }
+
+   pauseDraw() {
+      if (_pauseButton.hover) {
+         Draw.setColor(Color.Fill, 101, 157, 214, 255)
+      } else {
+         Draw.setColor(Color.Fill, 47, 112, 176, 255)
+      }
+
+      Draw.rect(_pauseButton.x, _pauseButton.y, _pauseButton.w, _pauseButton.h, Fill.Solid)
+
+      Draw.setColor(Color.Fill, 255, 255, 255, 255)
+      Draw.rect(_pauseButton.x+6, _pauseButton.y+6, 4, 12, false)
+      Draw.rect(_pauseButton.x+15, _pauseButton.y+6, 4, 12, false)
    }
 
    anyClicked() {
@@ -285,7 +311,8 @@ class TD {
    update(dt) {
       var mouse = Trap.mousePosition()
 
-      if (Trap.keyPressed(Button.Start, 0, -1)) {
+      _pauseMenu.pauseUpdate(dt)
+      if (_pauseMenu.pauseClicked() || Trap.keyPressed(Button.Start, 0, -1)) {
          _paused = _paused ? false : true
       }
 
@@ -369,11 +396,13 @@ class TD {
          Draw.text(_tipX, _tipY, 200, _tipText)
       }
 
+      Draw.resetTransform()
+      Draw.transform(h/720, 0, 0, h/720, 0, 0)
+
       if (_paused) {
-         Draw.resetTransform()
-         Draw.transform(h/720, 0, 0, h/720, 0, 0)
          _pauseMenu.draw()
       }
+      _pauseMenu.pauseDraw()
 
       Draw.submit()
    }

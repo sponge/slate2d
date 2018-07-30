@@ -22,6 +22,7 @@ class Goat is Entity {
       _frozen = false
 
       _sprite = Asset.find("goat")
+      _eatingSprite = Asset.find("goat_eating")
       _dieSound = Asset.find("goat_die")
 
       _imgSize = Asset.imageSize(_sprite)
@@ -135,7 +136,7 @@ class Goat is Entity {
 
       // if there's no path, just run straight toward the coin and destroy
       // walls until you make one
-      if (closest[0] == 0 && closest[1] == 0) {
+      if (!movedToGrass && closest[0] == 0 && closest[1] == 0) {
          // move on the longer axis toward goal
          var xShorter = ((_grid.goalX-x).abs < (_grid.goalY-y).abs)
          _dx = xShorter ? 0 : Math.sign(_grid.goalX-x)
@@ -176,7 +177,8 @@ class Goat is Entity {
   draw() {
     var sprX = (x - 1) * _td.tw
     var sprY = (y - 1) * _td.th
-    Draw.image(_sprite, sprX, sprY, _imgSize[0], _imgSize[1], 1.0)
+    var sprite = (_mode == "grass" || _mode == "destroy") ? _eatingSprite : _sprite
+    Draw.image(sprite, sprX, sprY, _imgSize[0], _imgSize[1], 1.0)
     Draw.setColor(Color.Fill, 0, 255, 0, 255)
     Draw.rect(sprX, sprY - 2, _td.tw * 2 * (_hp / _startingHP), _td.th / 4, false)
   }

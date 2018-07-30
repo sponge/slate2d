@@ -161,6 +161,7 @@ class TD {
          Asset.spriteSet(_spr, 8, 8, 0, 0)
          Asset.create(Asset.Sound, "goat_die", "sound/goat1_die.wav")
          Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
+         Asset.create(Asset.Image, "goat_eating", "gfx/game1/goat_eating.png")
          _vHeight = 180
          _winScene = "game1_win"
          _currSymbol = "£"
@@ -172,6 +173,7 @@ class TD {
          Asset.spriteSet(_spr, 8, 8, 0, 0)
          Asset.create(Asset.Sound, "goat_die", "sound/goat2_die.wav")
          Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
+         Asset.create(Asset.Image, "goat_eating", "gfx/game1/goat_eating.png")
          _vHeight = 180
          _winScene = "game2_win"
          _currSymbol = "£"
@@ -184,6 +186,7 @@ class TD {
          Asset.spriteSet(_spr, 8, 8, 0, 0)
          Asset.create(Asset.Sound, "goat_die", "sound/goat3_die.wav")
          Asset.create(Asset.Image, "goat", "gfx/game1/goat.png")
+         Asset.create(Asset.Image, "goat_eating", "gfx/game1/goat_eating.png")
          _vHeight = 180   
          _winScene = "game3_win"
          _currSymbol = "$"
@@ -195,6 +198,7 @@ class TD {
          Asset.spriteSet(_spr, 32, 32, 0, 0)   
          Asset.create(Asset.Sound, "goat_die", "sound/goat4_die.wav")
          Asset.create(Asset.Image, "goat", "gfx/game4/goat.png")
+         Asset.create(Asset.Image, "goat_eating", "gfx/game4/goat_eating.png")
          _vHeight = 720
          _winScene = "game4_win"
          _currSymbol = "$"

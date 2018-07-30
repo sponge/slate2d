@@ -3,6 +3,7 @@ import "engine" for Draw, Asset, Trap, Color, Fill, Button, ImageFlags, Align
 import "debug" for Debug
 import "uibutton" for TextButton
 import "soundcontroller" for SoundController
+import "fonts" for Fonts
 
 class IntroMessage {
    nextScene { _nextScene }
@@ -12,7 +13,7 @@ class IntroMessage {
       _nextScene = null
       _time = 0
 
-      _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
+      _bodyFont = Asset.create(Asset.Font, "body", Fonts.body)
       _banner = Asset.create(Asset.Sprite, "welcome_banner", "gfx/welcome_banner.png")
       _controls = Asset.create(Asset.Image, "controls", "gfx/controls.png")
       _gameItems = Asset.create(Asset.Image, "gameitems", "gfx/gameitems.png")
@@ -44,15 +45,16 @@ class IntroMessage {
 
       Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
 
-      Draw.setColor(Color.Fill, 0, 0, 0, 200)
-      Draw.rect(108, 0, h/720*w-200, 720, Fill.Solid)
+//       Draw.setColor(Color.Fill, 0, 0, 0, 200)
+//       Draw.rect(108, 0, h/720*w-200, 720, Fill.Solid)
 
       Draw.setColor(Color.Fill, 255, 255, 255, 255)
 
       Draw.sprite(_banner, 0, w/2 - 225, 10, 1, 3)
 
-      Draw.setTextStyle(_bodyFont, 24, 1.0, Align.Left+Align.Top)
-      Draw.text(128, 100, h/720*w-256, "Thanks for purchasing Clive Sturridge's Battlement Defense Legacy Collection. What you are about to play is a museum-grade collection of games made by the iconic British programmer and designer, Clive Sturridge. His impact on the industry as a whole cannot be understated, making him worthy of his auteurship. For the first time ever, all his works are playable in one collection.")
+      Draw.setTextStyle(_bodyFont, 36, 1.0, Align.Left+Align.Top)
+      Draw.text(128, 100, h/720*w-256, "Thanks for purchasing Clive Sturridge's Battlement Defense Legacy Collection!\n\nWhat you are about to play is a museum-grade collection of games, created by the iconic British programmer and designer, Sir Clive Sturridge. Sir Clive's incredible forethought and unceasing commitment to producing quality games has made him a living legend and household name across the world.\n\nWe present, for the first time ever, all of his work in a single collection.
+")
 
       Draw.image(_controls, 210, 420)
       Draw.image(_gameItems, 277, 250)

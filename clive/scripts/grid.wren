@@ -1,6 +1,7 @@
 import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar, Align
 import "math" for Math
 import "debug" for Debug
+import "fonts" for Fonts
 
 import "entities/coin" for Coin
 import "tower" for Tower
@@ -19,7 +20,7 @@ class Grid {
       _tw = tw
       _th = th
 
-      _font = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
+      _font = Asset.create(Asset.Font, "body", Fonts.body)
 
       _showPathsCVar = CVar.get("debug_pathfinding", false)
       _tiles = List.filled(_w*_h, 0)

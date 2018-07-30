@@ -3,6 +3,7 @@ import "engine" for Draw, Asset, Trap, Color, Fill, Button, Align
 import "math" for Math
 import "soundcontroller" for SoundController
 import "actionqueue" for ActionQueue
+import "fonts" for Fonts
 
 class FadeThing {
    construct new(x, y, thing) {
@@ -99,7 +100,7 @@ class Game4Title {
       _time = 0
 
       _music = Asset.create(Asset.Sound, "game4_title", "sound/game4_title.ogg")
-      _font = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
+      _font = Asset.create(Asset.Font, "body", Fonts.body)
       _ks = Asset.create(Asset.Image, "ks", "gfx/game4/ks.png")
       _title = Asset.create(Asset.Image, "title", "gfx/game4/title.png")
 

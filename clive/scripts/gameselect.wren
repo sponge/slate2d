@@ -3,6 +3,7 @@ import "engine" for Draw, Asset, Trap, Color, Fill, Button, Align
 import "debug" for Debug
 import "uibutton" for GameSelectButton
 import "soundcontroller" for SoundController
+import "fonts" for Fonts
 
 class GameSelect {
    nextScene { _nextScene }
@@ -35,7 +36,7 @@ class GameSelect {
       x = x + width + spacing
       _items.add(GameSelectButton.new("game5", x, y, width, 350, "Towers", "gfx/box_5.png"))
 
-      _bodyFont = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
+      _bodyFont = Asset.create(Asset.Font, "body", Fonts.body)
       _currentItem = ""
 
       Asset.loadAll()
@@ -84,7 +85,7 @@ class GameSelect {
 
       Draw.sprite(_banner, 0, w/2 - 225, 10, 1, 3)
 
-      Draw.setTextStyle(_bodyFont, 48, 1.0, Align.Center|Align.Top)
+      Draw.setTextStyle(_bodyFont, 64, 1.0, Align.Center|Align.Top)
       // shadow
       Draw.setColor(Color.Fill, 0, 0, 0, 255)
       Draw.text(0, 103, 1280, _currentItem)

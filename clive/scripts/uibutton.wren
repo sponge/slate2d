@@ -2,6 +2,7 @@ import "engine" for Draw, Asset, Trap, Color, Fill, Button, ImageFlags, Align
 import "debug" for Debug
 import "math" for Math
 import "soundcontroller" for SoundController
+import "fonts" for Fonts
 
 class UIButton {
    x { _x }
@@ -55,7 +56,7 @@ class TextButton is UIButton {
       super(id, x, y, w, h)
       _label = label
 
-      _font = Asset.create(Asset.Font, "body", "fonts/Roboto-Regular.ttf")
+      _font = Asset.create(Asset.Font, "body", Fonts.body)
       _click = Asset.create(Asset.Sound, "menu_click", "sound/menu_click.ogg")
    }
 

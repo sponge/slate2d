@@ -74,6 +74,10 @@ class Tower {
 
    draw() {
       var tid = _type == Tower.Magic ? 37 : _type * 2
-      Draw.sprite(_td.spr, tid, _x * _td.tw, _y * _td.th, 1.0, 1, 0, 2, 2)
+      if (_type == Tower.Magic) {
+         Draw.sprite(_td.spr, tid, _x * _td.tw, _y * _td.th - (2*_td.th), 1.0, 1, 0, 2, 4)
+      } else {
+         Draw.sprite(_td.spr, tid, _x * _td.tw, _y * _td.th, 1.0, 1, 0, 2, 2)
+      }
    }
 }

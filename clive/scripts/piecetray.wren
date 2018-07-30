@@ -204,15 +204,23 @@ class PieceTray {
       }
    }
 
-   // used when looping through buttons to draw the correct element
    drawTool(x, y, id) {
+      drawTool(x, y, id, false)
+   }
+
+   // used when looping through buttons to draw the correct element
+   drawTool(x, y, id, fullTower) {
       var alpha = 1
       if (id == "tower1") {
          Draw.sprite(_td.spr, 0, x, y, alpha, 1, 0, 2, 2)
       } else if (id == "tower2") {
          Draw.sprite(_td.spr, 2, x, y, alpha, 1, 0, 2, 2)
       } else if (id == "tower3") {
-         Draw.sprite(_td.spr, 37, x, y, alpha, 1, 0, 2, 2)
+         if (fullTower) {
+            Draw.sprite(_td.spr, 37, x, y-_td.th*2, alpha, 1, 0, 2, 4)
+         } else {
+            Draw.sprite(_td.spr, 37, x, y, alpha, 1, 0, 2, 2)
+         }
       } else if (id == "grass") {
          Draw.sprite(_td.spr, 22, x, y, alpha, 1, 0, 1, 1)
          // Draw.sprite(_td.spr, 22, x+_td.tw, y, alpha, 1, 0, 1, 1)

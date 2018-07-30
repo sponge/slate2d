@@ -118,6 +118,49 @@ class Grid {
    }
 
    update(dt) {
+      // if right click, deselect the current piece
+      if (!_td.paused && _td.pieceTray.activeTool && _td.pieceTray.activeTool.category != "piece" && Trap.keyPressed(Button.A, 0, -1)) {
+         _td.pieceTray.deselectPiece()
+      }
+
+      var localMouse = getLocalMouse()
+      var button = _td.pieceTray.activeTool
+      var tx = localMouse[0] - (localMouse[0] % _tw)
+      var ty = localMouse[1] - (localMouse[1] % _th)
+
+      if (button != null) {
+         if (button.category == "tower") {
+            // if it's a valid placement, place the tower
+            if (_td.pieceTray.canAfford() && !isNotValidPiecePlacement(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
+               setTower(tx / _tw, ty / _th, button.variation)
+               _td.pieceTray.spendCurrent()
+            }
+         } else if (button.category == "piece") {
+            tx = tx - _tw
+            ty = ty - _th
+
+            // rotate piece
+            if (Trap.keyPressed(Button.A, 0, -1)) {
+               Debug.printLn("rotate")
+               _td.pieceTray.rotateActivePiece()
+            // if there's a click, attempt to place the wall
+            } else if (_td.pieceTray.canAfford() && Trap.keyPressed(Button.B, 0, -1)) {
+               var piece = _td.pieceTray.queuedPieces[button.variation]
+               var success = setWallPiece(tx/_tw, ty/_th, _td.pieceTray.activePiece)
+               // call into the piece tray to deduct currency, generate new piece, etc
+               if (success) {
+                  _td.pieceTray.spendCurrent()
+               }
+            }
+         } else if (button.category == "grass") {
+            // if it's a valid placement, place the tower
+            if (_td.pieceTray.canAfford() && !isNotValidPiecePlacement(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
+               setGrass(tx / _tw, ty / _th)
+               _td.pieceTray.spendCurrent()
+            }
+         }
+      }
+
       generatePaths()
 
       var creeps = _entities.where{|e| e.type == "goat"}
@@ -176,11 +219,6 @@ class Grid {
          }
       }
 
-      // if right click, deselect the current piece
-      if (!_td.paused && _td.pieceTray.activeTool && _td.pieceTray.activeTool.category != "piece" && Trap.keyPressed(Button.A, 0, -1)) {
-         _td.pieceTray.deselectPiece()
-      }
-
       // if something is selected, draw the piece shadow
       // snap it to the nearest 8px boundary
       // TODO: ugly gamejam code (this shouldn't all be in draw)
@@ -195,38 +233,13 @@ class Grid {
          // treat towers and pieces differently
          if (button.category == "tower") {
             _td.pieceTray.drawTool(tx, ty, button.id)
-
-            // if it's a valid placement, place the tower
-            if (_td.pieceTray.canAfford() && !isNotValidPiecePlacement(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
-               setTower(tx / _tw, ty / _th, button.variation)
-               _td.pieceTray.spendCurrent()
-            }
          } else if (button.category == "piece") {
             // shift over by one so you are pointing at the middle of a 3x3 tile
             tx = tx - _tw
             ty = ty - _th
             _td.pieceTray.drawPiece(tx, ty, 1.0, _td.pieceTray.activePiece)
-
-            // rotate piece
-            if (Trap.keyPressed(Button.A, 0, -1)) {
-               _td.pieceTray.rotateActivePiece()
-            // if there's a click, attempt to place the wall
-            } else if (_td.pieceTray.canAfford() && Trap.keyPressed(Button.B, 0, -1)) {
-               var piece = _td.pieceTray.queuedPieces[button.variation]
-               var success = setWallPiece(tx/_tw, ty/_th, _td.pieceTray.activePiece)
-               // call into the piece tray to deduct currency, generate new piece, etc
-               if (success) {
-                  _td.pieceTray.spendCurrent()
-               }
-            }
          } else if (button.category == "grass") {
             _td.pieceTray.drawTool(tx, ty, button.id)
-
-            // if it's a valid placement, place the tower
-            if (_td.pieceTray.canAfford() && !isNotValidPiecePlacement(tx / _tw, ty / _th) && Trap.keyPressed(Button.B, 0, -1)) {
-               setGrass(tx / _tw, ty / _th)
-               _td.pieceTray.spendCurrent()
-            }
          }
 
       }

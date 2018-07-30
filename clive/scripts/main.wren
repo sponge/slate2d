@@ -95,6 +95,8 @@ class Main {
          __scene.update(1/60)
       }
       Timer.tick(1/60)
+
+      // see the hack comment in engine.wren for why this is
       Trap.clearKeyPressed()
    }
 

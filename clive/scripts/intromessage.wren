@@ -15,8 +15,7 @@ class IntroMessage {
 
       _bodyFont = Asset.create(Asset.Font, "body", Fonts.body)
       _banner = Asset.create(Asset.Sprite, "welcome_banner", "gfx/welcome_banner.png")
-      _controls = Asset.create(Asset.Image, "controls", "gfx/controls.png")
-      _gameItems = Asset.create(Asset.Image, "gameitems", "gfx/gameitems.png")
+      _help = Asset.create(Asset.Image, "help", "gfx/help.png")
       _gradient = Asset.create(Asset.Image, "menu_gradient", "gfx/menu_gradient.png")
 
       Asset.spriteSet(_banner, 150, 16, 0, 0)
@@ -52,12 +51,11 @@ class IntroMessage {
 
       Draw.sprite(_banner, 0, w/2 - 225, 10, 1, 3)
 
-      Draw.setTextStyle(_bodyFont, 36, 1.0, Align.Left+Align.Top)
-      Draw.text(128, 100, h/720*w-256, "Thanks for purchasing Clive Sturridge's Battlement Defense Legacy Collection!\n\nWhat you are about to play is a museum-grade collection of games, created by the iconic British programmer and designer, Sir Clive Sturridge. Sir Clive's incredible forethought and unceasing commitment to producing quality games has made him a living legend and household name across the world.\n\nWe present, for the first time ever, all of his work in a single collection.
+      Draw.setTextStyle(_bodyFont, 32, 1.0, Align.Left+Align.Top)
+      Draw.text(128, 80, h/720*w-256, "Thanks for purchasing Clive Sturridge's Battlement Defense Legacy Collection!\n\nWhat you are about to play is a museum-grade collection of classic tower defense games, created by the iconic British programmer and designer, Sir Clive Sturridge. Sir Clive's incredible forethought and unceasing commitment to producing quality games has made him a living legend and household name across the world.\n\nWe present, for the first time ever, all of his work in a single collection.
 ")
 
-      Draw.image(_controls, 210, 420)
-      Draw.image(_gameItems, 277, 250)
+      Draw.image(_help, 240, 320)
       Draw.submit()
    }
 

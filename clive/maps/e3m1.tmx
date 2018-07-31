@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="2018.03.04" orientation="orthogonal" renderorder="right-down" width="40" height="22" tilewidth="8" tileheight="8" infinite="0" nextobjectid="1">
+<map version="1.0" tiledversion="1.1.4" orientation="orthogonal" renderorder="right-down" width="40" height="22" tilewidth="8" tileheight="8" infinite="0" nextobjectid="1">
  <properties>
   <property name="gamemode" type="int" value="3"/>
   <property name="goalx" type="int" value="26"/>
@@ -7,7 +7,7 @@
   <property name="gridw" type="int" value="32"/>
   <property name="gridx" type="int" value="1"/>
   <property name="gridy" type="int" value="5"/>
-  <property name="music" value="sound/game2_bgm.ogg"/>
+  <property name="music" value="sound/game3_bgm.ogg"/>
  </properties>
  <tileset firstgid="1" source="tilesets/e3.tsx"/>
  <tileset firstgid="257" source="tilesets/e2.tsx"/>

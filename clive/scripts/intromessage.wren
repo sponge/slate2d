@@ -29,7 +29,7 @@ class IntroMessage {
 
       if (Trap.keyPressed(Button.B, 0, -1)) {
          SoundController.playOnce(_click)
-         nextScene = "gameselect"
+         nextScene = ["gameselect", "tutorial"]
       }
 
    }

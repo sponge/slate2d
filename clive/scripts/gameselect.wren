@@ -13,6 +13,10 @@ class GameSelect {
       _nextScene = null
       _time = 0
 
+      if (params == "tutorial") {
+         _tutorial = true
+      }
+
       _banner = Asset.create(Asset.Sprite, "banner", "gfx/gameselect_banner.png")
       Asset.spriteSet(_banner, 150, 16, 0, 0)
 
@@ -26,15 +30,15 @@ class GameSelect {
       var spacing = 45
       var x = spacing
       _items = []
-      _items.add(GameSelectButton.new("game1", x, y, width, 350, "Battlement Defence", "gfx/box_1.png"))
+      _items.add(GameSelectButton.new("game1", x, y, width, 350, "Battlement Defence", "gfx/box_1.png", _tutorial ? 0 : 0))
       x = x + width + spacing
-      _items.add(GameSelectButton.new("game2", x, y, width, 350, "Battlement Defence 2", "gfx/box_2.png"))
+      _items.add(GameSelectButton.new("game2", x, y, width, 350, "Battlement Defence 2", "gfx/box_2.png", _tutorial ? 2 : 0))
       x = x + width + spacing
-      _items.add(GameSelectButton.new("game3", x, y, width, 350, "Battlement Defense Arcade", "gfx/box_3.png"))
+      _items.add(GameSelectButton.new("game3", x, y, width, 350, "Battlement Defense Arcade", "gfx/box_3.png", _tutorial ? 2.5 : 0))
       x = x + width + spacing
-      _items.add(GameSelectButton.new("game4", x, y, width, 350, "Battlement Defense ReDefended", "gfx/box_4.png"))
+      _items.add(GameSelectButton.new("game4", x, y, width, 350, "Battlement Defense ReDefended", "gfx/box_4.png", _tutorial ? 3 : 0))
       x = x + width + spacing
-      _items.add(GameSelectButton.new("game5", x, y, width, 350, "Towers", "gfx/box_5.png"))
+      _items.add(GameSelectButton.new("game5", x, y, width, 350, "Towers", "gfx/box_5.png", _tutorial ? 3.5 : 0))
 
       _bodyFont = Asset.create(Asset.Font, "body", Fonts.body)
       _currentItem = ""

@@ -3,6 +3,7 @@ import "debug" for Debug
 import "math" for Math
 import "soundcontroller" for SoundController
 import "fonts" for Fonts
+import "timer" for Timer
 
 class UIButton {
    x { _x }
@@ -86,7 +87,7 @@ class TextButton is UIButton {
 class GameSelectButton is UIButton {
    label { _label }
 
-   construct new(id, x, y, w, h, label, img) {
+   construct new(id, x, y, w, h, label, img, fadeInStart) {
       super(id, x, y, w, h)
       _imgHnd = Asset.create(Asset.Image, img, img, ImageFlags.LinearFilter)
       _imgW = 385
@@ -96,11 +97,32 @@ class GameSelectButton is UIButton {
       _targetScale = 1
 
       _label = label
+
+      _alpha = 1.0
+      if (fadeInStart > 0) {
+         _alpha = 0.2
+      }
+      Timer.runLater(fadeInStart) {
+         _fadeIn = true
+      }
+   }
+
+   clicked(mx, my) {
+      if (_alpha < 1.0) {
+         return false
+      }
+
+      return super(mx, my)
    }
 
    update(dt, mx, my) {
       super.update(dt, mx, my)
       _scale = Math.lerp(_scale, _targetScale, 0.2)
+
+      if (_fadeIn && _alpha < 1.0) {
+         _alpha = _alpha + 1 * dt
+         _alpha = Math.clamp(0, _alpha, 1)
+      }
    }
 
    draw() {
@@ -113,7 +135,7 @@ class GameSelectButton is UIButton {
       var scale = _scale * 0.5
       var width = _imgW * scale
       var height = _imgH * scale
-      Draw.image(_imgHnd, x + ((w - width) / 2), y+10, width * (1/scale), height * (1/scale), 1.0, scale)
+      Draw.image(_imgHnd, x + ((w - width) / 2), y+10, width * (1/scale), height * (1/scale), _alpha, scale)
    }
 }
 

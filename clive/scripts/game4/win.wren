@@ -13,7 +13,7 @@ class Game4Win {
       _nextScene = null
       _time = 0
 
-      _music = Asset.create(Asset.Sound, "game4_title", "sound/game4_title.ogg")
+      _music = Asset.create(Asset.Sound, "game4_ending", "sound/game4_ending.ogg")
       _font = Asset.create(Asset.Font, "body", Fonts.body)
 
       _britNames = BritNames.new()

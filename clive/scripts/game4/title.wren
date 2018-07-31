@@ -103,7 +103,7 @@ class Game4Title {
       _font = Asset.create(Asset.Font, "body", Fonts.body)
       _ks = Asset.create(Asset.Image, "ks", "gfx/game4/ks.png")
       _title = Asset.create(Asset.Image, "title", "gfx/game4/title.png")
-
+      _sting = Asset.create(Asset.Sound, "game4_sting", "sound/kickstartersting.ogg")
 
       Asset.loadAll()
 
@@ -132,8 +132,12 @@ class Game4Title {
          }],
          [1, Fn.new { _things["noogie"].fadeIn(1) }],
          [4, Fn.new { _things["noogie"].fadeOut(1) }],
-         [1, Fn.new { _things["title"].fadeIn(1) }],
-         [5, Fn.new { _things["title"].fadeOut(1) }],
+         [1, Fn.new {
+            _things["title"].fadeIn(1)
+            SoundController.stopMusic()
+            SoundController.playOnce(_sting)
+         }],
+         [9, Fn.new { _things["title"].fadeOut(1) }],
          [1, Fn.new { startGame() }],
       ]
       _actionQueue = ActionQueue.new(_actions)

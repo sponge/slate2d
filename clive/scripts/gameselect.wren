@@ -32,13 +32,13 @@ class GameSelect {
       _items = []
       _items.add(GameSelectButton.new("game1", x, y, width, 350, "Battlement Defence", "gfx/box_1.png", _tutorial ? 0 : 0))
       x = x + width + spacing
-      _items.add(GameSelectButton.new("game2", x, y, width, 350, "Battlement Defence 2", "gfx/box_2.png", _tutorial ? 2 : 0))
+      _items.add(GameSelectButton.new("game2", x, y, width, 350, "Battlement Defence 2", "gfx/box_2.png", _tutorial ? 2.5 : 0))
       x = x + width + spacing
-      _items.add(GameSelectButton.new("game3", x, y, width, 350, "Battlement Defense Arcade", "gfx/box_3.png", _tutorial ? 2.5 : 0))
+      _items.add(GameSelectButton.new("game3", x, y, width, 350, "Battlement Defense Arcade", "gfx/box_3.png", _tutorial ? 3 : 0))
       x = x + width + spacing
-      _items.add(GameSelectButton.new("game4", x, y, width, 350, "Battlement Defense ReDefended", "gfx/box_4.png", _tutorial ? 3 : 0))
+      _items.add(GameSelectButton.new("game4", x, y, width, 350, "Battlement Defense ReDefended", "gfx/box_4.png", _tutorial ? 3.5 : 0))
       x = x + width + spacing
-      _items.add(GameSelectButton.new("game5", x, y, width, 350, "Towers", "gfx/box_5.png", _tutorial ? 3.5 : 0))
+      _items.add(GameSelectButton.new("game5", x, y, width, 350, "Towers", "gfx/box_5.png", _tutorial ? 4 : 0))
 
       _bodyFont = Asset.create(Asset.Font, "body", Fonts.body)
       _currentItem = ""

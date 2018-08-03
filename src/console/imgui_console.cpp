@@ -152,7 +152,7 @@ int ConsoleUI::TextEditCallback(ImGuiTextEditCallbackData* data)
 		// Build a list of candidates
 		auto cb = [](const char *match, const char *cmd) {
 			if (strncasecmp(match, cmd, strlen(match)) == 0) {
-				Console()->candidates.push_back(cmd);
+				IMConsole()->candidates.push_back(cmd);
 			}
 		};
 
@@ -239,7 +239,7 @@ int ConsoleUI::TextEditCallback(ImGuiTextEditCallbackData* data)
 	return 0;
 }
 
-ConsoleUI * Console() {
+ConsoleUI * IMConsole() {
 	static ConsoleUI console;
 	return &console;
 }

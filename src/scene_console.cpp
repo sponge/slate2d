@@ -38,5 +38,5 @@ void ConsoleScene::Render() {
 		return;
 	}
 
-	Console()->Draw("Console", &consoleActive);
+	IMConsole()->Draw("Console", &consoleActive);
 }

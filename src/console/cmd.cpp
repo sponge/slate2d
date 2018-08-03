@@ -81,7 +81,7 @@ void Com_Printf(const char *fmt, ...) {
 	va_end(argptr);
 
 	printf("%s", msg);
-	Console()->AddLog("%s", msg);
+	IMConsole()->AddLog("%s", msg);
 }
 
 char *CopyString(const char *in) {
@@ -653,7 +653,7 @@ Clears the console
 =================
 */
 static void Com_Clear_f(void) {
-	Console()->ClearLog();
+	IMConsole()->ClearLog();
 }
 
 /*
@@ -949,6 +949,6 @@ void Cmd_Init (void) {
 	Cmd_AddCommand ("quit", Com_Quit_f);
 
 	// force the console to init here
-	Console();
+	IMConsole();
 }
 

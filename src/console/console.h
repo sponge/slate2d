@@ -35,7 +35,7 @@ struct ConsoleUI
     int TextEditCallback(ImGuiTextEditCallbackData* data);
 };
 
-ConsoleUI* Console();
+ConsoleUI* IMConsole();
 
 // COMMAND SYSTEM
 

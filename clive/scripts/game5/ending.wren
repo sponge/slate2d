@@ -1,5 +1,6 @@
 import "engine" for Asset, Trap, Draw, Align, Color, Button
 import "soundcontroller" for SoundController
+import "pausemenu" for PauseMenu
 
 class TowersEnding {
    nextScene { _nextScene }
@@ -13,14 +14,38 @@ class TowersEnding {
       _bodyFont = Asset.create(Asset.Font, "raleway", "fonts/Raleway-ExtraLight.ttf")
       _textY = 720
 
+      _pauseMenu = PauseMenu.new(490, 260, false)
+      _paused = false
+
       Asset.loadAll()
 
       SoundController.playOnce(_audio, 1.25, 0, false)
    }
 
    update(dt) {
-      if (Trap.keyPressed(Button.Start, 0, -1)) {
-         _nextScene = "gameselect"
+      _pauseMenu.pauseUpdate(dt)
+
+      if (_pauseMenu.pauseClicked() || Trap.keyPressed(Button.Start, 0, -1)) {
+         _paused = _paused ? false : true
+         if (_paused) {
+            SoundController.pauseAsset(_audio)
+         } else {
+            SoundController.resumeAsset(_audio)
+         }
+      }
+
+      if (_paused) {
+         _pauseMenu.update(dt)
+
+         var pauseAction = _pauseMenu.anyClicked()
+         if (pauseAction == "menu") {
+            _nextScene = "gameselect"
+         } else if (pauseAction == "resume") {
+            _paused = false
+            SoundController.resumeAsset(_audio)
+         }
+
+         return
       }
 
       _textY = _textY - dt * 8
@@ -36,6 +61,11 @@ class TowersEnding {
       Draw.setColor(Color.Fill, 0, 0, 0, 255)
       Draw.setTextStyle(_bodyFont, 28, 1.0, Align.Left|Align.Top)
       Draw.text(600, _textY < -1020 ? -1020 : _textY, 640, _text)
+
+      if (_paused) {
+         _pauseMenu.draw()
+      }
+      _pauseMenu.pauseDraw()
    }
 
    shutdown() {

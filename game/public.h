@@ -51,6 +51,7 @@ typedef struct gameImportFuncs_s {
 
 	unsigned int(*Snd_Play)(AssetHandle asset, float volume, float pan, bool loop);
 	void(*Snd_Stop)(unsigned int handle);
+	void(*Snd_PauseResume)(unsigned int handle, bool pause);
 } gameImportFuncs_t;
 
 typedef struct gameExportFuncs_s {

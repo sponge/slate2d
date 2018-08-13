@@ -135,7 +135,8 @@ static gameImportFuncs_t GAMEtraps = {
 	Sprite_Set,
 	Get_Img,
 	Snd_Play,
-	Snd_Stop
+	Snd_Stop,
+	Snd_PauseResume
 };
 
 #ifdef __EMSCRIPTEN__

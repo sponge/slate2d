@@ -75,3 +75,7 @@ unsigned int Snd_Play(AssetHandle assetHandle, float volume, float pan, bool loo
 void Snd_Stop(unsigned int handle) {
 	soloud.stop(handle);
 }
+
+void Snd_PauseResume(unsigned int handle, bool pause) {
+	soloud.setPause(handle, pause);
+}

@@ -2,7 +2,7 @@ import "engine" for Asset, Draw, Align, Color, Trap, Button
 import "random" for Random
 import "bagrandomizer" for BagRandomizer
 import "soundcontroller" for SoundController
-import "td" for PauseMenu
+import "pausemenu" for PauseMenu
 
 class Platitudes {
    construct new() {

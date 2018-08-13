@@ -57,7 +57,7 @@ void wren_trap_snd_play(WrenVM *vm) {
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	float volume = (float)wrenGetSlotDouble(vm, 2);
 	float pan = (float)wrenGetSlotDouble(vm, 3);
-	bool loop = (float)wrenGetSlotBool(vm, 4);
+	bool loop = wrenGetSlotBool(vm, 4);
 
 	unsigned int hnd = trap->Snd_Play(assetHandle, volume, pan, loop);
 	wrenSetSlotDouble(vm, 0, hnd);
@@ -72,6 +72,12 @@ void wren_trap_snd_stop(WrenVM *vm) {
 
 	unsigned int handle = (unsigned int)wrenGetSlotDouble(vm, 1);
 	trap->Snd_Stop(handle);
+}
+
+void wren_trap_snd_pause_resume(WrenVM *vm) {
+	unsigned int handle = (unsigned int)wrenGetSlotDouble(vm, 1);
+	bool pause = wrenGetSlotBool(vm, 2);
+	trap->Snd_PauseResume(handle, pause);
 }
 
 void wren_trap_in_keystate(WrenVM *vm) {
@@ -750,6 +756,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "console(_)", wren_trap_console },
 	{ "engine", "Trap", true, "sndPlay(_,_,_,_)", wren_trap_snd_play },
 	{ "engine", "Trap", true, "sndStop(_)", wren_trap_snd_stop },
+	{ "engine", "Trap", true, "sndPauseResume(_,_)", wren_trap_snd_pause_resume },
 	{ "engine", "Trap", true, "keyActive(_)", wren_trap_in_keystate },
 	{ "engine", "Trap", true, "keyPressed(_,_,_)", wren_trap_in_keypressed },
 	{ "engine", "Trap", true, "mousePosition()", wren_trap_mouse_position },

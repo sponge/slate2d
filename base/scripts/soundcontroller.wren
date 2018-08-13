@@ -33,4 +33,12 @@ class SoundController {
       Trap.sndStop(__musicHnd)
       __musicHnd = null
    }
+
+   static pauseAsset(asset) {
+      Trap.sndPauseResume(__handlesByAsset[asset], true)
+   }
+
+   static resumeAsset(asset) {
+      Trap.sndPauseResume(__handlesByAsset[asset], false)
+   }
 }

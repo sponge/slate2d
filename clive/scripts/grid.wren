@@ -71,6 +71,15 @@ class Grid {
       return (tid >= 4 && tid <= 7) || (tid >= 20 && tid <= 21)
    }
 
+   isTower(x, y) {
+     if (!isLegal(x, y)) {
+       return false
+     }
+
+      // lazy but it's easier than checking for all 4 tiles
+      return _tiles[y*_w+x] >= 200
+   }
+
    destroyGrass(x,y) {
       if (!isGrass(x,y)) {
          Debug.printLn("WARNING: tile %(x),%(y) wasn't grass")
@@ -85,6 +94,23 @@ class Grid {
          return
       }
       _tiles[y*_w+x] = 0
+   }
+
+   destroyTower(x, y) {
+      if (!isTower(x,y)) {
+         Debug.printLn("WARNING: tile %(x),%(y) wasn't a tower")
+         return
+      }
+      // find the tower for this tile
+      var foundTowers = _towers.where{|tower| (tower.x == x || tower.x + 1 == x) && (tower.y == y || tower.y + 1 == y)}.toList
+      if (foundTowers.count > 0) {
+         var tower = foundTowers[0]
+         _tiles[tower.y*_w+tower.x] = 0
+         _tiles[tower.y*_w+tower.x+1] = 0
+         _tiles[(tower.y+1)*_w+tower.x] = 0
+         _tiles[(tower.y+1)*_w+tower.x+1] = 0
+         _towers = _towers.where{|otherTower| tower.x != otherTower.x || tower.y != otherTower.y}.toList
+      }
    }
 
    isPieceValid(x, y, piece) {
@@ -181,26 +207,6 @@ class Grid {
    draw() {
       Draw.translate(_x * _tw, _y * _th)
 
-      // debug show how far each step is until the goal
-      if (_showPathsCVar.bool()) {
-         Draw.setTextStyle(_font, 6, 1.0, Align.Center+Align.Top)
-         for (x in 0..._w) {
-            for (y in 0..._h) {
-               // checkerboard pattern
-               if ((y+x) % 2 == 0) {
-                  Draw.setColor(Color.Fill, 255, 255, 255, 10)
-                  Draw.rect(x*_tw, y*_th, _tw, _th, Fill.Solid)
-               }
-               var dist = _paths[y * _w + x]
-               if (dist != null) {
-                  var a = 127 - (dist * 4)
-                  Draw.setColor(Color.Fill, 255, 255, 255, 40)
-                  Draw.text(x * _tw, y * _th, 8, "%(dist)")
-               }
-            }
-         }
-      }
-
       // draw all the tiles on the map but ignore any tiles >= 200 since
       // those are reserved for blocking but non visible
       for (y in 0..._h) {
@@ -218,6 +224,27 @@ class Grid {
 
       for (entity in _entities) {
          entity.draw()
+      }
+
+      // debug show how far each step is until the goal
+      if (_showPathsCVar.bool()) {
+         Draw.setTextStyle(_font, 6, 1.0, Align.Center+Align.Top)
+         for (x in 0..._w) {
+            for (y in 0..._h) {
+               // checkerboard pattern
+               var alpha = (y+x) % 2 == 0 ? 96 : 64
+               var col = isBlocked(x, y) ? [255, 127, 127, alpha] : [64, 64, 64, alpha]
+               Draw.setColor(Color.Fill, col)
+               Draw.rect(x*_tw, y*_th, _tw, _th, Fill.Solid)
+
+               var dist = _paths[y * _w + x]
+               if (dist != null) {
+                  var a = 127 - (dist * 4)
+                  Draw.setColor(Color.Fill, 255, 255, 255, 40)
+                  Draw.text(x * _tw, y * _th, 8, "%(dist)")
+               }
+            }
+         }
       }
 
       // if something is selected, draw the piece shadow

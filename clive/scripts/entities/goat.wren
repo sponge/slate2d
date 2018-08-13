@@ -55,6 +55,8 @@ class Goat is Entity {
          _frozen = false
          if (_mode == "destroy") {
             moveDestroy()
+         } else if (_mode == "destroy_tower") {
+            moveDestroyTower()
          } else if (_mode == "move") {
             moveStep()
          } else if (_mode == "grass") {
@@ -78,6 +80,14 @@ class Goat is Entity {
 
    moveDestroy() {
       _grid.destroyWall(x+_dx,y+_dy)
+      x = x + _dx
+      y = y + _dy
+      _nextUpdate = _td.time + _moveInterval
+      _mode = "move"
+   }
+
+   moveDestroyTower() {
+      _grid.destroyTower(x+_dx,y+_dy)
       x = x + _dx
       y = y + _dy
       _nextUpdate = _td.time + _moveInterval
@@ -146,6 +156,9 @@ class Goat is Entity {
          if (_grid.isWall(x+_dx, y+_dy)) {
             _nextUpdate = _td.time + _destroyInterval
             _mode = "destroy"
+         } else if (_grid.isTower(x+_dx, y+_dy)) {
+            _nextUpdate = _td.time + _destroyInterval * 2
+            _mode = "destroy_tower"
          } else if (!_grid.isBlocked(x + _dx, y + _dy)) {
             x = x + _dx
             y = y + _dy
@@ -177,7 +190,7 @@ class Goat is Entity {
   draw() {
     var sprX = (x - 1) * _td.tw
     var sprY = (y - 1) * _td.th
-    var sprite = (_mode == "grass" || _mode == "destroy") ? _eatingSprite : _sprite
+    var sprite = (_mode == "grass" || _mode == "destroy" || _mode == "destroy_tower") ? _eatingSprite : _sprite
     Draw.image(sprite, sprX, sprY, _imgSize[0], _imgSize[1], 1.0)
     Draw.setColor(Color.Fill, 0, 255, 0, 255)
     Draw.rect(sprX, sprY - 2, _td.tw * 2 * (_hp / _startingHP), _td.th / 4, false)

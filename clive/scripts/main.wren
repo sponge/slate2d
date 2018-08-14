@@ -5,6 +5,7 @@ import "debug" for Debug
 import "soundcontroller" for SoundController
 
 import "intro" for Intro
+import "credits" for Credits
 import "intromessage" for IntroMessage
 import "gameselect" for GameSelect
 import "gameinfo" for Game1Info, Game2Info, Game3Info, Game4Info, Game5Info, GameInfo
@@ -38,6 +39,7 @@ class Main {
 
       __scenes = {
          "intro": Intro,
+         "credits": Credits,
          "intromessage": IntroMessage,
          "gameselect": GameSelect,
          "game1": Game1Info,

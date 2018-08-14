@@ -28,7 +28,7 @@ class Intro {
 
       if (Trap.keyPressed(Button.B, 0, -1)) {
          SoundController.playOnce(_clickSound)
-         nextScene = "intromessage"
+         nextScene = "credits"
       }
    }
 

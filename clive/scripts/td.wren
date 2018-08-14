@@ -14,6 +14,35 @@ import "uibutton" for CoinButton, TextButton, UIButton
 import "game4/slots" for SlotMachine
 import "pausemenu" for PauseMenu
 
+class Tip {
+   construct new(x, y, text, lifetime) {
+      _x = x
+      _y = y
+      _active = true
+      _text = text
+      _descriptionFont = Asset.find("description")
+
+      Timer.runLater(lifetime) {
+         _active = false
+      }
+   }
+
+   draw(w, h) {
+      if (_active == false) {
+         return
+      }
+
+      Draw.resetTransform()
+      Draw.transform(h/720, 0, 0, h/720, 0, 0)
+      
+      Draw.setColor(Color.Fill, 0, 57, 113, 200)
+      Draw.rect(_x, _y, 200, 65, false)
+      Draw.setColor(Color.Fill, 255, 255, 255, 255)
+      Draw.setTextStyle(_descriptionFont, 36, 0.85, Align.Center+Align.Top)
+      Draw.text(_x, _y, 200, _text)
+   }
+}
+
 class TD {
    nextScene { _nextScene }
    nextScene=(params) { _nextScene = params }
@@ -54,7 +83,8 @@ class TD {
       _coinsPerKill = 3 // amount of coins for each kill
 
       _rnd = Random.new()
-      _seenTip = false
+      _seenGoldTip = false
+      _tips = []
 
       SoundController.stopMusic()
 
@@ -86,6 +116,8 @@ class TD {
       Asset.create(Asset.Sound, "magic_shoot", "sound/magic_shoot.wav")
       _coinPickup = Asset.create(Asset.Sound, "coin_pickup", "sound/coin_pickup.wav")
 
+      _descriptionFont = Asset.create(Asset.Font, "description", Fonts.description)
+
       if (_gameMode == 1) {
          // TODO: this image is loaded twice since the tmx also loads this but we can't use the
          // same name to load the existing texture because it's an image, and not a sprite
@@ -101,6 +133,13 @@ class TD {
          _currSymbol = "£"
          _enableMagicTower = false
          _goatsDropMoney = false
+
+         var tipTime = 10
+         showTip(890, 32, "Build towers\nto kill goats", 10)
+         showTip(890, 110, "Plant grass\nto slow goats", 10)
+         showTip(890, 220, "Build walls\nto block goats", 10)
+         showTip(740, 480, "Protect the\npound sterling!", 10)
+         showTip(40, 200, "Goats start\nfrom the left", 10)
       } else if (_gameMode == 2) {
          _spr = Asset.create(Asset.Sprite, "e2spr", "maps/tilesets/e2.png")
           _font = Asset.create(Asset.Font, "speccy", "fonts/spectrum.ttf")
@@ -167,12 +206,16 @@ class TD {
          [1, Fn.new { _checkForWin = true }]
       ]
 
+      if (_gameMode == 1) {
+         _actions.insert(0, [5, Fn.new { }])
+      }
+
       // end
 
       _actionQueue = ActionQueue.new(_actions)
 
       _grid = Grid.new(this, _gridX, _gridY, _gridW, _gridH, _tw, _th)
-      _grid.setGoal(_mapProps["properties"]["goalx"], _rnd.int(0, _gridH-2))
+      _grid.setGoal(_mapProps["properties"]["goalx"], _gameMode == 1 ? 10 : _rnd.int(0, _gridH-2))
 
       _pieceTray = PieceTray.new(this, 272, 0, 48, 180)
 
@@ -186,7 +229,6 @@ class TD {
       _pauseMenu = PauseMenu.new(490, 260)
 
       _bodyFont = Asset.create(Asset.Font, "body", Fonts.body)
-      _descriptionFont = Asset.create(Asset.Font, "description", Fonts.description)
 
       Asset.loadAll()
 
@@ -194,18 +236,11 @@ class TD {
    }
 
    showTip(x, y, text) {
-      if (_seenTip == true) {
-         return
-      }
+      showTip(x, y, text, 3)
+   }
 
-      _seenTip = true
-      _tipX = x
-      _tipY = y
-      _tipText = text
-      _drawTip = true
-      Timer.runLater(5) {
-         _drawTip = false
-      }
+   showTip(x, y, text, lifetime) {
+      _tips.add(Tip.new(x, y, text, lifetime))
    }
 
    spawnGroup(count) {
@@ -224,8 +259,9 @@ class TD {
          if (_goatsDropMoney) {
             var x = (ent.x+_gridX)*_tw + _rnd.int(-8,8)
             var y = (ent.y+_gridY)*_th + _rnd.int(-8,8)
-            if (_extraGoats == 0) {
+            if (_extraGoats == 0 && _seenGoldTip == false) {
                showTip(x*_scale-90, y*_scale-70, "NEW: Click coins to earn money!")
+               _seenGoldTip = true
             }
             _coins.add(CoinButton.new(this, x, y))
          } else {
@@ -324,15 +360,8 @@ class TD {
          _slots.draw()
       }
 
-      if (_drawTip) {
-         Draw.resetTransform()
-         Draw.transform(h/720, 0, 0, h/720, 0, 0)
-         
-         Draw.setColor(Color.Fill, 0, 57, 113, 200)
-         Draw.rect(_tipX, _tipY, 200, 65, false)
-         Draw.setColor(Color.Fill, 255, 255, 255, 255)
-         Draw.setTextStyle(_descriptionFont, 36, 0.85, Align.Center+Align.Top)
-         Draw.text(_tipX, _tipY, 200, _tipText)
+      for (tip in _tips) {
+         tip.draw(w,h)
       }
 
       Draw.resetTransform()

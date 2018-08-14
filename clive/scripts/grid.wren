@@ -77,7 +77,7 @@ class Grid {
      }
 
       // lazy but it's easier than checking for all 4 tiles
-      return _tiles[y*_w+x] >= 200
+      return _tiles[y*_w+x] == 200
    }
 
    destroyGrass(x,y) {

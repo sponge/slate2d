@@ -9,5 +9,9 @@
         "bin/": true,
         "build/": true
     },
-    "editor.tabSize": 3
+    "editor.tabSize": 3,
+    "wren.additionalModuleDirectories": [
+        "./base/scripts/"
+        "./clive/scripts/"
+    ]
 }

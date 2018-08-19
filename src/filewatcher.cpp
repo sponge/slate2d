@@ -29,10 +29,11 @@ void FileWatcher_TrackFile(const char *path) {
 		return;
 	}
 
-	auto mtime = PHYSFS_getLastModTime(path);
+	PHYSFS_Stat stat;
+	int err = PHYSFS_stat(path, &stat);
 
-	if (mtime == -1) {
-		Com_Printf("can't get mtime for file %s\n", path);
+	if (err == 0) {
+		Com_Printf("can't stat file %s\n", path);
 		return;
 	}
 
@@ -44,22 +45,26 @@ void FileWatcher_TrackFile(const char *path) {
 
 	strncpy(sourceFiles[filesCount], path, MAX_QPATH);
 
-	sourceTime[filesCount] = mtime;
+	sourceTime[filesCount] = stat.modtime;
 	filesCount++;
 	Com_Printf("now tracking file for changes: %s\n", path);
 }
 
 void FileWatcher_TrackRecursive(const char *path) {
-	if (PHYSFS_isDirectory(path) == false) {
-		FileWatcher_TrackFile(path);
-		return;
-	}
+	int err;
+	PHYSFS_Stat stat;
 
 	char **files = PHYSFS_enumerateFiles(path);
 	char **i;
 	for (i = files; *i != NULL; i++) {
 		const char *fullPath = CopyString(va("%s/%s", path, *i));
-		if (PHYSFS_isDirectory(fullPath)) {
+		err = PHYSFS_stat(fullPath, &stat);
+		if (err == 0) {
+			Com_Printf("can't stat file %s\n", path);
+			return;
+		}
+
+		if (stat.filetype == PHYSFS_FILETYPE_DIRECTORY) {
 			FileWatcher_TrackRecursive(fullPath);
 			free((void*)fullPath);
 			continue;
@@ -79,7 +84,21 @@ void Cmd_TrackPath_f() {
 	}
 
 	const char *path = Cmd_Argv(1);
-	FileWatcher_TrackRecursive(path);
+
+	PHYSFS_Stat stat;
+	int err = PHYSFS_stat(path, &stat);
+
+	if (err == 0) {
+		Com_Printf("can't stat file %s\n", path);
+		return;
+	}
+
+	if (stat.filetype != PHYSFS_FILETYPE_DIRECTORY) {
+		FileWatcher_TrackFile(path);
+	}
+	else {
+		FileWatcher_TrackRecursive(path);
+	}
 }
 
 void Cmd_ClearFiles_f() {

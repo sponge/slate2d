@@ -2,8 +2,8 @@
 #include <physfs.h>
 #include "console/console.h"
 
-#define MAX_CHECK_FILES 256
-static char sourceFiles[MAX_CHECK_FILES][256];
+#define MAX_CHECK_FILES 1024
+static char sourceFiles[MAX_CHECK_FILES][MAX_QPATH];
 static PHYSFS_sint64 sourceTime[MAX_CHECK_FILES];
 static int filesCount = 0;
 static bool fileChanged = false;
@@ -42,23 +42,44 @@ void FileWatcher_TrackFile(const char *path) {
 		}
 	}
 
-	strncpy(sourceFiles[filesCount], path, MAX_CHECK_FILES);
+	strncpy(sourceFiles[filesCount], path, MAX_QPATH);
 
 	sourceTime[filesCount] = mtime;
 	filesCount++;
 	Com_Printf("now tracking file for changes: %s\n", path);
 }
 
-void Cmd_TrackFile_f() {
+void FileWatcher_TrackRecursive(const char *path) {
+	if (PHYSFS_isDirectory(path) == false) {
+		FileWatcher_TrackFile(path);
+		return;
+	}
+
+	char **files = PHYSFS_enumerateFiles(path);
+	char **i;
+	for (i = files; *i != NULL; i++) {
+		const char *fullPath = CopyString(va("%s/%s", path, *i));
+		if (PHYSFS_isDirectory(fullPath)) {
+			FileWatcher_TrackRecursive(fullPath);
+			free((void*)fullPath);
+			continue;
+		}
+		FileWatcher_TrackFile(fullPath);
+		free((void*)fullPath);
+	}
+	PHYSFS_freeList(files);
+}
+
+void Cmd_TrackPath_f() {
 	int c = Cmd_Argc();
 
 	if (c < 2) {
-		Com_Printf("trackfile [path] : track a file for changes\n");
+		Com_Printf("trackfile [path] : track a directory or file for changes\n");
 		return;
 	}
 
 	const char *path = Cmd_Argv(1);
-	FileWatcher_TrackFile(path);
+	FileWatcher_TrackRecursive(path);
 }
 
 void Cmd_ClearFiles_f() {
@@ -82,7 +103,7 @@ void FileWatcher_StartThread() {
 }
 
 void FileWatcher_Init() {
-	Cmd_AddCommand("filewatcher_add", &Cmd_TrackFile_f);
+	Cmd_AddCommand("filewatcher_add", &Cmd_TrackPath_f);
 	Cmd_AddCommand("filewatcher_clear", &Cmd_ClearFiles_f);
 	Cvar_Get("filewatcher_execute", "", 0);
 

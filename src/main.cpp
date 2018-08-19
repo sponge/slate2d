@@ -274,6 +274,7 @@ int main(int argc, char *argv[]) {
 	Cvar_Init();
 	RegisterMainCvars();
 	CL_InitKeyCommands();
+	FileWatcher_Init();
 
 	if (!FS_Exists("default.cfg")) {
 		Com_Error(ERR_FATAL, "Filesystem error, check fs_basepath is set correctly. (Could not find default.cfg)");
@@ -286,8 +287,6 @@ int main(int argc, char *argv[]) {
 	Cbuf_Execute();
 
 	Com_StartupVariable(nullptr);
-
-	FileWatcher_Init();
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0) {
 		Com_Error(ERR_FATAL, "There was an error initing SDL2: %s", SDL_GetError());

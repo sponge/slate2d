@@ -731,6 +731,8 @@ static void wren_error(WrenVM* vm, WrenErrorType type, const char* module, int l
 char* wren_loadModuleFn(WrenVM* vm, const char* name) {
 	char *script = nullptr;
 	const char *path = va("scripts/%s.wren", name);
+	trap->FileWatcher_TrackFile(path);
+
 	int sz = trap->FS_ReadFile(path, (void**)&script);
 	if (sz <= 0) {
 		return nullptr;
@@ -892,6 +894,9 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 		trap->Error(ERR_DROP, "wren error: can't compile %s", mainScriptName);
 		return nullptr;
 	}
+
+	trap->FileWatcher_TrackFile(mainScriptName);
+
 	free(mainStr);
 
 	// make sure we can find a new Game class

@@ -12,6 +12,7 @@
 #include "bitmapfont.h"
 #include "audio.h"
 #include "assetloader.h"
+#include "filetracker.h"
 
 extern SceneManager *sm;
 extern tmx_map *map;
@@ -136,7 +137,8 @@ static gameImportFuncs_t GAMEtraps = {
 	Get_Img,
 	Snd_Play,
 	Snd_Stop,
-	Snd_PauseResume
+	Snd_PauseResume,
+	FileWatcher_TrackFile
 };
 
 #ifdef __EMSCRIPTEN__

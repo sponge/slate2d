@@ -44,6 +44,8 @@
 #include <soloud.h>
 #include <soloud_thread.h>
 
+#include "filetracker.h"
+
 SoLoud::Soloud soloud;
 ClientInfo inf;
 SceneManager *sm;
@@ -109,6 +111,8 @@ void main_loop() {
 		soloud.setGlobalVolume(s_volume->value);
 		s_volume->modified = false;
 	}
+
+	FileWatcher_Tick();
 
 	while (SDL_PollEvent(&ev)) {
 		ImGui_ImplSdl_ProcessEvent(&ev);
@@ -282,6 +286,8 @@ int main(int argc, char *argv[]) {
 	Cbuf_Execute();
 
 	Com_StartupVariable(nullptr);
+
+	FileWatcher_Init();
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0) {
 		Com_Error(ERR_FATAL, "There was an error initing SDL2: %s", SDL_GetError());

@@ -54,8 +54,15 @@ void FS_AddPaksFromList(char **list, const char *basePath, const char *gamePath)
 }
 
 void FS_Init(const char *argv0) {
-	PHYSFS_init(argv0);
-	fs_basepath = Cvar_Get("fs_basepath", PHYSFS_getBaseDir(), CVAR_INIT);
+	int err = PHYSFS_init(argv0);
+
+	if (err == 0) {
+		Com_Error(ERR_FATAL, "Error in PHYSFS_init: %s", PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
+		return;
+	}
+
+	const char *baseDir = PHYSFS_getBaseDir();
+	fs_basepath = Cvar_Get("fs_basepath", baseDir, CVAR_INIT);
 	fs_basegame = Cvar_Get("fs_basegame", "base", CVAR_INIT);
 	fs_game = Cvar_Get("fs_game", "plat", CVAR_INIT);
 

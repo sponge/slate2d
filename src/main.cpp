@@ -198,14 +198,6 @@ void main_loop() {
 		ImGui::End();
 	}
 
-	/*
-	frame_accum += dt;
-	while (frame_accum >= 1 / 200.0f) {
-		sm->Update(1 / 200.0f);
-		frame_accum -= 1 / 200.0f;
-	}
-	*/
-
 	glClear(GL_COLOR_BUFFER_BIT);
 	nvgBeginFrame(inf.nvg, inf.width, inf.height, 1.0);
 

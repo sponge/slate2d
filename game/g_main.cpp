@@ -2,7 +2,6 @@
 #include "public.h"
 #include "draw.h"
 #include <stdio.h>
-#include "scene_game.h"
 #include "scene_wren.h"
 #include "game.h"
 

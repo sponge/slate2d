@@ -31,7 +31,7 @@ void GameScene::Startup(ClientInfo* info) {
 	}
 }
 
-void GameScene::Update(float dt) {
+void GameScene::Update(double dt) {
 
 }
 

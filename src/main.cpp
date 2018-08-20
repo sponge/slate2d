@@ -2,6 +2,7 @@
 #include <cmath>
 #include <chrono>
 #include <thread>
+#include <stdint.h>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -49,7 +50,7 @@
 SoLoud::Soloud soloud;
 ClientInfo inf;
 SceneManager *sm;
-double frame_msec = 0, com_frameTime = 0, com_lastFrameTime = 0;
+int64_t frame_musec = 0, com_frameTime = 0;
 tmx_map *map;
 //float frame_accum;
 bool frameAdvance = false;
@@ -89,23 +90,20 @@ void DropToMenu() {
 	errorVisible = true;
 }
 
+
 static struct NVGcontext* vg;
 static bool loop = true;
-static std::chrono::time_point<std::chrono::steady_clock> start;
-static std::chrono::time_point<std::chrono::steady_clock> last;
+
+using namespace std::chrono;
+using namespace std::chrono_literals;
+
+auto start = steady_clock::now();
 
 void main_loop() {
-	using clock = std::chrono::high_resolution_clock;
-	using namespace std::chrono_literals;
 
-	ImGuiIO &io = ImGui::GetIO();
-	SDL_Event ev;
-	auto now = clock::now();
-	auto dt = std::chrono::duration<float>(now - last).count();
-	com_lastFrameTime = com_frameTime;
-	com_frameTime = std::chrono::duration<float>(now - start).count() * 1000;
-	frame_msec = dt * 1000;
-	last = now;
+	auto now = duration_cast<microseconds>( steady_clock::now() - start ).count();
+	frame_musec = now - com_frameTime;
+	com_frameTime = now;
 
 	if (s_volume->modified) {
 		soloud.setGlobalVolume(s_volume->value);
@@ -114,6 +112,8 @@ void main_loop() {
 
 	FileWatcher_Tick();
 
+	SDL_Event ev;
+	ImGuiIO &io = ImGui::GetIO();
 	while (SDL_PollEvent(&ev)) {
 		ImGui_ImplSdl_ProcessEvent(&ev);
 
@@ -209,17 +209,14 @@ void main_loop() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	nvgBeginFrame(inf.nvg, inf.width, inf.height, 1.0);
 
-	gexports->Frame(dt);
-	consoleScene->Update(dt);
+	gexports->Frame(frame_musec / 1E6);
+	consoleScene->Update(frame_musec / 1E6);
 
 	if (!com_pause->integer || frameAdvance) {
-		sm->Update(dt);
+		sm->Update(frame_musec / 1E6);
 		frameAdvance = false;
 	}
 
-	// FIXME: maybe eventually take dc_clear/dc_submit out of wren and handle it in the engine
-	// so we can just render the last submitted frame without calling render on all the scenes
-	// but doing so would make it easier to cheat changing state in your draw function
 	sm->Render();
 	consoleScene->Render();
 
@@ -232,16 +229,13 @@ void main_loop() {
 	// sleep a little so we don't burn up cpu/gpu on insanely fast frames (>1000fps)
 	// in a perfect world you should be able to do com_maxFps but we lose the cpu benefits
 	// by having to burn through a really tight loop to measure
-	if (com_sleepShortFrame->integer && frame_msec < 1.0f) {
+	if (com_sleepShortFrame->integer && frame_musec < 1000.0f) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 
 }
 
 int main(int argc, char *argv[]) {
-	using clock = std::chrono::high_resolution_clock;
-	using namespace std::chrono_literals;
-	
 	// handle command line parsing. combine into one string and pass it in.
 	if (argc > 1) {
 		int len, i;
@@ -380,8 +374,6 @@ static const char *lib = "libgame.dylib";
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 #endif
 
-	start = clock::now();
-	last = clock::now();
 #ifdef __EMSCRIPTEN__
 	emscripten_set_main_loop(main_loop, 0, 1);
 #else

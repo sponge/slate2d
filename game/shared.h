@@ -1,5 +1,6 @@
 #pragma once
 // types that are shared across the dll and engine
+#include <stdint.h>
 
 #ifdef _MSC_VER 
 #define STRFUNCS
@@ -73,9 +74,8 @@ typedef struct {
 
 typedef struct {
 	int			down[2];		// key nums holding it down
-	double	firstdowntime;
-	double	downtime;		// msec timestamp
-	double	msec;			// msec down this frame if both a down and up happened
+	int64_t		downtime;		// musec timestamp
+	int64_t		musec;			// musec down this frame if both a down and up happened
 	bool		active;			// current state
 	bool		wasPressed;		// set when down, not cleared when up
 } kbutton_t;
@@ -91,7 +91,7 @@ class Scene {
 public:
 	virtual ~Scene() {};
 	virtual void Startup(ClientInfo* i) = 0;
-	virtual void Update(float dt) = 0;
+	virtual void Update(double dt) = 0;
 	virtual void Render() = 0;
 };
 

@@ -94,7 +94,7 @@ static void Console(const char *line) {
 
 // technically the scene manager will handle every frame for gameplay scenes,
 // but anything that needs an event loop type pump can go here
-static void Frame(float dt) {
+static void Frame(double dt) {
 
 }
 

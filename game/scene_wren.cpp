@@ -7,7 +7,7 @@ void WrenScene::Startup(ClientInfo* info) {
 	vm = Wren_Init(mainScriptName, mapFileName);
 }
 
-void WrenScene::Update(float dt) {
+void WrenScene::Update(double dt) {
 	Wren_Update(vm, dt);
 }
 

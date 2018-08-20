@@ -6,7 +6,7 @@
 class ConsoleScene : public Scene {
 public:
 	void Startup(ClientInfo* i) override;
-	void Update(float dt) override;
+	void Update(double dt) override;
 	void Render() override;
 
 	bool consoleActive;

@@ -6,7 +6,7 @@ class GameScene : public Scene {
 public:
 	GameScene(const char *mapFileName) : mapFileName(mapFileName) {};
 	void Startup(ClientInfo* i) override;
-	void Update(float dt) override;
+	void Update(double dt) override;
 	void Render() override;
 	~GameScene();
 

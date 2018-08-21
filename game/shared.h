@@ -93,6 +93,7 @@ public:
 	virtual void Startup(ClientInfo* i) = 0;
 	virtual void Update(double dt) = 0;
 	virtual void Render() = 0;
+	virtual void Console(const char *line) = 0;
 };
 
 // RENDER COMMANDS

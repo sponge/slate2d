@@ -20,19 +20,18 @@ class Level {
    title { _title }
    worldLayer { _worldLayer }
    backgroundColor { _backgroundColor }
-   props { _mapProps }
 
    construct new(mapName) {
       var tmapId = Asset.create(Asset.TileMap, "tilemap", mapName)
       TileMap.setCurrent(tmapId)
       Asset.loadAll()
       
-      _mapProps = TileMap.getMapProperties()
+      var mapProps = TileMap.getMapProperties()
 
-      _w = _mapProps["width"]
-      _h = _mapProps["height"]
-      _tw = _mapProps["tileWidth"]
-      _th = _mapProps["tileHeight"]
+      _w = mapProps["width"]
+      _h = mapProps["height"]
+      _tw = mapProps["tileWidth"]
+      _th = mapProps["tileHeight"]
       _maxX = _w * _tw
       _maxY = _h * _th
       _layers = TileMap.layerNames()
@@ -43,11 +42,11 @@ class Level {
          return
       }
 
-      var rgba = _mapProps["backgroundColor"]
+      var rgba = mapProps["backgroundColor"]
       _backgroundColor = [(rgba>>16)&0xFF, (rgba>>8)&0xFF, (rgba)&0xFF, (rgba>>24)&0xFF]
 
-      _music = _mapProps["properties"]["music"]
-      _title = _mapProps["properties"]["title"]
+      _music = mapProps["properties"]["music"]
+      _title = mapProps["properties"]["title"]
    }
 
    getTile(x, y) {

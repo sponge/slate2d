@@ -12,27 +12,10 @@
 #include "audio.h"
 #include "assetloader.h"
 
-extern SceneManager *sm;
 extern ClientInfo inf;
 
 void trap_SendConsoleCommand(const char *text) {
 	Cbuf_ExecuteText(EXEC_NOW, text);
-}
-
-void trap_Scene_Switch(Scene *newScene) {
-	sm->Switch(newScene);
-}
-
-Scene * trap_Scene_Get(int i) {
-	return sm->Get(i);
-}
-
-void trap_Scene_Replace(int i, Scene *newScene) {
-	sm->Replace(i, newScene);
-}
-
-Scene * trap_Scene_Current() {
-	return sm->Current();
 }
 
 int R_RegisterShader(const char *name, const char *vshader, const char *fshader) {
@@ -56,10 +39,6 @@ static gameImportFuncs_t GAMEtraps = {
 	FS_Exists,
 	FS_List,
 	FS_FreeList,
-	trap_Scene_Switch,
-	trap_Scene_Get,
-	trap_Scene_Replace,
-	trap_Scene_Current,
 	IN_KeyDown,
 	IN_KeyUp,
 	IN_KeyState,

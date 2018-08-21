@@ -49,7 +49,6 @@
 
 SoLoud::Soloud soloud;
 ClientInfo inf;
-SceneManager *sm;
 int64_t frame_musec = 0, com_frameTime = 0;
 //float frame_accum;
 bool frameAdvance = false;
@@ -85,7 +84,6 @@ void Cmd_Vid_Restart_f(void) {
 }
 
 void DropToMenu() {
-	sm->Clear();
 	errorVisible = true;
 }
 
@@ -200,15 +198,13 @@ void main_loop() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	nvgBeginFrame(inf.nvg, inf.width, inf.height, 1.0);
 
-	gexports->Frame(frame_musec / 1E6);
+	gexports->Frame(!com_pause->integer || frameAdvance ? frame_musec / 1E6 : 0);
 	consoleScene->Update(frame_musec / 1E6);
 
 	if (!com_pause->integer || frameAdvance) {
-		sm->Update(frame_musec / 1E6);
 		frameAdvance = false;
 	}
 
-	sm->Render();
 	consoleScene->Render();
 
 	nvgEndFrame(vg);
@@ -340,8 +336,6 @@ int main(int argc, char *argv[]) {
 	if (!Com_AddStartupCommands()) {
 		// do something here? don't load menu?
 	}
-
-	sm = new SceneManager(inf);
 
 	consoleScene = new ConsoleScene();
 	consoleScene->Startup(&inf);

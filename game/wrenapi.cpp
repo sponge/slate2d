@@ -127,14 +127,14 @@ void wren_trap_mouse_position(WrenVM *vm) {
 
 extern void wren_trap_inspect(WrenVM *vm);
 
+extern ClientInfo *inf;
+
 void wren_trap_get_resolution(WrenVM *vm) {
 	wrenEnsureSlots(vm, 3);
 	wrenSetSlotNewList(vm, 0);
 
-	// FIXME: hacky
-	WrenScene *scene = (WrenScene*)trap->Scene_Current();
-	wrenSetSlotDouble(vm, 1, scene->inf->width);
-	wrenSetSlotDouble(vm, 2, scene->inf->height);
+	wrenSetSlotDouble(vm, 1, inf->width);
+	wrenSetSlotDouble(vm, 2, inf->height);
 
 	wrenInsertInList(vm, 0, -1, 1);
 	wrenInsertInList(vm, 0, -1, 2);

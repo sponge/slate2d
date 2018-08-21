@@ -5,9 +5,10 @@
 #include "scene_wren.h"
 #include "game.h"
 
+ClientInfo *inf;
 gameImportFuncs_t *trap;
 kbutton_t buttons[MAX_KEYS];
-WrenScene *wrenScene;
+Scene *scene;
 
 #ifdef __EMSCRIPTEN__
 extern
@@ -22,7 +23,9 @@ void Cmd_Scene_f(void) {
 	}
 
 	auto newScene = new WrenScene(mainScriptName, sceneParams);
-	trap->Scene_Replace(0, newScene);
+	if (scene) { delete scene; }
+	scene = newScene;
+	scene->Startup(inf);
 }
 
 // map (name) - load a map and switch to the game scene
@@ -46,11 +49,15 @@ void Cmd_Map_f(void) {
 		return;
 	}
 
-	wrenScene = new WrenScene("scripts/main.wren", filename);
-	trap->Scene_Replace(0, wrenScene);
+	auto newScene = new WrenScene("scripts/main.wren", filename);
+	if (scene) { delete scene; }
+	scene = newScene;
+	scene->Startup(inf);
 }
 
 static void Init(void *clientInfo, void *imGuiContext) {
+	inf = (ClientInfo*) clientInfo;
+
 	trap->Cmd_AddCommand("map", Cmd_Map_f);
 	trap->Cmd_AddCommand("scene", Cmd_Scene_f);
 
@@ -81,20 +88,24 @@ static void Init(void *clientInfo, void *imGuiContext) {
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
-	wrenScene = new WrenScene("scripts/main.wren", nullptr);
-	trap->Scene_Replace(0, wrenScene);
+	auto newScene = new WrenScene("scripts/main.wren", nullptr);
+	if (scene) { delete scene; }
+	scene = newScene;
+	scene->Startup(inf);
 }
 
 static void Console(const char *line) {
-	if (wrenScene != nullptr) {
-		wrenScene->Console(line);
+	if (scene != nullptr) {
+		scene->Console(line);
 	}
 }
 
-// technically the scene manager will handle every frame for gameplay scenes,
-// but anything that needs an event loop type pump can go here
 static void Frame(double dt) {
+	if (dt != 0) {
+		scene->Update(dt);
+	}
 
+	scene->Render();
 }
 
 static gameExportFuncs_t GAMEfuncs = {

@@ -5,7 +5,7 @@
 #include "scene_wren.h"
 #include "game.h"
 
-ClientInfo *inf;
+ClientInfo *clientInf;
 gameImportFuncs_t *trap;
 kbutton_t buttons[MAX_KEYS];
 Scene *scene;
@@ -25,7 +25,7 @@ void Cmd_Scene_f(void) {
 	auto newScene = new WrenScene(mainScriptName, sceneParams);
 	if (scene) { delete scene; }
 	scene = newScene;
-	scene->Startup(inf);
+	scene->Startup(clientInf);
 }
 
 // map (name) - load a map and switch to the game scene
@@ -52,11 +52,11 @@ void Cmd_Map_f(void) {
 	auto newScene = new WrenScene("scripts/main.wren", filename);
 	if (scene) { delete scene; }
 	scene = newScene;
-	scene->Startup(inf);
+	scene->Startup(clientInf);
 }
 
 static void Init(void *clientInfo, void *imGuiContext) {
-	inf = (ClientInfo*) clientInfo;
+	clientInf = (ClientInfo*) clientInfo;
 
 	trap->Cmd_AddCommand("map", Cmd_Map_f);
 	trap->Cmd_AddCommand("scene", Cmd_Scene_f);
@@ -91,7 +91,7 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	auto newScene = new WrenScene("scripts/main.wren", nullptr);
 	if (scene) { delete scene; }
 	scene = newScene;
-	scene->Startup(inf);
+	scene->Startup(clientInf);
 }
 
 static void Console(const char *line) {

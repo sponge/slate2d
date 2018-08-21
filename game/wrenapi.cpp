@@ -11,6 +11,7 @@
 #include "scene_wren.h"
 
 static unsigned int mapId;
+extern ClientInfo *clientInf;
 
 #pragma region Trap Module
 void wren_trap_print(WrenVM *vm) {
@@ -127,14 +128,12 @@ void wren_trap_mouse_position(WrenVM *vm) {
 
 extern void wren_trap_inspect(WrenVM *vm);
 
-extern ClientInfo *inf;
-
 void wren_trap_get_resolution(WrenVM *vm) {
 	wrenEnsureSlots(vm, 3);
 	wrenSetSlotNewList(vm, 0);
 
-	wrenSetSlotDouble(vm, 1, inf->width);
-	wrenSetSlotDouble(vm, 2, inf->height);
+	wrenSetSlotDouble(vm, 1, clientInf->width);
+	wrenSetSlotDouble(vm, 2, clientInf->height);
 
 	wrenInsertInList(vm, 0, -1, 1);
 	wrenInsertInList(vm, 0, -1, 2);

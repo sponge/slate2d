@@ -139,8 +139,6 @@ class Color {
 }
 
 class TileMap {
-   // foreign static load(name)
-   // foreign static free()
    foreign static setCurrent(assetHandle)
    foreign static layerByName(name)
    foreign static layerNames()

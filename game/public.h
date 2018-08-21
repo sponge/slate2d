@@ -28,9 +28,6 @@ typedef struct gameImportFuncs_s {
 	void (*Scene_Replace)(int i, Scene *newScene);
 	Scene* (*Scene_Current)();
 
-	tmx_map* (*Map_Load)(const char *file);
-	void (*Map_Free)(tmx_map* map);
-
 	void (*IN_KeyDown)(kbutton_t *b);
 	void (*IN_KeyUp)(kbutton_t *b);
 	float (*IN_KeyState)(kbutton_t *key);
@@ -42,12 +39,14 @@ typedef struct gameImportFuncs_s {
 
 	AssetHandle (*Asset_Create)(AssetType_t assetType, const char *name, const char *path, int flags);
 	AssetHandle (*Asset_Find)(const char *name);
+	void (*Asset_Load)(AssetHandle assetHandle);
 	void (*Asset_LoadAll)();
 	void (*Asset_ClearAll)();
 	void (*Asset_BMPFNT_Set)(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight);
 	int (*Asset_BMPFNT_TextWidth)(AssetHandle assetHandle, const char *string, float scale);
 	void (*Asset_Sprite_Set)(AssetHandle assetHandle, int width, int height, int marginX, int marginY);
 	Image* (*Get_Img)(AssetHandle id);
+	tmx_map* (*Get_TileMap)(AssetHandle id);
 
 	unsigned int(*Snd_Play)(AssetHandle asset, float volume, float pan, bool loop);
 	void(*Snd_Stop)(unsigned int handle);

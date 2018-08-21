@@ -212,6 +212,7 @@ typedef struct {
 typedef struct {
 	byte commandId;
 	float x, y;
+	unsigned int mapId;
 	unsigned int layer, cellX, cellY, cellW, cellH;
 } drawMapCommand_t;
 
@@ -250,6 +251,7 @@ typedef enum {
 	ASSET_MOD,
 	ASSET_FONT,
 	ASSET_BITMAPFONT,
+	ASSET_TILEMAP,
 	ASSET_MAX
 } AssetType_t;
 
@@ -262,6 +264,7 @@ static const char* assetStrings[] = {
 	"ASSET_MOD",
 	"ASSET_FONT",
 	"ASSET_BITMAPFONT",
+	"ASSET_TILEMAP",
 	"ASSET_MAX"
 };
 

@@ -180,9 +180,10 @@ void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, bool
 	cmd->y3 = y3;
 }
 
-void DC_DrawMapLayer(unsigned int layer, float x, float y, unsigned int cellX, unsigned int cellY, unsigned int cellW, unsigned int cellH)
+void DC_DrawMapLayer(unsigned int mapId, unsigned int layer, float x, float y, unsigned int cellX, unsigned int cellY, unsigned int cellW, unsigned int cellH)
 {
 	GET_COMMAND(drawMapCommand_t, RC_DRAW_MAP_LAYER);
+	cmd->mapId = mapId;
 	cmd->layer = layer;
 	cmd->x = x;
 	cmd->y = y;

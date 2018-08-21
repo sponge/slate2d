@@ -1,10 +1,12 @@
 #pragma once
 
 #include "../game/shared.h"
+#include <tmx.h>
 
 AssetHandle Asset_Find(const char *name);
 Asset* Asset_Get(AssetType_t type, AssetHandle id);
 AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *path, int flags = 0);
+void Asset_Load(AssetHandle i);
 void Asset_LoadAll();
 void Asset_ClearAll();
 
@@ -51,3 +53,9 @@ void Speech_Free(Asset &asset);
 void* Sound_Load(Asset &asset);
 void Sound_Free(Asset &asset);
 void Mod_Free(Asset &asset);
+
+// tilemap assets
+
+void * TileMap_Load(Asset &asset);
+void TileMap_Free(Asset &asset);
+tmx_map* Get_TileMap(AssetHandle id);

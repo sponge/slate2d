@@ -8,7 +8,6 @@
 #include "console/console.h"
 
 extern ClientInfo inf;
-extern tmx_map *map;
 
 const void *RB_SetColor(const void *data) {
 	auto cmd = (const setColorCommand_t *)data;
@@ -250,6 +249,8 @@ const void *RB_DrawTri(const void *data) {
 
 const void *RB_DrawMapLayer(const void *data) {
 	auto cmd = (const drawMapCommand_t *)data;
+
+	tmx_map *map = (tmx_map *)Asset_Get(ASSET_TILEMAP, cmd->mapId)->resource;
 
 	tmx_layer *layer = map->ly_head;
 	unsigned int i = 0;

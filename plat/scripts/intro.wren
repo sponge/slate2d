@@ -7,7 +7,10 @@ class Intro {
    nextScene=(params) { _nextScene = params }
 
    construct new(mapName) {
-      TileMap.load(mapName)
+      var tmapId = Asset.create(Asset.TileMap, mapName, mapName)
+      TileMap.setCurrent(tmapId)
+      Asset.load(tmapId)
+
       var mapProps = TileMap.getMapProperties()
 
       _nextScene = null

@@ -23,7 +23,10 @@ class Level {
    props { _mapProps }
 
    construct new(mapName) {
-      TileMap.load(mapName)
+      var tmapId = Asset.create(Asset.TileMap, "tilemap", mapName)
+      TileMap.setCurrent(tmapId)
+      Asset.loadAll()
+      
       _mapProps = TileMap.getMapProperties()
 
       _w = _mapProps["width"]

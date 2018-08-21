@@ -1,5 +1,4 @@
 #include <SDL/SDL.h>
-#include <tmx.h>
 
 #include "gamedll.h"
 #include "../game/public.h"
@@ -14,7 +13,6 @@
 #include "assetloader.h"
 
 extern SceneManager *sm;
-extern tmx_map *map;
 extern ClientInfo inf;
 
 void trap_SendConsoleCommand(const char *text) {
@@ -35,61 +33,6 @@ void trap_Scene_Replace(int i, Scene *newScene) {
 
 Scene * trap_Scene_Current() {
 	return sm->Current();
-}
-
-void * tmx_img_load(const char *path) {
-	const char *fullpath = va("maps/%s", path);
-	AssetHandle handle = Asset_Create(ASSET_IMAGE, fullpath, fullpath);
-	return (void*)Asset_Get(ASSET_IMAGE, handle);
-}
-
-void tmx_img_free(void *address) {
-	
-}
-
-void *tmx_fs(const char *filename, int *outSz) {
-	void *xml;
-
-	*outSz = FS_ReadFile(va("maps/%s",filename), &xml);
-
-	if (*outSz < 0) {
-		Com_Error(ERR_DROP, "Couldn't load file while parsing map %s", filename);
-		return nullptr;
-	}
-
-	return xml;
-}
-
-tmx_map * trap_Map_Load(const char *filename) {
-	tmx_img_load_func = &tmx_img_load;
-	tmx_img_free_func = &tmx_img_free;
-	tmx_file_read_func = &tmx_fs;
-
-	const char *xml;
-	int outSz = FS_ReadFile(filename, (void **) &xml);
-	if (outSz < 0) {
-		Com_Error(ERR_DROP, "Couldn't read map %s", filename);
-		return nullptr;
-	}
-
-	map = tmx_load_buffer(xml, outSz);
-
-	if (map == nullptr) {
-		Com_Error(ERR_DROP, "Failed to load tmx");
-		return nullptr;
-	}
-
-	if (map->orient != O_ORT) {
-		Com_Error(ERR_DROP, "Non orthagonal tiles not supported");
-		return nullptr;
-	}
-
-	return map;
-}
-
-void trap_Map_Free(tmx_map *localMap) {
-	tmx_map_free(localMap);
-	map = nullptr;
 }
 
 int R_RegisterShader(const char *name, const char *vshader, const char *fshader) {
@@ -117,8 +60,6 @@ static gameImportFuncs_t GAMEtraps = {
 	trap_Scene_Get,
 	trap_Scene_Replace,
 	trap_Scene_Current,
-	trap_Map_Load,
-	trap_Map_Free,
 	IN_KeyDown,
 	IN_KeyUp,
 	IN_KeyState,
@@ -128,12 +69,14 @@ static gameImportFuncs_t GAMEtraps = {
 	R_RegisterShader,
 	Asset_Create,
 	Asset_Find,
+	Asset_Load,
 	Asset_LoadAll,
 	Asset_ClearAll,
 	BMPFNT_Set,
 	BMPFNT_TextWidth,
 	Sprite_Set,
 	Get_Img,
+	Get_TileMap,
 	Snd_Play,
 	Snd_Stop,
 	Snd_PauseResume,

@@ -88,8 +88,11 @@ class TD {
 
       SoundController.stopMusic()
 
-      // load the requested map
-      TileMap.load(_mapName)
+      // load the requested mapw
+      var tmapId = Asset.create(Asset.TileMap, _mapName, _mapName)
+      TileMap.setCurrent(tmapId)
+      Asset.load(tmapId)
+      
       _layers = TileMap.layerNames()
 
       _mapProps = TileMap.getMapProperties()

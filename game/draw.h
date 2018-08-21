@@ -16,6 +16,6 @@ void DC_DrawSprite(unsigned int sprite, int id, float x, float y, float alpha = 
 void DC_DrawLine(float x1, float y1, float x2, float y2);
 void DC_DrawCircle(float x, float y, float radius, bool outline = false);
 void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, bool outline = false);
-void DC_DrawMapLayer(unsigned int layer, float x = 0, float y = 0, unsigned int cellX = 0, unsigned int cellY = 0, unsigned int cellW = 0, unsigned int cellH = 0);
+void DC_DrawMapLayer(unsigned int mapId, unsigned int layer, float x = 0, float y = 0, unsigned int cellX = 0, unsigned int cellY = 0, unsigned int cellW = 0, unsigned int cellH = 0);
 void DC_Submit();
 void DC_Clear();

@@ -51,7 +51,6 @@ SoLoud::Soloud soloud;
 ClientInfo inf;
 SceneManager *sm;
 int64_t frame_musec = 0, com_frameTime = 0;
-tmx_map *map;
 //float frame_accum;
 bool frameAdvance = false;
 bool errorVisible = false;

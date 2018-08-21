@@ -48,6 +48,7 @@ class Asset {
    foreign static create(type, name, path, flags)
    static create(type, name, path) { create(type, name, path, 0) }
    foreign static find(name)
+   foreign static load(assetHandle)
    foreign static loadAll()
    foreign static clearAll()
    foreign static bmpfntSet(assetHandle, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight)
@@ -64,7 +65,8 @@ class Asset {
    static Mod { 5 }
    static Font { 6 }
    static BitmapFont { 7 }
-   static Max { 8 }
+   static TileMap { 8 }
+   static Max { 9 }
 }
 
 class Draw {
@@ -137,8 +139,9 @@ class Color {
 }
 
 class TileMap {
-   foreign static load(name)
-   foreign static free()
+   // foreign static load(name)
+   // foreign static free()
+   foreign static setCurrent(assetHandle)
    foreign static layerByName(name)
    foreign static layerNames()
    foreign static objectsInLayer(id)

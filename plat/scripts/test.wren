@@ -35,7 +35,8 @@ class Title {
       _spr = Asset.create(Asset.Sprite, "spr", "maps/tilesets/plat.gif")
       Asset.spriteSet(_spr, 8, 8, 0, 0)
 
-      TileMap.load(mapName)
+      var tmapId = Asset.create(Asset.TileMap, mapName, mapName)
+      TileMap.setCurrent(tmapId)
 
       Asset.loadAll()
 
@@ -172,7 +173,6 @@ class Title {
    }
 
    shutdown() {
-      TileMap.free()
       Asset.clearAll()
    }
 }

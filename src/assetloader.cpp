@@ -18,7 +18,8 @@ static AssetLoadHandler assetHandler[ASSET_MAX] = {
 	{Sound_Load, Sound_Free},
 	{Sound_Load, Mod_Free},
 	{TTF_Load, TTF_Free},
-	{BMPFNT_Load, BMPFNT_Free}
+	{BMPFNT_Load, BMPFNT_Free},
+	{TileMap_Load, TileMap_Free},
 };
 
 AssetHandle Asset_Find(const char *name) {
@@ -74,21 +75,25 @@ AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *pa
 	return asset->id;
 }
 
+void Asset_Load(AssetHandle i) {
+	Asset &asset = assets[i];
+	if (asset.type == ASSET_ANY || asset.loaded) {
+		return;
+	}
+
+	Com_Printf("asset_load: %s name:%s path:%s\n", assetStrings[asset.type], asset.name, asset.path);
+	void *resourcePtr = assetHandler[asset.type].Load(asset);
+	if (resourcePtr == nullptr) {
+		Com_Error(ERR_FATAL, "asset_loadall: got nullptr while loading %s", asset.name);
+		return;
+	}
+	asset.resource = resourcePtr;
+	asset.loaded = true;
+}
+
 void Asset_LoadAll() {
 	for (int i = 0; i < MAX_ASSETS; i++) {
-		Asset &asset = assets[i];
-		if (asset.type == ASSET_ANY || asset.loaded) {
-			continue;
-		}
-
-		Com_Printf("asset_load: %s name:%s path:%s\n", assetStrings[asset.type], asset.name, asset.path);
-		void *resourcePtr = assetHandler[asset.type].Load(asset);
-		if (resourcePtr == nullptr) {
-			Com_Error(ERR_FATAL, "asset_loadall: got nullptr while loading %s", asset.name);
-			return;
-		}
-		asset.resource = resourcePtr;
-		asset.loaded = true;
+		Asset_Load(i);
 	}
 }
 

@@ -10,7 +10,7 @@
 #include <imgui.h>
 #include "scene_wren.h"
 
-static tmx_map *map; // FIXME: bad!
+static unsigned int mapId;
 
 #pragma region Trap Module
 void wren_trap_print(WrenVM *vm) {
@@ -224,6 +224,11 @@ void wren_asset_find(WrenVM *vm) {
 	wrenSetSlotDouble(vm, 0, trap->Asset_Find(name));
 }
 
+void wren_asset_load(WrenVM *vm) {
+	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
+	trap->Asset_Load(assetHandle);
+}
+
 void wren_asset_loadall(WrenVM *vm) {
 	trap->Asset_LoadAll();
 }
@@ -420,7 +425,7 @@ void wren_dc_drawmaplayer(WrenVM *vm) {
 	unsigned int cellW = (unsigned int)wrenGetSlotDouble(vm, 6);
 	unsigned int cellH = (unsigned int)wrenGetSlotDouble(vm, 7);
 
-	DC_DrawMapLayer(layer, x, y, cellX, cellY, cellW, cellH);
+	DC_DrawMapLayer(mapId, layer, x, y, cellX, cellY, cellW, cellH);
 }
 
 void wren_dc_drawsprite(WrenVM *vm) {
@@ -489,19 +494,15 @@ void parseProperties(WrenVM *vm, int propSlot, int *totalSlotsIn, int *sIn, void
 	}
 }
 
-void wren_map_load(WrenVM *vm) {
-	const char *str = wrenGetSlotString(vm, 1);
-
-	map = trap->Map_Load(str);
-}
-
-void wren_map_free(WrenVM *vm) {
-	trap->Map_Free(map);
+void wren_map_setcurrent(WrenVM *vm) {
+	unsigned int id = (unsigned int) wrenGetSlotDouble(vm, 1);
+	mapId = id;
 }
 
 void wren_map_getlayerbyname(WrenVM *vm) {
 	const char *name = wrenGetSlotString(vm, 1);
 
+	tmx_map *map = trap->Get_TileMap(mapId);
 	int id = Map_GetLayerByName(map, name);
 
 	wrenSetSlotDouble(vm, 0, id);
@@ -527,6 +528,7 @@ void wren_map_getobjectsinlayer(WrenVM *vm) {
 		wrenSetSlotString(vm, s++, keys[i]);
 	}
 
+	tmx_map *map = trap->Get_TileMap(mapId);
 	tmx_object *obj = Map_LayerObjects(map, id, nullptr);
 	while (obj != nullptr) {
 		// ensure enough slots for map object + map values
@@ -576,6 +578,8 @@ void wren_map_getmapproperties(WrenVM *vm) {
 	static const char *keys[] = { "width", "height", "tileWidth", "tileHeight", "backgroundColor", "properties" };
 	static const int keySz = sizeof(keys) / sizeof(*keys);
 
+	const tmx_map *map = trap->Get_TileMap(mapId);
+
 	int totalSlots = 1; // total num of slots for wrenEnsureSlots
 	int s = 1; // current slot we're on
 
@@ -610,6 +614,8 @@ void wren_map_getmapproperties(WrenVM *vm) {
 
 void wren_map_getlayerproperties(WrenVM *vm) {
 	int id = (int)wrenGetSlotDouble(vm, 1);
+
+	tmx_map *map = trap->Get_TileMap(mapId);
 	tmx_layer *layer = Map_GetLayer(map, id);
 
 	if (layer == nullptr) {
@@ -650,6 +656,8 @@ void wren_map_getlayerproperties(WrenVM *vm) {
 }
 
 void wren_map_gettileproperties(WrenVM *vm) {
+	tmx_map *map = trap->Get_TileMap(mapId);
+
 	int totalSlots = 2; // total num of slots for wrenEnsureSlots
 	int s = 1; // current slot we're on
 
@@ -684,6 +692,7 @@ void wren_map_gettile(WrenVM *vm) {
 	unsigned int x = (unsigned int)wrenGetSlotDouble(vm, 2);
 	unsigned int y = (unsigned int)wrenGetSlotDouble(vm, 3);
 	
+	tmx_map *map = trap->Get_TileMap(mapId);
 	int gid = Map_GetTile(map, layer, x, y);
 
 	wrenSetSlotDouble(vm, 0, gid);
@@ -693,6 +702,8 @@ void wren_map_getlayernames(WrenVM *vm) {
 	int i = 0;
 
 	wrenSetSlotNewList(vm, 0);
+
+	tmx_map *map = trap->Get_TileMap(mapId);
 	tmx_layer *layer = Map_GetLayer(map, i);
 	while (layer != nullptr) {
 		wrenEnsureSlots(vm, i + 2);
@@ -772,6 +783,7 @@ static const wrenMethodDef methods[] = {
 
 	{ "engine", "Asset", true, "create(_,_,_,_)", wren_asset_create },
 	{ "engine", "Asset", true, "find(_)", wren_asset_find },
+	{ "engine", "Asset", true, "load(_)", wren_asset_load },
 	{ "engine", "Asset", true, "loadAll()", wren_asset_loadall },
 	{ "engine", "Asset", true, "clearAll()", wren_asset_clearall },
 	{ "engine", "Asset", true, "bmpfntSet(_,_,_,_,_,_)", wren_asset_bmpfnt_set },
@@ -799,8 +811,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Draw", true, "submit()", wren_dc_submit },
 	{ "engine", "Draw", true, "clear()", wren_dc_clear },
 
-	{ "engine", "TileMap", true, "load(_)", wren_map_load },
-	{ "engine", "TileMap", true, "free()", wren_map_free },
+	{ "engine", "TileMap", true, "setCurrent(_)", wren_map_setcurrent },
 	{ "engine", "TileMap", true, "layerByName(_)", wren_map_getlayerbyname },
 	{ "engine", "TileMap", true, "layerNames()", wren_map_getlayernames },
 	{ "engine", "TileMap", true, "objectsInLayer(_)", wren_map_getobjectsinlayer },

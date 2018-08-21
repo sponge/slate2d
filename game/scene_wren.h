@@ -16,4 +16,5 @@ private:
 	const char *mainScriptName;
 	const char *mapFileName;
 	struct WrenVM *vm;
+	bool initialized = false;
 };

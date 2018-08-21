@@ -62,12 +62,12 @@ static gameImportFuncs_t GAMEtraps = {
 };
 
 #ifdef __EMSCRIPTEN__
-extern "C" void dllEntry(void ** exports, void * imports, int * version);
-void Sys_LoadDll(const char * module, void ** exports, int * version) {
-	dllEntry(exports, &GAMEtraps, version);
+extern "C" void dllEntry(void ** exports, void * imports);
+void Sys_LoadDll(const char * module, void ** exports) {
+	dllEntry(exports, &GAMEtraps);
 }
 #else
-void Sys_LoadDll(const char * module, void ** exports, int * version) {
+void Sys_LoadDll(const char * module, void ** exports) {
 	void *gameDLL;
 
 	gameDLL = SDL_LoadObject(va("%s/%s/%s", fs_basepath->string, fs_game->string, module));
@@ -84,13 +84,13 @@ void Sys_LoadDll(const char * module, void ** exports, int * version) {
 		gameDLL = SDL_LoadObject(module);
 	}
 
-	void(*gameDllEntry)(void ** exports, const void * imports, int * version) = (void(*)(void **, const void *, int *)) SDL_LoadFunction(gameDLL, "dllEntry");
+	void(*gameDllEntry)(void ** exports, const void * imports) = (void(*)(void **, const void *)) SDL_LoadFunction(gameDLL, "dllEntry");
 
 	if (gameDllEntry == nullptr) {
 		Com_Error(ERR_FATAL, "Couldn't find dllEntry in %s", module);
 	}
 
-	gameDllEntry(exports, &GAMEtraps, version);
+	gameDllEntry(exports, &GAMEtraps);
 
 }
 #endif

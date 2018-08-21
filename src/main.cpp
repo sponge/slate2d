@@ -85,6 +85,7 @@ void Cmd_Vid_Restart_f(void) {
 
 void DropToMenu() {
 	errorVisible = true;
+	gexports->Error(ERR_DROP, com_errorMessage->string);
 }
 
 
@@ -340,8 +341,6 @@ int main(int argc, char *argv[]) {
 	consoleScene = new ConsoleScene();
 	consoleScene->Startup(&inf);
 
-	int ver = 0;
-
 #ifdef _WIN32
 	static const char *lib = "game.dll";
 #elif defined MACOS
@@ -350,7 +349,7 @@ static const char *lib = "libgame.dylib";
         static const char *lib = "libgame.so";
 #endif
 
-	Sys_LoadDll(lib, (void **)(&gexports), &ver);
+	Sys_LoadDll(lib, (void **)(&gexports));
 	gexports->Init((void*)&inf, (void*)ImGui::GetCurrentContext());
 
 // not working in emscripten for some reason? assert on ImGuiKey_Space not being mapped

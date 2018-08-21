@@ -52,6 +52,7 @@ typedef struct gameExportFuncs_s {
 	void(*Init)(void *clientInfo, void *imGuiContext);
 	void(*Console)(const char *line);
 	void(*Frame)(double dt);
+	void(*Error)(int level, const char *msg);
 } gameExportFuncs_t;
 
 extern gameImportFuncs_t *trap;

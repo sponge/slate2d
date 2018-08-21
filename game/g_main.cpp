@@ -101,6 +101,10 @@ static void Console(const char *line) {
 }
 
 static void Frame(double dt) {
+	if (scene == nullptr) {
+		return;
+	}
+
 	if (dt != 0) {
 		scene->Update(dt);
 	}
@@ -108,20 +112,25 @@ static void Frame(double dt) {
 	scene->Render();
 }
 
-static gameExportFuncs_t GAMEfuncs = {
+static void Error(int level, const char *msg) {
+	delete scene;
+	scene = nullptr;
+}
+
+static gameExportFuncs_t gameExports = {
 	Init,
 	Console,
-	Frame
+	Frame,
+	Error
 };
 
 extern "C" 
 #ifdef _WIN32
 __declspec(dllexport)
 #endif
-void dllEntry(void ** exports, void * imports, int * version) {
-	*exports = &GAMEfuncs;
+void dllEntry(void ** exports, void * imports) {
+	*exports = &gameExports;
 	trap = (gameImportFuncs_t *)imports;
-	*version = 1;
 }
 
 /*

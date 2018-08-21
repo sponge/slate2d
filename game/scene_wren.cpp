@@ -5,6 +5,10 @@
 void WrenScene::Startup(ClientInfo* info) {
 	inf = info;
 	vm = Wren_Init(mainScriptName, mapFileName);
+	if (vm != nullptr) {
+		initialized = true;
+		trap->Cvar_Set("com_errorMessage", "");
+	}
 }
 
 void WrenScene::Update(double dt) {
@@ -17,6 +21,10 @@ void WrenScene::Render() {
 
 WrenScene::~WrenScene()
 {
+	if (!initialized) {
+		return;
+	}
+
 	Wren_Scene_Shutdown(vm);
 	Wren_FreeVM(vm);
 }

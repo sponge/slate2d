@@ -88,18 +88,14 @@ void DropToMenu() {
 	gexports->Error(ERR_DROP, com_errorMessage->string);
 }
 
-
 static struct NVGcontext* vg;
 static bool loop = true;
 
-using namespace std::chrono;
-using namespace std::chrono_literals;
-
-auto start = steady_clock::now();
+auto start = std::chrono::steady_clock::now();
 
 void main_loop() {
 
-	auto now = duration_cast<microseconds>( steady_clock::now() - start ).count();
+	auto now = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - start ).count();
 	frame_musec = now - com_frameTime;
 	com_frameTime = now;
 
@@ -329,14 +325,7 @@ int main(int argc, char *argv[]) {
 #endif
 	inf.nvg = vg;
 
-	unsigned char *font;
-	auto sz = FS_ReadFile("/fonts/Roboto-Regular.ttf", (void **)&font);
-	assert(sz != -1);
-	nvgCreateFontMem(vg, "sans", font, sz, 1);
-
-	if (!Com_AddStartupCommands()) {
-		// do something here? don't load menu?
-	}
+	Com_AddStartupCommands();
 
 	consoleScene = new ConsoleScene();
 	consoleScene->Startup(&inf);
@@ -344,9 +333,9 @@ int main(int argc, char *argv[]) {
 #ifdef _WIN32
 	static const char *lib = "game.dll";
 #elif defined MACOS
-static const char *lib = "libgame.dylib";
+	static const char *lib = "libgame.dylib";
 #else
-        static const char *lib = "libgame.so";
+	static const char *lib = "libgame.so";
 #endif
 
 	Sys_LoadDll(lib, (void **)(&gexports));

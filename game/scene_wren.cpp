@@ -19,8 +19,7 @@ void WrenScene::Render() {
 	Wren_Draw(vm, inf->width, inf->height);
 }
 
-WrenScene::~WrenScene()
-{
+WrenScene::~WrenScene() {
 	if (!initialized) {
 		return;
 	}
@@ -29,7 +28,6 @@ WrenScene::~WrenScene()
 	Wren_FreeVM(vm);
 }
 
-void WrenScene::Console(const char *str)
-{
+void WrenScene::Console(const char *str) {
 	Wren_Console(vm, str);
 }

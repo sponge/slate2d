@@ -1,5 +1,5 @@
 import "meta" for Meta
-import "engine" for Trap, Draw, Asset
+import "engine" for Trap, Draw, Asset, CVar
 
 import "timer" for Timer
 import "debug" for Debug
@@ -19,6 +19,8 @@ class Main {
       SoundController.init()
       __accumTime = 0
 
+      __inspector = CVar.get("wren_inspector", 0)
+
       if (mapName == null) {
          loadScene("title", null)
          // loadScene("world", "maps/plat2.tmx")
@@ -28,9 +30,14 @@ class Main {
    }
 
    static update(dt) {
-      if (__scene.nextScene != null) {
-         Trap.printLn("got scene transfer: %(__scene)")
-         loadScene(__scene.nextScene[0], __scene.nextScene[1])
+      if (__scene && __scene.nextScene != null) {
+         Trap.printLn("got scene transfer: %(__scene.nextScene)")
+         if (__scene.nextScene is String) {
+            loadScene(__scene.nextScene, null)
+         } else {
+            var params = __scene.nextScene.count > 1 ? __scene.nextScene[1] : null
+            loadScene(__scene.nextScene[0], params)
+         }
       }
 
       __accumTime = __accumTime + dt
@@ -43,18 +50,27 @@ class Main {
       Debug.persist(true)
       Debug.clearPersist()
 
-      __scene.update(1)
+      if (__scene != null) {
+         __scene.update(1)
+      }
       Timer.tick(1)
+
+      // see the hack comment in engine.wren for why this is
+      Trap.clearKeyPressed()
    }
 
    static draw(w, h) {
       Debug.persist(false)
       Draw.clear()
-      __scene.draw(w, h)
+      if (__scene != null) {
+         __scene.draw(w, h)
+      }
       Debug.draw()
       Draw.submit()
 
-      Trap.inspect(__scene)
+      if (__inspector.bool()) {
+         Trap.inspect(__scene)
+      }
    }
 
    static console(line) {

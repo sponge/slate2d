@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <ctype.h>
 #include <string>
 #include <map>
+#include <algorithm>
 
 std::map<std::string, cvar_t*> cvars;
 cvar_t		*cvar_cheats;
@@ -59,7 +60,10 @@ Cvar_FindVar
 ============
 */
 cvar_t *Cvar_FindVar( const char *var_name ) {
-	return cvars[var_name];
+	std::string lwr = var_name;
+	std::transform(lwr.begin(), lwr.end(), lwr.begin(), ::tolower);
+
+	return cvars[lwr];
 }
 
 /*
@@ -132,9 +136,11 @@ Cvar_CommandCompletion
 */
 void	Cvar_CommandCompletion(void(*callback)(const char *match, const char *candidate), const char *match) {
 	cvar_t		*cvar;
+	std::string lwr = match;
+	std::transform(lwr.begin(), lwr.end(), lwr.begin(), ::tolower);
 	
 	for (const auto &cvar : cvars) {
-		callback(match, cvar.second->name);
+		callback(lwr.c_str(), cvar.first.c_str());
 	}
 }
 
@@ -225,7 +231,10 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 	var->resetString = CopyString( var_value );
 
 	// link the variable in
-	cvars[var->name] = var;
+	std::string lwr = var_name;
+	std::transform(lwr.begin(), lwr.end(), lwr.begin(), ::tolower);
+
+	cvars[lwr] = var;
 
 	var->flags = flags;
 

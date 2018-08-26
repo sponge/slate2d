@@ -321,7 +321,7 @@ class Towers {
 
       if (_paused) {
          Draw.resetTransform()
-         Draw.transform(h/720, 0, 0, h/720, 0, 0)
+         Draw.scale(h/720)
          _pauseMenu.draw()
       }
    }

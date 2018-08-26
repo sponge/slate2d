@@ -42,7 +42,7 @@ class IntroMessage {
       Draw.rect(0, 0, w, h, false)
       Draw.image(_gradient, 0, 0, w, h)
 
-      Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
+      Draw.scale(h / 720)
 
 //       Draw.setColor(0, 0, 0, 200)
 //       Draw.rect(108, 0, h/720*w-200, 720, Fill.Solid)

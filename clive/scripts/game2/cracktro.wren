@@ -60,7 +60,7 @@ class Game2Cracktro {
 
       Draw.clear()
       Draw.resetTransform()
-      Draw.transform(h / 360, 0, 0, h / 360, 0, 0)
+      Draw.scale(h / 360)
 
       Draw.image(_bg, 0, 0)
 

@@ -41,7 +41,7 @@ class Game1Win {
 
    draw(w, h) {
       Draw.clear()
-      Draw.transform(_scale, 0, 0, _scale, 0, 0)
+      Draw.scale(_scale)
       w = w/_scale
       h = h/_scale
 

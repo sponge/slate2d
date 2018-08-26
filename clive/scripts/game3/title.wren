@@ -112,7 +112,7 @@ class Game3Title {
    draw(w, h) {
       Draw.clear()
       Draw.resetTransform()
-      Draw.transform(h / 180, 0, 0, h / 180, 0, 0)
+      Draw.scale(h / 180)
 
       if (_mode == "glitch") {
          Draw.image(_glitch, 0, 0)

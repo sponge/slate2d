@@ -56,7 +56,7 @@ class Game1Title {
    draw(w, h) {
       Draw.clear()
       Draw.resetTransform()
-      Draw.transform(h / 360, 0, 0, h / 360, 0, 0)
+      Draw.scale(h / 360)
 
       Draw.translate(192, 72)
       

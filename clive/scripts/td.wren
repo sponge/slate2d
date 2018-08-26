@@ -33,7 +33,7 @@ class Tip {
       }
 
       Draw.resetTransform()
-      Draw.transform(h/720, 0, 0, h/720, 0, 0)
+      Draw.scale(h/720)
       
       Draw.setColor(0, 57, 113, 200)
       Draw.rect(_x, _y, 200, 65, false)
@@ -346,7 +346,7 @@ class TD {
       Draw.clear()
       Draw.resetTransform()
       _scale = h / _vHeight
-      Draw.transform(_scale, 0, 0, _scale, 0, 0)
+      Draw.scale(_scale)
 
       for (i in 0.._layers.count-1) {
          Draw.mapLayer(i)
@@ -368,7 +368,7 @@ class TD {
       }
 
       Draw.resetTransform()
-      Draw.transform(h/720, 0, 0, h/720, 0, 0)
+      Draw.scale(h/720)
 
       if (_paused) {
          _pauseMenu.draw()

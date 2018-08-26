@@ -42,7 +42,7 @@ class Game3Win {
    draw(w, h) {
       Draw.clear()
       Draw.clear()
-      Draw.transform(h/180, 0, 0, h/180, 0, 0)
+      Draw.scale(h/180)
 
       Draw.setTextStyle(_font, 20, 1.0, Align.Center|Align.Top)
       Draw.setColor(textColor())

@@ -30,12 +30,10 @@ const void *RB_ResetTransform(const void *data) {
 	return (const void *)(cmd + 1);
 }
 
-const void *RB_Transform(const void *data) {
-	auto cmd = (const transformCommand_t *)data;
+const void *RB_Scale(const void *data) {
+	auto cmd = (const scaleCommand_t *)data;
 
-	rlScalef(cmd->transform[0], cmd->transform[3], 1.0f);
-	rlTranslatef(cmd->transform[4], cmd->transform[5], 0.0f);
-	// FIXME: skew, we don't use it yet
+	rlScalef(cmd->x, cmd->y, 1.0f);
 
 	return (const void *)(cmd + 1);
 }
@@ -393,8 +391,8 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 			data = RB_ResetTransform(data);
 			break;
 
-		case RC_TRANSFORM:
-			data = RB_Transform(data);
+		case RC_SCALE:
+			data = RB_Scale(data);
 			break;
 
 		case RC_ROTATE:

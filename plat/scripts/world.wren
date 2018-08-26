@@ -208,7 +208,7 @@ class World {
    draw(w, h) {
       Draw.resetTransform()
 
-      Draw.transform(h / _cam.h, 0, 0, h / _cam.h, 0, 0)
+      Draw.scale(h / _cam.h)
       
       Draw.setScissor(0, 16, _cam.w, _cam.h - 16)
 

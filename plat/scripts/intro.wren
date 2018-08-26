@@ -46,7 +46,7 @@ class Intro {
    draw(w, h) {
       Draw.clear()
       Draw.resetTransform()
-      Draw.transform(h / 180, 0, 0, h / 180, 0, 0)
+      Draw.scale(h / 180)
 
       Draw.bmpText(_fixedFont, 20, 50, "Now entering...")
       Draw.bmpText( _font, (320 - _titleLen) / 2, 85, _title)

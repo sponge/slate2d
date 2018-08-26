@@ -44,14 +44,10 @@ void DC_ResetTransform() {
 	GET_COMMAND(resetTransformCommand_t, RC_RESET_TRANSFORM)
 }
 
-void DC_Transform(float a, float b, float c, float d, float e, float f) {
-	GET_COMMAND(transformCommand_t, RC_TRANSFORM)
-	cmd->transform[0] = a;
-	cmd->transform[1] = b;
-	cmd->transform[2] = c;
-	cmd->transform[3] = d;
-	cmd->transform[4] = e;
-	cmd->transform[5] = f;
+void DC_Scale(float x, float y) {
+	GET_COMMAND(scaleCommand_t, RC_SCALE)
+	cmd->x = x;
+	cmd->y = y;
 }
 
 void DC_Rotate(float angle) {

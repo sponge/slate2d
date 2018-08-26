@@ -89,13 +89,13 @@ class Game2Title {
 
    draw(w, h) {
       if (_drawTitle) {
-         Draw.transform(h / 180, 0, 0, h / 180, 0, 0)
+         Draw.scale(h / 180)
          Draw.image(_titleBg, 0, 0)
          Draw.submit()
          return
       }
 
-      Draw.transform(h / 240, 0, 0, h / 240, 0, 0)
+      Draw.scale(h / 240)
 
       var x = 41 
       var y = 0

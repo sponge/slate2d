@@ -81,7 +81,7 @@ class GameSelect {
       Draw.image(_gradient, 0, 0, w, h)
 
       Draw.resetTransform()
-      Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
+      Draw.scale(h / 720)
 
       for (item in _items) {
           item.draw()

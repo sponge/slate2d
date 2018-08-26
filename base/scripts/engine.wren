@@ -73,7 +73,8 @@ class Draw {
    foreign static setColor(r, g, b, a)
    static setColor(rgba) { setColor(rgba[0], rgba[1], rgba[2], rgba[3])}
    foreign static resetTransform()
-   foreign static transform(a, b, c, d, e, f)
+   foreign static scale(x, y)
+   static scale(factor) { scale(factor, factor) }
    foreign static rotate(angle)
    foreign static translate(x, y)
    foreign static setScissor(x, y, w, h)

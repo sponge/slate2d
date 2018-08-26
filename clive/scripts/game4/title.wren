@@ -163,7 +163,7 @@ class Game4Title {
    draw(w, h) {
       Draw.clear()
       Draw.resetTransform()
-      Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
+      Draw.scale(h / 720)
 
       Draw.setColor(255, 255, 255, 255)
       Draw.setTextStyle(_font, 48, 1.0, Align.Left+Align.Top)

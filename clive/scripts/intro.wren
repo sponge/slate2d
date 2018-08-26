@@ -40,7 +40,7 @@ class Intro {
       Draw.rect(0, 0, w, h, false)
       Draw.image(_gradient, 0, 0, w, h)
 
-      Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
+      Draw.scale(h / 720)
 
       Draw.image(_logo, 0, 0)
       if (_time.floor % 2 == 0) {

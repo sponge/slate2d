@@ -104,7 +104,7 @@ class Title {
 
       Draw.clear()
       Draw.resetTransform()
-      Draw.transform(h / 180, 0, 0, h / 180, 0, 0)
+      Draw.scale(h / 180)
 
       Draw.mapLayer(_bgLayer)
       Draw.mapLayer(_worldLayer)

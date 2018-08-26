@@ -117,8 +117,8 @@ typedef struct {
 
 typedef struct {
 	byte	commandId;
-	float	transform[6];
-} transformCommand_t;
+	float	x, y;
+} scaleCommand_t;
 
 typedef struct {
 	byte	commandId;
@@ -218,7 +218,7 @@ typedef enum {
 	RC_SET_COLOR,
 	RC_SET_TEXT_STYLE,
 	RC_RESET_TRANSFORM,
-	RC_TRANSFORM,
+	RC_SCALE,
 	RC_ROTATE,
 	RC_TRANSLATE,
 	RC_SET_SCISSOR,

@@ -1,10 +1,11 @@
-#include <nanovg.h>
 #include "bitmapfont.h"
 #include "files.h"
 #include "../game/shared.h"
 #include "console/console.h"
-#include <stb_image.h>
+#include "stb_image.h"
 #include "assetloader.h"
+#include "rendercommands.h"
+#include "rlgl.h"
 
 extern ClientInfo inf;
 
@@ -76,8 +77,8 @@ void* BMPFNT_Load(Asset &asset) {
 	}
 
 end:
-	font->nvg = inf.nvg;
-	font->hnd = nvgCreateImageMem(font->nvg, NVG_IMAGE_NEAREST, (unsigned char *)buffer, sz);
+
+	font->img = (Image*) Img_Load(asset);
 	font->w = w;
 	font->h = h;
 
@@ -88,7 +89,8 @@ end:
 
 void BMPFNT_Free(Asset &asset) {
 	BitmapFont *font = (BitmapFont*)asset.resource;
-	nvgDeleteImage(font->nvg, font->hnd);
+	rlDeleteTextures(font->img->hnd);
+	free(font->img);
 	free(font);
 }
 
@@ -172,18 +174,7 @@ int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, cons
 
 		BitmapGlyph &glyph = font->offsets[string[i]];
 
-		nvgSave(inf.nvg);
-
-		nvgTranslate(inf.nvg, currX, currY);
-		nvgScale(inf.nvg, scale, scale);
-
-		auto paint = nvgImagePattern(inf.nvg, 0 - glyph.start, 0, font->w, font->h, 0, font->hnd, 1.0);
-		nvgBeginPath(inf.nvg);
-		nvgRect(inf.nvg, 0, 0, glyph.end - glyph.start, font->h);
-		nvgFillPaint(inf.nvg, paint);
-		nvgFill(inf.nvg);
-
-		nvgRestore(inf.nvg);
+		DrawImage(currX, currY, glyph.end - glyph.start, font->h, glyph.start, 0, 1.0, scale, 0, font->img, 0);
 
 		currX += (glyph.end - glyph.start + font->charSpacing) * scale;
 

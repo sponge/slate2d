@@ -34,8 +34,7 @@ typedef struct {
 } BitmapGlyph;
 
 typedef struct BitmapFont {
-	struct NVGcontext *nvg;
-	unsigned int hnd;
+	Image *img;
 	int charSpacing, glyphWidth, spaceWidth, lineHeight;
 	int w, h;
 	unsigned char glyphs[256];

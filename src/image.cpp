@@ -1,13 +1,15 @@
-#include <nanovg.h>
+#include "rlgl.h"
 #include "assetloader.h"
 #include "files.h"
 #include "console/console.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 extern ClientInfo inf;
 
 void* Img_Load(Asset &asset) {
-	void *buffer;
-	auto sz = FS_ReadFile(asset.path, &buffer);
+	unsigned char *buffer;
+	auto sz = FS_ReadFile(asset.path, (void**) &buffer);
 
 	if (sz == -1) {
 		Com_Error(ERR_DROP, "Couldn't read image %s", asset.path);
@@ -15,14 +17,25 @@ void* Img_Load(Asset &asset) {
 	}
 
 	Image * img = new Image();
-	img->nvg = inf.nvg;
 
-	// flip nearest flag since we want nearest by default
-	int flags = asset.flags;
-	flags ^= NVG_IMAGE_NEAREST;
+	int w, h, imgBpp;
+	unsigned char *loaded = stbi_load_from_memory(buffer, sz, &img->w, &img->h, &imgBpp, 0);
 
-	img->hnd = nvgCreateImageMem(img->nvg, flags, (unsigned char *)buffer, sz);
-	nvgImageSize(img->nvg, img->hnd, &img->w, &img->h);
+	// FIXME: error handling?
+
+	unsigned int format = 0;
+	if (imgBpp == 1) format = UNCOMPRESSED_GRAYSCALE;
+	else if (imgBpp == 2) format = UNCOMPRESSED_GRAY_ALPHA;
+	else if (imgBpp == 3) format = UNCOMPRESSED_R8G8B8;
+	else if (imgBpp == 4) format = UNCOMPRESSED_R8G8B8A8;
+
+	unsigned int tex = rlLoadTexture(loaded, img->w, img->h, format, 1);
+
+	// FIXME: error handling?
+
+	// FIXME: nearest flags
+
+	img->hnd = tex;
 
 	free(buffer);
 
@@ -31,7 +44,8 @@ void* Img_Load(Asset &asset) {
 
 void Img_Free(Asset &asset) {
 	Image* img = (Image*)asset.resource;
-	nvgDeleteImage(img->nvg, img->hnd);
+
+	rlDeleteTextures(img->hnd);
 	free(img);
 }
 
@@ -84,7 +98,8 @@ void* Sprite_Load(Asset &asset) {
 
 void Sprite_Free(Asset &asset) {
 	Sprite *spr = (Sprite*)asset.resource;
-	nvgDeleteImage(spr->image->nvg, spr->image->h);
+	rlDeleteTextures(spr->image->hnd);
+	//nvgDeleteImage(spr->image->nvg, spr->image->h);
 	free(spr->image);
 	free(asset.resource);
 }

@@ -38,11 +38,14 @@ solution "game"
     language "C++"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
     removefiles { "src/imgui_impl_sdl_es2.cpp" }
-    sysincludedirs { "libs/sdl", "libs/nanovg", "libs/tmx", "libs/imgui", "libs/physfs", "libs/glew", "libs/soloud/include" }
+    sysincludedirs { "src/external", "libs/sdl", "libs/tmx", "libs/imgui", "libs/physfs", "libs/glew", "libs/soloud/include" }
     debugdir "."
     targetdir "build/bin/%{cfg.buildcfg}"
-    links { "nanovg", "tmx", "imgui", "physfs", "glew", "soloud", "libmodplug" }
+    links { "tmx", "imgui", "physfs", "glew", "soloud", "libmodplug" }
     cppdialect "C++14"
+
+    filter { "files:**.c"}
+      language "C"
 
     filter { "configurations:Release" }
       kind "WindowedApp"
@@ -91,15 +94,6 @@ solution "game"
       defines "WREN_NAN_TAGGING=0"
 
   group "libraries"
-
-    project "nanovg"
-      language "C"
-      kind "StaticLib"
-      includedirs { "libs/nanovg" }
-      files { "libs/nanovg/**.c", "libs/nanovg/**.h" }
-      targetdir "build/%{cfg.buildcfg}"
-      defines { "_CRT_SECURE_NO_WARNINGS" }
-      warnings "Off"
 
     project "tmx"
       language "C++"

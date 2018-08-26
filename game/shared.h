@@ -81,7 +81,6 @@ typedef struct {
 } kbutton_t;
 
 typedef struct {
-	struct NVGcontext *nvg;
 	int width, height;
 } ClientInfo;
 
@@ -280,7 +279,6 @@ typedef struct {
 } Asset;
 
 typedef struct {
-	struct NVGcontext *nvg;
 	unsigned int hnd;
 	int w, h;
 } Image;

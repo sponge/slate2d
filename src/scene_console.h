@@ -1,7 +1,8 @@
 #pragma once
 #include <vector>
-#include "scene.h"
 #include <tmx.h>
+
+#include "../game/shared.h"
 
 class ConsoleScene : public Scene {
 public:

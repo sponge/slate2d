@@ -20,13 +20,10 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
-#include <nanovg.h>
-#ifdef __EMSCRIPTEN__
-#define NANOVG_GLES2_IMPLEMENTATION
-#else
-#define NANOVG_GL3_IMPLEMENTATION
-#endif
-#include <nanovg_gl.h>
+extern "C" {
+#include "rlgl.h"
+	extern bool initGL(int width, int height);
+}
 
 #include <imgui.h>
 #include "imgui_impl_sdl.h"
@@ -37,7 +34,6 @@
 
 #include "gamedll.h"
 
-#include "scene.h"
 #include "scene_console.h"
 
 #include "../game/public.h"
@@ -88,7 +84,6 @@ void DropToMenu() {
 	gexports->Error(ERR_DROP, com_errorMessage->string);
 }
 
-static struct NVGcontext* vg;
 static bool loop = true;
 
 auto start = std::chrono::steady_clock::now();
@@ -193,7 +188,12 @@ void main_loop() {
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT);
-	nvgBeginFrame(inf.nvg, inf.width, inf.height, 1.0);
+
+	rlMatrixMode(RL_PROJECTION);                            // Enable internal projection matrix
+	rlLoadIdentity();                                       // Reset internal projection matrix
+	rlOrtho(0.0, inf.width, inf.height, 0.0, 0.0, 1.0); // Recalculate internal projection matrix
+	rlMatrixMode(RL_MODELVIEW);                             // Enable internal modelview matrix
+	rlLoadIdentity();                                       // Reset internal modelview matrix
 
 	gexports->Frame(!com_pause->integer || frameAdvance ? frame_musec / 1E6 : 0);
 	consoleScene->Update(frame_musec / 1E6);
@@ -202,9 +202,10 @@ void main_loop() {
 		frameAdvance = false;
 	}
 
+	rlglDraw();
+
 	consoleScene->Render();
 
-	nvgEndFrame(vg);
 	ImGui::Render();
 	ImGui_ImplSdl_RenderDrawData(ImGui::GetDrawData());
 
@@ -292,6 +293,10 @@ int main(int argc, char *argv[]) {
 
 	SDL_GLContext context = SDL_GL_CreateContext(window);
 
+	if (!initGL(inf.width, inf.height)) {
+		Com_Error(ERR_FATAL, "Could not init GL.");
+	}
+
 	SDL_GL_SetSwapInterval(vid_swapinterval->integer);
 
 	if (context == NULL) {
@@ -303,12 +308,6 @@ int main(int argc, char *argv[]) {
 		Com_Error(ERR_FATAL, "There was an error with OpenGL configuration.");
 	}
 
-#ifndef __EMSCRIPTEN__
-	if (glewInit() != GLEW_OK) {
-		Com_Error(ERR_FATAL, "Could not init glew.");
-	}
-#endif
-
 	soloud.init();
 
 	SDL_GL_MakeCurrent(window, context);
@@ -318,12 +317,6 @@ int main(int argc, char *argv[]) {
 
 	ImGui::StyleColorsDark();
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
-#ifdef __EMSCRIPTEN__
-	vg = nvgCreateGLES2(NVG_STENCIL_STROKES);
-#else
-	vg = nvgCreateGL3(NVG_STENCIL_STROKES);
-#endif
-	inf.nvg = vg;
 
 	Com_AddStartupCommands();
 

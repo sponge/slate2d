@@ -1,22 +1,31 @@
 #include "rendercommands.h"
 #include <algorithm>
-#include <nanovg.h>
 #include <tmx.h>
 #include "assetloader.h"
 #include "bitmapfont.h"
+#include "rlgl.h"
 
 #include "console/console.h"
 
 extern ClientInfo inf;
 
+float currentFillColor[4] = { 1.0, 1.0, 1.0, 1.0 };
+float currentStrokeColor[4] = { 1.0, 1.0, 1.0, 1.0 };
+
 const void *RB_SetColor(const void *data) {
 	auto cmd = (const setColorCommand_t *)data;
 
 	if (cmd->which == COLOR_FILL) {
-		nvgFillColor(inf.nvg, nvgRGBA(cmd->color[0], cmd->color[1], cmd->color[2], cmd->color[3])); 
+		currentFillColor[0] = cmd->color[0];
+		currentFillColor[1] = cmd->color[1];
+		currentFillColor[2] = cmd->color[2];
+		currentFillColor[3] = cmd->color[3];
 	}
 	else {
-		nvgStrokeColor(inf.nvg, nvgRGBA(cmd->color[0], cmd->color[1], cmd->color[2], cmd->color[3]));
+		currentStrokeColor[0] = cmd->color[0];
+		currentStrokeColor[1] = cmd->color[1];
+		currentStrokeColor[2] = cmd->color[2];
+		currentStrokeColor[3] = cmd->color[3];
 	}
 
 	return (const void *)(cmd + 1);
@@ -25,7 +34,7 @@ const void *RB_SetColor(const void *data) {
 const void *RB_ResetTransform(const void *data) {
 	auto cmd = (const resetTransformCommand_t *)data;
 
-	nvgResetTransform(inf.nvg);
+	rlLoadIdentity();
 
 	return (const void *)(cmd + 1);
 }
@@ -33,7 +42,9 @@ const void *RB_ResetTransform(const void *data) {
 const void *RB_Transform(const void *data) {
 	auto cmd = (const transformCommand_t *)data;
 
-	nvgTransform(inf.nvg, cmd->transform[0], cmd->transform[1], cmd->transform[2], cmd->transform[3], cmd->transform[4], cmd->transform[5]);
+	rlScalef(cmd->transform[0], cmd->transform[3], 1.0f);
+	rlTranslatef(cmd->transform[4], cmd->transform[5], 0.0f);
+	// FIXME: skew, we don't use it yet
 
 	return (const void *)(cmd + 1);
 }
@@ -41,7 +52,7 @@ const void *RB_Transform(const void *data) {
 const void *RB_Rotate(const void *data) {
 	auto cmd = (const rotateCommand_t *)data;
 
-	nvgRotate(inf.nvg, cmd->angle);
+	rlRotatef(cmd->angle, 0, 0, 0);
 
 	return (const void *)(cmd + 1);
 }
@@ -49,34 +60,62 @@ const void *RB_Rotate(const void *data) {
 const void *RB_Translate(const void *data) {
 	auto cmd = (const translateCommand_t *)data;
 
-	nvgTranslate(inf.nvg, cmd->x, cmd->y);
+	rlTranslatef(cmd->x, cmd->y, 0);
 
 	return (const void *)(cmd + 1);
 }
 
 const void *RB_SetScissor(const void *data) {
 	auto cmd = (const setScissorCommand_t *)data;
-	if (cmd->w <= 0 || cmd->h <= 0) {
-		nvgResetScissor(inf.nvg);
-	}
-	else {
-		nvgScissor(inf.nvg, cmd->x, cmd->y, cmd->w, cmd->h);
-	}
+
+	//if (cmd->w <= 0 || cmd->h <= 0) {
+	//	nvgResetScissor(inf.nvg);
+	//}
+	//else {
+	//	nvgScissor(inf.nvg, cmd->x, cmd->y, cmd->w, cmd->h);
+	//}
 
 	return (const void *)(cmd + 1);
+}
+
+const void DrawRectangle(float x, float y, float w, float h) {
+	rlNormal3f(0.0f, 0.0f, 1.0f);
+
+	rlTexCoord2f(0.0f, 0.0f);
+	rlVertex2f(x, y);
+
+	rlTexCoord2f(0.0f, 1.0f);
+	rlVertex2f(x, y + h);
+
+	rlTexCoord2f(1.0f, 1.0f);
+	rlVertex2f(x + w, y + h);
+
+	rlTexCoord2f(1.0f, 0.0f);
+	rlVertex2f(x + w, y);
 }
 
 const void *RB_DrawRect(const void *data) {
 	auto cmd = (const drawRectCommand_t *)data;
 
-	nvgBeginPath(inf.nvg);
-	nvgRect(inf.nvg, cmd->x, cmd->y, cmd->w, cmd->h);
+	rlBegin(RL_QUADS);
+	rlEnableTexture(GetTextureDefault().id);
+
+
 	if (cmd->outline) {
-		nvgStroke(inf.nvg);
+		rlColor4ub(currentStrokeColor[0], currentStrokeColor[1], currentStrokeColor[2], currentStrokeColor[3]);
+		DrawRectangle(cmd->x, cmd->y, cmd->w, 1);
+		DrawRectangle(cmd->x + cmd->w - 1, cmd->y + 1, 1, cmd->h - 2);
+		DrawRectangle(cmd->x, cmd->y + cmd->h - 1, cmd->w, 1);
+		DrawRectangle(cmd->x, cmd->y + 1, 1, cmd->h - 2);
 	}
 	else {
-		nvgFill(inf.nvg);
+		rlColor4ub(currentFillColor[0], currentFillColor[1], currentFillColor[2], currentFillColor[3]);
+		DrawRectangle(cmd->x, cmd->y, cmd->w, cmd->h);
 	}
+
+	rlDisableTexture();
+	rlEnd();
+
 
 	return (const void *)(cmd + 1);
 }
@@ -91,10 +130,10 @@ const void *RB_SetTextStyle(const void *data) {
 	// -1 since we +1 when loading fonts to avoid returning a nullptr
 	int font = (int)asset->resource - 1;
 
-	nvgFontFaceId(inf.nvg, font);
-	nvgFontSize(inf.nvg, cmd->size);
-	nvgTextAlign(inf.nvg, cmd->align);
-	nvgTextLineHeight(inf.nvg, cmd->lineHeight);
+	//nvgFontFaceId(inf.nvg, font);
+	//nvgFontSize(inf.nvg, cmd->size);
+	//nvgTextAlign(inf.nvg, cmd->align);
+	//nvgTextLineHeight(inf.nvg, cmd->lineHeight);
 
 	return (const void *)(cmd + 1);
 }
@@ -103,9 +142,9 @@ const void *RB_DrawText(const void *data) {
 	auto cmd = (const drawTextCommand_t *)data;
 	const char *text = (const char *)cmd + sizeof(drawTextCommand_t);
 
-	nvgSave(inf.nvg);
-	nvgTextBox(inf.nvg, cmd->x, cmd->y, cmd->w, text, 0);
-	nvgRestore(inf.nvg);
+	//nvgSave(inf.nvg);
+	//nvgTextBox(inf.nvg, cmd->x, cmd->y, cmd->w, text, 0);
+	//nvgRestore(inf.nvg);
 
 	return (const void *)(text + cmd->strSz);
 }
@@ -120,63 +159,68 @@ const void *RB_DrawBmpText(const void *data) {
 }
 
 void DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, float scale, byte flipBits, Image *img, unsigned int shaderId) {
-	float flipX = flipBits & FLIP_H ? -1.0f : 1.0f;
-	float flipY = flipBits & FLIP_V ? -1.0f : 1.0f;
+	bool flipX = flipBits & FLIP_H;
+	bool flipY = flipBits & FLIP_V;
 	bool flipDiag = flipBits & FLIP_DIAG;
 
-	nvgSave(inf.nvg);
+	rlEnableTexture(img->hnd);
+	rlPushMatrix();
 
-	nvgTranslate(inf.nvg, x, y);
-	nvgScale(inf.nvg, scale, scale);
+	rlTranslatef(x, y, 0);
+	rlScalef(scale, scale, 1);
 
-	// FIXME: this got real ugly with the move back to top left. can this be improved?
 	if (flipDiag) {
-		nvgTransform(inf.nvg, 0, 1, 1, 0, 0, 0);
-		if (flipX == -1) {
-			nvgTranslate(inf.nvg, 0, 0 + h);
-		}
-		if (flipY == -1) {
-			nvgTranslate(inf.nvg, 0 + w, 0);
-		}
+		rlRotatef(90, 0, 0, 1);
+		rlTranslatef(0, -h, 0);
+		bool tempX = flipX;
+		flipX = flipY;
+		flipY = !tempX;
 	}
 
-	if ((flipX == -1) ^ (flipY == -1) && flipDiag) {
-		nvgScale(inf.nvg, flipY, flipX);
-	}
-	else {
-		nvgScale(inf.nvg, flipX, flipY);
-		if (!flipDiag) {
-			if (flipX == -1) {
-				nvgTranslate(inf.nvg, 0 - w, 0);
-			}
-			if (flipY == -1) {
-				nvgTranslate(inf.nvg, 0, 0 - h);
-			}
-		}
-	}
+	rlBegin(RL_QUADS);
+	// FIXME: alpha * 255 bad! come back to this and make it consistent everywhere?
+	rlColor4ub(255, 255, 255, alpha * 255);
 
-	auto paint = nvgImagePattern(inf.nvg, 0 - ox, 0 - oy, img->w, img->h, 0, img->hnd, alpha);
-	paint.shader = shaderId;
-	nvgGlobalCompositeBlendFuncSeparate(inf.nvg, NVG_SRC_ALPHA, NVG_ONE_MINUS_SRC_ALPHA, NVG_ONE, NVG_ONE_MINUS_SRC_ALPHA);
-	nvgBeginPath(inf.nvg);
-	nvgRect(inf.nvg, 0, 0, w, h);
-	nvgFillPaint(inf.nvg, paint);
-	nvgFill(inf.nvg);
+	rlNormal3f(0, 0, 1);
 
-	nvgRestore(inf.nvg);
+	float xTex[2] = { ox / img->w, (ox + w) / img->w };
+	float yTex[2] = { oy / img->h, (oy + h) / img->h };
+
+	// bottom left
+	rlTexCoord2f(xTex[flipX ? 1 : 0], yTex[flipY ? 1 : 0]);
+	rlVertex2f(0, 0);
+
+	// bottom right
+	rlTexCoord2f(xTex[flipX ? 1 : 0], yTex[flipY ? 0 : 1]);
+	rlVertex2f(0, h);
+
+	// top right
+	rlTexCoord2f(xTex[flipX ? 0 : 1], yTex[flipY ? 0 : 1]);
+	rlVertex2f(w, h);
+
+	// top left
+	rlTexCoord2f(xTex[flipX ? 0 : 1], yTex[flipY ? 1 : 0]);
+	rlVertex2f(w, 0);
+	rlEnd();
+
+	rlPopMatrix();
+	rlDisableTexture();
 }
 
 const void *RB_DrawImage(const void *data) {
 	auto cmd = (const drawImageCommand_t *)data;
+
 	Image *image = Get_Img(cmd->imgId);
 	float w = cmd->w == 0 ? image->w : cmd->w;
 	float h = cmd->h == 0 ? image->h : cmd->h;
 	DrawImage(cmd->x, cmd->y, w, h, cmd->ox, cmd->oy, cmd->alpha, cmd->scale, cmd->flipBits, image, cmd->shaderId);
+
 	return (const void *)(cmd + 1);
 }
 
 const void *RB_DrawSprite(const void *data) {
 	auto cmd = (const drawSpriteCommand_t *)data;
+
 	Asset *asset = Asset_Get(ASSET_SPRITE, cmd->spr);
 	Sprite *spr = (Sprite*)asset->resource;
 	Image *img = spr->image;
@@ -205,10 +249,12 @@ const void *RB_DrawSprite(const void *data) {
 
 const void *RB_DrawLine(const void *data) {
 	auto cmd = (const drawLineCommand_t *)data;
-	nvgBeginPath(inf.nvg);
-	nvgMoveTo(inf.nvg, cmd->x1, cmd->y1);
-	nvgLineTo(inf.nvg, cmd->x2, cmd->y2);
-	nvgStroke(inf.nvg);
+
+	rlBegin(RL_LINES);
+	rlColor4ub(currentStrokeColor[0], currentStrokeColor[1], currentStrokeColor[2], currentStrokeColor[3]);
+	rlVertex2f(cmd->x1, cmd->y1);
+	rlVertex2f(cmd->x2, cmd->y2);
+	rlEnd();
 
 	return (const void *)(cmd + 1);
 }
@@ -216,14 +262,43 @@ const void *RB_DrawLine(const void *data) {
 const void *RB_DrawCircle(const void *data) {
 	auto cmd = (const drawCircleCommand_t *)data;
 
-	nvgBeginPath(inf.nvg);
-	nvgCircle(inf.nvg, cmd->x, cmd->y, cmd->radius);
+	rlEnableTexture(GetTextureDefault().id);
+
 	if (cmd->outline) {
-		nvgStroke(inf.nvg);
+		if (rlCheckBufferLimit(RL_LINES, 2 * 36)) {
+			rlglDraw();
+		}
+
+		rlBegin(RL_LINES);
+		rlColor4ub(currentStrokeColor[0], currentStrokeColor[1], currentStrokeColor[2], currentStrokeColor[3]);
+
+		// NOTE: Circle outline is drawn pixel by pixel every degree (0 to 360)
+		for (int i = 0; i < 360; i += 10)
+		{
+			rlVertex2f(cmd->x + sinf(DEG2RAD*i)*cmd->radius, cmd->y + cosf(DEG2RAD*i)*cmd->radius);
+			rlVertex2f(cmd->x + sinf(DEG2RAD*(i + 10))*cmd->radius, cmd->y + cosf(DEG2RAD*(i + 10))*cmd->radius);
+		}
+		rlEnd();
 	}
 	else {
-		nvgFill(inf.nvg);
+		if (rlCheckBufferLimit(RL_QUADS, 4 * (36 / 2))) rlglDraw();
+
+
+		rlBegin(RL_QUADS);
+		for (int i = 0; i < 360; i += 20)
+		{
+			rlColor4ub(currentFillColor[0], currentFillColor[1], currentFillColor[2], currentFillColor[3]);
+
+			rlVertex2f(cmd->x, cmd->y);
+			rlVertex2f(cmd->x + sinf(DEG2RAD*i)*cmd->radius, cmd->y + cosf(DEG2RAD*i)*cmd->radius);
+			rlVertex2f(cmd->x + sinf(DEG2RAD*(i + 10))*cmd->radius, cmd->y + cosf(DEG2RAD*(i + 10))*cmd->radius);
+			rlVertex2f(cmd->x + sinf(DEG2RAD*(i + 20))*cmd->radius, cmd->y + cosf(DEG2RAD*(i + 20))*cmd->radius);
+		}
+		rlEnd();
+
 	}
+
+	rlDisableTexture();
 
 	return (const void *)(cmd + 1);
 }
@@ -231,18 +306,35 @@ const void *RB_DrawCircle(const void *data) {
 const void *RB_DrawTri(const void *data) {
 	auto cmd = (const drawTriCommand_t *)data;
 
-	nvgBeginPath(inf.nvg);
-	nvgMoveTo(inf.nvg, cmd->x1, cmd->y1);
-	nvgLineTo(inf.nvg, cmd->x2, cmd->y2);
-	nvgLineTo(inf.nvg, cmd->x3, cmd->y3);
-	nvgLineTo(inf.nvg, cmd->x1, cmd->y1);
-	
+	rlEnableTexture(GetTextureDefault().id);
+
 	if (cmd->outline) {
-		nvgStroke(inf.nvg);
+		rlBegin(RL_LINES);
+		rlColor4ub(currentStrokeColor[0], currentStrokeColor[1], currentStrokeColor[2], currentStrokeColor[3]);
+
+		rlVertex2f(cmd->x1, cmd->y1);
+		rlVertex2f(cmd->x2, cmd->y2);
+
+		rlVertex2f(cmd->x2, cmd->y2);
+		rlVertex2f(cmd->x3, cmd->y3);
+
+		rlVertex2f(cmd->x3, cmd->y3);
+		rlVertex2f(cmd->x1, cmd->y1);
+		rlEnd();
 	}
 	else {
-		nvgFill(inf.nvg);
+		rlBegin(RL_QUADS);
+		rlColor4ub(currentFillColor[0], currentFillColor[1], currentFillColor[2], currentFillColor[3]);
+
+		// FIXME: order of 2 and 3 matters. how to figure this out here and swap them?
+		rlVertex2f(cmd->x1, cmd->y1);
+		rlVertex2f(cmd->x2, cmd->y2);
+		rlVertex2f(cmd->x2, cmd->y2);
+		rlVertex2f(cmd->x3, cmd->y3);
+		rlEnd();
 	}
+
+	rlDisableTexture();
 
 	return (const void *)(cmd + 1);
 }
@@ -301,7 +393,6 @@ const void *RB_DrawMapLayer(const void *data) {
 void SubmitRenderCommands(renderCommandList_t * list) {
 	const void *data = list->cmds;
 
-	nvgSave(inf.nvg);
 	while (1) {
 		switch (*(const byte *)data) {
 
@@ -370,7 +461,6 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 			break;
 
 		case RC_END_OF_LIST:
-			nvgRestore(inf.nvg);
 			return;
 
 		default:

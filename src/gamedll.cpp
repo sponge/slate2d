@@ -5,7 +5,6 @@
 #include "console/console.h"
 #include "main.h"
 #include "files.h"
-#include "scene.h"
 #include "input.h"
 #include "rendercommands.h"
 #include "bitmapfont.h"

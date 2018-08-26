@@ -1,5 +1,5 @@
 import "entity" for Entity
-import "engine" for Trap, Button, Draw, Color, Fill, Asset
+import "engine" for Trap, Button, Draw, Fill, Asset
 import "debug" for Debug
 import "main" for Main
 import "timer" for Timer
@@ -223,7 +223,7 @@ class Player is Entity {
          }
       }
 
-      //var color = Draw.setColor(Color.Fill, 218, 212, 94, 255)
+      //var color = Draw.setColor(218, 212, 94, 255)
       //Draw.rect(x, y, w, h, Fill.Solid)
       Draw.image(_img, x-2, y-3, 12, 12, 1.0, 1.0, _facing > 0 ? 0 : 1)
    }

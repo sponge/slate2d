@@ -1,4 +1,4 @@
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar, Align
+import "engine" for Draw, Asset, Trap, Fill, Button, TileMap, CVar, Align
 import "math" for Math
 import "debug" for Debug
 import "bagrandomizer" for BagRandomizer
@@ -243,13 +243,13 @@ class PieceTray {
 
       // draw gold (number of currencies are game dependent, pass in from TD)
       if (_activeTool == null || canAfford() == true) {
-         Draw.setColor(Color.Fill, 255, 255, 255, 255)
+         Draw.setColor(255, 255, 255, 255)
       } else {
-         Draw.setColor(Color.Fill, 255, 0, 0, 255)
+         Draw.setColor(255, 0, 0, 255)
       }
       Draw.text(_x,_y-(4*_mult),_w, "%(_td.currSymbol)%(_td.currencies[0])")
 
-      Draw.setColor(Color.Fill, 255, 255, 255, 255)
+      Draw.setColor(255, 255, 255, 255)
       for (button in _buttons) {
          button.draw()
          drawTool(button.x, button.y, button.id)

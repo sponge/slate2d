@@ -1,5 +1,5 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, ImageFlags
+import "engine" for Draw, Asset, Trap, Fill, Button, ImageFlags
 import "debug" for Debug
 import "uibutton" for TextButton
 import "soundcontroller" for SoundController
@@ -60,22 +60,22 @@ class GameInfo {
       Draw.clear()
       Draw.resetTransform()
 
-      Draw.setColor(Color.Fill, 0, 57, 113, 255)
+      Draw.setColor(0, 57, 113, 255)
       Draw.rect(0, 0, w, h, false)
       Draw.image(_gradient, 0, 0, w, h)
       
       Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
 
-      Draw.setColor(Color.Fill, 0, 0, 0, 200)
+      Draw.setColor(0, 0, 0, 200)
       Draw.rect(0, 0, 425+40, 720, Fill.Solid)
 
       Draw.image(_boxHnd, 40, 55)
 
-      Draw.setColor(Color.Fill, 176, 205, 234, 255)
+      Draw.setColor(176, 205, 234, 255)
       Draw.setTextStyle(_bodyFont, 80)
       Draw.text(_rightCol, 60, 780, _title)
 
-      Draw.setColor(Color.Fill, 255, 255, 255, 255)
+      Draw.setColor(255, 255, 255, 255)
       Draw.setTextStyle(_bodyFont, 48)
       Draw.text(_rightCol, 100, 780, _year)
       Draw.setTextStyle(_descriptionFont, 32, 1.0)

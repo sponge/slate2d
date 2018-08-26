@@ -284,12 +284,11 @@ void wren_asset_image_size(WrenVM *vm) {
 
 #pragma region Draw Module
 void wren_dc_setcolor(WrenVM *vm) {
-	double which = wrenGetSlotDouble(vm, 1);
-	byte r = (byte) wrenGetSlotDouble(vm, 2);
-	byte g = (byte) wrenGetSlotDouble(vm, 3);
-	byte b = (byte) wrenGetSlotDouble(vm, 4);
-	byte a = (byte) wrenGetSlotDouble(vm, 5);
-	DC_SetColor(which != 0.0f ? OUTLINE : FILL, r, g, b, a);
+	byte r = (byte) wrenGetSlotDouble(vm, 1);
+	byte g = (byte) wrenGetSlotDouble(vm, 2);
+	byte b = (byte) wrenGetSlotDouble(vm, 3);
+	byte a = (byte) wrenGetSlotDouble(vm, 4);
+	DC_SetColor(r, g, b, a);
 }
 
 void wren_dc_reset_transform(WrenVM *vm) {
@@ -790,7 +789,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Asset", true, "spriteSet(_,_,_,_,_)", wren_asset_sprite_set },
 	{ "engine", "Asset", true, "imageSize(_)", wren_asset_image_size },
 
-	{ "engine", "Draw", true, "setColor(_,_,_,_,_)", wren_dc_setcolor },
+	{ "engine", "Draw", true, "setColor(_,_,_,_)", wren_dc_setcolor },
 	{ "engine", "Draw", true, "resetTransform()", wren_dc_reset_transform },
 	{ "engine", "Draw", true, "transform(_,_,_,_,_,_)", wren_dc_transform },
 	{ "engine", "Draw", true, "rotate(_)", wren_dc_rotate },

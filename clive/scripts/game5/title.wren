@@ -1,4 +1,4 @@
-import "engine" for Draw, Color, Trap, Asset, Align, Button
+import "engine" for Draw, Trap, Asset, Align, Button
 import "soundcontroller" for SoundController
 
 class Game5Title {
@@ -73,19 +73,19 @@ class Game5Title {
 
       var waveY = y + h
 
-      Draw.setColor(Color.Stroke, 255, 255, 255, 255-_ripple)
+      Draw.setColor(255, 255, 255, 255-_ripple)
       Draw.line(x - rippleX, waveY, x + w, waveY + rippleY)
       Draw.line(x - rippleX, waveY, x + w, waveY - rippleY)
       Draw.line(x + (w * 2) + rippleX, waveY, x + w, waveY + rippleY)
       Draw.line(x + (w * 2) + rippleX, waveY, x + w, waveY - rippleY)
 
-      Draw.setColor(Color.Fill, 132, 132, 132, 255)
+      Draw.setColor(132, 132, 132, 255)
       var o = drawSkewedRect(x, y, w, h, -Num.pi/8)
 
-      Draw.setColor(Color.Fill, 192, 192, 192, 255)
+      Draw.setColor(192, 192, 192, 255)
       drawSkewedRect(x + w, y, w, h, Num.pi/8)
 
-      Draw.setColor(Color.Fill, 227, 227, 227, 255)
+      Draw.setColor(227, 227, 227, 255)
       Draw.tri(x, y, x + w, y - o, x + w, y + o, false)
       Draw.tri(x+(w*2), y, x + w, y - o, x + w, y + o, false)
 
@@ -99,17 +99,17 @@ class Game5Title {
       if (_nextSceneTimer != null) {
          var alpha = (1 - (_nextSceneTimer/_fadeTime)) * 255
          alpha = alpha > 255 ? 255 : alpha
-         Draw.setColor(Color.Fill, 0, 0, 0, _nextSceneTimer > 0 ? alpha : 255)
+         Draw.setColor(0, 0, 0, _nextSceneTimer > 0 ? alpha : 255)
          Draw.rect(0, 0, 1280, 720, false)
          Draw.setTextStyle(_bodyFont, 48, 1.0, Align.Center|Align.Middle)
 
          var msgAlpha =  ((_nextSceneTimer/_fadeTime) * Num.pi).sin * 255
          msgAlpha = msgAlpha < 0 ? 0 : msgAlpha
-         Draw.setColor(Color.Fill, 255, 255, 255, msgAlpha) 
+         Draw.setColor(255, 255, 255, msgAlpha) 
          Draw.text(0, 360, 1280, "will you reach the top?")
       }
 
-      Draw.setColor(Color.Fill, 0, 0, 0, 255-_fadeIn)
+      Draw.setColor(0, 0, 0, 255-_fadeIn)
       Draw.rect(0, 0, 1280, 720, false)
    }
 }

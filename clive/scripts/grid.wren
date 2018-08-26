@@ -1,4 +1,4 @@
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar, Align
+import "engine" for Draw, Asset, Trap, Fill, Button, TileMap, CVar, Align
 import "math" for Math
 import "debug" for Debug
 import "fonts" for Fonts
@@ -234,13 +234,13 @@ class Grid {
                // checkerboard pattern
                var alpha = (y+x) % 2 == 0 ? 96 : 64
                var col = isBlocked(x, y) ? [255, 127, 127, alpha] : [64, 64, 64, alpha]
-               Draw.setColor(Color.Fill, col)
+               Draw.setColor(col)
                Draw.rect(x*_tw, y*_th, _tw, _th, Fill.Solid)
 
                var dist = _paths[y * _w + x]
                if (dist != null) {
                   var a = 127 - (dist * 4)
-                  Draw.setColor(Color.Fill, 255, 255, 255, 40)
+                  Draw.setColor(255, 255, 255, 40)
                   Draw.text(x * _tw, y * _th, 8, "%(dist)")
                }
             }

@@ -1,5 +1,5 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Color, Fill, Button
+import "engine" for Draw, Asset, Trap, Fill, Button
 import "debug" for Debug
 import "soundcontroller" for SoundController
 
@@ -36,7 +36,7 @@ class Intro {
       Draw.clear()
       Draw.resetTransform()
 
-      Draw.setColor(Color.Fill, 0, 57, 113, 255)
+      Draw.setColor(0, 57, 113, 255)
       Draw.rect(0, 0, w, h, false)
       Draw.image(_gradient, 0, 0, w, h)
 
@@ -47,7 +47,7 @@ class Intro {
          Draw.image(_clickToContinue, 494, 620)
       }
 
-      Draw.setColor(Color.Stroke, 255, 0, 0, 255)
+      Draw.setColor(255, 0, 0, 255)
 
       Draw.submit()
    }

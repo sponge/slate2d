@@ -1,4 +1,4 @@
-import "engine" for Trap, Draw, Fill, Color
+import "engine" for Trap, Draw, Fill
 
 class Debug {
    // if true, store these debug draws in a separate array that is cleared manually used
@@ -85,7 +85,7 @@ class Debug {
 
    static drawRects_(l) {
       for (r in l) {
-         Draw.setColor(r[5] == Fill.Solid ? Color.Fill : Color.Stroke, __colors[r[4]])
+         Draw.setColor(__colors[r[4]])
          Draw.rect(r[0], r[1], r[2], r[3], r[5]) 
       }
    }

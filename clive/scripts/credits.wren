@@ -1,4 +1,4 @@
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, Align
+import "engine" for Draw, Asset, Trap, Fill, Button, Align
 import "fonts" for Fonts
 import "soundcontroller" for SoundController
 
@@ -29,17 +29,17 @@ class Credits {
    drawCredit(col, y, name, link, creds) {
       var margin = 128
 
-      Draw.setColor(Color.Fill, 200, 227, 255, 255)
+      Draw.setColor(200, 227, 255, 255)
       Draw.setTextStyle(_bodyFont, 64, 1.0, Align.Center+Align.Top)
       Draw.text(margin + col * (640 - margin), y, 640 - margin, name)
       y = y + 52
 
-      Draw.setColor(Color.Fill, 255, 255, 255, 164)
+      Draw.setColor(255, 255, 255, 164)
       Draw.setTextStyle(_bodyFont, 40, 1.0, Align.Center+Align.Top)
       Draw.text(margin + col * (640 - margin), y, 640 - margin, link)
       y = y + 36
 
-      Draw.setColor(Color.Fill, 255, 255, 255, 255)
+      Draw.setColor(255, 255, 255, 255)
       Draw.setTextStyle(_bodyFont, 40, 1.0, Align.Center+Align.Top)
       Draw.text(margin + col * (640 - margin), y, 640 - margin, creds)
       return y + 96
@@ -49,13 +49,13 @@ class Credits {
       Draw.clear()
       Draw.resetTransform()
 
-      Draw.setColor(Color.Fill, 0, 57, 113, 255)
+      Draw.setColor(0, 57, 113, 255)
       Draw.rect(0, 0, w, h, false)
       Draw.image(_gradient, 0, 0, w, h)
 
       Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
 
-      Draw.setColor(Color.Fill, 200, 227, 255, 255)
+      Draw.setColor(200, 227, 255, 255)
       Draw.setTextStyle(_bodyFont, 96, 1.0, Align.Center+Align.Top)
       Draw.text(0, 30, 1280, "CREDITS")
 

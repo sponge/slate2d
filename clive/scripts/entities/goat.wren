@@ -1,4 +1,4 @@
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap
+import "engine" for Draw, Asset, Trap, Fill, Button, TileMap
 import "entities/entity" for Entity
 import "debug" for Debug
 import "math" for Math
@@ -192,7 +192,7 @@ class Goat is Entity {
     var sprY = (y - 1) * _td.th
     var sprite = (_mode == "grass" || _mode == "destroy" || _mode == "destroy_tower") ? _eatingSprite : _sprite
     Draw.image(sprite, sprX, sprY, _imgSize[0], _imgSize[1], 1.0)
-    Draw.setColor(Color.Fill, 0, 255, 0, 255)
+    Draw.setColor(0, 255, 0, 255)
     Draw.rect(sprX, sprY - 2, _td.tw * 2 * (_hp / _startingHP), _td.th / 4, false)
   }
 }

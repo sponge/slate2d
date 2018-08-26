@@ -1,4 +1,4 @@
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, ImageFlags, Align
+import "engine" for Draw, Asset, Trap, Fill, Button, ImageFlags, Align
 import "debug" for Debug
 import "math" for Math
 import "soundcontroller" for SoundController
@@ -32,7 +32,7 @@ class UIButton {
    }
 
    draw() {
-      // Draw.setColor(Color.Stroke, 255, 0, 0, 255)
+      // Draw.setColor(255, 0, 0, 255)
       // Draw.rect(_x, _y, _w, _h, Fill.Outline)
    }
 
@@ -72,13 +72,13 @@ class TextButton is UIButton {
 
    draw() {
       if (hover) {
-         Draw.setColor(Color.Fill, 101, 157, 214, 255)
+         Draw.setColor(101, 157, 214, 255)
       } else {
-         Draw.setColor(Color.Fill, 47, 112, 176, 255)
+         Draw.setColor(47, 112, 176, 255)
       }
 
       Draw.rect(x, y, w, h, Fill.Solid)
-      Draw.setColor(Color.Fill, 255, 255, 255, 255)
+      Draw.setColor(255, 255, 255, 255)
       Draw.setTextStyle(_font, 48, 1.0, Align.Center+Align.Top)
       Draw.text(x, y-2, w, _label)
    }
@@ -153,13 +153,13 @@ class CoinButton is UIButton {
    }
 
    draw() {
-      // Draw.setColor(Color.Fill, 255, 0, 0, 255)
+      // Draw.setColor(255, 0, 0, 255)
       // Draw.rect(x, y, w, h, Fill.Solid)
 
       if ((_time * 4).floor % 2 == 0) {
-         Draw.setColor(Color.Fill, 255, 255, 0, 255)
+         Draw.setColor(255, 255, 0, 255)
       } else {
-         Draw.setColor(Color.Fill, 255, 128, 0, 255)
+         Draw.setColor(255, 128, 0, 255)
       }
       Draw.circle(x+w/2, y+h/2, 2, Fill.Solid)
    }   

@@ -1,4 +1,4 @@
-import "engine" for Asset, Draw, Align, Color, Trap, Button
+import "engine" for Asset, Draw, Align, Trap, Button
 import "random" for Random
 import "bagrandomizer" for BagRandomizer
 import "soundcontroller" for SoundController
@@ -151,12 +151,12 @@ class Man {
       var width = 20
       var height = 40
       var baseY = _y
-      Draw.setColor(Color.Fill, color, color, color, 255)
+      Draw.setColor(color, 255)
 
       if (_jumping) {
          var jumpY = ((1 - (_jumpTimer / _jumpTime)) * Num.pi).sin * 10
          Draw.rect(_x, baseY - jumpY, width, height, false)
-         Draw.setColor(Color.Fill, 0, 0, 0, 64)
+         Draw.setColor(0, 0, 0, 64)
          Draw.rect(_x, baseY + height, width, 4, false)
       } else {
          Draw.rect(_x, baseY, width, height, false)
@@ -269,7 +269,7 @@ class Towers {
    drawTower() {
       var alpha = 0.5//(_height/_maxHeight) * 0.5 + 0.25
       var width = 500
-      Draw.setColor(Color.Fill, 200, 200, 200, alpha*255)
+      Draw.setColor(200, 200, 200, alpha*255)
       Draw.rect(640-(width/2), 20, width, 720, false)
    }
 
@@ -306,17 +306,17 @@ class Towers {
       } else if (_platitudeTimer > (_platitudeTime - 2)) {
          platAlpha = 255 - ((_platitudeTimer - (_platitudeTime - 2)) / 2) * 255
       }
-      Draw.setColor(Color.Fill, 255, 255, 255, platAlpha)
+      Draw.setColor(255, 255, 255, platAlpha)
       Draw.text(0, 360, 1280, _currentPlatitude)
 
-      Draw.setColor(Color.Fill, 255, 255, 255, 127)
+      Draw.setColor(255, 255, 255, 127)
       Draw.text(0, 680, 1280, "Click to climb")
 
       var m = ((680 - _player.y) / 680) * 1000
-      Draw.setColor(Color.Fill, 255, 255, 255, 255)
+      Draw.setColor(255, 255, 255, 255)
       Draw.text(0, 40, 1280, "%(1000 - m.floor)m to go")
 
-      Draw.setColor(Color.Fill, 0, 0, 0, 255 - _fade)
+      Draw.setColor(0, 0, 0, 255 - _fade)
       Draw.rect(0, 0, 1280 ,720, false)
 
       if (_paused) {

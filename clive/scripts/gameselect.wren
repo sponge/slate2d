@@ -1,5 +1,5 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, Align
+import "engine" for Draw, Asset, Trap, Fill, Button, Align
 import "debug" for Debug
 import "uibutton" for GameSelectButton
 import "soundcontroller" for SoundController
@@ -76,7 +76,7 @@ class GameSelect {
    draw(w, h) {
       Draw.clear()
 
-      Draw.setColor(Color.Fill, 0, 57, 113, 255)
+      Draw.setColor(0, 57, 113, 255)
       Draw.rect(0, 0, w, h, false)
       Draw.image(_gradient, 0, 0, w, h)
 
@@ -91,10 +91,10 @@ class GameSelect {
 
       Draw.setTextStyle(_bodyFont, 64, 1.0, Align.Center|Align.Top)
       // shadow
-      Draw.setColor(Color.Fill, 0, 0, 0, 255)
+      Draw.setColor(0, 0, 0, 255)
       Draw.text(0, 103, 1280, _currentItem)
       // text
-      Draw.setColor(Color.Fill, 255, 255, 255, 255)
+      Draw.setColor(255, 255, 255, 255)
       Draw.text(0, 100, 1280, _currentItem)
 
       Draw.submit()

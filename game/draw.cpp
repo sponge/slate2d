@@ -32,17 +32,12 @@ void DC_Clear() {
 	memset(&cmdList, 0, sizeof(cmdList));
 }
 
-void DC_SetColor(byte which, byte r, byte g, byte b, byte a) {
+void DC_SetColor(byte r, byte g, byte b, byte a) {
 	GET_COMMAND(setColorCommand_t, RC_SET_COLOR)
-	cmd->which = which;
 	cmd->color[0] = r;
 	cmd->color[1] = g;
 	cmd->color[2] = b;
 	cmd->color[3] = a;
-}
-
-void DC_SetColor(byte which, byte color[4]) {
-	DC_SetColor(which, color[0], color[1], color[2], color[3]);
 }
 
 void DC_ResetTransform() {

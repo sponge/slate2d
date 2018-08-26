@@ -1,4 +1,4 @@
-import "engine" for Draw, Trap, Asset, Color, Button, Align
+import "engine" for Draw, Trap, Asset, Button, Align
 
 class Game1Win {
    nextScene { _nextScene }
@@ -46,14 +46,14 @@ class Game1Win {
       h = h/_scale
 
       Draw.setTextStyle(_font, 20, 1.0, Align.Left+Align.Top)
-      Draw.setColor(Color.Fill, textColor())
+      Draw.setColor(textColor())
       var y = h/2 + 30
       Draw.text(30, y, w, "TOP BANANA! YOU WON.")
       Draw.text(60, y+16, w, "everything by clive")
       y = y + 32
       Draw.text(90, y, w, "THANKS MUM FOR THE PIES")
 
-      Draw.setColor(Color.Fill, 255, 255, 0, 255)
+      Draw.setColor(255, 255, 0, 255)
       y = y + 16
 
       var frame = (_time * 8% 4).floor

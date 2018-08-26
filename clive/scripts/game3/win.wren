@@ -1,4 +1,4 @@
-import "engine" for Draw, Trap, Asset, Color, Button, Align
+import "engine" for Draw, Trap, Asset, Button, Align
 
 class Game3Win {
    nextScene { _nextScene }
@@ -45,7 +45,7 @@ class Game3Win {
       Draw.transform(h/180, 0, 0, h/180, 0, 0)
 
       Draw.setTextStyle(_font, 20, 1.0, Align.Center|Align.Top)
-      Draw.setColor(Color.Fill, textColor())
+      Draw.setColor(textColor())
       Draw.text(0, 50, 320, "THE GOATS HAVE BEEN BESTED")
       Draw.text(0, 60, 320, "TRY AGAIN WITH %(_extraGoats) EXTRA GOATS!")
 

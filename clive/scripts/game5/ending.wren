@@ -1,4 +1,4 @@
-import "engine" for Asset, Trap, Draw, Align, Color, Button
+import "engine" for Asset, Trap, Draw, Align, Button
 import "soundcontroller" for SoundController
 import "pausemenu" for PauseMenu
 
@@ -58,7 +58,7 @@ class TowersEnding {
    draw(w, h) {
       Draw.image(_bg, 0, 0)
 
-      Draw.setColor(Color.Fill, 0, 0, 0, 255)
+      Draw.setColor(0, 0, 0, 255)
       Draw.setTextStyle(_bodyFont, 28, 1.0, Align.Left|Align.Top)
       Draw.text(600, _textY < -1020 ? -1020 : _textY, 640, _text)
 

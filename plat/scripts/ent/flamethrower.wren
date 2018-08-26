@@ -63,7 +63,7 @@ class Flame is Entity {
          }     
       }
 
-      // Draw.setColor(Color.Fill, 255, 0, 0, 255)
+      // Draw.setColor(255, 0, 0, 255)
       // Draw.rect(x, y, w, h, Fill.Solid)
 
       var flicker = (t / 3 % 2).floor == 0

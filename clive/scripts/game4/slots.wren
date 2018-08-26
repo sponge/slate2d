@@ -1,4 +1,4 @@
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar, Align
+import "engine" for Draw, Asset, Trap, Fill, Button, TileMap, CVar, Align
 import "math" for Math
 import "debug" for Debug
 import "bagrandomizer" for BagRandomizer
@@ -74,7 +74,7 @@ class SlotMachine {
    }
 
    draw() {
-      Draw.setColor(Color.Fill, 254, 174, 52, 255)
+      Draw.setColor(254, 174, 52, 255)
       Draw.rect(_x, _y, _w, _h, Fill.Solid)
       Draw.image(_bg, _x, _y)
       for (i in 0..._reels.count) {

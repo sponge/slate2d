@@ -1,4 +1,4 @@
-import "engine" for Draw, Trap, Asset, Color, Button, Align
+import "engine" for Draw, Trap, Asset, Button, Align
 import "random" for Random
 
 class Game2Win {

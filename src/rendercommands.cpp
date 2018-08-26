@@ -9,24 +9,15 @@
 
 extern ClientInfo inf;
 
-float currentFillColor[4] = { 1.0, 1.0, 1.0, 1.0 };
-float currentStrokeColor[4] = { 1.0, 1.0, 1.0, 1.0 };
+float currentColor[4] = { 1.0, 1.0, 1.0, 1.0 };
 
 const void *RB_SetColor(const void *data) {
 	auto cmd = (const setColorCommand_t *)data;
 
-	if (cmd->which == COLOR_FILL) {
-		currentFillColor[0] = cmd->color[0];
-		currentFillColor[1] = cmd->color[1];
-		currentFillColor[2] = cmd->color[2];
-		currentFillColor[3] = cmd->color[3];
-	}
-	else {
-		currentStrokeColor[0] = cmd->color[0];
-		currentStrokeColor[1] = cmd->color[1];
-		currentStrokeColor[2] = cmd->color[2];
-		currentStrokeColor[3] = cmd->color[3];
-	}
+	currentColor[0] = cmd->color[0];
+	currentColor[1] = cmd->color[1];
+	currentColor[2] = cmd->color[2];
+	currentColor[3] = cmd->color[3];
 
 	return (const void *)(cmd + 1);
 }
@@ -99,17 +90,15 @@ const void *RB_DrawRect(const void *data) {
 
 	rlBegin(RL_QUADS);
 	rlEnableTexture(GetTextureDefault().id);
-
+	rlColor4ub(currentColor[0], currentColor[1], currentColor[2], currentColor[3]);
 
 	if (cmd->outline) {
-		rlColor4ub(currentStrokeColor[0], currentStrokeColor[1], currentStrokeColor[2], currentStrokeColor[3]);
 		DrawRectangle(cmd->x, cmd->y, cmd->w, 1);
 		DrawRectangle(cmd->x + cmd->w - 1, cmd->y + 1, 1, cmd->h - 2);
 		DrawRectangle(cmd->x, cmd->y + cmd->h - 1, cmd->w, 1);
 		DrawRectangle(cmd->x, cmd->y + 1, 1, cmd->h - 2);
 	}
 	else {
-		rlColor4ub(currentFillColor[0], currentFillColor[1], currentFillColor[2], currentFillColor[3]);
 		DrawRectangle(cmd->x, cmd->y, cmd->w, cmd->h);
 	}
 
@@ -251,7 +240,7 @@ const void *RB_DrawLine(const void *data) {
 	auto cmd = (const drawLineCommand_t *)data;
 
 	rlBegin(RL_LINES);
-	rlColor4ub(currentStrokeColor[0], currentStrokeColor[1], currentStrokeColor[2], currentStrokeColor[3]);
+	rlColor4ub(currentColor[0], currentColor[1], currentColor[2], currentColor[3]);
 	rlVertex2f(cmd->x1, cmd->y1);
 	rlVertex2f(cmd->x2, cmd->y2);
 	rlEnd();
@@ -270,7 +259,7 @@ const void *RB_DrawCircle(const void *data) {
 		}
 
 		rlBegin(RL_LINES);
-		rlColor4ub(currentStrokeColor[0], currentStrokeColor[1], currentStrokeColor[2], currentStrokeColor[3]);
+		rlColor4ub(currentColor[0], currentColor[1], currentColor[2], currentColor[3]);
 
 		// NOTE: Circle outline is drawn pixel by pixel every degree (0 to 360)
 		for (int i = 0; i < 360; i += 10)
@@ -287,7 +276,7 @@ const void *RB_DrawCircle(const void *data) {
 		rlBegin(RL_QUADS);
 		for (int i = 0; i < 360; i += 20)
 		{
-			rlColor4ub(currentFillColor[0], currentFillColor[1], currentFillColor[2], currentFillColor[3]);
+			rlColor4ub(currentColor[0], currentColor[1], currentColor[2], currentColor[3]);
 
 			rlVertex2f(cmd->x, cmd->y);
 			rlVertex2f(cmd->x + sinf(DEG2RAD*i)*cmd->radius, cmd->y + cosf(DEG2RAD*i)*cmd->radius);
@@ -310,7 +299,7 @@ const void *RB_DrawTri(const void *data) {
 
 	if (cmd->outline) {
 		rlBegin(RL_LINES);
-		rlColor4ub(currentStrokeColor[0], currentStrokeColor[1], currentStrokeColor[2], currentStrokeColor[3]);
+		rlColor4ub(currentColor[0], currentColor[1], currentColor[2], currentColor[3]);
 
 		rlVertex2f(cmd->x1, cmd->y1);
 		rlVertex2f(cmd->x2, cmd->y2);
@@ -324,7 +313,7 @@ const void *RB_DrawTri(const void *data) {
 	}
 	else {
 		rlBegin(RL_QUADS);
-		rlColor4ub(currentFillColor[0], currentFillColor[1], currentFillColor[2], currentFillColor[3]);
+		rlColor4ub(currentColor[0], currentColor[1], currentColor[2], currentColor[3]);
 
 		// FIXME: order of 2 and 3 matters. how to figure this out here and swap them?
 		rlVertex2f(cmd->x1, cmd->y1);

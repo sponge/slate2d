@@ -1,4 +1,4 @@
-import "engine" for Draw, Trap, Asset, Color, Button
+import "engine" for Draw, Trap, Asset, Button
 
 class GameOver {
    nextScene { _nextScene }
@@ -62,13 +62,13 @@ class GameOver {
       h = h/4
 
       Draw.setTextStyle(_font, 20)
-      Draw.setColor(Color.Fill, textColor())
+      Draw.setColor(textColor())
       var y = h/2 + 48
       drawCenteredText(w/2 , y, "THE POUND HAS COLLAPSED")
       y = y + 16
       drawCenteredText(w/2 , y, "GAME OVER")
 
-      Draw.setColor(Color.Fill, 255, 255, 0, 255)
+      Draw.setColor(255, 255, 0, 255)
       y = y + 16
       drawCenteredText(w/2, y, "Please try again")
 

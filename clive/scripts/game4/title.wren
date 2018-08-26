@@ -1,5 +1,5 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, Align
+import "engine" for Draw, Asset, Trap, Fill, Button, Align
 import "math" for Math
 import "soundcontroller" for SoundController
 import "actionqueue" for ActionQueue
@@ -83,7 +83,7 @@ class FadeThing {
 
       if (_thing is String) {
          Draw.setTextStyle(_textStyle[0], _textStyle[1], _textStyle[2], _textStyle[3])
-         Draw.setColor(Color.Fill, 255, 255, 255, _alpha)
+         Draw.setColor(255, 255, 255, _alpha)
          Draw.text(_x, _y, _w, _thing)
       } else if (_type == Asset.Image) {
          Draw.image(_thing, _x, _y, _w, _h, _alpha)
@@ -165,7 +165,7 @@ class Game4Title {
       Draw.resetTransform()
       Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
 
-      Draw.setColor(Color.Fill, 255, 255, 255, 255)
+      Draw.setColor(255, 255, 255, 255)
       Draw.setTextStyle(_font, 48, 1.0, Align.Left+Align.Top)
 
       for (k in _things.keys) {

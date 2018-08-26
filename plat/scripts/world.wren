@@ -1,4 +1,4 @@
-import "engine" for Trap, Button, Draw, Asset, Fill, Color, TileMap
+import "engine" for Trap, Button, Draw, Asset, Fill, TileMap
 import "debug" for Debug
 import "collision" for TileCollider
 import "camera" for Camera
@@ -212,7 +212,7 @@ class World {
       
       Draw.setScissor(0, 16, _cam.w, _cam.h - 16)
 
-      Draw.setColor(Color.Fill, level.backgroundColor)
+      Draw.setColor(level.backgroundColor)
       Draw.rect(0, 0, w, h, Fill.Solid)
 
       Draw.translate(0 - _cam.x, 0 - _cam.y)
@@ -251,9 +251,9 @@ class World {
       if (_levelWon) {
 
          if (player.health == 0) {
-            Draw.setColor(Color.Fill, 149, 0, 0, 255)
+            Draw.setColor(149, 0, 0, 255)
          } else {
-            Draw.setColor(Color.Fill, 52, 101, 36, 255)
+            Draw.setColor(52, 101, 36, 255)
 
          }
          Draw.rect(0, 70, 320, 56, Fill.Solid)

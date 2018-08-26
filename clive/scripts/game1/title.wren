@@ -1,5 +1,5 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Color, Fill, Button
+import "engine" for Draw, Asset, Trap, Fill, Button
 import "math" for Math
 import "soundcontroller" for SoundController
 import "actionqueue" for ActionQueue

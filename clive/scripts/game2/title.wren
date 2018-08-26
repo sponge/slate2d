@@ -1,4 +1,4 @@
-import "engine" for Draw, Trap, Button, Asset, Color
+import "engine" for Draw, Trap, Button, Asset
 import "soundcontroller" for SoundController
 
 class Game2Title {

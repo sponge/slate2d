@@ -1,4 +1,4 @@
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap, CVar, Align
+import "engine" for Draw, Asset, Trap, Fill, Button, TileMap, CVar, Align
 import "timer" for Timer
 import "debug" for Debug
 import "grid" for Grid
@@ -35,9 +35,9 @@ class Tip {
       Draw.resetTransform()
       Draw.transform(h/720, 0, 0, h/720, 0, 0)
       
-      Draw.setColor(Color.Fill, 0, 57, 113, 200)
+      Draw.setColor(0, 57, 113, 200)
       Draw.rect(_x, _y, 200, 65, false)
-      Draw.setColor(Color.Fill, 255, 255, 255, 255)
+      Draw.setColor(255, 255, 255, 255)
       Draw.setTextStyle(_descriptionFont, 36, 0.85, Align.Center+Align.Top)
       Draw.text(_x, _y, 200, _text)
    }

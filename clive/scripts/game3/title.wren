@@ -1,5 +1,5 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, Align
+import "engine" for Draw, Asset, Trap, Fill, Button, Align
 import "math" for Math
 import "soundcontroller" for SoundController
 import "debug" for Debug
@@ -131,7 +131,7 @@ class Game3Title {
 
          if (_skipWarningTime) {
             var y = 64
-            Draw.setColor(Color.Fill, 0, 0, 0, 255)
+            Draw.setColor(0, 0, 0, 255)
             Draw.rect(0, y, 360, 64, Fill.Solid)
             Draw.bmpText(_font, 0, y, _warningMessage)
          }
@@ -139,14 +139,14 @@ class Game3Title {
          Draw.bmpText(_font, 8, 8, _selfTestStr)
       } else if (_mode == "title") {
          Draw.image(_title, 160-108, 16)
-         Draw.setColor(Color.Fill, 255, 255, 255, 255)
+         Draw.setColor(255, 255, 255, 255)
          Draw.setTextStyle(_teleText, 10, 1.0, Align.Center|Align.Top)
          Draw.text(0, 4, 320, "CLIVE STURRIDGE'S")
          Draw.text(0, 118, 320, "FREE PLAY")
          Draw.text(0, 164, 320, "©1990 REASONABLE SOFTWARE LTD")
 
          if ((_time * 2).floor % 2 == 0) {
-            Draw.setColor(Color.Fill, 0, 149, 233, 255)
+            Draw.setColor(0, 149, 233, 255)
             Draw.text(0, 132, 320, "PUSH START")
          }
       }

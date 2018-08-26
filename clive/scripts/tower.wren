@@ -1,4 +1,4 @@
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, TileMap
+import "engine" for Draw, Asset, Trap, Fill, Button, TileMap
 import "entities/projectile" for Cannonball, Arrow, MagicBolt
 import "math" for Math
 import "soundcontroller" for SoundController

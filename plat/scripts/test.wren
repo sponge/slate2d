@@ -1,4 +1,4 @@
-import "engine" for Trap, CVar, Button, Draw, Asset, Fill, Color, TileMap
+import "engine" for Trap, CVar, Button, Draw, Asset, Fill, TileMap
 import "player" for Player
 import "meta" for Meta
 import "random" for Random
@@ -112,30 +112,30 @@ class Title {
       Draw.mapLayer(_worldLayer, 4, 4, 0, 14, 8, 99)
       Draw.mapLayer(_bgLayer, 4, 4, 0, 14, 8, 99)
 
-      Draw.setColor(Color.Stroke, 255, 0, 0, 255)
+      Draw.setColor(255, 0, 0, 255)
       Draw.rect(120 + (_time/80).sin * 80, 3, 16, 16, Fill.Outline)
 
-      Draw.setColor(Color.Fill, 60, 0, 90, 255)
+      Draw.setColor(60, 0, 90, 255)
       Draw.setScissor(0, 0, 280, 110)
       Draw.circle(270, 100, 20, Fill.Outline)
       Draw.resetScissor()
 
-      Draw.setColor(Color.Stroke, 0, 255, 0, 255)
+      Draw.setColor(0, 255, 0, 255)
       Draw.line(0, 0, 320, 180)
 
-      Draw.setColor(Color.Fill, 130, 140, 150, 255)
+      Draw.setColor(130, 140, 150, 255)
       Draw.rect(10, 30, 64, 64, Fill.Solid)
 
-      Draw.setColor(Color.Fill, 255, 255, 0, 255)
+      Draw.setColor(255, 255, 0, 255)
       Draw.circle(200, 25, 16, Fill.Solid)
 
-      Draw.setColor(Color.Stroke, 140, 90, 40, 255)
+      Draw.setColor(140, 90, 40, 255)
       Draw.circle(200, 70, 16, Fill.Outline)
 
-      Draw.setColor(Color.Stroke, 40, 90, 40, 255)
+      Draw.setColor(40, 90, 40, 255)
       Draw.tri(150, 150, 160, 160, 130, 160, Fill.Outline)
 
-      Draw.setColor(Color.Fill, 0, 255, 255, 255)
+      Draw.setColor(0, 255, 255, 255)
       Draw.tri(150, 180, 180, 180, 170, 170, Fill.Solid)
 
       Draw.image(_dog, 120, 120)

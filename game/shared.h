@@ -108,7 +108,6 @@ typedef struct {
 #define COLOR_STROKE 1
 typedef struct {
 	byte	commandId;
-	byte	which;
 	float	color[4];
 } setColorCommand_t;
 
@@ -137,8 +136,6 @@ typedef struct {
 	float x, y, w, h;
 } setScissorCommand_t;
 
-#define FILL false
-#define OUTLINE true
 typedef struct {
 	byte	commandId;
 	byte	outline;

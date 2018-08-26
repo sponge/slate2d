@@ -1,5 +1,5 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Color, Fill, Button, ImageFlags, Align
+import "engine" for Draw, Asset, Trap, Fill, Button, ImageFlags, Align
 import "debug" for Debug
 import "uibutton" for TextButton
 import "soundcontroller" for SoundController
@@ -38,16 +38,16 @@ class IntroMessage {
       Draw.clear()
       Draw.resetTransform()
 
-      Draw.setColor(Color.Fill, 0, 57, 113, 255)
+      Draw.setColor(0, 57, 113, 255)
       Draw.rect(0, 0, w, h, false)
       Draw.image(_gradient, 0, 0, w, h)
 
       Draw.transform(h / 720, 0, 0, h / 720, 0, 0)
 
-//       Draw.setColor(Color.Fill, 0, 0, 0, 200)
+//       Draw.setColor(0, 0, 0, 200)
 //       Draw.rect(108, 0, h/720*w-200, 720, Fill.Solid)
 
-      Draw.setColor(Color.Fill, 255, 255, 255, 255)
+      Draw.setColor(255, 255, 255, 255)
 
       Draw.sprite(_banner, 0, w/2 - 225, 10, 1, 3)
 

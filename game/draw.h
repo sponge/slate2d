@@ -1,6 +1,6 @@
 #pragma once
 
-void DC_SetColor(byte which, byte r, byte g, byte b, byte a);
+void DC_SetColor(byte r, byte g, byte b, byte a);
 void DC_ResetTransform();
 void DC_Transform(float a, float b, float c, float d, float e, float f);
 void DC_Rotate(float angle);

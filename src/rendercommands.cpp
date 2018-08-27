@@ -49,6 +49,7 @@ const void *RB_Rotate(const void *data) {
 const void *RB_Translate(const void *data) {
 	auto cmd = (const translateCommand_t *)data;
 
+	rlglDraw();
 	rlTranslatef(cmd->x, cmd->y, 0);
 
 	return (const void *)(cmd + 1);
@@ -58,10 +59,10 @@ const void *RB_SetScissor(const void *data) {
 	auto cmd = (const setScissorCommand_t *)data;
 
 	//if (cmd->w <= 0 || cmd->h <= 0) {
-	//	nvgResetScissor(inf.nvg);
+	//	rlViewport(0, 0, 1280, 720);
 	//}
 	//else {
-	//	nvgScissor(inf.nvg, cmd->x, cmd->y, cmd->w, cmd->h);
+	//	rlViewport(cmd->x, cmd->y, cmd->w, cmd->h);
 	//}
 
 	return (const void *)(cmd + 1);
@@ -141,6 +142,7 @@ const void *RB_DrawBmpText(const void *data) {
 	const char *text = (const char *)cmd + sizeof(drawBmpTextCommand_t);
 
 	BMPFNT_DrawText(cmd->fntId, cmd->x, cmd->y, cmd->scale, text);
+	rlglDraw();
 
 	return (const void *)(text + cmd->strSz);
 }
@@ -374,6 +376,9 @@ const void *RB_DrawMapLayer(const void *data) {
 			}
 		}
 	}
+
+	rlglDraw();
+
 	return (const void *)(cmd + 1);
 }
 

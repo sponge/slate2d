@@ -1809,11 +1809,7 @@ void rlglInit(int width, int height)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);      // Color blending function (how colors are mixed)
     glEnable(GL_BLEND);                                     // Enable color blending (required to work with transparencies)
 
-    // Init state: Culling
-    // NOTE: All shapes/models triangles are drawn CCW
-    glCullFace(GL_BACK);                                    // Cull the back face (default)
-    glFrontFace(GL_CCW);                                    // Front face are defined counter clockwise (default)
-    glEnable(GL_CULL_FACE);                                 // Enable backface culling
+	// deleted backface culling here
 
 #if defined(GRAPHICS_API_OPENGL_11)
     // Init state: Color hints (deprecated in OpenGL 3.0+)

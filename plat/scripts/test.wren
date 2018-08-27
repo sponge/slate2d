@@ -104,6 +104,7 @@ class Title {
 
       Draw.clear()
       Draw.resetTransform()
+      Draw.translate(0, 0)
       Draw.scale(h / 180)
 
       Draw.mapLayer(_bgLayer)
@@ -136,7 +137,7 @@ class Title {
       Draw.tri(150, 150, 160, 160, 130, 160, Fill.Outline)
 
       Draw.setColor(0, 255, 255, 255)
-      Draw.tri(150, 180, 180, 180, 170, 170, Fill.Solid)
+      Draw.tri(150, 180, 170, 170, 180, 180, Fill.Solid)
 
       Draw.image(_dog, 120, 120)
       

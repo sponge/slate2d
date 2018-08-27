@@ -210,12 +210,12 @@ class World {
 
       Draw.scale(h / _cam.h)
       
-      Draw.setScissor(0, 16, _cam.w, _cam.h - 16)
+      //Draw.setScissor(0, 16, _cam.w, _cam.h - 16)
 
       Draw.setColor(level.backgroundColor)
       Draw.rect(0, 0, w, h, Fill.Solid)
 
-      Draw.translate(0 - _cam.x, 0 - _cam.y)
+      Draw.translate(-_cam.x, -_cam.y)
 
       for (i in 0..level.layers.count-1) {
          Draw.mapLayer(i)
@@ -227,9 +227,13 @@ class World {
          }
       }
 
-      Draw.resetScissor()
+      //Draw.resetScissor()
 
       Draw.translate(_cam.x, _cam.y)
+
+      Draw.setColor(0, 0, 0, 255)
+      Draw.rect(0, 0, _cam.w, 16, Fill.Solid)
+
       if (_player != null) {
          Draw.bmpText(_fixedFont, 4, 4, "S")
          var pct = (_player.pMeter / _player.pMeterCapacity * 40 / 8).floor

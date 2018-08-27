@@ -202,8 +202,6 @@ void main_loop() {
 		frameAdvance = false;
 	}
 
-	rlglDraw();
-
 	consoleScene->Render();
 
 	ImGui::Render();

@@ -49,7 +49,6 @@ const void *RB_Rotate(const void *data) {
 const void *RB_Translate(const void *data) {
 	auto cmd = (const translateCommand_t *)data;
 
-	rlglDraw();
 	rlTranslatef(cmd->x, cmd->y, 0);
 
 	return (const void *)(cmd + 1);
@@ -142,7 +141,6 @@ const void *RB_DrawBmpText(const void *data) {
 	const char *text = (const char *)cmd + sizeof(drawBmpTextCommand_t);
 
 	BMPFNT_DrawText(cmd->fntId, cmd->x, cmd->y, cmd->scale, text);
-	rlglDraw();
 
 	return (const void *)(text + cmd->strSz);
 }
@@ -270,8 +268,9 @@ const void *RB_DrawCircle(const void *data) {
 		rlEnd();
 	}
 	else {
-		if (rlCheckBufferLimit(RL_QUADS, 4 * (36 / 2))) rlglDraw();
-
+		if (rlCheckBufferLimit(RL_QUADS, 4 * (36 / 2))) {
+			rlglDraw();
+		}
 
 		rlBegin(RL_QUADS);
 		for (int i = 0; i < 360; i += 20)
@@ -361,23 +360,21 @@ const void *RB_DrawMapLayer(const void *data) {
 
 				tmx_tile *tile = map->tiles[gid];
 				tmx_tileset *ts = tile->tileset;
-				Asset *asset = (Asset*) tile->tileset->image->resource_image;
+				Asset *asset = (Asset*)tile->tileset->image->resource_image;
 
 				DrawImage(
-				//  offset + current x/y         - start tile offset         
-					cmd->x + x * ts->tile_width  - (cmd->cellX * ts->tile_width),
+					//  offset + current x/y         - start tile offset         
+					cmd->x + x * ts->tile_width - (cmd->cellX * ts->tile_width),
 					cmd->y + y * ts->tile_height - (cmd->cellY * ts->tile_height),
 					ts->tile_width,
 					ts->tile_height,
 					tile->ul_x,
 					tile->ul_y,
-					1.0f, 1.0f, flipBits, (Image*) asset->resource, 0
+					1.0f, 1.0f, flipBits, (Image*)asset->resource, 0
 				);
 			}
 		}
 	}
-
-	rlglDraw();
 
 	return (const void *)(cmd + 1);
 }
@@ -414,6 +411,7 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 
 		case RC_DRAW_RECT:
 			data = RB_DrawRect(data);
+			rlglDraw();
 			break;
 
 		case RC_SET_TEXT_STYLE:
@@ -426,33 +424,41 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 
 		case RC_DRAW_BMPTEXT:
 			data = RB_DrawBmpText(data);
+			rlglDraw();
 			break;
 
 		case RC_DRAW_IMAGE:
 			data = RB_DrawImage(data);
+			rlglDraw();
 			break;
 
 		case RC_DRAW_SPRITE:
 			data = RB_DrawSprite(data);
+			rlglDraw();
 			break;
 
 		case RC_DRAW_LINE:
 			data = RB_DrawLine(data);
+			rlglDraw();
 			break;
 
 		case RC_DRAW_CIRCLE:
 			data = RB_DrawCircle(data);
+			rlglDraw();
 			break;
 
 		case RC_DRAW_TRI:
 			data = RB_DrawTri(data);
+			rlglDraw();
 			break;
 
 		case RC_DRAW_MAP_LAYER:
 			data = RB_DrawMapLayer(data);
+			rlglDraw();
 			break;
 
 		case RC_END_OF_LIST:
+			rlglDraw();
 			return;
 
 		default:

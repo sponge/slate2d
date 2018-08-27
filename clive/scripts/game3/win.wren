@@ -51,7 +51,5 @@ class Game3Win {
 
       var frame = (_time * 8% 4).floor
       Draw.sprite(_spr, 8 + (frame * 2), 128, 90, 1.0, 4, 0, 2, 2)
-
-      Draw.submit()
    }
 }

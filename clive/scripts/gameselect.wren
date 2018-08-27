@@ -95,9 +95,7 @@ class GameSelect {
       Draw.text(0, 103, 1280, _currentItem)
       // text
       Draw.setColor(255, 255, 255, 255)
-      Draw.text(0, 100, 1280, _currentItem)
-
-      Draw.submit()
+      Draw.text(0, 100, 1280, _currentItem) 
    }
 
    shutdown() {

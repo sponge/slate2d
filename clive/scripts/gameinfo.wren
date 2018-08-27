@@ -83,9 +83,7 @@ class GameInfo {
 
       for (item in _items) {
           item.draw()
-      }
-
-      Draw.submit()
+      } 
    }
 
    shutdown() {

@@ -169,8 +169,6 @@ class Title {
       if (_upActive) {
          Draw.rect(100, 0, 100, 100, Fill.Solid)
       }
-
-      Draw.submit()
    }
 
    shutdown() {

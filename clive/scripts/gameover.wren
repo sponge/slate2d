@@ -83,8 +83,6 @@ class GameOver {
          goatY = goatY - (goatY % 8)
          // Draw.rect(w/2 + rad.cos * radius, h/3 + rad.sin * radius, 8, 8, false)
          Draw.image(_sprite, goatX, goatY, _imgSize[0], _imgSize[1], 1.0, 1.0 * _sizeScale)
-      }
-
-      Draw.submit()
+      } 
    }
 }

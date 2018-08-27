@@ -373,9 +373,7 @@ class TD {
       if (_paused) {
          _pauseMenu.draw()
       }
-      _pauseMenu.pauseDraw()
-
-      Draw.submit()
+      _pauseMenu.pauseDraw()  
    }
 
    shutdown() {

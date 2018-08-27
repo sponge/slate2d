@@ -73,8 +73,6 @@ class Game1Title {
          var blockPx = Math.clamp(0, px + (8 - px % 8), _towerHeight)
          Draw.image(_tower, 100, 20, _towerWidth, blockPx)
       }
-
-      Draw.submit()
    }
 
    shutdown() {

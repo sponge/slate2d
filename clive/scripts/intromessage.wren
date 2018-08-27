@@ -56,7 +56,6 @@ class IntroMessage {
 ")
 
       Draw.image(_help, 240, 320)
-      Draw.submit()
    }
 
    shutdown() {

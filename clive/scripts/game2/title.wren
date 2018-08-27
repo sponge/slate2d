@@ -91,7 +91,6 @@ class Game2Title {
       if (_drawTitle) {
          Draw.scale(h / 180)
          Draw.image(_titleBg, 0, 0)
-         Draw.submit()
          return
       }
 
@@ -108,8 +107,6 @@ class Game2Title {
          drawA(x + 113 + 104, _aY)
          drawBle(x + 113 + 104 + 33, _bleY)
       }
-
-      Draw.submit()
    }
 
    shutdown() {

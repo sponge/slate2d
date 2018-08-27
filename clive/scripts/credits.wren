@@ -102,8 +102,6 @@ class Credits {
 
 //       Draw.text(640, textY + 72, textWidth, "LiLPP")
 //       Draw.text(640, textY + 78, textWidth, "audio")
-
-      Draw.submit()
    }
 
    shutdown() {

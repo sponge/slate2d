@@ -171,8 +171,6 @@ class Game4Title {
       for (k in _things.keys) {
          _things[k].draw()
       }
-
-      Draw.submit()
    }
 
    shutdown() {

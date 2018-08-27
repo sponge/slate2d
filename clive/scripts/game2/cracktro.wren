@@ -86,8 +86,6 @@ class Game2Cracktro {
       }
 
       _baseX = _baseX - 3
-
-      Draw.submit()
    }
 
    shutdown() {

@@ -51,8 +51,6 @@ class Intro {
       Draw.bmpText(_fixedFont, 20, 50, "Now entering...")
       Draw.bmpText( _font, (320 - _titleLen) / 2, 85, _title)
       Draw.bmpText(_fixedFontBlue, 220, 120, "Good Luck!")
-
-      Draw.submit()
    }
 
    shutdown() {

@@ -48,8 +48,6 @@ class Intro {
       }
 
       Draw.setColor(255, 0, 0, 255)
-
-      Draw.submit()
    }
 
    shutdown() {

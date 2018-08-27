@@ -150,8 +150,6 @@ class Game3Title {
             Draw.text(0, 132, 320, "PUSH START")
          }
       }
-      
-      Draw.submit()
    }
 
    shutdown() {

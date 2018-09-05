@@ -266,6 +266,14 @@ void wren_asset_sprite_set(WrenVM *vm) {
 	trap->Asset_Sprite_Set(assetHandle, width, height, marginX, marginY);
 }
 
+void wren_asset_canvas_set(WrenVM *vm) {
+	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
+	int width = (int)wrenGetSlotDouble(vm, 2);
+	int height = (int)wrenGetSlotDouble(vm, 3);
+
+	trap->Asset_Canvas_Set(assetHandle, width, height);
+}
+
 void wren_asset_image_size(WrenVM *vm) {
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 
@@ -324,6 +332,17 @@ void wren_dc_setscissor(WrenVM *vm) {
 
 void wren_dc_resetscissor(WrenVM *vm) {
 	DC_ResetScissor();
+}
+
+void wren_dc_usecanvas(WrenVM *vm) {
+	if (wrenGetSlotType(vm, 1) == WREN_TYPE_NULL) {
+		DC_ResetCanvas();
+	}
+	else {
+		AssetHandle fntId = (AssetHandle)wrenGetSlotDouble(vm, 1);
+
+		DC_UseCanvas(fntId);
+	}
 }
 
 void wren_dc_settextstyle(WrenVM *vm) {
@@ -783,6 +802,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Asset", true, "measureBmpText(_,_,_)", wren_asset_measurebmptext },
 	{ "engine", "Asset", true, "spriteSet(_,_,_,_,_)", wren_asset_sprite_set },
 	{ "engine", "Asset", true, "imageSize(_)", wren_asset_image_size },
+	{ "engine", "Asset", true, "canvasSet(_,_,_)", wren_asset_canvas_set },
 
 	{ "engine", "Draw", true, "setColor(_,_,_,_)", wren_dc_setcolor },
 	{ "engine", "Draw", true, "resetTransform()", wren_dc_reset_transform },
@@ -791,6 +811,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Draw", true, "translate(_,_)", wren_dc_translate },
 	{ "engine", "Draw", true, "setScissor(_,_,_,_)", wren_dc_setscissor },
 	{ "engine", "Draw", true, "resetScissor()", wren_dc_resetscissor },
+	{ "engine", "Draw", true, "useCanvas(_)", wren_dc_usecanvas },
 	{ "engine", "Draw", true, "rect(_,_,_,_,_)", wren_dc_drawrect },
 	{ "engine", "Draw", true, "setTextStyle(_,_,_,_)", wren_dc_settextstyle },
 	{ "engine", "Draw", true, "text(_,_,_,_)", wren_dc_drawtext },

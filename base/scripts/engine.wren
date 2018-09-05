@@ -56,6 +56,7 @@ class Asset {
    static measureBmpText(fntId, text) { measureBmpText(fntId, text, 1.0) }
    foreign static imageSize(assetHandle)
    foreign static spriteSet(assetHandle, w, h, marginX, marginY)
+   foreign static canvasSet(assetHandle, w, h)
 
    static Any { 0 }
    static Image { 1 }
@@ -66,7 +67,8 @@ class Asset {
    static Font { 6 }
    static BitmapFont { 7 }
    static TileMap { 8 }
-   static Max { 9 }
+   static Canvas { 9 }
+   static Max { 10 }
 }
 
 class Draw {
@@ -79,6 +81,7 @@ class Draw {
    foreign static translate(x, y)
    foreign static setScissor(x, y, w, h)
    foreign static resetScissor()
+   foreign static useCanvas(id)
    foreign static rect(x, y, w, h, outline)
    foreign static setTextStyle(fntId, size, lineHeight, align)
    static setTextStyle(fntId, size, lineHeight) { setTextStyle(fntId, size, 1.0, 1) }

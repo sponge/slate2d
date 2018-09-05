@@ -73,6 +73,15 @@ void DC_ResetScissor() {
 	DC_SetScissor(0, 0, 0, 0);
 }
 
+void DC_UseCanvas(unsigned int canvasId) {
+	GET_COMMAND(useCanvasCommand_t, RC_USE_CANVAS)
+	cmd->canvasId = canvasId;
+}
+
+void DC_ResetCanvas() {
+	GET_COMMAND(resetCanvasCommand_t, RC_RESET_CANVAS)
+}
+
 void DC_DrawRect(float x, float y, float w, float h, bool outline) {
 	GET_COMMAND(drawRectCommand_t, RC_DRAW_RECT)
 	cmd->outline = outline;

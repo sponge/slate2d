@@ -38,6 +38,9 @@ class Title {
       var tmapId = Asset.create(Asset.TileMap, mapName, mapName)
       TileMap.setCurrent(tmapId)
 
+      _canvas = Asset.create(Asset.Canvas, "canvas", "")
+      Asset.canvasSet(_canvas, 320, 180)
+
       Asset.loadAll()
 
       _rnd = Random.new()
@@ -104,8 +107,8 @@ class Title {
 
       Draw.clear()
       Draw.resetTransform()
-      Draw.translate(0, 0)
-      Draw.scale(h / 180)
+
+      Draw.useCanvas(_canvas)
 
       Draw.mapLayer(_bgLayer)
       Draw.mapLayer(_worldLayer)
@@ -169,6 +172,15 @@ class Title {
       if (_upActive) {
          Draw.rect(100, 0, 100, 100, Fill.Solid)
       }
+
+      Draw.useCanvas(null)
+
+      Draw.resetTransform()
+      Draw.scale(h / 180)
+      Draw.image(_canvas, 0, 0)
+
+      Draw.resetTransform()
+      Draw.image(_canvas, 640, 320)
    }
 
    shutdown() {

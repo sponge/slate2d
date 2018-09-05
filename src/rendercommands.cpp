@@ -67,6 +67,40 @@ const void *RB_SetScissor(const void *data) {
 	return (const void *)(cmd + 1);
 }
 
+const void *RB_UseCanvas(const void *data) {
+	auto cmd = (const useCanvasCommand_t*)data;
+
+	Canvas *canvas = (Canvas *)Asset_Get(ASSET_CANVAS, cmd->canvasId)->resource;
+
+	assert(canvas != nullptr);
+
+	rlEnableRenderTexture(canvas->texture.id);
+	// Initialize viewport and internal projection/modelview matrices
+	rlViewport(0, 0, canvas->w, canvas->h);
+	rlMatrixMode(RL_PROJECTION);                        // Switch to PROJECTION matrix
+	rlLoadIdentity();                                   // Reset current matrix (PROJECTION)
+	rlOrtho(0, canvas->w, canvas->h, 0, 0.0f, 1.0f); // Orthographic projection with top-left corner at (0,0)
+	rlMatrixMode(RL_MODELVIEW);                         // Switch back to MODELVIEW matrix
+	rlLoadIdentity();                                   // Reset current matrix (MODELVIEW)
+
+	return (const void *)(cmd + 1);
+}
+
+const void *RB_ResetCanvas(const void *data) {
+	auto cmd = (const resetCanvasCommand_t*)data;
+
+	rlDisableRenderTexture();
+	// Initialize viewport and internal projection/modelview matrices
+	rlViewport(0, 0, 1280, 720);
+	rlMatrixMode(RL_PROJECTION);                        // Switch to PROJECTION matrix
+	rlLoadIdentity();                                   // Reset current matrix (PROJECTION)
+	rlOrtho(0, inf.width, inf.height, 0, 0.0f, 1.0f); // Orthographic projection with top-left corner at (0,0)
+	rlMatrixMode(RL_MODELVIEW);                         // Switch back to MODELVIEW matrix
+	rlLoadIdentity();
+
+	return (const void *)(cmd + 1);
+}
+
 const void DrawRectangle(float x, float y, float w, float h) {
 	rlNormal3f(0.0f, 0.0f, 1.0f);
 
@@ -197,9 +231,22 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float alp
 const void *RB_DrawImage(const void *data) {
 	auto cmd = (const drawImageCommand_t *)data;
 
-	Image *image = Get_Img(cmd->imgId);
-	float w = cmd->w == 0 ? image->w : cmd->w;
-	float h = cmd->h == 0 ? image->h : cmd->h;
+	auto *asset = Asset_Get(ASSET_ANY, cmd->imgId);
+
+	assert(asset != nullptr && asset->resource != nullptr);
+
+	if (asset->type == ASSET_CANVAS) {
+		Canvas *canvas = (Canvas*) asset->resource;
+		float w = cmd->w == 0 ? canvas->w : cmd->w;
+		float h = cmd->h == 0 ? canvas->h : cmd->h;
+		byte flipBits = cmd->flipBits;
+		flipBits ^= FLIP_V;
+		DrawImage(cmd->x, cmd->y, w, h, cmd->ox, cmd->oy, cmd->alpha, cmd->scale, flipBits, canvas->texture.texture.id, canvas->w, canvas->h);
+	}
+	else {
+		Image *image = Get_Img(cmd->imgId);
+		float w = cmd->w == 0 ? image->w : cmd->w;
+		float h = cmd->h == 0 ? image->h : cmd->h;
 		DrawImage(cmd->x, cmd->y, w, h, cmd->ox, cmd->oy, cmd->alpha, cmd->scale, cmd->flipBits, image->hnd, image->w, image->h);
 	}
 	return (const void *)(cmd + 1);
@@ -410,6 +457,14 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 
 		case RC_SET_SCISSOR:
 			data = RB_SetScissor(data);
+			break;
+
+		case RC_USE_CANVAS:
+			data = RB_UseCanvas(data);
+			break;
+
+		case RC_RESET_CANVAS:
+			data = RB_ResetCanvas(data);
 			break;
 
 		case RC_DRAW_RECT:

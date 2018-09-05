@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../game/shared.h"
+#include "external/rlgl.h"
 #include <tmx.h>
 
 AssetHandle Asset_Find(const char *name);
@@ -58,3 +59,14 @@ void Mod_Free(Asset &asset);
 void * TileMap_Load(Asset &asset);
 void TileMap_Free(Asset &asset);
 tmx_map* Get_TileMap(AssetHandle id);
+
+// canvas assets
+
+typedef struct Canvas {
+	int w, h;
+	RenderTexture2D texture;
+};
+
+void * Canvas_Load(Asset &asset);
+void Canvas_Set(AssetHandle id, int width, int height);
+void Canvas_Free(Asset &asset);

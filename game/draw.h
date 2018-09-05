@@ -7,6 +7,8 @@ void DC_Rotate(float angle);
 void DC_Translate(float x, float y);
 void DC_SetScissor(float x, float y, float w, float h);
 void DC_ResetScissor();
+void DC_UseCanvas(unsigned int canvasId);
+void DC_ResetCanvas();
 void DC_DrawRect(float x, float y, float w, float h, bool outline = false);
 void DC_SetTextStyle(unsigned int fntId, unsigned int size, float lineHeight, int align);
 void DC_DrawText(float x, float y, float h, const char *text);

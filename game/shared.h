@@ -136,6 +136,15 @@ typedef struct {
 
 typedef struct {
 	byte	commandId;
+	unsigned int canvasId;
+} useCanvasCommand_t;
+
+typedef struct {
+	byte	commandId;
+} resetCanvasCommand_t;
+
+typedef struct {
+	byte	commandId;
 	byte	outline;
 	float	x, y, w, h;
 } drawRectCommand_t;
@@ -219,6 +228,8 @@ typedef enum {
 	RC_ROTATE,
 	RC_TRANSLATE,
 	RC_SET_SCISSOR,
+	RC_USE_CANVAS,
+	RC_RESET_CANVAS,
 	RC_DRAW_RECT,
 	RC_DRAW_TEXT,
 	RC_DRAW_BMPTEXT,
@@ -246,6 +257,7 @@ typedef enum {
 	ASSET_FONT,
 	ASSET_BITMAPFONT,
 	ASSET_TILEMAP,
+	ASSET_CANVAS,
 	ASSET_MAX
 } AssetType_t;
 
@@ -259,7 +271,8 @@ static const char* assetStrings[] = {
 	"ASSET_FONT",
 	"ASSET_BITMAPFONT",
 	"ASSET_TILEMAP",
-	"ASSET_MAX"
+	"ASSET_CANVAS",
+	"ASSET_MAX",
 };
 
 typedef struct {

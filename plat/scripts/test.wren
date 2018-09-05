@@ -1,4 +1,6 @@
 import "engine" for Trap, CVar, Button, Draw, Asset, Fill, TileMap
+import "debug" for Debug
+import "math" for Math
 import "player" for Player
 import "meta" for Meta
 import "random" for Random
@@ -176,8 +178,13 @@ class Title {
       Draw.useCanvas(null)
 
       Draw.resetTransform()
-      Draw.scale(h / 180)
-      Draw.image(_canvas, 0, 0)
+
+      var scale = Math.min(h / 180, w / 320).floor
+      Draw.scale(scale)
+
+      var x = (w - 320 * scale) / 4
+      var y = (h - 180 * scale) / 4
+      Draw.image(_canvas, x, y)
 
       Draw.resetTransform()
       Draw.image(_canvas, 640, 320)

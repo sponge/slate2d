@@ -113,12 +113,7 @@ class Draw {
 }
 
 class ImageFlags {
-   static GenerateMipmaps { 1<<0 }
-	static RepeatX { 1<<1 }
-	static RepeatY { 1<<2 }
-	static FlipY { 1<<3 }
-	static PremultipiedAlpha { 1<<4 }
-	static LinearFilter { 1<<5 }
+	static LinearFilter { 1<<0 }
 }
 
 class Align {

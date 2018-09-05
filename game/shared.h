@@ -99,6 +99,8 @@ public:
 
 #define	MAX_RENDER_COMMANDS	0x40000
 
+#define IMAGEFLAGS_LINEAR_FILTER 1 << 0
+
 typedef struct {
 	byte	cmds[MAX_RENDER_COMMANDS];
 	int		used;

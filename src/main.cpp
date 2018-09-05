@@ -187,7 +187,8 @@ void main_loop() {
 		ImGui::End();
 	}
 
-	glClear(GL_COLOR_BUFFER_BIT);
+	rlClearColor(0, 0, 0, 255);
+	rlClearScreenBuffers();
 
 	rlMatrixMode(RL_PROJECTION);                            // Enable internal projection matrix
 	rlLoadIdentity();                                       // Reset internal projection matrix

@@ -75,6 +75,10 @@ const void *RB_UseCanvas(const void *data) {
 	assert(canvas != nullptr);
 
 	rlEnableRenderTexture(canvas->texture.id);
+
+	rlClearColor(0, 0, 0, 0);
+	rlClearScreenBuffers();
+
 	// Initialize viewport and internal projection/modelview matrices
 	rlViewport(0, 0, canvas->w, canvas->h);
 	rlMatrixMode(RL_PROJECTION);                        // Switch to PROJECTION matrix
@@ -91,7 +95,7 @@ const void *RB_ResetCanvas(const void *data) {
 
 	rlDisableRenderTexture();
 	// Initialize viewport and internal projection/modelview matrices
-	rlViewport(0, 0, 1280, 720);
+	rlViewport(0, 0, inf.width, inf.height);
 	rlMatrixMode(RL_PROJECTION);                        // Switch to PROJECTION matrix
 	rlLoadIdentity();                                   // Reset current matrix (PROJECTION)
 	rlOrtho(0, inf.width, inf.height, 0, 0.0f, 1.0f); // Orthographic projection with top-left corner at (0,0)

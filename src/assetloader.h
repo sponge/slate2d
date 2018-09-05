@@ -63,7 +63,7 @@ tmx_map* Get_TileMap(AssetHandle id);
 // canvas assets
 
 typedef struct Canvas {
-	int w, h;
+	int w, h, flags;
 	RenderTexture2D texture;
 };
 

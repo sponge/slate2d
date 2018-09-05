@@ -92,8 +92,8 @@ class Draw {
    foreign static image(imgId, x, y, w, h, alpha, scale, flipBits, ox, oy)
    static image(imgId, x, y, w, h, alpha, scale, flipBits) { image(imgId, x, y, w, h, alpha, scale, flipBits, 0, 0) }
    static image(imgId, x, y, w, h, alpha, scale) { image(imgId, x, y, w, h, alpha, scale, 0, 0, 0) }
-   static image(imgId, x, y, w, h, alpha) { image(imgId, x, y, w, h, alpha, 1.0, 0, 0) }
-   static image(imgId, x, y, w, h) { image(imgId, x, y, w, h, 1.0, 1.0, 0, 0) }
+   static image(imgId, x, y, w, h, alpha) { image(imgId, x, y, w, h, alpha, 1.0, 0, 0, 0) }
+   static image(imgId, x, y, w, h) { image(imgId, x, y, w, h, 1.0, 1.0, 0, 0, 0) }
    static image(imgId, x, y) { image(imgId, x, y, 0, 0, 1.0, 1.0, 0, 0, 0) }
    foreign static line(x1, y1, x2, y2)
    foreign static circle(x, y, radius, outline)

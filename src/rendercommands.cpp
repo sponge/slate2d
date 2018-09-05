@@ -41,7 +41,7 @@ const void *RB_Scale(const void *data) {
 const void *RB_Rotate(const void *data) {
 	auto cmd = (const rotateCommand_t *)data;
 
-	rlRotatef(cmd->angle, 0, 0, 0);
+	rlRotatef(cmd->angle, 0, 0, 1);
 
 	return (const void *)(cmd + 1);
 }

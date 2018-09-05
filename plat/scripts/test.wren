@@ -187,7 +187,10 @@ class Title {
       Draw.image(_canvas, x, y)
 
       Draw.resetTransform()
-      Draw.image(_canvas, 640, 320)
+      Draw.translate(640+320/2, 320+180/2)
+
+      Draw.rotate(_time / 2 % 360)
+      Draw.image(_canvas, -320/2, -180/2)
    }
 
    shutdown() {

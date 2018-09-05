@@ -104,8 +104,6 @@ typedef struct {
 	int		used;
 } renderCommandList_t;
 
-#define COLOR_FILL 0
-#define COLOR_STROKE 1
 typedef struct {
 	byte	commandId;
 	float	color[4];
@@ -175,7 +173,6 @@ typedef struct {
 	float x, y, w, h, ox, oy, angle, alpha, scale;
 	byte flipBits;
 	unsigned int imgId;
-	unsigned int shaderId;
 } drawImageCommand_t;
 
 typedef struct {

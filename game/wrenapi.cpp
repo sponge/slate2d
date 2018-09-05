@@ -375,9 +375,8 @@ void wren_dc_drawimage(WrenVM *vm) {
 	byte flipBits = (byte)wrenGetSlotDouble(vm, 8);
 	float ox = (float)wrenGetSlotDouble(vm, 9);
 	float oy = (float)wrenGetSlotDouble(vm, 10);
-	int shaderId = (int)wrenGetSlotDouble(vm, 11);
 
-	DC_DrawImage(imgId, x, y, w, h, alpha, scale, flipBits, ox, oy, shaderId);
+	DC_DrawImage(imgId, x, y, w, h, alpha, scale, flipBits, ox, oy);
 }
 
 void wren_dc_drawline(WrenVM *vm) {
@@ -796,7 +795,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Draw", true, "setTextStyle(_,_,_,_)", wren_dc_settextstyle },
 	{ "engine", "Draw", true, "text(_,_,_,_)", wren_dc_drawtext },
 	{ "engine", "Draw", true, "bmpText(_,_,_,_,_)", wren_dc_drawbmptext },
-	{ "engine", "Draw", true, "image(_,_,_,_,_,_,_,_,_,_,_)", wren_dc_drawimage },
+	{ "engine", "Draw", true, "image(_,_,_,_,_,_,_,_,_,_)", wren_dc_drawimage },
 	{ "engine", "Draw", true, "line(_,_,_,_)", wren_dc_drawline },
 	{ "engine", "Draw", true, "circle(_,_,_,_)", wren_dc_drawcircle },
 	{ "engine", "Draw", true, "tri(_,_,_,_,_,_,_)", wren_dc_drawtri },

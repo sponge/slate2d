@@ -174,7 +174,7 @@ int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, cons
 
 		BitmapGlyph &glyph = font->offsets[string[i]];
 
-		DrawImage(currX, currY, glyph.end - glyph.start, font->h, glyph.start, 0, 1.0, scale, 0, font->img, 0);
+		DrawImage(currX, currY, glyph.end - glyph.start, font->h, glyph.start, 0, 1.0, scale, 0, font->img->hnd, font->img->w, font->img->h);
 
 		currX += (glyph.end - glyph.start + font->charSpacing) * scale;
 

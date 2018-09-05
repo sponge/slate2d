@@ -145,12 +145,12 @@ const void *RB_DrawBmpText(const void *data) {
 	return (const void *)(text + cmd->strSz);
 }
 
-void DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, float scale, byte flipBits, Image *img, unsigned int shaderId) {
+void DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, float scale, byte flipBits, unsigned int handle, int imgW, int imgH) {
 	bool flipX = flipBits & FLIP_H;
 	bool flipY = flipBits & FLIP_V;
 	bool flipDiag = flipBits & FLIP_DIAG;
 
-	rlEnableTexture(img->hnd);
+	rlEnableTexture(handle);
 	rlPushMatrix();
 
 	rlTranslatef(x, y, 0);
@@ -170,8 +170,8 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float alp
 
 	rlNormal3f(0, 0, 1);
 
-	float xTex[2] = { ox / img->w, (ox + w) / img->w };
-	float yTex[2] = { oy / img->h, (oy + h) / img->h };
+	float xTex[2] = { ox / imgW, (ox + w) / imgW };
+	float yTex[2] = { oy / imgH, (oy + h) / imgH };
 
 	// bottom left
 	rlTexCoord2f(xTex[flipX ? 1 : 0], yTex[flipY ? 1 : 0]);
@@ -200,8 +200,8 @@ const void *RB_DrawImage(const void *data) {
 	Image *image = Get_Img(cmd->imgId);
 	float w = cmd->w == 0 ? image->w : cmd->w;
 	float h = cmd->h == 0 ? image->h : cmd->h;
-	DrawImage(cmd->x, cmd->y, w, h, cmd->ox, cmd->oy, cmd->alpha, cmd->scale, cmd->flipBits, image, cmd->shaderId);
-
+		DrawImage(cmd->x, cmd->y, w, h, cmd->ox, cmd->oy, cmd->alpha, cmd->scale, cmd->flipBits, image->hnd, image->w, image->h);
+	}
 	return (const void *)(cmd + 1);
 }
 
@@ -227,8 +227,9 @@ const void *RB_DrawSprite(const void *data) {
 		cmd->alpha,
 		cmd->scale,
 		cmd->flipBits,
-		img,
-		0
+		img->hnd,
+		img->w,
+		img->h
 	);
 
 	return (const void *)(cmd + 1);
@@ -362,6 +363,8 @@ const void *RB_DrawMapLayer(const void *data) {
 				tmx_tileset *ts = tile->tileset;
 				Asset *asset = (Asset*)tile->tileset->image->resource_image;
 
+				Image *image = (Image*)asset->resource;
+
 				DrawImage(
 					//  offset + current x/y         - start tile offset         
 					cmd->x + x * ts->tile_width - (cmd->cellX * ts->tile_width),
@@ -370,7 +373,7 @@ const void *RB_DrawMapLayer(const void *data) {
 					ts->tile_height,
 					tile->ul_x,
 					tile->ul_y,
-					1.0f, 1.0f, flipBits, (Image*)asset->resource, 0
+					1.0f, 1.0f, flipBits, image->hnd, image->w, image->h
 				);
 			}
 		}

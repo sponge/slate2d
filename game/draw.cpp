@@ -116,7 +116,7 @@ void DC_DrawBmpText(unsigned int fntId, float x, float y, const char *text, floa
 	strncpy((char*)strStart, text, strlen(text));
 }
 
-void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h, float alpha, float scale, byte flipBits, float ox, float oy, unsigned int shaderId) {
+void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h, float alpha, float scale, byte flipBits, float ox, float oy) {
 	GET_COMMAND(drawImageCommand_t, RC_DRAW_IMAGE)
 	cmd->x = x;
 	cmd->y = y;
@@ -128,7 +128,6 @@ void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h, float 
 	cmd->scale = scale;
 	cmd->flipBits = flipBits;
 	cmd->imgId = imgId;
-	cmd->shaderId = shaderId;
 }
 
 void DC_DrawSprite(unsigned int spr, int id, float x, float y, float alpha, float scale, byte flipBits, int w, int h) {

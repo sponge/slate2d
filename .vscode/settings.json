@@ -12,6 +12,6 @@
     "editor.tabSize": 3,
     "wren.additionalModuleDirectories": [
         "./base/scripts/",
-        "./clive/scripts/"
+        "./plat/scripts/"
     ]
 }

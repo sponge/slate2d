@@ -21,6 +21,7 @@ static AssetLoadHandler assetHandler[ASSET_MAX] = {
 	{BMPFNT_Load, BMPFNT_Free},
 	{TileMap_Load, TileMap_Free},
 	{Canvas_Load, Canvas_Free},
+	{Shader_Load, Shader_Free},
 };
 
 AssetHandle Asset_Find(const char *name) {

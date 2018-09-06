@@ -105,6 +105,28 @@ const void *RB_ResetCanvas(const void *data) {
 	return (const void *)(cmd + 1);
 }
 
+const void *RB_UseShader(const void *data) {
+	auto cmd = (const useShaderCommand_t*)data;
+
+	ShaderAsset *shasset = (ShaderAsset *)Asset_Get(ASSET_SHADER, cmd->shaderId)->resource;
+
+	assert(shasset != nullptr);
+
+	Shader shader = *shasset->shader;
+
+	BeginShaderMode(shader);
+
+	return (const void *)(cmd + 1);
+}
+
+const void *RB_ResetShader(const void *data) {
+	auto cmd = (const resetShaderCommand_t*)data;
+
+	EndShaderMode();
+
+	return (const void *)(cmd + 1);
+}
+
 const void DrawRectangle(float x, float y, float w, float h) {
 	rlNormal3f(0.0f, 0.0f, 1.0f);
 
@@ -469,6 +491,14 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 
 		case RC_RESET_CANVAS:
 			data = RB_ResetCanvas(data);
+			break;
+
+		case RC_USE_SHADER:
+			data = RB_UseShader(data);
+			break;
+
+		case RC_RESET_SHADER:
+			data = RB_ResetShader(data);
 			break;
 
 		case RC_DRAW_RECT:

@@ -5,7 +5,7 @@
 void * Canvas_Load(Asset & asset) {
 	// canvases need to be setup before load.
 	if (asset.resource == nullptr) {
-		Com_Error(ERR_FATAL, "Canvas_Load: canvas font not setup before load %s", asset.path);
+		Com_Error(ERR_FATAL, "Canvas_Load: canvas not setup before load %s", asset.name);
 	}
 
 	auto *canvas = (Canvas*)asset.resource;

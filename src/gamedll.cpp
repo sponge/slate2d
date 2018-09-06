@@ -54,6 +54,7 @@ static gameImportFuncs_t GAMEtraps = {
 	BMPFNT_TextWidth,
 	Sprite_Set,
 	Canvas_Set,
+	Shader_Set,
 	Get_Img,
 	Get_TileMap,
 	Snd_Play,

@@ -57,6 +57,7 @@ class Asset {
    foreign static imageSize(assetHandle)
    foreign static spriteSet(assetHandle, w, h, marginX, marginY)
    foreign static canvasSet(assetHandle, w, h)
+   foreign static shaderSet(assetHandle, isFile, vertexShader, fragmentShader)
 
    static Any { 0 }
    static Image { 1 }
@@ -68,7 +69,8 @@ class Asset {
    static BitmapFont { 7 }
    static TileMap { 8 }
    static Canvas { 9 }
-   static Max { 10 }
+   static Shader { 10 }
+   static Max { 11 }
 }
 
 class Draw {
@@ -82,6 +84,7 @@ class Draw {
    foreign static setScissor(x, y, w, h)
    foreign static resetScissor()
    foreign static useCanvas(id)
+   foreign static useShader(id)
    foreign static rect(x, y, w, h, outline)
    foreign static setTextStyle(fntId, size, lineHeight, align)
    static setTextStyle(fntId, size, lineHeight) { setTextStyle(fntId, size, 1.0, 1) }

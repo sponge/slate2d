@@ -70,3 +70,15 @@ typedef struct Canvas {
 void * Canvas_Load(Asset &asset);
 void Canvas_Set(AssetHandle id, int width, int height);
 void Canvas_Free(Asset &asset);
+
+// shader assets
+
+typedef struct ShaderAsset {
+	char *vs, *fs;
+	bool isFile;
+	Shader *shader;
+};
+
+void * Shader_Load(Asset & asset);
+void Shader_Set(AssetHandle id, bool isFile, char *vs, char *fs);
+void Shader_Free(Asset & asset);

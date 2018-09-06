@@ -43,6 +43,9 @@ class Title {
       _canvas = Asset.create(Asset.Canvas, "canvas", "")
       Asset.canvasSet(_canvas, 320, 180)
 
+      _shader = Asset.create(Asset.Shader, "shader_grayscale", "")
+      Asset.shaderSet(_shader, true, "shaders/base.vs", "shaders/fisheye.fs")
+
       Asset.loadAll()
 
       _rnd = Random.new()
@@ -174,7 +177,7 @@ class Title {
       if (_upActive) {
          Draw.rect(100, 0, 100, 100, Fill.Solid)
       }
-
+      
       Draw.useCanvas(null)
 
       Draw.resetTransform()
@@ -184,7 +187,9 @@ class Title {
 
       var x = (w - 320 * scale) / 4
       var y = (h - 180 * scale) / 4
+      Draw.useShader(_shader)
       Draw.image(_canvas, x, y)
+      Draw.useShader(null)
 
       Draw.resetTransform()
       Draw.translate(640+320/2, 320+180/2)

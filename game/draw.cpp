@@ -82,6 +82,15 @@ void DC_ResetCanvas() {
 	GET_COMMAND(resetCanvasCommand_t, RC_RESET_CANVAS)
 }
 
+void DC_UseShader(unsigned int shaderId) {
+	GET_COMMAND(useShaderCommand_t, RC_USE_SHADER)
+	cmd->shaderId = shaderId;
+}
+
+void DC_ResetShader() {
+	GET_COMMAND(resetShaderCommand_t, RC_RESET_SHADER)
+}
+
 void DC_DrawRect(float x, float y, float w, float h, bool outline) {
 	GET_COMMAND(drawRectCommand_t, RC_DRAW_RECT)
 	cmd->outline = outline;

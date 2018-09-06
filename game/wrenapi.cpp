@@ -274,6 +274,15 @@ void wren_asset_canvas_set(WrenVM *vm) {
 	trap->Asset_Canvas_Set(assetHandle, width, height);
 }
 
+void wren_asset_shader_set(WrenVM *vm) {
+	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
+	bool isFile = wrenGetSlotBool(vm, 2);
+	char *vs = (char*) wrenGetSlotString(vm, 3);
+	char *fs = (char*) wrenGetSlotString(vm, 4);
+
+	trap->Asset_Shader_Set(assetHandle, isFile, vs, fs);
+}
+
 void wren_asset_image_size(WrenVM *vm) {
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 
@@ -339,9 +348,20 @@ void wren_dc_usecanvas(WrenVM *vm) {
 		DC_ResetCanvas();
 	}
 	else {
-		AssetHandle fntId = (AssetHandle)wrenGetSlotDouble(vm, 1);
+		AssetHandle canvasId = (AssetHandle)wrenGetSlotDouble(vm, 1);
 
-		DC_UseCanvas(fntId);
+		DC_UseCanvas(canvasId);
+	}
+}
+
+void wren_dc_useshader(WrenVM *vm) {
+	if (wrenGetSlotType(vm, 1) == WREN_TYPE_NULL) {
+		DC_ResetShader();
+	}
+	else {
+		AssetHandle shaderId = (AssetHandle)wrenGetSlotDouble(vm, 1);
+
+		DC_UseShader(shaderId);
 	}
 }
 
@@ -803,6 +823,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Asset", true, "spriteSet(_,_,_,_,_)", wren_asset_sprite_set },
 	{ "engine", "Asset", true, "imageSize(_)", wren_asset_image_size },
 	{ "engine", "Asset", true, "canvasSet(_,_,_)", wren_asset_canvas_set },
+	{ "engine", "Asset", true, "shaderSet(_,_,_,_)", wren_asset_shader_set },
 
 	{ "engine", "Draw", true, "setColor(_,_,_,_)", wren_dc_setcolor },
 	{ "engine", "Draw", true, "resetTransform()", wren_dc_reset_transform },
@@ -812,6 +833,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Draw", true, "setScissor(_,_,_,_)", wren_dc_setscissor },
 	{ "engine", "Draw", true, "resetScissor()", wren_dc_resetscissor },
 	{ "engine", "Draw", true, "useCanvas(_)", wren_dc_usecanvas },
+	{ "engine", "Draw", true, "useShader(_)", wren_dc_useshader },
 	{ "engine", "Draw", true, "rect(_,_,_,_,_)", wren_dc_drawrect },
 	{ "engine", "Draw", true, "setTextStyle(_,_,_,_)", wren_dc_settextstyle },
 	{ "engine", "Draw", true, "text(_,_,_,_)", wren_dc_drawtext },

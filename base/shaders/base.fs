@@ -8,10 +8,14 @@ in vec4 fragColor;
 uniform sampler2D texture0;
 uniform vec4 colDiffuse;
 
+// custom inputs
+uniform vec3 iResolution;
+uniform float iTime;
+uniform float iTimeDelta;
+uniform vec2 iMouse;
+
 // Output fragment color
 out vec4 finalColor;
-
-// NOTE: Add here your custom variables
 
 void main()
 {

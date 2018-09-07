@@ -4,10 +4,13 @@
 #include "assetloader.h"
 #include "bitmapfont.h"
 #include "rlgl.h"
+#include "main.h"
+#include "input.h"
 
 #include "console/console.h"
 
 extern ClientInfo inf;
+Canvas * activeCanvas = nullptr;
 
 float currentColor[4] = { 1.0, 1.0, 1.0, 1.0 };
 
@@ -87,6 +90,8 @@ const void *RB_UseCanvas(const void *data) {
 	rlMatrixMode(RL_MODELVIEW);                         // Switch back to MODELVIEW matrix
 	rlLoadIdentity();                                   // Reset current matrix (MODELVIEW)
 
+	activeCanvas = canvas;
+
 	return (const void *)(cmd + 1);
 }
 
@@ -102,6 +107,8 @@ const void *RB_ResetCanvas(const void *data) {
 	rlMatrixMode(RL_MODELVIEW);                         // Switch back to MODELVIEW matrix
 	rlLoadIdentity();
 
+	activeCanvas = nullptr;
+
 	return (const void *)(cmd + 1);
 }
 
@@ -113,6 +120,31 @@ const void *RB_UseShader(const void *data) {
 	assert(shasset != nullptr);
 
 	Shader shader = *shasset->shader;
+
+	// FIXME: this is needlessly slow
+	auto loc_iResolution = GetShaderLocation(shader, "iResolution");
+	auto loc_iTime = GetShaderLocation(shader, "iTime");
+	auto loc_iTimeDelta = GetShaderLocation(shader, "iTimeDelta");
+	auto loc_iMouse = GetShaderLocation(shader, "iMouse");
+
+	if (activeCanvas != nullptr) {
+		const float iResolution[3] = { activeCanvas->w, activeCanvas->h, 1.0f };
+		SetShaderValue(shader, loc_iResolution, iResolution, 3);
+	}
+	else {
+		const float iResolution[3] = { inf.width, inf.height, 1.0f };
+		SetShaderValue(shader, loc_iResolution, iResolution, 3);
+	}
+
+	const float iTime = com_frameTime / 1E6;
+	SetShaderValue(shader, loc_iTime, &iTime, 1);
+
+	const float iTimeDelta = frame_musec / 1E6;
+	SetShaderValue(shader, loc_iTimeDelta, &iTimeDelta, 1);
+
+	auto mousePos = IN_MousePosition();
+	const float iMouse[2] = { mousePos.x, mousePos.y };
+	SetShaderValue(shader, loc_iTime, iMouse, 2);
 
 	BeginShaderMode(shader);
 

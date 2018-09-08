@@ -17,11 +17,6 @@ void trap_SendConsoleCommand(const char *text) {
 	Cbuf_ExecuteText(EXEC_NOW, text);
 }
 
-int R_RegisterShader(const char *name, const char *vshader, const char *fshader) {
-	return 0;
-	//return nvglCreateShaderGL3(inf.nvg, name, vshader, fshader);
-}
-
 static gameImportFuncs_t GAMEtraps = {
 	trap_SendConsoleCommand,
 	Com_Printf,
@@ -29,11 +24,9 @@ static gameImportFuncs_t GAMEtraps = {
 	Cvar_Get,
 	Cvar_FindVar,
 	Cvar_Set,
-	Cmd_AddCommand,
 	Cmd_Argc,
 	Cmd_Argv,
 	Cmd_ArgsFrom,
-	Cmd_Cmd,
 	FS_ReadFile,
 	FS_Exists,
 	FS_List,
@@ -44,7 +37,6 @@ static gameImportFuncs_t GAMEtraps = {
 	IN_KeyPressed,
 	IN_MousePosition,
 	SubmitRenderCommands,
-	R_RegisterShader,
 	Asset_Create,
 	Asset_Find,
 	Asset_Load,

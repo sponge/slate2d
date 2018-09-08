@@ -8,6 +8,7 @@
 ClientInfo *clientInf;
 gameImportFuncs_t *trap;
 kbutton_t buttons[MAX_KEYS];
+const char *buttoncmds[MAX_KEYS] = { "p1up", "p1down", "p1left", "p1right", "p1a", "p1b", "p1x", "p1y", "p1l", "p1r", "p1start", "p1select" };
 Scene *scene;
 
 #ifdef __EMSCRIPTEN__
@@ -58,34 +59,6 @@ void Cmd_Map_f(void) {
 static void Init(void *clientInfo, void *imGuiContext) {
 	clientInf = (ClientInfo*) clientInfo;
 
-	trap->Cmd_AddCommand("map", Cmd_Map_f);
-	trap->Cmd_AddCommand("scene", Cmd_Scene_f);
-
-	trap->Cmd_AddCommand("+p1up",		[]() { trap->IN_KeyDown(&buttons[0]); });
-	trap->Cmd_AddCommand("-p1up",		[]() { trap->IN_KeyUp(&buttons[0]); });
-	trap->Cmd_AddCommand("+p1down",		[]() { trap->IN_KeyDown(&buttons[1]); });
-	trap->Cmd_AddCommand("-p1down",		[]() { trap->IN_KeyUp(&buttons[1]); });
-	trap->Cmd_AddCommand("+p1left",		[]() { trap->IN_KeyDown(&buttons[2]); });
-	trap->Cmd_AddCommand("-p1left",		[]() { trap->IN_KeyUp(&buttons[2]); });
-	trap->Cmd_AddCommand("+p1right",	[]() { trap->IN_KeyDown(&buttons[3]); });
-	trap->Cmd_AddCommand("-p1right",	[]() { trap->IN_KeyUp(&buttons[3]); });
-	trap->Cmd_AddCommand("+p1a",		[]() { trap->IN_KeyDown(&buttons[4]); });
-	trap->Cmd_AddCommand("-p1a",		[]() { trap->IN_KeyUp(&buttons[4]); });
-	trap->Cmd_AddCommand("+p1b",		[]() { trap->IN_KeyDown(&buttons[5]); });
-	trap->Cmd_AddCommand("-p1b",		[]() { trap->IN_KeyUp(&buttons[5]); });
-	trap->Cmd_AddCommand("+p1x",		[]() { trap->IN_KeyDown(&buttons[6]); });
-	trap->Cmd_AddCommand("-p1x",		[]() { trap->IN_KeyUp(&buttons[6]); });
-	trap->Cmd_AddCommand("+p1y",		[]() { trap->IN_KeyDown(&buttons[7]); });
-	trap->Cmd_AddCommand("-p1y",		[]() { trap->IN_KeyUp(&buttons[7]); });
-	trap->Cmd_AddCommand("+p1l",		[]() { trap->IN_KeyDown(&buttons[8]); });
-	trap->Cmd_AddCommand("-p1l",		[]() { trap->IN_KeyUp(&buttons[8]); });
-	trap->Cmd_AddCommand("+p1r",		[]() { trap->IN_KeyDown(&buttons[9]); });
-	trap->Cmd_AddCommand("-p1r",		[]() { trap->IN_KeyUp(&buttons[9]); });
-	trap->Cmd_AddCommand("+p1start",	[]() { trap->IN_KeyDown(&buttons[10]); });
-	trap->Cmd_AddCommand("-p1start",	[]() { trap->IN_KeyUp(&buttons[10]); });
-	trap->Cmd_AddCommand("+p1select",	[]() { trap->IN_KeyDown(&buttons[11]); });
-	trap->Cmd_AddCommand("-p1select",	[]() { trap->IN_KeyUp(&buttons[11]); });
-
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
 	auto newScene = new WrenScene("scripts/main.wren", nullptr);
@@ -94,10 +67,41 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	scene->Startup(clientInf);
 }
 
-static void Console(const char *line) {
-	if (scene != nullptr) {
-		scene->Console(line);
+static bool Console(const char *line) {
+	const char *cmd = trap->Cmd_Argv(0);
+	// if it's a + or - command, look to see if its a known key
+	// and signal to the engine that it's been pressed.
+	// we do this here so the game dll can customize the buttons used
+	if (line[0] == '+' || line[0] == '-') {
+		for (int i = 0; i < MAX_KEYS; i++) {
+			if (strcasecmp(cmd+1, buttoncmds[i]) == 0) {
+				if (cmd[0] == '+') {
+					trap->IN_KeyDown(&buttons[i]);
+				}
+				else {
+					trap->IN_KeyUp(&buttons[i]);
+				}
+
+				return true;
+			}
+		}
+
+		return false;
 	}
+
+	// search for known commands (this could be an array but we don't have
+	// enough to make it worth it.)
+	if (strcasecmp(cmd, "map") == 0) { Cmd_Map_f(); return true; }
+	if (strcasecmp(cmd, "scene") == 0) { Cmd_Scene_f(); return true; }
+
+	// if there's a scene loaded and it's not a /, pass it into the scene
+	// which is usually handled by eval'ing wren code
+	if (scene != nullptr && line[0] != '/') {
+		scene->Console(line);
+		return true;
+	}
+
+	return false;	
 }
 
 static void Frame(double dt) {

@@ -5,7 +5,6 @@
 
 #include "console.h"
 #include "../../game/public.h"
-extern gameExportFuncs_t * gexports;
 
 #define CONSOLE_MAX_LINES 4000
 
@@ -108,12 +107,7 @@ void ConsoleUI::ExecCommand(const char* command_line) {
 		}
 	History.push_back(Strdup(command_line));
 
-	if (command_line[0] == '/') {
-		Cbuf_ExecuteText(EXEC_NOW, command_line + 1);
-	}
-	else {
-		gexports->Console(command_line);
-	}
+	Cbuf_ExecuteText(EXEC_NOW, command_line);
 }
 
 int ConsoleUI::TextEditCallbackStub(ImGuiTextEditCallbackData* data) { // In C++11 you are better off using lambdas for this sort of forwarding callbacks

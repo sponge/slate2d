@@ -29,6 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "console.h"
 #include "../main.h"
 #include "../files.h"
+#include "../../game/public.h"
 #include <SDL/SDL.h>
 
 #if defined(_WIN32) && defined(DEBUG)
@@ -311,6 +312,10 @@ void Cmd_TokenizeString(const char *text_in) {
 
 	text = text_in;
 	textOut = cmd_tokenized;
+
+	if (text[0] == '/') {
+		text++;
+	}
 
 	while (1) {
 		if (cmd_argc == MAX_STRING_TOKENS) {
@@ -744,7 +749,7 @@ char	*Cmd_Args( void ) {
 
 /*
 ============
-Cmd_Args
+Cmd_ArgsFrom
 
 Returns a single string containing argv(arg) to argv(argc()-1)
 ============
@@ -868,6 +873,8 @@ Cmd_ExecuteString
 A complete command line has been parsed, so try to execute it
 ============
 */
+extern gameExportFuncs_t * gexports;
+
 void	Cmd_ExecuteString( const char *text ) {	
 	cmd_function_t	*cmd, **prev;
 
@@ -901,6 +908,12 @@ void	Cmd_ExecuteString( const char *text ) {
 	// check cvars
 	if ( Cvar_Command() ) {
 		return;
+	}
+
+	if (gexports != nullptr) {
+		if (gexports->Console(cmd_cmd)) {
+			return;
+		}
 	}
 
 	Com_Printf("unknown command %s", text);

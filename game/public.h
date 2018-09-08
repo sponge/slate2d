@@ -12,11 +12,9 @@ typedef struct gameImportFuncs_s {
 	cvar_t* (*Cvar_FindVar)(const char * name);
 	void (*Cvar_Set)(const char *var_name, const char *value);
 
-	void (*Cmd_AddCommand)(const char *cmd_name, xcommand_t function);
-	int(*Cmd_Argc)(void);
+	int (*Cmd_Argc)(void);
 	const char * (*Cmd_Argv)(int arg);
 	const char * (*Cmd_ArgsFrom)(int arg);
-	const char * (*Cmd_Cmd)();
 
 	int  (*FS_ReadFile)(const char *path, void **buffer);
 	bool (*FS_Exists)(const char *file);
@@ -30,7 +28,6 @@ typedef struct gameImportFuncs_s {
 	MousePosition (*IN_MousePosition)();
 
 	void(*SubmitRenderCommands)(renderCommandList_t *list);
-	int(*R_RegisterShader)(const char *name, const char *vshader, const char *fshader);
 
 	AssetHandle (*Asset_Create)(AssetType_t assetType, const char *name, const char *path, int flags);
 	AssetHandle (*Asset_Find)(const char *name);
@@ -52,7 +49,7 @@ typedef struct gameImportFuncs_s {
 
 typedef struct gameExportFuncs_s {
 	void(*Init)(void *clientInfo, void *imGuiContext);
-	void(*Console)(const char *line);
+	bool(*Console)(const char *line);
 	void(*Frame)(double dt);
 	void(*Error)(int level, const char *msg);
 } gameExportFuncs_t;

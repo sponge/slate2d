@@ -33,7 +33,6 @@ static gameImportFuncs_t GAMEtraps = {
 	FS_FreeList,
 	IN_KeyDown,
 	IN_KeyUp,
-	IN_KeyState,
 	IN_KeyPressed,
 	IN_MousePosition,
 	SubmitRenderCommands,

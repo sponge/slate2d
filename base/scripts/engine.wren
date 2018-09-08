@@ -9,8 +9,8 @@ class Trap {
    static sndPlay(assetHandle) { sndPlay(assetHandle, 1.0, 0, false) }
    foreign static sndStop(handle)
    foreign static sndPauseResume(handle, pause)
-   foreign static keyActive(key)
    foreign static keyPressed(key, delay, repeat)
+   static keyPressed(key) { keyPressed(key, 0, 0) }
    foreign static mousePosition()
    foreign static inspect(obj, title)
    static inspect(obj) { inspect(obj, null) }

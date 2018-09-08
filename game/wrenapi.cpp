@@ -81,17 +81,6 @@ void wren_trap_snd_pause_resume(WrenVM *vm) {
 	trap->Snd_PauseResume(handle, pause);
 }
 
-void wren_trap_in_keystate(WrenVM *vm) {
-	int key = (int)wrenGetSlotDouble(vm, 1);
-
-	if (key < 0 || key > MAX_KEYS) {
-		wrenSetSlotBool(vm, 0, false);
-		return;
-	}
-
-	wrenSetSlotBool(vm, 0, trap->IN_KeyState(&buttons[key]) > 0.0f);
-}
-
 void wren_trap_in_keypressed(WrenVM *vm) {
 	int key = (int)wrenGetSlotDouble(vm, 1);
 	int delay = (int)wrenGetSlotDouble(vm, 2);
@@ -801,7 +790,6 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "sndPlay(_,_,_,_)", wren_trap_snd_play },
 	{ "engine", "Trap", true, "sndStop(_)", wren_trap_snd_stop },
 	{ "engine", "Trap", true, "sndPauseResume(_,_)", wren_trap_snd_pause_resume },
-	{ "engine", "Trap", true, "keyActive(_)", wren_trap_in_keystate },
 	{ "engine", "Trap", true, "keyPressed(_,_,_)", wren_trap_in_keypressed },
 	{ "engine", "Trap", true, "mousePosition()", wren_trap_mouse_position },
 	{ "engine", "Trap", true, "inspect(_,_)", wren_trap_inspect },

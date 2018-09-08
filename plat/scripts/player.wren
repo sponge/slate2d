@@ -94,9 +94,9 @@ class Player is Entity {
    }
 
    think(dt) {
-      var dir = _disableControls ? 0 : Trap.keyActive(Button.Left) ? -1 : Trap.keyActive(Button.Right) ? 1 : 0
-      var jumpPress = _disableControls ? false : Trap.keyActive(Button.A)
-      var shootPress = _disableControls ? false : Trap.keyActive(Button.B)
+      var dir = _disableControls ? 0 : Trap.keyPressed(Button.Left) ? -1 : Trap.keyPressed(Button.Right) ? 1 : 0
+      var jumpPress = _disableControls ? false : Trap.keyPressed(Button.A)
+      var shootPress = _disableControls ? false : Trap.keyPressed(Button.B)
       var speed = 0
 
       runPlatform(dt)

@@ -86,7 +86,7 @@ class Title {
    }
 
    update(dt) {
-      _upActive = Trap.keyActive(Button.Up)
+      _upActive = Trap.keyPressed(Button.Up)
 
       for (i in 0..11) {
          if (Trap.keyPressed(i, 0, 1000)) { Trap.printLn("button %(i)") }

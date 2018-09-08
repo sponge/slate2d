@@ -225,50 +225,6 @@ void IN_KeyUp(kbutton_t *b) {
 	b->active = false;
 }
 
-/*
-===============
-IN_KeyState
-
-Returns the fraction of the frame that the key was down
-===============
-*/
-float IN_KeyState(kbutton_t *key) {
-	// q3 would do this fraction stuff but i'm not sure if it even works anymore
-	// just return if it's down or not since it was breaking slomo
-
-	return key->active ? 1.0f : 0.0f;
-
-#if 0
-	float		val;
-	double		msec;
-
-	msec = key->msec;
-	key->msec = 0;
-
-	if (key->active) {
-		// still down
-		if (!key->downtime) {
-			msec = com_frameTime;
-		}
-		else {
-			msec += com_frameTime - key->downtime;
-		}
-		key->downtime = com_frameTime;
-	}
-
-	val = (float)msec / frame_msec;
-
-	if (val < 0) {
-		val = 0;
-	}
-	if (val > 1) {
-		val = 1;
-	}
-
-	return val;
-#endif
-}
-
 bool IN_KeyPressed(kbutton_t *key, unsigned int delay, int repeat) {
 	if (key->active == false) {
 		return false;
@@ -298,8 +254,8 @@ bool IN_KeyPressed(kbutton_t *key, unsigned int delay, int repeat) {
 		return false;
 	}
 
-	if (muRepeat < 0) {
-		return false;
+	if (muRepeat == 0) {
+		return true;
 	}
 
 	int64_t repeatCount = heldTime / muRepeat;

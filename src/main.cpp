@@ -41,7 +41,7 @@ extern "C" {
 #include <soloud.h>
 #include <soloud_thread.h>
 
-#include "filetracker.h"
+#include "filewatcher.h"
 
 SoLoud::Soloud soloud;
 ClientInfo inf;

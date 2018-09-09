@@ -7,8 +7,6 @@
 #include "files.h"
 #include "input.h"
 #include "rendercommands.h"
-#include "bitmapfont.h"
-#include "audio.h"
 #include "assetloader.h"
 
 extern ClientInfo inf;

@@ -1,4 +1,3 @@
-#include "bitmapfont.h"
 #include "files.h"
 #include "../game/shared.h"
 #include "console/console.h"

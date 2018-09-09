@@ -45,6 +45,8 @@ typedef struct BitmapFont {
 void* BMPFNT_Load(Asset &asset);
 void BMPFNT_Free(Asset &asset);
 void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight);
+int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale);
+int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, const char *string);
 
 // audio assets
 
@@ -53,6 +55,10 @@ void Speech_Free(Asset &asset);
 void* Sound_Load(Asset &asset);
 void Sound_Free(Asset &asset);
 void Mod_Free(Asset &asset);
+
+unsigned int Snd_Play(AssetHandle assetHandle, float volume, float pan, bool loop);
+void Snd_Stop(unsigned int handle);
+void Snd_PauseResume(unsigned int handle, bool pause);
 
 // tilemap assets
 

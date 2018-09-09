@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <tmx.h>
 #include "assetloader.h"
-#include "bitmapfont.h"
 #include "rlgl.h"
 #include "main.h"
 #include "input.h"

@@ -120,30 +120,32 @@ const void *RB_UseShader(const void *data) {
 
 	Shader shader = *shasset->shader;
 
-	// FIXME: this is needlessly slow
-	auto loc_iResolution = GetShaderLocation(shader, "iResolution");
-	auto loc_iTime = GetShaderLocation(shader, "iTime");
-	auto loc_iTimeDelta = GetShaderLocation(shader, "iTimeDelta");
-	auto loc_iMouse = GetShaderLocation(shader, "iMouse");
-
-	if (activeCanvas != nullptr) {
-		const float iResolution[3] = { activeCanvas->w, activeCanvas->h, 1.0f };
-		SetShaderValue(shader, loc_iResolution, iResolution, 3);
-	}
-	else {
-		const float iResolution[3] = { inf.width, inf.height, 1.0f };
-		SetShaderValue(shader, loc_iResolution, iResolution, 3);
+	if (shasset->locResolution != -1) {
+		if (activeCanvas != nullptr) {
+			const float iResolution[3] = { activeCanvas->w, activeCanvas->h, 1.0f };
+			SetShaderValue(shader, shasset->locResolution, iResolution, 3);
+		}
+		else {
+			const float iResolution[3] = { inf.width, inf.height, 1.0f };
+			SetShaderValue(shader, shasset->locResolution, iResolution, 3);
+		}
 	}
 
-	const float iTime = com_frameTime / 1E6;
-	SetShaderValue(shader, loc_iTime, &iTime, 1);
+	if (shasset->locTime != -1) {
+		const float iTime = com_frameTime / 1E6;
+		SetShaderValue(shader, shasset->locTime, &iTime, 1);
+	}
 
-	const float iTimeDelta = frame_musec / 1E6;
-	SetShaderValue(shader, loc_iTimeDelta, &iTimeDelta, 1);
+	if (shasset->locTimeDelta != -1) {
+		const float iTimeDelta = frame_musec / 1E6;
+		SetShaderValue(shader, shasset->locTimeDelta, &iTimeDelta, 1);
+	}
 
-	auto mousePos = IN_MousePosition();
-	const float iMouse[2] = { mousePos.x, mousePos.y };
-	SetShaderValue(shader, loc_iTime, iMouse, 2);
+	if (shasset->locMouse != -1) {
+		auto mousePos = IN_MousePosition();
+		const float iMouse[2] = { mousePos.x, mousePos.y };
+		SetShaderValue(shader, shasset->locMouse, iMouse, 2);
+	}
 
 	BeginShaderMode(shader);
 

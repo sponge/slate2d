@@ -43,7 +43,7 @@ class Title {
       _canvas = Asset.create(Asset.Canvas, "canvas", "")
       Asset.canvasSet(_canvas, 320, 180)
 
-      _shader = Asset.create(Asset.Shader, "shader_grayscale", "")
+      _shader = Asset.create(Asset.Shader, "shader_plasma", "")
       Asset.shaderSet(_shader, true, "shaders/base.vs", "shaders/plasma.fs")
 
       Asset.loadAll()

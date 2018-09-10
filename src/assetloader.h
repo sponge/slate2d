@@ -82,6 +82,7 @@ void Canvas_Free(Asset &asset);
 typedef struct ShaderAsset {
 	char *vs, *fs;
 	bool isFile;
+	int locResolution, locTime, locTimeDelta, locMouse;
 	Shader *shader;
 };
 

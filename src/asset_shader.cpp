@@ -24,6 +24,11 @@ void * Shader_Load(Asset & asset) {
 
 		*shader = LoadShaderCode(vs, fs);
 
+		shasset->locResolution = GetShaderLocation(*shader, "iResolution");
+		shasset->locTime = GetShaderLocation(*shader, "iTime");
+		shasset->locTimeDelta = GetShaderLocation(*shader, "iTimeDelta");
+		shasset->locMouse = GetShaderLocation(*shader, "iMouse");
+
 		free(vs);
 		free(fs);
 	}

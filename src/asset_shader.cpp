@@ -36,6 +36,8 @@ void * Shader_Load(Asset & asset) {
 		*shader = LoadShaderCode(shasset->vs, shasset->fs);
 	}
 
+	free(shasset->fs);
+	free(shasset->vs);
 	shasset->shader = shader;
 
 	return (void*)shasset;
@@ -68,8 +70,6 @@ void Shader_Free(Asset & asset) {
 
 	UnloadShader(*res->shader);
 
-	delete res->fs;
-	delete res->vs;
 	delete res->shader;
 	delete asset.resource;
 }

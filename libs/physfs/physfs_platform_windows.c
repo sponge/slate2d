@@ -565,8 +565,8 @@ char *__PHYSFS_platformCalcUserDir(void)
         GOTO(errcodeFromWinApi(), done);
     else
     {
-        DWORD psize = 1;
-		LPWSTR dummy = " ";
+        DWORD psize = 0;
+        WCHAR dummy = 0;
         LPWSTR wstr = NULL;
         BOOL rc = 0;
 

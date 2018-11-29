@@ -6,7 +6,11 @@
 #include <raymath.h>
 
 #define RLGL_IMPLEMENTATION
+#ifdef __EMSCRIPTEN__
+#define GRAPHICS_API_OPENGL_ES2
+#else
 #define GRAPHICS_API_OPENGL_33
+#endif
 #include <rlgl.h>
 
 #ifdef __EMSCRIPTEN__

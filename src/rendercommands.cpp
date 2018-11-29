@@ -122,11 +122,11 @@ const void *RB_UseShader(const void *data) {
 
 	if (shasset->locResolution != -1) {
 		if (activeCanvas != nullptr) {
-			const float iResolution[3] = { activeCanvas->w, activeCanvas->h, 1.0f };
+			const float iResolution[3] = { (float) activeCanvas->w, (float) activeCanvas->h, 1.0f };
 			SetShaderValue(shader, shasset->locResolution, iResolution, 3);
 		}
 		else {
-			const float iResolution[3] = { inf.width, inf.height, 1.0f };
+			const float iResolution[3] = { (float) inf.width, (float) inf.height, 1.0f };
 			SetShaderValue(shader, shasset->locResolution, iResolution, 3);
 		}
 	}
@@ -143,7 +143,7 @@ const void *RB_UseShader(const void *data) {
 
 	if (shasset->locMouse != -1) {
 		auto mousePos = IN_MousePosition();
-		const float iMouse[2] = { mousePos.x, mousePos.y };
+		const float iMouse[2] = { (float) mousePos.x, (float) mousePos.y };
 		SetShaderValue(shader, shasset->locMouse, iMouse, 2);
 	}
 

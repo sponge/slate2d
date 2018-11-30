@@ -64,7 +64,7 @@ void FS_Init(const char *argv0) {
 	const char *baseDir = PHYSFS_getBaseDir();
 	fs_basepath = Cvar_Get("fs_basepath", baseDir, CVAR_INIT);
 	fs_basegame = Cvar_Get("fs_basegame", "base", CVAR_INIT);
-	fs_game = Cvar_Get("fs_game", "plat", CVAR_INIT);
+	fs_game = Cvar_Get("fs_game", DEFAULT_GAME, CVAR_INIT);
 
 	bool modLoaded = strlen(fs_game->string) > 0;
 

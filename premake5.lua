@@ -118,6 +118,9 @@ solution "game"
       kind "StaticLib"
       targetdir "build/%{cfg.buildcfg}"
       defines "WREN_NAN_TAGGING=0"
+    -- disable warnings for wren code since it's external
+    filter { "files:game/wren/* or files:game/wreninspector.cpp" }
+      disablewarnings { 4100, 4200, 4996, 4244, 4204, 4702, 4709 }
 
   group "libraries"
 
@@ -126,8 +129,8 @@ solution "game"
       kind "StaticLib"
       files { "libs/tmx/**.c", "libs/tmx/**.h", "libs/tmx/**.cpp" }
       targetdir "build/%{cfg.buildcfg}"
-      defines { "_CRT_SECURE_NO_WARNINGS" }
       cppdialect "C++14"
+      warnings "Off"
       filter { "system:macosx or system:linux" }
         buildoptions {"-stdlib=libc++"}
 
@@ -141,11 +144,12 @@ solution "game"
     project "physfs"
       language "C"
       kind "StaticLib"
-      undefines { "DEBUG" } -- fixes a weird issue on mac
-      defines { "_CRT_SECURE_NO_WARNINGS", "PHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_7Z"}
+      defines { "PHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_7Z" }
       files { "libs/physfs/**.c", "libs/physfs/**.h" }
       targetdir "build/%{cfg.buildcfg}"
       warnings "Off"
+      filter { "system:macosx" }
+        undefines { "DEBUG" } -- fixes a weird issue on mac
 
     project "glew"
       language "C++"

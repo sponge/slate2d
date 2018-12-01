@@ -35,9 +35,9 @@ void wren_trap_dbgwin(WrenVM *vm) {
 	if (keyWidth + valWidth + 20 < width) {
 		ImGui::SameLine();
 	}
-	int x = width - valWidth;
+	int x = (int)(width - valWidth);
 	x = x < 5 ? 5 : x;
-	ImGui::SetCursorPosX(x);
+	ImGui::SetCursorPosX((float)x);
 	ImGui::Text("%s", value);
 	ImGui::Separator();
 	ImGui::End();
@@ -132,6 +132,7 @@ void wren_trap_get_resolution(WrenVM *vm) {
 // this after we run an update frame lets me continue to know if the button was pressed on this frame
 // even if an input was skipped 
 void wren_clear_key_pressed(WrenVM *vm) {
+	NOTUSED(vm);
 	for (int i = 0; i < MAX_KEYS; i++) {
 		buttons[i].wasPressed = false;
 	}
@@ -179,7 +180,7 @@ void wren_cvar_set(WrenVM *vm) {
 	if (valType == WREN_TYPE_NUM) {
 		double value = wrenGetSlotDouble(vm, 1);
 		char cvarStr[MAX_CVAR_VALUE_STRING];
-		snprintf(cvarStr, MAX_CVAR_VALUE_STRING, "%d", value);
+		snprintf(cvarStr, MAX_CVAR_VALUE_STRING, "%f", value);
 		trap->Cvar_Set((*var)->name, cvarStr);
 	}
 	else if (valType == WREN_TYPE_BOOL) {
@@ -218,10 +219,12 @@ void wren_asset_load(WrenVM *vm) {
 }
 
 void wren_asset_loadall(WrenVM *vm) {
+	NOTUSED(vm);
 	trap->Asset_LoadAll();
 }
 
 void wren_asset_clearall(WrenVM *vm) {
+	NOTUSED(vm);
 	trap->Asset_ClearAll();
 }
 
@@ -298,6 +301,7 @@ void wren_dc_setcolor(WrenVM *vm) {
 }
 
 void wren_dc_reset_transform(WrenVM *vm) {
+	NOTUSED(vm);
 	DC_ResetTransform();
 }
 
@@ -329,6 +333,7 @@ void wren_dc_setscissor(WrenVM *vm) {
 }
 
 void wren_dc_resetscissor(WrenVM *vm) {
+	NOTUSED(vm);
 	DC_ResetScissor();
 }
 
@@ -356,7 +361,7 @@ void wren_dc_useshader(WrenVM *vm) {
 
 void wren_dc_settextstyle(WrenVM *vm) {
 	AssetHandle fntId = (AssetHandle)wrenGetSlotDouble(vm, 1);
-	float size = (float)wrenGetSlotDouble(vm, 2);
+	unsigned int size = (unsigned int)wrenGetSlotDouble(vm, 2);
 	float lineHeight = (float)wrenGetSlotDouble(vm, 3);
 	int align = (int)wrenGetSlotDouble(vm, 4);
 
@@ -450,7 +455,6 @@ void wren_dc_drawmaplayer(WrenVM *vm) {
 }
 
 void wren_dc_drawsprite(WrenVM *vm) {
-	int sz = 0;
 	AssetHandle sprId = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	int id = (int)wrenGetSlotDouble(vm, 2);
 	float x = (float)wrenGetSlotDouble(vm, 3);
@@ -465,10 +469,12 @@ void wren_dc_drawsprite(WrenVM *vm) {
 }
 
 void wren_dc_submit(WrenVM *vm) {
+	NOTUSED(vm);
 	DC_Submit();
 }
 
 void wren_dc_clear(WrenVM *vm) {
+	NOTUSED(vm);
 	DC_Clear();
 }
 #pragma endregion
@@ -739,6 +745,8 @@ void wren_map_getlayernames(WrenVM *vm) {
 #pragma region Wren config callbacks
 static bool clearNextError = true;
 static void wren_error(WrenVM* vm, WrenErrorType type, const char* module, int line, const char* message) {
+	NOTUSED(vm);
+
 	if (type == WREN_ERROR_STACK_COMPLETE) {
 		clearNextError = true;
 		return;
@@ -761,6 +769,8 @@ static void wren_error(WrenVM* vm, WrenErrorType type, const char* module, int l
 }
 
 char* wren_loadModuleFn(WrenVM* vm, const char* name) {
+	NOTUSED(vm);
+
 	char *script = nullptr;
 	const char *path = va("scripts/%s.wren", name);
 
@@ -847,6 +857,8 @@ static const wrenMethodDef methods[] = {
 static const int methodsCount = sizeof(methods) / sizeof(wrenMethodDef);
 
 WrenForeignMethodFn wren_bindForeignMethodFn(WrenVM* vm, const char* module, const char* className, bool isStatic, const char* signature) {
+	NOTUSED(vm);
+
 	for (int i = 0; i < methodsCount; i++) {
 		const wrenMethodDef &m = methods[i];
 		if (strcmp(module, m.module) == 0 && strcmp(className, m.className) == 0 && isStatic == m.isStatic && strcmp(signature, m.signature) == 0) {
@@ -885,22 +897,26 @@ void cvarAllocate(WrenVM *vm) {
 }
 
 void cvarFinalize(void *data) {
+	NOTUSED(data);
 
 }
 
 WrenForeignClassMethods wren_bindForeignClassFn(WrenVM* vm, const char* module, const char* className) {
-	WrenForeignClassMethods methods;
+	NOTUSED(vm);
+	NOTUSED(module);
+
+	WrenForeignClassMethods fnMethods;
 
 	if (strcmp(className, "CVar") == 0) {
-		methods.allocate = cvarAllocate;
-		methods.finalize = cvarFinalize;
+		fnMethods.allocate = cvarAllocate;
+		fnMethods.finalize = cvarFinalize;
 	}
 	else {
-		methods.allocate = NULL;
-		methods.finalize = NULL;
+		fnMethods.allocate = NULL;
+		fnMethods.finalize = NULL;
 	}
 
-	return methods;
+	return fnMethods;
 }
 
 #pragma endregion
@@ -984,7 +1000,7 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	return vm;
 }
 
-void Wren_Update(WrenVM *vm, float dt) {
+void Wren_Update(WrenVM *vm, double dt) {
 	wrenHandles_t* hnd = (wrenHandles_t*)wrenGetUserData(vm);
 	wrenEnsureSlots(vm, 2);
 	wrenSetSlotHandle(vm, 0, hnd->instanceHnd);

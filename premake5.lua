@@ -111,6 +111,8 @@ solution "game"
     targetdir "build/bin/%{cfg.buildcfg}"
     cppdialect "C++14"
     links { "tmx", "imgui" }
+    filter { "system:windows" }
+      defines { "_CRT_SECURE_NO_WARNINGS" }
     -- emscripten doesn't really support dynamic dlls. the dll is setup to work
     -- as a static lib, just need to disable NaN tagging within wren due to an
     -- incompat there

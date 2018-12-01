@@ -115,7 +115,7 @@ void DC_DrawText(float x, float y, float w, const char *text) {
 	cmd->x = x;
 	cmd->y = y;
 	cmd->w = w;
-	cmd->strSz = strlen(text) + 1;
+	cmd->strSz = (unsigned int) strlen(text) + 1;
 
 	void *strStart = R_GetCommandBuffer(cmd->strSz);
 	strncpy((char*)strStart, text, strlen(text));
@@ -128,7 +128,7 @@ void DC_DrawBmpText(unsigned int fntId, float x, float y, const char *text, floa
 	cmd->x = x;
 	cmd->y = y;
 	cmd->scale = scale;
-	cmd->strSz = strlen(text) + 1;
+	cmd->strSz = (unsigned int) strlen(text) + 1;
 
 	void *strStart = R_GetCommandBuffer(cmd->strSz);
 	strncpy((char*)strStart, text, strlen(text));

@@ -117,6 +117,8 @@ static void Frame(double dt) {
 }
 
 static void Error(int level, const char *msg) {
+	NOTUSED(msg);
+	NOTUSED(level);
 	delete scene;
 	scene = nullptr;
 }

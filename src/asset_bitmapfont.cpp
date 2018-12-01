@@ -146,7 +146,7 @@ int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
 
 	}
 
-	return currX * scale;
+	return (int) (currX * scale);
 }
 
 int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, const char *string) {
@@ -173,12 +173,12 @@ int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, cons
 
 		BitmapGlyph &glyph = font->offsets[string[i]];
 
-		DrawImage(currX, currY, glyph.end - glyph.start, font->h, glyph.start, 0, 1.0, scale, 0, font->img->hnd, font->img->w, font->img->h);
+		DrawImage(currX, currY, (float) (glyph.end - glyph.start), (float)font->h, (float)glyph.start, 0.0f, 1.0f, scale, 0, font->img->hnd, font->img->w, font->img->h);
 
 		currX += (glyph.end - glyph.start + font->charSpacing) * scale;
 
 		i++;
 	}
 
-	return currX - font->charSpacing - x;
+	return (int)(currX - font->charSpacing - x);
 }

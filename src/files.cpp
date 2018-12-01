@@ -82,10 +82,8 @@ void FS_Init(const char *argv0) {
 		PHYSFS_mount(fullGamePath, "/", 1);
 		gameFiles = PHYSFS_enumerateFiles("/");
 		PHYSFS_removeFromSearchPath(fullGamePath);
-	}
 
-	// mount the mod dir first, then mount mod PK3s
-	if (modLoaded) {
+		// mount the mod dir first, then mount mod PK3s
 		PHYSFS_mount(va("%s/%s", fs_basepath->string, fs_game->string), "/", 1);
 		FS_AddPaksFromList(gameFiles, fs_basepath->string, fs_game->string);
 		PHYSFS_freeList(gameFiles);
@@ -123,7 +121,7 @@ int FS_ReadFile(const char *path, void **buffer) {
 	*buffer = malloc(sz+1);
 	memset(*buffer, 0, sz + 1);
 
-	int read_sz = PHYSFS_read(f, *buffer, 1, sz);
+	auto read_sz = PHYSFS_read(f, *buffer, (PHYSFS_uint32)1, sz);
 
 	if (read_sz == -1) {
 		auto lastErr = PHYSFS_getLastError();
@@ -132,5 +130,5 @@ int FS_ReadFile(const char *path, void **buffer) {
 
 	PHYSFS_close(f);
 
-	return read_sz;
+	return (int)read_sz;
 }

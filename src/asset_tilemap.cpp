@@ -1,6 +1,7 @@
 #include "assetloader.h"
 #include "files.h"
 #include <tmx.h>
+#include "main.h"
 
 void * tmx_img_load(const char *path) {
 	const char *fullpath = va("maps/%s", path);
@@ -9,6 +10,7 @@ void * tmx_img_load(const char *path) {
 }
 
 void tmx_img_free(void *address) {
+	NOTUSED(address);
 	// FIXME: should i do this? other things could be using the asset
 }
 

@@ -135,12 +135,11 @@ Cvar_CommandCompletion
 ============
 */
 void	Cvar_CommandCompletion(void(*callback)(const char *match, const char *candidate), const char *match) {
-	cvar_t		*cvar;
 	std::string lwr = match;
 	std::transform(lwr.begin(), lwr.end(), lwr.begin(), ::tolower);
 	
-	for (const auto &cvar : cvars) {
-		callback(lwr.c_str(), cvar.first.c_str());
+	for (const auto &c : cvars) {
+		callback(lwr.c_str(), c.first.c_str());
 	}
 }
 
@@ -155,7 +154,6 @@ The flags will be or'ed in if the variable exists.
 */
 cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 	cvar_t	*var;
-	long	hash;
 
   if ( !var_name || ! var_value ) {
 		Com_Error( ERR_FATAL, "Cvar_Get: nullptr parameter" );

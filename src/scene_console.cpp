@@ -8,7 +8,7 @@ void ConsoleScene::Startup(ClientInfo* info) {
 	inf = info;
 }
 
-void ConsoleScene::Update(double dt) {
+void ConsoleScene::Update(double) {
 	if (!consoleActive) {
 		return;
 	}

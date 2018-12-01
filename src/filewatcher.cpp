@@ -1,6 +1,7 @@
 #include <SDL/SDL.h>
 #include <physfs.h>
 #include "console/console.h"
+#include "main.h"
 
 #define MAX_CHECK_FILES 1024
 static char sourceFiles[MAX_CHECK_FILES][MAX_QPATH];
@@ -10,6 +11,7 @@ static bool fileChanged = false;
 static SDL_Thread *thread;
 
 static int FileWatcher_Thread(void *ptr) {
+	NOTUSED(ptr);
 	while (true) {
 		for (int i = 0; i < filesCount; i++) {
 			auto mtime = PHYSFS_getLastModTime(sourceFiles[i]);

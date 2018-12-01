@@ -68,7 +68,7 @@ tmx_map* Get_TileMap(AssetHandle id);
 
 // canvas assets
 
-typedef struct Canvas {
+struct Canvas {
 	int w, h, flags;
 	RenderTexture2D texture;
 };
@@ -79,7 +79,7 @@ void Canvas_Free(Asset &asset);
 
 // shader assets
 
-typedef struct ShaderAsset {
+struct ShaderAsset {
 	char *vs, *fs;
 	bool isFile;
 	int locResolution, locTime, locTimeDelta, locMouse;

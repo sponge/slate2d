@@ -3,10 +3,13 @@
 #include "files.h"
 #include "console/console.h"
 
+#include "main.h" // FIXME: not needed after NOTUSED goes away
+
 extern ClientInfo inf;
 
 // can't unload TTFs, so we'll need to make sure we don't keep reloading them, sadly
 void* TTF_Load(Asset &asset) {
+	NOTUSED(asset);
 	//int found = nvgFindFont(inf.nvg, asset.name);
 	//if (found != -1) {
 	//	// a bit hacky, since we might return 0 for hnd which is a nullptr
@@ -31,5 +34,6 @@ void* TTF_Load(Asset &asset) {
 	return (void*)69696969;
 }
 void TTF_Free(Asset &asset) {
+	NOTUSED(asset);
 	// not supported
 }

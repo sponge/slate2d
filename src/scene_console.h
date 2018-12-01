@@ -9,7 +9,7 @@ public:
 	void Startup(ClientInfo* i) override;
 	void Update(double dt) override;
 	void Render() override;
-	void Console(const char *line) override {}; // not used for console
+	void Console(const char *) override {}; // not used for console
 
 	bool consoleActive;
 

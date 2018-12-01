@@ -1,7 +1,6 @@
 // this exists so that we can include rlgl and raymath and have them compiled in
 // c compiler mode by visual studio since it uses C99 stuff
 
-#define RAYMATH_STANDALONE
 #define RAYMATH_IMPLEMENTATION
 #include <raymath.h>
 

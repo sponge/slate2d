@@ -224,7 +224,7 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 	var->string = CopyString (var_value);
 	var->modified = true;
 	var->modificationCount = 1;
-	var->value = atof (var->string);
+	var->value = (float)atof (var->string);
 	var->integer = atoi(var->string);
 	var->resetString = CopyString( var_value );
 
@@ -344,7 +344,7 @@ cvar_t *Cvar_Set2( const char *var_name, const char *value, bool force ) {
 	free (var->string);	// free the old value string
 	
 	var->string = CopyString(value);
-	var->value = atof (var->string);
+	var->value = (float)atof (var->string);
 	var->integer = atoi (var->string);
 
 	return var;
@@ -467,7 +467,7 @@ void Cvar_Toggle_f( void ) {
 		return;
 	}
 
-	v = Cvar_VariableValue( Cmd_Argv( 1 ) );
+	v = (int)Cvar_VariableValue( Cmd_Argv( 1 ) );
 	v = !v;
 
 	Cvar_Set2 (Cmd_Argv(1), va("%i", v), false);
@@ -494,7 +494,7 @@ void Cvar_Set_f( void ) {
 	combined[0] = 0;
 	l = 0;
 	for ( i = 2 ; i < c ; i++ ) {
-		len = strlen ( Cmd_Argv( i ) + 1 );
+		len = (int)strlen ( Cmd_Argv( i ) + 1 );
 		if ( l + len >= MAX_STRING_TOKENS - 2 ) {
 			break;
 		}

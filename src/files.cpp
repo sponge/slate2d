@@ -115,13 +115,13 @@ int FS_ReadFile(const char *path, void **buffer) {
 	auto sz = PHYSFS_fileLength(f);
 
 	if (buffer == nullptr) {
-		return sz;
+		return (int)sz;
 	}
 	
-	*buffer = malloc(sz+1);
-	memset(*buffer, 0, sz + 1);
+	*buffer = malloc((size_t)sz+1);
+	memset(*buffer, 0, (size_t)sz + 1);
 
-	auto read_sz = PHYSFS_read(f, *buffer, (PHYSFS_uint32)1, sz);
+	auto read_sz = PHYSFS_read(f, *buffer, (PHYSFS_uint32)1, (PHYSFS_uint32)sz);
 
 	if (read_sz == -1) {
 		auto lastErr = PHYSFS_getLastError();

@@ -42,41 +42,34 @@
 #ifndef RAYMATH_H
 #define RAYMATH_H
 
-//#define RAYMATH_STANDALONE      // NOTE: To use raymath as standalone lib, just uncomment this line
+#define RAYMATH_STANDALONE      // NOTE: To use raymath as standalone lib, just uncomment this line
 //#define RAYMATH_HEADER_ONLY     // NOTE: To compile functions as static inline, uncomment this line
 
 #ifndef RAYMATH_STANDALONE
-    #include "raylib.h"             // Required for structs: Vector3, Matrix
+    #include "raylib.h"           // Required for structs: Vector3, Matrix
 #endif
 
-#ifdef __cplusplus
-    #define RMEXTERN extern "C"     // Functions visible from other files (no name mangling of functions in C++)
-#else
-    #define RMEXTERN                // Functions visible from other files
-#endif
-
-#if defined RAYMATH_IMPLEMENTATION && defined RAYMATH_HEADER_ONLY
+#if defined(RAYMATH_IMPLEMENTATION) && defined(RAYMATH_HEADER_ONLY)
     #error "Specifying both RAYMATH_IMPLEMENTATION and RAYMATH_HEADER_ONLY is contradictory"
 #endif
 
-#ifdef RAYMATH_IMPLEMENTATION
+#if defined(RAYMATH_IMPLEMENTATION)
     #if defined(_WIN32) && defined(BUILD_LIBTYPE_SHARED)
         #define RMDEF __declspec(dllexport) extern inline // We are building raylib as a Win32 shared library (.dll).
     #elif defined(_WIN32) && defined(USE_LIBTYPE_SHARED) 
-        #define RLAPI __declspec(dllimport)         // We are using raylib as a Win32 shared library (.dll)
+        #define RMDEF __declspec(dllimport)         // We are using raylib as a Win32 shared library (.dll)
     #else
         #define RMDEF extern inline // Provide external definition
     #endif
-#elif defined RAYMATH_HEADER_ONLY
+#elif defined(RAYMATH_HEADER_ONLY)
     #define RMDEF static inline // Functions may be inlined, no external out-of-line definition
 #else
-    #ifdef __TINYC__
+    #if defined(__TINYC__)
         #define RMDEF static inline // plain inline not supported by tinycc (See issue #435)
     #else
         #define RMDEF inline        // Functions may be inlined or external definition used
     #endif
 #endif
-
 
 //----------------------------------------------------------------------------------
 // Defines and Macros
@@ -229,6 +222,13 @@ RMDEF Vector2 Vector2Scale(Vector2 v, float scale)
     return result;
 }
 
+// Multiply vector by vector
+RMDEF Vector2 Vector2MultiplyV(Vector2 v1, Vector2 v2)
+{
+	Vector2 result = { v1.x*v2.x, v1.y*v2.y };
+	return result;
+}
+
 // Negate vector
 RMDEF Vector2 Vector2Negate(Vector2 v)
 {
@@ -241,6 +241,13 @@ RMDEF Vector2 Vector2Divide(Vector2 v, float div)
 {
     Vector2 result = { v.x/div, v.y/div };
     return result;
+}
+
+// Divide vector by vector
+RMDEF Vector2 Vector2DivideV(Vector2 v1, Vector2 v2)
+{
+	Vector2 result = { v1.x/v2.x, v1.y/v2.y };
+	return result;
 }
 
 // Normalize provided vector
@@ -286,7 +293,7 @@ RMDEF Vector3 Vector3Add(Vector3 v1, Vector3 v2)
     return result;
 }
 
-// Substract two vectors
+// Subtract two vectors
 RMDEF Vector3 Vector3Subtract(Vector3 v1, Vector3 v2)
 {
     Vector3 result = { v1.x - v2.x, v1.y - v2.y, v1.z - v2.z };
@@ -376,6 +383,20 @@ RMDEF Vector3 Vector3Negate(Vector3 v)
 {
     Vector3 result = { -v.x, -v.y, -v.z };
     return result;
+}
+
+// Divide vector by a float value
+RMDEF Vector3 Vector3Divide(Vector3 v, float div)
+{
+	Vector3 result = { v.x / div, v.y / div, v.z / div };
+	return result;
+}
+
+// Divide vector by vector
+RMDEF Vector3 Vector3DivideV(Vector3 v1, Vector3 v2)
+{
+	Vector3 result = { v1.x/v2.x, v1.y/v2.y, v1.z/v2.z };
+	return result;
 }
 
 // Normalize provided vector
@@ -692,8 +713,8 @@ RMDEF Matrix MatrixAdd(Matrix left, Matrix right)
     return result;
 }
 
-// Substract two matrices (left - right)
-RMDEF Matrix MatrixSubstract(Matrix left, Matrix right)
+// Subtract two matrices (left - right)
+RMDEF Matrix MatrixSubtract(Matrix left, Matrix right)
 {
     Matrix result = MatrixIdentity();
 

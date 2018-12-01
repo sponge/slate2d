@@ -108,7 +108,7 @@ typedef struct {
 
 typedef struct {
 	byte	commandId;
-	float	color[4];
+	byte	color[4];
 } setColorCommand_t;
 
 typedef struct {

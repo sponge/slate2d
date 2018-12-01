@@ -267,13 +267,13 @@ const char *Key_KeynumToString(int keynum) {
 	}
 
 	if (keynum >= SDL_SCANCODE_A && keynum <= SDL_SCANCODE_Z) {
-		tinystr[0] = keynum + 61;
+		tinystr[0] = (char)(keynum + 61);
 		tinystr[1] = 0;
 		return tinystr;
 	}
 
 	if (keynum >= SDL_SCANCODE_1 && keynum <= SDL_SCANCODE_9) {
-		tinystr[0] = keynum + 18;
+		tinystr[0] = (char)(keynum + 18);
 		tinystr[1] = 0;
 		return tinystr;
 	}
@@ -296,8 +296,8 @@ const char *Key_KeynumToString(int keynum) {
 
 	tinystr[0] = '0';
 	tinystr[1] = 'x';
-	tinystr[2] = i > 9 ? i - 10 + 'a' : i + '0';
-	tinystr[3] = j > 9 ? j - 10 + 'a' : j + '0';
+	tinystr[2] = (char)(i > 9 ? i - 10 + 'a' : i + '0');
+	tinystr[3] = (char)(j > 9 ? j - 10 + 'a' : j + '0');
 	tinystr[4] = 0;
 
 	return tinystr;

@@ -12,6 +12,7 @@ void* BMPFNT_Load(Asset &asset) {
 	// bitmap fonts need to be setup before load.
 	if (asset.resource == nullptr) {
 		Com_Error(ERR_FATAL, "BMPFNT_Load: bitmap font not setup before load %s", asset.path);
+		return nullptr;
 	}
 
 	void *buffer;

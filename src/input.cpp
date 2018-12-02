@@ -230,8 +230,8 @@ bool IN_KeyPressed(kbutton_t *key, unsigned int delay, int repeat) {
 		return false;
 	}
 
-	int64_t muDelay = delay * 1000;
-	int64_t muRepeat = repeat * 1000;
+	int64_t muDelay = (int64_t) delay * 1000;
+	int64_t muRepeat = (int64_t) repeat * 1000;
 
 	int64_t firstTrigger = key->downtime + muDelay;
 

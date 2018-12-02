@@ -157,6 +157,7 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 
   if ( !var_name || ! var_value ) {
 		Com_Error( ERR_FATAL, "Cvar_Get: nullptr parameter" );
+		return nullptr;
   }
 
 	if ( !Cvar_ValidateString( var_name ) ) {
@@ -614,11 +615,11 @@ Resets all cvars to their hardcoded values
 ============
 */
 void Cvar_Restart_f( void ) {
-	cvar_t	*var;
+	cvar_t	*var = nullptr;
 
 	for (const auto &cvar : cvars) {
 		var = cvar.second;
-		if ( !var ) {
+		if ( var == nullptr ) {
 			break;
 		}
 

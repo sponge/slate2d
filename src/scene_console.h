@@ -11,8 +11,8 @@ public:
 	void Render() override;
 	void Console(const char *) override {}; // not used for console
 
-	bool consoleActive;
+	bool consoleActive = false;
 
 private:
-	ClientInfo* inf;
+	ClientInfo* inf = nullptr;
 };

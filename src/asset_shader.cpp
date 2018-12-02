@@ -8,6 +8,7 @@ void * Shader_Load(Asset & asset) {
 	// shaders need to be setup before load.
 	if (asset.resource == nullptr) {
 		Com_Error(ERR_FATAL, "Shader_Load: shader not setup before load %s", asset.name);
+		return nullptr;
 	}
 
 	auto *shasset = (ShaderAsset*)asset.resource;

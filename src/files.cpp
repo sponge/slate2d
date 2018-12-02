@@ -66,7 +66,7 @@ void FS_Init(const char *argv0) {
 	fs_basegame = Cvar_Get("fs_basegame", "base", CVAR_INIT);
 	fs_game = Cvar_Get("fs_game", DEFAULT_GAME, CVAR_INIT);
 
-	bool modLoaded = strlen(fs_game->string) > 0;
+	bool modLoaded = fs_game->string[0] != '\0';
 
 	char **baseFiles, **gameFiles;
 

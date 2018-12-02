@@ -139,7 +139,7 @@ int ConsoleUI::TextEditCallback(ImGuiTextEditCallbackData* data)
 			word_start++;
 		}
 
-		if (strlen(word_start) == 0) {
+		if (word_start[0] == '\0') {
 			break;
 		}
 

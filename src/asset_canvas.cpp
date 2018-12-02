@@ -40,6 +40,7 @@ void Canvas_Set(AssetHandle id, int width, int height) {
 }
 
 void Canvas_Free(Asset & asset) {
-	delete(asset.resource);
+	Canvas* canvas = reinterpret_cast<Canvas*>(asset.resource);
+	delete(canvas);
 }
 

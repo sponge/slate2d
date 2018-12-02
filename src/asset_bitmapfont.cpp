@@ -119,9 +119,18 @@ void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int
 
 int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
 	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
+
+	if (asset == nullptr) {
+		Com_Error(ERR_DROP, "BMPFNT_TextWidth: asset not valid");
+		return 0;
+	}
+
 	BitmapFont *font = (BitmapFont*)asset->resource;
 
-	assert(asset != nullptr && font != nullptr);
+	if (font == nullptr) {
+		Com_Error(ERR_DROP, "BMPFNT_TextWidth: asset resource not valid");
+		return 0;
+	}
 
 	int currX = 0;
 
@@ -151,7 +160,18 @@ int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
 
 int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, const char *string) {
 	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
+
+	if (asset == nullptr) {
+		Com_Error(ERR_DROP, "BMPFNT_DrawText: asset not valid");
+		return 0;
+	}
+
 	BitmapFont *font = (BitmapFont*)asset->resource;
+
+	if (font == nullptr) {
+		Com_Error(ERR_DROP, "BMPFNT_DrawText: asset resource not valid");
+		return 0;
+	}
 
 	assert(asset != nullptr && font != nullptr);
 

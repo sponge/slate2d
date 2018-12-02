@@ -19,7 +19,7 @@ void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 void Cmd_Scene_f(void) {
 	const char *mainScriptName = trap->Cmd_Argv(1);
 	const char *sceneParams = trap->Cmd_ArgsFrom(2);
-	if (strlen(sceneParams) == 0) {
+	if (sceneParams[0] == '\0') {
 		sceneParams = nullptr;
 	}
 

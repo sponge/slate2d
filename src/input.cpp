@@ -59,13 +59,13 @@ const char *IN_BindForKey(int key) {
 
 bool KeyEvent(int key, bool down, int64_t time) {
 	// send the bound action
-	auto kb = keys[key].binding;
-	char	cmd[1024];
-
-	if (key > sizeof(keys) / sizeof(keys[0])) {
+	if (key >= sizeof(keys) / sizeof(keys[0])) {
 		Com_Printf("key number %i is out of bounds!\n", key);
 		return false;
 	}
+
+	auto kb = keys[key].binding;
+	char	cmd[1024];
 
 	if (!kb) {
 		return false;

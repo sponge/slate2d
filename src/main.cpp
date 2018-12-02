@@ -170,7 +170,7 @@ void main_loop() {
 
 	ImGui_ImplSdl_NewFrame(window);
 
-	if (errorVisible && strlen(com_errorMessage->string) == 0) {
+	if (errorVisible && com_errorMessage->string[0] == '\0') {
 		errorVisible = 0;
 	}
 	else if (errorVisible) {

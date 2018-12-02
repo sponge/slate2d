@@ -485,7 +485,7 @@ void Cbuf_ExecuteText (int exec_when, const char *text)
 	switch (exec_when)
 	{
 	case EXEC_NOW:
-		if (text && strlen(text) > 0) {
+		if (text && text[0] != '\0') {
 			Cmd_ExecuteString (text);
 		} else {
 			Cbuf_Execute();

@@ -26,7 +26,7 @@ static int FileWatcher_Thread(void *ptr) {
 }
 
 void FileWatcher_TrackFile(const char *path) {
-	if (filesCount > MAX_CHECK_FILES) {
+	if (filesCount >= MAX_CHECK_FILES) {
 		Com_Printf("can't track anymore files!\n");
 		return;
 	}

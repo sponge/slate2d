@@ -17,10 +17,10 @@ void * Shader_Load(Asset & asset) {
 
 	if (shasset->isFile) {
 		char *vs;
-		int sz = FS_ReadFile(shasset->vs, (void**)&vs);
+		FS_ReadFile(shasset->vs, (void**)&vs);
 
 		char *fs;
-		sz = FS_ReadFile(shasset->fs, (void**)&fs);
+		FS_ReadFile(shasset->fs, (void**)&fs);
 
 		*shader = LoadShaderCode(vs, fs);
 
@@ -71,5 +71,5 @@ void Shader_Free(Asset & asset) {
 	UnloadShader(*res->shader);
 
 	delete res->shader;
-	delete asset.resource;
+	delete res;
 }

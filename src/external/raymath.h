@@ -75,15 +75,15 @@
 // Defines and Macros
 //----------------------------------------------------------------------------------
 #ifndef PI
-    #define PI 3.14159265358979323846
+    #define PI (float)3.14159265358979323846
 #endif
 
 #ifndef DEG2RAD
-    #define DEG2RAD (PI/180.0f)
+    #define DEG2RAD (float)(PI/180.0f)
 #endif
 
 #ifndef RAD2DEG
-    #define RAD2DEG (180.0f/PI)
+    #define RAD2DEG (float)(180.0f/PI)
 #endif
 
 // Return float vector for Matrix

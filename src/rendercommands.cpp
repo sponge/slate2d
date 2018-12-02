@@ -1,5 +1,4 @@
 #include "rendercommands.h"
-#include <algorithm>
 #include <tmx.h>
 #include "assetloader.h"
 #include "rlgl.h"
@@ -451,8 +450,8 @@ const void *RB_DrawMapLayer(const void *data) {
 		unsigned int cellW = cmd->cellW == 0 ? map->width : cmd->cellW;
 		unsigned int cellH = cmd->cellH == 0 ? map->height : cmd->cellH;
 
-		unsigned int endX = std::min(cmd->cellX + cellW, map->width);
-		unsigned int endY = std::min(cmd->cellY + cellH, map->height);
+		unsigned int endX = map->width < cmd->cellX + cellW ? map->width : cmd->cellX + cellW;
+		unsigned int endY = map->height < cmd->cellY + cellH ? map->height : cmd->cellY + cellH;
 
 		for (unsigned int y = cmd->cellY; y < endY; y++) {
 			for (unsigned int x = cmd->cellX; x < endX; x++) {

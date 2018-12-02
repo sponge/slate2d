@@ -25,12 +25,6 @@ solution "game"
     defines { "MACOS" }
     platforms { "x64" }
     buildoptions {"-Wno-unused-parameter"}
-
-  -- unfinished!
-  filter { "system:linux" }
-    defines { "LINUX" }
-    toolset "clang"
-    platforms { "x64" }
   
   filter { "configurations:Debug" }
     defines { "DEBUG" }
@@ -56,6 +50,10 @@ solution "game"
     cppdialect "C++14"
     -- define so engine and emscripten packaging are always in sync on the same base game folder 
     defines { "DEFAULT_GAME=\"" .. _OPTIONS["default-game"] .. "\""}
+
+    -- rlgl and raymath have some warnings, suppress them here
+    filter { "files:src/glinit.c"}
+      disablewarnings { 4204, 4100, 4267 }
 
     -- compile all .c files in c mode so we don't get name mangling
     filter { "files:**.c"}
@@ -89,10 +87,6 @@ solution "game"
       links { "OpenGL.framework", "SDL2.framework", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework" }
       linkoptions {"-stdlib=libc++", "-F /Library/Frameworks"}
 
-    -- unfinished!
-    filter { "system:linux" }
-      linkoptions { "-stdlib=libc++" }
-
     -- emscripten uses opengl es2, not gl3
     filter { "action:gmake2", "options:emscripten" }
       targetextension ".bc"
@@ -111,8 +105,10 @@ solution "game"
     targetdir "build/bin/%{cfg.buildcfg}"
     cppdialect "C++14"
     links { "tmx", "imgui" }
+
     filter { "system:windows" }
       defines { "_CRT_SECURE_NO_WARNINGS" }
+
     -- emscripten doesn't really support dynamic dlls. the dll is setup to work
     -- as a static lib, just need to disable NaN tagging within wren due to an
     -- incompat there
@@ -120,6 +116,7 @@ solution "game"
       kind "StaticLib"
       targetdir "build/%{cfg.buildcfg}"
       defines "WREN_NAN_TAGGING=0"
+
     -- disable warnings for wren code since it's external
     filter { "files:game/wren/* or files:game/wreninspector.cpp" }
       disablewarnings { 4100, 4200, 4996, 4244, 4204, 4702, 4709 }
@@ -133,6 +130,7 @@ solution "game"
       targetdir "build/%{cfg.buildcfg}"
       cppdialect "C++14"
       warnings "Off"
+
       filter { "system:macosx or system:linux" }
         buildoptions {"-stdlib=libc++"}
 
@@ -150,6 +148,7 @@ solution "game"
       files { "libs/physfs/**.c", "libs/physfs/**.h" }
       targetdir "build/%{cfg.buildcfg}"
       warnings "Off"
+
       filter { "system:macosx" }
         undefines { "DEBUG" } -- fixes a weird issue on mac
 
@@ -181,6 +180,7 @@ solution "game"
         "libs/soloud/include",
         "libs/sdl/SDL" 
       }
+      
       filter { "system:windows" }
         libdirs { "libs/sdl/lib/Win32" }
         links { "SDL2" }
@@ -199,7 +199,9 @@ solution "game"
       targetname "libmodplug"
       warnings "Off"
       characterset "MBCS"
+
       filter { "system:macosx" }
         defines { "HAVE_SETENV" }
+
       filter { "action:gmake2", "options:emscripten" }
         defines { "HAVE_STDINT_H", "HAVE_SETENV" } 

@@ -61,7 +61,7 @@ Cvar_FindVar
 */
 cvar_t *Cvar_FindVar( const char *var_name ) {
 	std::string lwr = var_name;
-	std::transform(lwr.begin(), lwr.end(), lwr.begin(), ::tolower);
+	std::transform(lwr.begin(), lwr.end(), lwr.begin(), [](int c) -> char { return static_cast<char>(::tolower(c)); });
 
 	return cvars[lwr];
 }
@@ -136,8 +136,8 @@ Cvar_CommandCompletion
 */
 void	Cvar_CommandCompletion(void(*callback)(const char *match, const char *candidate), const char *match) {
 	std::string lwr = match;
-	std::transform(lwr.begin(), lwr.end(), lwr.begin(), ::tolower);
-	
+	std::transform(lwr.begin(), lwr.end(), lwr.begin(), [](int c) -> char { return static_cast<char>(::tolower(c)); });
+
 	for (const auto &c : cvars) {
 		callback(lwr.c_str(), c.first.c_str());
 	}
@@ -230,7 +230,7 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 
 	// link the variable in
 	std::string lwr = var_name;
-	std::transform(lwr.begin(), lwr.end(), lwr.begin(), ::tolower);
+	std::transform(lwr.begin(), lwr.end(), lwr.begin(), [](int c) -> char { return static_cast<char>(::tolower(c)); });
 
 	cvars[lwr] = var;
 

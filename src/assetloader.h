@@ -23,6 +23,11 @@ void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int
 
 // ttf font assets
 
+typedef struct TTFFont{
+	int hnd;
+	bool valid;
+} TTFFont_t;
+
 void* TTF_Load(Asset &asset);
 void TTF_Free(Asset &asset);
 

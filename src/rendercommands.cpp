@@ -10,6 +10,9 @@
 extern ClientInfo inf;
 Canvas * activeCanvas = nullptr;
 
+#include "external/fontstash.h"
+extern FONScontext *ctx;
+
 byte currentColor[4] = { 255, 255, 255, 255 };
 
 const void *RB_SetColor(const void *data) {
@@ -202,17 +205,17 @@ const void *RB_DrawRect(const void *data) {
 const void *RB_SetTextStyle(const void *data) {
 	auto cmd = (const setTextStyleCommand_t *)data;
 
-	//Asset *asset = Asset_Get(ASSET_FONT, cmd->fntId);
+	Asset *asset = Asset_Get(ASSET_FONT, cmd->fntId);
 
-	//assert(asset != nullptr);
+	assert(asset != nullptr);
 
 	// -1 since we +1 when loading fonts to avoid returning a nullptr
-	//int font = (int)asset->resource - 1;
+	TTFFont_t *fnt = (TTFFont_t*)asset->resource;
 
-	//nvgFontFaceId(inf.nvg, font);
-	//nvgFontSize(inf.nvg, cmd->size);
-	//nvgTextAlign(inf.nvg, cmd->align);
-	//nvgTextLineHeight(inf.nvg, cmd->lineHeight);
+	fonsSetFont(ctx, fnt->hnd);
+	fonsSetSize(ctx, (float)cmd->size);
+	fonsSetAlign(ctx, cmd->align);
+	// FIXME: cmd->lineHeight ?
 
 	return (const void *)(cmd + 1);
 }
@@ -221,9 +224,7 @@ const void *RB_DrawText(const void *data) {
 	auto cmd = (const drawTextCommand_t *)data;
 	const char *text = (const char *)cmd + sizeof(drawTextCommand_t);
 
-	//nvgSave(inf.nvg);
-	//nvgTextBox(inf.nvg, cmd->x, cmd->y, cmd->w, text, 0);
-	//nvgRestore(inf.nvg);
+	fonsDrawText(ctx, cmd->x, cmd->y, text, nullptr);
 
 	return (const void *)(text + cmd->strSz);
 }

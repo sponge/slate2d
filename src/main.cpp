@@ -170,7 +170,7 @@ void main_loop() {
 
 	ImGui_ImplSdl_NewFrame(window);
 
-	if (errorVisible && strlen(com_errorMessage->string) == 0) {
+	if (errorVisible && com_errorMessage->string[0] == '\0') {
 		errorVisible = 0;
 	}
 	else if (errorVisible) {
@@ -224,7 +224,7 @@ int main(int argc, char *argv[]) {
 	if (argc > 1) {
 		int len, i;
 		for (len = 1, i = 1; i < argc; i++) {
-			len += strlen(argv[i]) + 1;
+			len += (int)strlen(argv[i]) + 1;
 		}
 
 		char *cmdline = (char *)malloc(len);

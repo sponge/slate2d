@@ -12,6 +12,7 @@ void* BMPFNT_Load(Asset &asset) {
 	// bitmap fonts need to be setup before load.
 	if (asset.resource == nullptr) {
 		Com_Error(ERR_FATAL, "BMPFNT_Load: bitmap font not setup before load %s", asset.path);
+		return nullptr;
 	}
 
 	void *buffer;
@@ -119,9 +120,18 @@ void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int
 
 int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
 	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
+
+	if (asset == nullptr) {
+		Com_Error(ERR_DROP, "BMPFNT_TextWidth: asset not valid");
+		return 0;
+	}
+
 	BitmapFont *font = (BitmapFont*)asset->resource;
 
-	assert(asset != nullptr && font != nullptr);
+	if (font == nullptr) {
+		Com_Error(ERR_DROP, "BMPFNT_TextWidth: asset resource not valid");
+		return 0;
+	}
 
 	int currX = 0;
 
@@ -146,12 +156,23 @@ int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
 
 	}
 
-	return currX * scale;
+	return (int) (currX * scale);
 }
 
 int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, const char *string) {
 	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
+
+	if (asset == nullptr) {
+		Com_Error(ERR_DROP, "BMPFNT_DrawText: asset not valid");
+		return 0;
+	}
+
 	BitmapFont *font = (BitmapFont*)asset->resource;
+
+	if (font == nullptr) {
+		Com_Error(ERR_DROP, "BMPFNT_DrawText: asset resource not valid");
+		return 0;
+	}
 
 	assert(asset != nullptr && font != nullptr);
 
@@ -173,12 +194,12 @@ int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, cons
 
 		BitmapGlyph &glyph = font->offsets[string[i]];
 
-		DrawImage(currX, currY, glyph.end - glyph.start, font->h, glyph.start, 0, 1.0, scale, 0, font->img->hnd, font->img->w, font->img->h);
+		DrawImage(currX, currY, (float) (glyph.end - glyph.start), (float)font->h, (float)glyph.start, 0.0f, 1.0f, scale, 0, font->img->hnd, font->img->w, font->img->h);
 
 		currX += (glyph.end - glyph.start + font->charSpacing) * scale;
 
 		i++;
 	}
 
-	return currX - font->charSpacing - x;
+	return (int)(currX - font->charSpacing - x);
 }

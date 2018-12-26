@@ -49,11 +49,13 @@ Asset* Asset_Get(AssetType_t type, AssetHandle id) {
 }
 
 AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *path, int flags) {
-	Com_Printf("asset_create: %s name:%s path:%s\n", assetStrings[assetType], name, path);
-
 	if (assetType < 0 || assetType > ASSET_MAX) {
+		Com_Printf("asset_create: assetType out of range name:%s path:%s", name, path);
 		return INVALID_ASSET;
 	}
+
+	Com_Printf("asset_create: %s name:%s path:%s\n", assetStrings[assetType], name, path);
+
 
 	AssetHandle found = Asset_Find(name);
 	if (found != INVALID_ASSET) {

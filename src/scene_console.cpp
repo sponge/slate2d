@@ -8,7 +8,7 @@ void ConsoleScene::Startup(ClientInfo* info) {
 	inf = info;
 }
 
-void ConsoleScene::Update(double dt) {
+void ConsoleScene::Update(double) {
 	if (!consoleActive) {
 		return;
 	}
@@ -19,7 +19,7 @@ void ConsoleScene::Render() {
 	if (vid_showfps->integer || com_pause->integer) {
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10, 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
-		ImGui::SetNextWindowPos(ImVec2(inf->width - 80, 0));
+		ImGui::SetNextWindowPos(ImVec2((float)inf->width - 80, 0.0f));
 		ImGui::SetNextWindowSize(ImVec2(80, 0));
 		ImGui::Begin("##fps", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
 		if (vid_showfps->integer) {

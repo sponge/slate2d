@@ -1,5 +1,4 @@
 #include "rendercommands.h"
-#include <algorithm>
 #include <tmx.h>
 #include "assetloader.h"
 #include "rlgl.h"
@@ -11,7 +10,10 @@
 extern ClientInfo inf;
 Canvas * activeCanvas = nullptr;
 
-float currentColor[4] = { 1.0, 1.0, 1.0, 1.0 };
+#include "external/fontstash.h"
+extern FONScontext *ctx;
+
+byte currentColor[4] = { 255, 255, 255, 255 };
 
 const void *RB_SetColor(const void *data) {
 	auto cmd = (const setColorCommand_t *)data;
@@ -132,12 +134,12 @@ const void *RB_UseShader(const void *data) {
 	}
 
 	if (shasset->locTime != -1) {
-		const float iTime = com_frameTime / 1E6;
+		const float iTime = com_frameTime / (float)1E6;
 		SetShaderValue(shader, shasset->locTime, &iTime, 1);
 	}
 
 	if (shasset->locTimeDelta != -1) {
-		const float iTimeDelta = frame_musec / 1E6;
+		const float iTimeDelta = frame_musec / (float)1E6;
 		SetShaderValue(shader, shasset->locTimeDelta, &iTimeDelta, 1);
 	}
 
@@ -208,12 +210,12 @@ const void *RB_SetTextStyle(const void *data) {
 	assert(asset != nullptr);
 
 	// -1 since we +1 when loading fonts to avoid returning a nullptr
-	int font = (int)asset->resource - 1;
+	TTFFont_t *fnt = (TTFFont_t*)asset->resource;
 
-	//nvgFontFaceId(inf.nvg, font);
-	//nvgFontSize(inf.nvg, cmd->size);
-	//nvgTextAlign(inf.nvg, cmd->align);
-	//nvgTextLineHeight(inf.nvg, cmd->lineHeight);
+	fonsSetFont(ctx, fnt->hnd);
+	fonsSetSize(ctx, (float)cmd->size);
+	fonsSetAlign(ctx, cmd->align);
+	// FIXME: cmd->lineHeight ?
 
 	return (const void *)(cmd + 1);
 }
@@ -222,9 +224,7 @@ const void *RB_DrawText(const void *data) {
 	auto cmd = (const drawTextCommand_t *)data;
 	const char *text = (const char *)cmd + sizeof(drawTextCommand_t);
 
-	//nvgSave(inf.nvg);
-	//nvgTextBox(inf.nvg, cmd->x, cmd->y, cmd->w, text, 0);
-	//nvgRestore(inf.nvg);
+	fonsDrawText(ctx, cmd->x, cmd->y, text, nullptr);
 
 	return (const void *)(text + cmd->strSz);
 }
@@ -258,8 +258,8 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float alp
 	}
 
 	rlBegin(RL_QUADS);
-	// FIXME: alpha * 255 bad! come back to this and make it consistent everywhere?
-	rlColor4ub(255, 255, 255, alpha * 255);
+	// FIXME: alpha * 255 bad! we use 0 - 255 everywhere but 0 - 1 here. come back to this and make it consistent everywhere!
+	rlColor4ub(255, 255, 255, (byte)(alpha * 255));
 
 	rlNormal3f(0, 0, 1);
 
@@ -326,10 +326,10 @@ const void *RB_DrawSprite(const void *data) {
 	DrawImage(
 		cmd->x,
 		cmd->y,
-		spr->spriteWidth * cmd->w,
-		spr->spriteHeight * cmd->h,
-		(cmd->id % spr->cols) * spr->spriteWidth,
-		(cmd->id / spr->cols) * spr->spriteHeight,
+		(float)spr->spriteWidth * cmd->w,
+		(float)spr->spriteHeight * cmd->h,
+		(float)(cmd->id % spr->cols) * spr->spriteWidth,
+		(float)(cmd->id / spr->cols) * spr->spriteHeight,
 		cmd->alpha,
 		cmd->scale,
 		cmd->flipBits,
@@ -369,8 +369,8 @@ const void *RB_DrawCircle(const void *data) {
 		// NOTE: Circle outline is drawn pixel by pixel every degree (0 to 360)
 		for (int i = 0; i < 360; i += 10)
 		{
-			rlVertex2f(cmd->x + sinf(DEG2RAD*i)*cmd->radius, cmd->y + cosf(DEG2RAD*i)*cmd->radius);
-			rlVertex2f(cmd->x + sinf(DEG2RAD*(i + 10))*cmd->radius, cmd->y + cosf(DEG2RAD*(i + 10))*cmd->radius);
+			rlVertex2f(cmd->x + sinf((float)DEG2RAD*i)*cmd->radius, cmd->y + cosf((float)DEG2RAD*i)*cmd->radius);
+			rlVertex2f(cmd->x + sinf((float)DEG2RAD*(i + 10))*cmd->radius, cmd->y + cosf((float)DEG2RAD*(i + 10))*cmd->radius);
 		}
 		rlEnd();
 	}
@@ -385,9 +385,9 @@ const void *RB_DrawCircle(const void *data) {
 			rlColor4ub(currentColor[0], currentColor[1], currentColor[2], currentColor[3]);
 
 			rlVertex2f(cmd->x, cmd->y);
-			rlVertex2f(cmd->x + sinf(DEG2RAD*i)*cmd->radius, cmd->y + cosf(DEG2RAD*i)*cmd->radius);
-			rlVertex2f(cmd->x + sinf(DEG2RAD*(i + 10))*cmd->radius, cmd->y + cosf(DEG2RAD*(i + 10))*cmd->radius);
-			rlVertex2f(cmd->x + sinf(DEG2RAD*(i + 20))*cmd->radius, cmd->y + cosf(DEG2RAD*(i + 20))*cmd->radius);
+			rlVertex2f(cmd->x + sinf((float)DEG2RAD*i)*cmd->radius, cmd->y + cosf((float)DEG2RAD*i)*cmd->radius);
+			rlVertex2f(cmd->x + sinf((float)DEG2RAD*(i + 10))*cmd->radius, cmd->y + cosf((float)DEG2RAD*(i + 10))*cmd->radius);
+			rlVertex2f(cmd->x + sinf((float)DEG2RAD*(i + 20))*cmd->radius, cmd->y + cosf((float)DEG2RAD*(i + 20))*cmd->radius);
 		}
 		rlEnd();
 
@@ -451,8 +451,8 @@ const void *RB_DrawMapLayer(const void *data) {
 		unsigned int cellW = cmd->cellW == 0 ? map->width : cmd->cellW;
 		unsigned int cellH = cmd->cellH == 0 ? map->height : cmd->cellH;
 
-		unsigned int endX = std::min(cmd->cellX + cellW, map->width);
-		unsigned int endY = std::min(cmd->cellY + cellH, map->height);
+		unsigned int endX = map->width < cmd->cellX + cellW ? map->width : cmd->cellX + cellW;
+		unsigned int endY = map->height < cmd->cellY + cellH ? map->height : cmd->cellY + cellH;
 
 		for (unsigned int y = cmd->cellY; y < endY; y++) {
 			for (unsigned int x = cmd->cellX; x < endX; x++) {
@@ -475,10 +475,10 @@ const void *RB_DrawMapLayer(const void *data) {
 					//  offset + current x/y         - start tile offset         
 					cmd->x + x * ts->tile_width - (cmd->cellX * ts->tile_width),
 					cmd->y + y * ts->tile_height - (cmd->cellY * ts->tile_height),
-					ts->tile_width,
-					ts->tile_height,
-					tile->ul_x,
-					tile->ul_y,
+					(float)ts->tile_width,
+					(float)ts->tile_height,
+					(float)tile->ul_x,
+					(float)tile->ul_y,
 					1.0f, 1.0f, flipBits, image->hnd, image->w, image->h
 				);
 			}

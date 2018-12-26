@@ -531,7 +531,7 @@ int GetPixelDataSize(int width, int height, int format);// Get pixel data size i
 #if defined(RLGL_IMPLEMENTATION)
 
 #if defined(RLGL_STANDALONE)
-    #define SUPPORT_VR_SIMULATOR
+    //#define SUPPORT_VR_SIMULATOR
     #define SUPPORT_DISTORTION_SHADER
 #else
     #include "config.h"             // rlgl module configuration

@@ -1,7 +1,6 @@
 // this exists so that we can include rlgl and raymath and have them compiled in
 // c compiler mode by visual studio since it uses C99 stuff
 
-#define RAYMATH_STANDALONE
 #define RAYMATH_IMPLEMENTATION
 #include <raymath.h>
 
@@ -12,6 +11,11 @@
 #define GRAPHICS_API_OPENGL_33
 #endif
 #include <rlgl.h>
+
+#define FONTSTASH_IMPLEMENTATION
+#include "external/fontstash.h"
+#define GLFONTSTASH_IMPLEMENTATION
+#include "external/gl3corefontstash.h"
 
 #ifdef __EMSCRIPTEN__
 #include "GLES2/gl2.h"

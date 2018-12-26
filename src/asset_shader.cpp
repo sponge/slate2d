@@ -8,6 +8,7 @@ void * Shader_Load(Asset & asset) {
 	// shaders need to be setup before load.
 	if (asset.resource == nullptr) {
 		Com_Error(ERR_FATAL, "Shader_Load: shader not setup before load %s", asset.name);
+		return nullptr;
 	}
 
 	auto *shasset = (ShaderAsset*)asset.resource;
@@ -17,10 +18,10 @@ void * Shader_Load(Asset & asset) {
 
 	if (shasset->isFile) {
 		char *vs;
-		int sz = FS_ReadFile(shasset->vs, (void**)&vs);
+		FS_ReadFile(shasset->vs, (void**)&vs);
 
 		char *fs;
-		sz = FS_ReadFile(shasset->fs, (void**)&fs);
+		FS_ReadFile(shasset->fs, (void**)&fs);
 
 		*shader = LoadShaderCode(vs, fs);
 
@@ -71,5 +72,5 @@ void Shader_Free(Asset & asset) {
 	UnloadShader(*res->shader);
 
 	delete res->shader;
-	delete asset.resource;
+	delete res;
 }

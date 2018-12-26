@@ -86,7 +86,7 @@ void wren_trap_in_keypressed(WrenVM *vm) {
 	int delay = (int)wrenGetSlotDouble(vm, 2);
 	int repeat = (int)wrenGetSlotDouble(vm, 3);
 
-	if (key < 0 || key > MAX_KEYS) {
+	if (key < 0 || key >= MAX_KEYS) {
 		wrenSetSlotBool(vm, 0, false);
 		return;
 	}
@@ -969,11 +969,13 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 
 	if (hnd->updateHnd == nullptr) {
 		trap->Error(ERR_DROP, "wren error: couldn't find static update(_) on Main");
+		Wren_FreeVM(vm);
 		return nullptr;
 	}
 
 	if (hnd->drawHnd == nullptr) {
 		trap->Error(ERR_DROP, "wren error: couldn't find static draw(_,_) on Main");
+		Wren_FreeVM(vm);
 		return nullptr;
 	}
 

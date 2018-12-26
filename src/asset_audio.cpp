@@ -60,12 +60,16 @@ void Mod_Free(Asset &asset) {
 
 unsigned int Snd_Play(AssetHandle assetHandle, float volume, float pan, bool loop) {
 	Asset* asset = Asset_Get(ASSET_ANY, assetHandle);
+
 	if (asset->type != ASSET_SOUND && asset->type != ASSET_SPEECH && asset->type != ASSET_MOD) {
-		assert(false);
+		Com_Error(ERR_DROP, "Snd_Play: asset not valid");
 		return 0;
 	}
 
-	assert(asset != nullptr && asset->resource != nullptr);
+	if (asset->resource == nullptr) {
+		Com_Error(ERR_DROP, "Snd_Play: asset resource not valid");
+		return 0;
+	}
 
 	SoLoud::AudioSource *src = (SoLoud::AudioSource*) asset->resource;
 	src->setLooping(loop);

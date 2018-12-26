@@ -78,6 +78,7 @@ void Sys_LoadDll(const char * module, void ** exports) {
 
 	if (gameDllEntry == nullptr) {
 		Com_Error(ERR_FATAL, "Couldn't find dllEntry in %s", module);
+		return;
 	}
 
 	gameDllEntry(exports, &GAMEtraps);

@@ -61,7 +61,7 @@ Cvar_FindVar
 */
 cvar_t *Cvar_FindVar( const char *var_name ) {
 	std::string lwr = var_name;
-	std::transform(lwr.begin(), lwr.end(), lwr.begin(), ::tolower);
+	std::transform(lwr.begin(), lwr.end(), lwr.begin(), [](int c) -> char { return static_cast<char>(::tolower(c)); });
 
 	return cvars[lwr];
 }
@@ -135,12 +135,11 @@ Cvar_CommandCompletion
 ============
 */
 void	Cvar_CommandCompletion(void(*callback)(const char *match, const char *candidate), const char *match) {
-	cvar_t		*cvar;
 	std::string lwr = match;
-	std::transform(lwr.begin(), lwr.end(), lwr.begin(), ::tolower);
-	
-	for (const auto &cvar : cvars) {
-		callback(lwr.c_str(), cvar.first.c_str());
+	std::transform(lwr.begin(), lwr.end(), lwr.begin(), [](int c) -> char { return static_cast<char>(::tolower(c)); });
+
+	for (const auto &c : cvars) {
+		callback(lwr.c_str(), c.first.c_str());
 	}
 }
 
@@ -155,10 +154,10 @@ The flags will be or'ed in if the variable exists.
 */
 cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 	cvar_t	*var;
-	long	hash;
 
   if ( !var_name || ! var_value ) {
 		Com_Error( ERR_FATAL, "Cvar_Get: nullptr parameter" );
+		return nullptr;
   }
 
 	if ( !Cvar_ValidateString( var_name ) ) {
@@ -226,13 +225,13 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 	var->string = CopyString (var_value);
 	var->modified = true;
 	var->modificationCount = 1;
-	var->value = atof (var->string);
+	var->value = (float)atof (var->string);
 	var->integer = atoi(var->string);
 	var->resetString = CopyString( var_value );
 
 	// link the variable in
 	std::string lwr = var_name;
-	std::transform(lwr.begin(), lwr.end(), lwr.begin(), ::tolower);
+	std::transform(lwr.begin(), lwr.end(), lwr.begin(), [](int c) -> char { return static_cast<char>(::tolower(c)); });
 
 	cvars[lwr] = var;
 
@@ -346,7 +345,7 @@ cvar_t *Cvar_Set2( const char *var_name, const char *value, bool force ) {
 	free (var->string);	// free the old value string
 	
 	var->string = CopyString(value);
-	var->value = atof (var->string);
+	var->value = (float)atof (var->string);
 	var->integer = atoi (var->string);
 
 	return var;
@@ -469,7 +468,7 @@ void Cvar_Toggle_f( void ) {
 		return;
 	}
 
-	v = Cvar_VariableValue( Cmd_Argv( 1 ) );
+	v = (int)Cvar_VariableValue( Cmd_Argv( 1 ) );
 	v = !v;
 
 	Cvar_Set2 (Cmd_Argv(1), va("%i", v), false);
@@ -496,7 +495,7 @@ void Cvar_Set_f( void ) {
 	combined[0] = 0;
 	l = 0;
 	for ( i = 2 ; i < c ; i++ ) {
-		len = strlen ( Cmd_Argv( i ) + 1 );
+		len = (int)strlen ( Cmd_Argv( i ) + 1 );
 		if ( l + len >= MAX_STRING_TOKENS - 2 ) {
 			break;
 		}
@@ -616,11 +615,11 @@ Resets all cvars to their hardcoded values
 ============
 */
 void Cvar_Restart_f( void ) {
-	cvar_t	*var;
+	cvar_t	*var = nullptr;
 
 	for (const auto &cvar : cvars) {
 		var = cvar.second;
-		if ( !var ) {
+		if ( var == nullptr ) {
 			break;
 		}
 

@@ -6341,7 +6341,9 @@ static stbi_uc *stbi__gif_load_next(stbi__context *s, stbi__gif *g, int *comp, i
    int dispose; 
    int first_frame; 
    int pi; 
-   int pcount; 
+   int pcount;
+
+   (int)req_comp; // suppress warning
 
    // on first frame, any non-written pixels get the background colour (non-transparent)
    first_frame = 0; 
@@ -6565,6 +6567,8 @@ static void *stbi__gif_load(stbi__context *s, int *x, int *y, int *comp, int req
    stbi_uc *u = 0;
    stbi__gif g;
    memset(&g, 0, sizeof(g));
+
+   (stbi__result_info *)ri; // suppress warning
 
    u = stbi__gif_load_next(s, &g, comp, req_comp, 0);
    if (u == (stbi_uc *) s) u = 0;  // end of animated gif marker

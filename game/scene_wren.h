@@ -10,11 +10,11 @@ public:
 	~WrenScene();
 
 	void Console(const char *str) override;
-	ClientInfo* inf;
+	ClientInfo* inf = nullptr;
 
 private:
 	const char *mainScriptName;
 	const char *mapFileName;
-	struct WrenVM *vm;
+	struct WrenVM *vm = nullptr;
 	bool initialized = false;
 };

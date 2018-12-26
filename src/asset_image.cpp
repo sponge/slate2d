@@ -18,7 +18,7 @@ void* Img_Load(Asset &asset) {
 
 	Image * img = new Image();
 
-	int w, h, imgBpp;
+	int imgBpp;
 	unsigned char *loaded = stbi_load_from_memory(buffer, sz, &img->w, &img->h, &imgBpp, 0);
 
 	// FIXME: error handling?

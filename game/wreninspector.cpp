@@ -26,7 +26,7 @@ ClassInfo *findClass(WrenVM* vm, ObjClass *cl) {
 		return nullptr;
 	}
 	uint32_t hash = cl->name->hash;
-	for (int i = 0; i < vm->classInfoCount; i++) {
+	for (size_t i = 0; i < vm->classInfoCount; i++) {
 		ClassInfo *ci = &vm->classInfo[i];
 		if (hash == ci->name->hash) {
 			return ci;

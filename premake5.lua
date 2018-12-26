@@ -120,6 +120,7 @@ solution "game"
       kind "StaticLib"
       targetdir "build/%{cfg.buildcfg}"
       defines "WREN_NAN_TAGGING=0"
+      disablewarnings { "unknown-pragmas" }
     -- disable warnings for wren code since it's external
     filter { "files:game/wren/* or files:game/wreninspector.cpp" }
       disablewarnings { 4100, 4200, 4996, 4244, 4204, 4702, 4709 }

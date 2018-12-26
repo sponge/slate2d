@@ -9,7 +9,7 @@ public:
 	void Render() override;
 	~WrenScene();
 
-	void Console(const char *str);
+	void Console(const char *str) override;
 	ClientInfo* inf;
 
 private:

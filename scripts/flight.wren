@@ -6,8 +6,8 @@ class Flight {
    nextScene=(params) { _nextScene = params }
 
    construct new() {
-      _dog = Asset.create(Asset.Sprite, "dog", "gfx/dog.png")
-      Asset.spriteSet(_dog, 22, 16, 0, 0)
+      _mouth = Asset.create(Asset.Sprite, "mouth", "gfx/mouth.png")
+      Asset.spriteSet(_mouth, 16, 16, 0, 0)
       Asset.loadAll()
 
       _t = 0
@@ -16,7 +16,7 @@ class Flight {
       _playerYAccel = 0
       _playerXAccel = 0
       _keyDown = false
-      _playerFlip = 1
+      _playerFlip = 0
    }
 
    update(dt) {
@@ -32,9 +32,9 @@ class Flight {
       }
 
       if (lPressed) {
-         _playerFlip = 1
-      } else if (rPressed) {
          _playerFlip = 0
+      } else if (rPressed) {
+         _playerFlip = 1
       }
 
       if (aPressed && !_keyDown) {
@@ -78,10 +78,10 @@ class Flight {
 
       var spr = 0
       if (_keyDown) {
-         spr = 4
+         spr = 1
       }
 
-      Draw.sprite(_dog, spr, _playerX, _playerY, 1.0, 1.0, _playerFlip, 1, 1)
+      Draw.sprite(_mouth, spr, _playerX, _playerY, 1.0, 1.0, _playerFlip, 1, 1)
    }
 
    shutdown() {

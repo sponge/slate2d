@@ -58,11 +58,12 @@ class Player is Entity{
       dx = Math.clamp(-_maxMoveSpeed, dx, _maxMoveSpeed)
       dy = Math.clamp(-_maxFlightSpeed, dy, _maxFallSpeed)
 
-      x = Math.clamp(10, x + dx, 290)
-      y = Math.clamp(10, y + dy, 220)
+      x = Math.max(world.cam.x + 5, x + dx)
+      y = y + dy
 
-      if (y == 220) {
+      if (y >= 185) {
          dy = 0
+         die()
       }
 
       if (dx <= 0.003 && dx >= -0.003) {
@@ -75,5 +76,10 @@ class Player is Entity{
    draw() {
       var spr = _flapPressed ? 1 : 0
       Draw.sprite(_mouth, spr, x, y, 1.0, 1.0, _flip, 1, 1)
+   }
+
+   die() {
+      super()
+      world.nextScene = "title"
    }
 }

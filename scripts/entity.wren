@@ -1,5 +1,6 @@
 class Entity {
    name { _name }
+   dead { _dead }
    x { _x }
    x=(x) { _x = x }
    y { _y }
@@ -22,6 +23,7 @@ class Entity {
       _active = true
       _props = {}
       _name = obj ? obj["name"] : ""
+      _dead = false
       _x = x
       _y = y
       _w = w
@@ -32,4 +34,7 @@ class Entity {
 
    think(dt){}
    draw(){}
+   die(){
+      _dead = true
+   }
 }

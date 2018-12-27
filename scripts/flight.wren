@@ -16,10 +16,14 @@ class Flight {
       _playerYAccel = 0
       _playerXAccel = 0
       _keyDown = false
+      _playerFlip = 1
    }
 
    update(dt) {
       _t = _t + dt
+      var aPressed = Trap.keyPressed(Button.A)
+      var lPressed = Trap.keyPressed(Button.Left)
+      var rPressed = Trap.keyPressed(Button.Right)
 
       if (_playerXAccel > 0) {
          _playerXAccel = _playerXAccel - 0.006
@@ -27,14 +31,19 @@ class Flight {
          _playerXAccel = _playerXAccel + 0.006
       }
 
-      var aPressed = Trap.keyPressed(Button.A, 0, 0)
+      if (lPressed) {
+         _playerFlip = 1
+      } else if (rPressed) {
+         _playerFlip = 0
+      }
+
       if (aPressed && !_keyDown) {
          _playerYAccel = _playerYAccel - 0.3
          _keyDown = true
 
-         if (Trap.keyPressed(Button.Left)) {
+         if (lPressed) {
             _playerXAccel = _playerXAccel - 0.2
-         } else if (Trap.keyPressed(Button.Right)) {
+         } else if (rPressed) {
             _playerXAccel = _playerXAccel + 0.2
          }
       } else {
@@ -71,7 +80,8 @@ class Flight {
       if (_keyDown) {
          spr = 4
       }
-      Draw.sprite(_dog, spr, _playerX, _playerY, 1.0, 1.0, 1, 1, 1)
+
+      Draw.sprite(_dog, spr, _playerX, _playerY, 1.0, 1.0, _playerFlip, 1, 1)
    }
 
    shutdown() {

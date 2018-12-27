@@ -3,8 +3,8 @@ import "engine" for Trap, Draw, Asset, CVar
 
 import "timer" for Timer
 import "debug" for Debug
-import "flight" for Flight
-// import "soundcontroller" for SoundController
+import "title" for Title
+import "game" for Game
 
 class Main {
    static scene { __scene }
@@ -13,11 +13,16 @@ class Main {
       __accumTime = 0
       __inspector = CVar.get("wren_inspector", 0)
 
+      __scenes = {
+         "title": Title,
+         "game": Game
+      } 
+
       Timer.init()
       Debug.init()
-
+      
       if (mapName == null) {
-         loadScene("flight", null)
+         loadScene("title", null)
       }
    }
 
@@ -104,9 +109,8 @@ class Main {
       Timer.clear()
       shutdown()
 
-      if (scene == "flight") {
-         __scene = Flight.new()
-      }
+      var next = scene == null || __scenes[scene] == null ? "title" : scene
+      __scene = __scenes[next].new(params)
 
       System.gc()
    }

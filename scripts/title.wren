@@ -14,7 +14,7 @@ class Title {
 
    update(dt) {
       if (Trap.keyPressed(Button.Start, 0, -1)) {
-         nextScene = "game"
+         nextScene = ["cutscene", "game"]
       }
    }
 

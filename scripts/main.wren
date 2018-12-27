@@ -5,6 +5,7 @@ import "timer" for Timer
 import "debug" for Debug
 import "title" for Title
 import "game" for Game
+import "cutscene" for Cutscene
 
 class Main {
    static scene { __scene }
@@ -15,7 +16,8 @@ class Main {
 
       __scenes = {
          "title": Title,
-         "game": Game
+         "game": Game,
+         "cutscene": Cutscene
       } 
 
       Timer.init()

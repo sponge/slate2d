@@ -53,8 +53,11 @@ class Flight {
 
       _playerY = _playerY + _playerYAccel
       _playerX = _playerX + _playerXAccel
+      _playerX = Math.max(_playerX, 10)
+      _playerX = Math.min(_playerX, 290)
 
       Trap.printWin("flight", "y", _playerY)
+      Trap.printWin("flight", "x", _playerX)
       Trap.printWin("flight", "xaccel", _playerXAccel)
       Trap.printWin("flight", "yaccel", _playerYAccel)
    }

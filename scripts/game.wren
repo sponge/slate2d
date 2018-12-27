@@ -10,20 +10,25 @@ class Game {
 
    entities { _entities }
    cam { _cam }
+   launched { _launched }
+   launched=(b) { _launched = b }
 
    construct new(params) {
       _entities = []
 
-      _entities.add(Player.new(this, {}, 120, 120, 16, 16))
+      _entities.add(Player.new(this, {}, 220, 50, 16, 16))
 
       _cam = Camera.new(16, 16, 320, 180)
       _scrollX = 0
+      _launched = false
    }
 
    update(dt) {
-      _scrollX = _scrollX - 0.25
-      // TODO: do we want to floor this?
-      _cam.move(_scrollX, 0)
+      if (_launched) {
+         _scrollX = _scrollX - 0.25
+         // TODO: do we want to floor this?
+         _cam.move(_scrollX, 0)
+      }
 
       for (ent in _entities) {
          ent.think(dt)

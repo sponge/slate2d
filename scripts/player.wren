@@ -1,4 +1,4 @@
-import "engine" for Draw, Asset, TileMap, Trap, Button
+import "engine" for Draw, Asset, Trap, Button, Fill
 import "math" for Math
 import "entity" for Entity
 
@@ -35,6 +35,7 @@ class Player is Entity{
       }
 
       if (aPressed && !_flapPressed) {
+         world.launched = true
          dy = dy - _flapStrength
          _flapPressed = true
 
@@ -42,7 +43,9 @@ class Player is Entity{
             dx = dx + (lPressed ? -_moveSpeed : _moveSpeed)
          }
       } else {
-         dy = dy + _gravity
+         if (world.launched) {
+            dy = dy + _gravity
+         }
       }
 
       if (dx > 0) {
@@ -76,6 +79,9 @@ class Player is Entity{
    draw() {
       var spr = _flapPressed ? 1 : 0
       Draw.sprite(_mouth, spr, x, y, 1.0, 1.0, _flip, 1, 1)
+      if (!world.launched) {
+         Draw.rect(x, y+16, 16, 3, Fill.Solid)
+      }
    }
 
    die() {

@@ -176,7 +176,7 @@ class Game {
 
       for (i in 0..4) {
          // FIXME: this sucks
-         var x = -80 - (i * 2) + (-_cam.x / 12 % 16) * (i + 4)
+         var x = -128 - (i * 2) + (-_cam.x / 12 % 16) * (i + 4)
          while (x < _cam.w) {
             if ( x <= -16) {
                x = x + 16

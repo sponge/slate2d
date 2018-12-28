@@ -4,17 +4,30 @@ import "entity" for Entity
 
 class Mine is Entity {
    spr { _spr }
-   construct new (world, obj, x, y) {
+   construct new (world, obj, x, y, dx, dy) {
       super(world, obj, x, y, 10, 10)
 
       _icons = obj["sprite"]
 
       var iconCount = 8
       _spr = world.rnd.int(iconCount)
+
+      _dx = dx
+      _dy = dy
+      _t = 0
    }
    
    think(dt) {
+      x = x + _dx
+      y = y + _dy
 
+      // have a lifetime for the mines if they're moving
+      if (_dx != 0 || _dy != 0) {
+         _t = _t + dt
+         if (_t > 60*30) {
+            die(false)
+         }
+      }
    }
 
    draw() {

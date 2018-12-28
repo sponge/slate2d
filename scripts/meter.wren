@@ -21,7 +21,6 @@ class Meter {
    }
 
    set(val) {
-      Trap.printLn(val)
       _xTarget = (1 - val / 100) * 288 + 16
    }
 

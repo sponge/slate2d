@@ -27,34 +27,93 @@ class Game {
       _rnd = Random.new()
       _player = Player.new(this, {}, 220, 50)
 
+      _t = 0
       _entities = [_player]
       _generatedX = 0 // how far in the world we've generated level parts
+
+      _modes = ["rain", "show", "minefield", "ashes"]
+
+      _generateMode = "minefield"
+
+      // rain generator
+      _nextRainTick = 0
 
       _uiEntities = []
 
       Asset.loadAll()
    }
 
+   generateRain(subtype) {
+      var cx = _cam.toWorld(0,0)[0]
+
+      if (cx <= _generatedX) {
+         _generatedX = cx - _cam.w * 1.25
+      }
+
+      if (_t < _nextRainTick) {
+         return
+      }
+
+      _nextRainTick = _t + 20
+      
+      var d = [0, 0]
+      var y = 0
+
+      if (subtype == "rain") {
+         d = [_rnd.float(0.05, 0.25), _rnd.float(0.4, 0.5)]
+         y = -16
+      } else if (subtype == "snow") {
+         d = [_rnd.float(-0.25, 0.25), _rnd.float(0.2, 0.4)]
+         y = -16
+      } else if (subtype == "ashes") {
+         d = [_rnd.float(-0.25, 0.25), _rnd.float(-0.2, -0.4)]
+         y = _cam.h
+      }
+
+      var mine = Mine.new(this, {"sprite": _icons}, _rnd.int(cx - 64, cx+_cam.w), y, d[0], d[1])
+      _entities.add(mine)
+   }
+
+   generateMinefield() {
+      // only run once
+      var cx = _cam.toWorld(0,0)[0]
+      if (cx > _generatedX) {
+         return
+      }
+
+      // the new chunk will be a bit longer than the camera view so we don't pop in
+      _generatedX = cx - _cam.w * 1.25
+
+      var y = 0
+      var x = cx
+      // generate a random chance of an obstacle in every 24px grid
+      while (y < _cam.h) {
+         while (x > _generatedX) {
+            if (_rnd.int(5) == 0) {
+               var mine = Mine.new(this, {"sprite": _icons}, x + _rnd.int(8), y + _rnd.int(8), 0, 0)
+               _entities.add(mine)
+            }
+            x = x - 24
+         }
+         y = y + 24
+         x = cx
+      }
+   }
+
    update(dt) {
-      // find the top left corner of the camera and figure out if we need to generate more level
+      _t = _t + dt
+
+      // if we've past the point where we need to switch, pick a new random section
       var cx = _cam.toWorld(0,0)[0]
       if (cx <= _generatedX) {
-         // the new chunk will be a bit longer than the camera view so we don't pop in
-         _generatedX = cx - (_cam.w * 1.25)
+         _generateMode = _rnd.sample(_modes)
+      }
 
-         var y = 0
-         var x = cx
-         // generate a random chance of an obstacle in every 16px grid
-         while (y < _cam.h) {
-            while (x > _generatedX) {
-               if (_rnd.int(5) == 0) {
-                  _entities.add(Mine.new(this, {"sprite": _icons}, x + _rnd.int(8), y + _rnd.int(8)))
-               }
-               x = x - 24
-            }
-            y = y + 24
-            x = cx
-         }
+      // run the level generator tick
+      if (_generateMode == "minefield") {
+         generateMinefield()
+      } else if (_generateMode == "rain" || _generateMode == "snow" || _generateMode == "ashes") {
+         generateRain(_generateMode)
       }
 
       // if the player isn't on the starting platform, autoscroll the camera

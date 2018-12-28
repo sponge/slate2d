@@ -18,6 +18,7 @@ class Cutscene {
 
       _icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
       Asset.spriteSet(_icons, 16, 16, 0, 0)
+      _iconCount = 8
 
       _bubble = Asset.create(Asset.Image, "bubble", "gfx/bubble.png")
 
@@ -31,8 +32,7 @@ class Cutscene {
          "y": y,
          "yelling": false,
          "scale": 1.0,
-         // TODO update this with the final icon count!!
-         "icon": _rnd.int(8)
+         "icon": _rnd.int(_iconCount)
       }
       _scareds = [
          ScaredEntity.new(_lady, 120, y, 1),
@@ -42,6 +42,7 @@ class Cutscene {
       _queue = ActionQueue.new([
          [50, Fn.new {
             _uncleState["yelling"] = true
+            _uncleState["icon"] = (_uncleState["icon"] + 1) % _iconCount
             for (scared in _scareds) {
                scared.scare(16)
             }
@@ -49,6 +50,7 @@ class Cutscene {
          [100, Fn.new { _uncleState["yelling"] = false }],
          [50, Fn.new {
             _uncleState["yelling"] = true
+            _uncleState["icon"] = (_uncleState["icon"] + 1) % _iconCount
             _uncleState["scale"] = 2.0
             for (scared in _scareds) {
                scared.scare(32)
@@ -57,6 +59,7 @@ class Cutscene {
          [100, Fn.new { _uncleState["yelling"] = false }],
          [50, Fn.new {
             _uncleState["yelling"] = true
+            _uncleState["icon"] = (_uncleState["icon"] + 1) % _iconCount
             _uncleState["scale"] = 3.0
             for (scared in _scareds) {
                scared.scare(256)

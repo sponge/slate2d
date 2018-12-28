@@ -1,8 +1,11 @@
+import "random" for Random
+
 import "engine" for Draw, Asset, TileMap, Trap, Button
 import "math" for Math
 import "camera" for Camera
 
 import "player" for Player
+import "mine" for Mine
 
 class Game {
    nextScene { _nextScene }
@@ -10,26 +13,49 @@ class Game {
 
    entities { _entities }
    cam { _cam }
-   launched { _launched }
-   launched=(b) { _launched = b }
+   rnd { _rnd }
 
    construct new(params) {
-      _entities = []
+      _icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
+      Asset.spriteSet(_icons, 16, 16, 0, 0)
 
-      _entities.add(Player.new(this, {}, 220, 50, 16, 16))
-
+      _player = Player.new(this, {}, 220, 50)
+      _entities = [_player]
       _cam = Camera.new(16, 16, 320, 180)
-      _scrollX = 0
-      _launched = false
+      _rnd = Random.new()
+      _generatedX = 0 // how far in the world we've generated level parts
+
+      Asset.loadAll()
    }
 
    update(dt) {
-      if (_launched) {
-         _scrollX = _scrollX - 0.25
-         // TODO: do we want to floor this?
-         _cam.move(_scrollX, 0)
+      // find the top left corner of the camera and figure out if we need to generate more level
+      var cx = _cam.toWorld(0,0)[0]
+      if (cx <= _generatedX) {
+         // the new chunk will be a bit longer than the camera view so we don't pop in
+         _generatedX = cx - (_cam.w * 1.25)
+
+         var y = 0
+         var x = cx
+         // generate a random chance of an obstacle in every 16px grid
+         while (y < _cam.h) {
+            while (x > _generatedX) {
+               if (_rnd.int(8) == 0) {
+                  _entities.add(Mine.new(this, {"sprite": _icons}, x + _rnd.int(8), y + _rnd.int(8)))
+               }
+               x = x - 16
+            }
+            y = y + 16
+            x = cx
+         }
       }
 
+      // if the player isn't on the starting platform, autoscroll the camera
+      if (_player.launched) {
+         _cam.move(_cam.x - 0.25, 0)
+      }
+
+      // update each entity and kill them if they're off camera
       for (ent in _entities) {
          ent.think(dt)
          if (ent.x > _cam.x + _cam.w) {
@@ -37,6 +63,7 @@ class Game {
          }
       }
 
+      // trim out dead entities from the list
       _entities = _entities.where {|c| !c.dead }.toList
    }
 

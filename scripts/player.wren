@@ -1,18 +1,24 @@
 import "engine" for Draw, Asset, Trap, Button, Fill
 import "math" for Math
+import "timer" for Timer
 import "entity" for Entity
 
-class Player is Entity{
-   construct new(world, obj, x, y, w, h) {
-      super(world, obj, x, y, w, h)
+class Player is Entity {
+   launched { _launched }
+
+   construct new(world, obj, x, y) {
+      super(world, obj, x, y, 10, 10)
+
+      _world = world
 
       _mouth = Asset.create(Asset.Sprite, "mouth", "gfx/mouth.png")
       Asset.spriteSet(_mouth, 16, 16, 0, 0)
-      Asset.loadAll()
 
       _t = 0
-      _flapPressed = false
       _flip = 0
+      _health = 3
+      _invuln = false
+      _launched = false
 
       _flapStrength = 0.4
       _maxFallSpeed = 0.75
@@ -21,6 +27,7 @@ class Player is Entity{
       _maxMoveSpeed = 1.0
       _gravity = 0.02
       _moveDecay = 0.003
+      _invulnTime = 180
    }
 
    think(dt) {
@@ -30,58 +37,90 @@ class Player is Entity{
       var lPressed = Trap.keyPressed(Button.Left)
       var rPressed = Trap.keyPressed(Button.Right)
 
+      // draw them in the right direction
       if (lPressed || rPressed) {
          _flip = lPressed ? 0 : 1
       }
 
+      // if the flap key is down for the first time
       if (aPressed && !_flapPressed) {
-         world.launched = true
+         // detach the player from the starting platform if necessary
+         _launched = true
+         // give the player a bump
          dy = dy - _flapStrength
          _flapPressed = true
 
+         // only move the player when flapping
          if (lPressed || rPressed) {
             dx = dx + (lPressed ? -_moveSpeed : _moveSpeed)
          }
       } else {
-         if (world.launched) {
+         // no flap this frame, apply gravity if not on the platform
+         if (_launched) {
             dy = dy + _gravity
+         }
+
+         if (!aPressed) {
+            _flapPressed = false
          }
       }
 
-      if (dx > 0) {
-         dx = dx - _moveDecay
-      } else if (dx < 0) {
-         dx = dx + _moveDecay
-      }
+      // apply air friction
+      dx = dx + _moveDecay * Math.sign(-dx)
 
-      if (!aPressed) {
-         _flapPressed = false
-      }
-
+      // cap speed
       dx = Math.clamp(-_maxMoveSpeed, dx, _maxMoveSpeed)
       dy = Math.clamp(-_maxFlightSpeed, dy, _maxFallSpeed)
 
-      x = Math.max(world.cam.x + 5, x + dx)
+      // do the move
+      x = x + dx
       y = y + dy
 
-      if (y >= 185) {
-         dy = 0
+      // if they've fallen off the screen, game over
+      if (y >= _world.cam.h + 5) {
          die()
+         return
       }
 
+      // round small movements to 0
       if (dx <= 0.003 && dx >= -0.003) {
          dx = 0
       }
 
-      Trap.inspect(this, "player")
+      // perform collision detection. we only care about intersections happening, nothing will block you
+      _world.entities.each {|ent|
+         if (ent == this || ent.dead || _invuln == true) {
+            return
+         }
+
+         if (Math.rectIntersect(ent.x, ent.y, ent.w, ent.h, x, y, w, h) == false) {
+            return
+         }
+
+         // if we've collided, destroy the ent we collided with and reduce health by 1
+         _health = _health - 1
+         ent.die()
+
+         if (_health == 0) {
+            die()
+            return
+         }
+
+         _invuln = true
+         Timer.runLater(_invulnTime) {
+            _invuln = false
+         } 
+      }
    }
 
    draw() {
-      var spr = _flapPressed ? 1 : 0
-      Draw.sprite(_mouth, spr, x, y, 1.0, 1.0, _flip, 1, 1)
-      if (!world.launched) {
-         Draw.rect(x, y+16, 16, 3, Fill.Solid)
+      var spr = Trap.keyPressed(Button.A) ? 1 : 0
+      Draw.sprite(_mouth, spr, x - 3, y - 3, _invuln ? 0.4 : 1.0, 1.0, _flip, 1, 1)
+      if (!_launched) {
+         Draw.rect(x-3, y+12, 16, 3, Fill.Solid)
       }
+
+      Trap.inspect(this, "player")
    }
 
    die() {

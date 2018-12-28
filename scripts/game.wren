@@ -23,6 +23,7 @@ class Game {
       Asset.spriteSet(_icons, 16, 16, 0, 0)
 
       _shag = Asset.create(Asset.Image, "shag", "gfx/shag.png")
+      _skirting = Asset.create(Asset.Image, "skirting", "gfx/skirting.png")
 
       _meter = Meter.new()
       _cam = Camera.new(16, 16, 320, 180)
@@ -152,6 +153,11 @@ class Game {
       Draw.resetTransform()
       Draw.scale(h / _cam.h)
 
+      Draw.setColor(238, 182, 47, 255)
+      Draw.rect(0, 0, 320, 160, Fill.Solid)
+      Draw.setColor(255, 255, 255, 255)
+      Draw.image(_skirting, 0, 142, 320, 12)
+
       drawGrass()
 
       Draw.translate(-_cam.x, -_cam.y)
@@ -170,6 +176,7 @@ class Game {
 
    drawGrass() {
       var grassStart = 140
+
       Draw.setColor(73, 60, 43, 255)
       Draw.rect(0, grassStart + 16, _cam.w, 64, Fill.Solid)
       Draw.setColor(255, 255, 255, 255)

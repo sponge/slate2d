@@ -259,7 +259,7 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float alp
 
 	rlBegin(RL_QUADS);
 	// FIXME: alpha * 255 bad! we use 0 - 255 everywhere but 0 - 1 here. come back to this and make it consistent everywhere!
-	rlColor4ub(255, 255, 255, (byte)(alpha * 255));
+	rlColor4ub(currentColor[0], currentColor[1], currentColor[2], (byte)(alpha * 255));
 
 	rlNormal3f(0, 0, 1);
 

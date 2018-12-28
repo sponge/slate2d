@@ -132,6 +132,6 @@ class Player is Entity {
 
    die() {
       super()
-      world.nextScene = "title"
+      world.nextScene = "gameover"
    }
 }

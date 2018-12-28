@@ -6,6 +6,7 @@ import "debug" for Debug
 import "title" for Title
 import "game" for Game
 import "cutscene" for Cutscene
+import "gameover" for GameOver
 
 class Main {
    static scene { __scene }
@@ -17,7 +18,8 @@ class Main {
       __scenes = {
          "title": Title,
          "game": Game,
-         "cutscene": Cutscene
+         "cutscene": Cutscene,
+         "gameover": GameOver
       }
 
       __defaultScene = "game"

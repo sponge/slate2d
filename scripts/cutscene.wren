@@ -22,6 +22,8 @@ class Cutscene {
       _bubble = Asset.create(Asset.Image, "bubble", "gfx/bubble.png")
 
       _rnd = Random.new()
+      _paramNextScene = nextScene
+      _canSkip = false
 
       var y = 80
       _uncleState = {
@@ -29,7 +31,7 @@ class Cutscene {
          "y": y,
          "yelling": false,
          "scale": 1.0,
-         // TODO update this with the final icon count!  !
+         // TODO update this with the final icon count!!
          "icon": _rnd.int(8)
       }
       _scareds = [
@@ -64,14 +66,25 @@ class Cutscene {
          [100, Fn.new { _nextScene = nextScene }],
       ])
 
+      _t = 0
+
       Asset.loadAll()
    }
 
    update(dt) {
+      _t = _t + dt
       for (scared in _scareds) {
          scared.update(dt)
       }
       _queue.update(dt)
+
+      if (!Trap.keyPressed(Button.Start)) {
+         _canSkip = true
+      }
+
+      if (_canSkip && Trap.keyPressed(Button.Start)) {
+         _nextScene = _paramNextScene
+      }
    }
 
    draw(w, h) {
@@ -83,7 +96,12 @@ class Cutscene {
          scared.draw(w, h)
       }
 
-      Draw.sprite(_uncle, 0, _uncleState["x"], _uncleState["y"])
+      Draw.sprite(
+         _uncle,
+         _uncleState["yelling"] ? (_t / 12) % 2 : 0,
+         _uncleState["x"],
+         _uncleState["y"])
+
       if (_uncleState["yelling"]) {
          Draw.image(
             _bubble,
@@ -96,6 +114,7 @@ class Cutscene {
             _uncleState["x"] + 16 + (6 * _uncleState["scale"]),
             _uncleState["y"] - 14 - (22 * (_uncleState["scale"] - 1)),
             1.0, _uncleState["scale"])
+      } else {
       }
    }
 

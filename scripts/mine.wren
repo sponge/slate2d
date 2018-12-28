@@ -4,7 +4,7 @@ import "entity" for Entity
 
 class Mine is Entity {
    construct new (world, obj, x, y) {
-      super(world, obj, x, y, 16, 16)
+      super(world, obj, x, y, 10, 10)
 
       _icons = obj["sprite"]
 

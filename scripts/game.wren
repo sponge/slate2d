@@ -19,7 +19,7 @@ class Game {
       _icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
       Asset.spriteSet(_icons, 16, 16, 0, 0)
 
-      _player = Player.new(this, {}, 220, 50, 16, 16)
+      _player = Player.new(this, {}, 220, 50)
       _entities = [_player]
       _cam = Camera.new(16, 16, 320, 180)
       _rnd = Random.new()

@@ -6,8 +6,8 @@ import "entity" for Entity
 class Player is Entity {
    launched { _launched }
 
-   construct new(world, obj, x, y, w, h) {
-      super(world, obj, x, y, w, h)
+   construct new(world, obj, x, y) {
+      super(world, obj, x, y, 10, 10)
 
       _world = world
 
@@ -33,6 +33,7 @@ class Player is Entity {
    think(dt) {
       _t = _t + dt
 
+      var aPressed = Trap.keyPressed(Button.A)
       var lPressed = Trap.keyPressed(Button.Left)
       var rPressed = Trap.keyPressed(Button.Right)
 
@@ -42,11 +43,12 @@ class Player is Entity {
       }
 
       // if the flap key is down for the first time
-      if (Trap.keyPressed(Button.A, 0, 5000)) {
+      if (aPressed && !_flapPressed) {
          // detach the player from the starting platform if necessary
          _launched = true
          // give the player a bump
          dy = dy - _flapStrength
+         _flapPressed = true
 
          // only move the player when flapping
          if (lPressed || rPressed) {
@@ -56,6 +58,10 @@ class Player is Entity {
          // no flap this frame, apply gravity if not on the platform
          if (_launched) {
             dy = dy + _gravity
+         }
+
+         if (!aPressed) {
+            _flapPressed = false
          }
       }
 
@@ -67,7 +73,7 @@ class Player is Entity {
       dy = Math.clamp(-_maxFlightSpeed, dy, _maxFallSpeed)
 
       // do the move
-      x = Math.max(world.cam.x + 5, x + dx)
+      x = x + dx
       y = y + dy
 
       // if they've fallen off the screen, game over
@@ -109,9 +115,9 @@ class Player is Entity {
 
    draw() {
       var spr = Trap.keyPressed(Button.A) ? 1 : 0
-      Draw.sprite(_mouth, spr, x, y, _invuln ? 0.4 : 1.0, 1.0, _flip, 1, 1)
+      Draw.sprite(_mouth, spr, x - 3, y - 3, _invuln ? 0.4 : 1.0, 1.0, _flip, 1, 1)
       if (!_launched) {
-         Draw.rect(x, y+16, 16, 3, Fill.Solid)
+         Draw.rect(x-3, y+12, 16, 3, Fill.Solid)
       }
 
       Trap.inspect(this, "player")

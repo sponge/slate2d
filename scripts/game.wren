@@ -16,19 +16,21 @@ class Game {
    entities { _entities }
    cam { _cam }
    rnd { _rnd }
+   meter { _meter }
 
    construct new(params) {
       _icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
       Asset.spriteSet(_icons, 16, 16, 0, 0)
 
-      _player = Player.new(this, {}, 220, 50)
-      _entities = [_player]
+      _meter = Meter.new()
       _cam = Camera.new(16, 16, 320, 180)
       _rnd = Random.new()
+      _player = Player.new(this, {}, 220, 50)
+
+      _entities = [_player]
       _generatedX = 0 // how far in the world we've generated level parts
 
       _uiEntities = []
-      _meter = Meter.new()
 
       Asset.loadAll()
    }
@@ -81,7 +83,6 @@ class Game {
 
    onMineHit(mine) {
       _uiEntities.add(MineText.new(mine.spr, 140, 160))
-      _meter.increase()
    }
 
    draw(w, h) {

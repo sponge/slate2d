@@ -16,7 +16,7 @@ class Player is Entity {
 
       _t = 0
       _flip = 0
-      _health = 3
+      _health = 100
       _invuln = false
       _launched = false
 
@@ -28,6 +28,7 @@ class Player is Entity {
       _gravity = 0.02
       _moveDecay = 0.003
       _invulnTime = 180
+      _regenRate = 50
    }
 
    think(dt) {
@@ -98,10 +99,10 @@ class Player is Entity {
          }
 
          // if we've collided, destroy the ent we collided with and reduce health by 1
-         _health = _health - 1
+         _health = _health - 36
          ent.die(true)
 
-         if (_health == 0) {
+         if (_health <= 0) {
             die()
             return
          }
@@ -111,6 +112,12 @@ class Player is Entity {
             _invuln = false
          } 
       }
+
+      // regen 1 hp every _regenRate ticks
+      if (_t % _regenRate == 0) {
+         _health = Math.min(100, _health + 1)
+      }
+      _world.meter.set(_health)
    }
 
    draw() {

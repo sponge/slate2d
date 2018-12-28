@@ -214,13 +214,17 @@ void main_loop() {
 
 	SDL_GL_SwapWindow(window);
 
-	// sleep for 100musec, but realistically OSes seem to not be able to sleep for shorter than a millisecond.
-	// i really don't want to use a burn loop here though for power saving reasons
+	// OSes seem to not be able to sleep for shorter than a millisecond. so let's sleep until
+	// we're close-ish and then burn loop the rest. we get a majority of the cpu/power gains
+	// while still remaining pretty accurate on frametimes.
 	if (vid_maxfps->integer > 0) {
-		auto target = now + (1000.0f / vid_maxfps->integer * 1000);
-		auto currentSleepTime = measure_now();
+		long long target = now + (long long) (1000.0f / vid_maxfps->integer * 1000);
+		long long currentSleepTime = measure_now();
 		while (currentSleepTime <= target) {
-			std::this_thread::sleep_for(std::chrono::microseconds(100));
+			long long amt = (target - currentSleepTime) - 2000;
+			if (amt > 0) {
+				std::this_thread::sleep_for(std::chrono::microseconds(amt));
+			}
 			currentSleepTime = measure_now();
 		}
 	}

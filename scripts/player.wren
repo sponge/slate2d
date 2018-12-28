@@ -73,8 +73,8 @@ class Player is Entity {
       dy = Math.clamp(-_maxFlightSpeed, dy, _maxFallSpeed)
 
       // do the move
-      x = x + dx
-      y = y + dy
+      x = Math.max(_world.cam.x + 5, x + dx)
+      y = Math.max(5, y + dy)
 
       // if they've fallen off the screen, game over
       if (y >= _world.cam.h + 5) {

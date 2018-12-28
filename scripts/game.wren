@@ -45,12 +45,12 @@ class Game {
          // generate a random chance of an obstacle in every 16px grid
          while (y < _cam.h) {
             while (x > _generatedX) {
-               if (_rnd.int(8) == 0) {
+               if (_rnd.int(5) == 0) {
                   _entities.add(Mine.new(this, {"sprite": _icons}, x + _rnd.int(8), y + _rnd.int(8)))
                }
-               x = x - 16
+               x = x - 24
             }
-            y = y + 16
+            y = y + 24
             x = cx
          }
       }

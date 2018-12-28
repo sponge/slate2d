@@ -1,5 +1,5 @@
 class Math {
-   static sign(a) { a < 0 ? -1 : 1 }
+   static sign(a) { a < 0 ? -1 : a > 0 ? 1 : 0 }
    static max(a, b) { a > b ? a : b }
    static min(a, b) { a < b ? a : b }
    static clamp(min, val, max) { val > max ? max : val < min ? min : val }

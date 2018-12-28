@@ -169,8 +169,8 @@ class Game {
    }
 
    drawGrass() {
-      var grassStart = 135
-      Draw.setColor(75, 34, 6, 255)
+      var grassStart = 140
+      Draw.setColor(73, 60, 43, 255)
       Draw.rect(0, grassStart + 16, _cam.w, 64, Fill.Solid)
       Draw.setColor(255, 255, 255, 255)
 
@@ -178,13 +178,13 @@ class Game {
          // FIXME: this sucks
          var x = -128 - (i * 2) + (-_cam.x / 12 % 16) * (i + 4)
          while (x < _cam.w) {
-            if ( x <= -16) {
-               x = x + 16
+            if ( x <= -32) {
+               x = x + 32
             }
             var y = i * 8 + grassStart
-            Draw.image(_shag, x, y, 16, 16, 1.0, 1.0, i % 2 == 0 ? 1 : 0)
+            Draw.image(_shag, x, y, 32, 16, 1.0, 1.0, i % 2 == 0 ? 1 : 0)
 
-            x = x + 16
+            x = x + 32
          }
       }
    }

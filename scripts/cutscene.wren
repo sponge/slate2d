@@ -152,6 +152,7 @@ class ScaredEntity {
    }
 
    draw(w, h) {
-      Draw.sprite(_spr, 0, _x, _y)
+      var diff = (_x - _xTarget).abs
+      Draw.sprite(_spr, diff > 0.1 ? 1 : 0, _x, _y)
    }
 }

@@ -9,24 +9,33 @@ class MineText is Entity {
       _x = x
       _y = y
 
-      _font = Asset.create(Asset.BitmapFont, "font", "gfx/good_neighbors.png")
-      Asset.bmpfntSet(_font, "!\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 0, -1, 7, 16)
-      // _font = Asset.create(Asset.Font, "roboto", "fonts/Sneak Attack.ttf")
+      _font = Asset.create(Asset.BitmapFont, "font", "gfx/font.png")
+      Asset.bmpfntSet(_font, "abcdefghijklmnopqrstuvwxyz!?'", 0, 1, 2, 5)
       Asset.loadAll()
+
+      _bright = true
    }
 
    think(dt) {
       _y = _y - (dt)
+
       if (_y < -16) {
          die()
+      }
+
+      if (_y % 12 == 0) {
+         _bright = !_bright
       }
    }
 
    draw() {
-      // Draw.setTextStyle(_font, 1)
-      // Draw.setColor(255, 255, 255, 255)
-      // Draw.text(1, 1, 100, _text)
+      if (_bright) {
+         Draw.setColor(247, 226, 107, 255)
+      } else {
+         Draw.setColor(235, 137, 49, 255)
+      }
       Draw.bmpText(_font, _x, _y, _text)
+      Draw.setColor(255, 255, 255, 255)
    }
 
    static Text {[

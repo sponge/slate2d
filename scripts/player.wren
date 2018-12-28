@@ -1,18 +1,22 @@
 import "engine" for Draw, Asset, Trap, Button, Fill
 import "math" for Math
+import "timer" for Timer
 import "entity" for Entity
 
-class Player is Entity{
+class Player is Entity {
    construct new(world, obj, x, y, w, h) {
       super(world, obj, x, y, w, h)
 
+      _world = world
+
       _mouth = Asset.create(Asset.Sprite, "mouth", "gfx/mouth.png")
       Asset.spriteSet(_mouth, 16, 16, 0, 0)
-      Asset.loadAll()
 
       _t = 0
       _flapPressed = false
       _flip = 0
+      _health = 3
+      _invuln = false
 
       _flapStrength = 0.4
       _maxFallSpeed = 0.75
@@ -21,6 +25,7 @@ class Player is Entity{
       _maxMoveSpeed = 1.0
       _gravity = 0.02
       _moveDecay = 0.003
+      _invulnTime = 180
    }
 
    think(dt) {
@@ -71,6 +76,28 @@ class Player is Entity{
 
       if (dx <= 0.003 && dx >= -0.003) {
          dx = 0
+      }
+
+      _world.entities.each {|ent|
+         if (ent == this || ent.dead || _invuln == true) {
+            return
+         }
+
+         if (Math.rectIntersect(ent.x, ent.y, ent.w, ent.h, x, y, w, h) == false) {
+            return
+         }
+
+         _health = _health - 1
+         ent.die()
+
+         if (_health == 0) {
+            die()
+         }
+
+         _invuln = true
+         Timer.runLater(_invulnTime) {
+            _invuln = false
+         } 
       }
 
       Trap.inspect(this, "player")

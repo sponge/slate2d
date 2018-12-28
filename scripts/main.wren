@@ -18,13 +18,15 @@ class Main {
          "title": Title,
          "game": Game,
          "cutscene": Cutscene
-      } 
+      }
+
+      __defaultScene = "title"
 
       Timer.init()
       Debug.init()
       
       if (mapName == null) {
-         loadScene("title", null)
+         loadScene(__defaultScene, null)
       }
    }
 
@@ -111,7 +113,7 @@ class Main {
       Timer.clear()
       shutdown()
 
-      var next = scene == null || __scenes[scene] == null ? "title" : scene
+      var next = scene == null || __scenes[scene] == null ? __defaultScene : scene
       __scene = __scenes[next].new(params)
 
       System.gc()

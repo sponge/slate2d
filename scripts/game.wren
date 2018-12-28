@@ -64,7 +64,7 @@ class Game {
       for (ent in _entities) {
          ent.think(dt)
          if (ent.x > _cam.x + _cam.w) {
-            ent.die()
+            ent.die(false)
          }
       }
 

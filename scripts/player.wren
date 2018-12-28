@@ -99,7 +99,7 @@ class Player is Entity {
 
          // if we've collided, destroy the ent we collided with and reduce health by 1
          _health = _health - 1
-         ent.die()
+         ent.die(true)
 
          if (_health == 0) {
             die()

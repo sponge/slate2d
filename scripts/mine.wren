@@ -21,8 +21,10 @@ class Mine is Entity {
       Draw.sprite(_icons, _spr, x-3, y-3, 1.0, 1.0, 0, 1, 1)
    }
 
-   die() {
+   die(hitByPlayer) {
       super()
-      world.onMineHit(this)
+      if (hitByPlayer) {
+         world.onMineHit(this)
+      }
    }
 }

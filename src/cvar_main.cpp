@@ -7,7 +7,7 @@ cvar_t *vid_height;
 cvar_t *vid_swapinterval;
 cvar_t *vid_fullscreen;
 cvar_t *vid_showfps;
-cvar_t *com_sleepShortFrame;
+cvar_t *vid_maxfps;
 cvar_t *com_pause;
 cvar_t *s_volume;
 
@@ -19,7 +19,7 @@ static cvarTable_t mainCvarTable[] = {
     { &vid_swapinterval, "vid_swapInterval", "1", 0 },
     { &vid_fullscreen, "vid_fullscreen", "0", 0 },
     { &vid_showfps, "vid_showfps", "0", 0 },
-	{ &com_sleepShortFrame, "com_sleepShortFrame", "1", 0 },
+	{ &vid_maxfps, "vid_maxfps", "120", 0 },
 	{ &com_pause, "com_pause", "0", 0 },
 	{ &s_volume, "s_volume", "1.0", 0 },
 

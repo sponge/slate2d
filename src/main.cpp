@@ -88,9 +88,13 @@ static bool loop = true;
 
 auto start = std::chrono::steady_clock::now();
 
+static inline long long measure_now() {
+	return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - start).count();
+}
+
 void main_loop() {
 
-	auto now = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - start ).count();
+	auto now = measure_now();
 	frame_musec = now - com_frameTime;
 	com_frameTime = now;
 
@@ -210,11 +214,15 @@ void main_loop() {
 
 	SDL_GL_SwapWindow(window);
 
-	// sleep a little so we don't burn up cpu/gpu on insanely fast frames (>1000fps)
-	// in a perfect world you should be able to do com_maxFps but we lose the cpu benefits
-	// by having to burn through a really tight loop to measure
-	if (com_sleepShortFrame->integer && frame_musec < 1000.0f) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	// sleep for 100musec, but realistically OSes seem to not be able to sleep for shorter than a millisecond.
+	// i really don't want to use a burn loop here though for power saving reasons
+	if (vid_maxfps->integer > 0) {
+		auto target = now + (1000.0f / vid_maxfps->integer * 1000);
+		auto currentSleepTime = measure_now();
+		while (currentSleepTime <= target) {
+			std::this_thread::sleep_for(std::chrono::microseconds(100));
+			currentSleepTime = measure_now();
+		}
 	}
 
 }

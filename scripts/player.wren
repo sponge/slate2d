@@ -90,7 +90,7 @@ class Player is Entity {
 
       // perform collision detection. we only care about intersections happening, nothing will block you
       _world.entities.each {|ent|
-         if (ent == this || ent.dead || _invuln == true) {
+         if (ent == this || ent.dead || _invuln == true || _launched == false) {
             return
          }
 

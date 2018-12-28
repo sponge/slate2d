@@ -1,6 +1,6 @@
 import "random" for Random
 
-import "engine" for Draw, Asset, TileMap, Trap, Button
+import "engine" for Draw, Asset, TileMap, Trap, Button, Fill
 import "math" for Math
 import "camera" for Camera
 
@@ -22,6 +22,8 @@ class Game {
       _icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
       Asset.spriteSet(_icons, 16, 16, 0, 0)
 
+      _shag = Asset.create(Asset.Image, "shag", "gfx/shag.png")
+
       _meter = Meter.new()
       _cam = Camera.new(16, 16, 320, 180)
       _rnd = Random.new()
@@ -33,7 +35,7 @@ class Game {
 
       _modes = ["rain", "show", "minefield", "ashes"]
 
-      _generateMode = "minefield"
+      _generateMode = null
 
       // rain generator
       _nextRainTick = 0
@@ -106,7 +108,8 @@ class Game {
       // if we've past the point where we need to switch, pick a new random section
       var cx = _cam.toWorld(0,0)[0]
       if (cx <= _generatedX) {
-         _generateMode = _rnd.sample(_modes)
+         // hardcode first phase to minefield
+         _generateMode = _generateMode == null ? "minefield" : _rnd.sample(_modes)
       }
 
       // run the level generator tick
@@ -149,6 +152,8 @@ class Game {
       Draw.resetTransform()
       Draw.scale(h / _cam.h)
 
+      drawGrass()
+
       Draw.translate(-_cam.x, -_cam.y)
 
       for (ent in _entities) {
@@ -161,6 +166,27 @@ class Game {
          ent.draw()
       }
       _meter.draw()
+   }
+
+   drawGrass() {
+      var grassStart = 135
+      Draw.setColor(75, 34, 6, 255)
+      Draw.rect(0, grassStart + 16, _cam.w, 64, Fill.Solid)
+      Draw.setColor(255, 255, 255, 255)
+
+      for (i in 0..4) {
+         // FIXME: this sucks
+         var x = -80 - (i * 2) + (-_cam.x / 12 % 16) * (i + 4)
+         while (x < _cam.w) {
+            if ( x <= -16) {
+               x = x + 16
+            }
+            var y = i * 8 + grassStart
+            Draw.image(_shag, x, y, 16, 16, 1.0, 1.0, i % 2 == 0 ? 1 : 0)
+
+            x = x + 16
+         }
+      }
    }
 
    shutdown() {

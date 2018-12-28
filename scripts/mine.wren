@@ -3,6 +3,7 @@ import "math" for Math
 import "entity" for Entity
 
 class Mine is Entity {
+   spr { _spr }
    construct new (world, obj, x, y) {
       super(world, obj, x, y, 10, 10)
 
@@ -22,5 +23,6 @@ class Mine is Entity {
 
    die() {
       super()
+      world.onMineHit(this)
    }
 }

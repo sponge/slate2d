@@ -6,6 +6,7 @@ import "camera" for Camera
 
 import "player" for Player
 import "mine" for Mine
+import "minetext" for MineText
 
 class Game {
    nextScene { _nextScene }
@@ -24,6 +25,8 @@ class Game {
       _cam = Camera.new(16, 16, 320, 180)
       _rnd = Random.new()
       _generatedX = 0 // how far in the world we've generated level parts
+
+      _uiEntities = []
 
       Asset.loadAll()
    }
@@ -65,6 +68,16 @@ class Game {
 
       // trim out dead entities from the list
       _entities = _entities.where {|c| !c.dead }.toList
+
+      // update ui entities
+      for (ent in _uiEntities) {
+         ent.think(dt)
+      }
+      _uiEntities = _uiEntities.where {|c| !c.dead }.toList
+   }
+
+   onMineHit(mine) {
+      _uiEntities.add(MineText.new(mine.spr, 180, 160))
    }
 
    draw(w, h) {
@@ -75,6 +88,12 @@ class Game {
       Draw.translate(-_cam.x, -_cam.y)
 
       for (ent in _entities) {
+         ent.draw()
+      }
+
+      // draw the ui elements on top of everything without the camera translation
+      Draw.translate(_cam.x, _cam.y)
+      for (ent in _uiEntities) {
          ent.draw()
       }
    }

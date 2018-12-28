@@ -7,6 +7,7 @@ import "camera" for Camera
 import "player" for Player
 import "mine" for Mine
 import "minetext" for MineText
+import "meter" for Meter
 
 class Game {
    nextScene { _nextScene }
@@ -27,6 +28,7 @@ class Game {
       _generatedX = 0 // how far in the world we've generated level parts
 
       _uiEntities = []
+      _meter = Meter.new()
 
       Asset.loadAll()
    }
@@ -74,10 +76,12 @@ class Game {
          ent.think(dt)
       }
       _uiEntities = _uiEntities.where {|c| !c.dead }.toList
+      _meter.think(dt)
    }
 
    onMineHit(mine) {
-      _uiEntities.add(MineText.new(mine.spr, 180, 160))
+      _uiEntities.add(MineText.new(mine.spr, 140, 160))
+      _meter.increase()
    }
 
    draw(w, h) {
@@ -96,6 +100,7 @@ class Game {
       for (ent in _uiEntities) {
          ent.draw()
       }
+      _meter.draw()
    }
 
    shutdown() {

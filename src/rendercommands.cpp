@@ -577,12 +577,10 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 
 		case RC_DRAW_TRI:
 			data = RB_DrawTri(data);
-			rlglDraw();
 			break;
 
 		case RC_DRAW_MAP_LAYER:
 			data = RB_DrawMapLayer(data);
-			rlglDraw();
 			break;
 
 		case RC_END_OF_LIST:

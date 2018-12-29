@@ -26,7 +26,7 @@ class Main {
          "ending": Ending,
       }
 
-      __defaultScene = "game"
+      __defaultScene = "title"
 
       Timer.init()
       Debug.init()

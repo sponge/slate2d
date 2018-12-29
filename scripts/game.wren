@@ -193,6 +193,8 @@ class Game {
       var level = _levels[_level]
       Draw.setColor(level["background"]["color"])
       Draw.rect(0, 0, 320, 160, Fill.Solid)
+      Draw.setColor(73, 60, 43, 255)
+      Draw.rect(0, 154, _cam.w, 64, Fill.Solid)
       Draw.setColor(255, 255, 255, 255)
       Draw.image(_skirting, 0, 142, 320, 12)
 
@@ -215,18 +217,16 @@ class Game {
    drawGrass() {
       var grassStart = 140
 
-      Draw.setColor(73, 60, 43, 255)
-      Draw.rect(0, grassStart + 16, _cam.w, 64, Fill.Solid)
-      Draw.setColor(255, 255, 255, 255)
-
       for (i in 0..4) {
-         // FIXME: this sucks
-         var x = -128 - (i * 2) + (-_cam.x / 12 % 16) * (i + 4)
+         // -32 : start offscreen so we don't have gaps on the left side
+         // -_cam.x : what drives the motion
+         // *(i+1) : further down rows move faster
+         // / 5 : slow down the movement
+         // + i*4 : offset initial position of rows so they don't ever all match up
+         // % 32 : sprite is 32 wide, wrap starting x from 0 to -32
+         var x = -32 + (-_cam.x * (i+1) / 5 + i*4) % 32
          while (x < _cam.w) {
-            if ( x <= -32) {
-               x = x + 32
-            }
-            var y = i * 8 + grassStart
+            var y = i * 6 + grassStart
             Draw.image(_shag, x, y, 32, 16, 1.0, 1.0, i % 2 == 0 ? 1 : 0)
 
             x = x + 32

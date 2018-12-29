@@ -499,44 +499,52 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 			break;
 
 		case RC_RESET_TRANSFORM:
+			rlglDraw();
 			data = RB_ResetTransform(data);
 			break;
 
 		case RC_SCALE:
+			rlglDraw();
 			data = RB_Scale(data);
 			break;
 
 		case RC_ROTATE:
+			rlglDraw();
 			data = RB_Rotate(data);
 			break;
 
 		case RC_TRANSLATE:
+			rlglDraw();
 			data = RB_Translate(data);
 			break;
 
 		case RC_SET_SCISSOR:
+			rlglDraw();
 			data = RB_SetScissor(data);
 			break;
 
 		case RC_USE_CANVAS:
+			rlglDraw();
 			data = RB_UseCanvas(data);
 			break;
 
 		case RC_RESET_CANVAS:
+			rlglDraw();
 			data = RB_ResetCanvas(data);
 			break;
 
 		case RC_USE_SHADER:
+			rlglDraw();
 			data = RB_UseShader(data);
 			break;
 
 		case RC_RESET_SHADER:
+			rlglDraw();
 			data = RB_ResetShader(data);
 			break;
 
 		case RC_DRAW_RECT:
 			data = RB_DrawRect(data);
-			rlglDraw();
 			break;
 
 		case RC_SET_TEXT_STYLE:
@@ -549,27 +557,22 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 
 		case RC_DRAW_BMPTEXT:
 			data = RB_DrawBmpText(data);
-			rlglDraw();
 			break;
 
 		case RC_DRAW_IMAGE:
 			data = RB_DrawImage(data);
-			rlglDraw();
 			break;
 
 		case RC_DRAW_SPRITE:
 			data = RB_DrawSprite(data);
-			rlglDraw();
 			break;
 
 		case RC_DRAW_LINE:
 			data = RB_DrawLine(data);
-			rlglDraw();
 			break;
 
 		case RC_DRAW_CIRCLE:
 			data = RB_DrawCircle(data);
-			rlglDraw();
 			break;
 
 		case RC_DRAW_TRI:

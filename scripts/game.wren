@@ -8,6 +8,7 @@ import "player" for Player
 import "mine" for Mine
 import "minetext" for MineText
 import "meter" for Meter
+import "levels" for Levels
 
 class Game {
    nextScene { _nextScene }
@@ -35,35 +36,9 @@ class Game {
       _generatedX = 0 // how far in the world we've generated level parts
 
       _modes = ["rain", "snow", "minefield", "ashes"]
-      _levels = [
-         {
-            "background": {
-               "color": [238, 182, 47, 255]
-            },
-            "generateMode": "minefield"
-         },
-         {
-            "background": {
-               "color": [224, 111, 139, 255]
-            },
-            "generateMode": "snow"
-         },
-         {
-            "background": {
-               "color": [178, 220, 239, 255]
-            },
-            "generateMode": "rain"
-         },
-         {
-            "background": {
-               "color": [218, 66, 0, 255]
-            },
-            "generateMode": "ashes"
-         },
-      ]
       _level = level || 0
       _levelLength = 512 + (_level * 64)
-      _generateMode = _levels[_level]["generateMode"]
+      _generateMode = Levels.Levels[_level]["generateMode"]
 
       // rain generator
       _nextRainTick = 0
@@ -146,7 +121,7 @@ class Game {
       }
       */
       if (_player.x < -_levelLength) {
-         if (_level == _levels.count - 1) {
+         if (_level == Levels.Levels.count - 1) {
             nextScene = "ending"
          } else {
             nextScene = ["levelending", _level + 1]
@@ -194,7 +169,7 @@ class Game {
       Draw.scale(h / _cam.h)
 
       // background
-      var level = _levels[_level]
+      var level = Levels.Levels[_level]
       Draw.setColor(level["background"]["color"])
       Draw.rect(0, 0, 320, 160, Fill.Solid)
       Draw.setColor(73, 60, 43, 255)

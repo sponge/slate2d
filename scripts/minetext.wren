@@ -10,7 +10,7 @@ class MineText is Entity {
       _y = y
 
       _font = Asset.create(Asset.BitmapFont, "font", "gfx/font.png")
-      Asset.bmpfntSet(_font, "abcdefghijklmnopqrstuvwxyz!?'", 0, 1, 2, 5)
+      Asset.bmpfntSet(_font, "abcdefghijklmnopqrstuvwxyz!?'$1234567890", 0, 1, 2, 5)
       Asset.loadAll()
 
       _bright = true
@@ -30,7 +30,7 @@ class MineText is Entity {
 
    draw() {
       // outline
-      Draw.setColor(73, 60, 43, 255)
+      Draw.setColor(27, 38, 50, 255)
       Draw.bmpText(_font, _x, _y + 1, _text)
       Draw.bmpText(_font, _x, _y - 1, _text)
       Draw.bmpText(_font, _x + 1, _y, _text)
@@ -77,6 +77,10 @@ class MineText is Entity {
       {
          "name": "The Wall",
          "sentences": ["the wall"],
+      },
+      {
+         "name": "MLM",
+         "sentences": ["it's only $2000 for the starter kit!"],
       },
    ]}
 }

@@ -8,13 +8,16 @@ class Mine is Entity {
       super(world, obj, x, y, 10, 10)
 
       _icons = obj["sprite"]
+      _iconbg = Asset.create(Asset.Image, "iconbg", "gfx/icon-background.png")
 
-      var iconCount = 8
+      var iconCount = 9
       _spr = world.rnd.int(iconCount)
 
       _dx = dx
       _dy = dy
       _t = 0
+
+      Asset.loadAll()
    }
    
    think(dt) {
@@ -31,6 +34,7 @@ class Mine is Entity {
    }
 
    draw() {
+      Draw.image(_iconbg, x-4, y-4)
       Draw.sprite(_icons, _spr, x-3, y-3, 1.0, 1.0, 0, 1, 1)
    }
 

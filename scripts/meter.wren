@@ -1,4 +1,4 @@
-import "engine" for Asset, Draw
+import "engine" for Asset, Draw, Fill
 import "math" for Math
 import "entity" for Entity
 import "engine" for Trap
@@ -12,6 +12,7 @@ class Meter {
       _t = 0
       _adjust = 0
       Asset.loadAll()
+      _meterMin = 14
    }
 
    think(dt) {
@@ -21,11 +22,16 @@ class Meter {
    }
 
    set(val) {
-      _xTarget = (1 - val / 100) * 288 + 16
+      _xTarget = (1 - val / 100) * 288 + _meterMin
    }
 
    draw() {
+      var x = Math.clamp(_meterMin, _x + _adjust, _meterMin + 288)
       Draw.image(_meter, 16, 152)
-      Draw.image(_arrow, _x +_adjust, 172)
+      Draw.image(_arrow, x, 171)
+
+      Draw.setColor(0, 0, 0, 150)
+      Draw.rect(x + 3, 162, 2, 9, Fill.Solid)
+      Draw.setColor(255, 255, 255, 255)
    }
 }

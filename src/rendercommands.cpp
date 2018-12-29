@@ -359,7 +359,7 @@ const void *RB_DrawCircle(const void *data) {
 	rlEnableTexture(GetTextureDefault().id);
 
 	if (cmd->outline) {
-		if (rlCheckBufferLimit(RL_LINES, 2 * 36)) {
+		if (rlCheckBufferLimit(2 * 36)) {
 			rlglDraw();
 		}
 
@@ -375,7 +375,7 @@ const void *RB_DrawCircle(const void *data) {
 		rlEnd();
 	}
 	else {
-		if (rlCheckBufferLimit(RL_QUADS, 4 * (36 / 2))) {
+		if (rlCheckBufferLimit(4 * (36 / 2))) {
 			rlglDraw();
 		}
 

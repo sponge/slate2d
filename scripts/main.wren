@@ -8,6 +8,7 @@ import "game" for Game
 import "cutscene" for Cutscene
 import "gameover" for GameOver
 import "levelending" for LevelEnding
+import "ending" for Ending
 
 class Main {
    static scene { __scene }
@@ -21,7 +22,8 @@ class Main {
          "game": Game,
          "cutscene": Cutscene,
          "gameover": GameOver,
-         "levelending": LevelEnding
+         "levelending": LevelEnding,
+         "ending": Ending,
       }
 
       __defaultScene = "game"

@@ -17,7 +17,7 @@ class MineText is Entity {
    }
 
    think(dt) {
-      _y = _y - (dt)
+      _y = _y - dt
 
       if (_y < -16) {
          die()
@@ -29,6 +29,13 @@ class MineText is Entity {
    }
 
    draw() {
+      // outline
+      Draw.setColor(73, 60, 43, 255)
+      Draw.bmpText(_font, _x, _y + 1, _text)
+      Draw.bmpText(_font, _x, _y - 1, _text)
+      Draw.bmpText(_font, _x + 1, _y, _text)
+      Draw.bmpText(_font, _x - 1, _y, _text)
+
       if (_bright) {
          Draw.setColor(247, 226, 107, 255)
       } else {

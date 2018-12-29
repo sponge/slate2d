@@ -61,7 +61,7 @@ class Game {
             "generateMode": "ashes"
          },
       ]
-      _level = level || 1
+      _level = level || 0
       _levelLength = 512 + (_level * 64)
       _generateMode = _levels[_level]["generateMode"]
 
@@ -146,7 +146,11 @@ class Game {
       }
       */
       if (_player.x < -_levelLength) {
-         nextScene = ["levelending", _level + 1]
+         if (_level == _levels.count - 1) {
+            nextScene = "ending"
+         } else {
+            nextScene = ["levelending", _level + 1]
+         }
       }
 
       // run the level generator tick

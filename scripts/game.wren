@@ -18,7 +18,7 @@ class Game {
    rnd { _rnd }
    meter { _meter }
 
-   construct new(params) {
+   construct new(level) {
       _icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
       Asset.spriteSet(_icons, 16, 16, 0, 0)
 
@@ -34,9 +34,36 @@ class Game {
       _entities = [_player]
       _generatedX = 0 // how far in the world we've generated level parts
 
-      _modes = ["rain", "show", "minefield", "ashes"]
-
-      _generateMode = null
+      _modes = ["rain", "snow", "minefield", "ashes"]
+      _levels = [
+         {
+            "background": {
+               "color": [238, 182, 47, 255]
+            },
+            "generateMode": "minefield"
+         },
+         {
+            "background": {
+               "color": [224, 111, 139, 255]
+            },
+            "generateMode": "snow"
+         },
+         {
+            "background": {
+               "color": [178, 220, 239, 255]
+            },
+            "generateMode": "rain"
+         },
+         {
+            "background": {
+               "color": [218, 66, 0, 255]
+            },
+            "generateMode": "ashes"
+         },
+      ]
+      _level = level || 1
+      _levelLength = 512 + (_level * 64)
+      _generateMode = _levels[_level]["generateMode"]
 
       // rain generator
       _nextRainTick = 0
@@ -51,6 +78,10 @@ class Game {
 
       if (cx <= _generatedX) {
          _generatedX = cx - _cam.w * 1.25
+      }
+
+      if (cx < -_levelLength) {
+         return
       }
 
       if (_t < _nextRainTick) {
@@ -91,7 +122,7 @@ class Game {
       var x = cx
       // generate a random chance of an obstacle in every 24px grid
       while (y < _cam.h) {
-         while (x > _generatedX) {
+         while (x > _generatedX && x > -_levelLength) {
             if (_rnd.int(5) == 0) {
                var mine = Mine.new(this, {"sprite": _icons}, x + _rnd.int(8), y + _rnd.int(8), 0, 0)
                _entities.add(mine)
@@ -107,10 +138,15 @@ class Game {
       _t = _t + dt
 
       // if we've past the point where we need to switch, pick a new random section
+      /*
       var cx = _cam.toWorld(0,0)[0]
       if (cx <= _generatedX) {
          // hardcode first phase to minefield
          _generateMode = _generateMode == null ? "minefield" : _rnd.sample(_modes)
+      }
+      */
+      if (_player.x < -_levelLength) {
+         nextScene = ["levelending", _level + 1]
       }
 
       // run the level generator tick
@@ -153,7 +189,9 @@ class Game {
       Draw.resetTransform()
       Draw.scale(h / _cam.h)
 
-      Draw.setColor(238, 182, 47, 255)
+      // background
+      var level = _levels[_level]
+      Draw.setColor(level["background"]["color"])
       Draw.rect(0, 0, 320, 160, Fill.Solid)
       Draw.setColor(255, 255, 255, 255)
       Draw.image(_skirting, 0, 142, 320, 12)

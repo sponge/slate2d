@@ -1,6 +1,7 @@
 import "engine" for Draw, Asset, Trap, Button, Fill
 import "math" for Math
 import "entity" for Entity
+import "random" for Random
 
 class Mine is Entity {
    spr { _spr }
@@ -12,6 +13,7 @@ class Mine is Entity {
 
       var iconCount = 9
       _spr = world.rnd.int(iconCount)
+      _flip = Random.new().int(0, 2) == 0
 
       _dx = dx
       _dy = dy
@@ -34,7 +36,11 @@ class Mine is Entity {
    }
 
    draw() {
-      Draw.image(_iconbg, x-4, y-4)
+      if (_flip) {
+         Draw.image(_iconbg, x-4, y-4, 0, 0, 1.0, 1.0, 1)
+      } else {
+         Draw.image(_iconbg, x-6, y-4)
+      }
       Draw.sprite(_icons, _spr, x-3, y-3, 1.0, 1.0, 0, 1, 1)
    }
 

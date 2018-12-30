@@ -10,7 +10,7 @@ class LevelEnding {
       _bigFont = Asset.create(Asset.BitmapFont, "sneakattack", "gfx/sneak-attack-bitmap.png")
       Asset.bmpfntSet(_bigFont, "abcdefghijklmnopqrstuvwxyz'!?", 0, 1, 2, 5)
 
-      _level = Levels.Levels[nextLevel - 1]
+      _level = Levels.Levels[(nextLevel || 1) - 1]
       _spr = Asset.create(Asset.Sprite, "levelending", "gfx/" + _level["sprite"] + ".png")
       Asset.spriteSet(_spr, 16, 48, 0, 0)
 
@@ -34,10 +34,10 @@ class LevelEnding {
       Draw.resetTransform()
       Draw.scale(h / 180)
 
-      var y = 32
-      Draw.sprite(_spr, 0, 320/2 - 8, y)
+      var y = 8
+      Draw.sprite(_spr, 0, 320/2 - 16, y, 1.0, 2.0)
 
-      y = y + 72
+      y = y + 108
       for (line in _level["endingText"]) {
          drawCenteredText(_bigFont, 320/2, y, line)
          y = y + 12

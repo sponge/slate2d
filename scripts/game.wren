@@ -21,6 +21,7 @@ class Game {
    rnd { _rnd }
    meter { _meter }
    canWin { _canWin }
+   level { _level }
 
    construct new(level) {
       var icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")

@@ -5,21 +5,23 @@ class GameOver {
    nextScene { _nextScene }
    nextScene=(params) { _nextScene = params }
 
-   construct new(params) {
+   construct new(level) {
       _font = Asset.create(Asset.BitmapFont, "font", "gfx/font.png")
       Asset.bmpfntSet(_font, "abcdefghijklmnopqrstuvwxyz!?'", 0, 1, 2, 5)
 
       _bigFont = Asset.create(Asset.BitmapFont, "sneakattack", "gfx/sneak-attack-bitmap.png")
       Asset.bmpfntSet(_bigFont, "abcdefghijklmnopqrstuvwxyz'", 0, 1, 2, 5)
 
-      _uncle = Asset.create(Asset.Sprite, "uncle", "gfx/uncle.png")
-      Asset.spriteSet(_uncle, 16, 48, 0, 0)
+      _spr = Asset.create(Asset.Sprite, "gameover", "gfx/%(level["sprite"]).png")
+      Asset.spriteSet(_spr, 16, 48, 0, 0)
 
       _icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
       _iconCount = 15
       Asset.spriteSet(_icons, 16, 16, 0, 0)
 
       _bubble = Asset.create(Asset.Image, "bubble", "gfx/bubble.png")
+
+      _level = level
 
       Asset.loadAll()
 
@@ -58,7 +60,7 @@ class GameOver {
       Draw.resetTransform()
       Draw.scale(h / 180)
 
-      Draw.sprite(_uncle, 1, 320/2 - 8, 52)
+      Draw.sprite(_spr, 1, 320/2 - 8, 52)
       var i = 0
       var step = Num.pi / (_bubbleCount - 1)
       for (i in 0..._bubbleCount) {
@@ -71,7 +73,8 @@ class GameOver {
       }
 
       var y = 112
-      drawCenteredText(_font, 320/2, y, "oh no! uncle tony is yelling!", false, 1.0)
+      var name = _level["spriteName"]
+      drawCenteredText(_font, 320/2, y, "oh no! %(name) is yelling!", false, 1.0)
       drawCenteredText(_font, 320/2, y + 12, "better luck next year!", false, 1.0)
       drawCenteredText(_bigFont, 320/2, y + 34, "game over", true, 2.0)
    }

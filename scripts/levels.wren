@@ -7,6 +7,7 @@ class Levels {
          },
          "generateMode": "minefield",
          "sprite": "aunt",
+         "spriteName": "aunt deborah",
          "endingText": ["you survived the conversation", "with aunt deborah!"],
          "nextlevel": ["levelending", 1],
          "help": true
@@ -18,6 +19,7 @@ class Levels {
          },
          "generateMode": "snow",
          "sprite": "cousin",
+         "spriteName": "cousin touglas",
          "endingText": ["you survived the conversation", "with cousin touglas!"],
          "nextlevel": ["levelending", 2],
       },
@@ -28,6 +30,7 @@ class Levels {
          },
          "generateMode": "rain",
          "sprite": "uncle",
+         "spriteName": "uncle tony",
          "endingText": ["you survived the conversation", "with uncle tony!"],
          "nextlevel": ["levelending", 3],
       },

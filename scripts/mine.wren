@@ -7,9 +7,10 @@ class Mine is Entity {
    spr { _spr }
    construct new (world, obj, x, y, dx, dy) {
       super(world, obj, x, y, 10, 10)
+      name = "mine"
 
-      _icons = obj["sprite"]
-      _iconbg = Asset.create(Asset.Image, "iconbg", "gfx/icon-background.png")
+      _icons = Asset.find("icons")
+      _iconbg = Asset.find("iconbg")
 
       var iconCount = 9
       _spr = world.rnd.int(iconCount)
@@ -18,8 +19,6 @@ class Mine is Entity {
       _dx = dx
       _dy = dy
       _t = 0
-
-      Asset.loadAll()
    }
    
    think(dt) {

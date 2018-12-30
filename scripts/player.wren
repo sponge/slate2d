@@ -19,6 +19,7 @@ class Player is Entity {
       _health = 100
       _invuln = false
       _launched = false
+      _flap = false
 
       _flapStrength = 0.4
       _maxFallSpeed = 0.75
@@ -27,14 +28,15 @@ class Player is Entity {
       _maxMoveSpeed = 1.0
       _gravity = 0.02
       _moveDecay = 0.003
-      _invulnTime = 180
-      _regenRate = 50
+      _invulnTime = 120
+      _regenRate = 80
+      _collectibleHeal = 14
    }
 
    think(dt) {
       _t = _t + dt
 
-      var aPressed = Trap.keyPressed(Button.A)
+      _flap = Trap.keyPressed(Button.A) || Trap.keyPressed(Button.B)
       var lPressed = Trap.keyPressed(Button.Left)
       var rPressed = Trap.keyPressed(Button.Right)
 
@@ -44,12 +46,12 @@ class Player is Entity {
       }
 
       // if the flap key is down for the first time
-      if (aPressed && !_flapPressed) {
+      if (_flap && !_flapHeld) {
          // detach the player from the starting platform if necessary
          _launched = true
          // give the player a bump
          dy = dy - _flapStrength
-         _flapPressed = true
+         _flapHeld = true
 
          // only move the player when flapping
          if (lPressed || rPressed) {
@@ -61,8 +63,8 @@ class Player is Entity {
             dy = dy + _gravity
          }
 
-         if (!aPressed) {
-            _flapPressed = false
+         if (!_flap) {
+            _flapHeld = false
          }
       }
 
@@ -90,7 +92,7 @@ class Player is Entity {
 
       // perform collision detection. we only care about intersections happening, nothing will block you
       _world.entities.each {|ent|
-         if (ent == this || ent.dead || _invuln == true || _launched == false) {
+         if (ent == this || ent.dead || _launched == false) {
             return
          }
 
@@ -98,19 +100,27 @@ class Player is Entity {
             return
          }
 
-         // if we've collided, destroy the ent we collided with and reduce health by 1
-         _health = _health - 36
-         ent.die(true)
+         // we have a collision
 
-         if (_health <= 0) {
-            die()
-            return
+         // if it was a mine, hurt you
+         if (ent.name == "mine" && !_invuln) {
+            ent.die(true)
+            _health = _health - 36
+
+            if (_health <= 0) {
+               die()
+               return
+            }
+
+            _invuln = true
+            Timer.runLater(_invulnTime) {
+               _invuln = false
+            }
+         // if it was a collectible, heal you
+         } else if (ent.name == "collectible") {
+            ent.die(true)
+            _health = Math.clamp(0, _health + _collectibleHeal, 100)
          }
-
-         _invuln = true
-         Timer.runLater(_invulnTime) {
-            _invuln = false
-         } 
       }
 
       // regen 1 hp every _regenRate ticks
@@ -121,7 +131,7 @@ class Player is Entity {
    }
 
    draw() {
-      var spr = Trap.keyPressed(Button.A) ? 1 : 0
+      var spr = _flap ? 1 : 0
       Draw.sprite(_mouth, spr, x - 3, y - 3, _invuln ? 0.4 : 1.0, 1.0, _flip, 1, 1)
       if (!_launched) {
          Draw.rect(x-3, y+12, 16, 3, Fill.Solid)

@@ -11,7 +11,6 @@ class Meter {
       _xTarget = 16
       _t = 0
       _adjust = 0
-      Asset.loadAll()
       _meterMin = 14
    }
 

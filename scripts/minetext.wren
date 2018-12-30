@@ -9,9 +9,7 @@ class MineText is Entity {
       _x = x
       _y = y
 
-      _font = Asset.create(Asset.BitmapFont, "font", "gfx/font.png")
-      Asset.bmpfntSet(_font, "abcdefghijklmnopqrstuvwxyz!?'$1234567890", 0, 1, 2, 5)
-      Asset.loadAll()
+      _font = Asset.find("font")
 
       _bright = true
    }

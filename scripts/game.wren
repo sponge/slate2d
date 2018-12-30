@@ -9,6 +9,7 @@ import "mine" for Mine
 import "minetext" for MineText
 import "meter" for Meter
 import "levels" for Levels
+import "collectible" for Collectible
 
 class Game {
    nextScene { _nextScene }
@@ -20,11 +21,19 @@ class Game {
    meter { _meter }
 
    construct new(level) {
-      _icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
-      Asset.spriteSet(_icons, 16, 16, 0, 0)
+      var icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
+      Asset.spriteSet(icons, 16, 16, 0, 0)
 
       _shag = Asset.create(Asset.Image, "shag", "gfx/shag.png")
       _skirting = Asset.create(Asset.Image, "skirting", "gfx/skirting.png")
+
+      Asset.create(Asset.Image, "iconbg", "gfx/icon-background.png")
+
+      var collectible = Asset.create(Asset.Sprite, "collectible", "gfx/collectible.png")
+      Asset.spriteSet(collectible, 12, 12, 0, 0)
+
+      var font = Asset.create(Asset.BitmapFont, "font", "gfx/font.png")
+      Asset.bmpfntSet(font, "abcdefghijklmnopqrstuvwxyz!?'$1234567890", 0, 1, 2, 5)
 
       _meter = Meter.new()
       _cam = Camera.new(16, 16, 320, 180)
@@ -79,7 +88,7 @@ class Game {
          y = _cam.h
       }
 
-      var mine = Mine.new(this, {"sprite": _icons}, _rnd.int(cx - 64, cx+_cam.w), y, d[0], d[1])
+      var mine = Mine.new(this, {}, _rnd.int(cx - 64, cx+_cam.w), y, d[0], d[1])
       _entities.add(mine)
    }
 
@@ -90,22 +99,33 @@ class Game {
          return
       }
 
+      var lastCoin = [0, 0]
+
       // the new chunk will be a bit longer than the camera view so we don't pop in
       _generatedX = cx - _cam.w * 1.25
 
       var y = 0
       var x = cx
       // generate a random chance of an obstacle in every 24px grid
-      while (y < _cam.h) {
-         while (x > _generatedX && x > -_levelLength) {
-            if (_rnd.int(5) == 0) {
-               var mine = Mine.new(this, {"sprite": _icons}, x + _rnd.int(8), y + _rnd.int(8), 0, 0)
+      while (x > _generatedX && x > -_levelLength) {
+         while (y < _cam.h) {
+            var i = _rnd.int(100)
+            // 20% chance of a mine
+            if (i <= 20) {
+               var mine = Mine.new(this, {}, x + _rnd.int(8), y + _rnd.int(8), 0, 0)
                _entities.add(mine)
+            // 15% chance of a collectible as long as it's spaced out enough
+            } else if (i <= 35) {
+               if ((lastCoin[0] - x).abs > 24 && (lastCoin[1] - y).abs > 48) {
+                  var collectible = Collectible.new(this, {}, x + _rnd.int(8), y + _rnd.int(8))
+                  _entities.add(collectible)
+                  lastCoin = [x, y]
+               }
             }
-            x = x - 24
+            y = y + 24
          }
-         y = y + 24
-         x = cx
+         x = x - 24
+         y = 0
       }
    }
 
@@ -159,8 +179,12 @@ class Game {
       _meter.think(dt)
    }
 
-   onMineHit(mine) {
-      _uiEntities.add(MineText.new(mine.spr, 140, 160))
+   onMineHit(ent) {
+      _uiEntities.add(MineText.new(ent.spr, 140, 160))
+   }
+
+   onCollectibleHit(ent) {
+
    }
 
    draw(w, h) {

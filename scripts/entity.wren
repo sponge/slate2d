@@ -1,5 +1,6 @@
 class Entity {
    name { _name }
+   name=(name) { _name=name }
    dead { _dead }
    x { _x }
    x=(x) { _x = x }

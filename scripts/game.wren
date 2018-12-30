@@ -20,6 +20,7 @@ class Game {
    cam { _cam }
    rnd { _rnd }
    meter { _meter }
+   canWin { _canWin }
 
    construct new(level) {
       var icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
@@ -46,6 +47,7 @@ class Game {
       _generatedX = 0 // how far in the world we've generated level parts
       _itemsToWin = 5
       _totalItems = 0
+      _canWin = false
 
       if (level == "endless") {
          _endless = true
@@ -63,6 +65,7 @@ class Game {
          _bg = Asset.create(Asset.Sprite, bgSprite, "gfx/" + bgSprite + ".png")
          Asset.spriteSet(_bg, _level["background"]["spriteWidth"] || 32, 48, 0, 0)
          _bgMad = false
+         _arrow = Asset.create(Asset.Image, "arrow", "gfx/arrow.png")
       }
 
       // rain generator
@@ -159,6 +162,10 @@ class Game {
          }
       // collected all the items, next level
       } else if (_itemsToWin <= 0) {
+         _canWin = true
+      }
+
+      if (_canWin && _player.y < -16) {
          nextScene = _level["nextlevel"]
          return
       }
@@ -235,6 +242,16 @@ class Game {
       Draw.translate(_cam.x, _cam.y)
       for (ent in _uiEntities) {
          ent.draw()
+      }
+
+      if (_canWin) {
+         var y = (_t / 4).sin
+         Draw.image(_arrow, 320/4, y + 2)
+         Draw.bmpText(_font, 320/4 - 4, y + 12, "exit")
+         Draw.image(_arrow, 320/4 * 2, y + 2)
+         Draw.bmpText(_font, 320/4 * 2 - 4, y + 12, "exit")
+         Draw.image(_arrow, 320/4 * 3, y + 2)
+         Draw.bmpText(_font, 320/4 * 3 - 4, y + 12, "exit")
       }
 
       _meter.draw()

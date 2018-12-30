@@ -77,7 +77,8 @@ class Player is Entity {
 
       // do the move
       x = Math.max(_world.cam.x + 5, x + dx)
-      y = Math.max(5, y + dy)
+      var yMin = _world.canWin ? -32 : 5
+      y = Math.max(yMin, y + dy)
 
       // if they've fallen off the screen, game over
       if (y >= _world.cam.h + 5) {

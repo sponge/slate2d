@@ -37,6 +37,12 @@ class Game {
       _font = Asset.create(Asset.BitmapFont, "font", "gfx/font.png")
       Asset.bmpfntSet(_font, "abcdefghijklmnopqrstuvwxyz!?'$1234567890", 0, 1, 2, 5)
 
+      _arrows = Asset.create(Asset.Image, "arrows", "gfx/arrows.png")
+      _zx = Asset.create(Asset.Image, "zx", "gfx/zx.png")
+
+      _dpad = Asset.create(Asset.Image, "dpad", "gfx/arrows-gamepad.png")
+      _padButtons = Asset.create(Asset.Image, "dpadbuttons", "gfx/zx-gamepad.png")
+
       _meter = Meter.new()
       _cam = Camera.new(16, 16, 320, 180)
       _rnd = Random.new()
@@ -211,7 +217,7 @@ class Game {
    }
 
    onCollectibleHit(ent) {
-      _itemsToWin = _itemsToWin - 1
+      _itemsToWin = Math.max(0, _itemsToWin - 1)
       _totalItems = _totalItems + 1
    }
 
@@ -245,18 +251,33 @@ class Game {
       }
 
       if (_canWin) {
-         var y = (_t / 4).sin
-         Draw.image(_arrow, 320/4, y + 2)
-         Draw.bmpText(_font, 320/4 - 4, y + 12, "exit")
-         Draw.image(_arrow, 320/4 * 2, y + 2)
-         Draw.bmpText(_font, 320/4 * 2 - 4, y + 12, "exit")
-         Draw.image(_arrow, 320/4 * 3, y + 2)
-         Draw.bmpText(_font, 320/4 * 3 - 4, y + 12, "exit")
+         drawExit()
       }
 
+      drawStatus()
+
+      if (!_endless && !_player.launched && _level["help"] == true) {
+         drawHelp()
+      }
+
+   }
+
+   drawExit() {
+      // draw arrows pointing to exit if you can win
+      var y = (_t / 4).sin
+      Draw.image(_arrow, 320/4, y + 2)
+      Draw.bmpText(_font, 320/4 - 4, y + 12, "exit")
+      Draw.image(_arrow, 320/4 * 2, y + 2)
+      Draw.bmpText(_font, 320/4 * 2 - 4, y + 12, "exit")
+      Draw.image(_arrow, 320/4 * 3, y + 2)
+      Draw.bmpText(_font, 320/4 * 3 - 4, y + 12, "exit")
+   }
+
+   drawStatus() {
       _meter.draw()
 
       // this is bad but GAME JAM CODE!
+      // draw collectibles status
       var collectX = 222
       Draw.sprite(_collectible, 0, collectX, 148)
 
@@ -265,8 +286,10 @@ class Game {
       var msgY
       if (_endless) {
          msg = "%(_totalItems) dodged topics!"
-      } else {
+      } else if (_itemsToWin != 0) {
          msg = "%(_itemsToWin) more to escape!"
+      } else {
+         msg = "get out of there!"
       }
 
       msgX = collectX + 13
@@ -281,6 +304,26 @@ class Game {
       Draw.setColor(247, 226, 107, 255)
       Draw.bmpText(_font, msgX, msgY, msg)
       Draw.setColor(255, 255, 255, 255)
+   }
+
+   drawHelp() {
+      var x = 180
+      var y = 70
+      Draw.setColor(0, 0, 0, 200)
+      Draw.rect(x, y, 90, 60, Fill.Solid)
+      Draw.setColor(255, 255, 255, 255)
+
+      x = x + 5
+      y = y + 5
+
+      Draw.image(_zx, x, y)
+      Draw.image(_padButtons, x, y + 20)
+      Draw.bmpText(_font, x + 8, y + 40, "flap")
+
+      Draw.image(_arrows, x + 48, y)
+      Draw.image(_dpad, x + 48, y + 20)
+      Draw.bmpText(_font, x + 55, y + 40, "move")
+
    }
 
    drawBg() {

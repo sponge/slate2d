@@ -9,6 +9,7 @@ class Levels {
          "sprite": "aunt",
          "endingText": ["you survived the conversation", "with aunt deborah!"],
          "nextlevel": ["levelending", 1],
+         "help": true
       },
       {
          "background": {

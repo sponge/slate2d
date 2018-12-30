@@ -11,13 +11,27 @@ class Help {
       _arrows = Asset.create(Asset.Image, "arrows", "gfx/arrows.png")
       _zx = Asset.create(Asset.Image, "zx", "gfx/zx.png")
 
+      _dpad = Asset.create(Asset.Image, "dpad", "gfx/arrows-gamepad.png")
+      _padButtons = Asset.create(Asset.Image, "dpadbuttons", "gfx/zx-gamepad.png")
+
       Asset.loadAll()
 
       _credits = [
          ["engine, programming", "sponge"],
          ["programming, art", "alligator"],
       ]
-      _story = "oh no it's christmas day at aunt deborah and\nuncle tony's house!\n\navoid the minefield of controverisial\nconversation topics and make your way\nthrough the day without anyone yelling!"
+      _story = "oh no it's christmas day at aunt deborah and
+uncle tony's house!
+      
+avoid the minefield of controversial
+conversation topics and try not to get anyone
+into a full on rant!
+
+collect blue conversation bubbles to make
+enough smalltalk, until you can escape by
+flying out of the room.
+
+can you make it past christmas dinner?"
       _t = 0
       _canReturn = false
    }
@@ -48,18 +62,21 @@ class Help {
    }
 
    drawControls(x, y) {
-      drawBox("controls", x, y, 92, 42)
+      drawBox("controls", x, y, 92, 60)
       x = x + 6
       y = y + 10 
       Draw.image(_zx, x, y)
-      Draw.bmpText(_font, x + 8, y + 20, "flap")
+      Draw.image(_padButtons, x, y + 20)
+      Draw.bmpText(_font, x + 8, y + 40, "flap")
 
       Draw.image(_arrows, x + 48, y)
-      Draw.bmpText(_font, x + 55, y + 20, "move")
+      Draw.image(_dpad, x + 48, y + 20)
+      Draw.bmpText(_font, x + 55, y + 40, "move")
+
    }
 
    drawCredits(x, y) {
-      drawBox("credits", x, y, 92, 106)
+      drawBox("credits", x, y, 92, 86)
 
       var currentY = y + 8
       for (credit in _credits) {
@@ -84,11 +101,11 @@ class Help {
 
       drawStory(10, 6)
       drawControls(220, 6)
-      drawCredits(220, 54)
+      drawCredits(220, 74)
 
       var tw = Asset.measureBmpText(_font, "press enter to return")
       if (_t % 64 < 32) {
-         Draw.bmpText(_font, 320/2 - tw/2, 166, "press enter to returm")
+         Draw.bmpText(_font, 320/2 - tw/2, 166, "press enter to return")
       }
    }
 

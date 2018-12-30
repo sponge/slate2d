@@ -16,7 +16,7 @@ class GameOver {
       Asset.spriteSet(_uncle, 16, 48, 0, 0)
 
       _icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
-      _iconCount = 8
+      _iconCount = 15
       Asset.spriteSet(_icons, 16, 16, 0, 0)
 
       _bubble = Asset.create(Asset.Image, "bubble", "gfx/bubble.png")

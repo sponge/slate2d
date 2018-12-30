@@ -12,7 +12,7 @@ class Mine is Entity {
       _icons = Asset.find("icons")
       _iconbg = Asset.find("iconbg")
 
-      var iconCount = 9
+      var iconCount = 15
       _spr = world.rnd.int(iconCount)
       _flip = Random.new().int(0, 2) == 0
 

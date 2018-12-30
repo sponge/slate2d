@@ -18,7 +18,7 @@ class Cutscene {
 
       _icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
       Asset.spriteSet(_icons, 16, 16, 0, 0)
-      _iconCount = 8
+      _iconCount = 15
 
       _bubble = Asset.create(Asset.Image, "bubble", "gfx/bubble.png")
 

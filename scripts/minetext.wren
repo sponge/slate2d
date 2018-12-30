@@ -80,5 +80,29 @@ class MineText is Entity {
          "name": "MLM",
          "sentences": ["hashtag be your own boss", "it's only $2000 for the starter kit!", "come to my beauty party!"],
       },
+      {
+         "name": "religion",
+         "sentences": []
+      },
+      {
+         "name": "university",
+         "sentences": ["i went to the university of life!!", "you paid that loan off yet?"]
+      },
+      {
+         "name": "work",
+         "sentences": ["you got a job yet?", "work for me! $2.50 an hour!"]
+      },
+      {
+         "name": "phone",
+         "sentences": ["how come you never call?"]
+      },
+      {
+         "name": "socialmedia",
+         "sentences": ["why didn't you accept my friend request?", "come watch this video it's soo funny!"]
+      },
+      {
+         "name": "photoalbum",
+         "sentences": ["who wants to see holiday photos!!", "let's look at old family photos!"],
+      }
    ]}
 }

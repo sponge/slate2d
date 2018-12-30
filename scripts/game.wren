@@ -51,7 +51,7 @@ class Game {
 
       var bgSprite = _level["background"]["sprite"]
       _bg = Asset.create(Asset.Sprite, bgSprite, "gfx/" + bgSprite + ".png")
-      Asset.spriteSet(_bg, 32, 48, 0, 0)
+      Asset.spriteSet(_bg, _level["background"]["spriteWidth"] || 32, 48, 0, 0)
       _bgMad = false
 
       // rain generator
@@ -243,7 +243,7 @@ class Game {
       if (_bgMad) {
          frame = 2
       } else {
-         frame = _t % 32 < 16 ? 1 : 0
+         frame = _t % 48 < 24 ? 1 : 0
       }
 
       Draw.sprite(_bg, frame, x, 64, 1.0, 2.0)

@@ -38,10 +38,11 @@ class LevelEnding {
       Draw.sprite(_spr, 0, 320/2 - 8, y)
 
       y = y + 72
-      drawCenteredText(_bigFont, 320/2, y, "you survived the conversation")
-      drawCenteredText(_bigFont, 320/2, y + 12, "with " + _level["spriteName"] + "!")
-
-      drawCenteredText(_bigFont, 320/2, y + 36, "well done!")
+      for (line in _level["endingText"]) {
+         drawCenteredText(_bigFont, 320/2, y, line)
+         y = y + 12
+      }
+      drawCenteredText(_bigFont, 320/2, y + 12, "well done!")
    }
 
    shutdown() {

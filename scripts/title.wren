@@ -38,7 +38,7 @@ class Title {
          },
 
          Fn.new {
-
+            nextScene = "help"
          },
 
          Fn.new {

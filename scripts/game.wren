@@ -47,6 +47,7 @@ class Game {
       _itemsCollected = 0
 
       _level = Levels.Levels[level || 0]
+      // _level = Levels.Levels[1]
 
       var bgSprite = _level["background"]["sprite"]
       _bg = Asset.create(Asset.Sprite, bgSprite, "gfx/" + bgSprite + ".png")
@@ -65,7 +66,16 @@ class Game {
       var cx = _cam.toWorld(0,0)[0]
 
       if (cx <= _generatedX) {
-         _generatedX = cx - _cam.w * 1.25
+         var sectionWidth = _cam.w * 1.25
+         _generatedX = cx - sectionWidth
+         var coinStart = cx
+         Trap.printLn("%(coinStart) %(_generatedX)")
+         while (coinStart >= _generatedX) {
+            Trap.printLn("%(coinStart) gen coin")
+            var collectible = Collectible.new(this, {}, coinStart - _rnd.int(50), _rnd.int(8, 140))
+            _entities.add(collectible)
+            coinStart = coinStart - sectionWidth / 3
+         }
       }
 
       if (_t < _nextRainTick) {

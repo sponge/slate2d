@@ -3,7 +3,7 @@ class Levels {
       {
          "background": {
             "color": [247, 226, 107, 255],
-            "sprite": "aunt-bg",
+            "sprite": "aunt-bg"
          },
          "generateMode": "minefield",
          "sprite": "aunt",
@@ -12,7 +12,8 @@ class Levels {
       },
       {
          "background": {
-            "color": [224, 111, 139, 255]
+            "color": [224, 111, 139, 255],
+            "sprite": "aunt-bg"
          },
          "generateMode": "snow",
          "sprite": "uncle",
@@ -21,7 +22,8 @@ class Levels {
       },
       {
          "background": {
-            "color": [178, 220, 239, 255]
+            "color": [178, 220, 239, 255],
+            "sprite": "aunt-bg"
          },
          "generateMode": "rain",
          "sprite": "uncle",

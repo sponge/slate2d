@@ -46,39 +46,39 @@ class MineText is Entity {
    static Text {[
       {
          "name": "Brexit",
-         "sentences": ["nigel was right!!"],
+         "sentences": ["nigel was right!!", "hard brexit is the only brexit"],
       },
       {
          "name": "Money",
-         "sentences": ["i'll pay you back in january"],
+         "sentences": ["i'll pay you back in january", "hey you can help me out a bit right?"],
       },
       {
          "name": "Marriage",
-         "sentences": ["marriage"],
+         "sentences": ["so have you met anyone nice yet?", "when you gonna put a ring on it?"],
       },
       {
          "name": "Football",
-         "sentences": ["football"],
+         "sentences": ["football!!!", "we gotta watch the game!", "we gotta stay up until midnight to watch the game!"],
       },
       {
          "name": "Also Football",
-         "sentences": ["also football"],
+         "sentences": ["also football!!!", "we gotta watch the game!", "we gotta wake up at 6am to watch the game!"],
       },
       {
          "name": "Aliens",
-         "sentences": ["where you think velcro came from??"],
+         "sentences": ["where you think velcro came from??", "project blue beam is happening soon", "fuck nasa"],
       },
       {
          "name": "Ugly Baby",
-         "sentences": ["he's got his fathers unibrow"],
+         "sentences": ["he's got his fathers unibrow", "what an ugly baby", "when ya havin kids?"],
       },
       {
          "name": "The Wall",
-         "sentences": ["the wall"],
+         "sentences": ["we're gonna build that wall", "gotta bring those jobs back"],
       },
       {
          "name": "MLM",
-         "sentences": ["it's only $2000 for the starter kit!"],
+         "sentences": ["hashtag be your own boss", "it's only $2000 for the starter kit!", "come to my beauty party!"],
       },
    ]}
 }

@@ -35,7 +35,7 @@ class Ending {
       var winSize = Asset.imageSize(_win)
       Trap.printLn(winSize)
       for (i in 0...winSize[0]) {
-         var y = ((i - _t * 1.5) / 8).sin
+         var y = ((i - _t * 1.2) / 6).sin * 1.3
          Draw.setColor(247, 226, 107, 255)
          Draw.image(_win, 320/2 - winSize[0] + i * 2, y + 8, 1, 0, 1.0, 2.0, 0, i, 0)
          Draw.setColor(235, 137, 49, 255)

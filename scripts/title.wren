@@ -34,7 +34,7 @@ class Title {
          },
 
          Fn.new {
-
+            nextScene = ["game", "endless"]
          },
 
          Fn.new {

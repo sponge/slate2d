@@ -7,7 +7,8 @@ class Levels {
          },
          "generateMode": "minefield",
          "sprite": "aunt",
-         "spriteName": "aunt deborah"
+         "spriteName": "aunt deborah",
+         "nextlevel": ["levelending", 1],
       },
       {
          "background": {
@@ -15,7 +16,8 @@ class Levels {
          },
          "generateMode": "snow",
          "sprite": "uncle",
-         "spriteName": "uncle tony"
+         "spriteName": "uncle tony",
+         "nextlevel": ["levelending", 2],
       },
       {
          "background": {
@@ -23,7 +25,8 @@ class Levels {
          },
          "generateMode": "rain",
          "sprite": "uncle",
-         "spriteName": "uncle tony"
+         "spriteName": "uncle tony",
+         "nextlevel": ["levelending", 3],
       },
       {
          "background": {
@@ -32,7 +35,8 @@ class Levels {
          },
          "generateMode": "ashes",
          "sprite": "uncle",
-         "spriteName": "uncle tony"
+         "spriteName": "uncle tony",
+         "nextlevel": "ending",
       },
    ]}
 }

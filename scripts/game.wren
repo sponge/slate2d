@@ -44,13 +44,11 @@ class Game {
       _t = 0
       _entities = [_player]
       _generatedX = 0 // how far in the world we've generated level parts
+      _itemsCollected = 0
 
-      _modes = ["rain", "snow", "minefield", "ashes"]
-      _level = level || 0
-      _levelLength = 512 + (_level * 64)
-      _generateMode = Levels.Levels[_level]["generateMode"]
+      _level = Levels.Levels[level || 0]
 
-      var bgSprite = Levels.Levels[_level]["background"]["sprite"]
+      var bgSprite = _level["background"]["sprite"]
       _bg = Asset.create(Asset.Sprite, bgSprite, "gfx/" + bgSprite + ".png")
       Asset.spriteSet(_bg, 32, 48, 0, 0)
       _bgMad = false
@@ -68,10 +66,6 @@ class Game {
 
       if (cx <= _generatedX) {
          _generatedX = cx - _cam.w * 1.25
-      }
-
-      if (cx < -_levelLength) {
-         return
       }
 
       if (_t < _nextRainTick) {
@@ -113,7 +107,7 @@ class Game {
       var y = 0
       var x = cx
       // generate a random chance of an obstacle in every 24px grid
-      while (x > _generatedX && x > -_levelLength) {
+      while (x > _generatedX) {
          while (y < _cam.h) {
             var i = _rnd.int(100)
             // 20% chance of a mine
@@ -122,7 +116,7 @@ class Game {
                _entities.add(mine)
             // 15% chance of a collectible as long as it's spaced out enough
             } else if (i <= 35) {
-               if ((lastCoin[0] - x).abs > 24 && (lastCoin[1] - y).abs > 48) {
+               if ((lastCoin[0] - x).abs > 24 && (lastCoin[1] - y).abs > 48 && y < 150) {
                   var collectible = Collectible.new(this, {}, x + _rnd.int(8), y + _rnd.int(8))
                   _entities.add(collectible)
                   lastCoin = [x, y]
@@ -139,26 +133,30 @@ class Game {
       _t = _t + dt
 
       // if we've past the point where we need to switch, pick a new random section
-      /*
-      var cx = _cam.toWorld(0,0)[0]
-      if (cx <= _generatedX) {
-         // hardcode first phase to minefield
-         _generateMode = _generateMode == null ? "minefield" : _rnd.sample(_modes)
-      }
-      */
-      if (_player.x < -_levelLength) {
-         if (_level == Levels.Levels.count - 1) {
-            nextScene = "ending"
-         } else {
-            nextScene = ["levelending", _level + 1]
-         }
+      // var cx = _cam.toWorld(0,0)[0]
+      // if (cx <= _generatedX) {
+      //    // hardcode first phase to minefield
+      //    _generateMode = _generateMode == null ? "minefield" : _rnd.sample(_modes)
+      // }
+      // if (_player.x < -_levelLength) {
+      //    if (_level == Levels.Levels.count - 1) {
+      //       nextScene = "ending"
+      //    } else {
+      //       nextScene = ["levelending", _level + 1]
+      //    }
+      // }
+
+      if (_itemsCollected >= 3) {
+         nextScene = _level["nextlevel"]
+         return
       }
 
       // run the level generator tick
-      if (_generateMode == "minefield") {
+      var genMode = _level["generateMode"]
+      if (genMode == "minefield") {
          generateMinefield()
-      } else if (_generateMode == "rain" || _generateMode == "snow" || _generateMode == "ashes") {
-         generateRain(_generateMode)
+      } else if (genMode == "rain" || genMode == "snow" || genMode == "ashes") {
+         generateRain(genMode)
       }
 
       // if the player isn't on the starting platform, autoscroll the camera
@@ -194,7 +192,7 @@ class Game {
    }
 
    onCollectibleHit(ent) {
-
+      _itemsCollected = _itemsCollected + 1
    }
 
    draw(w, h) {
@@ -203,8 +201,7 @@ class Game {
       Draw.scale(h / _cam.h)
 
       // background
-      var level = Levels.Levels[_level]
-      Draw.setColor(level["background"]["color"])
+      Draw.setColor(_level["background"]["color"])
       Draw.rect(0, 0, 320, 160, Fill.Solid)
       Draw.setColor(73, 60, 43, 255)
       Draw.rect(0, 154, _cam.w, 64, Fill.Solid)

@@ -2,7 +2,8 @@ class Levels {
    static Levels {[
       {
          "background": {
-            "color": [238, 182, 47, 255]
+            "color": [238, 182, 47, 255],
+            "sprite": "uncle-recliner",
          },
          "generateMode": "minefield",
          "sprite": "aunt",

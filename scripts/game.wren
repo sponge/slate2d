@@ -3,6 +3,7 @@ import "random" for Random
 import "engine" for Draw, Asset, TileMap, Trap, Button, Fill
 import "math" for Math
 import "camera" for Camera
+import "timer" for Timer
 
 import "player" for Player
 import "mine" for Mine
@@ -48,6 +49,11 @@ class Game {
       _level = level || 0
       _levelLength = 512 + (_level * 64)
       _generateMode = Levels.Levels[_level]["generateMode"]
+
+      var bgSprite = Levels.Levels[_level]["background"]["sprite"]
+      _bg = Asset.create(Asset.Sprite, bgSprite, "gfx/" + bgSprite + ".png")
+      Asset.spriteSet(_bg, 32, 48, 0, 0)
+      _bgMad = false
 
       // rain generator
       _nextRainTick = 0
@@ -181,6 +187,10 @@ class Game {
 
    onMineHit(ent) {
       _uiEntities.add(MineText.new(ent.spr, 140, 160))
+      _bgMad = true
+      Timer.runLater(100) {
+         _bgMad = false
+      }
    }
 
    onCollectibleHit(ent) {
@@ -201,7 +211,9 @@ class Game {
       Draw.setColor(255, 255, 255, 255)
       Draw.image(_skirting, 0, 142, 320, 12)
 
-      drawGrass()
+      drawGrass([0])
+      drawBg()
+      drawGrass(1..4)
 
       Draw.translate(-_cam.x, -_cam.y)
 
@@ -217,10 +229,23 @@ class Game {
       _meter.draw()
    }
 
-   drawGrass() {
+   drawBg() {
+      var x = (-_cam.x / 5) + 10 
+
+      var frame = 0
+      if (_bgMad) {
+         frame = 2
+      } else {
+         frame = _t % 32 < 16 ? 1 : 0
+      }
+
+      Draw.sprite(_bg, frame, x, 64, 1.0, 2.0)
+   }
+
+   drawGrass(range) {
       var grassStart = 140
 
-      for (i in 0..4) {
+      for (i in range) {
          // -32 : start offscreen so we don't have gaps on the left side
          // -_cam.x : what drives the motion
          // *(i+1) : further down rows move faster

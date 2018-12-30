@@ -24,7 +24,7 @@ class Title {
       _items = [
          "start",
          "endless mode",
-         "controls",
+         "help",
          "quit"
       ]
 

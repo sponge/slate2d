@@ -30,11 +30,11 @@ class Game {
 
       Asset.create(Asset.Image, "iconbg", "gfx/icon-background.png")
 
-      var collectible = Asset.create(Asset.Sprite, "collectible", "gfx/collectible.png")
-      Asset.spriteSet(collectible, 12, 12, 0, 0)
+      _collectible = Asset.create(Asset.Sprite, "collectible", "gfx/collectible.png")
+      Asset.spriteSet(_collectible, 12, 12, 0, 0)
 
-      var font = Asset.create(Asset.BitmapFont, "font", "gfx/font.png")
-      Asset.bmpfntSet(font, "abcdefghijklmnopqrstuvwxyz!?'$1234567890", 0, 1, 2, 5)
+      _font = Asset.create(Asset.BitmapFont, "font", "gfx/font.png")
+      Asset.bmpfntSet(_font, "abcdefghijklmnopqrstuvwxyz!?'$1234567890", 0, 1, 2, 5)
 
       _meter = Meter.new()
       _cam = Camera.new(16, 16, 320, 180)
@@ -44,7 +44,7 @@ class Game {
       _t = 0
       _entities = [_player]
       _generatedX = 0 // how far in the world we've generated level parts
-      _itemsCollected = 0
+      _itemsToWin = 5
 
       _level = Levels.Levels[level || 0]
       // _level = Levels.Levels[1]
@@ -156,7 +156,7 @@ class Game {
       //    }
       // }
 
-      if (_itemsCollected >= 3) {
+      if (_itemsToWin <= 0) {
          nextScene = _level["nextlevel"]
          return
       }
@@ -202,7 +202,7 @@ class Game {
    }
 
    onCollectibleHit(ent) {
-      _itemsCollected = _itemsCollected + 1
+      _itemsToWin = _itemsToWin - 1
    }
 
    draw(w, h) {
@@ -233,7 +233,25 @@ class Game {
       for (ent in _uiEntities) {
          ent.draw()
       }
+
       _meter.draw()
+
+      // this is bad but GAME JAM CODE!
+      var collectX = 222
+      Draw.sprite(_collectible, 0, collectX, 148)
+      var msg = "%(_itemsToWin) more to escape!"
+      var msgX = collectX + 13
+      var msgY = 153
+
+      Draw.setColor(27, 38, 50, 255)
+      Draw.bmpText(_font, msgX+1, msgY, msg)
+      Draw.bmpText(_font, msgX-1, msgY, msg)
+      Draw.bmpText(_font, msgX, msgY-1, msg)
+      Draw.bmpText(_font, msgX, msgY+1, msg)
+
+      Draw.setColor(247, 226, 107, 255)
+      Draw.bmpText(_font, msgX, msgY, msg)
+      Draw.setColor(255, 255, 255, 255)
    }
 
    drawBg() {

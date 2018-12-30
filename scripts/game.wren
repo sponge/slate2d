@@ -45,14 +45,25 @@ class Game {
       _entities = [_player]
       _generatedX = 0 // how far in the world we've generated level parts
       _itemsToWin = 5
+      _totalItems = 0
 
-      _level = Levels.Levels[level || 0]
-      // _level = Levels.Levels[1]
+      if (level == "endless") {
+         _endless = true
+         _level = Levels.Levels[0]
+      } else {
+         _level = Levels.Levels[level || 0]
+         // _level = Levels.Levels[1]
+         _endless = false
+      }
 
-      var bgSprite = _level["background"]["sprite"]
-      _bg = Asset.create(Asset.Sprite, bgSprite, "gfx/" + bgSprite + ".png")
-      Asset.spriteSet(_bg, _level["background"]["spriteWidth"] || 32, 48, 0, 0)
-      _bgMad = false
+      if (_endless == true) {
+         _bg = null
+      } else {
+         var bgSprite = _level["background"]["sprite"]
+         _bg = Asset.create(Asset.Sprite, bgSprite, "gfx/" + bgSprite + ".png")
+         Asset.spriteSet(_bg, _level["background"]["spriteWidth"] || 32, 48, 0, 0)
+         _bgMad = false
+      }
 
       // rain generator
       _nextRainTick = 0
@@ -69,9 +80,7 @@ class Game {
          var sectionWidth = _cam.w * 1.25
          _generatedX = cx - sectionWidth
          var coinStart = cx
-         Trap.printLn("%(coinStart) %(_generatedX)")
          while (coinStart >= _generatedX) {
-            Trap.printLn("%(coinStart) gen coin")
             var collectible = Collectible.new(this, {}, coinStart - _rnd.int(50), _rnd.int(8, 140))
             _entities.add(collectible)
             coinStart = coinStart - sectionWidth / 3
@@ -142,21 +151,14 @@ class Game {
    update(dt) {
       _t = _t + dt
 
-      // if we've past the point where we need to switch, pick a new random section
-      // var cx = _cam.toWorld(0,0)[0]
-      // if (cx <= _generatedX) {
-      //    // hardcode first phase to minefield
-      //    _generateMode = _generateMode == null ? "minefield" : _rnd.sample(_modes)
-      // }
-      // if (_player.x < -_levelLength) {
-      //    if (_level == Levels.Levels.count - 1) {
-      //       nextScene = "ending"
-      //    } else {
-      //       nextScene = ["levelending", _level + 1]
-      //    }
-      // }
-
-      if (_itemsToWin <= 0) {
+      // select a new random level in endless if we've passed one
+      if (_endless) {
+         var cx = _cam.toWorld(0,0)[0]
+         if (cx <= _generatedX) {
+            _level = _rnd.sample(Levels.Levels)
+         }
+      // collected all the items, next level
+      } else if (_itemsToWin <= 0) {
          nextScene = _level["nextlevel"]
          return
       }
@@ -203,6 +205,7 @@ class Game {
 
    onCollectibleHit(ent) {
       _itemsToWin = _itemsToWin - 1
+      _totalItems = _totalItems + 1
    }
 
    draw(w, h) {
@@ -239,9 +242,18 @@ class Game {
       // this is bad but GAME JAM CODE!
       var collectX = 222
       Draw.sprite(_collectible, 0, collectX, 148)
-      var msg = "%(_itemsToWin) more to escape!"
-      var msgX = collectX + 13
-      var msgY = 153
+
+      var msg
+      var msgX
+      var msgY
+      if (_endless) {
+         msg = "%(_totalItems) dodged topics!"
+      } else {
+         msg = "%(_itemsToWin) more to escape!"
+      }
+
+      msgX = collectX + 13
+      msgY = 153
 
       Draw.setColor(27, 38, 50, 255)
       Draw.bmpText(_font, msgX+1, msgY, msg)
@@ -255,6 +267,10 @@ class Game {
    }
 
    drawBg() {
+      if (_endless) {
+         return
+      }
+      
       var x = (-_cam.x / 5) + 10 
 
       var frame = 0

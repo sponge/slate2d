@@ -42,7 +42,7 @@ class Levels {
          },
          "generateMode": "ashes",
          "sprite": "table",
-         "spriteName": "uncle tony",
+         "spriteName": "everyone",
          "nextlevel": "ending",
       },
    ]}

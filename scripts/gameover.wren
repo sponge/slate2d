@@ -8,6 +8,7 @@ class GameOver {
    construct new(params) {
       _level = params[0]
       _msg = "you couldn't utter %(params[1]) sentence%(params[1] == 1 ? "" : "s") before setting them off"
+      _spriteWidth = _level["background"]["spriteWidth"] || 16
       
       _font = Asset.create(Asset.BitmapFont, "font", "gfx/font.png")
       Asset.bmpfntSet(_font, "abcdefghijklmnopqrstuvwxyz!?'$1234567890", 0, 1, 2, 5)
@@ -16,7 +17,7 @@ class GameOver {
       Asset.bmpfntSet(_bigFont, "abcdefghijklmnopqrstuvwxyz'", 0, 1, 2, 5)
 
       _spr = Asset.create(Asset.Sprite, "gameover", "gfx/%(_level["sprite"]).png")
-      Asset.spriteSet(_spr, 16, 48, 0, 0)
+      Asset.spriteSet(_spr, _spriteWidth, 48, 0, 0)
 
       _icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
       _iconCount = 15
@@ -61,7 +62,7 @@ class GameOver {
       Draw.resetTransform()
       Draw.scale(h / 180)
 
-      Draw.sprite(_spr, 1, 320/2 - 8, 52)
+      Draw.sprite(_spr, 1, 320/2 - _spriteWidth/2, 52)
       var i = 0
       var step = Num.pi / (_bubbleCount - 1)
       for (i in 0..._bubbleCount) {

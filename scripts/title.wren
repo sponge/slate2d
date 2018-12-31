@@ -1,4 +1,5 @@
 import "engine" for Draw, Asset, TileMap, Trap, Button, Fill
+import "random" for Random
 import "math" for Math
 
 class Title {
@@ -15,7 +16,11 @@ class Title {
       Asset.spriteSet(_icons, 16, 16, 0, 0)
       _iconCount = 15
 
+      _logo = Asset.create(Asset.Image, "hotair", "gfx/hotair.png")
+
       Asset.loadAll()
+
+      _rnd = Random.new()
 
       _selectedItem = 0
       _currentIcon = 0
@@ -45,10 +50,25 @@ class Title {
             Trap.console("quit")
          }
       ]
+
+      _snow = []
    }
 
    update(dt) {
       _t = _t + dt
+
+      if (_t % 4 == 0) {
+         // x, y, dx
+         _snow.add([_rnd.int(320), 0, 0])
+      }
+
+      for (s in _snow) {
+         s[1] = s[1] + dt
+         s[2] = ((_t + s[0]) / 16).sin * 2
+         s[0] = Math.lerp(s[0], s[0] + s[2], 0.1)
+      }
+
+      _snow = _snow.where{|s| s[1] < 180 }.toList
 
       var confirmed = Trap.keyPressed(Button.Start, 0, -1) || Trap.keyPressed(Button.A, 0, -1)
       var up = Trap.keyPressed(Button.Up, 0, -1)
@@ -72,10 +92,10 @@ class Title {
       Draw.scale(h / 180)
 
       // grid squares
-      Draw.setColor(0, 128, 0, 255)
+      Draw.setColor(17, 94, 51, 255)
       Draw.rect(0, 0, w, h, Fill.Solid)
 
-      Draw.setColor(128, 0, 0, 255)
+      Draw.setColor(115, 41, 48, 255)
 
       var x = -32 + (_t / 2) % 64
       var y = -32 + (_t / 8) % 64
@@ -87,6 +107,13 @@ class Title {
             innerY = innerY + 64
          }
          x = x + 64
+      }
+
+      for (s in _snow) {
+         Draw.setColor(178, 220, 239, 255)
+         Draw.rect(s[0], s[1], 2, 2, false)
+         Draw.setColor(255, 255, 255, 255)
+         Draw.rect(s[0] + 1, s[1], 1, 1, false)
       }
 
       //icon strip
@@ -116,7 +143,7 @@ class Title {
          bottomIcon = bottomIcon == 0 ? _iconCount - 1 : bottomIcon - 1
       }
 
-      Draw.bmpText(_font, 90, 55, "not balloon fight", 2)
+      Draw.image(_logo, 320/2 - 80, 46, 0, 0, 1.0, 2.0)
 
       for (i in 0..._items.count) {
          Draw.setColor(i == _selectedItem ? [255, 255, 0, 255] : [255, 255, 255, 255])

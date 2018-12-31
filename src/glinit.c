@@ -12,11 +12,6 @@
 #endif
 #include <rlgl.h>
 
-#define FONTSTASH_IMPLEMENTATION
-#include "external/fontstash.h"
-#define GLFONTSTASH_IMPLEMENTATION
-#include "external/gl3corefontstash.h"
-
 #ifdef __EMSCRIPTEN__
 #include "GLES2/gl2.h"
 #include "GLES2/gl2ext.h"
@@ -24,6 +19,11 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #endif
+
+//#define FONTSTASH_IMPLEMENTATION
+//#include "external/fontstash.h"
+//#define GLFONTSTASH_IMPLEMENTATION
+//#include "external/gl3corefontstash.h"
 
 bool initGL(int width, int height) {
 #ifndef __EMSCRIPTEN__

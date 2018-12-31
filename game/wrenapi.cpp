@@ -138,6 +138,20 @@ void wren_trap_set_window_title(WrenVM *vm) {
 	trap->SetWindowTitle(title);
 }
 
+void wren_trap_get_platform(WrenVM *vm) {
+	wrenEnsureSlots(vm, 1);
+
+#if defined(_WIN32)
+	static const char *platform = "windows";
+#elif defined(__EMSCRIPTEN__)
+	static const char *platform = "emscripten";
+#else
+	static const char *platform = "unknown";
+#endif
+
+	wrenSetSlotString(vm, 0, platform);
+}
+
 // HACK: because i'm sometimes skipping update() to run at 60, key inputs may be delayed a frame. calling
 // this after we run an update frame lets me continue to know if the button was pressed on this frame
 // even if an input was skipped 
@@ -815,6 +829,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "inspect(_,_)", wren_trap_inspect },
 	{ "engine", "Trap", true, "getResolution()", wren_trap_get_resolution },
 	{ "engine", "Trap", true, "setWindowTitle(_)", wren_trap_set_window_title },
+	{ "engine", "Trap", true, "getPlatform()", wren_trap_get_platform },
 	{ "engine", "Trap", true, "clearKeyPressed()", wren_clear_key_pressed},
 
 	{ "engine", "CVar", false, "bool()", wren_cvar_bool },

@@ -16,6 +16,7 @@ class Trap {
    static inspect(obj) { inspect(obj, null) }
    foreign static getResolution()
    foreign static setWindowTitle(title)
+   foreign static getPlatform()
    foreign static clearKeyPressed()
    // HACK: because i'm sometimes skipping update() to run at 60, key inputs may be delayed a frame. calling
    // this after we run an update frame lets me continue to know if the button was pressed on this frame

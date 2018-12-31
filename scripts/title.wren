@@ -1,6 +1,7 @@
 import "engine" for Draw, Asset, TileMap, Trap, Button, Fill
 import "random" for Random
 import "math" for Math
+import "levels" for Levels
 
 class Title {
    nextScene { _nextScene }
@@ -23,6 +24,7 @@ class Title {
       _rnd = Random.new()
 
       _selectedItem = 0
+      _selectedLevel = 0
       _currentIcon = 0
       _t = 0
 
@@ -35,7 +37,7 @@ class Title {
 
       _actions = [
          Fn.new {
-            nextScene = ["cutscene", "game"]
+            nextScene = _selectedLevel == 0 ? ["cutscene", "game"] : ["game", _selectedLevel]
          },
 
          Fn.new {
@@ -73,6 +75,8 @@ class Title {
       var confirmed = Trap.keyPressed(Button.Start, 0, -1) || Trap.keyPressed(Button.A, 0, -1)
       var up = Trap.keyPressed(Button.Up, 0, -1)
       var down = Trap.keyPressed(Button.Down, 0, -1)
+      var left = Trap.keyPressed(Button.Left, 0, -1)
+      var right = Trap.keyPressed(Button.Right, 0, -1)
 
       if (up) {
          _selectedItem = _selectedItem - 1
@@ -81,6 +85,9 @@ class Title {
          }
       } else if (down) {
          _selectedItem = (_selectedItem + 1) % _items.count
+      } else if ((left || right) && _items[_selectedItem] == "start") {
+         Trap.printLn(right)
+         _selectedLevel = right ? (_selectedLevel + 1) % Levels.Levels.count : _selectedLevel == 0 ? Levels.Levels.count - 1 : _selectedLevel - 1
       } else if (confirmed) {
          _actions[_selectedItem].call()
       }
@@ -149,9 +156,13 @@ class Title {
       Draw.bmpText(_font, 320/2 - tw/2, 78, "a game for the 2018 awful holiday jam")
 
       for (i in 0..._items.count) {
+         var item = _items[i]
+         if (item == "start") {
+            item = item + " level %(_selectedLevel + 1)"
+         }
          Draw.setColor(i == _selectedItem ? [163, 206, 39, 255] : [255, 255, 255, 255])
-         var w = Asset.measureBmpText(_font, _items[i], 1)
-         Draw.bmpText(_font, 320/2 - w/2, i*10 + 99, _items[i], 1)
+         var w = Asset.measureBmpText(_font, item, 1)
+         Draw.bmpText(_font, 320/2 - w/2, i*10 + 99, item, 1)
       }
       
       Draw.setColor(255, 255, 255, 255)

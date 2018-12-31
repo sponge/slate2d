@@ -5,14 +5,17 @@ class GameOver {
    nextScene { _nextScene }
    nextScene=(params) { _nextScene = params }
 
-   construct new(level) {
+   construct new(params) {
+      _level = params[0]
+      _msg = "you couldn't utter %(params[1]) sentence%(params[1] == 1 ? "" : "s") before setting them off"
+      
       _font = Asset.create(Asset.BitmapFont, "font", "gfx/font.png")
-      Asset.bmpfntSet(_font, "abcdefghijklmnopqrstuvwxyz!?'", 0, 1, 2, 5)
+      Asset.bmpfntSet(_font, "abcdefghijklmnopqrstuvwxyz!?'$1234567890", 0, 1, 2, 5)
 
       _bigFont = Asset.create(Asset.BitmapFont, "sneakattack", "gfx/sneak-attack-bitmap.png")
       Asset.bmpfntSet(_bigFont, "abcdefghijklmnopqrstuvwxyz'", 0, 1, 2, 5)
 
-      _spr = Asset.create(Asset.Sprite, "gameover", "gfx/%(level["sprite"]).png")
+      _spr = Asset.create(Asset.Sprite, "gameover", "gfx/%(_level["sprite"]).png")
       Asset.spriteSet(_spr, 16, 48, 0, 0)
 
       _icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
@@ -20,8 +23,6 @@ class GameOver {
       Asset.spriteSet(_icons, 16, 16, 0, 0)
 
       _bubble = Asset.create(Asset.Image, "bubble", "gfx/bubble.png")
-
-      _level = level
 
       Asset.loadAll()
 
@@ -76,7 +77,8 @@ class GameOver {
       var name = _level["spriteName"]
       drawCenteredText(_font, 320/2, y, "oh no! %(name) is yelling!", false, 1.0)
       drawCenteredText(_font, 320/2, y + 12, "better luck next year!", false, 1.0)
-      drawCenteredText(_bigFont, 320/2, y + 34, "game over", true, 2.0)
+      drawCenteredText(_bigFont, 320/2, y + 30, "game over", true, 2.0)
+      drawCenteredText(_font, 320/2, y + 56, _msg, false, 1.0)
    }
 
    shutdown() {

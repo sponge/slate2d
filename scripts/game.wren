@@ -253,6 +253,10 @@ class Game {
       _totalItems = _totalItems + 1
    }
 
+   onGameOver() {
+      _nextScene = ["gameover", [_level, _totalItems]]
+   }
+
    draw(w, h) {
       Draw.clear()
       Draw.resetTransform()

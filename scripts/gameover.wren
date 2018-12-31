@@ -8,7 +8,7 @@ class GameOver {
 
    construct new(params) {
       _level = params[0]
-      _msg = "you couldn't utter %(params[1]) sentence%(params[1] == 1 ? "" : "s") before setting them off"
+      _msg = "you could only utter %(params[1]) sentence%(params[1] == 1 ? "" : "s") before setting them off"
       _spriteWidth = _level["background"]["spriteWidth"] || 16
       
       _font = Asset.create(Asset.BitmapFont, "font", "gfx/font.png")

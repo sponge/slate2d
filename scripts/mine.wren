@@ -11,11 +11,10 @@ class Mine is Entity {
       name = "mine"
 
       _icons = Asset.find("icons")
-      _iconbg = Asset.find("iconbg")
 
       var iconCount = 15
       _spr = world.rnd.int(iconCount)
-      _flip = Random.new().int(0, 2) == 0
+      _flip = 0
 
       _dx = dx
       _dy = dy
@@ -41,9 +40,9 @@ class Mine is Entity {
 
    draw() {
       if (_flip) {
-         Draw.image(_iconbg, x-4, y-4, 0, 0, 1.0, 1.0, 1)
+         Draw.sprite(_icons, 16, x-16, y-4, 1.0, 1.0, 1, 2, 2)
       } else {
-         Draw.image(_iconbg, x-6, y-4)
+         Draw.sprite(_icons, 16, x+24, y-4, 1.0, 1.0, 0, 2, 2)
       }
       Draw.sprite(_icons, _spr, x-3, y-3, 1.0, 1.0, 0, 1, 1)
    }

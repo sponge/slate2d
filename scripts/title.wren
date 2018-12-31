@@ -139,11 +139,11 @@ class Title {
       x = -32
       var topIcon = _currentIcon
       var bottomIcon = _currentIcon
-      while (x < w) {
-         Draw.image(_iconbg, x - _cycle, 5)
+      while (x <= w / (h/180)) {
+         Draw.sprite(_icons, 16, x - _cycle, 5, 1.0, 1.0, 0, 2, 2)
          Draw.sprite(_icons, topIcon, x - _cycle +3, 5+1)
 
-         Draw.image(_iconbg, x + _cycle, 156)
+         Draw.sprite(_icons, 16, x + _cycle, 156, 1.0, 1.0, 0, 2, 2)
          Draw.sprite(_icons, bottomIcon, x + _cycle +3, 156+1)
 
          x = x + 32

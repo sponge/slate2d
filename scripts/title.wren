@@ -92,7 +92,6 @@ class Title {
       } else if (down) {
          _selectedItem = (_selectedItem + 1) % _items.count
       } else if ((left || right) && _items[_selectedItem] == "start") {
-         Trap.printLn(right)
          _selectedLevel = right ? (_selectedLevel + 1) % Levels.Levels.count : _selectedLevel == 0 ? Levels.Levels.count - 1 : _selectedLevel - 1
       } else if (confirmed) {
          _actions[_selectedItem].call()

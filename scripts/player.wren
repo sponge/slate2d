@@ -7,11 +7,11 @@ class Player is Entity {
    launched { _launched }
 
    construct new(world, obj, x, y) {
-      super(world, obj, x, y, 10, 10)
+      super(world, obj, x, y, 12, 10)
 
       _world = world
 
-      _mouth = Asset.create(Asset.Sprite, "mouth", "gfx/mouth.png")
+      _mouth = Asset.create(Asset.Sprite, "mouth", "gfx/bigmouth.png")
       Asset.spriteSet(_mouth, 16, 16, 0, 0)
 
       _t = 0
@@ -80,6 +80,11 @@ class Player is Entity {
       var yMin = _world.canWin ? -32 : 5
       y = Math.max(yMin, y + dy)
 
+      if (x >= _world.cam.x + _world.cam.w + 8) {
+         die()
+         return
+      }
+
       // if they've fallen off the screen, game over
       if (y >= _world.cam.h + 5) {
          die()
@@ -132,8 +137,24 @@ class Player is Entity {
    }
 
    draw() {
+      var offs = [-3, -14] // [x,y] balloon offset
+
+      // pull balloons in if flying up
+      if (dy < 0) {
+         offs[1] = offs[1] + (dy < -0.4 ? 2 : 1)
+      }
+
+      // shift balloons left/right opposite of motion
+      offs[0] = offs[0] + dx / 2 * 8 * -1
+
+      // balloons
+      Draw.sprite(_mouth, 2, x+offs[0], y+offs[1], _invuln ? 0.4 : 1.0, 1.0, 0, 1, 1)
+
+      // sprite
       var spr = _flap ? 1 : 0
-      Draw.sprite(_mouth, spr, x - 3, y - 3, _invuln ? 0.4 : 1.0, 1.0, _flip, 1, 1)
+      Draw.sprite(_mouth, spr, x - 3, y - 2, _invuln ? 0.4 : 1.0, 1.0, _flip, 1, 1)
+
+      // starting platform
       if (!_launched) {
          Draw.rect(x-3, y+12, 16, 3, Fill.Solid)
       }

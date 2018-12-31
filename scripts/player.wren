@@ -124,7 +124,7 @@ class Player is Entity {
          // if it was a mine, hurt you
          if (ent.name == "mine" && !_invuln) {
             ent.die(true)
-            _health = _health - 36
+            _health = _health - 48
 
             if (_health <= 0) {
                die()

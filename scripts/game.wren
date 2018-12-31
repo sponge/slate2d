@@ -27,7 +27,7 @@ class Game {
 
       if (level == "endless") {
          _endless = true
-         _level = Levels.Levels[0]
+         _level = null // will be filled in by game loop
       } else {
          _level = Levels.Levels[level || 0]
          // _level = Levels.Levels[1]
@@ -67,7 +67,7 @@ class Game {
       _t = 0
       _entities = [_player]
       _generatedX = 0 // how far in the world we've generated level parts
-      _itemsToWin = 5
+      _itemsToWin = 7
       _totalItems = 0
       _canWin = false
       _paused = false
@@ -92,7 +92,7 @@ class Game {
       Asset.loadAll()
    }
 
-   generateRain(subtype) {
+   randomCoins() {
       var cx = _cam.toWorld(0,0)[0]
 
       if (cx <= _generatedX) {
@@ -105,6 +105,12 @@ class Game {
             coinStart = coinStart - sectionWidth / 3
          }
       }
+   }
+
+   generateRain(subtype) {
+      var cx = _cam.toWorld(0,0)[0]
+
+      randomCoins()
 
       if (_t < _nextRainTick) {
          return
@@ -116,7 +122,7 @@ class Game {
       var y = 0
 
       if (subtype == "rain") {
-         d = [_rnd.float(0.05, 0.25), _rnd.float(0.4, 0.5)]
+         d = [_rnd.float(0.25, 0.35), _rnd.float(0.8, 1.0)]
          y = -16
       } else if (subtype == "snow") {
          d = [_rnd.float(-0.25, 0.25), _rnd.float(0.2, 0.4)]
@@ -127,6 +133,37 @@ class Game {
       }
 
       var mine = Mine.new(this, {}, _rnd.int(cx - 64, cx+_cam.w), y, d[0], d[1])
+      _entities.add(mine)
+   }
+
+   generateLasers() {
+      var cx = _cam.toWorld(0,0)[0]
+
+      randomCoins()
+
+      if (_t < _nextRainTick) {
+         return
+      }
+
+      _nextRainTick = _t + 20
+
+      var mine = Mine.new(this, {}, cx-24, _rnd.int(0, 180), _rnd.float(0.9, 1.2), 0)
+      _entities.add(mine)
+   }
+
+   generateLob() {
+      var cx = _cam.toWorld(0,0)[0]
+
+      randomCoins()
+
+      if (_t < _nextRainTick) {
+         return
+      }
+
+      _nextRainTick = _t + 40
+
+      var mine = Mine.new(this, {}, _rnd.int(cx-48, cx+48), _cam.h, _rnd.float(0.3, 0.5), _rnd.float(-0.9, -1.4))
+      mine.gravity = 0.005
       _entities.add(mine)
    }
 
@@ -200,7 +237,7 @@ class Game {
       if (_endless) {
          var cx = _cam.toWorld(0,0)[0]
          if (cx <= _generatedX) {
-            _level = _rnd.sample(Levels.Levels)
+            _level = _rnd.sample(Levels.EndlessLevels)
          }
       // collected all the items, next level
       } else if (_itemsToWin <= 0) {
@@ -218,6 +255,10 @@ class Game {
          generateMinefield()
       } else if (genMode == "rain" || genMode == "snow" || genMode == "ashes") {
          generateRain(genMode)
+      } else if (genMode == "lob") {
+         generateLob()
+      } else if (genMode == "lasers") {
+         generateLasers()
       }
 
       // if the player isn't on the starting platform, autoscroll the camera

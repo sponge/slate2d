@@ -37,6 +37,7 @@ class Main {
       
       if (mapName == null) {
          loadScene(__defaultScene, null)
+         //loadScene("game", 2)
       }
    }
 

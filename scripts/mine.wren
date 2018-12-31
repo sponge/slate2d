@@ -5,6 +5,7 @@ import "random" for Random
 
 class Mine is Entity {
    spr { _spr }
+   gravity=(amt) { _gravity = amt }
    construct new (world, obj, x, y, dx, dy) {
       super(world, obj, x, y, 10, 10)
       name = "mine"
@@ -31,6 +32,10 @@ class Mine is Entity {
          if (_t > 60*30) {
             die(false)
          }
+      }
+
+      if (_gravity != null) {
+         _dy = _dy + _gravity
       }
    }
 

@@ -28,7 +28,7 @@ class Levels {
             "color": [178, 220, 239, 255],
             "sprite": "uncle-recliner"
          },
-         "generateMode": "rain",
+         "generateMode": "lob",
          "sprite": "uncle",
          "spriteName": "uncle tony",
          "endingText": ["you survived the conversation", "with uncle tony!"],
@@ -44,6 +44,29 @@ class Levels {
          "sprite": "table",
          "spriteName": "everyone",
          "nextlevel": "ending",
+      },
+   ]}
+
+   static EndlessLevels { Levels.Levels + [
+      {
+         "background": {
+            "color": [153, 100, 249, 255],
+            "sprite": "uncle-recliner"
+         },
+         "generateMode": "lasers",
+         "sprite": "uncle",
+         "spriteName": "uncle tony",
+         "endingText": ["you survived the conversation", "with uncle tony!"],
+      },
+      {
+         "background": {
+            "color": [0, 87, 132, 255],
+            "sprite": "aunt-bg",
+         },
+         "generateMode": "rain",
+         "sprite": "aunt",
+         "spriteName": "aunt deborah",
+         "endingText": ["you survived the conversation", "with aunt deborah!"],
       },
    ]}
 }

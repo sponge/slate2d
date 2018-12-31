@@ -143,12 +143,12 @@ class Title {
          bottomIcon = bottomIcon == 0 ? _iconCount - 1 : bottomIcon - 1
       }
 
-      Draw.image(_logo, 320/2 - 80, 46, 0, 0, 1.0, 2.0)
+      Draw.image(_logo, 320/2 - 80, 42, 0, 0, 1.0, 2.0)
 
       for (i in 0..._items.count) {
          Draw.setColor(i == _selectedItem ? [163, 206, 39, 255] : [255, 255, 255, 255])
          var w = Asset.measureBmpText(_font, _items[i], 1)
-         Draw.bmpText(_font, 320/2 - w/2, i*14 + 95, _items[i], 1)
+         Draw.bmpText(_font, 320/2 - w/2, i*14 + 88, _items[i], 1)
       }
       
       Draw.setColor(255, 255, 255, 255)

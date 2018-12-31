@@ -72,6 +72,7 @@ class Game {
       _canWin = false
       _paused = false
       _pauseQuitSelected = false
+      _flashCounter = false
 
       if (_endless == true) {
          _bg = null
@@ -183,12 +184,12 @@ class Game {
    }
 
    update(dt) {
-      _t = _t + dt
-
       if (_paused) {
          pauseUpdate()
          return
       }
+      
+      _t = _t + dt
 
       if (!_paused && Trap.keyPressed(Button.Start, 0, -1)) {
          _paused = true
@@ -254,6 +255,11 @@ class Game {
    onCollectibleHit(ent) {
       _itemsToWin = Math.max(0, _itemsToWin - 1)
       _totalItems = _totalItems + 1
+
+      _flashCounter = true
+      Timer.runLater(120) {
+         _flashCounter = false
+      }
    }
 
    onGameOver() {
@@ -361,7 +367,12 @@ class Game {
       msgX = collectX + 13
       msgY = 153
 
-      Draw.setColor(27, 38, 50, 255)
+      if ((_flashCounter || _itemsToWin == 0) && _t % 24 < 12) {
+         Draw.setColor(235, 137, 49, 255)
+      } else {
+         Draw.setColor(27, 38, 50, 255)
+      }
+      
       Draw.bmpText(_font, msgX+1, msgY, msg)
       Draw.bmpText(_font, msgX-1, msgY, msg)
       Draw.bmpText(_font, msgX, msgY-1, msg)

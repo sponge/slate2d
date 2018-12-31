@@ -19,6 +19,8 @@ class Help {
       _credits = [
          ["engine, programming", "sponge"],
          ["programming, art", "alligator"],
+         ["music", "hardclumping"],
+
       ]
       _story = "oh no it's christmas day at aunt deborah and
 uncle tony's house!

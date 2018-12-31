@@ -47,7 +47,7 @@ class Levels {
       },
    ]}
 
-   static EndlessLevels { Levels.Levels + [
+   static EndlessLevels {[
       {
          "background": {
             "color": [153, 100, 249, 255],

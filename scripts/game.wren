@@ -24,10 +24,15 @@ class Game {
    level { _level }
 
    construct new(level) {
+      _rnd = Random.new()
 
       if (level == "endless") {
          _endless = true
-         _level = null // will be filled in by game loop
+         _endlessLevel = 0
+         _levelList = Levels.Levels + Levels.EndlessLevels
+         _currentEndlessLevel = 0
+         _rnd.shuffle(_levelList)
+         _level = _levelList[0]
       } else {
          _level = Levels.Levels[level || 0]
          // _level = Levels.Levels[1]
@@ -61,7 +66,6 @@ class Game {
 
       _meter = Meter.new()
       _cam = Camera.new(16, 16, 320, 180)
-      _rnd = Random.new()
       _player = Player.new(this, {}, 220, 70)
 
       _t = 0
@@ -237,7 +241,8 @@ class Game {
       if (_endless) {
          var cx = _cam.toWorld(0,0)[0]
          if (cx <= _generatedX) {
-            _level = _rnd.sample(Levels.EndlessLevels)
+            _currentEndlessLevel = _currentEndlessLevel + 1 % _levelList.count
+            _level = _levelList[_currentEndlessLevel]
          }
       // collected all the items, next level
       } else if (_itemsToWin <= 0) {

@@ -100,7 +100,7 @@ class Game {
       Asset.loadAll()
    }
 
-   randomCoins() {
+   randomCoins(minY) {
       var cx = _cam.toWorld(0,0)[0]
 
       if (cx <= _generatedX) {
@@ -108,7 +108,7 @@ class Game {
          _generatedX = cx - sectionWidth
          var coinStart = cx
          while (coinStart >= _generatedX) {
-            var collectible = Collectible.new(this, {}, coinStart - _rnd.int(50), _rnd.int(8, 140))
+            var collectible = Collectible.new(this, {}, coinStart - _rnd.int(50), _rnd.int(minY, 140))
             _entities.add(collectible)
             coinStart = coinStart - sectionWidth / 3
          }
@@ -118,7 +118,7 @@ class Game {
    generateRain(subtype) {
       var cx = _cam.toWorld(0,0)[0]
 
-      randomCoins()
+      randomCoins(8)
 
       if (_t < _nextRainTick) {
          return
@@ -147,7 +147,7 @@ class Game {
    generateLasers() {
       var cx = _cam.toWorld(0,0)[0]
 
-      randomCoins()
+      randomCoins(8)
 
       if (_t < _nextRainTick) {
          return
@@ -162,7 +162,7 @@ class Game {
    generateLob() {
       var cx = _cam.toWorld(0,0)[0]
 
-      randomCoins()
+      randomCoins(80)
 
       if (_t < _nextRainTick) {
          return
@@ -278,7 +278,7 @@ class Game {
       // update each entity and kill them if they're off camera
       for (ent in _entities) {
          ent.think(dt)
-         if (ent.x > _cam.x + _cam.w && ent is Player == false) {
+         if (ent.x > _cam.x + _cam.w + 5 && ent is Player == false) {
             ent.die(false)
          }
       }

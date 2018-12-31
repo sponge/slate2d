@@ -27,7 +27,7 @@ class Player is Entity {
       _flap = false
       _willDie = false
 
-      _flapStrength = 0.4
+      _flapStrength = 0.5
       _maxFallSpeed = 0.75
       _maxFlightSpeed = 1.0
       _moveSpeed = 0.2

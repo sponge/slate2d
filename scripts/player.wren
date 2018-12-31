@@ -158,8 +158,6 @@ class Player is Entity {
       if (!_launched) {
          Draw.rect(x-3, y+12, 16, 3, Fill.Solid)
       }
-
-      Trap.inspect(this, "player")
    }
 
    die() {

@@ -26,6 +26,7 @@ class Title {
       _selectedItem = 0
       _selectedLevel = 0
       _currentIcon = 0
+      _cycle = 0
       _t = 0
 
       _items = [
@@ -58,6 +59,11 @@ class Title {
 
    update(dt) {
       _t = _t + dt
+
+      _cycle = _t / 4 % 32
+      if (_cycle == 0) {
+         _currentIcon = (_currentIcon + 1) % _iconCount
+      }
 
       if (_t % 4 == 0) {
          // x, y, dx
@@ -130,20 +136,15 @@ class Title {
 
       Draw.setColor(255, 255, 255, 255)
 
-      var cycle = _t / 4 % 32
-      if (cycle == 0) {
-         _currentIcon = (_currentIcon + 1) % _iconCount
-      }
-
       x = -32
       var topIcon = _currentIcon
       var bottomIcon = _currentIcon
       while (x < w) {
-         Draw.image(_iconbg, x - cycle, 5)
-         Draw.sprite(_icons, topIcon, x - cycle +3, 5+1)
+         Draw.image(_iconbg, x - _cycle, 5)
+         Draw.sprite(_icons, topIcon, x - _cycle +3, 5+1)
 
-         Draw.image(_iconbg, x + cycle, 156)
-         Draw.sprite(_icons, bottomIcon, x + cycle +3, 156+1)
+         Draw.image(_iconbg, x + _cycle, 156)
+         Draw.sprite(_icons, bottomIcon, x + _cycle +3, 156+1)
 
          x = x + 32
          topIcon = (topIcon + 1) % _iconCount

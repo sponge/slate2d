@@ -60,9 +60,13 @@ class Main {
       Debug.clearPersist()
 
       if (__scene != null) {
-         __scene.update(1)
+         if (__scene.update(1) != false) {
+            Timer.tick(1)
+         }
+      } else {
+         Timer.tick(1)
       }
-      Timer.tick(1)
+      
 
       // see the hack comment in engine.wren for why this is
       Trap.clearKeyPressed()

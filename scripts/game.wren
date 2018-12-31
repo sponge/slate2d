@@ -186,9 +186,9 @@ class Game {
    update(dt) {
       if (_paused) {
          pauseUpdate()
-         return
+         return false
       }
-      
+
       _t = _t + dt
 
       if (!_paused && Trap.keyPressed(Button.Start, 0, -1)) {

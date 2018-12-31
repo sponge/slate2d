@@ -7,6 +7,7 @@ class LevelEnding {
    nextScene=(params) { _nextScene = params }
 
    construct new(nextLevel) {
+      _nextLevel = nextLevel
       _bigFont = Asset.create(Asset.BitmapFont, "sneakattack", "gfx/sneak-attack-bitmap.png")
       Asset.bmpfntSet(_bigFont, "abcdefghijklmnopqrstuvwxyz'!?", 0, 1, 2, 5)
 
@@ -23,7 +24,7 @@ class LevelEnding {
 
    update(dt) {
       if (Trap.keyPressed(Button.Start, 0, -1)) {
-         _nextScene = ["game", nextLevel]
+         _nextScene = ["game", _nextLevel]
       }
    }
 

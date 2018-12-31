@@ -1,4 +1,4 @@
-import "engine" for Asset, Draw, Trap
+import "engine" for Asset, Draw, Trap, Button
 
 class Ending {
    nextScene { _nextScene }
@@ -20,6 +20,9 @@ class Ending {
 
    update(dt) {
       _t = _t + dt
+      if (Trap.keyPressed(Button.Start, 0, -1)) {
+         _nextScene = ["title"]
+      }
    }
 
    drawCenteredText(font, x, y, text) {
@@ -33,7 +36,7 @@ class Ending {
       Draw.scale(h / 180)
 
       var winSize = Asset.imageSize(_win)
-      Trap.printLn(winSize)
+
       for (i in 0...winSize[0]) {
          var y = ((i - _t * 1.2) / 6).sin * 1.3
          Draw.setColor(247, 226, 107, 255)

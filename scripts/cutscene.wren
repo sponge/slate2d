@@ -81,11 +81,7 @@ class Cutscene {
       }
       _queue.update(dt)
 
-      if (!Trap.keyPressed(Button.Start)) {
-         _canSkip = true
-      }
-
-      if (_canSkip && Trap.keyPressed(Button.Start)) {
+      if (Trap.keyPressed(Button.Start, 0, -1)) {
          _nextScene = _paramNextScene
       }
    }

@@ -1,4 +1,4 @@
-import "engine" for Asset, Draw, Trap
+import "engine" for Asset, Draw, Trap, Button
 import "timer" for Timer
 import "levels" for Levels
 
@@ -22,6 +22,9 @@ class LevelEnding {
    }
 
    update(dt) {
+      if (Trap.keyPressed(Button.Start, 0, -1)) {
+         _nextScene = ["game", nextLevel]
+      }
    }
 
    drawCenteredText(font, x, y, text) {

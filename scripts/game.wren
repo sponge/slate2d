@@ -11,6 +11,7 @@ import "minetext" for MineText
 import "meter" for Meter
 import "levels" for Levels
 import "collectible" for Collectible
+import "soundcontroller" for SoundController
 
 class Game {
    nextScene { _nextScene }
@@ -63,6 +64,9 @@ class Game {
 
       _tick = Asset.create(Asset.Image, "tick", "gfx/tick.png")
       _cross = Asset.create(Asset.Image, "cross", "gfx/cross.png")
+
+      _explosionSnd = Asset.create(Asset.Sound, "explosionSnd", "sound/explo.wav")
+      _collectibleSnd = Asset.create(Asset.Sound, "collectibleSnd", "sound/collectible.wav")
 
       _meter = Meter.new()
       _cam = Camera.new(16, 16, 320, 180)
@@ -296,6 +300,8 @@ class Game {
       Timer.runLater(100) {
          _bgMad = false
       }
+
+      SoundController.playOnce(_explosionSnd)
    }
 
    onCollectibleHit(ent) {
@@ -306,6 +312,8 @@ class Game {
       Timer.runLater(120) {
          _flashCounter = false
       }
+
+      SoundController.playOnce(_collectibleSnd)
    }
 
    onGameOver() {

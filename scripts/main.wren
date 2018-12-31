@@ -1,6 +1,7 @@
 import "meta" for Meta
 import "engine" for Trap, Draw, Asset, CVar
 
+import "soundcontroller" for SoundController
 import "timer" for Timer
 import "debug" for Debug
 import "title" for Title
@@ -34,6 +35,7 @@ class Main {
 
       Timer.init()
       Debug.init()
+      SoundController.init()
       
       if (mapName == null) {
          loadScene(__defaultScene, null)

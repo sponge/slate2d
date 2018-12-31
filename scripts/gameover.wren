@@ -1,5 +1,6 @@
 import "engine" for Asset, Draw, Trap, Button
 import "random" for Random
+import "soundcontroller" for SoundController
 
 class GameOver {
    nextScene { _nextScene }
@@ -25,12 +26,16 @@ class GameOver {
 
       _bubble = Asset.create(Asset.Image, "bubble", "gfx/bubble.png")
 
+      _bgm = Asset.create(Asset.Sound, "bgm", "sound/gameover.ogg")
+
       Asset.loadAll()
 
       _t = 0
       _rnd = Random.new()
       _startIcon = _rnd.int(_iconCount)
       _bubbleCount = 4
+
+      SoundController.playOnce(_bgm)
    }
 
    update(dt) {

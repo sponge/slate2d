@@ -68,6 +68,8 @@ class Game {
       _explosionSnd = Asset.create(Asset.Sound, "explosionSnd", "sound/explo.wav")
       _collectibleSnd = Asset.create(Asset.Sound, "collectibleSnd", "sound/collectible.wav")
 
+      _bgm = Asset.create(Asset.Sound, "bgm", "sound/game.ogg")
+
       _meter = Meter.new()
       _cam = Camera.new(16, 16, 320, 180)
       _player = Player.new(this, {}, 220, 70)
@@ -98,6 +100,8 @@ class Game {
       _uiEntities = []
 
       Asset.loadAll()
+
+      SoundController.playMusic(_bgm)
    }
 
    randomCoins(minY) {

@@ -2,6 +2,7 @@ import "random" for Random
 import "engine" for Draw, Asset, TileMap, Trap, Button
 import "math" for Math
 import "actionqueue" for ActionQueue
+import "soundcontroller" for SoundController
 
 class Cutscene {
    nextScene { _nextScene }
@@ -24,6 +25,8 @@ class Cutscene {
       _iconCount = 15
 
       _bubble = Asset.create(Asset.Image, "bubble", "gfx/bubble.png")
+
+      _bgm = Asset.create(Asset.Sound, "bgm", "sound/cutscene.ogg")
 
       _rnd = Random.new()
       _paramNextScene = nextScene
@@ -69,12 +72,14 @@ class Cutscene {
             }
          }],
          [100, Fn.new { _uncleState["yelling"] = false }],
-         [100, Fn.new { _nextScene = nextScene }],
+         [150, Fn.new { _nextScene = nextScene }],
       ])
 
       _t = 0
 
       Asset.loadAll()
+
+      SoundController.playOnce(_bgm)
    }
 
    update(dt) {

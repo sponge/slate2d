@@ -23,7 +23,7 @@ class Title {
 
       _select = Asset.create(Asset.Sound, "select", "sound/select.wav")
       _menuMove = Asset.create(Asset.Sound, "menuMove", "sound/menumove.wav")
-
+      _bgm = Asset.create(Asset.Sound, "bgm", "sound/menu.ogg")
 
       Asset.loadAll()
 
@@ -61,6 +61,8 @@ class Title {
       ]
 
       _snow = []
+
+      SoundController.playMusic(_bgm)
    }
 
    update(dt) {

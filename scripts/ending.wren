@@ -1,4 +1,5 @@
 import "engine" for Asset, Draw, Trap, Button
+import "soundcontroller" for SoundController
 
 class Ending {
    nextScene { _nextScene }
@@ -13,9 +14,13 @@ class Ending {
 
       _win = Asset.create(Asset.Image, "win", "gfx/youwin.png")
 
+      _bgm = Asset.create(Asset.Sound, "bgm", "sound/menu.ogg")
+
       _t = 0
 
       Asset.loadAll()
+
+      SoundController.playMusic(_bgm)
    }
 
    update(dt) {

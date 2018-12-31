@@ -39,8 +39,11 @@ class Title {
          "start",
          "endless mode",
          "help",
-         "quit"
       ]
+
+      if (Trap.getPlatform() != "emscripten") {
+         _items.add("quit")
+      }
 
       _actions = [
          Fn.new {

@@ -150,7 +150,7 @@ class Title {
          bottomIcon = bottomIcon == 0 ? _iconCount - 1 : bottomIcon - 1
       }
 
-      Draw.image(_logo, 320/2 - 80, 38, 0, 0, 1.0, 2.0)
+      Draw.image(_logo, 320/2 - 80, 38, 0, 0, 1.0, 1.0)
 
       var tw = Asset.measureBmpText(_font, "a game for the 2018 awful holiday jam")
       Draw.bmpText(_font, 320/2 - tw/2, 78, "a game for the 2018 awful holiday jam")

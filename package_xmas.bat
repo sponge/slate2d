@@ -11,6 +11,6 @@ rename package\engine.exe hotair.exe
 rcedit-x64 "package\hotair.exe" --set-icon "xmas\icon.ico"
 
 "c:\Program Files\7-Zip\7z.exe" a -tzip package\base\pak00.pk3 .\base\*
-"c:\Program Files\7-Zip\7z.exe" u -tzip package\base\pak00.pk3 .\xmas\*
+"c:\Program Files\7-Zip\7z.exe" u -tzip package\base\pak00.pk3 .\xmas\* -xr!.git -xr!.vscode
 
 "c:\Program Files\7-Zip\7z.exe" a -tzip package\hotair.zip .\package\*

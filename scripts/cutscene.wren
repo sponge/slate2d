@@ -12,6 +12,9 @@ class Cutscene {
       _lady = Asset.create(Asset.Sprite, "lady", "gfx/lady.png")
       _guy = Asset.create(Asset.Sprite, "guy", "gfx/guy.png")
 
+      _font = Asset.create(Asset.BitmapFont, "font", "gfx/font.png")
+      Asset.bmpfntSet(_font, "abcdefghijklmnopqrstuvwxyz!?'$1234567890", 0, 1, 2, 5)
+
       Asset.spriteSet(_uncle, 16, 48, 0, 0)
       Asset.spriteSet(_lady, 16, 48, 0, 0)
       Asset.spriteSet(_guy, 16, 48, 0, 0)
@@ -26,7 +29,7 @@ class Cutscene {
       _paramNextScene = nextScene
       _canSkip = false
 
-      var y = 80
+      var y = 120
       _uncleState = {
          "x": 152,
          "y": y,
@@ -86,6 +89,11 @@ class Cutscene {
       }
    }
 
+   drawCenteredText(font, x, y, text) {
+      var w = Asset.measureBmpText(font, text)
+      Draw.bmpText(font, x - w/2, y, text)
+   }
+
    draw(w, h) {
       Draw.clear()
       Draw.resetTransform()
@@ -94,6 +102,11 @@ class Cutscene {
       for (scared in _scareds) {
          scared.draw(w, h)
       }
+
+      drawCenteredText(_font, 320/2, 10, "now it is the beginning of a")
+      drawCenteredText(_font, 320/2, 20, "nightmare christmas dinner! let us")
+      drawCenteredText(_font, 320/2, 30, "try to get out of this conversation!")
+      drawCenteredText(_font, 320/2, 40, "good luck!")
 
       Draw.sprite(
          _uncle,

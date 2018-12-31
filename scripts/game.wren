@@ -24,42 +24,6 @@ class Game {
    level { _level }
 
    construct new(level) {
-      var icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
-      Asset.spriteSet(icons, 16, 16, 0, 0)
-
-      _shag = Asset.create(Asset.Image, "shag", "gfx/shag.png")
-      _skirting = Asset.create(Asset.Image, "skirting", "gfx/skirting.png")
-
-      Asset.create(Asset.Image, "iconbg", "gfx/icon-background.png")
-
-      _collectible = Asset.create(Asset.Sprite, "collectible", "gfx/collectible.png")
-      Asset.spriteSet(_collectible, 12, 12, 0, 0)
-
-      _font = Asset.create(Asset.BitmapFont, "font", "gfx/font.png")
-      Asset.bmpfntSet(_font, "abcdefghijklmnopqrstuvwxyz!?'$1234567890", 0, 1, 2, 5)
-
-      _arrows = Asset.create(Asset.Image, "arrows", "gfx/arrows.png")
-      _zx = Asset.create(Asset.Image, "zx", "gfx/zx.png")
-
-      _dpad = Asset.create(Asset.Image, "dpad", "gfx/arrows-gamepad.png")
-      _padButtons = Asset.create(Asset.Image, "dpadbuttons", "gfx/zx-gamepad.png")
-
-      _tick = Asset.create(Asset.Image, "tick", "gfx/tick.png")
-      _cross = Asset.create(Asset.Image, "cross", "gfx/cross.png")
-
-      _meter = Meter.new()
-      _cam = Camera.new(16, 16, 320, 180)
-      _rnd = Random.new()
-      _player = Player.new(this, {}, 220, 50)
-
-      _t = 0
-      _entities = [_player]
-      _generatedX = 0 // how far in the world we've generated level parts
-      _itemsToWin = 5
-      _totalItems = 0
-      _canWin = false
-      _paused = false
-      _pauseQuitSelected = false
 
       if (level == "endless") {
          _endless = true
@@ -69,6 +33,45 @@ class Game {
          // _level = Levels.Levels[1]
          _endless = false
       }
+
+      var icons = Asset.create(Asset.Sprite, "icons", "gfx/icons.png")
+      Asset.spriteSet(icons, 16, 16, 0, 0)
+
+      _shag = Asset.create(Asset.Image, "shag", "gfx/shag.png")
+      _skirting = Asset.create(Asset.Image, "skirting", "gfx/skirting.png")
+
+      _iconBg = Asset.create(Asset.Image, "iconbg", "gfx/icon-background.png")
+
+      _collectible = Asset.create(Asset.Sprite, "collectible", "gfx/collectible.png")
+      Asset.spriteSet(_collectible, 12, 12, 0, 0)
+
+      _font = Asset.create(Asset.BitmapFont, "font", "gfx/font.png")
+      Asset.bmpfntSet(_font, "abcdefghijklmnopqrstuvwxyz!?'$1234567890", 0, 1, 2, 5)
+
+      if (!_endless && _level["help"] == true) {
+         _arrows = Asset.create(Asset.Image, "arrows", "gfx/arrows.png")
+         _zx = Asset.create(Asset.Image, "zx", "gfx/zx.png")
+
+         _dpad = Asset.create(Asset.Image, "dpad", "gfx/arrows-gamepad.png")
+         _padButtons = Asset.create(Asset.Image, "dpadbuttons", "gfx/zx-gamepad.png")
+      }
+
+      _tick = Asset.create(Asset.Image, "tick", "gfx/tick.png")
+      _cross = Asset.create(Asset.Image, "cross", "gfx/cross.png")
+
+      _meter = Meter.new()
+      _cam = Camera.new(16, 16, 320, 180)
+      _rnd = Random.new()
+      _player = Player.new(this, {}, 220, 70)
+
+      _t = 0
+      _entities = [_player]
+      _generatedX = 0 // how far in the world we've generated level parts
+      _itemsToWin = 5
+      _totalItems = 0
+      _canWin = false
+      _paused = false
+      _pauseQuitSelected = false
 
       if (_endless == true) {
          _bg = null
@@ -370,10 +373,10 @@ class Game {
    }
 
    drawHelp() {
-      var x = 180
-      var y = 70
+      var x = 80
+      var y = 25
       Draw.setColor(0, 0, 0, 200)
-      Draw.rect(x, y, 90, 60, Fill.Solid)
+      Draw.rect(x, y, 90, 100, Fill.Solid)
       Draw.setColor(255, 255, 255, 255)
 
       x = x + 5
@@ -386,6 +389,13 @@ class Game {
       Draw.image(_arrows, x + 48, y)
       Draw.image(_dpad, x + 48, y + 20)
       Draw.bmpText(_font, x + 55, y + 40, "move")
+
+      Draw.image(_iconBg, x + 8, y + 55)
+      Draw.bmpText(_font, x + 7, y + 80, "avoid")
+
+      Draw.sprite(_collectible, 0, x + 60, y + 58)
+      Draw.bmpText(_font, x + 55, y + 80, "grab")
+
 
    }
 

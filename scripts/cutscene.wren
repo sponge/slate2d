@@ -28,15 +28,15 @@ class Cutscene {
 
       var y = 80
       _uncleState = {
-         "x": 140,
+         "x": 152,
          "y": y,
          "yelling": false,
          "scale": 1.0,
          "icon": _rnd.int(_iconCount)
       }
       _scareds = [
-         ScaredEntity.new(_lady, 120, y, 1),
-         ScaredEntity.new(_guy, 160, y, -1)
+         ScaredEntity.new(_lady, 132, y, 1),
+         ScaredEntity.new(_guy, 172, y, -1)
       ]
 
       _queue = ActionQueue.new([

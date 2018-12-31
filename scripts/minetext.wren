@@ -8,6 +8,7 @@ class MineText is Entity {
       _text = _rnd.sample(MineText.Text[spr]["sentences"])
       _x = x
       _y = y
+      _w = w
 
       _font = Asset.find("font")
 
@@ -26,20 +27,25 @@ class MineText is Entity {
       }
    }
 
+   drawCenteredText(font, x, y, text) {
+      var w = Asset.measureBmpText(font, text)
+      Draw.bmpText(font, x - w/2, y, text)
+   }
+
    draw() {
       // outline
       Draw.setColor(27, 38, 50, 255)
-      Draw.bmpText(_font, _x, _y + 1, _text)
-      Draw.bmpText(_font, _x, _y - 1, _text)
-      Draw.bmpText(_font, _x + 1, _y, _text)
-      Draw.bmpText(_font, _x - 1, _y, _text)
+      drawCenteredText(_font, _x, _y + 1, _text)
+      drawCenteredText(_font, _x, _y - 1, _text)
+      drawCenteredText(_font, _x + 1, _y, _text)
+      drawCenteredText(_font, _x - 1, _y, _text)
 
       if (_bright) {
          Draw.setColor(247, 226, 107, 255)
       } else {
          Draw.setColor(235, 137, 49, 255)
       }
-      Draw.bmpText(_font, _x, _y, _text)
+      drawCenteredText(_font, _x, _y, _text)
       Draw.setColor(255, 255, 255, 255)
    }
 

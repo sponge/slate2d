@@ -299,7 +299,7 @@ class Game {
    }
 
    onMineHit(ent) {
-      _uiEntities.add(MineText.new(ent.spr, 140, 160))
+      _uiEntities.add(MineText.new(ent.spr, _cam.w / 2, 160))
       _bgMad = true
       Timer.runLater(100) {
          _bgMad = false

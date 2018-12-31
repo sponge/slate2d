@@ -54,7 +54,7 @@ class MineText is Entity {
       },
       {
          "name": "Marriage",
-         "sentences": ["so have you met anyone nice yet?", "when you gonna put a ring on it?"],
+         "sentences": ["so have you met anyone nice yet?", "when you gonna put a ring on it?", "hey are you still seeing what's their name?"],
       },
       {
          "name": "Football",
@@ -74,7 +74,7 @@ class MineText is Entity {
       },
       {
          "name": "The Wall",
-         "sentences": ["we're gonna build that wall", "gotta bring those jobs back"],
+         "sentences": ["we're gonna build that wall", "gotta bring those jobs back", "i'm not racist but"],
       },
       {
          "name": "MLM",
@@ -82,7 +82,7 @@ class MineText is Entity {
       },
       {
          "name": "religion",
-         "sentences": []
+         "sentences": ["you should join a church!", "that's gonna send you straight to hell"]
       },
       {
          "name": "university",
@@ -90,11 +90,11 @@ class MineText is Entity {
       },
       {
          "name": "work",
-         "sentences": ["you got a job yet?", "work for me! $2.50 an hour!"]
+         "sentences": ["you got a job yet?", "work for me! $2.50 an hour!", "hey i've got this idea for a game"]
       },
       {
          "name": "phone",
-         "sentences": ["how come you never call?"]
+         "sentences": ["how come you never call?", "i'm so lonely"]
       },
       {
          "name": "socialmedia",

@@ -83,9 +83,16 @@ namespace SoLoud
 		{
 			setVoiceVolume(ch, aVolume);
 		}
-		setVoiceRelativePlaySpeed(ch, 1);
 
+		// Fix initial voice volume ramp up		
 		int i;
+		for (i = 0; i < MAX_CHANNELS; i++)
+		{
+			mVoice[ch]->mCurrentChannelVolume[i] = mVoice[ch]->mChannelVolume[i] * mVoice[ch]->mOverallVolume;
+		}
+
+		setVoiceRelativePlaySpeed(ch, 1);
+		
 		for (i = 0; i < FILTERS_PER_STREAM; i++)
 		{
 			if (aSound.mFilter[i])
@@ -94,14 +101,7 @@ namespace SoLoud
 			}
 		}
 
-		int scratchneeded = SAMPLE_GRANULARITY * mVoice[ch]->mChannels;
-
-		mVoice[ch]->mResampleData[0]->mBuffer = new float[scratchneeded];
-		mVoice[ch]->mResampleData[1]->mBuffer = new float[scratchneeded];
-
-		// First buffer will be overwritten anyway; the second may be referenced by resampler
-		memset(mVoice[ch]->mResampleData[0]->mBuffer, 0, sizeof(float) * scratchneeded);
-		memset(mVoice[ch]->mResampleData[1]->mBuffer, 0, sizeof(float) * scratchneeded);
+		mActiveVoiceDirty = true;
 
 		unlockAudioMutex();
 
@@ -118,7 +118,7 @@ namespace SoLoud
 			mLastClockedTime = aSoundTime;
 		unlockAudioMutex();
 		int samples = 0;
-		if (lasttime != 0)
+		if (aSoundTime > lasttime)
 		{
 			samples = (int)floor((aSoundTime - lasttime) * mSamplerate);
 		}
@@ -127,11 +127,23 @@ namespace SoLoud
 		return h;
 	}
 
-	void Soloud::seek(handle aVoiceHandle, time aSeconds)
+	handle Soloud::playBackground(AudioSource &aSound, float aVolume, bool aPaused, unsigned int aBus)
 	{
+		handle h = play(aSound, aVolume, 0.0f, aPaused, aBus);
+		setPanAbsolute(h, 1.0f, 1.0f);
+		return h;
+	}
+
+	result Soloud::seek(handle aVoiceHandle, time aSeconds)
+	{
+		result res = SO_NO_ERROR;
+		result singleres = SO_NO_ERROR;
 		FOR_ALL_VOICES_PRE
-			mVoice[ch]->seek(aSeconds, mScratch.mData, mScratchSize);
+			singleres = mVoice[ch]->seek(aSeconds, mScratch.mData, mScratchSize);
+		if (singleres != SO_NO_ERROR)
+			res = singleres;
 		FOR_ALL_VOICES_POST
+		return res;
 	}
 
 
@@ -170,4 +182,25 @@ namespace SoLoud
 		}
 		unlockAudioMutex();
 	}
+
+	int Soloud::countAudioSource(AudioSource &aSound)
+	{
+		int count = 0;
+		if (aSound.mAudioSourceID)
+		{
+			lockAudioMutex();
+
+			int i;
+			for (i = 0; i < (signed)mHighestVoice; i++)
+			{
+				if (mVoice[i] && mVoice[i]->mAudioSourceID == aSound.mAudioSourceID)
+				{
+					count++;
+				}
+			}
+			unlockAudioMutex();
+		}
+		return count;
+	}
+
 }

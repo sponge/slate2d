@@ -7,7 +7,7 @@
 #include <soloud_wav.h>
 #include <soloud_thread.h>
 #include <soloud_speech.h>
-#include <soloud_modplug.h>
+#include <soloud_openmpt.h>
 
 extern SoLoud::Soloud soloud;
 
@@ -39,7 +39,7 @@ void* Sound_Load(Asset &asset) {
 		}
 
 		case ASSET_MOD: {
-			auto mod = new SoLoud::Modplug();
+			auto mod = new SoLoud::Openmpt();
 			mod->loadMem(musicbuf, sz, false, true);
 			return (void*)mod;
 		}
@@ -54,7 +54,7 @@ void Sound_Free(Asset &asset) {
 }
 
 void Mod_Free(Asset &asset) {
-	SoLoud::Modplug* mod = (SoLoud::Modplug*) asset.resource;
+	SoLoud::Openmpt* mod = (SoLoud::Openmpt*) asset.resource;
 	delete mod;
 }
 

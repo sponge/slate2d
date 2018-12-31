@@ -46,7 +46,7 @@ solution "game"
     -- physfs uses the exe path by default, but the game data files are in the top folder
     debugargs { "+set", "fs_basepath", path.getabsolute(".")}
     targetdir "build/bin/%{cfg.buildcfg}"
-    links { "tmx", "imgui", "physfs", "glew", "soloud", "libmodplug" }
+    links { "tmx", "imgui", "physfs", "glew", "soloud" }
     cppdialect "C++14"
     -- define so engine and emscripten packaging are always in sync on the same base game folder 
     defines { "DEFAULT_GAME=\"" .. _OPTIONS["default-game"] .. "\""}
@@ -168,7 +168,7 @@ solution "game"
       targetname "soloud_static"
       warnings "Off"
       sysincludedirs { "libs/sdl" }
-      defines { "MODPLUG_STATIC", "WITH_MODPLUG", "WITH_SDL2_STATIC" }
+      defines { "MODPLUG_STATIC", "WITH_OPENMPT", "WITH_SDL2_STATIC" }
       files {
         "libs/soloud/src/audiosource/**.c*",
         "libs/soloud/src/filter/**.c*",
@@ -188,20 +188,3 @@ solution "game"
       filter { "system:macosx" }
         links { "SDL2.framework" }
         linkoptions {"-F /Library/Frameworks"}
-
-    project "libmodplug"
-      kind "StaticLib"
-      targetdir "build/%{cfg.buildcfg}"
-      language "C++"
-      defines { "MODPLUG_STATIC", "HAVE_SINF" }
-      files { "libs/soloud/ext/libmodplug/src/**.cpp*" }
-      includedirs { "libs/soloud/ext/libmodplug/src/**" }
-      targetname "libmodplug"
-      warnings "Off"
-      characterset "MBCS"
-
-      filter { "system:macosx" }
-        defines { "HAVE_SETENV" }
-
-      filter { "action:gmake2", "options:emscripten" }
-        defines { "HAVE_STDINT_H", "HAVE_SETENV" } 

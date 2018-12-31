@@ -37,11 +37,13 @@ namespace SoLoud
 		unsigned int mScratchSize;
 		AlignedFloatBuffer mScratch;
 	public:
+		// Approximate volume for channels.
+		float mVisualizationChannelVolume[MAX_CHANNELS];
 		// Mono-mixed wave data for visualization and for visualization FFT input
 		float mVisualizationWaveData[256];
 
 		BusInstance(Bus *aParent);
-		virtual void getAudio(float *aBuffer, unsigned int aSamples);
+		virtual unsigned int getAudio(float *aBuffer, unsigned int aSamplesToRead, unsigned int aBufferSize);
 		virtual bool hasEnded();
 		virtual ~BusInstance();
 	};
@@ -71,6 +73,9 @@ namespace SoLoud
 
 		// Get 256 floats of wave data for visualization. Visualization has to be enabled before use.
 		float *getWave();
+
+		// Get approximate volume for output channel for visualization. Visualization has to be enabled before use.
+		float getApproximateVolume(unsigned int aChannel);
 	public:
 		BusInstance *mInstance;
 		unsigned int mChannelHandle;

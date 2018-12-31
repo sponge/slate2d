@@ -22,15 +22,15 @@ freely, subject to the following restrictions:
    distribution.
 */
 
-#include "soloud.h"
-#include "soloud_thread.h"
-
-#ifdef WINDOWS_VERSION
-#include <Windows.h>
+#if defined(_WIN32)||defined(_WIN64)
+#include <windows.h>
 #else
 #include <pthread.h>
 #include <unistd.h>
 #endif
+
+#include "soloud.h"
+#include "soloud_thread.h"
 
 namespace SoLoud
 {

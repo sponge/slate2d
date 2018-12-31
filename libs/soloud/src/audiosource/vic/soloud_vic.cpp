@@ -48,7 +48,7 @@ namespace SoLoud
 	{
 	}
 
-	void VicInstance::getAudio(float *aBuffer, unsigned int aSamples)
+	unsigned int VicInstance::getAudio(float *aBuffer, unsigned int aSamplesToRead, unsigned int aBufferSize)
 	{
 		unsigned int phaseAdder[4] = { 0, 0, 0, 0 };
 		for(int i = 0; i < 4; i++)
@@ -61,7 +61,7 @@ namespace SoLoud
 			}
 		}
 
-		for(int i = 0; i < (signed)aSamples; i++)
+		for(int i = 0; i < (signed)aSamplesToRead; i++)
 		{
 			float s = 0.0f;
 
@@ -91,6 +91,7 @@ namespace SoLoud
 
 			aBuffer[i] = s / 4.0f;
 		}
+		return aSamplesToRead;
 	}
 
 	bool VicInstance::hasEnded()
@@ -112,7 +113,7 @@ namespace SoLoud
 		{
 		    unsigned lsb = lfsr & 1;
 		    lfsr >>= 1;
-		    lfsr ^= (-lsb) & 0xB400u;
+		    lfsr ^= (unsigned)(-(signed)lsb) & 0xB400u;
 		    m_noise[i] = (lfsr & 0xff) ^ (lfsr >> 8);
 		}
 	}
@@ -147,6 +148,16 @@ namespace SoLoud
 	int Vic::getModel() const
 	{
 		return m_model;
+	}
+
+	void Vic::setRegister(int reg, unsigned char value) 
+	{ 
+		m_regs[reg] = value; 
+	}
+	
+	unsigned char Vic::getRegister(int reg)
+	{ 
+		return m_regs[reg]; 
 	}
 
 	AudioSourceInstance * Vic::createInstance() 

@@ -53,6 +53,11 @@ namespace SoLoud
 		return d;
 	}
 
+DiskFile::DiskFile(FILE *fp):
+mFileHandle(fp)
+{
+
+}
 
 	unsigned int DiskFile::read(unsigned char *aDst, unsigned int aBytes)
 	{
@@ -61,6 +66,8 @@ namespace SoLoud
 
 	unsigned int DiskFile::length()
 	{
+		if (!mFileHandle)
+			return 0;
 		int pos = ftell(mFileHandle);
 		fseek(mFileHandle, 0, SEEK_END);
 		int len = ftell(mFileHandle);
@@ -180,7 +187,7 @@ namespace SoLoud
 			if (mDataPtr == NULL)
 				return OUT_OF_MEMORY;
 			memcpy(mDataPtr, aData, aDataLength);
-			return SO_NO_ERROR;			
+			return SO_NO_ERROR;
 		}
 
 		mDataPtr = aData;
@@ -213,6 +220,8 @@ namespace SoLoud
 
 	result MemoryFile::openFileToMem(File *aFile)
 	{
+		if (!aFile)
+			return INVALID_PARAMETER;
 		if (mDataOwned)
 			delete[] mDataPtr;
 		mDataPtr = 0;
@@ -241,7 +250,7 @@ extern "C"
 	{
 		SoLoud::File *fp = (SoLoud::File *)f;
 		if (fp->eof())
-			return EOF;		
+			return EOF;
 		return fp->read8();
 	}
 

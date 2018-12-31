@@ -53,10 +53,10 @@ namespace SoLoud
 			mRegValues[i] = 0;
 	}
 
-	void TedSidInstance::getAudio(float *aBuffer, unsigned int aSamples)
+	unsigned int TedSidInstance::getAudio(float *aBuffer, unsigned int aSamplesToRead, unsigned int aBufferSize)
 	{
 		unsigned int i;
-		for (i = 0; i < aSamples; i++)
+		for (i = 0; i < aSamplesToRead; i++)
 		{
 		    tick();
 			short sample;
@@ -66,6 +66,7 @@ namespace SoLoud
 			aBuffer[i] = (sample + tedsample) / 8192.0f;
 			mSampleCount--;
 		}
+		return aSamplesToRead;
 	}
 	
 	void TedSidInstance::tick()
@@ -163,7 +164,10 @@ namespace SoLoud
 		if (!df) return OUT_OF_MEMORY;
 		int res = df->open(aFilename);
 		if (res != SO_NO_ERROR)
+		{
+			delete df;
 			return res;
+		}
 		res = loadFile(df);
 		if (res != SO_NO_ERROR)
 		{

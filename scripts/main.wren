@@ -30,6 +30,8 @@ class Main {
 
       __defaultScene = "title"
 
+      Trap.setWindowTitle("Hot Air")
+
       Timer.init()
       Debug.init()
       

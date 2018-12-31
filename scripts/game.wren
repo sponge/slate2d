@@ -44,6 +44,9 @@ class Game {
       _dpad = Asset.create(Asset.Image, "dpad", "gfx/arrows-gamepad.png")
       _padButtons = Asset.create(Asset.Image, "dpadbuttons", "gfx/zx-gamepad.png")
 
+      _tick = Asset.create(Asset.Image, "tick", "gfx/tick.png")
+      _cross = Asset.create(Asset.Image, "cross", "gfx/cross.png")
+
       _meter = Meter.new()
       _cam = Camera.new(16, 16, 320, 180)
       _rnd = Random.new()
@@ -55,6 +58,8 @@ class Game {
       _itemsToWin = 5
       _totalItems = 0
       _canWin = false
+      _paused = false
+      _pauseQuitSelected = false
 
       if (level == "endless") {
          _endless = true
@@ -158,8 +163,34 @@ class Game {
       }
    }
 
+   pauseUpdate() {
+      if (Trap.keyPressed(Button.Start, 0, -1)) {
+         if (_pauseQuitSelected) {
+            _nextScene = "title"
+         }
+         _paused = false
+      }
+
+      if (Trap.keyPressed(Button.Left, 0, -1)) {
+         _pauseQuitSelected = true
+      }
+      if (Trap.keyPressed(Button.Right, 0, -1)) {
+         _pauseQuitSelected = false
+      }
+   }
+
    update(dt) {
       _t = _t + dt
+
+      if (_paused) {
+         pauseUpdate()
+         return
+      }
+
+      if (!_paused && Trap.keyPressed(Button.Start, 0, -1)) {
+         _paused = true
+         _pauseQuitSelected = false
+      }
 
       // select a new random level in endless if we've passed one
       if (_endless) {
@@ -261,6 +292,33 @@ class Game {
          drawHelp()
       }
 
+      if (_paused) {
+         drawPause()
+      }
+   }
+
+   drawPause() {
+      var w = 64
+      var h = 28
+      Draw.setColor(0, 0, 0, 200)
+      Draw.rect(320/2 - w/2, 160/2 - h/2, w, h, false)
+      Draw.setColor(255, 255, 255, 255)
+
+      var tw = Asset.measureBmpText(_font, "quit?")
+      Draw.bmpText(_font, 320/2 - tw/2, 160/2 - h/2 + 2, "quit?")
+
+      if (_pauseQuitSelected) {
+         Draw.setColor(255, 255, 255, 255)
+         Draw.image(_tick, 320/2 - w/2 + 8, 160/2 - h/2 + 10)
+         Draw.setColor(127, 127, 127, 255)
+         Draw.image(_cross, 320/2 + w/2 - 24, 160/2 - h/2 + 10)
+      } else {
+         Draw.setColor(127, 127, 127, 255)
+         Draw.image(_tick, 320/2 - w/2 + 8, 160/2 - h/2 + 10)
+         Draw.setColor(255, 255, 255, 255)
+         Draw.image(_cross, 320/2 + w/2 - 24, 160/2 - h/2 + 10)
+      }
+         Draw.setColor(255, 255, 255, 255)
    }
 
    drawExit() {

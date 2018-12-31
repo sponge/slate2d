@@ -19,6 +19,7 @@ static gameImportFuncs_t GAMEtraps = {
 	trap_SendConsoleCommand,
 	Com_Printf,
 	Com_Error,
+	SetWindowTitle,
 	Cvar_Get,
 	Cvar_FindVar,
 	Cvar_Set,

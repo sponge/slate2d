@@ -128,6 +128,16 @@ void wren_trap_get_resolution(WrenVM *vm) {
 	wrenInsertInList(vm, 0, -1, 2);
 }
 
+void wren_trap_set_window_title(WrenVM *vm) {
+	const char *title = wrenGetSlotString(vm, 1);
+
+	if (title == nullptr || strlen(title) == 0) {
+		return;
+	}
+
+	trap->SetWindowTitle(title);
+}
+
 // HACK: because i'm sometimes skipping update() to run at 60, key inputs may be delayed a frame. calling
 // this after we run an update frame lets me continue to know if the button was pressed on this frame
 // even if an input was skipped 
@@ -804,6 +814,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "mousePosition()", wren_trap_mouse_position },
 	{ "engine", "Trap", true, "inspect(_,_)", wren_trap_inspect },
 	{ "engine", "Trap", true, "getResolution()", wren_trap_get_resolution },
+	{ "engine", "Trap", true, "setWindowTitle(_)", wren_trap_set_window_title },
 	{ "engine", "Trap", true, "clearKeyPressed()", wren_clear_key_pressed},
 
 	{ "engine", "CVar", false, "bool()", wren_cvar_bool },

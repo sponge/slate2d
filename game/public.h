@@ -6,7 +6,8 @@
 typedef struct gameImportFuncs_s {
 	void (*SendConsoleCommand)(const char * text);
 	void (*Print)(const char *fmt, ...);
-	void(*Error)(int level, const char *error, ...);
+	void (*Error)(int level, const char *error, ...);
+	void (*SetWindowTitle)(const char *title);
 
 	cvar_t* (*Cvar_Get)(const char *var_name, const char *var_value, int flags);
 	cvar_t* (*Cvar_FindVar)(const char * name);

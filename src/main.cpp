@@ -54,6 +54,10 @@ gameExportFuncs_t * gexports;
 SDL_Window *window;
 ConsoleScene *consoleScene;
 
+void SetWindowTitle(const char *title) {
+	SDL_SetWindowTitle(window, title);
+}
+
 void Cmd_FrameAdvance_f(void) {
 	if (!com_pause->integer) {
 		Cvar_Set("com_pause", "1");

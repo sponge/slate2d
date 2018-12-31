@@ -2,6 +2,7 @@ import "engine" for Draw, Asset, Trap, Button, Fill
 import "math" for Math
 import "timer" for Timer
 import "entity" for Entity
+import "soundcontroller" for SoundController
 
 class Player is Entity {
    launched { _launched }
@@ -13,6 +14,9 @@ class Player is Entity {
 
       _mouth = Asset.create(Asset.Sprite, "mouth", "gfx/bigmouth.png")
       Asset.spriteSet(_mouth, 16, 16, 0, 0)
+
+      _chomp = Asset.create(Asset.Sound, "chompSnd", "sound/chomp.wav")
+      _float = Asset.create(Asset.Sound, "floatSnd", "sound/float.wav")
 
       _t = 0
       _flip = 0
@@ -57,13 +61,16 @@ class Player is Entity {
          if (lPressed || rPressed) {
             dx = dx + (lPressed ? -_moveSpeed : _moveSpeed)
          }
+
+         SoundController.playOnce(_float)
       } else {
          // no flap this frame, apply gravity if not on the platform
          if (_launched) {
             dy = dy + _gravity
          }
 
-         if (!_flap) {
+         if (!_flap && _flapHeld) {
+            SoundController.playOnce(_chomp)
             _flapHeld = false
          }
       }

@@ -1,7 +1,9 @@
 import "engine" for Draw, Asset, TileMap, Trap, Button, Fill
+import "soundcontroller" for SoundController
 import "random" for Random
 import "math" for Math
 import "levels" for Levels
+import "timer" for Timer
 
 class Title {
    nextScene { _nextScene }
@@ -18,6 +20,10 @@ class Title {
       _iconCount = 15
 
       _logo = Asset.create(Asset.Image, "hotair", "gfx/hotair.png")
+
+      _select = Asset.create(Asset.Sound, "select", "sound/select.wav")
+      _menuMove = Asset.create(Asset.Sound, "menuMove", "sound/menumove.wav")
+
 
       Asset.loadAll()
 
@@ -89,12 +95,18 @@ class Title {
          if (_selectedItem < 0) {
             _selectedItem = _items.count - 1
          }
+         SoundController.playOnce(_menuMove, 0.5, 0, false)
       } else if (down) {
          _selectedItem = (_selectedItem + 1) % _items.count
+         SoundController.playOnce(_menuMove, 0.5, 0, false)
       } else if ((left || right) && _items[_selectedItem] == "start") {
          _selectedLevel = right ? (_selectedLevel + 1) % Levels.Levels.count : _selectedLevel == 0 ? Levels.Levels.count - 1 : _selectedLevel - 1
+         SoundController.playOnce(_menuMove, 0.5, 0, false)
       } else if (confirmed) {
-         _actions[_selectedItem].call()
+         SoundController.playOnce(_select, 0.5, 0, false)
+         Timer.runLater(30) {
+            _actions[_selectedItem].call()
+         }
       }
    }
 

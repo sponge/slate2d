@@ -17,6 +17,7 @@ class Player is Entity {
 
       _chomp = Asset.create(Asset.Sound, "chompSnd", "sound/chomp.wav")
       _float = Asset.create(Asset.Sound, "floatSnd", "sound/float.wav")
+      _die = Asset.create(Asset.Sound, "dieSnd", "sound/die.wav")
 
       _t = 0
       _flip = 0
@@ -24,6 +25,7 @@ class Player is Entity {
       _invuln = false
       _launched = false
       _flap = false
+      _willDie = false
 
       _flapStrength = 0.4
       _maxFallSpeed = 0.75
@@ -39,6 +41,10 @@ class Player is Entity {
 
    think(dt) {
       _t = _t + dt
+
+      if (_willDie) {
+         return
+      }
 
       _flap = Trap.keyPressed(Button.A) || Trap.keyPressed(Button.B)
       var lPressed = Trap.keyPressed(Button.Left)
@@ -144,6 +150,10 @@ class Player is Entity {
    }
 
    draw() {
+      if (_willDie) {
+         return
+      }
+
       var offs = [-3, -14] // [x,y] balloon offset
 
       // pull balloons in if flying up
@@ -168,7 +178,12 @@ class Player is Entity {
    }
 
    die() {
-      super()
-      world.onGameOver()
+      _willDie = true
+      SoundController.playOnce(_die)
+      Timer.runLater(60) {
+         super()
+         world.onGameOver()
+      }
+
    }
 }

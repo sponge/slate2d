@@ -278,7 +278,7 @@ class Game {
       // update each entity and kill them if they're off camera
       for (ent in _entities) {
          ent.think(dt)
-         if (ent.x > _cam.x + _cam.w) {
+         if (ent.x > _cam.x + _cam.w && ent is Player == false) {
             ent.die(false)
          }
       }

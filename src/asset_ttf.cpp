@@ -14,7 +14,7 @@ void* TTF_Load(Asset &asset) {
 	TTFFont_t *fnt = new TTFFont_t();
 
 	if (ctx == nullptr) {
-		ctx = glfonsCreate(512, 512, 0);
+		ctx = glfonsCreate(512, 512, FONS_ZERO_TOPLEFT);
 	}
 
 

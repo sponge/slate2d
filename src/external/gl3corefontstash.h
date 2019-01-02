@@ -121,35 +121,6 @@ static void glfons__renderDraw(void* userPtr, const float* verts, const float* t
 	
 	rlDisableTexture();
 	rlEnd();
-
-
-	/*
-	glBindVertexArray(gl->vertexArray);
-
-	glEnableVertexAttribArray(GLFONS_VERTEX_ATTRIB);
-	glBindBuffer(GL_ARRAY_BUFFER, gl->vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, nverts * 2 * sizeof(float), verts, GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(GLFONS_VERTEX_ATTRIB, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
-	glEnableVertexAttribArray(GLFONS_TCOORD_ATTRIB);
-	glBindBuffer(GL_ARRAY_BUFFER, gl->tcoordBuffer);
-	glBufferData(GL_ARRAY_BUFFER, nverts * 2 * sizeof(float), tcoords, GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(GLFONS_TCOORD_ATTRIB, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
-	glEnableVertexAttribArray(GLFONS_COLOR_ATTRIB);
-	glBindBuffer(GL_ARRAY_BUFFER, gl->colorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, nverts * sizeof(unsigned int), colors, GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(GLFONS_COLOR_ATTRIB, 4, GL_UNSIGNED_BYTE, GL_FALSE, 0, NULL);
-
-	glDrawArrays(GL_TRIANGLES, 0, nverts);
-
-	glDisableVertexAttribArray(GLFONS_VERTEX_ATTRIB);
-	glDisableVertexAttribArray(GLFONS_TCOORD_ATTRIB);
-	glDisableVertexAttribArray(GLFONS_COLOR_ATTRIB);
-	
-
-	glBindVertexArray(0);
-	*/
 }
 
 static void glfons__renderDelete(void* userPtr)

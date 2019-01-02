@@ -20,10 +20,10 @@
 #include <GL/glew.h>
 #endif
 
-//#define FONTSTASH_IMPLEMENTATION
-//#include "external/fontstash.h"
-//#define GLFONTSTASH_IMPLEMENTATION
-//#include "external/gl3corefontstash.h"
+#define FONTSTASH_IMPLEMENTATION
+#include "external/fontstash.h"
+#define GLFONTSTASH_IMPLEMENTATION
+#include "external/gl3corefontstash.h"
 
 bool initGL(int width, int height) {
 #ifndef __EMSCRIPTEN__

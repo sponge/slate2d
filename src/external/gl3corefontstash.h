@@ -35,25 +35,9 @@ FONS_DEF unsigned int glfonsRGBA(unsigned char r, unsigned char g, unsigned char
 
 #ifdef GLFONTSTASH_IMPLEMENTATION
 
-#ifndef GLFONS_VERTEX_ATTRIB
-#	define GLFONS_VERTEX_ATTRIB 0
-#endif
-
-#ifndef GLFONS_TCOORD_ATTRIB
-#	define GLFONS_TCOORD_ATTRIB 1
-#endif
-
-#ifndef GLFONS_COLOR_ATTRIB
-#	define GLFONS_COLOR_ATTRIB 2
-#endif
-
 struct GLFONScontext {
 	GLuint tex;
 	int width, height;
-	GLuint vertexArray;
-	GLuint vertexBuffer;
-	GLuint tcoordBuffer;
-	GLuint colorBuffer;
 };
 typedef struct GLFONScontext GLFONScontext;
 
@@ -69,20 +53,6 @@ static int glfons__renderCreate(void* userPtr, int width, int height)
 
 	glGenTextures(1, &gl->tex);
 	if (!gl->tex) return 0;
-
-	if (!gl->vertexArray) glGenVertexArrays(1, &gl->vertexArray);
-	if (!gl->vertexArray) return 0;
-
-	glBindVertexArray(gl->vertexArray);
-
-	if (!gl->vertexBuffer) glGenBuffers(1, &gl->vertexBuffer);
-	if (!gl->vertexBuffer) return 0;
-
-	if (!gl->tcoordBuffer) glGenBuffers(1, &gl->tcoordBuffer);
-	if (!gl->tcoordBuffer) return 0;
-
-	if (!gl->colorBuffer) glGenBuffers(1, &gl->colorBuffer);
-	if (!gl->colorBuffer) return 0;
 
 	gl->width = width;
 	gl->height = height;
@@ -136,11 +106,24 @@ static void glfons__renderUpdate(void* userPtr, int* rect, const unsigned char* 
 static void glfons__renderDraw(void* userPtr, const float* verts, const float* tcoords, const unsigned int* colors, int nverts)
 {
 	GLFONScontext* gl = (GLFONScontext*)userPtr;
-	if (gl->tex == 0 || gl->vertexArray == 0) return;
+	if (gl->tex == 0) return;
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, gl->tex);
+	rlglDraw();
 
+	rlBegin(RL_TRIANGLES);
+	rlEnableTexture(gl->tex);
+
+	for (int i = 0; i < nverts; i++) {
+		rlColor4ub(colors[i] >> 16 & 255, colors[i] >> 8 & 255, colors[i] >> 0 & 255, colors[i] >> 24 & 255);
+		rlVertex2f(verts[i * 2 + 0], verts[i * 2 + 1]);
+		rlTexCoord2f(tcoords[i * 2 + 0], tcoords[i * 2 + 1]);
+	}
+	
+	rlDisableTexture();
+	rlEnd();
+
+
+	/*
 	glBindVertexArray(gl->vertexArray);
 
 	glEnableVertexAttribArray(GLFONS_VERTEX_ATTRIB);
@@ -163,8 +146,10 @@ static void glfons__renderDraw(void* userPtr, const float* verts, const float* t
 	glDisableVertexAttribArray(GLFONS_VERTEX_ATTRIB);
 	glDisableVertexAttribArray(GLFONS_TCOORD_ATTRIB);
 	glDisableVertexAttribArray(GLFONS_COLOR_ATTRIB);
+	
 
 	glBindVertexArray(0);
+	*/
 }
 
 static void glfons__renderDelete(void* userPtr)
@@ -173,28 +158,6 @@ static void glfons__renderDelete(void* userPtr)
 	if (gl->tex != 0) {
 		glDeleteTextures(1, &gl->tex);
 		gl->tex = 0;
-	}
-
-	glBindVertexArray(0);
-
-	if (gl->vertexBuffer != 0) {
-		glDeleteBuffers(1, &gl->vertexBuffer);
-		gl->vertexBuffer = 0;
-	}
-
-	if (gl->tcoordBuffer != 0) {
-		glDeleteBuffers(1, &gl->tcoordBuffer);
-		gl->tcoordBuffer = 0;
-	}
-
-	if (gl->colorBuffer != 0) {
-		glDeleteBuffers(1, &gl->colorBuffer);
-		gl->colorBuffer = 0;
-	}
-
-	if (gl->vertexArray != 0) {
-		glDeleteVertexArrays(1, &gl->vertexArray);
-		gl->vertexArray = 0;
 	}
 
 	free(gl);

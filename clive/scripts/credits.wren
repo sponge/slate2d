@@ -51,6 +51,7 @@ class Credits {
 
       Draw.setColor(0, 57, 113, 255)
       Draw.rect(0, 0, w, h, false)
+      Draw.setColor(255, 255, 255, 255)
       Draw.image(_gradient, 0, 0, w, h)
 
       Draw.scale(h / 720)
@@ -58,6 +59,7 @@ class Credits {
       Draw.setColor(200, 227, 255, 255)
       Draw.setTextStyle(_bodyFont, 96, 1.0, Align.Center+Align.Top)
       Draw.text(0, 30, 1280, "CREDITS")
+      Draw.setColor(255, 255, 255, 255)
 
       var textY = 200
       textY = drawCredit(
@@ -89,19 +91,6 @@ class Credits {
          "@tinypeepee",
          "audio"
       )
-//       Draw.setTextStyle(_bodyFont, 48, 1.0, Align.Center+Align.Top)
-//       Draw.text(0, textY, 1280, "alligator")
-//       textY = textY + 48
-//       Draw.text(0, textY, 1280, "art, concept, programming, writing, voice acting")
-
-//       Draw.text(640, textY, textWidth, "sponge")
-//       Draw.text(640, textY + 5, textWidth, "concept, programming, writing")
-
-//       Draw.text(textMargin, textY + 72, textWidth, "HardClumping")
-//       Draw.text(textMargin, textY + 78, textWidth, "audio, music, writing")
-
-//       Draw.text(640, textY + 72, textWidth, "LiLPP")
-//       Draw.text(640, textY + 78, textWidth, "audio")
    }
 
    shutdown() {

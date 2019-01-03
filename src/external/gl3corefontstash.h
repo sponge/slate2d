@@ -108,6 +108,7 @@ static void glfons__renderDraw(void* userPtr, const float* verts, const float* t
 	GLFONScontext* gl = (GLFONScontext*)userPtr;
 	if (gl->tex == 0) return;
 
+	// FIXME: probably can check for buffer space instead
 	rlglDraw();
 
 	rlBegin(RL_TRIANGLES);

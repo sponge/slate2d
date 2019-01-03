@@ -68,7 +68,7 @@ class Main {
          loadScene("td", params)
       } else {
          Asset.clearAll()
-         loadScene("towers", null)
+         loadScene("title", null)
       }
    }
 

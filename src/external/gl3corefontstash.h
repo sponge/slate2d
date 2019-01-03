@@ -114,7 +114,11 @@ static void glfons__renderDraw(void* userPtr, const float* verts, const float* t
 	rlEnableTexture(gl->tex);
 
 	for (int i = 0; i < nverts; i++) {
-		rlColor4ub(colors[i] >> 16 & 255, colors[i] >> 8 & 255, colors[i] >> 0 & 255, colors[i] >> 24 & 255);
+		byte r = colors[i] >> 0 & 255;
+		byte g = colors[i] >> 8 & 255;
+		byte b = colors[i] >> 16 & 255;
+		byte a = colors[i] >> 24 & 255;
+		rlColor4ub(r, g, b, a);
 		rlVertex2f(verts[i * 2 + 0], verts[i * 2 + 1]);
 		rlTexCoord2f(tcoords[i * 2 + 0], tcoords[i * 2 + 1]);
 	}

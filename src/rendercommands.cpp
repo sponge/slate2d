@@ -14,6 +14,8 @@ Canvas * activeCanvas = nullptr;
 extern FONScontext *ctx;
 
 byte currentColor[4] = { 255, 255, 255, 255 };
+int currentAlign = FONS_ALIGN_LEFT;
+float currentLineHeight = 0;
 
 const void *RB_SetColor(const void *data) {
 	auto cmd = (const setColorCommand_t *)data;
@@ -214,7 +216,8 @@ const void *RB_SetTextStyle(const void *data) {
 	fonsSetFont(ctx, fnt->hnd);
 	fonsSetSize(ctx, (float)cmd->size);
 	fonsSetAlign(ctx, cmd->align);
-	// FIXME: cmd->lineHeight ?
+	currentLineHeight = cmd->lineHeight;
+	currentAlign = cmd->align;
 
 	return (const void *)(cmd + 1);
 }
@@ -223,8 +226,15 @@ const void *RB_DrawText(const void *data) {
 	auto cmd = (const drawTextCommand_t *)data;
 	const char *text = (const char *)cmd + sizeof(drawTextCommand_t);
 
-	fonsDrawText(ctx, cmd->x, cmd->y, text, nullptr);
-	// FIXME: cmd->width
+	fonsSetColor(ctx, (currentColor[0]) | (currentColor[1] << 8) | (currentColor[2] << 16) | (currentColor[3] << 24));
+
+	if (cmd->w <= 0) {
+		fonsDrawText(ctx, cmd->x, cmd->y, text, nullptr);
+		return (const void *)(text + cmd->strSz);
+	}
+	else {
+		TTF_TextBox(cmd, text);
+	}
 
 	return (const void *)(text + cmd->strSz);
 }

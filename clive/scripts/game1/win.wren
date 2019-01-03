@@ -53,7 +53,7 @@ class Game1Win {
       y = y + 32
       Draw.text(90, y, w, "THANKS MUM FOR THE PIES")
 
-      Draw.setColor(255, 255, 0, 255)
+      Draw.setColor(255, 255, 255, 255)
       y = y + 16
 
       var frame = (_time * 8% 4).floor

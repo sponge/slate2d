@@ -93,6 +93,7 @@ class Game5Title {
       Draw.text(0, 600, 1280, "towers")
       Draw.setTextStyle(_bodyFont, 32, 1.0, Align.Center|Align.Top)
       Draw.text(0, 650, 1280, "by clive")
+      Draw.setColor(255, 255, 255, 255)
 
       Draw.setTextStyle(_bodyFont, 48, 1.0, Align.Center|Align.Top)
 

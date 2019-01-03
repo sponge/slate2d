@@ -61,6 +61,7 @@ class TowersEnding {
       Draw.setColor(0, 0, 0, 255)
       Draw.setTextStyle(_bodyFont, 28, 1.0, Align.Left|Align.Top)
       Draw.text(600, _textY < -1020 ? -1020 : _textY, 640, _text)
+      Draw.setColor(255, 255, 255, 255)
 
       if (_paused) {
          _pauseMenu.draw()

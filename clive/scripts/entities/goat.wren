@@ -194,5 +194,6 @@ class Goat is Entity {
     Draw.image(sprite, sprX, sprY, _imgSize[0], _imgSize[1], 1.0)
     Draw.setColor(0, 255, 0, 255)
     Draw.rect(sprX, sprY - 2, _td.tw * 2 * (_hp / _startingHP), _td.th / 4, false)
+    Draw.setColor(255, 255, 255, 255)
   }
 }

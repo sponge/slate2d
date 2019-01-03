@@ -69,6 +69,7 @@ class GameInfo {
       Draw.setColor(0, 0, 0, 200)
       Draw.rect(0, 0, 425+40, 720, Fill.Solid)
 
+      Draw.setColor(255, 255, 255, 255)
       Draw.image(_boxHnd, 40, 55)
 
       Draw.setColor(176, 205, 234, 255)

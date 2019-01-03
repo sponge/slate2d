@@ -42,6 +42,9 @@ class Credits {
       Draw.setColor(255, 255, 255, 255)
       Draw.setTextStyle(_bodyFont, 40, 1.0, Align.Center+Align.Top)
       Draw.text(margin + col * (640 - margin), y, 640 - margin, creds)
+
+      Draw.setColor(255, 255, 255, 255)
+            
       return y + 96
    }
 

@@ -133,6 +133,7 @@ class Game3Title {
             var y = 64
             Draw.setColor(0, 0, 0, 255)
             Draw.rect(0, y, 360, 64, Fill.Solid)
+            Draw.setColor(255, 255, 255, 255)
             Draw.bmpText(_font, 0, y, _warningMessage)
          }
       } else if (_mode == "selftest") {
@@ -148,6 +149,7 @@ class Game3Title {
          if ((_time * 2).floor % 2 == 0) {
             Draw.setColor(0, 149, 233, 255)
             Draw.text(0, 132, 320, "PUSH START")
+            Draw.setColor(255, 255, 255, 255)
          }
       }
    }

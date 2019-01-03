@@ -49,6 +49,7 @@ class Game3Win {
       Draw.text(0, 50, 320, "THE GOATS HAVE BEEN BESTED")
       Draw.text(0, 60, 320, "TRY AGAIN WITH %(_extraGoats) EXTRA GOATS!")
 
+      Draw.setColor(255, 255, 255, 255)
       var frame = (_time * 8% 4).floor
       Draw.sprite(_spr, 8 + (frame * 2), 128, 90, 1.0, 4, 0, 2, 2)
    }

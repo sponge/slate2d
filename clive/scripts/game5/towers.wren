@@ -151,7 +151,7 @@ class Man {
       var width = 20
       var height = 40
       var baseY = _y
-      Draw.setColor(color, 255)
+      Draw.setColor(color, color, color, 255)
 
       if (_jumping) {
          var jumpY = ((1 - (_jumpTimer / _jumpTime)) * Num.pi).sin * 10

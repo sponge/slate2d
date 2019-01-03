@@ -86,6 +86,7 @@ class FadeThing {
          Draw.setColor(255, 255, 255, _alpha)
          Draw.text(_x, _y, _w, _thing)
       } else if (_type == Asset.Image) {
+         Draw.setColor(255, 255, 255, 255)
          Draw.image(_thing, _x, _y, _w, _h, _alpha)
       }
    }

@@ -38,6 +38,8 @@ class Intro {
 
       Draw.setColor(0, 57, 113, 255)
       Draw.rect(0, 0, w, h, false)
+      
+      Draw.setColor(255, 255, 255, 255)
       Draw.image(_gradient, 0, 0, w, h)
 
       Draw.scale(h / 720)

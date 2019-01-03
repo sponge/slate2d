@@ -76,6 +76,7 @@ class SlotMachine {
    draw() {
       Draw.setColor(254, 174, 52, 255)
       Draw.rect(_x, _y, _w, _h, Fill.Solid)
+      Draw.setColor(255, 255, 255, 255)
       Draw.image(_bg, _x, _y)
       for (i in 0..._reels.count) {
          Draw.sprite(_icons, _reels[i], _x+36+(32*i), _y+32)

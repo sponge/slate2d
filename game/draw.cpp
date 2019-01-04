@@ -100,7 +100,7 @@ void DC_DrawRect(float x, float y, float w, float h, bool outline) {
 	cmd->h = h;
 }
 
-void DC_SetTextStyle(unsigned int fntId, unsigned int size, float lineHeight, int align) {
+void DC_SetTextStyle(unsigned int fntId, float size, float lineHeight, int align) {
 	GET_COMMAND(setTextStyleCommand_t, RC_SET_TEXT_STYLE)
 
 	cmd->fntId = fntId;
@@ -115,19 +115,6 @@ void DC_DrawText(float x, float y, float w, const char *text) {
 	cmd->x = x;
 	cmd->y = y;
 	cmd->w = w;
-	cmd->strSz = (unsigned int) strlen(text) + 1;
-
-	void *strStart = R_GetCommandBuffer(cmd->strSz);
-	strncpy((char*)strStart, text, strlen(text));
-}
-
-void DC_DrawBmpText(unsigned int fntId, float x, float y, const char *text, float scale) {
-	GET_COMMAND(drawBmpTextCommand_t, RC_DRAW_BMPTEXT)
-
-	cmd->fntId = fntId;
-	cmd->x = x;
-	cmd->y = y;
-	cmd->scale = scale;
 	cmd->strSz = (unsigned int) strlen(text) + 1;
 
 	void *strStart = R_GetCommandBuffer(cmd->strSz);

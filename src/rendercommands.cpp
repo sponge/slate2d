@@ -205,17 +205,28 @@ const void *RB_DrawRect(const void *data) {
 const void *RB_SetTextStyle(const void *data) {
 	auto cmd = (const setTextStyleCommand_t *)data;
 
-	Asset *asset = Asset_Get(ASSET_FONT, cmd->fntId);
+	Asset *asset = Asset_Get(ASSET_ANY, cmd->fntId);
 
 	assert(asset != nullptr);
 
-	TTFFont_t *fnt = (TTFFont_t*)asset->resource;
+	if (asset->type != ASSET_BITMAPFONT && asset->type != ASSET_FONT) {
+		Com_Error(ERR_DROP, "RB_SetTextStyle: asset not font or bmpfont");
+		return (const void *)(cmd + 1);
+	}
 
-	fonsSetFont(ctx, fnt->hnd);
-	fonsSetSize(ctx, (float)cmd->size);
-	fonsSetAlign(ctx, cmd->align);
+	state.font = asset;
 	state.lineHeight = cmd->lineHeight;
 	state.align = cmd->align;
+	state.size = cmd->size;
+
+	if (asset->type == ASSET_FONT) {
+		TTFFont_t *fnt = (TTFFont_t*)asset->resource;
+
+		fonsSetFont(ctx, fnt->hnd);
+		fonsSetSize(ctx, (float)cmd->size);
+		fonsSetAlign(ctx, cmd->align);
+	}
+
 
 	return (const void *)(cmd + 1);
 }
@@ -224,24 +235,20 @@ const void *RB_DrawText(const void *data) {
 	auto cmd = (const drawTextCommand_t *)data;
 	const char *text = (const char *)cmd + sizeof(drawTextCommand_t);
 
-	fonsSetColor(ctx, (state.color[0]) | (state.color[1] << 8) | (state.color[2] << 16) | (state.color[3] << 24));
-
-	if (cmd->w <= 0) {
-		fonsDrawText(ctx, cmd->x, cmd->y, text, nullptr);
-		return (const void *)(text + cmd->strSz);
+	if (state.font->type == ASSET_BITMAPFONT) {
+		BMPFNT_DrawText(state.font->id, cmd->x, cmd->y, state.size, text);
 	}
-	else {
-		TTF_TextBox(cmd, text);
+	else if (state.font->type == ASSET_FONT) {
+		fonsSetColor(ctx, (state.color[0]) | (state.color[1] << 8) | (state.color[2] << 16) | (state.color[3] << 24));
+
+		if (cmd->w <= 0) {
+			fonsDrawText(ctx, cmd->x, cmd->y, text, nullptr);
+			return (const void *)(text + cmd->strSz);
+		}
+		else {
+			TTF_TextBox(cmd, text);
+		}
 	}
-
-	return (const void *)(text + cmd->strSz);
-}
-
-const void *RB_DrawBmpText(const void *data) {
-	auto cmd = (const drawBmpTextCommand_t *)data;
-	const char *text = (const char *)cmd + sizeof(drawBmpTextCommand_t);
-
-	BMPFNT_DrawText(cmd->fntId, cmd->x, cmd->y, cmd->scale, text);
 
 	return (const void *)(text + cmd->strSz);
 }
@@ -561,10 +568,6 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 
 		case RC_DRAW_TEXT:
 			data = RB_DrawText(data);
-			break;
-
-		case RC_DRAW_BMPTEXT:
-			data = RB_DrawBmpText(data);
 			break;
 
 		case RC_DRAW_IMAGE:

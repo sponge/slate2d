@@ -92,7 +92,10 @@ class Draw {
    static setTextStyle(fntId, size, lineHeight) { setTextStyle(fntId, size, 1.0, 1) }
    static setTextStyle(fntId, size) { setTextStyle(fntId, size, 1.0) }
    foreign static text(x, y, w, text)
-   foreign static bmpText(fntId, x, y, text, scale)
+   static bmpText(fntId, x, y, text, scale) {
+      setTextStyle(fntId, scale, 12, Align.Left)
+      Draw.text(x, y, 0, text)
+   }
    static bmpText(fntId, x, y, text) { bmpText(fntId, x, y, text, 1.0) }
    foreign static image(imgId, x, y, w, h, alpha, scale, flipBits, ox, oy)
    static image(imgId, x, y, w, h, alpha, scale, flipBits) { image(imgId, x, y, w, h, alpha, scale, flipBits, 0, 0) }

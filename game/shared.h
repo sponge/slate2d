@@ -163,7 +163,7 @@ typedef struct {
 typedef struct {
 	byte	commandId;
 	unsigned int fntId;
-	unsigned int size;
+	float size;
 	float lineHeight;
 	int align;
 } setTextStyleCommand_t;
@@ -176,13 +176,6 @@ typedef struct {
 	float x, y, w;
 	unsigned int strSz;
 } drawTextCommand_t;
-
-typedef struct {
-	byte commandId;
-	unsigned int fntId;
-	float x, y, scale;
-	unsigned int strSz;
-} drawBmpTextCommand_t;
 
 #define FLIP_H 1
 #define FLIP_V 2
@@ -245,7 +238,6 @@ typedef enum {
 	RC_RESET_SHADER,
 	RC_DRAW_RECT,
 	RC_DRAW_TEXT,
-	RC_DRAW_BMPTEXT,
 	RC_DRAW_IMAGE,
 	RC_DRAW_SPRITE,
 	RC_DRAW_LINE,

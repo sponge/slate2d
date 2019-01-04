@@ -385,7 +385,7 @@ void wren_dc_useshader(WrenVM *vm) {
 
 void wren_dc_settextstyle(WrenVM *vm) {
 	AssetHandle fntId = (AssetHandle)wrenGetSlotDouble(vm, 1);
-	unsigned int size = (unsigned int)wrenGetSlotDouble(vm, 2);
+	float size = (float)wrenGetSlotDouble(vm, 2);
 	float lineHeight = (float)wrenGetSlotDouble(vm, 3);
 	int align = (int)wrenGetSlotDouble(vm, 4);
 
@@ -409,16 +409,6 @@ void wren_dc_drawtext(WrenVM *vm) {
 	const char *text = wrenGetSlotString(vm, 4);
 
 	DC_DrawText(x, y, w, text);
-}
-
-void wren_dc_drawbmptext(WrenVM *vm) {
-	AssetHandle fntId = (AssetHandle)wrenGetSlotDouble(vm, 1);
-	float x = (float)wrenGetSlotDouble(vm, 2);
-	float y = (float)wrenGetSlotDouble(vm, 3);
-	const char *text = wrenGetSlotString(vm, 4);
-	float scale = (float)wrenGetSlotDouble(vm, 5);
-
-	DC_DrawBmpText(fntId, x, y, text, scale);
 }
 
 void wren_dc_drawimage(WrenVM *vm) {
@@ -861,7 +851,6 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Draw", true, "rect(_,_,_,_,_)", wren_dc_drawrect },
 	{ "engine", "Draw", true, "setTextStyle(_,_,_,_)", wren_dc_settextstyle },
 	{ "engine", "Draw", true, "text(_,_,_,_)", wren_dc_drawtext },
-	{ "engine", "Draw", true, "bmpText(_,_,_,_,_)", wren_dc_drawbmptext },
 	{ "engine", "Draw", true, "image(_,_,_,_,_,_,_,_,_,_)", wren_dc_drawimage },
 	{ "engine", "Draw", true, "line(_,_,_,_)", wren_dc_drawline },
 	{ "engine", "Draw", true, "circle(_,_,_,_)", wren_dc_drawcircle },

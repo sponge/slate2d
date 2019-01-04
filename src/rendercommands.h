@@ -6,8 +6,10 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float alp
 
 struct RenderState {
 	byte color[4] = { 255, 255, 255, 255 };
+	Asset *font;
 	int align = 1;
 	float lineHeight = 1.0f;
+	float size = 1.0f;
 };
 typedef struct RenderState RenderState;
 

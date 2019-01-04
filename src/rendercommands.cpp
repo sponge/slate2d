@@ -13,17 +13,15 @@ Canvas * activeCanvas = nullptr;
 #include "external/fontstash.h"
 extern FONScontext *ctx;
 
-byte currentColor[4] = { 255, 255, 255, 255 };
-int currentAlign = FONS_ALIGN_LEFT;
-float currentLineHeight = 0;
+RenderState state;
 
 const void *RB_SetColor(const void *data) {
 	auto cmd = (const setColorCommand_t *)data;
 
-	currentColor[0] = cmd->color[0];
-	currentColor[1] = cmd->color[1];
-	currentColor[2] = cmd->color[2];
-	currentColor[3] = cmd->color[3];
+	state.color[0] = cmd->color[0];
+	state.color[1] = cmd->color[1];
+	state.color[2] = cmd->color[2];
+	state.color[3] = cmd->color[3];
 
 	return (const void *)(cmd + 1);
 }
@@ -185,7 +183,7 @@ const void *RB_DrawRect(const void *data) {
 
 	rlBegin(RL_QUADS);
 	rlEnableTexture(GetTextureDefault().id);
-	rlColor4ub(currentColor[0], currentColor[1], currentColor[2], currentColor[3]);
+	rlColor4ub(state.color[0], state.color[1], state.color[2], state.color[3]);
 
 	if (cmd->outline) {
 		DrawRectangle(cmd->x, cmd->y, cmd->w, 1);
@@ -216,8 +214,8 @@ const void *RB_SetTextStyle(const void *data) {
 	fonsSetFont(ctx, fnt->hnd);
 	fonsSetSize(ctx, (float)cmd->size);
 	fonsSetAlign(ctx, cmd->align);
-	currentLineHeight = cmd->lineHeight;
-	currentAlign = cmd->align;
+	state.lineHeight = cmd->lineHeight;
+	state.align = cmd->align;
 
 	return (const void *)(cmd + 1);
 }
@@ -226,7 +224,7 @@ const void *RB_DrawText(const void *data) {
 	auto cmd = (const drawTextCommand_t *)data;
 	const char *text = (const char *)cmd + sizeof(drawTextCommand_t);
 
-	fonsSetColor(ctx, (currentColor[0]) | (currentColor[1] << 8) | (currentColor[2] << 16) | (currentColor[3] << 24));
+	fonsSetColor(ctx, (state.color[0]) | (state.color[1] << 8) | (state.color[2] << 16) | (state.color[3] << 24));
 
 	if (cmd->w <= 0) {
 		fonsDrawText(ctx, cmd->x, cmd->y, text, nullptr);
@@ -269,7 +267,7 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float alp
 
 	rlBegin(RL_QUADS);
 	// FIXME: alpha * 255 bad! we use 0 - 255 everywhere but 0 - 1 here. come back to this and make it consistent everywhere!
-	rlColor4ub(currentColor[0], currentColor[1], currentColor[2], (byte)(alpha * 255));
+	rlColor4ub(state.color[0], state.color[1], state.color[2], (byte)(alpha * 255));
 
 	rlNormal3f(0, 0, 1);
 
@@ -355,7 +353,7 @@ const void *RB_DrawLine(const void *data) {
 	auto cmd = (const drawLineCommand_t *)data;
 
 	rlBegin(RL_LINES);
-	rlColor4ub(currentColor[0], currentColor[1], currentColor[2], currentColor[3]);
+	rlColor4ub(state.color[0], state.color[1], state.color[2], state.color[3]);
 	rlVertex2f(cmd->x1, cmd->y1);
 	rlVertex2f(cmd->x2, cmd->y2);
 	rlEnd();
@@ -374,7 +372,7 @@ const void *RB_DrawCircle(const void *data) {
 		}
 
 		rlBegin(RL_LINES);
-		rlColor4ub(currentColor[0], currentColor[1], currentColor[2], currentColor[3]);
+		rlColor4ub(state.color[0], state.color[1], state.color[2], state.color[3]);
 
 		// NOTE: Circle outline is drawn pixel by pixel every degree (0 to 360)
 		for (int i = 0; i < 360; i += 10)
@@ -392,7 +390,7 @@ const void *RB_DrawCircle(const void *data) {
 		rlBegin(RL_QUADS);
 		for (int i = 0; i < 360; i += 20)
 		{
-			rlColor4ub(currentColor[0], currentColor[1], currentColor[2], currentColor[3]);
+			rlColor4ub(state.color[0], state.color[1], state.color[2], state.color[3]);
 
 			rlVertex2f(cmd->x, cmd->y);
 			rlVertex2f(cmd->x + sinf((float)DEG2RAD*i)*cmd->radius, cmd->y + cosf((float)DEG2RAD*i)*cmd->radius);
@@ -415,7 +413,7 @@ const void *RB_DrawTri(const void *data) {
 
 	if (cmd->outline) {
 		rlBegin(RL_LINES);
-		rlColor4ub(currentColor[0], currentColor[1], currentColor[2], currentColor[3]);
+		rlColor4ub(state.color[0], state.color[1], state.color[2], state.color[3]);
 
 		rlVertex2f(cmd->x1, cmd->y1);
 		rlVertex2f(cmd->x2, cmd->y2);
@@ -429,7 +427,7 @@ const void *RB_DrawTri(const void *data) {
 	}
 	else {
 		rlBegin(RL_QUADS);
-		rlColor4ub(currentColor[0], currentColor[1], currentColor[2], currentColor[3]);
+		rlColor4ub(state.color[0], state.color[1], state.color[2], state.color[3]);
 
 		// FIXME: order of 2 and 3 matters. how to figure this out here and swap them?
 		rlVertex2f(cmd->x1, cmd->y1);

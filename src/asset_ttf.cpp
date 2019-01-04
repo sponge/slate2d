@@ -271,17 +271,17 @@ int TTF_BreakLines(const char *string, const char *end, float breakRowWidth, TTF
 void TTF_TextBox(const drawTextCommand_t *cmd, const char *string) {
 	TTFtextRow rows[2];
 	int nrows = 0, i;
-	int oldAlign = currentAlign;
-	int halign = currentAlign & (FONS_ALIGN_LEFT | FONS_ALIGN_CENTER | FONS_ALIGN_RIGHT);
-	int valign = currentAlign & (FONS_ALIGN_TOP | FONS_ALIGN_MIDDLE | FONS_ALIGN_BOTTOM | FONS_ALIGN_BASELINE);
+	int oldAlign = state.align;
+	int halign = state.align & (FONS_ALIGN_LEFT | FONS_ALIGN_CENTER | FONS_ALIGN_RIGHT);
+	int valign = state.align & (FONS_ALIGN_TOP | FONS_ALIGN_MIDDLE | FONS_ALIGN_BOTTOM | FONS_ALIGN_BASELINE);
 	float lineh; // FIXME: lineheight
 
 	fonsVertMetrics(ctx, nullptr, nullptr, &lineh);
 	fonsSetAlign(ctx, FONS_ALIGN_LEFT | valign);
 
-	int x = cmd->x;
-	int y = cmd->y;
-	lineh *= currentLineHeight;
+	float x = cmd->x;
+	float y = cmd->y;
+	lineh *= state.lineHeight;
 
 	while ((nrows = TTF_BreakLines(string, nullptr, cmd->w, rows, 2)) > 0) {
 		for (i = 0; i < nrows; i++) {

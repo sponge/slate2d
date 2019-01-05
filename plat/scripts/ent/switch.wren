@@ -6,30 +6,30 @@ import "collision" for Dir
 // switches will find an entity from target prop
 // and call activated(_) on them
 class Switch is LogicEnt {
-   construct new(world, obj, ox, oy) {
-      super(world, obj, ox, oy, 8, 8)
-      _visible = true
+  construct new(world, obj, ox, oy) {
+    super(world, obj, ox, oy, 8, 8)
+    _visible = true
 
-      props["bouncy"] = true
-   }
+    props["bouncy"] = true
+  }
 
-   activate(activator) {
-      _visible = !_visible
-   }
+  activate(activator) {
+    _visible = !_visible
+  }
 
-   canCollide(other, side, d) { _visible }
+  canCollide(other, side, d) { _visible }
 
-   touch(other, side) {
-      if (side != Dir.Up) {
-         return
-      }
-      activateTargets()
-      _visible = false
-   }
+  touch(other, side) {
+    if (side != Dir.Up) {
+      return
+    }
+    activateTargets()
+    _visible = false
+  }
 
-   draw(t) {
-      if (_visible) {
-         drawSprite(248, x, y)
-      }
-   }
+  draw(t) {
+    if (_visible) {
+      drawSprite(248, x, y)
+    }
+  }
 }

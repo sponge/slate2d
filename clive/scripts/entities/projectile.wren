@@ -4,68 +4,68 @@ import "entities/entity" for Entity
 import "debug" for Debug
 
 class Projectile is Entity {
-   target { _target }
-   construct new(td, startX, startY, target, speed, damage) {
-      super(_sx, _sy, "projectile")
-      _td = td
-      _sx = startX
-      _sy = startY
-      _target = target
-      _speed = speed
-      _damage = damage
-      _time = 0
-   }
+  target { _target }
+  construct new(td, startX, startY, target, speed, damage) {
+    super(_sx, _sy, "projectile")
+    _td = td
+    _sx = startX
+    _sy = startY
+    _target = target
+    _speed = speed
+    _damage = damage
+    _time = 0
+  }
 
-   onHit() {
-      _target.hurt(_damage)
-   }
+  onHit() {
+    _target.hurt(_damage)
+  }
 
-   update(dt) {
-      _time = _time + (dt * _speed)
-      if (_time <= 1) {
-         x = Math.lerp(_sx, _target.x, _time)
-         y = Math.lerp(_sy, _target.y, _time)
-      } else {
-         onHit()
-         die()
-      }
-   }
+  update(dt) {
+    _time = _time + (dt * _speed)
+    if (_time <= 1) {
+      x = Math.lerp(_sx, _target.x, _time)
+      y = Math.lerp(_sy, _target.y, _time)
+    } else {
+      onHit()
+      die()
+    }
+  }
 
-   drawSprite(id) {
-      Draw.sprite(_td.spr, id, x * _td.tw, y * _td.th, 1.0, 1.0, x < _sx ? 1 : 0)
-   }
+  drawSprite(id) {
+    Draw.sprite(_td.spr, id, x * _td.tw, y * _td.th, 1.0, 1.0, x < _sx ? 1 : 0)
+  }
 }
 
 class Cannonball is Projectile {
-   construct new(td, startX, startY, target) {
-      super(td, startX, startY, target, 2, 4)
-   }
+  construct new(td, startX, startY, target) {
+    super(td, startX, startY, target, 2, 4)
+  }
 
-   draw() {
-      drawSprite(32)
-   }
+  draw() {
+    drawSprite(32)
+  }
 }
 
 class Arrow is Projectile {
-   construct new(td, startX, startY, target) {
-      super(td, startX, startY, target, 5, 1)
-   }
+  construct new(td, startX, startY, target) {
+    super(td, startX, startY, target, 5, 1)
+  }
 
-   draw() {
-      drawSprite(48)
-   }
+  draw() {
+    drawSprite(48)
+  }
 }
 
 class MagicBolt is Projectile {
-   construct new(td, startX, startY, target) {
-      super(td, startX, startY, target, 5, 1)
-   }
+  construct new(td, startX, startY, target) {
+    super(td, startX, startY, target, 5, 1)
+  }
 
-   onHit() {
-      target.freeze(2)
-   }
+  onHit() {
+    target.freeze(2)
+  }
 
-   draw() {
-      drawSprite(64)
-   }   
+  draw() {
+    drawSprite(64)
+  }
 }

@@ -13,126 +13,126 @@ import "ending" for Ending
 import "help" for Help
 
 class Main {
-   static scene { __scene }
+  static scene { __scene }
 
-   static init(mapName) {
-      __accumTime = 0
-      __inspector = CVar.get("wren_inspector", 0)
+  static init(mapName) {
+    __accumTime = 0
+    __inspector = CVar.get("wren_inspector", 0)
 
-      __scenes = {
-         "title": Title,
-         "game": Game,
-         "cutscene": Cutscene,
-         "gameover": GameOver,
-         "levelending": LevelEnding,
-         "ending": Ending,
-         "help": Help,
-      }
+    __scenes = {
+      "title": Title,
+      "game": Game,
+      "cutscene": Cutscene,
+      "gameover": GameOver,
+      "levelending": LevelEnding,
+      "ending": Ending,
+      "help": Help,
+    }
 
-      __defaultScene = "title"
+    __defaultScene = "title"
 
-      Trap.setWindowTitle("Hot Air")
+    Trap.setWindowTitle("Hot Air")
 
-      Timer.init()
-      Debug.init()
-      SoundController.init()
-      
-      if (mapName == null) {
-         loadScene(__defaultScene, null)
-         //loadScene("game", 2)
-      }
-   }
+    Timer.init()
+    Debug.init()
+    SoundController.init()
 
-   static update(dt) {
-      if (__scene && __scene.nextScene != null) {
-         Trap.printLn("got scene transfer: %(__scene.nextScene)")
-         if (__scene.nextScene is String) {
-            loadScene(__scene.nextScene, null)
-         } else {
-            var params = __scene.nextScene.count > 1 ? __scene.nextScene[1] : null
-            loadScene(__scene.nextScene[0], params)
-         }
-      }
+    if (mapName == null) {
+      loadScene(__defaultScene, null)
+      //loadScene("game", 2)
+    }
+  }
 
-      __accumTime = __accumTime + dt
-      if (__accumTime >= 1/60) {
-         __accumTime = __accumTime - 1/60
+  static update(dt) {
+    if (__scene && __scene.nextScene != null) {
+      Trap.printLn("got scene transfer: %(__scene.nextScene)")
+      if (__scene.nextScene is String) {
+        loadScene(__scene.nextScene, null)
       } else {
-         return
+        var params = __scene.nextScene.count > 1 ? __scene.nextScene[1] : null
+        loadScene(__scene.nextScene[0], params)
       }
+    }
 
-      Debug.persist(true)
-      Debug.clearPersist()
+    __accumTime = __accumTime + dt
+    if (__accumTime >= 1/60) {
+      __accumTime = __accumTime - 1/60
+    } else {
+      return
+    }
 
-      if (__scene != null) {
-         if (__scene.update(1) != false) {
-            Timer.tick(1)
-         }
-      } else {
-         Timer.tick(1)
+    Debug.persist(true)
+    Debug.clearPersist()
+
+    if (__scene != null) {
+      if (__scene.update(1) != false) {
+        Timer.tick(1)
       }
-      
+    } else {
+      Timer.tick(1)
+    }
 
-      // see the hack comment in engine.wren for why this is
-      Trap.clearKeyPressed()
-   }
 
-   static draw(w, h) {
-      Debug.persist(false)
-      Draw.clear()
-      if (__scene != null) {
-         __scene.draw(w, h)
-      }
-      Debug.draw()
-      Draw.submit()
+    // see the hack comment in engine.wren for why this is
+    Trap.clearKeyPressed()
+  }
 
-      if (__inspector.bool()) {
-         Trap.inspect(__scene)
-      }
-   }
+  static draw(w, h) {
+    Debug.persist(false)
+    Draw.clear()
+    if (__scene != null) {
+      __scene.draw(w, h)
+    }
+    Debug.draw()
+    Draw.submit()
 
-   static console(line) {
-      var fiber
-      var isExpression
-      if (line.startsWith("eval ")) {
-         line = line["eval ".count..-1]
-         fiber = Meta.compile(line)
-      } else {
-         isExpression = true
-         fiber = Meta.compileExpression(line)
-      }
+    if (__inspector.bool()) {
+      Trap.inspect(__scene)
+    }
+  }
 
-      if (fiber == null) return
-      var result = fiber.try()
-      if (fiber.error != null) {
-         // TODO: Include callstack.
-         Trap.printLn("Runtime error: %(fiber.error)")
-         return
-      }
+  static console(line) {
+    var fiber
+    var isExpression
+    if (line.startsWith("eval ")) {
+      line = line["eval ".count..-1]
+      fiber = Meta.compile(line)
+    } else {
+      isExpression = true
+      fiber = Meta.compileExpression(line)
+    }
 
-      if (isExpression) {
-         Trap.printLn(result)
-      }
-   }
+    if (fiber == null) return
+    var result = fiber.try()
+    if (fiber.error != null) {
+      // TODO: Include callstack.
+      Trap.printLn("Runtime error: %(fiber.error)")
+      return
+    }
 
-   static shutdown() {
-      if (__scene == null) {
-         return
-      }
+    if (isExpression) {
+      Trap.printLn(result)
+    }
+  }
 
-      __scene.shutdown()
-      __scene = null
+  static shutdown() {
+    if (__scene == null) {
+      return
+    }
 
-      Asset.clearAll()
-   }
+    __scene.shutdown()
+    __scene = null
 
-   static loadScene(scene, params) {
-      Timer.clear()
-      shutdown()
+    Asset.clearAll()
+  }
 
-      var next = scene == null || __scenes[scene] == null ? __defaultScene : scene
-      __scene = __scenes[next].new(params)
+  static loadScene(scene, params) {
+    Timer.clear()
+    shutdown()
 
-      System.gc()
-   }
+    var next = scene == null || __scenes[scene] == null ? __defaultScene : scene
+    __scene = __scenes[next].new(params)
+
+    System.gc()
+  }
 }

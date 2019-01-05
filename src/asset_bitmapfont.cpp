@@ -174,8 +174,6 @@ int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, cons
 		return 0;
 	}
 
-	assert(asset != nullptr && font != nullptr);
-
 	float currX = x, currY = y;
 	int i = 0;
 	while (string[i] != '\0') {

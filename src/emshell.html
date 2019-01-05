@@ -18,12 +18,19 @@
 	color: #def1ff;
 	font-family: sans-serif;
       }
-      .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
+      .emscripten { display: block; }
       textarea.emscripten { font-family: monospace; width: 80%; }
       div.emscripten { text-align: center; }
       /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
-      canvas.emscripten { border: 0px none; background-color: black; height: 100%;}
-      #status {
+      canvas.emscripten { border: 0px none; background-color: black; width: 100%; height: auto;}
+      @media (min-aspect-ratio: 16/9) {
+        canvas.emscripten {
+          width: auto;
+	  height: 100%;
+        }
+      }
+
+     #status {
         display: none;
       }
      .spinner {

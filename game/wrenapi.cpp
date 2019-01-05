@@ -4,6 +4,9 @@
 #include "draw.h"
 #include <cstring>
 #include "wren/wren.hpp"
+extern "C" {
+#include "wren/wren_debug.h"
+}
 #include "map.h"
 #include <string>
 #include <map>
@@ -13,6 +16,41 @@
 static unsigned int mapId;
 extern ClientInfo *clientInf;
 
+static const char *wrenTypeStrings[] =
+{
+	"WREN_TYPE_BOOL",
+	"WREN_TYPE_NUM",
+	"WREN_TYPE_FOREIGN",
+	"WREN_TYPE_LIST",
+	"WREN_TYPE_NULL",
+	"WREN_TYPE_STRING",
+	"WREN_TYPE_MAP",
+	"WREN_TYPE_UNKNOWN"
+};
+static const int wrenTypeCount = sizeof(wrenTypeStrings) / sizeof(wrenTypeStrings[0]);
+static const char* wrenGetTypeString(WrenType i) {
+	return i < 0 || i >= wrenTypeCount ? "WREN_TYPE_UNKNOWN" : wrenTypeStrings[i];
+}
+
+bool wrenCheckArgs(WrenVM *vm, int count, ...) {
+	va_list args;
+	va_start(args, count);
+	for (int i = 1; i <= count; ++i) {
+		WrenType result = va_arg(args, WrenType);
+		WrenType slot = wrenGetSlotType(vm, i);
+		if (slot != result) {
+			trap->Print("Expected %s in paramter %i, got %s", wrenGetTypeString(result), i, wrenGetTypeString(slot));
+			wrenDebugPrintStackTrace(vm);
+			va_end(args);
+			return false;
+		}
+	}
+	va_end(args);
+	return true;
+}
+
+#define CHECK_ARGS(count, ...) if (wrenCheckArgs(vm, count, __VA_ARGS__) == false) { return; }
+
 #pragma region Trap Module
 void wren_trap_print(WrenVM *vm) {
 	const char *str = wrenGetSlotString(vm, 1);
@@ -20,6 +58,8 @@ void wren_trap_print(WrenVM *vm) {
 }
 
 void wren_trap_dbgwin(WrenVM *vm) {
+	CHECK_ARGS(3, WREN_TYPE_STRING, WREN_TYPE_STRING, WREN_TYPE_STRING);
+
 	const char *title = wrenGetSlotString(vm, 1);
 	const char *key = wrenGetSlotString(vm, 2);
 	const char *value = wrenGetSlotString(vm, 3);
@@ -44,17 +84,23 @@ void wren_trap_dbgwin(WrenVM *vm) {
 }
 
 void wren_trap_console(WrenVM *vm) {
+	CHECK_ARGS(1, WREN_TYPE_STRING);
+
 	const char *str = wrenGetSlotString(vm, 1);
 	trap->SendConsoleCommand(str);
 }
 
 void wren_trap_error(WrenVM *vm) {
+	CHECK_ARGS(2, WREN_TYPE_NUM, WREN_TYPE_STRING);
+
 	int err = (int) wrenGetSlotDouble(vm, 1);
 	const char *str = wrenGetSlotString(vm, 2);
 	trap->Error(err, va("%s",str));
 }
 
 void wren_trap_snd_play(WrenVM *vm) {
+	CHECK_ARGS(4, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_BOOL);
+
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	float volume = (float)wrenGetSlotDouble(vm, 2);
 	float pan = (float)wrenGetSlotDouble(vm, 3);
@@ -65,23 +111,25 @@ void wren_trap_snd_play(WrenVM *vm) {
 }
 
 void wren_trap_snd_stop(WrenVM *vm) {
-	// let's handle this one specifically because otherwise you have to
-	// track null yourself. wish i could macro all of this.
-	if (wrenGetSlotType(vm, 1) != WREN_TYPE_NUM) {
-		return;
-	}
+	if (wrenGetSlotType(vm, 1) != WREN_TYPE_NULL) {
+		CHECK_ARGS(1, WREN_TYPE_NUM);
 
-	unsigned int handle = (unsigned int)wrenGetSlotDouble(vm, 1);
-	trap->Snd_Stop(handle);
+		unsigned int handle = (unsigned int)wrenGetSlotDouble(vm, 1);
+		trap->Snd_Stop(handle);
+	}
 }
 
 void wren_trap_snd_pause_resume(WrenVM *vm) {
+	CHECK_ARGS(2, WREN_TYPE_NUM, WREN_TYPE_BOOL);
+
 	unsigned int handle = (unsigned int)wrenGetSlotDouble(vm, 1);
 	bool pause = wrenGetSlotBool(vm, 2);
 	trap->Snd_PauseResume(handle, pause);
 }
 
 void wren_trap_in_keypressed(WrenVM *vm) {
+	CHECK_ARGS(3, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
+
 	int key = (int)wrenGetSlotDouble(vm, 1);
 	int delay = (int)wrenGetSlotDouble(vm, 2);
 	int repeat = (int)wrenGetSlotDouble(vm, 3);
@@ -129,6 +177,8 @@ void wren_trap_get_resolution(WrenVM *vm) {
 }
 
 void wren_trap_set_window_title(WrenVM *vm) {
+	CHECK_ARGS(1, WREN_TYPE_STRING);
+
 	const char *title = wrenGetSlotString(vm, 1);
 
 	if (title == nullptr || strlen(title) == 0) {
@@ -224,6 +274,8 @@ void wren_cvar_set(WrenVM *vm) {
 
 #pragma region Asset Module
 void wren_asset_create(WrenVM *vm) {
+	CHECK_ARGS(4, WREN_TYPE_NUM, WREN_TYPE_STRING, WREN_TYPE_STRING, WREN_TYPE_NUM);
+
 	AssetType_t assetType = (AssetType_t)(int)wrenGetSlotDouble(vm, 1);
 	const char *name = wrenGetSlotString(vm, 2);
 	const char *path = wrenGetSlotString(vm, 3);
@@ -233,11 +285,15 @@ void wren_asset_create(WrenVM *vm) {
 }
 
 void wren_asset_find(WrenVM *vm) {
+	CHECK_ARGS(1, WREN_TYPE_STRING);
+
 	const char *name = wrenGetSlotString(vm, 1);
 	wrenSetSlotDouble(vm, 0, trap->Asset_Find(name));
 }
 
 void wren_asset_load(WrenVM *vm) {
+	CHECK_ARGS(1, WREN_TYPE_NUM);
+
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	trap->Asset_Load(assetHandle);
 }
@@ -253,6 +309,8 @@ void wren_asset_clearall(WrenVM *vm) {
 }
 
 void wren_asset_bmpfnt_set(WrenVM *vm) {
+	CHECK_ARGS(6, WREN_TYPE_NUM, WREN_TYPE_STRING, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
+
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	const char *glyphs = wrenGetSlotString(vm, 2);
 	int glyphWidth = (int)wrenGetSlotDouble(vm, 3);
@@ -264,6 +322,8 @@ void wren_asset_bmpfnt_set(WrenVM *vm) {
 }
 
 void wren_asset_measurebmptext(WrenVM *vm) {
+	CHECK_ARGS(3, WREN_TYPE_NUM, WREN_TYPE_STRING, WREN_TYPE_NUM);
+
 	AssetHandle fntId = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	const char *text = wrenGetSlotString(vm, 2);
 	float scale = (float)wrenGetSlotDouble(vm, 3);
@@ -273,6 +333,8 @@ void wren_asset_measurebmptext(WrenVM *vm) {
 }
 
 void wren_asset_sprite_set(WrenVM *vm) {
+	CHECK_ARGS(5, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
+
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	int width = (int)wrenGetSlotDouble(vm, 2);
 	int height = (int)wrenGetSlotDouble(vm, 3);
@@ -283,6 +345,8 @@ void wren_asset_sprite_set(WrenVM *vm) {
 }
 
 void wren_asset_canvas_set(WrenVM *vm) {
+	CHECK_ARGS(3, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
+
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	int width = (int)wrenGetSlotDouble(vm, 2);
 	int height = (int)wrenGetSlotDouble(vm, 3);
@@ -291,6 +355,8 @@ void wren_asset_canvas_set(WrenVM *vm) {
 }
 
 void wren_asset_shader_set(WrenVM *vm) {
+	CHECK_ARGS(4, WREN_TYPE_NUM, WREN_TYPE_BOOL, WREN_TYPE_STRING, WREN_TYPE_STRING);
+
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	bool isFile = wrenGetSlotBool(vm, 2);
 	char *vs = (char*) wrenGetSlotString(vm, 3);
@@ -300,6 +366,8 @@ void wren_asset_shader_set(WrenVM *vm) {
 }
 
 void wren_asset_image_size(WrenVM *vm) {
+	CHECK_ARGS(1, WREN_TYPE_NUM);
+
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 
 	Image *img = trap->Get_Img(assetHandle);
@@ -317,6 +385,8 @@ void wren_asset_image_size(WrenVM *vm) {
 
 #pragma region Draw Module
 void wren_dc_setcolor(WrenVM *vm) {
+	CHECK_ARGS(4, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
+
 	byte r = (byte) wrenGetSlotDouble(vm, 1);
 	byte g = (byte) wrenGetSlotDouble(vm, 2);
 	byte b = (byte) wrenGetSlotDouble(vm, 3);
@@ -330,6 +400,8 @@ void wren_dc_reset_transform(WrenVM *vm) {
 }
 
 void wren_dc_scale(WrenVM *vm) {
+	CHECK_ARGS(2, WREN_TYPE_NUM, WREN_TYPE_NUM);
+
 	float x = (float) wrenGetSlotDouble(vm, 1);
 	float y = (float) wrenGetSlotDouble(vm, 2);
 
@@ -337,17 +409,23 @@ void wren_dc_scale(WrenVM *vm) {
 }
 
 void wren_dc_rotate(WrenVM *vm) {
+	CHECK_ARGS(1, WREN_TYPE_NUM);
+
 	float angle = (float) wrenGetSlotDouble(vm, 1);
 	DC_Rotate(angle);
 }
 
 void wren_dc_translate(WrenVM *vm) {
+	CHECK_ARGS(2, WREN_TYPE_NUM, WREN_TYPE_NUM);
+
 	float x = (float) wrenGetSlotDouble(vm, 1);
 	float y = (float) wrenGetSlotDouble(vm, 2);
 	DC_Translate(x, y);
 }
 
 void wren_dc_setscissor(WrenVM *vm) {
+	CHECK_ARGS(4, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
+
 	float x = (float) wrenGetSlotDouble(vm, 1);
 	float y = (float) wrenGetSlotDouble(vm, 2);
 	float w = (float) wrenGetSlotDouble(vm, 3);
@@ -366,6 +444,8 @@ void wren_dc_usecanvas(WrenVM *vm) {
 		DC_ResetCanvas();
 	}
 	else {
+		CHECK_ARGS(1, WREN_TYPE_NUM);
+
 		AssetHandle canvasId = (AssetHandle)wrenGetSlotDouble(vm, 1);
 
 		DC_UseCanvas(canvasId);
@@ -377,6 +457,8 @@ void wren_dc_useshader(WrenVM *vm) {
 		DC_ResetShader();
 	}
 	else {
+		CHECK_ARGS(1, WREN_TYPE_NUM);
+
 		AssetHandle shaderId = (AssetHandle)wrenGetSlotDouble(vm, 1);
 
 		DC_UseShader(shaderId);
@@ -384,6 +466,8 @@ void wren_dc_useshader(WrenVM *vm) {
 }
 
 void wren_dc_settextstyle(WrenVM *vm) {
+	CHECK_ARGS(4, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
+
 	AssetHandle fntId = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	float size = (float)wrenGetSlotDouble(vm, 2);
 	float lineHeight = (float)wrenGetSlotDouble(vm, 3);
@@ -393,6 +477,8 @@ void wren_dc_settextstyle(WrenVM *vm) {
 }
 
 void wren_dc_drawrect(WrenVM *vm) {
+	CHECK_ARGS(5, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_BOOL);
+
 	float x = (float) wrenGetSlotDouble(vm, 1);
 	float y = (float) wrenGetSlotDouble(vm, 2);
 	float w = (float) wrenGetSlotDouble(vm, 3);
@@ -403,6 +489,8 @@ void wren_dc_drawrect(WrenVM *vm) {
 }
 
 void wren_dc_drawtext(WrenVM *vm) {
+	CHECK_ARGS(4, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_STRING);
+
 	float x = (float)wrenGetSlotDouble(vm, 1);
 	float y = (float)wrenGetSlotDouble(vm, 2);
 	float w = (float)wrenGetSlotDouble(vm, 3);
@@ -412,6 +500,9 @@ void wren_dc_drawtext(WrenVM *vm) {
 }
 
 void wren_dc_drawimage(WrenVM *vm) {
+	CHECK_ARGS(10, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM,
+		WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
+
 	AssetHandle imgId = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	float x = (float)wrenGetSlotDouble(vm, 2);
 	float y = (float)wrenGetSlotDouble(vm, 3);
@@ -427,6 +518,8 @@ void wren_dc_drawimage(WrenVM *vm) {
 }
 
 void wren_dc_drawline(WrenVM *vm) {
+	CHECK_ARGS(4, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
+
 	float x1 = (float)wrenGetSlotDouble(vm, 1);
 	float y1 = (float)wrenGetSlotDouble(vm, 2);
 	float x2 = (float)wrenGetSlotDouble(vm, 3);
@@ -436,6 +529,8 @@ void wren_dc_drawline(WrenVM *vm) {
 }
 
 void wren_dc_drawcircle(WrenVM *vm) {
+	CHECK_ARGS(4, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_BOOL);
+
 	float x = (float)wrenGetSlotDouble(vm, 1);
 	float y = (float)wrenGetSlotDouble(vm, 2);
 	float radius = (float)wrenGetSlotDouble(vm, 3);
@@ -445,6 +540,8 @@ void wren_dc_drawcircle(WrenVM *vm) {
 }
 
 void wren_dc_drawtri(WrenVM *vm) {
+	CHECK_ARGS(7, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_BOOL);
+
 	float x1 = (float)wrenGetSlotDouble(vm, 1);
 	float y1 = (float)wrenGetSlotDouble(vm, 2);
 	float x2 = (float)wrenGetSlotDouble(vm, 3);
@@ -457,6 +554,8 @@ void wren_dc_drawtri(WrenVM *vm) {
 }
 
 void wren_dc_drawmaplayer(WrenVM *vm) {
+	CHECK_ARGS(7, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
+
 	int layer = (int)wrenGetSlotDouble(vm, 1);
 	float x = (float)wrenGetSlotDouble(vm, 2);
 	float y = (float)wrenGetSlotDouble(vm, 3);
@@ -469,6 +568,10 @@ void wren_dc_drawmaplayer(WrenVM *vm) {
 }
 
 void wren_dc_drawsprite(WrenVM *vm) {
+	CHECK_ARGS(9, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM,
+		WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, 
+		WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
+
 	AssetHandle sprId = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	int id = (int)wrenGetSlotDouble(vm, 2);
 	float x = (float)wrenGetSlotDouble(vm, 3);
@@ -536,11 +639,15 @@ void parseProperties(WrenVM *vm, int propSlot, int *totalSlotsIn, int *sIn, void
 }
 
 void wren_map_setcurrent(WrenVM *vm) {
+	CHECK_ARGS(1, WREN_TYPE_NUM);
+
 	unsigned int id = (unsigned int) wrenGetSlotDouble(vm, 1);
 	mapId = id;
 }
 
 void wren_map_getlayerbyname(WrenVM *vm) {
+	CHECK_ARGS(1, WREN_TYPE_STRING);
+
 	const char *name = wrenGetSlotString(vm, 1);
 
 	tmx_map *map = trap->Get_TileMap(mapId);
@@ -550,6 +657,8 @@ void wren_map_getlayerbyname(WrenVM *vm) {
 }
 
 void wren_map_getobjectsinlayer(WrenVM *vm) {
+	CHECK_ARGS(1, WREN_TYPE_NUM);
+
 	int id = (int) wrenGetSlotDouble(vm, 1);
 	int totalSlots = 1; // total num of slots for wrenEnsureSlots
 	int s = 1; // current slot we're on
@@ -654,6 +763,8 @@ void wren_map_getmapproperties(WrenVM *vm) {
 }
 
 void wren_map_getlayerproperties(WrenVM *vm) {
+	CHECK_ARGS(1, WREN_TYPE_NUM);
+
 	int id = (int)wrenGetSlotDouble(vm, 1);
 
 	tmx_map *map = trap->Get_TileMap(mapId);
@@ -697,6 +808,8 @@ void wren_map_getlayerproperties(WrenVM *vm) {
 }
 
 void wren_map_gettileproperties(WrenVM *vm) {
+	CHECK_ARGS(1, WREN_TYPE_NUM);
+
 	tmx_map *map = trap->Get_TileMap(mapId);
 
 	int totalSlots = 2; // total num of slots for wrenEnsureSlots
@@ -729,6 +842,8 @@ void wren_map_gettileproperties(WrenVM *vm) {
 }
 
 void wren_map_gettile(WrenVM *vm) {
+	CHECK_ARGS(3, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
+
 	int layer = (int)wrenGetSlotDouble(vm, 1);
 	unsigned int x = (unsigned int)wrenGetSlotDouble(vm, 2);
 	unsigned int y = (unsigned int)wrenGetSlotDouble(vm, 3);

@@ -40,7 +40,7 @@ namespace SoLoud
 #if defined(_MSC_VER)
 #include <SDL.h>
 #else
-#include <SDL2/SDL.h>
+#include <SDL/SDL.h>
 #endif
 #include <math.h>
 

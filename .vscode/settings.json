@@ -9,7 +9,7 @@
         "bin/": true,
         "build/": true
     },
-    "editor.tabSize": 3,
+    "editor.tabSize": 2,
     "wren.additionalModuleDirectories": [
         "./base/scripts/",
         "./plat/scripts/"

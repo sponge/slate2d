@@ -1,38 +1,38 @@
 class Timer {
-   static init() {
-      __fibers = []
-   }
+  static init() {
+    __fibers = []
+  }
 
-   static clear() {
-      __fibers.clear()
-   }
+  static clear() {
+    __fibers.clear()
+  }
 
-   static runLater(time, func) {
-      var f = Fiber.new {
-         while (time > 0) {
-            var t = Fiber.yield()
-            time = time - t
-         }
-
-         func.call()
+  static runLater(time, func) {
+    var f = Fiber.new {
+      while (time > 0) {
+        var t = Fiber.yield()
+        time = time - t
       }
 
-      __fibers.add(f)
-   }
+      func.call()
+    }
 
-   static tick(t) {
-      for (f in __fibers) {
-         f.call(t)
-      }
+    __fibers.add(f)
+  }
 
-      if (__fibers.isEmpty) {
-         return
+  static tick(t) {
+    for (f in __fibers) {
+      f.call(t)
+    }
+
+    if (__fibers.isEmpty) {
+      return
+    }
+
+    for (i in __fibers.count-1..0) {
+      if (__fibers[i].isDone) {
+        __fibers.removeAt(i)
       }
-      
-      for (i in __fibers.count-1..0) {
-         if (__fibers[i].isDone) {
-            __fibers.removeAt(i)
-         }
-      }
-   }
+    }
+  }
 }

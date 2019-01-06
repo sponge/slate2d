@@ -4,19 +4,91 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
-            "type": "shell",
-            "command": "${workspaceRoot}/build.bat",
+            "label": "Build (Release x64)",
+            "command": "cmd",
+            "type": "process",
             "args": [
-                "${workspaceRoot}"
+                "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
+            ],
+            "group":{
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {
+                "env": {
+                    "operation": "Build",
+                    "platform": "x64",
+                    "configuration": "Release",
+                    "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
+                }
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ]
+        },
+        {
+            "label": "Rebuild (Release x64)",
+            "command": "cmd",
+            "type": "process",
+            "args": [
+                "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
             ],
             "group": "build",
-            "presentation": {
-                // Reveal the output only if unrecognized errors occur.
-                "reveal": "never"
+            "options": {
+                "env": {
+                    "operation": "Clean,Build",
+                    "platform": "x64",
+                    "configuration": "Release",
+                    "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
+                }
             },
-            // Use the standard MS compiler pattern to detect errors, warnings and infos
-            "problemMatcher": "$msCompile"
+            "problemMatcher": [
+                "$msCompile"
+            ]
+        },
+        {
+            "label": "Build (Debug x64)",
+            "command": "cmd",
+            "type": "process",
+            "args": [
+                "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
+            ],
+            "group":{
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {
+                "env": {
+                    "operation": "Build",
+                    "platform": "x64",
+                    "configuration": "Debug",
+                    "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
+                }
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ]
+        },
+        {
+            "label": "Rebuild (Debug x64)",
+            "command": "cmd",
+            "type": "process",
+            "args": [
+                "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
+            ],
+            "group": "build",
+            "options": {
+                "env": {
+                    "operation": "Clean,Build",
+                    "platform": "x64",
+                    "configuration": "Debug",
+                    "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
+                }
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ]
         }
+
     ]
 }

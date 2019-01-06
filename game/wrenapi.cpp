@@ -38,8 +38,11 @@ bool wrenCheckArgs(WrenVM *vm, int count, ...) {
 	for (int i = 1; i <= count; ++i) {
 		WrenType result = va_arg(args, WrenType);
 		WrenType slot = wrenGetSlotType(vm, i);
-		if (slot != result) {
-			trap->Print("Expected %s in paramter %i, got %s", wrenGetTypeString(result), i, wrenGetTypeString(slot));
+		if (result == WREN_TYPE_UNKNOWN) {
+			continue;
+		}
+		else if (slot != result) {
+			trap->Print("Expected %s in paramter %i, got %s.", wrenGetTypeString(result), i, wrenGetTypeString(slot));
 			wrenDebugPrintStackTrace(vm);
 			va_end(args);
 			return false;

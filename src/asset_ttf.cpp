@@ -278,7 +278,7 @@ void TTF_TextBox(const drawTextCommand_t *cmd, const char *string) {
 	int oldAlign = state.align;
 	int halign = state.align & (FONS_ALIGN_LEFT | FONS_ALIGN_CENTER | FONS_ALIGN_RIGHT);
 	int valign = state.align & (FONS_ALIGN_TOP | FONS_ALIGN_MIDDLE | FONS_ALIGN_BOTTOM | FONS_ALIGN_BASELINE);
-	float lineh; // FIXME: lineheight
+	float lineh;
 
 	fonsVertMetrics(ctx, nullptr, nullptr, &lineh);
 	fonsSetAlign(ctx, FONS_ALIGN_LEFT | valign);
@@ -302,7 +302,6 @@ void TTF_TextBox(const drawTextCommand_t *cmd, const char *string) {
 	}
 
 	fonsSetAlign(ctx, oldAlign);
-
 }
 
 int Asset_TextWidth(AssetHandle assetHandle, const char *string, float scale) {

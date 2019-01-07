@@ -5,8 +5,16 @@
 #include "assetloader.h"
 #include "rendercommands.h"
 #include "rlgl.h"
+#include "external/fontstash.h"
 
 extern ClientInfo inf;
+
+enum TTFcodepointType {
+	TTF_SPACE,
+	TTF_NEWLINE,
+	TTF_CHAR,
+	TTF_CJK_CHAR,
+};
 
 void* BMPFNT_Load(Asset &asset) {
 	// bitmap fonts need to be setup before load.
@@ -159,7 +167,7 @@ int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
 	return (int) (currX * scale);
 }
 
-int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, const char *string) {
+int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, const char *string, const char *end = nullptr) {
 	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
 
 	if (asset == nullptr) {
@@ -174,30 +182,108 @@ int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, float scale, cons
 		return 0;
 	}
 
+	if (end == nullptr) {
+		end = string + strlen(string);
+	}
+
 	float currX = x, currY = y;
 	int i = 0;
-	while (string[i] != '\0') {
+	while (&string[i] != end) {
 		if (string[i] == '\n') {
-			currY += font->lineHeight * scale;
+			currY += font->lineHeight * state.size;
 			currX = x;
 			i++;
 			continue;
 		}
 		
 		if (string[i] == ' ') {
-			currX += font->spaceWidth * scale;
+			currX += font->spaceWidth * state.size;
 			i++;
 			continue;
 		}
 
 		BitmapGlyph &glyph = font->offsets[string[i]];
 
-		DrawImage(currX, currY, (float) (glyph.end - glyph.start), (float)font->h, (float)glyph.start, 0.0f, 1.0f, scale, 0, font->img->hnd, font->img->w, font->img->h);
+		DrawImage(currX, currY, (float) (glyph.end - glyph.start), (float)font->h, (float)glyph.start, 0.0f, 1.0f, state.size, 0, font->img->hnd, font->img->w, font->img->h);
 
-		currX += (glyph.end - glyph.start + font->charSpacing) * scale;
+		currX += (glyph.end - glyph.start + font->charSpacing) * state.size;
 
 		i++;
 	}
 
 	return (int)(currX - font->charSpacing - x);
+}
+
+void BMPFNT_TextBox(const drawTextCommand_t *cmd, const char *string) {
+	BitmapFont *font = (BitmapFont*)state.font->resource;
+
+	if (font == nullptr) {
+		Com_Error(ERR_DROP, "BMPFNT_BMPFNT_TextBoxDrawText: asset resource not valid");
+		return;
+	}
+
+	/*
+	const char *current = string, *prev = string;
+	float rowStartX = 0;
+	float rowWidth = 0;
+	float rowMinX = 0;
+	float rowMaxX = 0;
+	const char* rowStart = NULL;
+	const char* rowEnd = NULL;
+	const char* wordStart = NULL;
+	float wordStartX = 0;
+	float wordMinX = 0;
+	const char* breakEnd = NULL;
+	float breakWidth = 0;
+	float breakMaxX = 0;
+	int type = TTF_SPACE, ptype = TTF_SPACE;
+
+	while (current != '\0') {
+		switch (current[0]) {
+			case 9: // \t
+			case 11: // \v
+			case 12: // \f
+			case 32: // space
+			case 0x00a0: // NBSP
+				type = TTF_SPACE;
+				break;
+			case 10:		// \n
+				type = prev[0] == 13 ? TTF_SPACE : TTF_NEWLINE;
+				break;
+			case 13:		// \r
+				type = prev[0] == 10 ? TTF_SPACE : TTF_NEWLINE;
+				break;
+			case 0x0085:	// NEL
+				type = TTF_NEWLINE;
+				break;
+			default:
+				type = TTF_CHAR;
+				break;
+		}
+
+		if (type == TTF_NEWLINE) {
+			// Always handle new lines.
+			const char *thisStart = rowStart != NULL ? rowStart : current;
+			const char *thisEnd = rowEnd != NULL ? rowEnd : current;
+			// rows[nrows].width = rowWidth;
+			// rows[nrows].minx = rowMinX;
+			// rows[nrows].maxx = rowMaxX;
+			// rows[nrows].next = iter.next;
+
+			// Set null break point
+			breakEnd = rowStart;
+			breakWidth = 0.0;
+			breakMaxX = 0.0;
+			// Indicate to skip the white space at the beginning of the row.
+			rowStart = NULL;
+			rowEnd = NULL;
+			rowWidth = 0;
+			rowMinX = rowMaxX = 0;
+		}
+
+		ptype = type;
+		prev = current;
+		current++;
+	}
+	*/
 }

@@ -29,7 +29,7 @@ class Game2Win {
   }
 
   drawCenteredText(font, x, y, str, scale) {
-    var width = Asset.measureBmpText(font, str) * scale
+    var width = Asset.textWidth(font, str) * scale
     Draw.bmpText(font, x - width/2, y, str, scale)
   }
 

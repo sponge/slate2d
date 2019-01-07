@@ -375,7 +375,7 @@ class Game {
     Draw.rect(320/2 - w/2, 160/2 - h/2, w, h, false)
     Draw.setColor(255, 255, 255, 255)
 
-    var tw = Asset.measureBmpText(_font, "quit?")
+    var tw = Asset.textWidth(_font, "quit?")
     Draw.bmpText(_font, 320/2 - tw/2, 160/2 - h/2 + 2, "quit?")
 
     if (_pauseQuitSelected) {

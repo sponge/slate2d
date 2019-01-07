@@ -31,8 +31,8 @@ class Game2Cracktro {
     _bounce = _bounce + "see you in the next release!"
 
 
-    _strWidth = Asset.measureBmpText(_font, _bounce)
-    _lw = Asset.measureBmpText(_font, "a")
+    _strWidth = Asset.textWidth(_font, _bounce)
+    _lw = Asset.textWidth(_font, "a")
 
     Timer.runLater(2) {
       _drawIntro = true
@@ -41,7 +41,7 @@ class Game2Cracktro {
   }
 
   drawCenteredText(font, x, y, str, scale) {
-    var width = Asset.measureBmpText(font, str) * scale
+    var width = Asset.textWidth(font, str) * scale
     Draw.bmpText(font, x - width/2, y, str, scale)
   }
 

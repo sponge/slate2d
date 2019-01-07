@@ -30,7 +30,7 @@ class Intro {
 
     Asset.loadAll()
 
-    _titleLen = Asset.measureBmpText(_font, _title)
+    _titleLen = Asset.textWidth(_font, _title)
 
     SoundController.playMusic(_music)
 

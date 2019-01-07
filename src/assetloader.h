@@ -32,6 +32,7 @@ void* TTF_Load(Asset &asset);
 void TTF_Free(Asset &asset);
 
 void TTF_TextBox(const drawTextCommand_t *data, const char *text);
+int Asset_TextWidth(AssetHandle assetHandle, const char *string, float scale);
 
 // bitmap font assets
 

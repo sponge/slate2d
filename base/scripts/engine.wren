@@ -54,8 +54,8 @@ class Asset {
   foreign static loadAll()
   foreign static clearAll()
   foreign static bmpfntSet(assetHandle, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight)
-  foreign static measureBmpText(fntId, text, scale)
-  static measureBmpText(fntId, text) { measureBmpText(fntId, text, 1.0) }
+  foreign static textWidth(fntId, text, scale)
+  static textWidth(fntId, text) { textWidth(fntId, text, 1.0) }
   foreign static imageSize(assetHandle)
   foreign static spriteSet(assetHandle, w, h, marginX, marginY)
   foreign static canvasSet(assetHandle, w, h)

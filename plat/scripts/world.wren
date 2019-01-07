@@ -277,14 +277,14 @@ class World {
       Draw.bmpText(_fixedFont, (_cam.w - (str1.count*8)) / 2, 88, str1)
       Draw.bmpText(_fixedFontBlue, (_cam.w - (str2.count*8)) / 2, 104, str2)
 
-      var x = (_cam.w - Asset.measureBmpText(_font, bounce)) / 2
+      var x = (_cam.w - Asset.textWidth(_font, bounce)) / 2
       var y = 60
       var i = 0
       for (letter in bounce) {
         var x2 = player.health == 0 ? x + (_ticks/3 + i).sin : x
         var y2 = player.health == 0 ? y + (_ticks/2 + i).sin : y + (_ticks/10 + i).sin * 4
         Draw.bmpText(_font, x2, y2, letter)
-        x = x + Asset.measureBmpText(_font, letter)
+        x = x + Asset.textWidth(_font, letter)
         i = i + 1
       }
     }

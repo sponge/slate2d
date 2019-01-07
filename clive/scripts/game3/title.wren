@@ -118,15 +118,15 @@ class Game3Title {
       Draw.image(_glitch, 0, 0)
     } else if (_mode == "countdown") {
       var warming = "Warming up now"
-      var warmWidth = Asset.measureBmpText(_font, warming)
+      var warmWidth = Asset.textWidth(_font, warming)
       Draw.bmpText(_font, 160 - warmWidth/2, 4, warming)
 
       var count = Math.clamp(0,(100 - (_time - _countdownStartTime) * _countdownSpeedupFactor).floor, 100).toString
-      var countWidth = Asset.measureBmpText(_font, "99", 4)
+      var countWidth = Asset.textWidth(_font, "99", 4)
       Draw.bmpText(_font, 160 - countWidth/2, 72, count, 4)
 
       var presented = "Presented By Clive"
-      var presentedWidth = Asset.measureBmpText(_font, presented)
+      var presentedWidth = Asset.textWidth(_font, presented)
       Draw.bmpText(_font, 160 - presentedWidth/2, 168, presented)
 
       if (_skipWarningTime) {

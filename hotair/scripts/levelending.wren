@@ -29,7 +29,7 @@ class LevelEnding {
   }
 
   drawCenteredText(font, x, y, text) {
-    var w = Asset.measureBmpText(font, text)
+    var w = Asset.textWidth(font, text)
     Draw.bmpText(font, x - w/2, y, text)
   }
 

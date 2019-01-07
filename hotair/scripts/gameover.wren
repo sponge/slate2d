@@ -51,7 +51,7 @@ class GameOver {
   }
 
   drawCenteredText(font, x, y, text, flash, scale) {
-    var textWidth = Asset.measureBmpText(font, text, scale)
+    var textWidth = Asset.textWidth(font, text, scale)
 
     if (flash && _t % 24 < 12) {
       Draw.setColor(235, 137, 49, 255)

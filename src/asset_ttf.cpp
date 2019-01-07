@@ -44,7 +44,11 @@ void* TTF_Load(Asset &asset) {
 
 	unsigned char *font;
 	auto sz = FS_ReadFile(asset.path, (void **)&font);
-	assert(sz != -1);
+
+	if (sz == -1) {
+		Com_Error(ERR_DROP, "TTF_Load: couldn't load file %s", asset.path);
+		return nullptr;
+	}
 
 	int hnd = fonsAddFontMem(ctx, asset.name, font, sz, 1);
 	if (hnd < 0) {
@@ -200,7 +204,7 @@ int TTF_BreakLines(const char *string, const char *end, float breakRowWidth, TTF
 				}
 
 				// Break to new line when a character is beyond break width.
-				if ((type == TTF_CHAR || type == TTF_CJK_CHAR) && nextWidth > breakRowWidth) {
+				if ((type == TTF_CHAR || type == TTF_CJK_CHAR) && (nextWidth > breakRowWidth && breakRowWidth > 0)) {
 					// The run length is too long, need to break to new line.
 					if (breakEnd == rowStart) {
 						// The current word is longer than the row length, just break it from here.
@@ -299,4 +303,25 @@ void TTF_TextBox(const drawTextCommand_t *cmd, const char *string) {
 
 	fonsSetAlign(ctx, oldAlign);
 
+}
+
+int Asset_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
+	Asset *asset = Asset_Get(ASSET_ANY, assetHandle);
+
+	assert(asset != nullptr);
+
+	if (asset->type != ASSET_BITMAPFONT && asset->type != ASSET_FONT) {
+		Com_Error(ERR_DROP, "Asset_TextWidth: asset not font or bmpfont");
+		return -1;
+	}
+
+	if (asset->type == ASSET_BITMAPFONT) {
+		return BMPFNT_TextWidth(assetHandle, string, scale);
+	} else {
+		TTFFont_t *fnt = (TTFFont_t*)asset->resource;
+
+		fonsSetFont(ctx, fnt->hnd);
+		fonsSetSize(ctx, scale);
+		return (int) fonsTextBounds(ctx, 0, 0, string, nullptr, nullptr);
+	}
 }

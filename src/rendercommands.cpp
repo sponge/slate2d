@@ -240,14 +240,7 @@ const void *RB_DrawText(const void *data) {
 	}
 	else if (state.font->type == ASSET_FONT) {
 		fonsSetColor(ctx, (state.color[0]) | (state.color[1] << 8) | (state.color[2] << 16) | (state.color[3] << 24));
-
-		if (cmd->w <= 0) {
-			fonsDrawText(ctx, cmd->x, cmd->y, text, nullptr);
-			return (const void *)(text + cmd->strSz);
-		}
-		else {
-			TTF_TextBox(cmd, text);
-		}
+		TTF_TextBox(cmd, text);
 	}
 
 	return (const void *)(text + cmd->strSz);

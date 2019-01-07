@@ -324,14 +324,14 @@ void wren_asset_bmpfnt_set(WrenVM *vm) {
 	trap->Asset_BMPFNT_Set(assetHandle, glyphs, glyphWidth, charSpacing, intWidth, lineHeight);
 }
 
-void wren_asset_measurebmptext(WrenVM *vm) {
+void wren_asset_textwidth(WrenVM *vm) {
 	CHECK_ARGS(3, WREN_TYPE_NUM, WREN_TYPE_STRING, WREN_TYPE_NUM);
 
 	AssetHandle fntId = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	const char *text = wrenGetSlotString(vm, 2);
 	float scale = (float)wrenGetSlotDouble(vm, 3);
 
-	double width = trap->Asset_BMPFNT_TextWidth(fntId, text, scale);
+	double width = trap->Asset_TextWidth(fntId, text, scale);
 	wrenSetSlotDouble(vm, 0, width);
 }
 
@@ -951,7 +951,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Asset", true, "loadAll()", wren_asset_loadall },
 	{ "engine", "Asset", true, "clearAll()", wren_asset_clearall },
 	{ "engine", "Asset", true, "bmpfntSet(_,_,_,_,_,_)", wren_asset_bmpfnt_set },
-	{ "engine", "Asset", true, "measureBmpText(_,_,_)", wren_asset_measurebmptext },
+	{ "engine", "Asset", true, "textWidth(_,_,_)", wren_asset_textwidth },
 	{ "engine", "Asset", true, "spriteSet(_,_,_,_,_)", wren_asset_sprite_set },
 	{ "engine", "Asset", true, "imageSize(_)", wren_asset_image_size },
 	{ "engine", "Asset", true, "canvasSet(_,_,_)", wren_asset_canvas_set },

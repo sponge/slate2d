@@ -81,7 +81,7 @@ class Title {
     var layerProps = TileMap.getLayerProperties(_worldLayer)
     Trap.printLn(layerProps)
 
-    var len = Asset.measureBmpText(_font, "hello world")
+    var len = Asset.textWidth(_font, "hello world")
     Trap.printLn("length of text is %(len)")
   }
 

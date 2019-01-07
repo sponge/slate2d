@@ -169,7 +169,7 @@ class Title {
 
     Draw.image(_logo, 320/2 - 80, 38, 0, 0, 1.0, 1.0)
 
-    var tw = Asset.measureBmpText(_font, "a game for the 2018 awful holiday jam")
+    var tw = Asset.textWidth(_font, "a game for the 2018 awful holiday jam")
     Draw.bmpText(_font, 320/2 - tw/2, 78, "a game for the 2018 awful holiday jam")
 
     for (i in 0..._items.count) {
@@ -178,7 +178,7 @@ class Title {
         item = item + " level %(_selectedLevel + 1)"
       }
       Draw.setColor(i == _selectedItem ? [163, 206, 39, 255] : [255, 255, 255, 255])
-      var w = Asset.measureBmpText(_font, item, 1)
+      var w = Asset.textWidth(_font, item, 1)
       Draw.bmpText(_font, 320/2 - w/2, i*10 + 99, item, 1)
     }
 

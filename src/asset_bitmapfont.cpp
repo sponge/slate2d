@@ -9,11 +9,11 @@
 
 extern ClientInfo inf;
 
-enum TTFcodepointType {
-	TTF_SPACE,
-	TTF_NEWLINE,
-	TTF_CHAR,
-	TTF_CJK_CHAR,
+enum TextCodepointType {
+	TEXT_SPACE,
+	TEXT_NEWLINE,
+	TEXT_CHAR,
+	TEXT_IGNORE,
 };
 
 void* BMPFNT_Load(Asset &asset) {
@@ -222,68 +222,90 @@ void BMPFNT_TextBox(const drawTextCommand_t *cmd, const char *string) {
 		return;
 	}
 
-	/*
+	int halign = state.align & (FONS_ALIGN_LEFT | FONS_ALIGN_CENTER | FONS_ALIGN_RIGHT);
 	const char *current = string, *prev = string;
-	float rowStartX = 0;
-	float rowWidth = 0;
-	float rowMinX = 0;
-	float rowMaxX = 0;
-	const char* rowStart = NULL;
-	const char* rowEnd = NULL;
-	const char* wordStart = NULL;
-	float wordStartX = 0;
-	float wordMinX = 0;
-	const char* breakEnd = NULL;
-	float breakWidth = 0;
-	float breakMaxX = 0;
-	int type = TTF_SPACE, ptype = TTF_SPACE;
+	float currWidth = 0;
+	float currY = cmd->y;
+	const char* lineStart = NULL;
+	int type = TEXT_SPACE, ptype = TEXT_SPACE;
+	bool writeLine = false;
 
-	while (current != '\0') {
-		switch (current[0]) {
+	for (; current[0] != '\0'; ++current) {
+		char currChar = current[0];
+		//char prevChar = prev[0];
+
+		switch (currChar) {
 			case 9: // \t
 			case 11: // \v
 			case 12: // \f
 			case 32: // space
 			case 0x00a0: // NBSP
-				type = TTF_SPACE;
+				type = TEXT_SPACE;
 				break;
 			case 10:		// \n
-				type = prev[0] == 13 ? TTF_SPACE : TTF_NEWLINE;
+				type = TEXT_NEWLINE;
 				break;
 			case 13:		// \r
-				type = prev[0] == 10 ? TTF_SPACE : TTF_NEWLINE;
+				type = TEXT_IGNORE;
 				break;
 			case 0x0085:	// NEL
-				type = TTF_NEWLINE;
+				type = TEXT_NEWLINE;
 				break;
 			default:
-				type = TTF_CHAR;
+				type = TEXT_CHAR;
 				break;
 		}
 
-		if (type == TTF_NEWLINE) {
-			// Always handle new lines.
-			const char *thisStart = rowStart != NULL ? rowStart : current;
-			const char *thisEnd = rowEnd != NULL ? rowEnd : current;
-			// rows[nrows].width = rowWidth;
-			// rows[nrows].minx = rowMinX;
-			// rows[nrows].maxx = rowMaxX;
-			// rows[nrows].next = iter.next;
+		if (type == TEXT_NEWLINE) {
+			writeLine = true;
+		}
+		else if (lineStart == nullptr) {
+			if (type == TEXT_CHAR) {
+				lineStart = current;
+			}
+		}
+		else {
+			float thisWidth = 0;
+			if (type == TEXT_SPACE) {
+				thisWidth = font->spaceWidth * state.size;
+			}
+			else {
+				BitmapGlyph &glyph = font->offsets[currChar];
+				thisWidth = (glyph.end - glyph.start + font->charSpacing) * state.size;
+			}
 
-			// Set null break point
-			breakEnd = rowStart;
-			breakWidth = 0.0;
-			breakMaxX = 0.0;
-			// Indicate to skip the white space at the beginning of the row.
-			rowStart = NULL;
-			rowEnd = NULL;
-			rowWidth = 0;
-			rowMinX = rowMaxX = 0;
+			if (currWidth + thisWidth >= cmd->w) {
+				writeLine = true;
+			} else {
+				currWidth += thisWidth;
+			}
+		}
+
+		if (writeLine) {
+			if (lineStart != nullptr) {
+				float x = cmd->x;
+				x += halign & FONS_ALIGN_CENTER ? (cmd->w - currWidth) / 2 : 0;
+				x += halign & FONS_ALIGN_RIGHT ? cmd->w - currWidth : 0;
+				BMPFNT_DrawText(state.font->id, x, currY, lineStart, prev);
+				if (type != TEXT_NEWLINE) {
+					current -= 2;
+				}
+			}
+
+			lineStart = nullptr;
+			currWidth = 0;
+			currY += font->lineHeight * state.size;
+			writeLine = false;
 		}
 
 		ptype = type;
 		prev = current;
-		current++;
 	}
-	*/
+
+	if (lineStart != nullptr) {
+		float x = cmd->x;
+		x += halign & FONS_ALIGN_CENTER ? (cmd->w - currWidth) / 2 : 0;
+		x += halign & FONS_ALIGN_RIGHT ? cmd->w - currWidth : 0;
+		BMPFNT_DrawText(state.font->id, x, currY, lineStart, nullptr);	
+	}
 }

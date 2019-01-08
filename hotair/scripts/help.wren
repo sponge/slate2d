@@ -27,17 +27,14 @@ class Help {
 
     ]
     _story = "oh no it's christmas day at aunt deborah and
-uncle tony's house!
+              uncle tony's house!
 
-avoid the minefield of controversial
-conversation topics and try not to get anyone
-into a full on rant!
 
-collect blue conversation bubbles to make
-enough smalltalk, until you can escape by
-flying out of the room.
+              avoid the minefield of controversial conversation topics and try not to get anyone into a full on rant!
 
-can you make it past christmas dinner?"
+              collect blue conversation bubbles to make enough smalltalk, until you can escape by flying out of the room.
+
+              can you make it past christmas dinner?"
     _t = 0
     _canReturn = false
   }
@@ -102,8 +99,14 @@ can you make it past christmas dinner?"
   drawStory(x, y) {
     drawBox("story", x, y, 200, 154)
 
+    var w = 187
+
+    // Draw.setColor(128, 0, 0, 128)
+    // Draw.rect(x+4, y+8, w, 154, false)
+
+    Draw.setColor(255, 255, 255, 255)
     Draw.setTextStyle(_font, _fontSize, 1.0, Align.Left+Align.Top)
-    Draw.text(x + 4, y + 8, 0, _story)
+    Draw.text(x + 4, y + 8, w, _story)
   }
 
   draw(w, h) {

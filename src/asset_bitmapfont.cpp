@@ -264,7 +264,7 @@ void BMPFNT_TextBox(const drawTextCommand_t *cmd, const char *string) {
 				lineStart = current;
 			}
 		}
-		else {
+		else if (type != TEXT_IGNORE) {
 			float thisWidth = 0;
 			if (type == TEXT_SPACE) {
 				thisWidth = font->spaceWidth * state.size;
@@ -274,7 +274,7 @@ void BMPFNT_TextBox(const drawTextCommand_t *cmd, const char *string) {
 				thisWidth = (glyph.end - glyph.start + font->charSpacing) * state.size;
 			}
 
-			if (currWidth + thisWidth >= cmd->w) {
+			if (cmd->w > 0 && currWidth + thisWidth >= cmd->w) {
 				writeLine = true;
 			} else {
 				currWidth += thisWidth;
@@ -284,8 +284,10 @@ void BMPFNT_TextBox(const drawTextCommand_t *cmd, const char *string) {
 		if (writeLine) {
 			if (lineStart != nullptr) {
 				float x = cmd->x;
-				x += halign & FONS_ALIGN_CENTER ? (cmd->w - currWidth) / 2 : 0;
-				x += halign & FONS_ALIGN_RIGHT ? cmd->w - currWidth : 0;
+				if (cmd->w > 0) {
+					x += halign & FONS_ALIGN_CENTER ? (cmd->w - currWidth) / 2 : 0;
+					x += halign & FONS_ALIGN_RIGHT ? cmd->w - currWidth : 0;
+				}
 				BMPFNT_DrawText(state.font->id, x, currY, lineStart, prev);
 				if (type != TEXT_NEWLINE) {
 					current -= 2;

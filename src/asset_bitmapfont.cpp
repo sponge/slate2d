@@ -151,10 +151,6 @@ int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale, c
 	int i = 0;
 	while (&string[i] != end) {
 		if (string[i] == '\n') {
-			if (currX > maxX) {
-				maxX = currX;
-			}
-
 			currX = 0;
 			i++;
 			continue;
@@ -169,6 +165,11 @@ int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale, c
 		BitmapGlyph &glyph = font->offsets[string[i]];
 
 		currX += glyph.end - glyph.start + font->charSpacing;
+
+		if (currX > maxX) {
+			maxX = currX;
+		}
+		
 		i++;
 
 	}

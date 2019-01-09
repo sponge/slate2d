@@ -146,10 +146,15 @@ int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale, c
 	}
 
 	int currX = 0;
+	int maxX = 0;
 
 	int i = 0;
 	while (&string[i] != end) {
 		if (string[i] == '\n') {
+			if (currX > maxX) {
+				maxX = currX;
+			}
+
 			currX = 0;
 			i++;
 			continue;
@@ -168,7 +173,9 @@ int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale, c
 
 	}
 
-	return (int) (currX * scale);
+	currX -= font->charSpacing;
+
+	return (int) (maxX * scale);
 }
 
 int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, const char *string, const char *end) {

@@ -53,8 +53,8 @@ typedef struct BitmapFont {
 void* BMPFNT_Load(Asset &asset);
 void BMPFNT_Free(Asset &asset);
 void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight);
-int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale);
-int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, const char *string, const char *end);
+int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale, const char *end = nullptr);
+int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, const char *string, const char *end = nullptr);
 void BMPFNT_TextBox(const drawTextCommand_t *cmd, const char *string);
 
 // audio assets

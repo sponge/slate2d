@@ -126,7 +126,7 @@ void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int
 	asset->resource = (void*)font;
 }
 
-int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
+int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale, const char *end) {
 	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
 
 	if (asset == nullptr) {
@@ -141,10 +141,14 @@ int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
 		return 0;
 	}
 
+	if (end == nullptr) {
+		end = string + strlen(string);
+	}
+
 	int currX = 0;
 
 	int i = 0;
-	while (string[i] != '\0') {
+	while (&string[i] != end) {
 		if (string[i] == '\n') {
 			currX = 0;
 			i++;
@@ -167,7 +171,7 @@ int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
 	return (int) (currX * scale);
 }
 
-int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, const char *string, const char *end = nullptr) {
+int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, const char *string, const char *end) {
 	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
 
 	if (asset == nullptr) {
@@ -284,9 +288,11 @@ void BMPFNT_TextBox(const drawTextCommand_t *cmd, const char *string) {
 		if (writeLine) {
 			if (lineStart != nullptr) {
 				float x = cmd->x;
-				if (cmd->w > 0) {
-					x += halign & FONS_ALIGN_CENTER ? (cmd->w - currWidth) / 2 : 0;
-					x += halign & FONS_ALIGN_RIGHT ? cmd->w - currWidth : 0;
+				if (cmd->w > 0 && state.align & (FONS_ALIGN_CENTER | FONS_ALIGN_RIGHT)) {
+					// FIXME: this should be unnecessary, but currWidth and width are not equal
+					int width = BMPFNT_TextWidth(state.font->id, lineStart, state.size, prev);
+					x += halign & FONS_ALIGN_CENTER ? (cmd->w - width) / 2 : 0;
+					x += halign & FONS_ALIGN_RIGHT ? cmd->w - width : 0;
 				}
 				BMPFNT_DrawText(state.font->id, x, currY, lineStart, prev);
 				if (type != TEXT_NEWLINE) {
@@ -306,8 +312,15 @@ void BMPFNT_TextBox(const drawTextCommand_t *cmd, const char *string) {
 
 	if (lineStart != nullptr) {
 		float x = cmd->x;
-		x += halign & FONS_ALIGN_CENTER ? (cmd->w - currWidth) / 2 : 0;
-		x += halign & FONS_ALIGN_RIGHT ? cmd->w - currWidth : 0;
+
+		if (cmd->w > 0 && state.align & (FONS_ALIGN_CENTER | FONS_ALIGN_RIGHT)) {
+			// FIXME: this should be unnecessary, but currWidth and width are not equal
+			// note: not entirely copy paste, nullptr instead of prev
+			int width = BMPFNT_TextWidth(state.font->id, lineStart, state.size, nullptr);
+			x += halign & FONS_ALIGN_CENTER ? (cmd->w - width) / 2 : 0;
+			x += halign & FONS_ALIGN_RIGHT ? cmd->w - width : 0;
+		}
+
 		BMPFNT_DrawText(state.font->id, x, currY, lineStart, nullptr);	
 	}
 }

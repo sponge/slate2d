@@ -230,7 +230,7 @@ void BMPFNT_TextBox(const drawTextCommand_t *cmd, const char *string) {
 	BitmapFont *font = (BitmapFont*)state.font->resource;
 
 	if (font == nullptr) {
-		Com_Error(ERR_DROP, "BMPFNT_BMPFNT_TextBoxDrawText: asset resource not valid");
+		Com_Error(ERR_DROP, "BMPFNT_TextBox: asset resource not valid");
 		return;
 	}
 

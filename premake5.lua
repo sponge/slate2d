@@ -42,11 +42,11 @@ solution "game"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
     -- only used in emscripten build
     removefiles { "src/imgui_impl_sdl_es2.cpp" }
-    sysincludedirs { "src/external", "libs/sdl", "libs/tmx", "libs/imgui", "libs/physfs", "libs/glew", "libs/soloud/include" }
+    sysincludedirs { "src/external", "libs/sdl", "libs/tmx", "libs/imgui", "libs/physfs", "libs/glew", "libs/soloud/include", "libs/crunch" }
     -- physfs uses the exe path by default, but the game data files are in the top folder
     debugargs { "+set", "fs_basepath", path.getabsolute(".")}
     targetdir "build/bin/%{cfg.buildcfg}"
-    links { "tmx", "imgui", "physfs", "glew", "soloud" }
+    links { "tmx", "imgui", "physfs", "glew", "soloud", "crunch" }
     cppdialect "C++14"
     -- define so engine and emscripten packaging are always in sync on the same base game folder 
     defines { "DEFAULT_GAME=\"" .. _OPTIONS["default-game"] .. "\""}
@@ -188,3 +188,13 @@ solution "game"
       filter { "system:macosx" }
         links { "SDL2.framework" }
         linkoptions {"-F /Library/Frameworks"}
+
+    project "crunch"
+      language "C++"
+      kind "StaticLib"
+      includedirs { "libs/crunch" }
+      sysincludedirs { "libs/physfs" }
+      links { "physfs" }
+      files { "libs/crunch/**.cpp", "libs/crunch/**.h", "libs/crunch/**.hpp" }
+      targetdir "build/%{cfg.buildcfg}"
+      warnings "Off"

@@ -1,0 +1,1 @@
+int crunch_main(int argc, const char* argv[]);

@@ -42,6 +42,7 @@ extern "C" {
 #include <soloud_thread.h>
 
 #include "filewatcher.h"
+#include "crunch_frontend.h"
 
 SoLoud::Soloud soloud;
 ClientInfo inf;
@@ -269,6 +270,7 @@ int main(int argc, char *argv[]) {
 	RegisterMainCvars();
 	CL_InitKeyCommands();
 	FileWatcher_Init();
+	Crunch_Init();
 
 	if (!FS_Exists("default.cfg")) {
 		Com_Error(ERR_FATAL, "Filesystem error, check fs_basepath is set correctly. (Could not find default.cfg)");

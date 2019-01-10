@@ -29,7 +29,7 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
-#include "tinydir.h"
+#include <physfs.h>
 #include "str.hpp"
 
 template <class T>
@@ -69,6 +69,7 @@ void HashFiles(size_t& hash, const string& root)
     static string dot1 = ".";
     static string dot2 = "..";
     
+    /*
     tinydir_dir dir;
     tinydir_open(&dir, StrToPath(root).data());
     
@@ -89,6 +90,7 @@ void HashFiles(size_t& hash, const string& root)
     }
     
     tinydir_close(&dir);
+    */
 }
 
 void HashData(size_t& hash, const char* data, size_t size)

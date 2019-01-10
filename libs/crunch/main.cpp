@@ -129,40 +129,45 @@ static string GetFileName(const string& path)
 
 static void LoadBitmap(const string& prefix, const string& path)
 {
-	/*
-    if (optVerbose)
-        cout << '\t' << PathToStr(path) << endl;
+	if (optVerbose) {
+		cout << '\t' << path << endl;
+	}
     
-    bitmaps.push_back(new Bitmap(PathToStr(path), prefix + GetFileName(PathToStr(path)), optPremultiply, optTrim));
-	*/
+    bitmaps.push_back(new Bitmap(path, prefix + GetFileName(path), optPremultiply, optTrim));
 }
 
 static void LoadBitmaps(const string& root, const string& prefix)
 {
     static string dot1 = ".";
     static string dot2 = "..";
-    /*
-    tinydir_dir dir;
-    tinydir_open(&dir, StrToPath(root).data());
-    
-    while (dir.has_next)
-    {
-        tinydir_file file;
-        tinydir_readfile(&dir, &file);
-        
-        if (file.is_dir)
-        {
-            if (dot1 != PathToStr(file.name) && dot2 != PathToStr(file.name))
-                LoadBitmaps(PathToStr(file.path), prefix + PathToStr(file.name) + "/");
+
+	int err;
+	PHYSFS_Stat stat;
+
+	char **files = PHYSFS_enumerateFiles(root.c_str());
+	char **i;
+	for (i = files; *i != NULL; i++) {
+		const string fullPath = root + "/" + *i;
+
+		err = PHYSFS_stat(fullPath.c_str(), &stat);
+		if (err == 0) {
+            cerr << "can't stat file" << fullPath;
+			return;
+		}
+
+
+        int len = strlen(fullPath.c_str());
+
+		if (stat.filetype == PHYSFS_FILETYPE_DIRECTORY) {
+            LoadBitmaps(root, *i);
         }
-        else if (PathToStr(file.extension) == "png")
-            LoadBitmap(prefix, file.path);
-        
-        tinydir_next(&dir);
+        else if (strncmp(fullPath.c_str() + len - 4, ".png", 4) == 0) {
+			const char *realPath = PHYSFS_getRealDir(prefix.c_str());
+            LoadBitmap("", string(realPath) + "/" + root + "/" + *i);
+        } 
     }
-    
-    tinydir_close(&dir);
-	*/
+
+	PHYSFS_freeList(files);
 }
 
 static void RemoveFile(string file)
@@ -201,7 +206,7 @@ static int GetPadding(const string& str)
     return 1;
 }
 
-int main(int argc, const char* argv[])
+int crunch_main(int argc, const char* argv[])
 {
     //Print out passed arguments
     for (int i = 0; i < argc; ++i)
@@ -243,7 +248,7 @@ int main(int argc, const char* argv[])
     {
         string arg = argv[i];
         if (arg == "-d" || arg == "--default")
-            optXml = optPremultiply = optTrim = optUnique = true;
+            optBinary = optPremultiply = optTrim = optUnique = true;
         else if (arg == "-x" || arg == "--xml")
             optXml = true;
         else if (arg == "-b" || arg == "--binary")
@@ -330,6 +335,7 @@ int main(int argc, const char* argv[])
     }
     
     //Remove old files
+
     RemoveFile(outputDir + name + ".hash");
     RemoveFile(outputDir + name + ".bin");
     RemoveFile(outputDir + name + ".xml");

@@ -1,0 +1,1 @@
+void Crunch_Init();

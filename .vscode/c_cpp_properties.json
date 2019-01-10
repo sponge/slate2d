@@ -68,7 +68,8 @@
                 "${workspaceRoot}/libs/physfs",
                 "${workspaceRoot}/libs/sdl",
                 "${workspaceRoot}/libs/soloud/include",
-                "${workspaceRoot}/libs/tmx"
+                "${workspaceRoot}/libs/tmx",
+                "${workspaceFolder}/libs/crunch"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,

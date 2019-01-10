@@ -811,8 +811,6 @@ void wren_map_getlayerproperties(WrenVM *vm) {
 }
 
 void wren_map_gettileproperties(WrenVM *vm) {
-	CHECK_ARGS(1, WREN_TYPE_NUM);
-
 	tmx_map *map = trap->Get_TileMap(mapId);
 
 	int totalSlots = 2; // total num of slots for wrenEnsureSlots

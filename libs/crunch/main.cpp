@@ -125,50 +125,50 @@ static string GetFileName(const string& path)
 
 static void LoadBitmap(const string& prefix, const string& path)
 {
-	if (optVerbose) {
-		Com_Printf("\t %s\n", path.c_str());
-	}
+    if (optVerbose) {
+        Com_Printf("\t %s\n", path.c_str());
+    }
     
     bitmaps.push_back(new Bitmap(path, prefix + GetFileName(path), optPremultiply, optTrim));
 }
 
 static void LoadBitmaps(const string& root, const string& prefix)
 {
-	int err;
-	PHYSFS_Stat stat;
+    int err;
+    PHYSFS_Stat stat;
 
-	char **files = PHYSFS_enumerateFiles(root.c_str());
-	char **i;
-	for (i = files; *i != NULL; i++) {
-		const string fullPath = root + "/" + *i;
+    char **files = PHYSFS_enumerateFiles(root.c_str());
+    char **i;
+    for (i = files; *i != NULL; i++) {
+        const string fullPath = root + "/" + *i;
 
-		err = PHYSFS_stat(fullPath.c_str(), &stat);
-		if (err == 0) {
-			Com_Printf("can't stat file %s", fullPath.c_str());
-			return;
-		}
+        err = PHYSFS_stat(fullPath.c_str(), &stat);
+        if (err == 0) {
+            Com_Printf("can't stat file %s", fullPath.c_str());
+            return;
+        }
 
 
         int len = strlen(fullPath.c_str());
 
-		string virtPath = prefix + "/" + fullPath;
+        string virtPath = prefix + "/" + fullPath;
 
-		if (stat.filetype == PHYSFS_FILETYPE_DIRECTORY) {
+        if (stat.filetype == PHYSFS_FILETYPE_DIRECTORY) {
             LoadBitmaps(virtPath, "");
         }
         else if (strncmp(fullPath.c_str() + len - 4, ".png", 4) == 0) {
-			const char *realPath = PHYSFS_getRealDir(virtPath.c_str());
+            const char *realPath = PHYSFS_getRealDir(virtPath.c_str());
 
-			if (realPath == nullptr) {
-				Com_Printf("realpath returning nullptr for virtual path %s\n", virtPath.c_str());
-				continue;
-			}
+            if (realPath == nullptr) {
+                Com_Printf("realpath returning nullptr for virtual path %s\n", virtPath.c_str());
+                continue;
+            }
 
             LoadBitmap("", string(realPath) + "/" + root + "/" + *i);
         } 
     }
 
-	PHYSFS_freeList(files);
+    PHYSFS_freeList(files);
 }
 
 static void RemoveFile(string file)
@@ -192,7 +192,7 @@ static int GetPackSize(const string& str)
         return 128;
     if (str == "64")
         return 64;
-	Com_Printf("invalid size: %s", str.c_str());
+    Com_Printf("invalid size: %s", str.c_str());
     exit(EXIT_FAILURE);
     return 0;
 }
@@ -209,33 +209,33 @@ static int GetPadding(const string& str)
 
 int crunch_main(int argc, const char* argv[])
 {
-	packers.clear();
-	bitmaps.clear();
+    packers.clear();
+    bitmaps.clear();
 
     if (argc < 2)
     {
-		Com_Printf("invalid input, expected: \"crunch [INPUT DIRECTORY] [OUTPUT PREFIX] [OPTIONS...]\"\n");
+        Com_Printf("invalid input, expected: \"crunch [INPUT DIRECTORY] [OUTPUT PREFIX] [OPTIONS...]\"\n");
         return EXIT_FAILURE;
     }
     
     //Get the output directory and name
     string outputDir, name, scriptsDir;
     SplitFileName(argv[1], &outputDir, &name, nullptr);
-	outputDir = outputDir;
-	scriptsDir = "/scripts/sprites/";
+    outputDir = outputDir;
+    scriptsDir = "/scripts/sprites/";
 
-	const char *oldWriteDir = PHYSFS_getWriteDir();
+    const char *oldWriteDir = PHYSFS_getWriteDir();
 
-	PHYSFS_setWriteDir((fs_basepath->string + string("/") + string(fs_game->string)).c_str());
-	PHYSFS_mkdir(outputDir.c_str());
-	PHYSFS_mkdir(scriptsDir.c_str());
+    PHYSFS_setWriteDir((fs_basepath->string + string("/") + string(fs_game->string)).c_str());
+    PHYSFS_mkdir(outputDir.c_str());
+    PHYSFS_mkdir(scriptsDir.c_str());
 
-	PHYSFS_setWriteDir(oldWriteDir);
+    PHYSFS_setWriteDir(oldWriteDir);
 
-	auto err = PHYSFS_getLastErrorCode();
+    auto err = PHYSFS_getLastErrorCode();
 
-	outputDir = fs_basepath->string + string("/") + string(fs_game->string) + string("/") + outputDir;
-	scriptsDir = fs_basepath->string + string("/") + string(fs_game->string) + string("/scripts/sprites/");
+    outputDir = fs_basepath->string + string("/") + string(fs_game->string) + string("/") + outputDir;
+    scriptsDir = fs_basepath->string + string("/") + string(fs_game->string) + string("/scripts/sprites/");
 
     //Get all the input files and directories
     vector<string> inputs;
@@ -255,40 +255,40 @@ int crunch_main(int argc, const char* argv[])
     optVerbose = false;
     optForce = false;
     optUnique = false;
-	if (argc < 3) {
-		optPremultiply = optTrim = optUnique = true;
-	}
-	else {
-		for (int i = 3; i < argc; ++i)
-		{
-			string arg = argv[i];
-			if (arg == "-p" || arg == "--premultiply")
-				optPremultiply = true;
-			else if (arg == "-t" || arg == "--trim")
-				optTrim = true;
-			else if (arg == "-v" || arg == "--verbose")
-				optVerbose = true;
-			else if (arg == "-f" || arg == "--force")
-				optForce = true;
-			else if (arg == "-u" || arg == "--unique")
-				optUnique = true;
-			else if (arg == "-r" || arg == "--rotate")
-				optRotate = true;
-			else if (arg.find("--size") == 0)
-				optSize = GetPackSize(arg.substr(6));
-			else if (arg.find("-s") == 0)
-				optSize = GetPackSize(arg.substr(2));
-			else if (arg.find("--pad") == 0)
-				optPadding = GetPadding(arg.substr(5));
-			else if (arg.find("-p") == 0)
-				optPadding = GetPadding(arg.substr(2));
-			else
-			{
-				Com_Printf("unexpected argument: %s\n", arg.c_str());
-				return EXIT_FAILURE;
-			}
-		}
-	}
+    if (argc < 3) {
+        optPremultiply = optTrim = optUnique = true;
+    }
+    else {
+        for (int i = 3; i < argc; ++i)
+        {
+            string arg = argv[i];
+            if (arg == "-p" || arg == "--premultiply")
+                optPremultiply = true;
+            else if (arg == "-t" || arg == "--trim")
+                optTrim = true;
+            else if (arg == "-v" || arg == "--verbose")
+                optVerbose = true;
+            else if (arg == "-f" || arg == "--force")
+                optForce = true;
+            else if (arg == "-u" || arg == "--unique")
+                optUnique = true;
+            else if (arg == "-r" || arg == "--rotate")
+                optRotate = true;
+            else if (arg.find("--size") == 0)
+                optSize = GetPackSize(arg.substr(6));
+            else if (arg.find("-s") == 0)
+                optSize = GetPackSize(arg.substr(2));
+            else if (arg.find("--pad") == 0)
+                optPadding = GetPadding(arg.substr(5));
+            else if (arg.find("-p") == 0)
+                optPadding = GetPadding(arg.substr(2));
+            else
+            {
+                Com_Printf("unexpected argument: %s\n", arg.c_str());
+                return EXIT_FAILURE;
+            }
+        }
+    }
 
     
     //Hash the arguments and input directories
@@ -326,15 +326,15 @@ int crunch_main(int argc, const char* argv[])
     
     if (optVerbose)
     {
-		Com_Printf("options...\n");
-		Com_Printf("\t--premultiply: %s\n", optPremultiply ? "true" : "false");
-		Com_Printf("\t--trim: %s\n", optTrim ? "true" : "false");
-		Com_Printf("\t--verbose: %s\n", optVerbose ? "true" : "false");
-		Com_Printf("\t--force: %s\n", optForce ? "true" : "false");
-		Com_Printf("\t--unique: %s\n", optUnique ? "true" : "false");
-		Com_Printf("\t--rotate: %s\n", optRotate ? "true" : "false");
-		Com_Printf("\t--size: %i\n", optSize);
-		Com_Printf("\t--pad: %i\n", optPadding);
+        Com_Printf("options...\n");
+        Com_Printf("\t--premultiply: %s\n", optPremultiply ? "true" : "false");
+        Com_Printf("\t--trim: %s\n", optTrim ? "true" : "false");
+        Com_Printf("\t--verbose: %s\n", optVerbose ? "true" : "false");
+        Com_Printf("\t--force: %s\n", optForce ? "true" : "false");
+        Com_Printf("\t--unique: %s\n", optUnique ? "true" : "false");
+        Com_Printf("\t--rotate: %s\n", optRotate ? "true" : "false");
+        Com_Printf("\t--size: %i\n", optSize);
+        Com_Printf("\t--pad: %i\n", optPadding);
     }
     
     //Remove old files
@@ -370,9 +370,9 @@ int crunch_main(int argc, const char* argv[])
         auto packer = new Packer(optSize, optSize, optPadding);
         packer->Pack(bitmaps, optVerbose, optUnique, optRotate);
         packers.push_back(packer);
-		if (optVerbose) {
-			Com_Printf("finished packing: %s%s (%i x %i)\n", name.c_str(), to_string(packers.size() - 1).c_str(), packer->width, packer->height);
-		}
+        if (optVerbose) {
+            Com_Printf("finished packing: %s%s (%i x %i)\n", name.c_str(), to_string(packers.size() - 1).c_str(), packer->width, packer->height);
+        }
 
         if (packer->bitmaps.empty())
         {
@@ -399,14 +399,14 @@ int crunch_main(int argc, const char* argv[])
         packers[i]->SaveBin(name + to_string(i), bin, optTrim, optRotate);
     bin.close();
 
-	//Save the atlas binary
-	if (optVerbose)
-		Com_Printf("writing wren: %s%s.wren\n", scriptsDir.c_str(), name.c_str());
+    //Save the atlas binary
+    if (optVerbose)
+        Com_Printf("writing wren: %s%s.wren\n", scriptsDir.c_str(), name.c_str());
 
-	ofstream wren(scriptsDir + name + ".wren", ios::binary);
-	for (size_t i = 0; i < packers.size(); ++i)
-		packers[i]->SaveWren(name + (packers.size() == 1 ? "" : to_string(i)), wren);
-	wren.close();
+    ofstream wren(scriptsDir + name + ".wren", ios::binary);
+    for (size_t i = 0; i < packers.size(); ++i)
+        packers[i]->SaveWren(name + (packers.size() == 1 ? "" : to_string(i)), wren);
+    wren.close();
 
     //Save the new hash
     SaveHash(newHash, outputDir + name + ".hash");

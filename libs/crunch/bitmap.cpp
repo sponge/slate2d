@@ -30,6 +30,7 @@
 #include "lodepng.h"
 #include <algorithm>
 #include "hash.hpp"
+#include "console/console.h"
 
 using namespace std;
 
@@ -41,7 +42,7 @@ Bitmap::Bitmap(const string& file, const string& name, bool premultiply, bool tr
     unsigned int pw, ph;
     if (lodepng_decode32_file(&pdata, &pw, &ph, file.data()))
     {
-        cerr << "failed to load png: " << file << endl;
+		Com_Printf("failed to load png: %s\n", file.c_str());
         exit(EXIT_FAILURE);
     }
     int w = static_cast<int>(pw);
@@ -96,7 +97,7 @@ Bitmap::Bitmap(const string& file, const string& name, bool premultiply, bool tr
             minY = 0;
             maxX = w - 1;
             maxY = h - 1;
-            cout << "image is completely transparent: " << file << endl;
+			Com_Printf("image is completely transparent: %s\n", file.c_str());
         }
     }
     else
@@ -161,7 +162,7 @@ void Bitmap::SaveAs(const string& file)
     unsigned int ph = static_cast<unsigned int>(height);
     if (lodepng_encode32_file(file.data(), pdata, pw, ph))
     {
-        cout << "failed to save png: " << file << endl;
+		Com_Printf("failed to save png: %s\n", file);
         exit(EXIT_FAILURE);
     }
 }

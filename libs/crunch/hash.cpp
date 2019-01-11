@@ -32,6 +32,8 @@
 #include <physfs.h>
 #include "str.hpp"
 
+#include "console/console.h"
+
 template <class T>
 void HashCombine(std::size_t& hash, const T& v)
 {
@@ -56,7 +58,7 @@ void HashFile(size_t& hash, const string& file)
     vector<char> buffer(size + 1);
     if (!stream.read(buffer.data(), size))
     {
-        cerr << "failed to read file: " << file << endl;
+		Com_Printf("failed to read file: %s", file.c_str());
         exit(EXIT_FAILURE);
     }
     buffer[size] = '\0';
@@ -65,10 +67,7 @@ void HashFile(size_t& hash, const string& file)
 }
 
 void HashFiles(size_t& hash, const string& root)
-{
-    static string dot1 = ".";
-    static string dot2 = "..";
-    
+{   
     /*
     tinydir_dir dir;
     tinydir_open(&dir, StrToPath(root).data());

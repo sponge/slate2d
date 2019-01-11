@@ -32,10 +32,6 @@
     crunch bin/atlases/atlas assets/characters,assets/tiles -p -t -v -u -r
  
  options:
-    -d  --default           use default settings (-x -p -t -u)
-    -x  --xml               saves the atlas data as a .xml file
-    -b  --binary            saves the atlas data as a .bin file
-    -j  --json              saves the atlas data as a .json file
     -p  --premultiply       premultiplies the pixels of the bitmaps by their alpha channel
     -t  --trim              trims excess transparency off the bitmaps
     -v  --verbose           print to the debug console as the packer works
@@ -75,13 +71,13 @@
 #include "hash.hpp"
 #include "str.hpp"
 
+#include "console/console.h"
+#include "files.h"
+
 using namespace std;
 
 static int optSize;
 static int optPadding;
-static bool optXml;
-static bool optBinary;
-static bool optJson;
 static bool optPremultiply;
 static bool optTrim;
 static bool optVerbose;
@@ -130,7 +126,7 @@ static string GetFileName(const string& path)
 static void LoadBitmap(const string& prefix, const string& path)
 {
 	if (optVerbose) {
-		cout << '\t' << path << endl;
+		Com_Printf("\t %s\n", path.c_str());
 	}
     
     bitmaps.push_back(new Bitmap(path, prefix + GetFileName(path), optPremultiply, optTrim));
@@ -138,9 +134,6 @@ static void LoadBitmap(const string& prefix, const string& path)
 
 static void LoadBitmaps(const string& root, const string& prefix)
 {
-    static string dot1 = ".";
-    static string dot2 = "..";
-
 	int err;
 	PHYSFS_Stat stat;
 
@@ -151,7 +144,7 @@ static void LoadBitmaps(const string& root, const string& prefix)
 
 		err = PHYSFS_stat(fullPath.c_str(), &stat);
 		if (err == 0) {
-            cerr << "can't stat file" << fullPath;
+			Com_Printf("can't stat file %s", fullPath.c_str());
 			return;
 		}
 
@@ -162,7 +155,14 @@ static void LoadBitmaps(const string& root, const string& prefix)
             LoadBitmaps(root, *i);
         }
         else if (strncmp(fullPath.c_str() + len - 4, ".png", 4) == 0) {
-			const char *realPath = PHYSFS_getRealDir(prefix.c_str());
+			string virtPath = prefix + "/" + fullPath;
+			const char *realPath = PHYSFS_getRealDir(virtPath.c_str());
+
+			if (realPath == nullptr) {
+				Com_Printf("realpath returning nullptr for virtual path %s\n", virtPath.c_str());
+				continue;
+			}
+
             LoadBitmap("", string(realPath) + "/" + root + "/" + *i);
         } 
     }
@@ -191,7 +191,7 @@ static int GetPackSize(const string& str)
         return 128;
     if (str == "64")
         return 64;
-    cerr << "invalid size: " << str << endl;
+	Com_Printf("invalid size: %s", str.c_str());
     exit(EXIT_FAILURE);
     return 0;
 }
@@ -201,28 +201,37 @@ static int GetPadding(const string& str)
     for (int i = 0; i <= 16; ++i)
         if (str == to_string(i))
             return i;
-    cerr << "invalid padding value: " << str << endl;
+    Com_Printf("invalid padding value: %s\n", str.c_str());
     exit(EXIT_FAILURE);
     return 1;
 }
 
 int crunch_main(int argc, const char* argv[])
 {
-    //Print out passed arguments
-    for (int i = 0; i < argc; ++i)
-        cout << argv[i] << ' ';
-    cout << endl;
-    
-    if (argc < 3)
+	packers.clear();
+	bitmaps.clear();
+
+    if (argc < 2)
     {
-        cerr << "invalid input, expected: \"crunch [INPUT DIRECTORY] [OUTPUT PREFIX] [OPTIONS...]\"" << endl;
+		Com_Printf("invalid input, expected: \"crunch [INPUT DIRECTORY] [OUTPUT PREFIX] [OPTIONS...]\"\n");
         return EXIT_FAILURE;
     }
     
     //Get the output directory and name
-    string outputDir, name;
+    string outputDir, name, scriptsDir;
     SplitFileName(argv[1], &outputDir, &name, nullptr);
-    
+	outputDir = outputDir;
+	scriptsDir = "/scripts/sprites/";
+
+	PHYSFS_setWriteDir((fs_basepath->string + string("/") + string(fs_game->string)).c_str());
+	PHYSFS_mkdir(outputDir.c_str());
+	PHYSFS_mkdir(scriptsDir.c_str());
+
+	auto err = PHYSFS_getLastErrorCode();
+
+	outputDir = fs_basepath->string + string("/") + string(fs_game->string) + string("/") + outputDir;
+	scriptsDir = fs_basepath->string + string("/") + string(fs_game->string) + string("/scripts/sprites/");
+
     //Get all the input files and directories
     vector<string> inputs;
     stringstream ss(argv[2]);
@@ -236,51 +245,46 @@ int crunch_main(int argc, const char* argv[])
     //Get the options
     optSize = 4096;
     optPadding = 1;
-    optXml = false;
-    optBinary = false;
-    optJson = false;
     optPremultiply = false;
     optTrim = false;
     optVerbose = false;
     optForce = false;
     optUnique = false;
-    for (int i = 3; i < argc; ++i)
-    {
-        string arg = argv[i];
-        if (arg == "-d" || arg == "--default")
-            optBinary = optPremultiply = optTrim = optUnique = true;
-        else if (arg == "-x" || arg == "--xml")
-            optXml = true;
-        else if (arg == "-b" || arg == "--binary")
-            optBinary = true;
-        else if (arg == "-j" || arg == "--json")
-            optJson = true;
-        else if (arg == "-p" || arg == "--premultiply")
-            optPremultiply = true;
-        else if (arg == "-t" || arg == "--trim")
-            optTrim = true;
-        else if (arg == "-v" || arg == "--verbose")
-            optVerbose = true;
-        else if (arg == "-f" || arg == "--force")
-            optForce = true;
-        else if (arg == "-u" || arg == "--unique")
-            optUnique = true;
-        else if (arg == "-r" || arg == "--rotate")
-            optRotate = true;
-        else if (arg.find("--size") == 0)
-            optSize = GetPackSize(arg.substr(6));
-        else if (arg.find("-s") == 0)
-            optSize = GetPackSize(arg.substr(2));
-        else if (arg.find("--pad") == 0)
-            optPadding = GetPadding(arg.substr(5));
-        else if (arg.find("-p") == 0)
-            optPadding = GetPadding(arg.substr(2));
-        else
-        {
-            cerr << "unexpected argument: " << arg << endl;
-            return EXIT_FAILURE;
-        }
-    }
+	if (argc < 3) {
+		optPremultiply = optTrim = optUnique = true;
+	}
+	else {
+		for (int i = 3; i < argc; ++i)
+		{
+			string arg = argv[i];
+			if (arg == "-p" || arg == "--premultiply")
+				optPremultiply = true;
+			else if (arg == "-t" || arg == "--trim")
+				optTrim = true;
+			else if (arg == "-v" || arg == "--verbose")
+				optVerbose = true;
+			else if (arg == "-f" || arg == "--force")
+				optForce = true;
+			else if (arg == "-u" || arg == "--unique")
+				optUnique = true;
+			else if (arg == "-r" || arg == "--rotate")
+				optRotate = true;
+			else if (arg.find("--size") == 0)
+				optSize = GetPackSize(arg.substr(6));
+			else if (arg.find("-s") == 0)
+				optSize = GetPackSize(arg.substr(2));
+			else if (arg.find("--pad") == 0)
+				optPadding = GetPadding(arg.substr(5));
+			else if (arg.find("-p") == 0)
+				optPadding = GetPadding(arg.substr(2));
+			else
+			{
+				Com_Printf("unexpected argument: %s\n", arg.c_str());
+				return EXIT_FAILURE;
+			}
+		}
+	}
+
     
     //Hash the arguments and input directories
     size_t newHash = 0;
@@ -300,15 +304,12 @@ int crunch_main(int argc, const char* argv[])
     {
         if (!optForce && newHash == oldHash)
         {
-            cout << "atlas is unchanged: " << name << endl;
+            Com_Printf("atlas is unchanged: %s\n", name.c_str());
             return EXIT_SUCCESS;
         }
     }
     
-    /*-d  --default           use default settings (-x -p -t -u)
-    -x  --xml               saves the atlas data as a .xml file
-    -b  --binary            saves the atlas data as a .bin file
-    -j  --json              saves the atlas data as a .json file
+    /*
     -p  --premultiply       premultiplies the pixels of the bitmaps by their alpha channel
     -t  --trim              trims excess transparency off the bitmaps
     -v  --verbose           print to the debug console as the packer works
@@ -320,18 +321,15 @@ int crunch_main(int argc, const char* argv[])
     
     if (optVerbose)
     {
-        cout << "options..." << endl;
-        cout << "\t--xml: " << (optXml ? "true" : "false") << endl;
-        cout << "\t--binary: " << (optBinary ? "true" : "false") << endl;
-        cout << "\t--json: " << (optJson ? "true" : "false") << endl;
-        cout << "\t--premultiply: " << (optPremultiply ? "true" : "false") << endl;
-        cout << "\t--trim: " << (optTrim ? "true" : "false") << endl;
-        cout << "\t--verbose: " << (optVerbose ? "true" : "false") << endl;
-        cout << "\t--force: " << (optForce ? "true" : "false") << endl;
-        cout << "\t--unique: " << (optUnique ? "true" : "false") << endl;
-        cout << "\t--rotate: " << (optRotate ? "true" : "false") << endl;
-        cout << "\t--size: " << optSize << endl;
-        cout << "\t--pad: " << optPadding << endl;
+		Com_Printf("options...\n");
+		Com_Printf("\t--premultiply: %s\n", optPremultiply ? "true" : "false");
+		Com_Printf("\t--trim: %s\n", optTrim ? "true" : "false");
+		Com_Printf("\t--verbose: %s\n", optVerbose ? "true" : "false");
+		Com_Printf("\t--force: %s\n", optForce ? "true" : "false");
+		Com_Printf("\t--unique: %s\n", optUnique ? "true" : "false");
+		Com_Printf("\t--rotate: %s\n", optRotate ? "true" : "false");
+		Com_Printf("\t--size: %i\n", optSize);
+		Com_Printf("\t--pad: %i\n", optPadding);
     }
     
     //Remove old files
@@ -345,7 +343,7 @@ int crunch_main(int argc, const char* argv[])
     
     //Load the bitmaps from all the input files and directories
     if (optVerbose)
-        cout << "loading images..." << endl;
+        Com_Printf("loading images...\n");
     for (size_t i = 0; i < inputs.size(); ++i)
     {
         if (inputs[i].rfind('.') != string::npos)
@@ -363,16 +361,17 @@ int crunch_main(int argc, const char* argv[])
     while (!bitmaps.empty())
     {
         if (optVerbose)
-            cout << "packing " << bitmaps.size() << " images..." << endl;
+            Com_Printf("packing %i images...\n", bitmaps.size());
         auto packer = new Packer(optSize, optSize, optPadding);
         packer->Pack(bitmaps, optVerbose, optUnique, optRotate);
         packers.push_back(packer);
-        if (optVerbose)
-            cout << "finished packing: " << name << to_string(packers.size() - 1) << " (" << packer->width << " x " << packer->height << ')' << endl;
-    
+		if (optVerbose) {
+			Com_Printf("finished packing: %s%s (%i x %i)\n", name.c_str(), to_string(packers.size() - 1).c_str(), packer->width, packer->height);
+		}
+
         if (packer->bitmaps.empty())
         {
-            cerr << "packing failed, could not fit bitmap: " << (bitmaps.back())->name << endl;
+            Com_Printf("packing failed, could not fit bitmap: %s\n", (bitmaps.back())->name.c_str());
             return EXIT_FAILURE;
         }
     }
@@ -381,58 +380,29 @@ int crunch_main(int argc, const char* argv[])
     for (size_t i = 0; i < packers.size(); ++i)
     {
         if (optVerbose)
-            cout << "writing png: " << outputDir << name << to_string(i) << ".png" << endl;
+            Com_Printf("writing png: %s%s%s.png\n", outputDir.c_str(), name.c_str(), to_string(i).c_str());
         packers[i]->SavePng(outputDir + name + to_string(i) + ".png");
     }
     
     //Save the atlas binary
-    if (optBinary)
-    {
-        if (optVerbose)
-            cout << "writing bin: " << outputDir << name << ".bin" << endl;
+    if (optVerbose)
+        Com_Printf("writing bin: %s%s.bin\n", outputDir.c_str(), name.c_str());
         
-        ofstream bin(outputDir + name + ".bin", ios::binary);
-        WriteShort(bin, (int16_t)packers.size());
-        for (size_t i = 0; i < packers.size(); ++i)
-            packers[i]->SaveBin(name + to_string(i), bin, optTrim, optRotate);
-        bin.close();
-    }
-    
-    //Save the atlas xml
-    if (optXml)
-    {
-        if (optVerbose)
-            cout << "writing xml: " << outputDir << name << ".xml" << endl;
-        
-        ofstream xml(outputDir + name + ".xml");
-        xml << "<atlas>" << endl;
-        for (size_t i = 0; i < packers.size(); ++i)
-            packers[i]->SaveXml(name + to_string(i), xml, optTrim, optRotate);
-        xml << "</atlas>";
-    }
-    
-    //Save the atlas json
-    if (optJson)
-    {
-        if (optVerbose)
-            cout << "writing json: " << outputDir << name << ".json" << endl;
-        
-        ofstream json(outputDir + name + ".json");
-        json << '{' << endl;
-        json << "\t\"textures\":[" << endl;
-        for (size_t i = 0; i < packers.size(); ++i)
-        {
-            json << "\t\t{" << endl;
-            packers[i]->SaveJson(name + to_string(i), json, optTrim, optRotate);
-            json << "\t\t}";
-            if (i + 1 < packers.size())
-                json << ',';
-            json << endl;
-        }
-        json << "\t]" << endl;
-        json << '}';
-    }
-    
+    ofstream bin(outputDir + name + ".bin", ios::binary);
+    WriteShort(bin, (int16_t)packers.size());
+    for (size_t i = 0; i < packers.size(); ++i)
+        packers[i]->SaveBin(name + to_string(i), bin, optTrim, optRotate);
+    bin.close();
+
+	//Save the atlas binary
+	if (optVerbose)
+		Com_Printf("writing wren: %s%s.wren\n", scriptsDir.c_str(), name.c_str());
+
+	ofstream wren(scriptsDir + name + ".wren", ios::binary);
+	for (size_t i = 0; i < packers.size(); ++i)
+		packers[i]->SaveWren(name + (packers.size() == 1 ? "" : to_string(i)), wren);
+	wren.close();
+
     //Save the new hash
     SaveHash(newHash, outputDir + name + ".hash");
     

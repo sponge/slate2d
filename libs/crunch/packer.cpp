@@ -31,6 +31,9 @@
 #include <iostream>
 #include <algorithm>
 
+#include "console/console.h"
+#include <cctype>
+
 using namespace std;
 using namespace rbp;
 
@@ -50,8 +53,8 @@ void Packer::Pack(vector<Bitmap*>& bitmaps, bool verbose, bool unique, bool rota
     {
         auto bitmap = bitmaps.back();
         
-        if (verbose)
-            cout << '\t' << bitmaps.size() << ": " << bitmap->name << endl;
+		if (verbose)
+			Com_Printf("\t%i: %s\n", bitmaps.size(), bitmap->name.c_str());
         
         //Check to see if this is a duplicate of an already packed bitmap
         if (unique)
@@ -116,30 +119,6 @@ void Packer::SavePng(const string& file)
     bitmap.SaveAs(file);
 }
 
-void Packer::SaveXml(const string& name, ofstream& xml, bool trim, bool rotate)
-{
-    xml << "\t<tex n=\"" << name << "\">" << endl;
-    for (size_t i = 0, j = bitmaps.size(); i < j; ++i)
-    {
-        xml << "\t\t<img n=\"" << bitmaps[i]->name << "\" ";
-        xml << "x=\"" << points[i].x << "\" ";
-        xml << "y=\"" << points[i].y << "\" ";
-        xml << "w=\"" << bitmaps[i]->width << "\" ";
-        xml << "h=\"" << bitmaps[i]->height << "\" ";
-        if (trim)
-        {
-            xml << "fx=\"" << bitmaps[i]->frameX << "\" ";
-            xml << "fy=\"" << bitmaps[i]->frameY << "\" ";
-            xml << "fw=\"" << bitmaps[i]->frameW << "\" ";
-            xml << "fh=\"" << bitmaps[i]->frameH << "\" ";
-        }
-        if (rotate)
-            xml << "r=\"" << (points[i].rot ? 1 : 0) << "\" ";
-        xml << "/>" << endl;
-    }
-    xml << "\t</tex>" << endl;
-}
-
 void Packer::SaveBin(const string& name, ofstream& bin, bool trim, bool rotate)
 {
     WriteString(bin, name);
@@ -163,31 +142,16 @@ void Packer::SaveBin(const string& name, ofstream& bin, bool trim, bool rotate)
     }
 }
 
-void Packer::SaveJson(const string& name, ofstream& json, bool trim, bool rotate)
+
+void Packer::SaveWren(const string& name, ofstream& wren)
 {
-    json << "\t\t\t\"name\":\"" << name << "\"," << endl;
-    json << "\t\t\t\"images\":[" << endl;
-    for (size_t i = 0, j = bitmaps.size(); i < j; ++i)
-    {
-        json << "\t\t\t\t{ ";
-        json << "\"n\":\"" << bitmaps[i]->name << "\", ";
-        json << "\"x\":" << points[i].x << ", ";
-        json << "\"y\":" << points[i].y << ", ";
-        json << "\"w\":" << bitmaps[i]->width << ", ";
-        json << "\"h\":" << bitmaps[i]->height;
-        if (trim)
-        {
-            json << ", \"fx\":" << bitmaps[i]->frameX << ", ";
-            json << "\"fy\":" << bitmaps[i]->frameY << ", ";
-            json << "\"fw\":" << bitmaps[i]->frameW << ", ";
-            json << "\"fh\":" << bitmaps[i]->frameH;
-        }
-        if (rotate)
-            json << ", \"r\":" << (points[i].rot ? "true" : "false");
-        json << " }";
-        if(i != bitmaps.size() -1)
-            json << ",";
-        json << endl;
-    }
-    json << "\t\t\t]" << endl;
+	string upperName = name;
+	upperName[0] = toupper(upperName[0]);
+
+	wren << "class " << upperName << "Sprite {" << endl;
+	for (size_t i = 0, j = bitmaps.size(); i < j; ++i)
+	{
+		wren << "\tstatic " << bitmaps[i]->name << " { " << i << " }" << endl;
+	}
+	wren << "}" << endl;
 }

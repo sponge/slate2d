@@ -194,8 +194,8 @@ solution "game"
     project "crunch"
       language "C++"
       kind "StaticLib"
-      includedirs { "libs/crunch" }
-      sysincludedirs { "libs/physfs" }
+      includedirs { "libs/crunch", "src/" }
+      sysincludedirs { "libs/physfs", "libs/imgui", "libs/sdl" }
       links { "physfs" }
       files { "libs/crunch/**.cpp", "libs/crunch/**.h", "libs/crunch/**.hpp" }
       targetdir "build/%{cfg.buildcfg}"

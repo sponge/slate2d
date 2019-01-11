@@ -72,14 +72,16 @@ solution "game"
         libdirs { "libs/sdl/lib/Win32" }
         -- need to copy x86 sdl runtime to output
         postbuildcommands {
-          '{COPY} "%{wks.location}../libs/sdl/lib/win32/SDL2.dll" "%{cfg.targetdir}"'
+          '{COPY} "%{wks.location}../libs/sdl/lib/win32/SDL2.dll" "%{cfg.targetdir} ',
+          '{COPY} "%{wks.location}../libs/openmpt/win32/*.dll" "%{cfg.targetdir}" '
         }
 
       filter { "platforms:x64", "system:windows" }
         libdirs { "libs/sdl/lib/x64" }
         -- need to copy x64 sdl runtime to output
         postbuildcommands {
-          '{COPY} "%{wks.location}../libs/sdl/lib/x64/SDL2.dll" "%{cfg.targetdir}"'
+          '{COPY} "%{wks.location}../libs/sdl/lib/x64/SDL2.dll" "%{cfg.targetdir}" ',
+          '{COPY} "%{wks.location}../libs/openmpt/x64/*.dll" "%{cfg.targetdir}" '
         }
 
     -- use system installed SDL2 framework on mac

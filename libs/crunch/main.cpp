@@ -151,11 +151,12 @@ static void LoadBitmaps(const string& root, const string& prefix)
 
         int len = strlen(fullPath.c_str());
 
+		string virtPath = prefix + "/" + fullPath;
+
 		if (stat.filetype == PHYSFS_FILETYPE_DIRECTORY) {
-            LoadBitmaps(root, *i);
+            LoadBitmaps(virtPath, "");
         }
         else if (strncmp(fullPath.c_str() + len - 4, ".png", 4) == 0) {
-			string virtPath = prefix + "/" + fullPath;
 			const char *realPath = PHYSFS_getRealDir(virtPath.c_str());
 
 			if (realPath == nullptr) {
@@ -223,9 +224,13 @@ int crunch_main(int argc, const char* argv[])
 	outputDir = outputDir;
 	scriptsDir = "/scripts/sprites/";
 
+	const char *oldWriteDir = PHYSFS_getWriteDir();
+
 	PHYSFS_setWriteDir((fs_basepath->string + string("/") + string(fs_game->string)).c_str());
 	PHYSFS_mkdir(outputDir.c_str());
 	PHYSFS_mkdir(scriptsDir.c_str());
+
+	PHYSFS_setWriteDir(oldWriteDir);
 
 	auto err = PHYSFS_getLastErrorCode();
 

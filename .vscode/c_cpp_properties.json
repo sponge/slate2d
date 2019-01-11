@@ -69,7 +69,8 @@
                 "${workspaceRoot}/libs/sdl",
                 "${workspaceRoot}/libs/soloud/include",
                 "${workspaceRoot}/libs/tmx",
-                "${workspaceFolder}/libs/crunch"
+                "${workspaceFolder}/libs/crunch",
+                "${workspaceFolder}/src"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,

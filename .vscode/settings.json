@@ -3,7 +3,8 @@
         "typeinfo": "cpp",
         "bitset": "cpp",
         "array": "cpp",
-        "hashtable": "cpp"
+        "hashtable": "cpp",
+        "xstring": "cpp"
     },
     "files.exclude": {
         "bin/": true,

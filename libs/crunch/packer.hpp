@@ -56,7 +56,6 @@ struct Packer
     void Pack(vector<Bitmap*>& bitmaps, bool verbose, bool unique, bool rotate);
     void SavePng(const string& file);
     void SaveBin(const string& name, ofstream& bin, bool trim, bool rotate);
-	void SaveWren(const string& name, ofstream& wren);
 };
 
 #endif

@@ -141,17 +141,3 @@ void Packer::SaveBin(const string& name, ofstream& bin, bool trim, bool rotate)
             WriteByte(bin, points[i].rot ? 1 : 0);
     }
 }
-
-
-void Packer::SaveWren(const string& name, ofstream& wren)
-{
-	string upperName = name;
-	upperName[0] = toupper(upperName[0]);
-
-	wren << "class " << upperName << "Sprite {" << endl;
-	for (size_t i = 0, j = bitmaps.size(); i < j; ++i)
-	{
-		wren << "\tstatic " << bitmaps[i]->name << " { " << i << " }" << endl;
-	}
-	wren << "}" << endl;
-}

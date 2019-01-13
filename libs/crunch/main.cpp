@@ -401,8 +401,19 @@ int crunch_main(int argc, const char* argv[])
     Com_Printf("writing wren: %s%s.wren\n", scriptsDir.c_str(), name.c_str());
 
     ofstream wren(scriptsDir + name + ".wren", ios::binary);
-    for (size_t i = 0; i < packers.size(); ++i)
-        packers[i]->SaveWren(name + (packers.size() == 1 ? "" : to_string(i)), wren);
+
+    string upperName = name;
+    upperName[0] = toupper(upperName[0]);
+
+    wren << "class " << upperName << "Sprite {" << endl;
+    int id = 0;
+    for (auto &packer : packers) {
+        for (auto &bitmap : packer->bitmaps)
+        {
+            wren << "\tstatic " << bitmap->name << " { " << id++ << " }" << endl;
+        }
+    }
+    wren << "}" << endl;
     wren.close();
 
     //Save the new hash

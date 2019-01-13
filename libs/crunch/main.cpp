@@ -384,14 +384,12 @@ int crunch_main(int argc, const char* argv[])
     //Save the atlas image
     for (size_t i = 0; i < packers.size(); ++i)
     {
-        if (optVerbose)
-            Com_Printf("writing png: %s%s%s.png\n", outputDir.c_str(), name.c_str(), to_string(i).c_str());
+        Com_Printf("writing png: %s%s%s.png\n", outputDir.c_str(), name.c_str(), to_string(i).c_str());
         packers[i]->SavePng(outputDir + name + to_string(i) + ".png");
     }
     
     //Save the atlas binary
-    if (optVerbose)
-        Com_Printf("writing bin: %s%s.bin\n", outputDir.c_str(), name.c_str());
+    Com_Printf("writing bin: %s%s.bin\n", outputDir.c_str(), name.c_str());
         
     ofstream bin(outputDir + name + ".bin", ios::binary);
     WriteShort(bin, (int16_t)packers.size());
@@ -400,8 +398,7 @@ int crunch_main(int argc, const char* argv[])
     bin.close();
 
     //Save the atlas binary
-    if (optVerbose)
-        Com_Printf("writing wren: %s%s.wren\n", scriptsDir.c_str(), name.c_str());
+    Com_Printf("writing wren: %s%s.wren\n", scriptsDir.c_str(), name.c_str());
 
     ofstream wren(scriptsDir + name + ".wren", ios::binary);
     for (size_t i = 0; i < packers.size(); ++i)

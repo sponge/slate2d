@@ -17,6 +17,8 @@ void* Img_Load(Asset &asset);
 void Img_Free(Asset &asset);
 Image* Get_Img(AssetHandle id);
 
+// sprite assets
+
 void* Sprite_Load(Asset &asset);
 void Sprite_Free(Asset &asset);
 void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int marginY);

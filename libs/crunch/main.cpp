@@ -390,9 +390,19 @@ int crunch_main(int argc, const char* argv[])
     
     //Save the atlas binary
     Com_Printf("writing bin: %s%s.bin\n", outputDir.c_str(), name.c_str());
+
+	int16_t numImages = 0;
+	for (auto &packer : packers) {
+		for (auto &bitmap : packer->bitmaps)
+		{
+			numImages += 1;
+		}
+	}
         
     ofstream bin(outputDir + name + ".bin", ios::binary);
     WriteShort(bin, (int16_t)packers.size());
+	WriteShort(bin, numImages);
+
     for (size_t i = 0; i < packers.size(); ++i)
         packers[i]->SaveBin(name + to_string(i), bin, optTrim, optRotate);
     bin.close();

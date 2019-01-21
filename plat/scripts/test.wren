@@ -37,6 +37,8 @@ class Title {
     _spr = Asset.create(Asset.Sprite, "spr", "maps/tilesets/plat.gif")
     Asset.spriteSet(_spr, 8, 8, 0, 0)
 
+    _crunchSpr = Asset.create(Asset.Sprite, "crunchspr", "gfx.bin")
+
     var tmapId = Asset.create(Asset.TileMap, mapName, mapName)
     TileMap.setCurrent(tmapId)
 

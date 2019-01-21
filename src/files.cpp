@@ -132,3 +132,13 @@ int FS_ReadFile(const char *path, void **buffer) {
 
 	return (int)read_sz;
 }
+
+const char *FS_FileExtension(const char *filename) {
+    const char *dot = strrchr(filename, '.');
+	
+    if (!dot || dot == filename) {
+		return "";
+	}
+
+    return dot + 1;
+}

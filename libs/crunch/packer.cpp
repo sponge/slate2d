@@ -130,14 +130,12 @@ void Packer::SaveBin(const string& name, ofstream& bin, bool trim, bool rotate)
         WriteShort(bin, (int16_t)points[i].y);
         WriteShort(bin, (int16_t)bitmaps[i]->width);
         WriteShort(bin, (int16_t)bitmaps[i]->height);
-        if (trim)
-        {
-            WriteShort(bin, (int16_t)bitmaps[i]->frameX);
-            WriteShort(bin, (int16_t)bitmaps[i]->frameY);
-            WriteShort(bin, (int16_t)bitmaps[i]->frameW);
-            WriteShort(bin, (int16_t)bitmaps[i]->frameH);
-        }
-        if (rotate)
-            WriteByte(bin, points[i].rot ? 1 : 0);
+
+        WriteShort(bin, (int16_t)bitmaps[i]->frameX);
+        WriteShort(bin, (int16_t)bitmaps[i]->frameY);
+        WriteShort(bin, (int16_t)bitmaps[i]->frameW);
+        WriteShort(bin, (int16_t)bitmaps[i]->frameH);
+
+        WriteByte(bin, points[i].rot ? 1 : 0);
     }
 }

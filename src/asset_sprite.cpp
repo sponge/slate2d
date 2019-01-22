@@ -27,40 +27,48 @@ const char* ReadString(byte **curr) {
 }
 
 void* Sprite_Load(Asset &asset) {
+	// if the sprite ends in bin, load it through crunch, otherwise generate the sprite
 	if (strcmp("bin", FS_FileExtension(asset.path)) == 0) {
-		PackedSprite *spr = new PackedSprite();
-
+		// read the bin file
 		byte *crunch;
 		int len = FS_ReadFile(asset.path, (void**)&crunch);
+		byte *curr = crunch;
 
 		if (len == -1) {
 			Com_Error(ERR_DROP, "Sprite_Load: couldn't read file %s", asset.path);
 			return nullptr;
 		}
 
-		byte *curr = crunch;
+		// we have a probably valid file, create the atlas
+		SpriteAtlas *atlas = new SpriteAtlas();
 
-		spr->numTextures = ReadShort(&curr);
-		spr->numSprites = ReadShort(&curr);
+		// read the counts from the file (numSprites is a new field compared to standard crunch)
+		atlas->numTextures = ReadShort(&curr);
+		atlas->numSprites = ReadShort(&curr);
 
-		spr->textures = new Image[spr->numTextures];
-		spr->sprites = new CrunchSprite[spr->numSprites];
+		atlas->textures = new Image[atlas->numTextures];
+		atlas->sprites = new Sprite[atlas->numSprites];
 
-		for (int tex = 0; tex < spr->numTextures; tex++) {
+		// for each texture, read the texture path and number of sprites in that image
+		for (int tex = 0; tex < atlas->numTextures; tex++) {
 			const char *imgPath = ReadString(&curr);
-			int16_t numSprites = ReadShort(&curr);
+			int16_t texSprites = ReadShort(&curr);
 
+			// load the imgae into the GPU, copy it, and delete it
 			Image *img = (Image*)Img_LoadPath(imgPath);
-			spr->textures[tex] = *img;
-			free(img);
+			atlas->textures[tex] = *img;
+			delete img;
 
-			Com_Printf("texture %s has %i images\n", imgPath, numSprites);
+			Com_Printf("texture %s has %i images\n", imgPath, texSprites);
 
-			for (int id = 0; id < spr->numSprites; id++) {
+			// for each sprite in the texture, read it into our struct
+			for (int i = 0; i <= texSprites; i++) {
+				// we don't care about the name, just print it
 				const char *name = ReadString(&curr);
 
-				spr->sprites[id] = {
-					&spr->textures[tex],
+				// read all the sprite attributes
+				atlas->sprites[i] = {
+					&atlas->textures[tex],
 					ReadShort(&curr),
 					ReadShort(&curr),
 					ReadShort(&curr),
@@ -72,15 +80,17 @@ void* Sprite_Load(Asset &asset) {
 					ReadByte(&curr)
 				};
 
-				Com_Printf("%s (%i): pos:(%i, %i) sz:(%i, %i)\n", name, id, spr->sprites[id].x, spr->sprites[id].y, spr->sprites[id].w, spr->sprites[id].h);
+				Sprite *spr = &atlas->sprites[i];
+				Com_Printf("%s (%i): pos:(%i, %i) sz:(%i, %i)\n", name, i, spr->x, spr->y, spr->w, spr->h);
 			}
 
 		}
 
-		asset.resource = (void*)spr;
+		asset.resource = (void*)atlas;
 	}
 	else {
-		PackedSprite *spr = (PackedSprite*)asset.resource;
+		// create the atlas based off of fixed bounds
+		SpriteAtlas *spr = (SpriteAtlas*)asset.resource;
 		Image *img = (Image*)Img_Load(asset);
 
 		if (img == nullptr) {
@@ -88,16 +98,20 @@ void* Sprite_Load(Asset &asset) {
 			return nullptr;
 		}
 
+		// sprites set with setSprite only ever have one texture
 		spr->textures = new Image[1];
 		spr->textures[0] = *img;
 
 		int rows = (img->h / (spr->staticHeight + spr->staticMarginY));
 		int cols = (img->w / (spr->staticWidth + spr->staticMarginX));
 
+		delete img;
+
 		spr->numTextures = 1;
 		spr->numSprites = rows * cols;
-		spr->sprites = new CrunchSprite[spr->numSprites];
+		spr->sprites = new Sprite[spr->numSprites];
 
+		// step through each square in the grid and generate the structure for it
 		for (int i = 0; i < spr->numSprites; i++) {
 			spr->sprites[i].texture = &spr->textures[0];
 			spr->sprites[i].x = (int16_t)((i % cols) * spr->staticWidth);
@@ -105,8 +119,6 @@ void* Sprite_Load(Asset &asset) {
 			spr->sprites[i].w = (int16_t)spr->staticWidth;
 			spr->sprites[i].h = (int16_t)spr->staticHeight;
 		}
-
-		free(img);
 
 	}
 
@@ -139,7 +151,7 @@ void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int
 		return;
 	}
 
-	auto spr = new PackedSprite();
+	auto spr = new SpriteAtlas();
 
 	spr->staticWidth = width;
 	spr->staticHeight = height;

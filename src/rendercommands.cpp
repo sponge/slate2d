@@ -323,14 +323,14 @@ const void *RB_DrawSprite(const void *data) {
 	auto cmd = (const drawSpriteCommand_t *)data;
 
 	Asset *asset = Asset_Get(ASSET_SPRITE, cmd->spr);
-	PackedSprite *spr = (PackedSprite*)asset->resource;
+	SpriteAtlas *spr = (SpriteAtlas*)asset->resource;
 
 	if (cmd->id > spr->numSprites) {
 		Com_Printf("WARNING: draw sprite %s out of index %i > %i\n", asset->name, cmd->id, spr->numSprites - 1);
 		return (const void *)(cmd + 1);
 	}
 
-	CrunchSprite *crunch = &spr->sprites[cmd->id];
+	Sprite *crunch = &spr->sprites[cmd->id];
 	Image *img = crunch->texture;
 
 	DrawImage(

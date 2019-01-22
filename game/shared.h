@@ -308,19 +308,19 @@ typedef struct {
 	int16_t framew;
 	int16_t frameh;
 	byte rotated;
-} CrunchSprite;
+} Sprite;
 
 typedef struct {
 	int numTextures;
 	int numSprites;
 	Image *textures;
-	CrunchSprite *sprites;
+	Sprite *sprites;
 
 	int staticWidth;
 	int staticHeight;
 	int staticMarginX;
 	int staticMarginY;
-} PackedSprite;
+} SpriteAtlas;
 
 typedef struct {
 	int x, y;

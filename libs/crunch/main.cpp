@@ -220,7 +220,7 @@ int crunch_main(int argc, const char* argv[])
     
     //Get the output directory and name
     string outputDir, name, scriptsDir;
-    SplitFileName(argv[1], &outputDir, &name, nullptr);
+    SplitFileName(argv[2], &outputDir, &name, nullptr);
     outputDir = outputDir;
     scriptsDir = "/scripts/sprites/";
 
@@ -235,11 +235,11 @@ int crunch_main(int argc, const char* argv[])
     auto err = PHYSFS_getLastErrorCode();
 
     outputDir = fs_basepath->string + string("/") + string(fs_game->string) + string("/") + outputDir;
-    scriptsDir = fs_basepath->string + string("/") + string(fs_game->string) + string("/scripts/sprites/");
+    scriptsDir = fs_basepath->string + string("/") + string(fs_game->string) + string(scriptsDir);
 
     //Get all the input files and directories
     vector<string> inputs;
-    stringstream ss(argv[2]);
+    stringstream ss(argv[1]);
     while (ss.good())
     {
         string inputStr;
@@ -404,7 +404,7 @@ int crunch_main(int argc, const char* argv[])
 	WriteShort(bin, numImages);
 
     for (size_t i = 0; i < packers.size(); ++i)
-        packers[i]->SaveBin(name + to_string(i), bin, optTrim, optRotate);
+        packers[i]->SaveBin(argv[2] + to_string(i) + ".png", bin, optTrim, optRotate);
     bin.close();
 
     //Save the atlas binary

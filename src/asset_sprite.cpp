@@ -4,31 +4,6 @@
 #include "console/console.h"
 #include <physfs.h>
 
-typedef struct {
-	const char *name;
-	int16_t x;
-	int16_t y;
-	int16_t w;
-	int16_t h;
-	int16_t framex;
-	int16_t framey;
-	int16_t framew;
-	int16_t frameh;
-	byte rotated;
-} SpriteImage;
-
-typedef struct {
-	const char *name;
-	int numImages;
-} SpriteTexture;
-
-typedef struct {
-	int numTextures;
-	int numImages;
-	SpriteTexture *textures;
-	SpriteImage *images;
-} PackedSprite;
-
 byte ReadByte(byte **curr) {
 	byte ret = (byte)**curr;
 	*curr += 1;
@@ -52,33 +27,40 @@ const char* ReadString(byte **curr) {
 }
 
 void* Sprite_Load(Asset &asset) {
-	Sprite *spr = (Sprite*)asset.resource;
-
 	if (strcmp("bin", FS_FileExtension(asset.path)) == 0) {
+		PackedSprite *spr = new PackedSprite();
+
 		byte *crunch;
-		FS_ReadFile(asset.path, (void**)&crunch);
+		int len = FS_ReadFile(asset.path, (void**)&crunch);
+
+		if (len == -1) {
+			Com_Error(ERR_DROP, "Sprite_Load: couldn't read file %s", asset.path);
+			return nullptr;
+		}
 
 		byte *curr = crunch;
 
-		int16_t totalTextures = ReadShort(&curr);
-		int16_t totalImages = ReadShort(&curr);
+		spr->numTextures = ReadShort(&curr);
+		spr->numSprites = ReadShort(&curr);
 
-		SpriteTexture *textures = (SpriteTexture*) malloc(sizeof(SpriteTexture) * totalTextures);
-		SpriteImage *images = (SpriteImage*)malloc(sizeof(SpriteImage) * totalImages);
+		spr->textures = new Image[spr->numTextures];
+		spr->sprites = new CrunchSprite[spr->numSprites];
 
-		for (int tex = 0; tex < totalTextures; tex++) {
+		for (int tex = 0; tex < spr->numTextures; tex++) {
+			const char *imgPath = ReadString(&curr);
+			int16_t numSprites = ReadShort(&curr);
 
-			// FIXME: this is prob unnecessary. read image directly here
-			textures[tex] = {
-				ReadString(&curr),
-				ReadShort(&curr)
-			};
+			Image *img = (Image*)Img_LoadPath(imgPath);
+			spr->textures[tex] = *img;
+			free(img);
 
-			Com_Printf("texture %s has %i images\n", textures[tex].name, textures[tex].numImages);
+			Com_Printf("texture %s has %i images\n", imgPath, numSprites);
 
-			for (int img = 0; img < textures[tex].numImages; img++) {
-				images[img] = {
-					ReadString(&curr),
+			for (int id = 0; id < spr->numSprites; id++) {
+				const char *name = ReadString(&curr);
+
+				spr->sprites[id] = {
+					&spr->textures[tex],
 					ReadShort(&curr),
 					ReadShort(&curr),
 					ReadShort(&curr),
@@ -90,14 +72,15 @@ void* Sprite_Load(Asset &asset) {
 					ReadByte(&curr)
 				};
 
-				Com_Printf("%s (%i): pos:(%i, %i) sz:(%i, %i)\n", images[img].name, img, images[img].x, images[img].y, images[img].w, images[img].h);
+				Com_Printf("%s (%i): pos:(%i, %i) sz:(%i, %i)\n", name, id, spr->sprites[id].x, spr->sprites[id].y, spr->sprites[id].w, spr->sprites[id].h);
 			}
 
 		}
 
-		asset.resource = (void*)1;
+		asset.resource = (void*)spr;
 	}
 	else {
+		PackedSprite *spr = (PackedSprite*)asset.resource;
 		Image *img = (Image*)Img_Load(asset);
 
 		if (img == nullptr) {
@@ -105,20 +88,37 @@ void* Sprite_Load(Asset &asset) {
 			return nullptr;
 		}
 
-		spr->image = img;
-		spr->rows = (img->h / (spr->spriteHeight + spr->marginY));
-		spr->cols = (img->w / (spr->spriteWidth + spr->marginX));
-		spr->maxId = spr->rows * spr->cols - 1;
+		spr->textures = new Image[1];
+		spr->textures[0] = *img;
+
+		int rows = (img->h / (spr->staticHeight + spr->staticMarginY));
+		int cols = (img->w / (spr->staticWidth + spr->staticMarginX));
+
+		spr->numTextures = 1;
+		spr->numSprites = rows * cols;
+		spr->sprites = new CrunchSprite[spr->numSprites];
+
+		for (int i = 0; i < spr->numSprites; i++) {
+			spr->sprites[i].texture = &spr->textures[0];
+			spr->sprites[i].x = (int16_t)((i % cols) * spr->staticWidth);
+			spr->sprites[i].y = (int16_t)((i / cols) * spr->staticHeight);
+			spr->sprites[i].w = (int16_t)spr->staticWidth;
+			spr->sprites[i].h = (int16_t)spr->staticHeight;
+		}
+
+		free(img);
+
 	}
 
 	return asset.resource;
 }
 
 void Sprite_Free(Asset &asset) {
-	Sprite *spr = (Sprite*)asset.resource;
-	rlDeleteTextures(spr->image->hnd);
-	free(spr->image);
-	free(asset.resource);
+	// FIXME: free sprites
+	// Sprite *spr = (Sprite*)asset.resource;
+	// rlDeleteTextures(spr->image->hnd);
+	// free(spr->image);
+	// free(asset.resource);
 }
 
 void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int marginY) {
@@ -139,12 +139,12 @@ void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int
 		return;
 	}
 
-	auto spr = new Sprite();
+	auto spr = new PackedSprite();
 
-	spr->spriteWidth = width;
-	spr->spriteHeight = height;
-	spr->marginX = marginX;
-	spr->marginY = marginY;
+	spr->staticWidth = width;
+	spr->staticHeight = height;
+	spr->staticMarginX = marginX;
+	spr->staticMarginY = marginY;
 
 	asset->resource = (void*)spr;
 }

@@ -323,21 +323,23 @@ const void *RB_DrawSprite(const void *data) {
 	auto cmd = (const drawSpriteCommand_t *)data;
 
 	Asset *asset = Asset_Get(ASSET_SPRITE, cmd->spr);
-	Sprite *spr = (Sprite*)asset->resource;
-	Image *img = spr->image;
+	PackedSprite *spr = (PackedSprite*)asset->resource;
 
-	if (cmd->id > spr->maxId) {
-		Com_Printf("WARNING: draw sprite %s out of index %i > %i\n", asset->name, cmd->id, spr->maxId);
+	if (cmd->id > spr->numSprites) {
+		Com_Printf("WARNING: draw sprite %s out of index %i > %i\n", asset->name, cmd->id, spr->numSprites - 1);
 		return (const void *)(cmd + 1);
 	}
+
+	CrunchSprite *crunch = &spr->sprites[cmd->id];
+	Image *img = crunch->texture;
 
 	DrawImage(
 		cmd->x,
 		cmd->y,
-		(float)spr->spriteWidth * cmd->w,
-		(float)spr->spriteHeight * cmd->h,
-		(float)(cmd->id % spr->cols) * spr->spriteWidth,
-		(float)(cmd->id / spr->cols) * spr->spriteHeight,
+		(float)crunch->w * cmd->w,
+		(float)crunch->h * cmd->h,
+		(float)crunch->x,
+		(float)crunch->y,
 		cmd->alpha,
 		cmd->scale,
 		cmd->flipBits,

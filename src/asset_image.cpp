@@ -5,12 +5,12 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-void* Img_Load(Asset &asset) {
+void* Img_LoadPath(const char *path) {
 	unsigned char *buffer;
-	auto sz = FS_ReadFile(asset.path, (void**) &buffer);
+	auto sz = FS_ReadFile(path, (void**)&buffer);
 
 	if (sz == -1) {
-		Com_Error(ERR_DROP, "Couldn't read image %s", asset.path);
+		Com_Error(ERR_DROP, "Img_LoadPath: Couldn't read image %s", path);
 		return nullptr;
 	}
 
@@ -37,7 +37,11 @@ void* Img_Load(Asset &asset) {
 
 	free(buffer);
 
-	return (void*) img;
+	return (void*)img;
+}
+
+void* Img_Load(Asset &asset) {
+	return Img_LoadPath(asset.path);
 }
 
 void Img_Free(Asset &asset) {

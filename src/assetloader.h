@@ -14,6 +14,7 @@ void Asset_ClearAll();
 // image assets
 
 void* Img_Load(Asset &asset);
+void* Img_LoadPath(const char *path);
 void Img_Free(Asset &asset);
 Image* Get_Img(AssetHandle id);
 

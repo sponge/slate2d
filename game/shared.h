@@ -298,13 +298,29 @@ typedef struct {
 } Image;
 
 typedef struct {
-	Image *image;
-	int maxId;
-	int imageWidth, imageHeight;
-	int spriteWidth, spriteHeight;
-	int marginX, marginY;
-	int rows, cols;
-} Sprite;
+	Image *texture;
+	int16_t x;
+	int16_t y;
+	int16_t w;
+	int16_t h;
+	int16_t framex;
+	int16_t framey;
+	int16_t framew;
+	int16_t frameh;
+	byte rotated;
+} CrunchSprite;
+
+typedef struct {
+	int numTextures;
+	int numSprites;
+	Image *textures;
+	CrunchSprite *sprites;
+
+	int staticWidth;
+	int staticHeight;
+	int staticMarginX;
+	int staticMarginY;
+} PackedSprite;
 
 typedef struct {
 	int x, y;

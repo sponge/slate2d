@@ -4,6 +4,7 @@ import "math" for Math
 import "player" for Player
 import "meta" for Meta
 import "random" for Random
+import "sprites/gfx" for GfxSprite
 
 class Title {
   nextScene { null }
@@ -37,7 +38,7 @@ class Title {
     _spr = Asset.create(Asset.Sprite, "spr", "maps/tilesets/plat.gif")
     Asset.spriteSet(_spr, 8, 8, 0, 0)
 
-    _crunchSpr = Asset.create(Asset.Sprite, "crunchspr", "gfx.bin")
+    _crunchSpr = Asset.create(Asset.Sprite, "crunchspr", "sprites/gfx.bin")
 
     var tmapId = Asset.create(Asset.TileMap, mapName, mapName)
     TileMap.setCurrent(tmapId)
@@ -179,6 +180,8 @@ class Title {
     Draw.sprite(_spr, 17, 275, 80, 1.0, 1.0, 7, 2, 1)
 
     Draw.sprite(_spr, 17, 275, 96, 1.0, 2.0, 7, 2, 1)
+
+    Draw.sprite(_crunchSpr, GfxSprite.notgooddog, 8, 8)
 
     if (_upActive) {
       Draw.rect(100, 0, 100, 100, Fill.Solid)

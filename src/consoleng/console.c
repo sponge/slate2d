@@ -33,6 +33,14 @@ void Cmd_Exec_f() {
 	// if it doesn't end in cfg, add it
 }
 
+void Cmd_Reset_f() {
+	// set to default value
+}
+
+void Cmd_Toggle_f() {
+	// toggle between 0 and 1 values
+}
+
 void Cmd_ListCmds_f() {
 	map_iter_t iter = map_iter(&con->cmds);
 	int count = 0;
@@ -69,10 +77,13 @@ void Con_Init(conState_t *newCon) {
 
 	Con_AddCommand("echo", Cmd_Echo_f);
 	Con_AddCommand("listcmds", Cmd_ListCmds_f);
+	Con_AddCommand("exec", Cmd_Exec_f);
+
 	Con_AddCommand("listcvars", Cmd_ListCvars_f);
 	Con_AddCommand("set", Cmd_Set_f);
+	Con_AddCommand("toggle", Cmd_Toggle_f);
+	Con_AddCommand("reset", Cmd_Reset_f);
 	Con_AddCommand("vstr", Cmd_Vstr_f);
-	Con_AddCommand("exec", Cmd_Vstr_f);
 }
 
 void Con_SetActive(conState_t *newCon) {
@@ -106,6 +117,7 @@ void Con_Shutdown() {
 }
 
 // Command handling
+
 void Con_AddCommand(const char *name, conCmd_t cb) {
 	map_set(&con->cmds, name, cb);
 }
@@ -168,3 +180,5 @@ const char *Con_GetRawArgs() {
 
 	return &con->cmd[cmdLen + 1];
 }
+
+// Convar handling

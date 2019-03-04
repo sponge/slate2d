@@ -4,12 +4,15 @@
 #include "../external/map.h"
 
 typedef struct conVar {
-    const char *name;
+    sds name; // name of the cvar
+	sds defaultValue;
+	int flags;
+	int modified; // set to true when changed, can be set to false by user
 
-    const char *string;
-    float value;
-    int integer;
-    bool boolean;
+    sds string; // string value of the cvar
+    float value; // float value
+    int integer; // integer value
+    bool boolean; // boolean value
 } conVar_t;
 
 typedef void(*conCmd_t) ();

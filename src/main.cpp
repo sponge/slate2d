@@ -44,6 +44,12 @@ extern "C" {
 #include "filewatcher.h"
 #include "crunch_frontend.h"
 
+extern "C" {
+#include "consoleng/console.h"
+}
+
+conState_t console;
+
 SoLoud::Soloud soloud;
 ClientInfo inf;
 int64_t frame_musec = 0, com_frameTime = 0;
@@ -237,6 +243,13 @@ void main_loop() {
 }
 
 int main(int argc, char *argv[]) {
+	Con_Init(&console);
+
+	Con_Execute("echo hello \"big\" boy");
+	Con_Execute("this is invalid");
+	Con_Execute("listcmds");
+	Con_Execute("listcmds list");
+
 	// handle command line parsing. combine into one string and pass it in.
 	if (argc > 1) {
 		int len, i;
@@ -300,7 +313,7 @@ int main(int argc, char *argv[]) {
 
 	inf.width = vid_width->integer;
 	inf.height = vid_height->integer;
-	window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, inf.width, inf.height, SDL_WINDOW_OPENGL);
+	window = SDL_CreateWindow("Slate2D", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, inf.width, inf.height, SDL_WINDOW_OPENGL);
 
 	if (window == NULL) {
 		Com_Error(ERR_FATAL, "There was an error creating the window: %s", SDL_GetError());

@@ -62,7 +62,7 @@ void* Sprite_Load(Asset &asset) {
 			Com_Printf("texture %s has %i images\n", imgPath, texSprites);
 
 			// for each sprite in the texture, read it into our struct
-			for (int i = 0; i <= texSprites; i++) {
+			for (int i = 0; i < texSprites; i++) {
 				// we don't care about the name, just print it
 				const char *name = ReadString(&curr);
 

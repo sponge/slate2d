@@ -77,3 +77,26 @@ const char *Con_GetArgs(unsigned int start);
 // returns a string containing everything past the command
 // useful if you just want to pass the whole set of arguments into somewhere else
 const char *Con_GetRawArgs();
+
+// finds and returns the named convar, returns NULL if not found
+conVar_t *Con_GetVar(const char *name);
+
+// finds and returns the named convar, returns a new var set to defaultValue if not found
+// use this function to create new convars.
+conVar_t *Con_GetVarDefault(const char *name, const char *defaultValue, int flags);
+
+// returns the string value of a convar. returns an empty string if no convar exists.
+const char * Con_GetVarString(const char * name);
+
+// returns the float value of a convar. returns 0 if no convar exists.
+float Con_GetVarFloat(const char * name);
+
+// returns the int value of a convar. returns 0 if no convar exists.
+int Con_GetVarInt(const char * name);
+
+// returns the boolean value of a convar. returns false if no convar exists.
+bool Con_GetVarBool(const char * name);
+
+conVar_t * Con_SetCvar(const char * name, const char * value);
+
+conVar_t * Con_SetCvarFloat(const char * name, float value);

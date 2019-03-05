@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include "../external/sds.h"
 
-
 // Built in commands
 
 void Cmd_Echo_f() {
@@ -182,3 +181,62 @@ const char *Con_GetRawArgs() {
 }
 
 // Convar handling
+
+conVar_t *Con_GetVar(const char *name) {
+	return map_get(&con->cvars, name);
+}
+
+conVar_t *Con_GetVarDefault(const char *name, const char *defaultValue, int flags) {
+	if (!name || !defaultValue) {
+		// FIXME: error
+		return NULL;
+	}
+
+	conVar_t *var = Con_GetVar(name);
+
+	if (var == NULL) {
+		conVar_t newVar;
+		newVar.name = sdsnew(name);
+		newVar.flags = flags;
+		newVar.defaultValue = sdsnew(defaultValue);
+		newVar.string = sdsnew(defaultValue);
+		newVar.value = atof(defaultValue);
+		newVar.integer = atoi(defaultValue);
+		newVar.boolean = !!newVar.integer;
+
+		map_set(&con->cvars, name, newVar);
+
+		// map_set is going to copy the data so make sure we get the right one by re-getting it
+		var = Con_GetVar(name);
+	}
+
+	return var;
+}
+
+const char *Con_GetVarString(const char *name) {
+	conVar_t *var = Con_GetVar(name);
+	return var == NULL ? "" : var->string;
+}
+
+float Con_GetVarFloat(const char *name) {
+	conVar_t *var = Con_GetVar(name);
+	return var == NULL ? 0.0f : var->value;
+}
+
+int Con_GetVarInt(const char *name) {
+	conVar_t *var = Con_GetVar(name);
+	return var == NULL ? 0 : var->integer;
+}
+
+bool Con_GetVarBool(const char *name) {
+	conVar_t *var = Con_GetVar(name);
+	return var == NULL ? false : var->boolean;
+}
+
+conVar_t *Con_SetCvar(const char *name, const char *value) {
+	return NULL;
+}
+
+conVar_t *Con_SetCvarFloat(const char *name, float value) {
+	return NULL;
+}

@@ -3,13 +3,18 @@
 #include "../external/vec.h"
 #include "../external/map.h"
 
+#define CONVAR_ROM 1<<0  // value can never be changed and only set by code
+#define CONVAR_STARTUP 1<<1 // value can only be set during startup
+#define CONVAR_CFG 1<<2 // value came from an exec'd config file
+
 typedef struct conVar {
-    sds name; // name of the cvar
+    sds name; // name of the var
 	sds defaultValue;
 	int flags;
-	int modified; // set to true when changed, can be set to false by user
+	bool modified; // set to true when changed, can be set to false by anyone
+	int modifiedCount;
 
-    sds string; // string value of the cvar
+    sds string; // string value of the var
     float value; // float value
     int integer; // integer value
     bool boolean; // boolean value
@@ -22,18 +27,18 @@ typedef map_t(conCmd_t) conCmd_map_t;
 
 typedef struct conHandlers {
 	void(*print)(const char *message);
-	void(*unhandledCommand)();
+	bool(*unhandledCommand)();
 } conHandlers_t;
 
 typedef struct conState {
 	unsigned int argc;
 	sds *argv;
-    conVar_map_t cvars;
+    conVar_map_t vars;
     conCmd_map_t cmds;
 	conHandlers_t handlers; 
 
 	// internal state
-	const char *cmd; // full command
+	sds cmd; // full command
 	sds tempArgs; // temp storage used for functions that return a string
 } conState_t;
 
@@ -97,6 +102,8 @@ int Con_GetVarInt(const char * name);
 // returns the boolean value of a convar. returns false if no convar exists.
 bool Con_GetVarBool(const char * name);
 
-conVar_t * Con_SetCvar(const char * name, const char * value);
+conVar_t * Con_SetVar(const char * name, const char * value);
 
-conVar_t * Con_SetCvarFloat(const char * name, float value);
+conVar_t * Con_SetVarFloat(const char * name, float value);
+
+conVar_t * Con_SetVarForce(const char * name, const char * value);

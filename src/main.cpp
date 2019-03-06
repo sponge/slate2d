@@ -245,6 +245,7 @@ void main_loop() {
 int main(int argc, char *argv[]) {
 	Con_Init(&console);
 
+	Con_Execute("set a \"bcd\"; set b \"cd;ef\"");
 	Con_Execute("echo hello \"big\" boy");
 	Con_Execute("this is invalid");
 	Con_Execute("listcmds");

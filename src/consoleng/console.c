@@ -16,11 +16,11 @@ void Cmd_Echo_f() {
 }
 
 void Cmd_Set_f() {
-	// set a cvar
+	// set a var
 }
 
-void Cmd_ListCvars_f() {
-	// list a cvar
+void Cmd_ListVars_f() {
+	// list a var
 }
 
 void Cmd_Vstr_f() {
@@ -69,7 +69,7 @@ void Cmd_ListCmds_f() {
 // Main Console
 
 void Con_Init(conState_t *newCon) {
-    map_init(&newCon->cvars);
+    map_init(&newCon->vars);
 	map_init(&newCon->cmds);
 
 	Con_SetActive(newCon);
@@ -78,7 +78,7 @@ void Con_Init(conState_t *newCon) {
 	Con_AddCommand("listcmds", Cmd_ListCmds_f);
 	Con_AddCommand("exec", Cmd_Exec_f);
 
-	Con_AddCommand("listcvars", Cmd_ListCvars_f);
+	Con_AddCommand("listvars", Cmd_ListVars_f);
 	Con_AddCommand("set", Cmd_Set_f);
 	Con_AddCommand("toggle", Cmd_Toggle_f);
 	Con_AddCommand("reset", Cmd_Reset_f);
@@ -111,7 +111,7 @@ void Con_Printf(const char *fmt, ...) {
 }
 
 void Con_Shutdown() {
-	map_deinit(&con->cvars);
+	map_deinit(&con->vars);
 	map_deinit(&con->cmds);
 }
 
@@ -125,31 +125,94 @@ void Con_RemoveCommand(const char *name) {
 	map_remove(&con->cmds, name);
 }
 
-void Con_Execute(const char *cmd) {
+static void Con_RunCommand(sds cmd) {
 	con->cmd = cmd;
-	con->argv = sdssplitargs(cmd, &con->argc);
+	int argc = 0;
+	con->argv = sdssplitargs(con->cmd, &argc);
+	con->argc = (unsigned int)argc;
 
 	conCmd_t *handler = map_get(&con->cmds, con->argv[0]);
+	bool handled = false;
 
 	if (handler) {
 		(*handler)();
+		handled = true;
 	}
-	else if (/* its a cvar */ false) {
+	else if (/* its a var */ false) {
 		// handle by printing or setting the value
+		handled = true;
 	}
 	else if (con->handlers.unhandledCommand) {
-		// handled through callback
-		con->handlers.unhandledCommand();
+		// possibly handled through callback
+		handled = con->handlers.unhandledCommand();
 	}
-	else {
+	
+	if (!handled) {
 		Con_Printf("unknown command: %s\n", con->argv[0]);
 	}
 
 	sdsfreesplitres(con->argv, con->argc);
 	sdsfree(con->tempArgs);
-	con->cmd = NULL;
+	sdsfree(con->cmd);
 	con->argv = NULL;
 	con->argc = 0;
+	con->tempArgs = NULL;
+	con->cmd = NULL;
+}
+
+void Con_Execute(const char *cmd) {
+	// there may be multiple commands in this string, so we need to go through and split by
+	// semicolons or new lines that are outside of quoted strings.
+	const char *p = cmd;
+	bool inQuotes = false;
+	bool inSingleQuotes = false;
+	int len = 0;
+	while (*p) {
+		switch (*p) {
+		case '\'': 
+			if (!inQuotes) {
+				inSingleQuotes = !inSingleQuotes;
+			}
+			len++;
+			break;
+
+		case '"': 
+			if (!inSingleQuotes) {
+				inQuotes = !inQuotes;
+			}
+			len++;
+			break;
+
+		case '\n':
+		case ';':
+			if (inQuotes || inSingleQuotes) {
+				len++;
+				break;
+			}
+
+			if (len > 0) {
+				sds subcmd = sdscatlen(sdsempty(), p - len, len);
+				Con_RunCommand(subcmd);
+				sdsfree(subcmd);
+			}
+
+			inSingleQuotes = false;
+			inQuotes = false;
+			len = 0;
+			break;
+
+		default:
+			len++;
+			break;
+		}
+		p++;
+	}
+
+	if (len > 0) {
+		sds subcmd = sdscatlen(sdsempty(), p - len, len);
+		Con_RunCommand(subcmd);
+		sdsfree(subcmd);
+	}
 }
 
 const char *Con_GetArg(unsigned int i) {
@@ -183,7 +246,7 @@ const char *Con_GetRawArgs() {
 // Convar handling
 
 conVar_t *Con_GetVar(const char *name) {
-	return map_get(&con->cvars, name);
+	return map_get(&con->vars, name);
 }
 
 conVar_t *Con_GetVarDefault(const char *name, const char *defaultValue, int flags) {
@@ -198,16 +261,22 @@ conVar_t *Con_GetVarDefault(const char *name, const char *defaultValue, int flag
 		conVar_t newVar;
 		newVar.name = sdsnew(name);
 		newVar.flags = flags;
+		newVar.value = strtof(defaultValue, NULL);
 		newVar.defaultValue = sdsnew(defaultValue);
 		newVar.string = sdsnew(defaultValue);
-		newVar.value = atof(defaultValue);
 		newVar.integer = atoi(defaultValue);
 		newVar.boolean = !!newVar.integer;
 
-		map_set(&con->cvars, name, newVar);
+		map_set(&con->vars, name, newVar);
 
 		// map_set is going to copy the data so make sure we get the right one by re-getting it
 		var = Con_GetVar(name);
+	}
+	// if the config existed before we got here, properly set the default but respect the current value
+	else if ((var->flags & CONVAR_CFG) && !(flags & CONVAR_CFG)) {
+		sdsclear(var->defaultValue);
+		var->defaultValue = sdscat(var->defaultValue, defaultValue);
+		var->flags &= ~CONVAR_CFG;
 	}
 
 	return var;
@@ -233,10 +302,39 @@ bool Con_GetVarBool(const char *name) {
 	return var == NULL ? false : var->boolean;
 }
 
-conVar_t *Con_SetCvar(const char *name, const char *value) {
+conVar_t *Con_SetVar(const char *name, const char *value) {
+	conVar_t *var = Con_GetVar(name);
+
+	if (var == NULL) {
+		return NULL;
+	}
+
+	if (var->flags & CONVAR_ROM) {
+		Con_Printf("can't set %s, is read only", var->name);
+		return var;
+	}
+
+	return Con_SetVarForce(name, value);
+}
+
+conVar_t *Con_SetVarFloat(const char *name, float value) {
 	return NULL;
 }
 
-conVar_t *Con_SetCvarFloat(const char *name, float value) {
-	return NULL;
+conVar_t *Con_SetVarForce(const char *name, const char *value) {
+	conVar_t *var = Con_GetVar(name);
+
+	if (var == NULL) {
+		return NULL;
+	}
+
+	sdsclear(var->string);
+	var->string = sdscat(var->string, value);
+	var->value = strtof(value, NULL);
+	var->integer = atoi(value);
+	var->boolean = !!var->integer;
+	var->modified = true;
+	var->modifiedCount++;
+
+	return var;
 }

@@ -49,7 +49,7 @@ typedef struct gameImportFuncs_s {
 
 typedef struct gameExportFuncs_s {
 	void(*Init)(void *clientInfo, void *imGuiContext);
-	bool(*Console)(const char *line);
+	bool(*Console)();
 	void(*Frame)(double dt);
 	void(*Error)(int level, const char *msg);
 } gameExportFuncs_t;

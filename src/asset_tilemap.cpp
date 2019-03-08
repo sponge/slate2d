@@ -20,7 +20,7 @@ void *tmx_fs(const char *filename, int *outSz) {
 	*outSz = FS_ReadFile(va("maps/%s", filename), &xml);
 
 	if (*outSz < 0) {
-		Com_Error(ERR_DROP, "Couldn't load file while parsing map %s", filename);
+		Con_Error(ERR_GAME, "Couldn't load file while parsing map %s", filename);
 		return nullptr;
 	}
 
@@ -37,19 +37,19 @@ void * TileMap_Load(Asset &asset) {
 	const char *xml;
 	int outSz = FS_ReadFile(asset.path, (void **)&xml);
 	if (outSz < 0) {
-		Com_Error(ERR_DROP, "Couldn't read map %s", asset.path);
+		Con_Error(ERR_GAME, "Couldn't read map %s", asset.path);
 		return nullptr;
 	}
 
 	map = tmx_load_buffer(xml, outSz);
 
 	if (map == nullptr) {
-		Com_Error(ERR_DROP, "Failed to load tmx");
+		Con_Error(ERR_GAME, "Failed to load tmx");
 		return nullptr;
 	}
 
 	if (map->orient != O_ORT) {
-		Com_Error(ERR_DROP, "Non orthagonal tiles not supported");
+		Con_Error(ERR_GAME, "Non orthagonal tiles not supported");
 		return nullptr;
 	}
 

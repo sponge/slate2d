@@ -92,12 +92,34 @@ void Cmd_Vid_Restart_f(void) {
 
 void DropToMenu() {
 	errorVisible = true;
-	gexports->Error(ERR_DROP, com_errorMessage->string);
+	gexports->Error(ERR_GAME, com_errorMessage->string);
 }
 
 void ConH_Print(const char *line) {
 	IMConsole()->AddLog("%s", line);
 	printf(line);
+}
+
+void ConH_Error(int level, const char *message) {
+	Con_Print(message);
+
+#if defined(_WIN32) && defined(DEBUG)
+	if (level == ERR_FATAL) {
+		__debugbreak();
+	}
+#else
+	if (level == ERR_FATAL) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Fatal Error", errorMessage, NULL);
+	}
+#endif
+
+	if (level == ERR_FATAL) {
+		exit(1);
+	}
+	else {
+		Con_SetVar("com_errorMessage", message);
+		DropToMenu();
+	}
 }
 
 static bool loop = true;
@@ -273,19 +295,17 @@ int main(int argc, char *argv[]) {
 	Con_SetVarFromStartup("fs_game");
 	FS_Init(argv[0]);
 
-	//Cbuf_Init();
-	//Cmd_Init();
 	Con_AddCommand("vid_restart", Cmd_Vid_Restart_f);
 	Con_AddCommand("toggleconsole", Cmd_ToggleConsole_f);
 	Con_AddCommand("frame_advance", Cmd_FrameAdvance_f);
-	//Cvar_Init();
+
 	RegisterMainCvars();
 	CL_InitKeyCommands();
 	FileWatcher_Init();
 	Crunch_Init();
 
 	if (!FS_Exists("default.cfg")) {
-		Com_Error(ERR_FATAL, "Filesystem error, check fs_basepath is set correctly. (Could not find default.cfg)");
+		Con_Error(ERR_FATAL, "Filesystem error, check fs_basepath is set correctly. (Could not find default.cfg)");
 	}
 
 	Con_Execute("exec default.cfg\n");
@@ -294,7 +314,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0) {
-		Com_Error(ERR_FATAL, "There was an error initing SDL2: %s", SDL_GetError());
+		Con_Error(ERR_FATAL, "There was an error initing SDL2: %s", SDL_GetError());
 	}
 
 	atexit(SDL_Quit);
@@ -312,7 +332,7 @@ int main(int argc, char *argv[]) {
 	window = SDL_CreateWindow("Slate2D", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, inf.width, inf.height, SDL_WINDOW_OPENGL);
 
 	if (window == NULL) {
-		Com_Error(ERR_FATAL, "There was an error creating the window: %s", SDL_GetError());
+		Con_Error(ERR_FATAL, "There was an error creating the window: %s", SDL_GetError());
 	}
 
 	SDL_SetWindowFullscreen(window, vid_fullscreen->integer == 2 ? SDL_WINDOW_FULLSCREEN : vid_fullscreen->integer == 1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
@@ -320,21 +340,22 @@ int main(int argc, char *argv[]) {
 	SDL_GLContext context = SDL_GL_CreateContext(window);
 
 	if (!initGL(inf.width, inf.height)) {
-		Com_Error(ERR_FATAL, "Could not init GL.");
+		Con_Error(ERR_FATAL, "Could not init GL.");
 	}
 
 	SDL_GL_SetSwapInterval(vid_swapinterval->integer);
 
 	if (context == NULL) {
-		Com_Error(ERR_FATAL, "There was an error creating OpenGL context: %s", SDL_GetError());
+		Con_Error(ERR_FATAL, "There was an error creating OpenGL context: %s", SDL_GetError());
 	}
 
 	const unsigned char *version = glGetString(GL_VERSION);
 	if (version == NULL) {
-		Com_Error(ERR_FATAL, "There was an error with OpenGL configuration.");
+		Con_Error(ERR_FATAL, "There was an error with OpenGL configuration.");
 	}
 
 	soloud.init();
+	// FIXME: check result code?
 
 	SDL_GL_MakeCurrent(window, context);
 
@@ -345,7 +366,6 @@ int main(int argc, char *argv[]) {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
 
 	Con_ExecuteCommandLine();
-	Con_FreeCommandLine();
 
 	consoleScene = new ConsoleScene();
 	consoleScene->Startup(&inf);
@@ -360,6 +380,7 @@ int main(int argc, char *argv[]) {
 
 	Sys_LoadDll(lib, (void **)(&gexports));
 	gexports->Init((void*)&inf, (void*)ImGui::GetCurrentContext());
+	console.handlers.unhandledCommand = gexports->Console;
 
 // not working in emscripten for some reason? assert on ImGuiKey_Space not being mapped
 #ifndef __EMSCRIPTEN__	

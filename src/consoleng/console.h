@@ -13,6 +13,10 @@ extern "C" {
 #define CONVAR_STARTUP 1<<1 // value can only be set during startup
 #define CONVAR_USER 1<<2 // value was set by user
 
+#define ERR_NONE 0
+#define ERR_GAME 1
+#define ERR_FATAL 2
+
 typedef struct conVar {
     sds name; // name of the var
 	sds defaultValue;
@@ -32,6 +36,7 @@ typedef map_t(conVar_t) conVar_map_t;
 typedef map_t(conCmd_t) conCmd_map_t;
 
 typedef struct conHandlers {
+	void(*error)(int level, const char *message);
 	void(*print)(const char *message);
 	bool(*unhandledCommand)();
 } conHandlers_t;
@@ -47,7 +52,8 @@ typedef struct conState {
 	sds cmd; // full command
 	sds tempArgs; // temp storage used for functions that return a string
 	sds *sargv; // used for startup parsing and storing
-	int sargc; 
+	int sargc;
+	char error[1024]; // fixed sized buffer to avoid mem allocation
 } conState_t;
 
 // initializes the console and sets it as the active one.
@@ -55,6 +61,8 @@ void Con_Init(conState_t *con);
 
 // updates which instance of the console to use.
 void Con_SetActive(conState_t *newCon);
+
+void Con_Error(int level, const char * fmt, ...);
 
 // parses and handles the string. this is the main entry point to using the
 // console and is typically what you will want to pass user input to.
@@ -122,9 +130,6 @@ void Con_ParseCommandLine(const char *cmdline);
 void Con_ExecuteCommandLine();
 
 void Con_SetVarFromStartup(const char * name);
-
-void Con_FreeCommandLine();
-
 
 #ifdef __cplusplus
 } // end extern

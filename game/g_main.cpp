@@ -67,12 +67,13 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	scene->Startup(clientInf);
 }
 
-static bool Console(const char *line) {
+static bool Console() {
 	const char *cmd = trap->Con_GetArg(0);
+	const char *line = trap->Con_GetArgs(0);
 	// if it's a + or - command, look to see if its a known key
 	// and signal to the engine that it's been pressed.
 	// we do this here so the game dll can customize the buttons used
-	if (line[0] == '+' || line[0] == '-') {
+	if (cmd[0] == '+' || cmd[0] == '-') {
 		for (int i = 0; i < MAX_KEYS; i++) {
 			if (strcasecmp(cmd+1, buttoncmds[i]) == 0) {
 				if (cmd[0] == '+') {
@@ -96,7 +97,7 @@ static bool Console(const char *line) {
 
 	// if there's a scene loaded and it's not a /, pass it into the scene
 	// which is usually handled by eval'ing wren code
-	if (scene != nullptr && line[0] != '/') {
+	if (scene != nullptr && cmd[0] != '/') {
 		scene->Console(line);
 		return true;
 	}

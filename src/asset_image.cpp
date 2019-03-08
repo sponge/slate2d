@@ -10,7 +10,7 @@ void* Img_LoadPath(const char *path) {
 	auto sz = FS_ReadFile(path, (void**)&buffer);
 
 	if (sz == -1) {
-		Com_Error(ERR_DROP, "Img_LoadPath: Couldn't read image %s", path);
+		Con_Error(ERR_GAME, "Img_LoadPath: Couldn't read image %s", path);
 		return nullptr;
 	}
 

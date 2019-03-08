@@ -7,7 +7,7 @@ void * Shader_Load(Asset & asset) {
 
 	// shaders need to be setup before load.
 	if (asset.resource == nullptr) {
-		Com_Error(ERR_FATAL, "Shader_Load: shader not setup before load %s", asset.name);
+		Con_Error(ERR_FATAL, "Shader_Load: shader not setup before load %s", asset.name);
 		return nullptr;
 	}
 
@@ -48,7 +48,7 @@ void Shader_Set(AssetHandle id, bool isFile, char *vs, char *fs) {
 	Asset *asset = Asset_Get(ASSET_SHADER, id);
 
 	if (asset == nullptr) {
-		Com_Error(ERR_DROP, "Shader_Set: asset not found");
+		Con_Error(ERR_GAME, "Shader_Set: asset not found");
 		return;
 	}
 

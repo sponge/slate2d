@@ -91,6 +91,25 @@ void Con_SetActive(conState_t *newCon) {
 	con = newCon;
 }
 
+void Con_Error(int level, const char *fmt, ...) {
+	if (level == ERR_NONE) {
+		return;
+	}
+
+	va_list args;
+
+	va_start(args, fmt);
+	vsnprintf(con->error, 1024, fmt, args);
+	va_end(args);
+
+	if (con->handlers.error) {
+		con->handlers.error(level, con->error);
+	} else {
+		Con_Print(con->error);
+		exit(1);
+	}
+}
+
 void Con_Print(const char *text) {
 	if (con->handlers.print) {
 		con->handlers.print(text);
@@ -270,7 +289,7 @@ conVar_t *Con_GetVar(const char *name) {
 
 conVar_t *Con_GetVarDefault(const char *name, const char *defaultValue, int flags) {
 	if (!name || !defaultValue) {
-		// FIXME: error
+		Con_Error(ERR_FATAL, "Con_GetVarDefault: cvar name or default value is null");
 		return NULL;
 	}
 
@@ -386,10 +405,18 @@ void Con_ParseCommandLine(const char *cmdline) {
 }
 
 void Con_ExecuteCommandLine() {
+	// FIXME: set everything and run commands
 
+	sdsfreesplitres(con->sargv, con->sargc);
+	con->sargc = 0;
+	con->sargv = NULL;
 }
 
 void Con_SetVarFromStartup(const char * name) {
+	if (con->sargv == NULL) {
+		return;
+	}
+
 	sds sname = sdsnew(name);
 	sdstolower(sname);
 
@@ -405,9 +432,4 @@ void Con_SetVarFromStartup(const char * name) {
 		}
 	}
 	sdsfree(sname);
-}
-
-void Con_FreeCommandLine() {
-	sdsfreesplitres(con->sargv, con->sargc);
-	con->sargc = 0;
 }

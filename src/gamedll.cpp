@@ -14,7 +14,7 @@ extern ClientInfo inf;
 static gameImportFuncs_t GAMEtraps = {
 	Con_Execute,
 	Con_Printf,
-	Com_Error,
+	Con_Error,
 	SetWindowTitle,
 	Con_GetVarDefault,
 	Con_GetVar,
@@ -74,7 +74,7 @@ void Sys_LoadDll(const char * module, void ** exports) {
 	void(*gameDllEntry)(void ** exports, const void * imports) = (void(*)(void **, const void *)) SDL_LoadFunction(gameDLL, "dllEntry");
 
 	if (gameDllEntry == nullptr) {
-		Com_Error(ERR_FATAL, "Couldn't find dllEntry in %s", module);
+		Con_Error(ERR_FATAL, "Couldn't find dllEntry in %s", module);
 		return;
 	}
 

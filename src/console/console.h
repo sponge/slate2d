@@ -46,27 +46,6 @@ void __cdecl Com_Error(int level, const char *error, ...);
 const char * __cdecl va(const char *format, ...);
 void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 
-//void Cbuf_Init(void);
-//void Cbuf_AddText(const char *text);
-//void Cbuf_InsertText(const char *text);
-//void Cbuf_ExecuteText(int exec_when, const char *text);
-//void Cbuf_Execute(void);
-
-//int	Cmd_Argc(void);
-//const char *Cmd_Argv(int arg);
-//const char *Cmd_ArgsFrom(int arg);
-//const char *Cmd_Cmd();
-//void Cmd_Init(void);
-//void Cmd_ExecuteString(const char *text);
-////void Cmd_AddCommand(const char *cmd_name, xcommand_t function);
-//void Cmd_RemoveCommand(const char *cmd_name);
-//void Com_ParseCommandLine(char *commandLine);
-//void Com_StartupVariable(const char *match);
-//bool Com_AddStartupCommands(void);
-//void Cmd_TokenizeString(const char *text_in);
-//void Cmd_CommandCompletion(void(*callback)(const char *match, const char *candidate), const char *match);
-//void Cvar_CommandCompletion(void(*callback)(const char *match, const char *candidate), const char *match);
-
 // possibly private stuff that's still needed
 
 // the game guarantees that no string from the network will ever
@@ -91,20 +70,6 @@ void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 #define MOUSE_BUTTON_MIDDLE 2
 #define MOUSE_BUTTON_X1 3
 #define MOUSE_BUTTON_X2 4
-
-//void Cvar_Init(void);
-//cvar_t *Cvar_FindVar(const char *var_name);
-//float Cvar_VariableValue(const char *var_name);
-//int Cvar_VariableIntegerValue(const char *var_name);
-//const char *Cvar_VariableString(const char *var_name);
-//void Cvar_VariableStringBuffer(const char *var_name, char *buffer, int bufsize);
-//cvar_t *Cvar_Get(const char *var_name, const char *var_value, int flags);
-//cvar_t *Cvar_Set2(const char *var_name, const char *value, bool force);
-//void Cvar_Set(const char *var_name, const char *value);
-//void Cvar_SetLatched(const char *var_name, const char *value);
-//void Cvar_SetValue(const char *var_name, float value);
-//void Cvar_Reset(const char *var_name);
-//bool Cvar_Command(void);
 
 // BIND SYSTEM
 

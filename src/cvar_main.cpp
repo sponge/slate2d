@@ -11,7 +11,7 @@ conVar_t *vid_maxfps;
 conVar_t *com_pause;
 conVar_t *s_volume;
 
-static cvarTable_t mainCvarTable[] = {
+static conVarTable_t mainCvarTable[] = {
     { &com_errorMessage, "com_errorMessage", "", 0 },
 	{ &com_lastErrorStack, "com_lastErrorStack", "", 0 },
     { &vid_width, "vid_width", "1280", 0 },
@@ -28,7 +28,7 @@ static cvarTable_t mainCvarTable[] = {
 static int mainCvarTableSize = sizeof( mainCvarTable ) / sizeof( mainCvarTable[0] );
 
 void RegisterMainCvars( void ) {
-    cvarTable_t *cv;
+    conVarTable_t *cv;
     int i;
 	for ( i = 0, cv = mainCvarTable ; i < mainCvarTableSize ; i++, cv++ ) {
         *cv->cvar = Con_GetVarDefault(cv->cvarName, cv->defaultString, cv->cvarFlags);

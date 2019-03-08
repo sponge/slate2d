@@ -1067,12 +1067,12 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	char *mainStr;
 	int mainSz = trap->FS_ReadFile(mainScriptName, (void**)&mainStr);
 	if (mainSz <= 0) {
-		trap->Error(ERR_DROP, "wren error: couldn't load %s", mainScriptName);
+		trap->Error(ERR_GAME, "wren error: couldn't load %s", mainScriptName);
 		return nullptr;
 	}
 
 	if (wrenInterpret(vm, mainStr) != WREN_RESULT_SUCCESS) {
-		trap->Error(ERR_DROP, "wren error: can't compile %s", mainScriptName);
+		trap->Error(ERR_GAME, "wren error: can't compile %s", mainScriptName);
 		return nullptr;
 	}
 
@@ -1084,7 +1084,7 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	WrenHandle *gameClass = wrenGetSlotHandle(vm, 0);
 
 	if (gameClass == nullptr) {
-		trap->Error(ERR_DROP, "wren error: couldn't find Game class");
+		trap->Error(ERR_GAME, "wren error: couldn't find Game class");
 		return nullptr;
 	}
 
@@ -1099,13 +1099,13 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	hnd->consoleHnd = wrenMakeCallHandle(vm, "console(_)");
 
 	if (hnd->updateHnd == nullptr) {
-		trap->Error(ERR_DROP, "wren error: couldn't find static update(_) on Main");
+		trap->Error(ERR_GAME, "wren error: couldn't find static update(_) on Main");
 		Wren_FreeVM(vm);
 		return nullptr;
 	}
 
 	if (hnd->drawHnd == nullptr) {
-		trap->Error(ERR_DROP, "wren error: couldn't find static draw(_,_) on Main");
+		trap->Error(ERR_GAME, "wren error: couldn't find static draw(_,_) on Main");
 		Wren_FreeVM(vm);
 		return nullptr;
 	}
@@ -1124,7 +1124,7 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	//wrenReleaseHandle(vm, gameClass);
 
 	if (wrenGetSlotCount(vm) == 0) {
-		trap->Error(ERR_DROP, "wren error: couldn't instantiate new Game class");
+		trap->Error(ERR_GAME, "wren error: couldn't instantiate new Game class");
 		return nullptr;
 	}
 

@@ -57,7 +57,7 @@ void FS_Init(const char *argv0) {
 	int err = PHYSFS_init(argv0);
 
 	if (err == 0) {
-		Com_Error(ERR_FATAL, "Error in PHYSFS_init: %s", PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
+		Con_Error(ERR_FATAL, "Error in PHYSFS_init: %s", PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 		return;
 	}
 

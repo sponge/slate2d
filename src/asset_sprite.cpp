@@ -35,7 +35,7 @@ void* Sprite_Load(Asset &asset) {
 		byte *curr = crunch;
 
 		if (len == -1) {
-			Com_Error(ERR_DROP, "Sprite_Load: couldn't read file %s", asset.path);
+			Con_Error(ERR_GAME, "Sprite_Load: couldn't read file %s", asset.path);
 			return nullptr;
 		}
 
@@ -94,7 +94,7 @@ void* Sprite_Load(Asset &asset) {
 		Image *img = (Image*)Img_Load(asset);
 
 		if (img == nullptr) {
-			Com_Error(ERR_DROP, "Sprite_Load: image failed to load");
+			Con_Error(ERR_GAME, "Sprite_Load: image failed to load");
 			return nullptr;
 		}
 
@@ -137,12 +137,12 @@ void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int
 	Asset *asset = Asset_Get(ASSET_SPRITE, assetHandle);
 
 	if (asset == nullptr) {
-		Com_Error(ERR_DROP, "Sprite_Set: asset not found");
+		Con_Error(ERR_GAME, "Sprite_Set: asset not found");
 		return;
 	}
 	
 	if (strcmp("bin", FS_FileExtension(asset->path)) == 0) {
-		Com_Error(ERR_DROP, "Sprite_Set: can't call set on a crunched sprite");
+		Con_Error(ERR_GAME, "Sprite_Set: can't call set on a crunched sprite");
 		return;
 	}
 

@@ -62,12 +62,12 @@ unsigned int Snd_Play(AssetHandle assetHandle, float volume, float pan, bool loo
 	Asset* asset = Asset_Get(ASSET_ANY, assetHandle);
 
 	if (asset->type != ASSET_SOUND && asset->type != ASSET_SPEECH && asset->type != ASSET_MOD) {
-		Com_Error(ERR_DROP, "Snd_Play: asset not valid");
+		Con_Error(ERR_GAME, "Snd_Play: asset not valid");
 		return 0;
 	}
 
 	if (asset->resource == nullptr) {
-		Com_Error(ERR_DROP, "Snd_Play: asset resource not valid");
+		Con_Error(ERR_GAME, "Snd_Play: asset resource not valid");
 		return 0;
 	}
 

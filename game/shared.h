@@ -13,11 +13,11 @@ typedef unsigned char byte;
 typedef void(*xcommand_t) (void);
 
 // parameters to the main Error routine
-typedef enum {
-	ERR_NONE,
-	ERR_FATAL,					// exit the entire game with a popup window
-	ERR_DROP,					// print to console and disconnect from game
-} errorParm_t;
+#ifndef ERR_NONE
+#define ERR_NONE 0
+#define ERR_GAME 1
+#define ERR_FATAL 2
+#endif
 
 // CVARS
 
@@ -26,7 +26,7 @@ typedef struct {
 	const char		*cvarName;
 	const char		*defaultString;
 	int	     		cvarFlags;
-} cvarTable_t;
+} conVarTable_t;
 
 typedef struct {
 	int			down[2];		// key nums holding it down

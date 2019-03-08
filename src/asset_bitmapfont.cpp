@@ -19,7 +19,7 @@ enum TextCodepointType {
 void* BMPFNT_Load(Asset &asset) {
 	// bitmap fonts need to be setup before load.
 	if (asset.resource == nullptr) {
-		Com_Error(ERR_FATAL, "BMPFNT_Load: bitmap font not setup before load %s", asset.path);
+		Con_Error(ERR_FATAL, "BMPFNT_Load: bitmap font not setup before load %s", asset.path);
 		return nullptr;
 	}
 
@@ -30,12 +30,12 @@ void* BMPFNT_Load(Asset &asset) {
 	auto img = stbi_load_from_memory((stbi_uc*)buffer, sz, &w, &h, &ch, 0);
 
 	if (img == nullptr) {
-		Com_Error(ERR_FATAL, "Failed to load bmpfont %s", asset.path);
+		Con_Error(ERR_FATAL, "Failed to load bmpfont %s", asset.path);
 		return nullptr;
 	}
 
 	if (ch != 4) {
-		Com_Error(ERR_FATAL, "Bitmap font %s does not have 4 components", asset.path);
+		Con_Error(ERR_FATAL, "Bitmap font %s does not have 4 components", asset.path);
 		return nullptr;
 	}
 
@@ -106,7 +106,7 @@ void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int
 	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
 
 	if (asset == nullptr) {
-		Com_Error(ERR_FATAL, "BMPFNT_Set: asset not found");
+		Con_Error(ERR_FATAL, "BMPFNT_Set: asset not found");
 		return;
 	}
 
@@ -130,14 +130,14 @@ int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale, c
 	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
 
 	if (asset == nullptr) {
-		Com_Error(ERR_DROP, "BMPFNT_TextWidth: asset not valid");
+		Con_Error(ERR_GAME, "BMPFNT_TextWidth: asset not valid");
 		return 0;
 	}
 
 	BitmapFont *font = (BitmapFont*)asset->resource;
 
 	if (font == nullptr) {
-		Com_Error(ERR_DROP, "BMPFNT_TextWidth: asset resource not valid");
+		Con_Error(ERR_GAME, "BMPFNT_TextWidth: asset resource not valid");
 		return 0;
 	}
 
@@ -183,14 +183,14 @@ int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, const char *strin
 	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
 
 	if (asset == nullptr) {
-		Com_Error(ERR_DROP, "BMPFNT_DrawText: asset not valid");
+		Con_Error(ERR_GAME, "BMPFNT_DrawText: asset not valid");
 		return 0;
 	}
 
 	BitmapFont *font = (BitmapFont*)asset->resource;
 
 	if (font == nullptr) {
-		Com_Error(ERR_DROP, "BMPFNT_DrawText: asset resource not valid");
+		Con_Error(ERR_GAME, "BMPFNT_DrawText: asset resource not valid");
 		return 0;
 	}
 
@@ -230,7 +230,7 @@ void BMPFNT_TextBox(const drawTextCommand_t *cmd, const char *string) {
 	BitmapFont *font = (BitmapFont*)state.font->resource;
 
 	if (font == nullptr) {
-		Com_Error(ERR_DROP, "BMPFNT_TextBox: asset resource not valid");
+		Con_Error(ERR_GAME, "BMPFNT_TextBox: asset resource not valid");
 		return;
 	}
 

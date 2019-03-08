@@ -88,7 +88,7 @@ void Asset_Load(AssetHandle i) {
 	Con_Printf("asset_load: %s name:%s path:%s\n", assetStrings[asset.type], asset.name, asset.path);
 	void *resourcePtr = assetHandler[asset.type].Load(asset);
 	if (resourcePtr == nullptr) {
-		Com_Error(ERR_FATAL, "asset_loadall: got nullptr while loading %s", asset.name);
+		Con_Error(ERR_FATAL, "asset_loadall: got nullptr while loading %s", asset.name);
 		return;
 	}
 	asset.resource = resourcePtr;

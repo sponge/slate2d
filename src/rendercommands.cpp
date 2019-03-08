@@ -210,7 +210,7 @@ const void *RB_SetTextStyle(const void *data) {
 	assert(asset != nullptr);
 
 	if (asset->type != ASSET_BITMAPFONT && asset->type != ASSET_FONT) {
-		Com_Error(ERR_DROP, "RB_SetTextStyle: asset not font or bmpfont");
+		Con_Error(ERR_GAME, "RB_SetTextStyle: asset not font or bmpfont");
 		return (const void *)(cmd + 1);
 	}
 
@@ -594,7 +594,7 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 			return;
 
 		default:
-			Com_Error(ERR_FATAL, "Bad render command byte id %i", *(const int *)data);
+			Con_Error(ERR_FATAL, "Bad render command byte id %i", *(const int *)data);
 			return;
 		}
 	}

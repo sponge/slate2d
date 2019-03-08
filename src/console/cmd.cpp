@@ -40,7 +40,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 int			cmd_wait;
 cmd_t		cmd_text;
 byte		cmd_text_buf[MAX_CMD_BUFFER];
-#endif
 
 char	errorMessage[1024];
 
@@ -79,8 +78,6 @@ void __cdecl Com_Error(int level, const char *error, ...) {
 		DropToMenu();
 	}
 }
-
-#if 0
 
 void Com_Printf(const char *fmt, ...) {
 	va_list		argptr;

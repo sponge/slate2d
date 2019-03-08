@@ -125,8 +125,6 @@ void Com_DefaultExtension(char *path, int maxSize, const char *extension) {
 	Com_sprintf(path, maxSize, "%s%s", oldPath, extension);
 }
 
-#endif
-
 /*
 ============
 va
@@ -151,8 +149,6 @@ const char	* __cdecl va(const char *format, ...) {
 
 	return buf;
 }
-
-#if 0
 
 //=============================================================================
 

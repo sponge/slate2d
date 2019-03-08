@@ -47,7 +47,7 @@ void FS_AddPaksFromList(char **list, const char *basePath, const char *gamePath)
 		if ((l > extlen) && ((*i)[l - extlen - 1] == '.')) {
 			ext = (*i) + (l - extlen);
 			if (strcasecmp(ext, archiveExt) == 0) {
-				PHYSFS_mount(va("%s/%s/%s", basePath, gamePath, *i), "/", 1);
+				PHYSFS_mount(tempstr("%s/%s/%s", basePath, gamePath, *i), "/", 1);
 			}
 		}
 	}
@@ -71,26 +71,26 @@ void FS_Init(const char *argv0) {
 	char **baseFiles, **gameFiles;
 
 	// get the file listing for the basegame dir, then immediately unmount
-	const char *fullBasePath = va("%s/%s", fs_basepath->string, fs_basegame->string);
+	const char *fullBasePath = tempstr("%s/%s", fs_basepath->string, fs_basegame->string);
 	PHYSFS_mount(fullBasePath, "/", 1);
 	baseFiles = PHYSFS_enumerateFiles("/");
 	PHYSFS_removeFromSearchPath(fullBasePath);
 
 	// if fs_game is set, do the same thing for the fs_game dir
 	if (modLoaded) {
-		const char *fullGamePath = va("%s/%s", fs_basepath->string, fs_game->string);
+		const char *fullGamePath = tempstr("%s/%s", fs_basepath->string, fs_game->string);
 		PHYSFS_mount(fullGamePath, "/", 1);
 		gameFiles = PHYSFS_enumerateFiles("/");
 		PHYSFS_removeFromSearchPath(fullGamePath);
 
 		// mount the mod dir first, then mount mod PK3s
-		PHYSFS_mount(va("%s/%s", fs_basepath->string, fs_game->string), "/", 1);
+		PHYSFS_mount(tempstr("%s/%s", fs_basepath->string, fs_game->string), "/", 1);
 		FS_AddPaksFromList(gameFiles, fs_basepath->string, fs_game->string);
 		PHYSFS_freeList(gameFiles);
 	}
 
 	// then mount the base game dir, then the mount base game PK3s
-	PHYSFS_mount(va("%s/%s", fs_basepath->string, fs_basegame->string), "/", 1);
+	PHYSFS_mount(tempstr("%s/%s", fs_basepath->string, fs_basegame->string), "/", 1);
 	FS_AddPaksFromList(baseFiles, fs_basepath->string, fs_basegame->string);
 	PHYSFS_freeList(baseFiles);
 

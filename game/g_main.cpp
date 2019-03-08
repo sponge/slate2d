@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "scene_wren.h"
 #include "game.h"
+#include "external/sds.h"
 
 ClientInfo *clientInf;
 gameImportFuncs_t *trap;
@@ -140,18 +141,8 @@ void dllEntry(void ** exports, void * imports) {
 	trap = (gameImportFuncs_t *)imports;
 }
 
-/*
-============
-va
-
-does a varargs printf into a temp buffer, so I don't need to have
-varargs versions of all text functions.
-FIXME: make this buffer size safe someday
-============
-*/
 #ifndef __EMSCRIPTEN__
-
-const char	* __cdecl va(const char *format, ...) {
+const char * __cdecl tempstr(const char *format, ...) {
 	va_list		argptr;
 	static char		string[2][32000];	// in case va is called by nested functions
 	static int		index = 0;

@@ -41,27 +41,16 @@ ConsoleUI* IMConsole();
 
 // COMMAND SYSTEM
 
-void __cdecl Com_Error(int level, const char *error, ...);
+//void __cdecl Com_Error(int level, const char *error, ...);
 //char *CopyString(const char *in);
-const char * __cdecl va(const char *format, ...);
-void Com_DefaultExtension(char *path, int maxSize, const char *extension);
+//const char * __cdecl va(const char *format, ...);
+//void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 
 // possibly private stuff that's still needed
 
 // the game guarantees that no string from the network will ever
 // exceed MAX_STRING_CHARS
-#define	MAX_STRING_CHARS	1024	// max length of a string passed to Cmd_TokenizeString
 #define	MAX_STRING_TOKENS	256		// max tokens resulting from Cmd_TokenizeString
-#define	MAX_TOKEN_CHARS		1024	// max length of an individual token
-
-#define	MAX_INFO_STRING		1024
-#define	MAX_INFO_KEY		1024
-#define	MAX_INFO_VALUE		1024
-
-#define	MAX_CMD_BUFFER	16384
-#define	MAX_CMD_LINE	1024
-
-#define	BIG_INFO_STRING		8192  // used for system info key only
 #define MAX_QPATH 1024
 
 #define NUM_MOUSE_BUTTONS 5

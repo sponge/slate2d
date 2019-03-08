@@ -4,7 +4,7 @@
 #include "main.h"
 
 void * tmx_img_load(const char *path) {
-	const char *fullpath = va("maps/%s", path);
+	const char *fullpath = tempstr("maps/%s", path);
 	AssetHandle handle = Asset_Create(ASSET_IMAGE, fullpath, fullpath);
 	return (void*)Asset_Get(ASSET_IMAGE, handle);
 }
@@ -17,7 +17,7 @@ void tmx_img_free(void *address) {
 void *tmx_fs(const char *filename, int *outSz) {
 	void *xml;
 
-	*outSz = FS_ReadFile(va("maps/%s", filename), &xml);
+	*outSz = FS_ReadFile(tempstr("maps/%s", filename), &xml);
 
 	if (*outSz < 0) {
 		Con_Error(ERR_GAME, "Couldn't load file while parsing map %s", filename);

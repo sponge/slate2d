@@ -57,14 +57,14 @@ void Sys_LoadDll(const char * module, void ** exports) {
 void Sys_LoadDll(const char * module, void ** exports) {
 	void *gameDLL;
 
-	gameDLL = SDL_LoadObject(va("%s/%s/%s", fs_basepath->string, fs_game->string, module));
+	gameDLL = SDL_LoadObject(tempstr("%s/%s/%s", fs_basepath->string, fs_game->string, module));
 
 	if (gameDLL == nullptr) {
-		gameDLL = SDL_LoadObject(va("%s/%s/%s", fs_basepath->string, fs_basegame->string, module));
+		gameDLL = SDL_LoadObject(tempstr("%s/%s/%s", fs_basepath->string, fs_basegame->string, module));
 	}
 
 	if (gameDLL == nullptr) {
-		gameDLL = SDL_LoadObject(va("%s/%s", fs_basepath->string, module));
+		gameDLL = SDL_LoadObject(tempstr("%s/%s", fs_basepath->string, module));
 	}
 
 	if (gameDLL == nullptr) {

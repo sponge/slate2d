@@ -61,6 +61,22 @@ gameExportFuncs_t * gexports;
 SDL_Window *window;
 ConsoleScene *consoleScene;
 
+const char * __cdecl tempstr(const char *format, ...) {
+	va_list		argptr;
+	static char		string[2][32000];	// in case va is called by nested functions
+	static int		index = 0;
+	char	*buf;
+
+	buf = string[index & 1];
+	index++;
+
+	va_start(argptr, format);
+	vsprintf(buf, format, argptr);
+	va_end(argptr);
+
+	return buf;
+}
+
 void SetWindowTitle(const char *title) {
 	SDL_SetWindowTitle(window, title);
 }

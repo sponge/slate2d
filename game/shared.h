@@ -9,10 +9,10 @@
 #define strcasecmp _stricmp
 #endif
 
-typedef unsigned char byte;
-typedef void(*xcommand_t) (void);
+const char * __cdecl tempstr(const char *format, ...);
 
-// parameters to the main Error routine
+typedef unsigned char byte;
+
 #ifndef ERR_NONE
 #define ERR_NONE 0
 #define ERR_GAME 1

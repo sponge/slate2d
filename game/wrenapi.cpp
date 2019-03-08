@@ -98,7 +98,7 @@ void wren_trap_error(WrenVM *vm) {
 
 	int err = (int) wrenGetSlotDouble(vm, 1);
 	const char *str = wrenGetSlotString(vm, 2);
-	trap->Error(err, va("%s",str));
+	trap->Error(err, tempstr("%s",str));
 }
 
 void wren_trap_snd_play(WrenVM *vm) {
@@ -889,11 +889,11 @@ static void wren_error(WrenVM* vm, WrenErrorType type, const char* module, int l
 
 	conVar_t *stack = trap->Con_GetVarDefault("com_lastErrorStack", "", 0);
 	if (line == -1) {
-		trap->Con_SetVar("com_lastErrorStack", va("%s\n%s", stack->string, message));
+		trap->Con_SetVar("com_lastErrorStack", tempstr("%s\n%s", stack->string, message));
 		trap->Print("%s\n", message);
 	}
 	else {
-		trap->Con_SetVar("com_lastErrorStack", va("%s\n(%s:%i) %s", stack->string, module, line, message));
+		trap->Con_SetVar("com_lastErrorStack", tempstr("%s\n(%s:%i) %s", stack->string, module, line, message));
 		trap->Print("(%s:%i) %s\n", module, line, message);
 	}
 }
@@ -902,7 +902,7 @@ char* wren_loadModuleFn(WrenVM* vm, const char* name) {
 	NOTUSED(vm);
 
 	char *script = nullptr;
-	const char *path = va("scripts/%s.wren", name);
+	const char *path = tempstr("scripts/%s.wren", name);
 
 	int sz = trap->FS_ReadFile(path, (void**)&script);
 	if (sz <= 0) {

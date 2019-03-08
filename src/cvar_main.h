@@ -3,13 +3,13 @@
 
 void RegisterMainCvars( void );
 
-extern cvar_t *com_errorMessage;
-extern cvar_t *com_lastErrorStack;
-extern cvar_t *vid_maxfps;
-extern cvar_t *vid_width;
-extern cvar_t *vid_height;
-extern cvar_t *vid_swapinterval;
-extern cvar_t *vid_fullscreen;
-extern cvar_t *vid_showfps;
-extern cvar_t *com_pause;
-extern cvar_t *s_volume;
+extern conVar_t *com_errorMessage;
+extern conVar_t *com_lastErrorStack;
+extern conVar_t *vid_maxfps;
+extern conVar_t *vid_width;
+extern conVar_t *vid_height;
+extern conVar_t *vid_swapinterval;
+extern conVar_t *vid_fullscreen;
+extern conVar_t *vid_showfps;
+extern conVar_t *com_pause;
+extern conVar_t *s_volume;

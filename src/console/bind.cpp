@@ -315,11 +315,11 @@ void Key_SetBinding(int keynum, const char *binding) {
 
 	// free old bindings
 	if (keys[keynum].binding) {
-		free(keys[keynum].binding);
+		sdsfree(keys[keynum].binding);
 	}
 
 	// allocate memory for new binding
-	keys[keynum].binding = CopyString(binding);
+	keys[keynum].binding = sdsnew(binding);
 
 	// consider this like modifying an archived cvar, so the
 	// file write will be triggered at the next oportunity
@@ -337,26 +337,26 @@ void Key_Bind_f(void)
 	int			i, c, b;
 	char		cmd[1024];
 
-	c = Cmd_Argc();
+	c = Con_GetArgsCount();
 
 	if (c < 2)
 	{
-		Com_Printf("bind <key> [command] : attach a command to a key\n");
+		Con_Printf("bind <key> [command] : attach a command to a key\n");
 		return;
 	}
-	b = Key_StringToKeynum(Cmd_Argv(1));
+	b = Key_StringToKeynum(Con_GetArg(1));
 	if (b == -1)
 	{
-		Com_Printf("\"%s\" isn't a valid key\n", Cmd_Argv(1));
+		Con_Printf("\"%s\" isn't a valid key\n", Con_GetArg(1));
 		return;
 	}
 
 	if (c == 2)
 	{
 		if (keys[b].binding)
-			Com_Printf("\"%s\" = \"%s\"\n", Cmd_Argv(1), keys[b].binding);
+			Con_Printf("\"%s\" = \"%s\"\n", Con_GetArg(1), keys[b].binding);
 		else
-			Com_Printf("\"%s\" is not bound\n", Cmd_Argv(1));
+			Con_Printf("\"%s\" is not bound\n", Con_GetArg(1));
 		return;
 	}
 
@@ -364,7 +364,7 @@ void Key_Bind_f(void)
 	cmd[0] = 0;		// start out with a null string
 	for (i = 2; i< c; i++)
 	{
-		strcat(cmd, Cmd_Argv(i));
+		strcat(cmd, Con_GetArg(i));
 		if (i != (c - 1))
 			strcat(cmd, " ");
 	}
@@ -382,16 +382,16 @@ void Key_Unbind_f(void)
 {
 	int		b;
 
-	if (Cmd_Argc() != 2)
+	if (Con_GetArgsCount() != 2)
 	{
-		Com_Printf("unbind <key> : remove commands from a key\n");
+		Con_Printf("unbind <key> : remove commands from a key\n");
 		return;
 	}
 
-	b = Key_StringToKeynum(Cmd_Argv(1));
+	b = Key_StringToKeynum(Con_GetArg(1));
 	if (b == -1)
 	{
-		Com_Printf("\"%s\" isn't a valid key\n", Cmd_Argv(1));
+		Con_Printf("\"%s\" isn't a valid key\n", Con_GetArg(1));
 		return;
 	}
 
@@ -422,7 +422,7 @@ void Key_Bindlist_f(void) {
 
 	for (i = 0; i < 256; i++) {
 		if (keys[i].binding && keys[i].binding[0]) {
-			Com_Printf("%s \"%s\"\n", Key_KeynumToString(i), keys[i].binding);
+			Con_Printf("%s \"%s\"\n", Key_KeynumToString(i), keys[i].binding);
 		}
 	}
 }
@@ -435,8 +435,8 @@ CL_InitKeyCommands
 */
 void CL_InitKeyCommands(void) {
 	// register our functions
-	Cmd_AddCommand("bind", Key_Bind_f);
-	Cmd_AddCommand("unbind", Key_Unbind_f);
-	Cmd_AddCommand("unbindall", Key_Unbindall_f);
-	Cmd_AddCommand("bindlist", Key_Bindlist_f);
+	Con_AddCommand("bind", Key_Bind_f);
+	Con_AddCommand("unbind", Key_Unbind_f);
+	Con_AddCommand("unbindall", Key_Unbindall_f);
+	Con_AddCommand("bindlist", Key_Bindlist_f);
 }

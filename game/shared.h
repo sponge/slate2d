@@ -1,6 +1,7 @@
 #pragma once
 // types that are shared across the dll and engine
 #include <stdint.h>
+#include "../src/consoleng/console.h"
 
 #ifdef _MSC_VER 
 #define STRFUNCS
@@ -11,19 +12,6 @@
 typedef unsigned char byte;
 typedef void(*xcommand_t) (void);
 
-typedef struct {
-	byte	*data;
-	int		maxsize;
-	int		cursize;
-} cmd_t;
-
-// paramters for command buffer stuffing
-typedef enum {
-	EXEC_NOW,			// don't return until completed
-	EXEC_INSERT,		// insert at current position, but don't run yet
-	EXEC_APPEND			// add to end of the command buffer (normal case)
-} cbufExec_t;
-
 // parameters to the main Error routine
 typedef enum {
 	ERR_NONE,
@@ -33,40 +21,8 @@ typedef enum {
 
 // CVARS
 
-#define	CVAR_ARCHIVE		1	// set to cause it to be saved to vars.rc
-// used for system variables, not for player
-// specific configurations
-#define	CVAR_SYSTEMINFO		2	// these cvars will be duplicated on all clients
-#define	CVAR_INIT			4	// don't allow change from console at all,
-// but can be set from the command line
-#define	CVAR_LATCH			8	// will only change when C code next does
-// a Cvar_Get(), so it can't be changed
-// without proper initialization.  modified
-// will be set, even though the value hasn't
-// changed yet
-#define	CVAR_ROM			16	// display only, cannot be set by user at all
-#define	CVAR_USER_CREATED	32	// created by a set command
-#define	CVAR_TEMP			64	// can be set even when cheats are disabled, but is not archived
-#define CVAR_CHEAT			128	// can not be changed if cheats are disabled
-#define CVAR_NORESTART		256	// do not clear when a cvar_restart is issued
-
-#define	MAX_CVAR_VALUE_STRING	256
-
-// nothing outside the Cvar_*() functions should modify these fields!
-typedef struct cvar_s {
-	char		*name;
-	char		*string;
-	char		*resetString;		// cvar_restart will reset to this value
-	char		*latchedString;		// for CVAR_LATCH vars
-	int			flags;
-	bool	modified;			// set each time the cvar is changed
-	int			modificationCount;	// incremented each time the cvar is changed
-	float		value;				// atof( string )
-	int			integer;			// atoi( string )
-} cvar_t;
-
 typedef struct {
-	cvar_t	   		**cvar;
+	conVar_t   		**cvar;
 	const char		*cvarName;
 	const char		*defaultString;
 	int	     		cvarFlags;

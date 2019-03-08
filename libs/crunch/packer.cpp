@@ -54,7 +54,7 @@ void Packer::Pack(vector<Bitmap*>& bitmaps, bool verbose, bool unique, bool rota
         auto bitmap = bitmaps.back();
         
 		if (verbose)
-			Com_Printf("\t%i: %s\n", bitmaps.size(), bitmap->name.c_str());
+			Con_Printf("\t%i: %s\n", bitmaps.size(), bitmap->name.c_str());
         
         //Check to see if this is a duplicate of an already packed bitmap
         if (unique)

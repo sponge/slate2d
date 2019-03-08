@@ -7,7 +7,7 @@ void WrenScene::Startup(ClientInfo* info) {
 	vm = Wren_Init(mainScriptName, mapFileName);
 	if (vm != nullptr) {
 		initialized = true;
-		trap->Cvar_Set("com_errorMessage", "");
+		trap->Con_SetVar("com_errorMessage", "");
 	}
 }
 

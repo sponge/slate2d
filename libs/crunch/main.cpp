@@ -126,7 +126,7 @@ static string GetFileName(const string& path)
 static void LoadBitmap(const string& prefix, const string& path)
 {
     if (optVerbose) {
-        Com_Printf("\t %s\n", path.c_str());
+        Con_Printf("\t %s\n", path.c_str());
     }
     
     bitmaps.push_back(new Bitmap(path, prefix + GetFileName(path), optPremultiply, optTrim));
@@ -144,7 +144,7 @@ static void LoadBitmaps(const string& root, const string& prefix)
 
         err = PHYSFS_stat(fullPath.c_str(), &stat);
         if (err == 0) {
-            Com_Printf("can't stat file %s", fullPath.c_str());
+            Con_Printf("can't stat file %s", fullPath.c_str());
             return;
         }
 
@@ -160,7 +160,7 @@ static void LoadBitmaps(const string& root, const string& prefix)
             const char *realPath = PHYSFS_getRealDir(virtPath.c_str());
 
             if (realPath == nullptr) {
-                Com_Printf("realpath returning nullptr for virtual path %s\n", virtPath.c_str());
+                Con_Printf("realpath returning nullptr for virtual path %s\n", virtPath.c_str());
                 continue;
             }
 
@@ -192,7 +192,7 @@ static int GetPackSize(const string& str)
         return 128;
     if (str == "64")
         return 64;
-    Com_Printf("invalid size: %s", str.c_str());
+    Con_Printf("invalid size: %s", str.c_str());
     exit(EXIT_FAILURE);
     return 0;
 }
@@ -202,7 +202,7 @@ static int GetPadding(const string& str)
     for (int i = 0; i <= 16; ++i)
         if (str == to_string(i))
             return i;
-    Com_Printf("invalid padding value: %s\n", str.c_str());
+    Con_Printf("invalid padding value: %s\n", str.c_str());
     exit(EXIT_FAILURE);
     return 1;
 }
@@ -214,7 +214,7 @@ int crunch_main(int argc, const char* argv[])
 
     if (argc < 2)
     {
-        Com_Printf("invalid input, expected: \"crunch [INPUT DIRECTORY] [OUTPUT PREFIX] [OPTIONS...]\"\n");
+        Con_Printf("invalid input, expected: \"crunch [INPUT DIRECTORY] [OUTPUT PREFIX] [OPTIONS...]\"\n");
         return EXIT_FAILURE;
     }
     
@@ -284,7 +284,7 @@ int crunch_main(int argc, const char* argv[])
                 optPadding = GetPadding(arg.substr(2));
             else
             {
-                Com_Printf("unexpected argument: %s\n", arg.c_str());
+                Con_Printf("unexpected argument: %s\n", arg.c_str());
                 return EXIT_FAILURE;
             }
         }
@@ -309,7 +309,7 @@ int crunch_main(int argc, const char* argv[])
     {
         if (!optForce && newHash == oldHash)
         {
-            Com_Printf("atlas is unchanged: %s\n", name.c_str());
+            Con_Printf("atlas is unchanged: %s\n", name.c_str());
             return EXIT_SUCCESS;
         }
     }
@@ -326,15 +326,15 @@ int crunch_main(int argc, const char* argv[])
     
     if (optVerbose)
     {
-        Com_Printf("options...\n");
-        Com_Printf("\t--premultiply: %s\n", optPremultiply ? "true" : "false");
-        Com_Printf("\t--trim: %s\n", optTrim ? "true" : "false");
-        Com_Printf("\t--verbose: %s\n", optVerbose ? "true" : "false");
-        Com_Printf("\t--force: %s\n", optForce ? "true" : "false");
-        Com_Printf("\t--unique: %s\n", optUnique ? "true" : "false");
-        Com_Printf("\t--rotate: %s\n", optRotate ? "true" : "false");
-        Com_Printf("\t--size: %i\n", optSize);
-        Com_Printf("\t--pad: %i\n", optPadding);
+        Con_Printf("options...\n");
+        Con_Printf("\t--premultiply: %s\n", optPremultiply ? "true" : "false");
+        Con_Printf("\t--trim: %s\n", optTrim ? "true" : "false");
+        Con_Printf("\t--verbose: %s\n", optVerbose ? "true" : "false");
+        Con_Printf("\t--force: %s\n", optForce ? "true" : "false");
+        Con_Printf("\t--unique: %s\n", optUnique ? "true" : "false");
+        Con_Printf("\t--rotate: %s\n", optRotate ? "true" : "false");
+        Con_Printf("\t--size: %i\n", optSize);
+        Con_Printf("\t--pad: %i\n", optPadding);
     }
     
     //Remove old files
@@ -348,7 +348,7 @@ int crunch_main(int argc, const char* argv[])
     
     //Load the bitmaps from all the input files and directories
     if (optVerbose)
-        Com_Printf("loading images...\n");
+        Con_Printf("loading images...\n");
     for (size_t i = 0; i < inputs.size(); ++i)
     {
         if (inputs[i].rfind('.') != string::npos)
@@ -366,17 +366,17 @@ int crunch_main(int argc, const char* argv[])
     while (!bitmaps.empty())
     {
         if (optVerbose)
-            Com_Printf("packing %i images...\n", bitmaps.size());
+            Con_Printf("packing %i images...\n", bitmaps.size());
         auto packer = new Packer(optSize, optSize, optPadding);
         packer->Pack(bitmaps, optVerbose, optUnique, optRotate);
         packers.push_back(packer);
         if (optVerbose) {
-            Com_Printf("finished packing: %s%s (%i x %i)\n", name.c_str(), to_string(packers.size() - 1).c_str(), packer->width, packer->height);
+            Con_Printf("finished packing: %s%s (%i x %i)\n", name.c_str(), to_string(packers.size() - 1).c_str(), packer->width, packer->height);
         }
 
         if (packer->bitmaps.empty())
         {
-            Com_Printf("packing failed, could not fit bitmap: %s\n", (bitmaps.back())->name.c_str());
+            Con_Printf("packing failed, could not fit bitmap: %s\n", (bitmaps.back())->name.c_str());
             return EXIT_FAILURE;
         }
     }
@@ -384,12 +384,12 @@ int crunch_main(int argc, const char* argv[])
     //Save the atlas image
     for (size_t i = 0; i < packers.size(); ++i)
     {
-        Com_Printf("writing png: %s%s%s.png\n", outputDir.c_str(), name.c_str(), to_string(i).c_str());
+        Con_Printf("writing png: %s%s%s.png\n", outputDir.c_str(), name.c_str(), to_string(i).c_str());
         packers[i]->SavePng(outputDir + name + to_string(i) + ".png");
     }
     
     //Save the atlas binary
-    Com_Printf("writing bin: %s%s.bin\n", outputDir.c_str(), name.c_str());
+    Con_Printf("writing bin: %s%s.bin\n", outputDir.c_str(), name.c_str());
 
 	int16_t numImages = 0;
 	for (auto &packer : packers) {
@@ -408,7 +408,7 @@ int crunch_main(int argc, const char* argv[])
     bin.close();
 
     //Save the atlas binary
-    Com_Printf("writing wren: %s%s.wren\n", scriptsDir.c_str(), name.c_str());
+    Con_Printf("writing wren: %s%s.wren\n", scriptsDir.c_str(), name.c_str());
 
     ofstream wren(scriptsDir + name + ".wren", ios::binary);
 

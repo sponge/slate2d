@@ -17,8 +17,8 @@ extern
 void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 
 void Cmd_Scene_f(void) {
-	const char *mainScriptName = trap->Cmd_Argv(1);
-	const char *sceneParams = trap->Cmd_ArgsFrom(2);
+	const char *mainScriptName = trap->Con_GetArg(1);
+	const char *sceneParams = trap->Con_GetArgs(2);
 	if (sceneParams[0] == '\0') {
 		sceneParams = nullptr;
 	}
@@ -31,13 +31,13 @@ void Cmd_Scene_f(void) {
 
 // map (name) - load a map and switch to the game scene
 void Cmd_Map_f(void) {
-	auto mapname = trap->Cmd_Argv(1);
+	auto mapname = trap->Con_GetArg(1);
 	char filename[256];
 
-	trap->Cvar_Set("com_lastErrorStack", "");
-	trap->Cvar_Set("com_errorMessage", "");
+	trap->Con_SetVar("com_lastErrorStack", "");
+	trap->Con_SetVar("com_errorMessage", "");
 
-	if (trap->Cmd_Argc() != 2) {
+	if (trap->Con_GetArgCount() != 2) {
 		trap->Print("map <mapname> : load a map\n");
 		return;
 	}
@@ -68,7 +68,7 @@ static void Init(void *clientInfo, void *imGuiContext) {
 }
 
 static bool Console(const char *line) {
-	const char *cmd = trap->Cmd_Argv(0);
+	const char *cmd = trap->Con_GetArg(0);
 	// if it's a + or - command, look to see if its a known key
 	// and signal to the engine that it's been pressed.
 	// we do this here so the game dll can customize the buttons used

@@ -30,15 +30,14 @@ void CL_AddKeyUpCommands(int key, char *kb, int64_t time) {
 			if (button[0] == '+') {
 				// button commands add keynum and time as parms so that multiple
 				// sources can be discriminated and subframe corrected
-				Com_sprintf(cmd, sizeof(cmd), "-%s %i %i\n", button + 1, key, (int)time);
-				Cbuf_AddText(cmd);
+				snprintf(cmd, sizeof(cmd), "-%s %i %i\n", button + 1, key, (int)time);
+				Con_Execute(cmd); // FIXME: was addtext
 				keyevent = true;
 			}
 			else {
 				if (keyevent) {
 					// down-only command
-					Cbuf_AddText(button);
-					Cbuf_AddText("\n");
+					Con_Execute(cmd); // FIXME: was addtext and addtext \n
 				}
 			}
 			buttonPtr = button;
@@ -60,7 +59,7 @@ const char *IN_BindForKey(int key) {
 bool KeyEvent(int key, bool down, int64_t time) {
 	// send the bound action
 	if (key >= sizeof(keys) / sizeof(keys[0])) {
-		Com_Printf("key number %i is out of bounds!\n", key);
+		Con_Printf("key number %i is out of bounds!\n", key);
 		return false;
 	}
 
@@ -86,13 +85,12 @@ bool KeyEvent(int key, bool down, int64_t time) {
 				if (button[0] == '+') {
 					// button commands add keynum and time as parms so that multiple
 					// sources can be discriminated and subframe corrected
-					Com_sprintf(cmd, sizeof(cmd), "%s %i %lld\n", button, key, time);
-					Cbuf_AddText(cmd);
+					snprintf(cmd, sizeof(cmd), "%s %i %lld\n", button, key, time);
+					Con_Execute(cmd); // FIXME: was addtext
 				}
 				else {
 					// down-only command
-					Cbuf_AddText(button);
-					Cbuf_AddText("\n");
+					Con_Execute(button); // FIXME: was addtext and addtext \n
 				}
 				buttonPtr = button;
 				while ((kb[i] <= ' ' || kb[i] == ';') && kb[i] != 0) {
@@ -108,8 +106,7 @@ bool KeyEvent(int key, bool down, int64_t time) {
 	}
 	else {
 		// down-only command
-		Cbuf_AddText(kb);
-		Cbuf_AddText("\n");
+		Con_Execute(kb); // FIXME: was addtext and addtext \n
 		return true;
 	}
 }
@@ -133,7 +130,7 @@ bool MouseEvent(int button, bool down, int64_t time) {
 
 bool JoyEvent(int controller, int button, bool down, int64_t time) {
 	if (controller >= MAX_CONTROLLERS) {
-		Com_Printf("ignoring controller %i > MAX_CONTROLLERS\n", controller);
+		Con_Printf("ignoring controller %i > MAX_CONTROLLERS\n", controller);
 		return false;
 	}
 
@@ -146,7 +143,7 @@ void IN_KeyDown(kbutton_t *b) {
 	int		k;
 	const char	*c;
 
-	c = Cmd_Argv(1);
+	c = Con_GetArg(1);
 	if (c[0]) {
 		k = atoi(c);
 	}
@@ -165,7 +162,7 @@ void IN_KeyDown(kbutton_t *b) {
 		b->down[1] = k;
 	}
 	else {
-		Com_Printf("Three keys down for a button!\n");
+		Con_Printf("Three keys down for a button!\n");
 		return;
 	}
 
@@ -174,7 +171,7 @@ void IN_KeyDown(kbutton_t *b) {
 	}
 
 	// save timestamp for partial frame summing
-	c = Cmd_Argv(2);
+	c = Con_GetArg(2);
 	b->downtime = atoi(c);
 
 	b->active = true;
@@ -186,7 +183,7 @@ void IN_KeyUp(kbutton_t *b) {
 	const char	*c;
 	unsigned	uptime;
 
-	c = Cmd_Argv(1);
+	c = Con_GetArg(1);
 	if (c[0]) {
 		k = atoi(c);
 	}
@@ -213,7 +210,7 @@ void IN_KeyUp(kbutton_t *b) {
 	b->active = false;
 
 	// save timestamp for partial frame summing
-	c = Cmd_Argv(2);
+	c = Con_GetArg(2);
 	uptime = atoi(c);
 	if (uptime) {
 		b->musec += uptime - b->downtime;
@@ -235,7 +232,7 @@ bool IN_KeyPressed(kbutton_t *key, unsigned int delay, int repeat) {
 
 	int64_t firstTrigger = key->downtime + muDelay;
 
-	//Com_Printf("%i ft:%0.5f >= firstTrigger:%0.5f && lastft:%0.5f < firstTrigger:%0.5f - dt:%0.5f",
+	//Con_Printf("%i ft:%0.5f >= firstTrigger:%0.5f && lastft:%0.5f < firstTrigger:%0.5f - dt:%0.5f",
 	//	com_frameTime >= firstTrigger && com_lastFrameTime < firstTrigger,
 	//	com_frameTime,
 	//	firstTrigger,
@@ -260,7 +257,7 @@ bool IN_KeyPressed(kbutton_t *key, unsigned int delay, int repeat) {
 
 	int64_t repeatCount = heldTime / muRepeat;
 	int64_t lastRepeatCount = (heldTime - frame_musec) / muRepeat;
-	//Com_Printf("current:%0.5f last:%0.5f", heldTime / muRepeat, (heldTime - frame_msec) / muRepeat);
+	//Con_Printf("current:%0.5f last:%0.5f", heldTime / muRepeat, (heldTime - frame_msec) / muRepeat);
 	//Com_Printf(lastRepeatCount != repeatCount ? " TRIGGER\n" : "\n");
 
 	return lastRepeatCount != repeatCount;

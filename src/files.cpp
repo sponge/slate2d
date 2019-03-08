@@ -1,18 +1,18 @@
 #include <physfs.h>
 #include "console/console.h"
 
-cvar_t *fs_basepath;
-cvar_t *fs_basegame;
-cvar_t *fs_game;
+conVar_t *fs_basepath;
+conVar_t *fs_basegame;
+conVar_t *fs_game;
 
 void Cmd_Dir_f() {
-	const char *path = Cmd_Argc() > 1 ? Cmd_Argv(1) : "/";
+	const char *path = Con_GetArgsCount() > 1 ? Con_GetArg(1) : "/";
 	char **rc = PHYSFS_enumerateFiles(path);
 	char **i;
 
-	Com_Printf("Directory listing of %s\n", path);
+	Con_Printf("Directory listing of %s\n", path);
 	for (i = rc; *i != NULL; i++)
-		Com_Printf("%s\n", *i);
+		Con_Printf("%s\n", *i);
 
 	PHYSFS_freeList(rc);
 }
@@ -62,9 +62,9 @@ void FS_Init(const char *argv0) {
 	}
 
 	const char *baseDir = PHYSFS_getBaseDir();
-	fs_basepath = Cvar_Get("fs_basepath", baseDir, CVAR_INIT);
-	fs_basegame = Cvar_Get("fs_basegame", "base", CVAR_INIT);
-	fs_game = Cvar_Get("fs_game", DEFAULT_GAME, CVAR_INIT);
+	fs_basepath = Con_GetVarDefault("fs_basepath", baseDir, CONVAR_STARTUP);
+	fs_basegame = Con_GetVarDefault("fs_basegame", "base", CONVAR_STARTUP);
+	fs_game = Con_GetVarDefault("fs_game", DEFAULT_GAME, CONVAR_STARTUP);
 
 	bool modLoaded = fs_game->string[0] != '\0';
 
@@ -95,14 +95,14 @@ void FS_Init(const char *argv0) {
 	PHYSFS_freeList(baseFiles);
 
 	// print all the files we've found in order of priority
-	Com_Printf("Current filesystem search path:\n");
+	Con_Printf("Current filesystem search path:\n");
 	for (char **foundPath = PHYSFS_getSearchPath(); *foundPath != NULL; foundPath++) {
-		Com_Printf("%s\n", *foundPath);
+		Con_Printf("%s\n", *foundPath);
 	}
-	Com_Printf("\n");
+	Con_Printf("\n");
 
 	// add command handler for dir to view virtual filesystem
-	Cmd_AddCommand("dir", Cmd_Dir_f);
+	Con_AddCommand("dir", Cmd_Dir_f);
 }
 
 int FS_ReadFile(const char *path, void **buffer) {
@@ -125,7 +125,7 @@ int FS_ReadFile(const char *path, void **buffer) {
 
 	if (read_sz == -1) {
 		auto lastErr = PHYSFS_getLastError();
-		Com_Printf("FS err: %s", lastErr);
+		Con_Printf("FS err: %s", lastErr);
 	}
 
 	PHYSFS_close(f);

@@ -326,7 +326,7 @@ const void *RB_DrawSprite(const void *data) {
 	SpriteAtlas *spr = (SpriteAtlas*)asset->resource;
 
 	if (cmd->id > spr->numSprites) {
-		Com_Printf("WARNING: draw sprite %s out of index %i > %i\n", asset->name, cmd->id, spr->numSprites - 1);
+		Con_Printf("WARNING: draw sprite %s out of index %i > %i\n", asset->name, cmd->id, spr->numSprites - 1);
 		return (const void *)(cmd + 1);
 	}
 

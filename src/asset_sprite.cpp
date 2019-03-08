@@ -59,7 +59,7 @@ void* Sprite_Load(Asset &asset) {
 			atlas->textures[tex] = *img;
 			delete img;
 
-			Com_Printf("texture %s has %i images\n", imgPath, texSprites);
+			Con_Printf("texture %s has %i images\n", imgPath, texSprites);
 
 			// for each sprite in the texture, read it into our struct
 			for (int i = 0; i < texSprites; i++) {
@@ -81,7 +81,7 @@ void* Sprite_Load(Asset &asset) {
 				};
 
 				Sprite *spr = &atlas->sprites[i];
-				Com_Printf("%s (%i): pos:(%i, %i) sz:(%i, %i)\n", name, i, spr->x, spr->y, spr->w, spr->h);
+				Con_Printf("%s (%i): pos:(%i, %i) sz:(%i, %i)\n", name, i, spr->x, spr->y, spr->w, spr->h);
 			}
 
 		}
@@ -147,7 +147,7 @@ void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int
 	}
 
 	if (asset->loaded == true) {
-		Com_Printf("WARNING: Asset_Set: trying to set already loaded asset\n");
+		Con_Printf("WARNING: Asset_Set: trying to set already loaded asset\n");
 		return;
 	}
 

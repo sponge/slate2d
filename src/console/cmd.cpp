@@ -36,11 +36,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <intrin.h>
 #endif
 
+#if 0
 int			cmd_wait;
 cmd_t		cmd_text;
 byte		cmd_text_buf[MAX_CMD_BUFFER];
+#endif
 
 char	errorMessage[1024];
+
+static	unsigned int			cmd_argc;
+static	char		*cmd_argv[MAX_STRING_TOKENS];		// points into cmd_tokenized
+static	char		cmd_tokenized[BIG_INFO_STRING + MAX_STRING_TOKENS];	// will have 0 bytes inserted
+static	char		cmd_cmd[BIG_INFO_STRING]; // the original command we received (no token processing)
 
 void __cdecl Com_Error(int level, const char *error, ...) {
 	va_list		argptr;
@@ -53,7 +60,7 @@ void __cdecl Com_Error(int level, const char *error, ...) {
 	vsprintf(errorMessage, error, argptr);
 	va_end(argptr);
 
-	Com_Printf("%s\n", errorMessage);
+	Con_Printf("%s\n", errorMessage);
 
 #if defined(_WIN32) && defined(DEBUG)
 	if (level == ERR_FATAL) {
@@ -68,10 +75,12 @@ void __cdecl Com_Error(int level, const char *error, ...) {
 	if (level == ERR_FATAL) {
 		exit(1);
 	} else {
-		Cvar_Set("com_errorMessage", errorMessage);
+		Con_SetVar("com_errorMessage", errorMessage);
 		DropToMenu();
 	}
 }
+
+#if 0
 
 void Com_Printf(const char *fmt, ...) {
 	va_list		argptr;
@@ -119,6 +128,8 @@ void Com_DefaultExtension(char *path, int maxSize, const char *extension) {
 	Com_sprintf(path, maxSize, "%s%s", oldPath, extension);
 }
 
+#endif
+
 /*
 ============
 va
@@ -144,6 +155,7 @@ const char	* __cdecl va(const char *format, ...) {
 	return buf;
 }
 
+#if 0
 
 //=============================================================================
 
@@ -180,10 +192,10 @@ quake3 set test blah + map test
 
 ============================================================================
 */
-
 #define	MAX_CONSOLE_LINES	32
 int		com_numConsoleLines;
 char	*com_consoleLines[MAX_CONSOLE_LINES];
+
 
 /*
 ==================
@@ -229,24 +241,23 @@ be after execing the config and default.
 void Com_StartupVariable(const char *match) {
 	int		i;
 	const char	*s;
-	cvar_t	*cv;
+	conVar_t	*cv;
 
 	for (i = 0; i < com_numConsoleLines; i++) {
 		Cmd_TokenizeString(com_consoleLines[i]);
-		if (strcmp(Cmd_Argv(0), "set")) {
+		if (strcmp(cmd_argv[0], "set")) {
 			continue;
 		}
 
-		s = Cmd_Argv(1);
+		s = cmd_argv[1];
 		if (!match || !strcmp(s, match)) {
-			Cvar_Set(s, Cmd_Argv(2));
-			cv = Cvar_Get(s, "", 0);
-			cv->flags |= CVAR_USER_CREATED;
+			Con_SetVar(s, cmd_argv[2]);
+			cv = Con_GetVarDefault(s, "", 0);
+			cv->flags |= CONVAR_CFG;
 			//			com_consoleLines[i] = 0;
 		}
 	}
 }
-
 
 /*
 =================
@@ -275,8 +286,7 @@ bool Com_AddStartupCommands(void) {
 		if (match == com_consoleLines[i]) {
 			added = true;
 		}
-		Cbuf_AddText(com_consoleLines[i]);
-		Cbuf_AddText("\n");
+		Con_Execute(com_consoleLines[i]);
 	}
 
 	return added;
@@ -292,10 +302,6 @@ are inserted in the apropriate place, The argv array
 will point into this temporary buffer.
 ============
 */
-static	unsigned int			cmd_argc;
-static	char		*cmd_argv[MAX_STRING_TOKENS];		// points into cmd_tokenized
-static	char		cmd_tokenized[BIG_INFO_STRING + MAX_STRING_TOKENS];	// will have 0 bytes inserted
-static	char		cmd_cmd[BIG_INFO_STRING]; // the original command we received (no token processing)
 
 void Cmd_TokenizeString(const char *text_in) {
 	const char	*text;
@@ -398,7 +404,6 @@ void Cmd_TokenizeString(const char *text_in) {
 	}
 
 }
-
 
 /*
 =============================================================================
@@ -916,7 +921,7 @@ void	Cmd_ExecuteString( const char *text ) {
 		}
 	}
 
-	Com_Printf("unknown command %s", text);
+	Con_Printf("unknown command %s", text);
 }
 
 /*
@@ -965,3 +970,4 @@ void Cmd_Init (void) {
 	IMConsole();
 }
 
+#endif

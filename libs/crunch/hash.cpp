@@ -58,7 +58,7 @@ void HashFile(size_t& hash, const string& file)
     vector<char> buffer(size + 1);
     if (!stream.read(buffer.data(), size))
     {
-		Com_Printf("failed to read file: %s", file.c_str());
+		Con_Printf("failed to read file: %s", file.c_str());
         exit(EXIT_FAILURE);
     }
     buffer[size] = '\0';

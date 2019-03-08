@@ -67,7 +67,7 @@ void SetWindowTitle(const char *title) {
 
 void Cmd_FrameAdvance_f(void) {
 	if (!com_pause->integer) {
-		Cvar_Set("com_pause", "1");
+		Con_SetVar("com_pause", "1");
 	}
 	else {
 		frameAdvance = true;
@@ -93,6 +93,11 @@ void Cmd_Vid_Restart_f(void) {
 void DropToMenu() {
 	errorVisible = true;
 	gexports->Error(ERR_DROP, com_errorMessage->string);
+}
+
+void ConH_Print(const char *line) {
+	IMConsole()->AddLog("%s", line);
+	printf(line);
 }
 
 static bool loop = true;
@@ -148,13 +153,13 @@ void main_loop() {
 			}
 
 			SDL_GameController *controller = SDL_GameControllerOpen(ev.cdevice.which);
-			Com_Printf("Using controller at device index %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
+			Con_Printf("Using controller at device index %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
 			break;
 		}
 
 		case SDL_CONTROLLERDEVICEREMOVED: {
 			SDL_GameController* controller = SDL_GameControllerFromInstanceID(ev.cdevice.which);
-			Com_Printf("Closing controller instance %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
+			Con_Printf("Closing controller instance %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
 			SDL_GameControllerClose(controller);
 			break;
 		}
@@ -181,7 +186,7 @@ void main_loop() {
 		}
 	}
 	
-	Cbuf_Execute();
+	//Cbuf_Execute(); // FIXME: the events would add keypresses to a buffer and then execute them all at once
 
 	ImGui_ImplSdl_NewFrame(window);
 
@@ -196,8 +201,8 @@ void main_loop() {
 		ImGui::NewLine();
 		if (ImGui::Button("Close")) {
 			errorVisible = false;
-			Cvar_Set("com_errorMessage", nullptr);
-			Cvar_Set("com_lastErrorStack", nullptr);
+			Con_SetVar("com_errorMessage", nullptr);
+			Con_SetVar("com_lastErrorStack", nullptr);
 		}
 		ImGui::End();
 	}
@@ -243,44 +248,37 @@ void main_loop() {
 }
 
 int main(int argc, char *argv[]) {
+	IMConsole();
+	console.handlers.print = &ConH_Print;
+
 	Con_Init(&console);
 
-	Con_Execute("set a \"bcd\"; set b \"cd;ef\"");
-	Con_Execute("echo hello \"big\" boy");
-	Con_Execute("this is invalid");
-	Con_Execute("listcmds");
-	Con_Execute("listcmds list");
-
 	// handle command line parsing. combine into one string and pass it in.
+	
 	if (argc > 1) {
-		int len, i;
-		for (len = 1, i = 1; i < argc; i++) {
-			len += (int)strlen(argv[i]) + 1;
-		}
-
-		char *cmdline = (char *)malloc(len);
-		*cmdline = 0;
-		for (i = 1; i < argc; i++)
+		sds cmdline = sdsempty();
+		for (int i = 1; i < argc; i++)
 		{
 			if (i > 1) {
-				strcat(cmdline, " ");
+				cmdline = sdscat(cmdline, " ");
 			}
-			strcat(cmdline, argv[i]);
+			cmdline = sdscat(cmdline, argv[i]);
 		}
-		Com_ParseCommandLine(cmdline);
+		Con_ParseCommandLine(cmdline);
+		sdsfree(cmdline);
 	}
 
-	Com_StartupVariable("fs_basepath");
-	Com_StartupVariable("fs_basegame");
-	Com_StartupVariable("fs_game");
+	Con_SetVarFromStartup("fs_basepath");
+	Con_SetVarFromStartup("fs_basegame");
+	Con_SetVarFromStartup("fs_game");
 	FS_Init(argv[0]);
 
-	Cbuf_Init();
-	Cmd_Init();
-	Cmd_AddCommand("vid_restart", Cmd_Vid_Restart_f);
-	Cmd_AddCommand("toggleconsole", Cmd_ToggleConsole_f);
-	Cmd_AddCommand("frame_advance", Cmd_FrameAdvance_f);
-	Cvar_Init();
+	//Cbuf_Init();
+	//Cmd_Init();
+	Con_AddCommand("vid_restart", Cmd_Vid_Restart_f);
+	Con_AddCommand("toggleconsole", Cmd_ToggleConsole_f);
+	Con_AddCommand("frame_advance", Cmd_FrameAdvance_f);
+	//Cvar_Init();
 	RegisterMainCvars();
 	CL_InitKeyCommands();
 	FileWatcher_Init();
@@ -290,13 +288,10 @@ int main(int argc, char *argv[]) {
 		Com_Error(ERR_FATAL, "Filesystem error, check fs_basepath is set correctly. (Could not find default.cfg)");
 	}
 
-	Cbuf_AddText("exec default.cfg\n");
+	Con_Execute("exec default.cfg\n");
 	if (FS_Exists("autoexec.cfg")) {
-		Cbuf_AddText("exec autoexec.cfg\n");
+		Con_Execute("exec autoexec.cfg\n");
 	}
-	Cbuf_Execute();
-
-	Com_StartupVariable(nullptr);
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0) {
 		Com_Error(ERR_FATAL, "There was an error initing SDL2: %s", SDL_GetError());
@@ -349,7 +344,8 @@ int main(int argc, char *argv[]) {
 	ImGui::StyleColorsDark();
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
 
-	Com_AddStartupCommands();
+	Con_ExecuteCommandLine();
+	Con_FreeCommandLine();
 
 	consoleScene = new ConsoleScene();
 	consoleScene->Startup(&inf);

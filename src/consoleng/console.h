@@ -1,3 +1,9 @@
+#pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdbool.h>
 #include "../external/sds.h"
 #include "../external/vec.h"
@@ -5,7 +11,7 @@
 
 #define CONVAR_ROM 1<<0  // value can never be changed and only set by code
 #define CONVAR_STARTUP 1<<1 // value can only be set during startup
-#define CONVAR_CFG 1<<2 // value came from an exec'd config file
+#define CONVAR_USER 1<<2 // value was set by user
 
 typedef struct conVar {
     sds name; // name of the var
@@ -40,9 +46,9 @@ typedef struct conState {
 	// internal state
 	sds cmd; // full command
 	sds tempArgs; // temp storage used for functions that return a string
+	sds *sargv; // used for startup parsing and storing
+	int sargc; 
 } conState_t;
-
-conState_t *con;
 
 // initializes the console and sets it as the active one.
 void Con_Init(conState_t *con);
@@ -102,8 +108,24 @@ int Con_GetVarInt(const char * name);
 // returns the boolean value of a convar. returns false if no convar exists.
 bool Con_GetVarBool(const char * name);
 
+// sets a variable to the given value, going through all validation. if the cvar doesn't
+// exist, a new one will be created, and will be flagged as CONVAR_USER. use Con_GetVarDefault
+// if you want to specify flags for a new cvar
 conVar_t * Con_SetVar(const char * name, const char * value);
 
 conVar_t * Con_SetVarFloat(const char * name, float value);
 
 conVar_t * Con_SetVarForce(const char * name, const char * value);
+
+void Con_ParseCommandLine(const char *cmdline);
+
+void Con_ExecuteCommandLine();
+
+void Con_SetVarFromStartup(const char * name);
+
+void Con_FreeCommandLine();
+
+
+#ifdef __cplusplus
+} // end extern
+#endif

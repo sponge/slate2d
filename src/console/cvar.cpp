@@ -1,3 +1,4 @@
+#if 0
 /*
 ===========================================================================
 Copyright (C) 1999-2005 Id Software, Inc.
@@ -161,13 +162,13 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
   }
 
 	if ( !Cvar_ValidateString( var_name ) ) {
-		Com_Printf("invalid cvar name string: %s\n", var_name );
+		Con_Printf("invalid cvar name string: %s\n", var_name );
 		var_name = "BADNAME";
 	}
 
 #if 0		// FIXME: values with backslash happen
 	if ( !Cvar_ValidateString( var_value ) ) {
-		Com_Printf("invalid cvar value string: %s\n", var_value );
+		Con_Printf("invalid cvar value string: %s\n", var_value );
 		var_value = "BADVALUE";
 	}
 #endif
@@ -251,13 +252,13 @@ cvar_t *Cvar_Set2( const char *var_name, const char *value, bool force ) {
 	//Com_DPrintf( "Cvar_Set2: %s %s\n", var_name, value );
 
 	if ( !Cvar_ValidateString( var_name ) ) {
-		Com_Printf("invalid cvar name string: %s\n", var_name );
+		Con_Printf("invalid cvar name string: %s\n", var_name );
 		var_name = "BADNAME";
 	}
 
 #if 0	// FIXME
 	if ( value && !Cvar_ValidateString( value ) ) {
-		Com_Printf("invalid cvar value string: %s\n", value );
+		Con_Printf("invalid cvar value string: %s\n", value );
 		var_value = "BADVALUE";
 	}
 #endif
@@ -565,39 +566,39 @@ void Cvar_List_f( void ) {
 		//if (match && !Com_Filter(match, var->name, false)) continue;
 		/*
 		if (var->flags & CVAR_SERVERINFO) {
-			Com_Printf("S");
+			Con_Printf("S");
 		} else {
-			Com_Printf(" ");
+			Con_Printf(" ");
 		}
 		if (var->flags & CVAR_USERINFO) {
-			Com_Printf("U");
+			Con_Printf("U");
 		} else {
-			Com_Printf(" ");
+			Con_Printf(" ");
 		}
 		if (var->flags & CVAR_ROM) {
-			Com_Printf("R");
+			Con_Printf("R");
 		} else {
-			Com_Printf(" ");
+			Con_Printf(" ");
 		}
 		if (var->flags & CVAR_INIT) {
-			Com_Printf("I");
+			Con_Printf("I");
 		} else {
-			Com_Printf(" ");
+			Con_Printf(" ");
 		}
 		if (var->flags & CVAR_ARCHIVE) {
-			Com_Printf("A");
+			Con_Printf("A");
 		} else {
-			Com_Printf(" ");
+			Con_Printf(" ");
 		}
 		if (var->flags & CVAR_LATCH) {
-			Com_Printf("L");
+			Con_Printf("L");
 		} else {
-			Com_Printf(" ");
+			Con_Printf(" ");
 		}
 		if (var->flags & CVAR_CHEAT) {
-			Com_Printf("C");
+			Con_Printf("C");
 		} else {
-			Com_Printf(" ");
+			Con_Printf(" ");
 		}
 		*/
 
@@ -670,3 +671,4 @@ void Cvar_Init (void) {
 	Cmd_AddCommand ("listcvars", Cvar_List_f);
 	Cmd_AddCommand ("cvar_restart", Cvar_Restart_f);
 }
+#endif

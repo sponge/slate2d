@@ -3,13 +3,13 @@
 
 void Cmd_Crunch_f() {
     const char *args[MAX_STRING_TOKENS];
-    int argc = Cmd_Argc();
+    int argc = Con_GetArgsCount();
     for (int i = 0; i < argc; i++) {
-        args[i] = Cmd_Argv(i);
+        args[i] = Con_GetArg(i);
     }
     crunch_main(argc, args);
 }
 
 void Crunch_Init() {
-    Cmd_AddCommand("crunch", &Cmd_Crunch_f);
+    Con_AddCommand("crunch", &Cmd_Crunch_f);
 }

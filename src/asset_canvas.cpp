@@ -30,7 +30,7 @@ void Canvas_Set(AssetHandle id, int width, int height) {
 	}
 
 	if (asset->loaded == true) {
-		Com_Printf("WARNING: Asset_Set: trying to set already loaded asset\n");
+		Con_Printf("WARNING: Asset_Set: trying to set already loaded asset\n");
 		return;
 	}
 

@@ -220,7 +220,7 @@ void wren_clear_key_pressed(WrenVM *vm) {
 #pragma region CVar Module
 
 void wren_cvar_bool(WrenVM *vm) {
-	cvar_t** var = (cvar_t**)wrenGetSlotForeign(vm, 0);
+	conVar_t** var = (conVar_t**)wrenGetSlotForeign(vm, 0);
 	if (*var == nullptr) {
 		return;
 	}
@@ -229,7 +229,7 @@ void wren_cvar_bool(WrenVM *vm) {
 }
 
 void wren_cvar_number(WrenVM *vm) {
-	cvar_t** var = (cvar_t**)wrenGetSlotForeign(vm, 0);
+	conVar_t** var = (conVar_t**)wrenGetSlotForeign(vm, 0);
 	if (*var == nullptr) {
 		return;
 	}
@@ -238,7 +238,7 @@ void wren_cvar_number(WrenVM *vm) {
 }
 
 void wren_cvar_string(WrenVM *vm) {
-	cvar_t** var = (cvar_t**)wrenGetSlotForeign(vm, 0);
+	conVar_t** var = (conVar_t**)wrenGetSlotForeign(vm, 0);
 	if (*var == nullptr) {
 		return;
 	}
@@ -247,7 +247,7 @@ void wren_cvar_string(WrenVM *vm) {
 }
 
 void wren_cvar_set(WrenVM *vm) {
-	cvar_t** var = (cvar_t**)wrenGetSlotForeign(vm, 0);
+	conVar_t** var = (conVar_t**)wrenGetSlotForeign(vm, 0);
 	if (*var == nullptr) {
 		return;
 	}
@@ -256,20 +256,20 @@ void wren_cvar_set(WrenVM *vm) {
 
 	if (valType == WREN_TYPE_NUM) {
 		double value = wrenGetSlotDouble(vm, 1);
-		char cvarStr[MAX_CVAR_VALUE_STRING];
-		snprintf(cvarStr, MAX_CVAR_VALUE_STRING, "%f", value);
-		trap->Cvar_Set((*var)->name, cvarStr);
+		char cvarStr[1024];
+		snprintf(cvarStr, 1024, "%f", value);
+		trap->Con_SetVar((*var)->name, cvarStr);
 	}
 	else if (valType == WREN_TYPE_BOOL) {
 		bool value = wrenGetSlotBool(vm, 1);
-		trap->Cvar_Set((*var)->name, value ? "1" : "0");
+		trap->Con_SetVar((*var)->name, value ? "1" : "0");
 	}
 	else if (valType == WREN_TYPE_STRING) {
 		const char *value = wrenGetSlotString(vm, 1);
-		trap->Cvar_Set((*var)->name, value);
+		trap->Con_SetVar((*var)->name, value);
 	}
 	else {
-		trap->Cvar_Set((*var)->name, "0");
+		trap->Con_SetVar((*var)->name, "0");
 	}
 }
 
@@ -883,17 +883,17 @@ static void wren_error(WrenVM* vm, WrenErrorType type, const char* module, int l
 	}
 
 	if (clearNextError) {
-		trap->Cvar_Set("com_lastErrorStack", "");
+		trap->Con_SetVar("com_lastErrorStack", "");
 		clearNextError = false;
 	}
 
-	cvar_t *stack = trap->Cvar_Get("com_lastErrorStack", "", 0);
+	conVar_t *stack = trap->Con_GetVarDefault("com_lastErrorStack", "", 0);
 	if (line == -1) {
-		trap->Cvar_Set("com_lastErrorStack", va("%s\n%s", stack->string, message));
+		trap->Con_SetVar("com_lastErrorStack", va("%s\n%s", stack->string, message));
 		trap->Print("%s\n", message);
 	}
 	else {
-		trap->Cvar_Set("com_lastErrorStack", va("%s\n(%s:%i) %s", stack->string, module, line, message));
+		trap->Con_SetVar("com_lastErrorStack", va("%s\n(%s:%i) %s", stack->string, module, line, message));
 		trap->Print("(%s:%i) %s\n", module, line, message);
 	}
 }
@@ -1003,27 +1003,27 @@ WrenForeignMethodFn wren_bindForeignMethodFn(WrenVM* vm, const char* module, con
 void cvarAllocate(WrenVM *vm) {
 	wrenEnsureSlots(vm, 3);
 
-	cvar_t** var = (cvar_t**)wrenSetSlotNewForeign(vm, 0, 0, sizeof(cvar_t*));
+	conVar_t** var = (conVar_t**)wrenSetSlotNewForeign(vm, 0, 0, sizeof(conVar_t*));
 	const char* name = wrenGetSlotString(vm, 1);
 
 	auto valType = wrenGetSlotType(vm, 2);
 
 	if (valType == WREN_TYPE_NUM) {
 		double value = wrenGetSlotDouble(vm, 2);
-		char cvarStr[MAX_CVAR_VALUE_STRING];
-		snprintf(cvarStr, MAX_CVAR_VALUE_STRING, "%g", value);
-		*var = trap->Cvar_Get(name, cvarStr, 0);
+		char cvarStr[1024];
+		snprintf(cvarStr, 1024, "%g", value);
+		*var = trap->Con_GetVarDefault(name, cvarStr, 0);
 	}
 	else if (valType == WREN_TYPE_BOOL) {
 		bool value = wrenGetSlotBool(vm, 2);
-		*var = trap->Cvar_Get(name, value ? "1" : "0", 0);
+		*var = trap->Con_GetVarDefault(name, value ? "1" : "0", 0);
 	}
 	else if (valType == WREN_TYPE_STRING) {
 		const char *value = wrenGetSlotString(vm, 2);
-		*var = trap->Cvar_Get(name, value, 0);
+		*var = trap->Con_GetVarDefault(name, value, 0);
 	}
 	else {
-		*var = trap->Cvar_Get(name, "0", 0);
+		*var = trap->Con_GetVarDefault(name, "0", 0);
 	}
 }
 

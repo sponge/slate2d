@@ -9,13 +9,13 @@ typedef struct gameImportFuncs_s {
 	void (*Error)(int level, const char *error, ...);
 	void (*SetWindowTitle)(const char *title);
 
-	cvar_t* (*Cvar_Get)(const char *var_name, const char *var_value, int flags);
-	cvar_t* (*Cvar_FindVar)(const char * name);
-	void (*Cvar_Set)(const char *var_name, const char *value);
+	conVar_t* (*Con_GetVarDefault)(const char *var_name, const char *var_value, int flags);
+	conVar_t* (*Con_GetVar)(const char * name);
+	conVar_t* (*Con_SetVar)(const char *var_name, const char *value);
 
-	int (*Cmd_Argc)(void);
-	const char * (*Cmd_Argv)(int arg);
-	const char * (*Cmd_ArgsFrom)(int arg);
+	int (*Con_GetArgCount)(void);
+	const char * (*Con_GetArg)(unsigned int arg);
+	const char * (*Con_GetArgs)(unsigned int start);
 
 	int  (*FS_ReadFile)(const char *path, void **buffer);
 	bool (*FS_Exists)(const char *file);

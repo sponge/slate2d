@@ -107,7 +107,7 @@ void ConsoleUI::ExecCommand(const char* command_line) {
 		}
 	History.push_back(Strdup(command_line));
 
-	Cbuf_ExecuteText(EXEC_NOW, command_line);
+	Con_Execute(command_line);
 }
 
 int ConsoleUI::TextEditCallbackStub(ImGuiTextEditCallbackData* data) { // In C++11 you are better off using lambdas for this sort of forwarding callbacks
@@ -151,8 +151,8 @@ int ConsoleUI::TextEditCallback(ImGuiTextEditCallbackData* data)
 		};
 
 		candidates.clear();
-		Cmd_CommandCompletion(cb, word_start);
-		Cvar_CommandCompletion(cb, word_start);
+		//Cmd_CommandCompletion(cb, word_start); // FIXME: reimplement autocomplete
+		//Cvar_CommandCompletion(cb, word_start); // FIXME: reimplement autocomplete
 
 		if (candidates.Size == 0)
 		{

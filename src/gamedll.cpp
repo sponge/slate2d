@@ -11,21 +11,17 @@
 
 extern ClientInfo inf;
 
-void trap_SendConsoleCommand(const char *text) {
-	Cbuf_ExecuteText(EXEC_NOW, text);
-}
-
 static gameImportFuncs_t GAMEtraps = {
-	trap_SendConsoleCommand,
-	Com_Printf,
+	Con_Execute,
+	Con_Printf,
 	Com_Error,
 	SetWindowTitle,
-	Cvar_Get,
-	Cvar_FindVar,
-	Cvar_Set,
-	Cmd_Argc,
-	Cmd_Argv,
-	Cmd_ArgsFrom,
+	Con_GetVarDefault,
+	Con_GetVar,
+	Con_SetVar,
+	Con_GetArgsCount,
+	Con_GetArg,
+	Con_GetArgs,
 	FS_ReadFile,
 	FS_Exists,
 	FS_List,

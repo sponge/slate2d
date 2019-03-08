@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include "../external/sds.h"
 
+conState_t *con;
+
 // Built in commands
 
 void Cmd_Echo_f() {
@@ -118,28 +120,43 @@ void Con_Shutdown() {
 // Command handling
 
 void Con_AddCommand(const char *name, conCmd_t cb) {
-	map_set(&con->cmds, name, cb);
+	sds sname = sdsnew(name);
+	sdstolower(sname);
+	map_set(&con->cmds, sname, cb);
+	sdsfree(sname);
 }
 
 void Con_RemoveCommand(const char *name) {
-	map_remove(&con->cmds, name);
+	sds sname = sdsnew(name);
+	sdstolower(sname);
+	map_remove(&con->cmds, sname, cb);
+	sdsfree(sname);
 }
 
+// Con_RunCommand WILL free the passed string in
 static void Con_RunCommand(sds cmd) {
 	con->cmd = cmd;
 	int argc = 0;
 	con->argv = sdssplitargs(con->cmd, &argc);
+	sdstolower(con->argv[0]);
 	con->argc = (unsigned int)argc;
 
 	conCmd_t *handler = map_get(&con->cmds, con->argv[0]);
+	conVar_t *var = NULL;
 	bool handled = false;
 
 	if (handler) {
 		(*handler)();
 		handled = true;
 	}
-	else if (/* its a var */ false) {
+	else if ((var = Con_GetVar(con->argv[0])) != NULL) {
 		// handle by printing or setting the value
+		if (con->argc == 1) {
+			Con_Printf("\"%s\" is:\"%s" "\" default:\"%s" "\"\n", var->name, var->string, var->defaultValue);
+		}
+		else {
+			Con_SetVar(con->argv[0], Con_GetArgs(1), CONVAR_USER);
+		}
 		handled = true;
 	}
 	else if (con->handlers.unhandledCommand) {
@@ -193,7 +210,6 @@ void Con_Execute(const char *cmd) {
 			if (len > 0) {
 				sds subcmd = sdscatlen(sdsempty(), p - len, len);
 				Con_RunCommand(subcmd);
-				sdsfree(subcmd);
 			}
 
 			inSingleQuotes = false;
@@ -211,7 +227,6 @@ void Con_Execute(const char *cmd) {
 	if (len > 0) {
 		sds subcmd = sdscatlen(sdsempty(), p - len, len);
 		Con_RunCommand(subcmd);
-		sdsfree(subcmd);
 	}
 }
 
@@ -231,7 +246,7 @@ const char *Con_GetArgs(unsigned int start) {
 	con->tempArgs = sdsempty();
 
 	for (start; start < con->argc; start++) {
-		con->tempArgs = sdscat(con->tempArgs, con->argv[start]);
+		con->tempArgs = sdscatfmt(con->tempArgs,start + 1 == con->argc ? "%s" : "%s ", con->argv[start]);
 	}
 
 	return con->tempArgs;
@@ -246,7 +261,11 @@ const char *Con_GetRawArgs() {
 // Convar handling
 
 conVar_t *Con_GetVar(const char *name) {
-	return map_get(&con->vars, name);
+	sds sname = sdsnew(name);
+	sdstolower(sname);
+	conVar_t *var = map_get(&con->vars, sname);
+	sdsfree(sname);
+	return var;
 }
 
 conVar_t *Con_GetVarDefault(const char *name, const char *defaultValue, int flags) {
@@ -260,6 +279,7 @@ conVar_t *Con_GetVarDefault(const char *name, const char *defaultValue, int flag
 	if (var == NULL) {
 		conVar_t newVar;
 		newVar.name = sdsnew(name);
+		sdstolower(newVar.name);
 		newVar.flags = flags;
 		newVar.value = strtof(defaultValue, NULL);
 		newVar.defaultValue = sdsnew(defaultValue);
@@ -267,16 +287,16 @@ conVar_t *Con_GetVarDefault(const char *name, const char *defaultValue, int flag
 		newVar.integer = atoi(defaultValue);
 		newVar.boolean = !!newVar.integer;
 
-		map_set(&con->vars, name, newVar);
+		map_set(&con->vars, newVar.name, newVar);
 
 		// map_set is going to copy the data so make sure we get the right one by re-getting it
 		var = Con_GetVar(name);
 	}
 	// if the config existed before we got here, properly set the default but respect the current value
-	else if ((var->flags & CONVAR_CFG) && !(flags & CONVAR_CFG)) {
+	else if ((var->flags & CONVAR_USER) && !(flags & CONVAR_USER)) {
 		sdsclear(var->defaultValue);
 		var->defaultValue = sdscat(var->defaultValue, defaultValue);
-		var->flags &= ~CONVAR_CFG;
+		var->flags &= ~CONVAR_USER;
 	}
 
 	return var;
@@ -306,7 +326,7 @@ conVar_t *Con_SetVar(const char *name, const char *value) {
 	conVar_t *var = Con_GetVar(name);
 
 	if (var == NULL) {
-		return NULL;
+		return Con_GetVarDefault(name, value, CONVAR_USER);
 	}
 
 	if (var->flags & CONVAR_ROM) {
@@ -318,7 +338,18 @@ conVar_t *Con_SetVar(const char *name, const char *value) {
 }
 
 conVar_t *Con_SetVarFloat(const char *name, float value) {
-	return NULL;
+	sds str;
+	if (value == floor(value)) {
+		str = sdscatfmt(sdsempty(), "%i", floor(value));
+	}
+	else {
+		str = sdscatfmt(sdsempty(), "%f", value);
+	}
+
+	conVar_t *var = Con_SetVar(name, str);
+	sdsfree(str);
+
+	return var;
 }
 
 conVar_t *Con_SetVarForce(const char *name, const char *value) {
@@ -330,6 +361,7 @@ conVar_t *Con_SetVarForce(const char *name, const char *value) {
 
 	sdsclear(var->string);
 	var->string = sdscat(var->string, value);
+	sdstolower(var->string);
 	var->value = strtof(value, NULL);
 	var->integer = atoi(value);
 	var->boolean = !!var->integer;
@@ -337,4 +369,45 @@ conVar_t *Con_SetVarForce(const char *name, const char *value) {
 	var->modifiedCount++;
 
 	return var;
+}
+
+conVar_t *Con_ResetVar(const char *name) {
+	conVar_t *var = Con_GetVar(name);
+
+	if (var == NULL) {
+		return NULL;
+	}
+
+	return Con_SetVar(name, var->defaultValue);
+}
+
+void Con_ParseCommandLine(const char *cmdline) {
+	con->sargv = sdssplitargs(cmdline, &con->sargc);
+}
+
+void Con_ExecuteCommandLine() {
+
+}
+
+void Con_SetVarFromStartup(const char * name) {
+	sds sname = sdsnew(name);
+	sdstolower(sname);
+
+	for (int i = 0; i < con->sargc; i++) {
+		if (sdscmp(con->sargv[i], "+set", 0)) {
+			if (i + 2 < con->sargc) {
+				sdstolower(con->sargv[i + 1]);
+				if (sdscmp(con->sargv[i + 1], sname) == 0) {
+					Con_GetVarDefault(name, con->sargv[i + 2], CONVAR_USER);
+					break;
+				}
+			}
+		}
+	}
+	sdsfree(sname);
+}
+
+void Con_FreeCommandLine() {
+	sdsfreesplitres(con->sargv, con->sargc);
+	con->sargc = 0;
 }

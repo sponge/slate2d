@@ -37,8 +37,8 @@ void * Shader_Load(Asset & asset) {
 		*shader = LoadShaderCode(shasset->vs, shasset->fs);
 	}
 
-	free(shasset->fs);
-	free(shasset->vs);
+	sdsfree(shasset->fs);
+	sdsfree(shasset->vs);
 	shasset->shader = shader;
 
 	return (void*)shasset;
@@ -53,15 +53,15 @@ void Shader_Set(AssetHandle id, bool isFile, char *vs, char *fs) {
 	}
 
 	if (asset->loaded == true) {
-		Com_Printf("WARNING: Shader_Set: trying to set already loaded asset\n");
+		Con_Printf("WARNING: Shader_Set: trying to set already loaded asset\n");
 		return;
 	}
 
 	auto shader = new ShaderAsset();
 
 	shader->isFile = isFile;
-	shader->fs = CopyString(fs);
-	shader->vs = CopyString(vs);
+	shader->fs = sdsnew(fs);
+	shader->vs = sdsnew(vs);
 
 	asset->resource = shader;
 }

@@ -1,6 +1,7 @@
 #include <SDL/SDL.h>
 #include <physfs.h>
 #include "console/console.h"
+#include "consoleng/console.h"
 #include "main.h"
 
 #define MAX_CHECK_FILES 1024
@@ -27,7 +28,7 @@ static int FileWatcher_Thread(void *ptr) {
 
 void FileWatcher_TrackFile(const char *path) {
 	if (filesCount >= MAX_CHECK_FILES) {
-		Com_Printf("can't track anymore files!\n");
+		Con_Printf("can't track anymore files!\n");
 		return;
 	}
 
@@ -35,7 +36,7 @@ void FileWatcher_TrackFile(const char *path) {
 	int err = PHYSFS_stat(path, &stat);
 
 	if (err == 0) {
-		Com_Printf("can't stat file %s\n", path);
+		Con_Printf("can't stat file %s\n", path);
 		return;
 	}
 
@@ -49,7 +50,7 @@ void FileWatcher_TrackFile(const char *path) {
 
 	sourceTime[filesCount] = stat.modtime;
 	filesCount++;
-	Com_Printf("now tracking file for changes: %s\n", path);
+	Con_Printf("now tracking file for changes: %s\n", path);
 }
 
 void FileWatcher_TrackRecursive(const char *path) {
@@ -59,39 +60,39 @@ void FileWatcher_TrackRecursive(const char *path) {
 	char **files = PHYSFS_enumerateFiles(path);
 	char **i;
 	for (i = files; *i != NULL; i++) {
-		const char *fullPath = CopyString(va("%s/%s", path, *i));
+		sds fullPath = sdscatfmt(sdsempty(), "%s/%s", path, *i);
 		err = PHYSFS_stat(fullPath, &stat);
 		if (err == 0) {
-			Com_Printf("can't stat file %s\n", path);
+			Con_Printf("can't stat file %s\n", path);
 			return;
 		}
 
 		if (stat.filetype == PHYSFS_FILETYPE_DIRECTORY) {
 			FileWatcher_TrackRecursive(fullPath);
-			free((void*)fullPath);
+			sdsfree(fullPath);
 			continue;
 		}
 		FileWatcher_TrackFile(fullPath);
-		free((void*)fullPath);
+		sdsfree(fullPath);
 	}
 	PHYSFS_freeList(files);
 }
 
 void Cmd_TrackPath_f() {
-	int c = Cmd_Argc();
+	int c = Con_GetArgsCount();
 
 	if (c < 2) {
-		Com_Printf("trackfile [path] : track a directory or file for changes\n");
+		Con_Printf("trackfile [path] : track a directory or file for changes\n");
 		return;
 	}
 
-	const char *path = Cmd_Argv(1);
+	const char *path = Con_GetArg(1);
 
 	PHYSFS_Stat stat;
 	int err = PHYSFS_stat(path, &stat);
 
 	if (err == 0) {
-		Com_Printf("can't stat file %s\n", path);
+		Con_Printf("can't stat file %s\n", path);
 		return;
 	}
 
@@ -110,7 +111,7 @@ void Cmd_ClearFiles_f() {
 	}
 
 	filesCount = 0;
-	Com_Printf("cleared all file modification trackers\n");
+	Con_Printf("cleared all file modification trackers\n");
 }
 
 void FileWatcher_StartThread() {
@@ -124,17 +125,17 @@ void FileWatcher_StartThread() {
 }
 
 void FileWatcher_Init() {
-	Cmd_AddCommand("filewatcher_add", &Cmd_TrackPath_f);
-	Cmd_AddCommand("filewatcher_clear", &Cmd_ClearFiles_f);
-	Cvar_Get("filewatcher_execute", "", 0);
+	Con_AddCommand("filewatcher_add", &Cmd_TrackPath_f);
+	Con_AddCommand("filewatcher_clear", &Cmd_ClearFiles_f);
+	Con_GetVarDefault("filewatcher_execute", "", 0);
 
 	FileWatcher_StartThread();
 }
 
 void FileWatcher_Tick() {
 	if (fileChanged) {
-		auto v = Cvar_VariableString("filewatcher_execute");
-		Cbuf_ExecuteText(EXEC_NOW, v);
+		auto v = Con_GetVarString("filewatcher_execute");
+		Con_Execute(v);
 
 		FileWatcher_StartThread();
 	}

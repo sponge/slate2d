@@ -106,6 +106,31 @@ void Cmd_Vid_Restart_f(void) {
 	SDL_SetWindowFullscreen(window, vid_fullscreen->integer == 2 ? SDL_WINDOW_FULLSCREEN : vid_fullscreen->integer == 1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }
 
+void Cmd_Exec_f() {
+	if (Con_GetArgsCount() != 2) {
+		Con_Printf("exec <filename> - runs the contents of filename as a console script\n");
+		return;
+	}
+
+	sds name = sdsnew(Con_GetArg(1));
+
+	if (strcmp(&name[sdslen(name) - 4], ".cfg") == 0) {
+
+	}
+	if (!FS_Exists(name)) {
+		Con_Printf("couldn't exec file %s\n", name);
+		return;
+	}
+
+	void *buffer;
+	auto sz = FS_ReadFile(name, &buffer);
+	const char *str = (const char *)buffer;
+
+	Con_Execute(str);
+
+	free(buffer);
+}
+
 void DropToMenu() {
 	errorVisible = true;
 	gexports->Error(ERR_GAME, com_errorMessage->string);
@@ -139,6 +164,10 @@ void ConH_Error(int level, const char *message) {
 }
 
 static bool loop = true;
+
+static void Cmd_Quit_f(void) {
+	loop = false;
+}
 
 auto start = std::chrono::steady_clock::now();
 
@@ -311,6 +340,8 @@ int main(int argc, char *argv[]) {
 	Con_SetVarFromStartup("fs_game");
 	FS_Init(argv[0]);
 
+	Con_AddCommand("exec", Cmd_Exec_f);
+	Con_AddCommand("quit", Cmd_Quit_f);
 	Con_AddCommand("vid_restart", Cmd_Vid_Restart_f);
 	Con_AddCommand("toggleconsole", Cmd_ToggleConsole_f);
 	Con_AddCommand("frame_advance", Cmd_FrameAdvance_f);

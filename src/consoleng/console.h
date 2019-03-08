@@ -125,6 +125,8 @@ conVar_t * Con_SetVarFloat(const char * name, float value);
 
 conVar_t * Con_SetVarForce(const char * name, const char * value);
 
+conVar_t * Con_ResetVar(const char * name);
+
 void Con_ParseCommandLine(const char *cmdline);
 
 void Con_ExecuteCommandLine();

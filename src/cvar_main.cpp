@@ -22,7 +22,6 @@ static conVarTable_t mainCvarTable[] = {
 	{ &vid_maxfps, "vid_maxfps", "120", 0 },
 	{ &com_pause, "com_pause", "0", 0 },
 	{ &s_volume, "s_volume", "1.0", 0 },
-
 };
 
 static int mainCvarTableSize = sizeof( mainCvarTable ) / sizeof( mainCvarTable[0] );

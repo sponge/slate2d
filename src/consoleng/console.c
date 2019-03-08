@@ -1,5 +1,6 @@
 #include "console.h"
 
+#include <math.h>
 #include <string.h>
 #include <stdio.h>
 #include "../external/sds.h"
@@ -18,28 +19,81 @@ void Cmd_Echo_f() {
 }
 
 void Cmd_Set_f() {
-	// set a var
+	if (Con_GetArgsCount() != 3) {
+		Con_Print("set <variable> <value> - sets variable to value, creating if necessary\n");
+		return;
+	}
+
+	const char *name = Con_GetArg(1);
+	const char *value = Con_GetArg(2);
+	Con_SetVar(name, value);
 }
 
 void Cmd_ListVars_f() {
-	// list a var
+	map_iter_t iter = map_iter(&con->vars);
+	int count = 0;
+	int filteredCount = 0;
+	const char *key = NULL;
+	const char *search = Con_GetArgsCount() > 1 ? Con_GetArg(1) : NULL;
+
+	while ((key = map_next(&con->vars, &iter))) {
+		count++;
+
+		if (search != NULL && strstr(key, search) == NULL) {
+			continue;
+		}
+
+		Con_Printf("%s\n", key);
+		filteredCount++;
+	}
+
+	if (search != NULL) {
+		Con_Printf("found %i vars (total %i)\n", filteredCount, count);
+	}
+	else {
+		Con_Printf("total %i vars\n", count);
+	}
 }
 
 void Cmd_Vstr_f() {
-	// run the contents of argv[1] as a command
-	// i be worrying about stack overflows? ex lots of nested vstr
-}
+	if (Con_GetArgsCount() != 2) {
+		Con_Print("vstr <name> - executes the contents of name as a console command\n");
+		return;
+	}
 
-void Cmd_Exec_f() {
-	// if it doesn't end in cfg, add it
+	const char *varName = Con_GetArg(1);
+	conVar_t *var = Con_GetVar(varName);
+	if (var == NULL) {
+		Con_Printf("couldn't execute %s, var not found\n", varName);
+		return;
+	}
+
+	Con_Execute(var->string);
 }
 
 void Cmd_Reset_f() {
-	// set to default value
+	if (Con_GetArgsCount() != 2) {
+		Con_Print("reset <name> - resets the variable to its default value\n");
+		return;
+	}
+
+	Con_ResetVar(Con_GetArg(1));
 }
 
 void Cmd_Toggle_f() {
-	// toggle between 0 and 1 values
+	if (Con_GetArgsCount() != 2) {
+		Con_Print("toggle <name> - toggles variable value between 1 and 0\n");
+		return;
+	}
+
+	const char *varName = Con_GetArg(1);
+	conVar_t *var = Con_GetVar(varName);
+	if (var == NULL) {
+		Con_Printf("couldn't toggle %s, var not found\n", varName);
+		return;
+	}
+
+	Con_SetVarFloat(varName, var->integer > 0 ? 0 : 1);
 }
 
 void Cmd_ListCmds_f() {
@@ -78,8 +132,6 @@ void Con_Init(conState_t *newCon) {
 
 	Con_AddCommand("echo", Cmd_Echo_f);
 	Con_AddCommand("listcmds", Cmd_ListCmds_f);
-	Con_AddCommand("exec", Cmd_Exec_f);
-
 	Con_AddCommand("listvars", Cmd_ListVars_f);
 	Con_AddCommand("set", Cmd_Set_f);
 	Con_AddCommand("toggle", Cmd_Toggle_f);
@@ -148,7 +200,7 @@ void Con_AddCommand(const char *name, conCmd_t cb) {
 void Con_RemoveCommand(const char *name) {
 	sds sname = sdsnew(name);
 	sdstolower(sname);
-	map_remove(&con->cmds, sname, cb);
+	map_remove(&con->cmds, sname);
 	sdsfree(sname);
 }
 
@@ -157,6 +209,11 @@ static void Con_RunCommand(sds cmd) {
 	con->cmd = cmd;
 	int argc = 0;
 	con->argv = sdssplitargs(con->cmd, &argc);
+
+	if (argc == 0) {
+		return;
+	}
+
 	sdstolower(con->argv[0]);
 	con->argc = (unsigned int)argc;
 
@@ -174,7 +231,7 @@ static void Con_RunCommand(sds cmd) {
 			Con_Printf("\"%s\" is:\"%s" "\" default:\"%s" "\"\n", var->name, var->string, var->defaultValue);
 		}
 		else {
-			Con_SetVar(con->argv[0], Con_GetArgs(1), CONVAR_USER);
+			Con_SetVar(con->argv[0], Con_GetArgs(1));
 		}
 		handled = true;
 	}
@@ -228,6 +285,7 @@ void Con_Execute(const char *cmd) {
 
 			if (len > 0) {
 				sds subcmd = sdscatlen(sdsempty(), p - len, len);
+				subcmd = sdstrim(subcmd, "\r\n");
 				Con_RunCommand(subcmd);
 			}
 
@@ -245,6 +303,7 @@ void Con_Execute(const char *cmd) {
 
 	if (len > 0) {
 		sds subcmd = sdscatlen(sdsempty(), p - len, len);
+		subcmd = sdstrim(subcmd, "\r\n");
 		Con_RunCommand(subcmd);
 	}
 }
@@ -349,7 +408,7 @@ conVar_t *Con_SetVar(const char *name, const char *value) {
 	}
 
 	if (var->flags & CONVAR_ROM) {
-		Con_Printf("can't set %s, is read only", var->name);
+		Con_Printf("can't set %s, is read only\n", var->name);
 		return var;
 	}
 
@@ -357,14 +416,8 @@ conVar_t *Con_SetVar(const char *name, const char *value) {
 }
 
 conVar_t *Con_SetVarFloat(const char *name, float value) {
-	sds str;
-	if (value == floor(value)) {
-		str = sdscatfmt(sdsempty(), "%i", floor(value));
-	}
-	else {
-		str = sdscatfmt(sdsempty(), "%f", value);
-	}
-
+	sds str = sdsnew("");
+	str = sdscatprintf(str, "%g", value);
 	conVar_t *var = Con_SetVar(name, str);
 	sdsfree(str);
 
@@ -421,7 +474,7 @@ void Con_SetVarFromStartup(const char * name) {
 	sdstolower(sname);
 
 	for (int i = 0; i < con->sargc; i++) {
-		if (sdscmp(con->sargv[i], "+set", 0)) {
+		if (strcmp(con->sargv[i], "+set") == 0) {
 			if (i + 2 < con->sargc) {
 				sdstolower(con->sargv[i + 1]);
 				if (sdscmp(con->sargv[i + 1], sname) == 0) {

@@ -14,8 +14,8 @@ typedef struct gameImportFuncs_s {
 	conVar_t* (*Con_SetVar)(const char *var_name, const char *value);
 
 	int (*Con_GetArgCount)(void);
-	const char * (*Con_GetArg)(unsigned int arg);
-	const char * (*Con_GetArgs)(unsigned int start);
+	const char * (*Con_GetArg)(int arg);
+	const char * (*Con_GetArgs)(int start);
 
 	int  (*FS_ReadFile)(const char *path, void **buffer);
 	bool (*FS_Exists)(const char *file);

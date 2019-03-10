@@ -9,6 +9,7 @@ conState_t *con;
 
 // Built in commands
 
+// command handler for echo, prints the text to the screen
 void Cmd_Echo_f() {
 	sds text = sdsnew(Con_GetRawArgs());
 	text = sdstrim(text, " ");
@@ -18,6 +19,7 @@ void Cmd_Echo_f() {
 	sdsfree(text);
 }
 
+// command handler for set, to set a convar to a given value
 void Cmd_Set_f() {
 	if (Con_GetArgsCount() != 3) {
 		Con_Print("set <variable> <value> - sets variable to value, creating if necessary\n");
@@ -29,16 +31,20 @@ void Cmd_Set_f() {
 	Con_SetVar(name, value);
 }
 
+// command handler for listvars, to list all variables currently registered
 void Cmd_ListVars_f() {
 	map_iter_t iter = map_iter(&con->vars);
 	int count = 0;
 	int filteredCount = 0;
 	const char *key = NULL;
+
+	// any parameter to listvars is used as a simple substring match
 	const char *search = Con_GetArgsCount() > 1 ? Con_GetArg(1) : NULL;
 
 	while ((key = map_next(&con->vars, &iter))) {
 		count++;
 
+		// skip if filter is specified and string doesn't match
 		if (search != NULL && strstr(key, search) == NULL) {
 			continue;
 		}
@@ -55,6 +61,7 @@ void Cmd_ListVars_f() {
 	}
 }
 
+// command handler for vstr, to run the string contents of a convar as a command
 void Cmd_Vstr_f() {
 	if (Con_GetArgsCount() != 2) {
 		Con_Print("vstr <name> - executes the contents of name as a console command\n");
@@ -71,6 +78,7 @@ void Cmd_Vstr_f() {
 	Con_Execute(var->string);
 }
 
+// command handler for reset, to reset a convar to its default value
 void Cmd_Reset_f() {
 	if (Con_GetArgsCount() != 2) {
 		Con_Print("reset <name> - resets the variable to its default value\n");
@@ -80,6 +88,7 @@ void Cmd_Reset_f() {
 	Con_ResetVar(Con_GetArg(1));
 }
 
+// command handler for toggle, toggles convar between 0 and 1 values
 void Cmd_Toggle_f() {
 	if (Con_GetArgsCount() != 2) {
 		Con_Print("toggle <name> - toggles variable value between 1 and 0\n");
@@ -96,16 +105,20 @@ void Cmd_Toggle_f() {
 	Con_SetVarFloat(varName, var->integer > 0.0f ? 0.0f : 1.0f);
 }
 
+// command handler for listcmds, prints all commands to console
 void Cmd_ListCmds_f() {
 	map_iter_t iter = map_iter(&con->cmds);
 	int count = 0;
 	int filteredCount = 0;
 	const char *key = NULL;
+
+	// any parameter to listvars is used as a simple substring match
 	const char *search = Con_GetArgsCount() > 1 ? Con_GetArg(1) : NULL;
 
 	while ((key = map_next(&con->cmds, &iter))) {
 		count++;
 
+		// skip if filter is specified and string doesn't match
 		if (search != NULL && strstr(key, search) == NULL) {
 			continue;
 		}
@@ -122,6 +135,7 @@ void Cmd_ListCmds_f() {
 	}
 }
 
+// command handler for bind, to set or show a console string to run when a key is pressed
 void Cmd_Bind_f(void) {
 	if (Con_GetArgsCount() < 2) {
 		Con_Printf("bind <key> <command> - bind a console string to a key\n");
@@ -136,6 +150,7 @@ void Cmd_Bind_f(void) {
 		return;
 	}
 
+	// if no new bind is specified, just print the current value
 	if (Con_GetArgsCount() == 2) {
 		const char *bind = Con_GetBindForKey(keyNum);
 		if (bind == NULL) {
@@ -152,6 +167,7 @@ void Cmd_Bind_f(void) {
 	}
 }
 
+// command handler for unbind, to remove the console script from a key
 void Cmd_Unbind_f(void) {
 	if (Con_GetArgsCount() != 2) {
 		Con_Printf("unbind <key> - remove command from key\n");
@@ -169,6 +185,7 @@ void Cmd_Unbind_f(void) {
 	Con_RemoveBind(keyNum);
 }
 
+// command handler for unbindall, which unbinds all keys
 void Cmd_UnbindAll_f(void) {
 	sds bind;
 	int keyNum;
@@ -177,6 +194,7 @@ void Cmd_UnbindAll_f(void) {
 	}
 }
 
+// command handler for bindlist, prints all keys that have commands bound to them
 void Cmd_BindList_f(void) {
 	sds bind;
 	int keyNum;
@@ -189,8 +207,11 @@ void Cmd_BindList_f(void) {
 
 // Main Console
 
+// rtakes a pointer to a previously allocated conState_t (heap or stack) and initializes
+// all dynamic structures and sets up the built in commands. the pointer passed in should remain
+// valid for the lifetime of the console.
 void Con_Init(conState_t *newCon) {
-    map_init(&newCon->vars);
+	map_init(&newCon->vars);
 	map_init(&newCon->cmds);
 	vec_init(&newCon->binds);
 	vec_init(&newCon->buttons);
@@ -198,12 +219,14 @@ void Con_Init(conState_t *newCon) {
 	Con_SetActive(newCon);
 
 	Con_AddCommand("echo", Cmd_Echo_f);
-	Con_AddCommand("listcmds", Cmd_ListCmds_f);
+
 	Con_AddCommand("listvars", Cmd_ListVars_f);
 	Con_AddCommand("set", Cmd_Set_f);
 	Con_AddCommand("toggle", Cmd_Toggle_f);
 	Con_AddCommand("reset", Cmd_Reset_f);
 	Con_AddCommand("vstr", Cmd_Vstr_f);
+
+	Con_AddCommand("listcmds", Cmd_ListCmds_f);
 
 	Con_AddCommand("bind", Cmd_Bind_f);
 	Con_AddCommand("unbind", Cmd_Unbind_f);
@@ -211,10 +234,22 @@ void Con_Init(conState_t *newCon) {
 	Con_AddCommand("bindlist", Cmd_BindList_f);
 }
 
+// free up all memory
+void Con_Shutdown() {
+	map_deinit(&con->vars);
+	map_deinit(&con->cmds);
+	vec_deinit(&con->binds);
+	vec_deinit(&con->buttons);
+}
+
+// swaps out the active pointer, so we don't need to constantly query for the active console.
+// doing this with a global means command handlers don't need any arugments passed in since
+// they can just call any Con_ function without having to be passed the conState_t
 void Con_SetActive(conState_t *newCon) {
 	con = newCon;
 }
 
+// raise an error. if no error handler is specified, just print it and exit.
 void Con_Error(int level, const char *fmt, ...) {
 	if (level == ERR_NONE) {
 		return;
@@ -234,6 +269,7 @@ void Con_Error(int level, const char *fmt, ...) {
 	}
 }
 
+// small wrapper that just calls printf if a handler isn't set.
 void Con_Print(const char *text) {
 	if (con->handlers.print) {
 		con->handlers.print(text);
@@ -243,6 +279,7 @@ void Con_Print(const char *text) {
 	}
 }
 
+// same as above but with formatting strings
 void Con_Printf(const char *fmt, ...) {
 	va_list args;
 
@@ -255,13 +292,9 @@ void Con_Printf(const char *fmt, ...) {
 	sdsfree(text);
 }
 
-void Con_Shutdown() {
-	map_deinit(&con->vars);
-	map_deinit(&con->cmds);
-}
-
 // Command handling
 
+// add a new command to the command map, case insensitive
 void Con_AddCommand(const char *name, conCmd_t cb) {
 	sds sname = sdsnew(name);
 	sdstolower(sname);
@@ -269,6 +302,7 @@ void Con_AddCommand(const char *name, conCmd_t cb) {
 	sdsfree(sname);
 }
 
+// removes a command from the command map, case insensitive
 void Con_RemoveCommand(const char *name) {
 	sds sname = sdsnew(name);
 	sdstolower(sname);
@@ -279,24 +313,27 @@ void Con_RemoveCommand(const char *name) {
 // Con_RunCommand WILL free the passed string in
 static void Con_RunCommand(sds cmd) {
 	con->cmd = cmd;
-	int argc = 0;
-	con->argv = sdssplitargs(con->cmd, &argc);
 
-	if (argc == 0) {
+	// setup argv/argc. sdssplitargs will not split terms in quotes.
+	con->argv = sdssplitargs(con->cmd, &con->argc);
+
+	if (con->argc == 0) {
 		return;
 	}
 
+	// command handlers are case insensitive
 	sdstolower(con->argv[0]);
-	con->argc = (unsigned int)argc;
 
 	conCmd_t *handler = map_get(&con->cmds, con->argv[0]);
 	conVar_t *var = NULL;
 	bool handled = false;
 
+	// first priority is if the string is a command, run it
 	if (handler) {
 		(*handler)();
 		handled = true;
 	}
+	// if there's no command handler, check if it's a valid convar
 	else if ((var = Con_GetVar(con->argv[0])) != NULL) {
 		// handle by printing or setting the value
 		if (con->argc == 1) {
@@ -307,6 +344,7 @@ static void Con_RunCommand(sds cmd) {
 		}
 		handled = true;
 	}
+	// give a set console handler a final opportunity to handle the command itself
 	else if (con->handlers.unhandledCommand) {
 		// possibly handled through callback
 		handled = con->handlers.unhandledCommand();
@@ -316,6 +354,7 @@ static void Con_RunCommand(sds cmd) {
 		Con_Printf("unknown command: %s\n", con->argv[0]);
 	}
 
+	// free all potentially used members
 	sdsfreesplitres(con->argv, con->argc);
 	sdsfree(con->tempArgs);
 	sdsfree(con->cmd);
@@ -325,6 +364,8 @@ static void Con_RunCommand(sds cmd) {
 	con->cmd = NULL;
 }
 
+// main entry point. takes a string, splits it up into individual cmomands (split by ; or newline) and
+// runs them one at a time.
 void Con_Execute(const char *cmd) {
 	// there may be multiple commands in this string, so we need to go through and split by
 	// semicolons or new lines that are outside of quoted strings.
@@ -335,13 +376,15 @@ void Con_Execute(const char *cmd) {
 	while (*p) {
 		switch (*p) {
 		case '\'': 
+			// don't track single quotes that are inside double quotes
 			if (!inQuotes) {
 				inSingleQuotes = !inSingleQuotes;
 			}
 			len++;
 			break;
 
-		case '"': 
+		case '"':
+			// don't track double quotes inside single quotes
 			if (!inSingleQuotes) {
 				inQuotes = !inQuotes;
 			}
@@ -350,29 +393,36 @@ void Con_Execute(const char *cmd) {
 
 		case '\n':
 		case ';':
+			// don't process command delimiters inside quotes
 			if (inQuotes || inSingleQuotes) {
 				len++;
 				break;
 			}
 
+			// if we have processed any part of a command, trim it and run it
 			if (len > 0) {
 				sds subcmd = sdscatlen(sdsempty(), p - len, len);
 				subcmd = sdstrim(subcmd, "\r\n");
 				Con_RunCommand(subcmd);
 			}
 
+			// reset parser state
 			inSingleQuotes = false;
 			inQuotes = false;
 			len = 0;
 			break;
 
+		// if not a special character just walk keep walking forward
 		default:
 			len++;
 			break;
 		}
+
+		// keep going forward
 		p++;
 	}
 
+	// if we've hit the end of the string, make sure to run what's last, also trimming it
 	if (len > 0) {
 		sds subcmd = sdscatlen(sdsempty(), p - len, len);
 		subcmd = sdstrim(subcmd, "\r\n");
@@ -380,15 +430,24 @@ void Con_Execute(const char *cmd) {
 	}
 }
 
-const char *Con_GetArg(unsigned int i) {
-	return i > con->argc ? "" : con->argv[i];
+// returns empty string instead of null for invalid args
+const char *Con_GetArg(int i) {
+	return i < 0 ? "" : i > con->argc ? "" : con->argv[i];
 }
 
+// returns amount of arguments in currently active command
 int Con_GetArgsCount() {
 	return con->argc;
 }
 
-const char *Con_GetArgs(unsigned int start) {
+
+// returns a temporary string from arg start to end. uses tempArgs which will be valid
+// until end of command parsing, or another function that uses tempArgs
+const char *Con_GetArgs(int start) {
+	if (start < 0) {
+		start = 0;
+	}
+
 	if (start > con->argc) {
 		return "";
 	}
@@ -402,6 +461,7 @@ const char *Con_GetArgs(unsigned int start) {
 	return con->tempArgs;
 }
 
+// returns all the arguments past the original command
 const char *Con_GetRawArgs() {
 	size_t cmdLen = sdslen(con->argv[0]);
 
@@ -410,6 +470,7 @@ const char *Con_GetRawArgs() {
 
 // Convar handling
 
+// returns a convar, returning NULL if not existant.
 conVar_t *Con_GetVar(const char *name) {
 	sds sname = sdsnew(name);
 	sdstolower(sname);
@@ -418,18 +479,19 @@ conVar_t *Con_GetVar(const char *name) {
 	return var;
 }
 
+// returns a convar, which can be newly made.
 conVar_t *Con_GetVarDefault(const char *name, const char *defaultValue, int flags) {
 	if (!name || !defaultValue) {
-		Con_Error(ERR_FATAL, "Con_GetVarDefault: cvar name or default value is null");
+		Con_Error(ERR_FATAL, "Con_GetVarDefault: convar name or default value is null");
 		return NULL;
 	}
 
 	conVar_t *var = Con_GetVar(name);
 
 	if (var == NULL) {
+		// we don't have an existing convar, setup a new one on the stack, since map_set will copy it
 		conVar_t newVar;
 		newVar.name = sdsnew(name);
-		sdstolower(newVar.name);
 		newVar.flags = flags;
 		newVar.value = strtof(defaultValue, NULL);
 		newVar.defaultValue = sdsnew(defaultValue);
@@ -437,18 +499,24 @@ conVar_t *Con_GetVarDefault(const char *name, const char *defaultValue, int flag
 		newVar.integer = atoi(defaultValue);
 		newVar.boolean = !!newVar.integer;
 
-		map_set(&con->vars, newVar.name, newVar);
+		// make a copy of the key, but now in lower case for the hash key. keep the newVar.name in the passed
+		// in case for presentation reasons
+		sds key = sdsnew(newVar.name);
+		sdstolower(key);
+		map_set(&con->vars, key, newVar);
+		sdsfree(key);
 
-		// map_set is going to copy the data so make sure we get the right one by re-getting it
+		// map_set is going to copy the data so make sure we return the right one by getting it new
 		var = Con_GetVar(name);
 	}
 	// if the config existed before we got here, properly set the default but respect the current value
 	else if ((var->flags & CONVAR_USER) && !(flags & CONVAR_USER)) {
+		// clear the current string and reuse it
 		sdsclear(var->defaultValue);
 		var->defaultValue = sdscat(var->defaultValue, defaultValue);
 		var->flags &= ~CONVAR_USER;
 
-		// if it's ROM, overwrite the current value no matter what
+		// if its ROM, overwrite the current value no matter what
 		if (flags & CONVAR_ROM) {
 			Con_SetVarForce(name, defaultValue);
 		}
@@ -457,42 +525,53 @@ conVar_t *Con_GetVarDefault(const char *name, const char *defaultValue, int flag
 	return var;
 }
 
+// null-safe get string value, returns empty string if convar doesn't exist
 const char *Con_GetVarString(const char *name) {
 	conVar_t *var = Con_GetVar(name);
 	return var == NULL ? "" : var->string;
 }
 
+// null-safe get float value, returns 0 if convar doesn't exist
 float Con_GetVarFloat(const char *name) {
 	conVar_t *var = Con_GetVar(name);
 	return var == NULL ? 0.0f : var->value;
 }
 
+// null-safe get int value, returns 0 if convar doesn't exist
 int Con_GetVarInt(const char *name) {
 	conVar_t *var = Con_GetVar(name);
 	return var == NULL ? 0 : var->integer;
 }
 
+// null-safe get bool value, returns false if convar doesn't exist
 bool Con_GetVarBool(const char *name) {
 	conVar_t *var = Con_GetVar(name);
 	return var == NULL ? false : var->boolean;
 }
 
+// sets a convar's value, creating it if necessary
 conVar_t *Con_SetVar(const char *name, const char *value) {
 	conVar_t *var = Con_GetVar(name);
 
+	// if convar doesn't exist, set it as a user var, since this is where config execution comes into
 	if (var == NULL) {
 		return Con_GetVarDefault(name, value, CONVAR_USER);
 	}
 
+	// don't do anything if the value hasn't changed
 	if (strcmp(var->string, value) == 0) {
 		return var;
 	}
 
+	// CONVAR_ROMs cant be changed
 	if (var->flags & CONVAR_ROM) {
 		Con_Printf("can't set %s, is read only\n", var->name);
 		return var;
 	}
 
+
+	// CONVAR_STARTUP works because the convar is set through whatever means (usually command line parsing)
+	// before Con_GetVarDefault is called giving the convar the flag
 	if (var->flags & CONVAR_STARTUP) {
 		Con_Printf("can't set %s, can only be set on command line\n", var->name);
 		return var;
@@ -501,6 +580,7 @@ conVar_t *Con_SetVar(const char *name, const char *value) {
 	return Con_SetVarForce(name, value);
 }
 
+// shortcut to set a float value directly instead of turning it into a string
 conVar_t *Con_SetVarFloat(const char *name, float value) {
 	sds str = sdsnew("");
 	str = sdscatprintf(str, "%g", value);
@@ -510,6 +590,9 @@ conVar_t *Con_SetVarFloat(const char *name, float value) {
 	return var;
 }
 
+// most con_setvar paths end up here, but this is what will actually set the value and update the
+// convar struct. if you need to force a change for whatever reason, it can also be called to bypass
+// everything.
 conVar_t *Con_SetVarForce(const char *name, const char *value) {
 	conVar_t *var = Con_GetVar(name);
 
@@ -519,7 +602,6 @@ conVar_t *Con_SetVarForce(const char *name, const char *value) {
 
 	sdsclear(var->string);
 	var->string = sdscat(var->string, value);
-	sdstolower(var->string);
 	var->value = strtof(value, NULL);
 	var->integer = atoi(value);
 	var->boolean = !!var->integer;
@@ -529,6 +611,7 @@ conVar_t *Con_SetVarForce(const char *name, const char *value) {
 	return var;
 }
 
+// resets the value to default. will obey verification
 conVar_t *Con_ResetVar(const char *name) {
 	conVar_t *var = Con_GetVar(name);
 
@@ -539,32 +622,40 @@ conVar_t *Con_ResetVar(const char *name) {
 	return Con_SetVar(name, var->defaultValue);
 }
 
+// stores the passed in commandline so we can scan through it later and pull out convars and finally execute it all
 void Con_SetupCommandLine(int argc, char *argv[]) {
 	con->sargc = argc;
 	con->sargv = argv;
 }
 
+// iterates through and passes a command which is a series of arguments prefixed with a +, ex "+echo hello world"
 void Con_ExecuteCommandLine() {
 	sds current = sdsempty();
 	for (int i = 1; i < con->sargc; i++) {
+		// if we have a +, execute what's there and start building up again
 		if (con->sargv[i][0] == '+') {
 			Con_Execute(current);
 			sdsclear(current);
 			current = sdscatprintf(current, "%s ", &con->sargv[i][1]);
 		}
+		// append until we reach the end or find a + at the start
 		else {
 			current = sdscatprintf(current, "%s ", con->sargv[i]);
 		}
 
 	}
 
+	// run whatever we have left
 	Con_Execute(current);
-	sdsfree(current);
 
+	// all done, we are never going to use this again
+	sdsfree(current);
 	con->sargc = 0;
 	con->sargv = NULL;
 }
 
+// pull out a +set, and the following 2 arguments from the command line and create a
+// CONVAR_USER convar out of it
 void Con_SetVarFromStartup(const char * name) {
 	if (con->sargv == NULL) {
 		return;
@@ -575,13 +666,17 @@ void Con_SetVarFromStartup(const char * name) {
 
 	sds currarg = sdsempty();
 
+	// skip the binary name
 	for (int i = 1; i < con->sargc; i++) {
+		// if we found a +set, and there are 2 arguments after, it is a candidate
 		if (strcmp(con->sargv[i], "+set") == 0) {
 			if (i + 2 < con->sargc) {
+				// case insensitive match, lowercase and compare
 				sdsclear(currarg);
 				currarg = sdscat(currarg, con->sargv[i + 1]);
 				sdstolower(currarg);
 				if (sdscmp(currarg, sname) == 0) {
+					// everything is good, set the convar
 					Con_GetVarDefault(name, con->sargv[i + 2], CONVAR_USER);
 					break;
 				}
@@ -595,6 +690,7 @@ void Con_SetVarFromStartup(const char * name) {
 
 // input handling
 
+// reserves the amount of space needed for keys, and sets all values to NULL
 void Con_AllocateKeys(int count) {
 	vec_reserve(&con->binds, count);
 	for (int i = 0; i < count; i++) {
@@ -602,6 +698,7 @@ void Con_AllocateKeys(int count) {
 	}
 }
 
+// returns string binding for key. doesn't return NULL ever, just an empty string
 const char *Con_GetBindForKey(int key) {
 	if (key < 0 || key > con->binds.length) {
 		return "";
@@ -610,6 +707,7 @@ const char *Con_GetBindForKey(int key) {
 	return con->binds.data[key] == NULL ? "" : con->binds.data[key];
 }
 
+// main input handler, all user input should go through here instead of calling other functions directly
 void Con_HandleKeyPress(int key, bool down, int64_t time) {
 	// look up the binding, process it if its a button press
 	if (key < 0 || key > con->binds.capacity) {
@@ -619,9 +717,11 @@ void Con_HandleKeyPress(int key, bool down, int64_t time) {
 
 	const char *action = con->binds.data[key];
 
+	// if nothing is bound, there's nothing else to do
 	if (action == NULL) {
 		return;
 	}
+	// +commands are handled specially. search to see if there is a button by this game, and mark it as held
 	else if (action[0] == '+') {
 		int buttonNum;
 		buttonState_t *button;
@@ -630,15 +730,15 @@ void Con_HandleKeyPress(int key, bool down, int64_t time) {
 		vec_foreach_ptr(&con->buttons, button, buttonNum) {
 			if (strcmp(button->name, &action[1]) == 0) {
 				if (down) {
-					// put this key's id in the keysheld id so we can track separate key presses
+					// put this key's id in the keysHeld array so we can track separate key presses
 					for (int i = 0; i < 8; i++) {
 						if (button->keysHeld[i] == 0) {
-							button->keysHeld[i] == key;
+							button->keysHeld[i] = key;
 							break;
 						}
 					}
 
-					// if this is the first press
+					// if this is the first press, mark it as held
 					if (button->held == false) {
 						button->timestamp = time;
 						button->wasPressed = true;
@@ -651,17 +751,17 @@ void Con_HandleKeyPress(int key, bool down, int64_t time) {
 					// look through the keys held for the key being let go
 					for (int i = 0; i < 8; i++) {
 						if (button->keysHeld[i] == key) {
-							button->keysHeld[i] == 0;
+							button->keysHeld[i] = 0;
+						}
 
-							// if another key is still holding this button down, dont clear the button state
-							if (button->keysHeld[i] != 0) {
-								anyKeyHeld = true;
-							}
-							break;
+						// if another key is still holding this button down, dont clear the button state
+						if (button->keysHeld[i] != 0) {
+							anyKeyHeld = true;
 						}
 					}
 
 					// no keys are holding this button down still, clear the button state
+					// don't unset wasPressed because user code can clear that at whatever frequency it wants
 					if (anyKeyHeld == false) {
 						button->held = false;
 						button->timestamp = false;
@@ -672,11 +772,13 @@ void Con_HandleKeyPress(int key, bool down, int64_t time) {
 			}
 		}
 	}
+	// if the command is bound, and not a + command, just run it on keydown
 	else if (down) {
 		Con_Execute(action);
 	}
 }
 
+// mostly wrapper for handler, only really used for bindlist
 const char * Con_GetStringForKey(int key) {
 	if (con->handlers.getStringForKey == NULL) {
 		Con_Error(ERR_FATAL, "Con_GetStringForKey: input system used without setting up handlers");
@@ -687,6 +789,7 @@ const char * Con_GetStringForKey(int key) {
 }
 
 
+// mostly wrapper for handler, used to parse bind commands and convert them to key numbers
 int Con_GetKeyForString(const char *key) {
 	if (con->handlers.getKeyForString == NULL) {
 		Con_Error(ERR_FATAL, "Con_GetKeyForString: input system used without setting up handlers");
@@ -696,11 +799,13 @@ int Con_GetKeyForString(const char *key) {
 	return con->handlers.getKeyForString(key);
 }
 
+// takes the key id and binds it to the passed in console script, value
 void Con_SetBind(int key, const char *value) {
 	if (key < 0 || key > con->binds.capacity) {
 		return;
 	}
 
+	// reuse the existing string if there's already a bind there, otherwise make a new one
 	if (con->binds.data[key] != NULL) {
 		sdsclear(con->binds.data[key]);
 	}
@@ -711,6 +816,7 @@ void Con_SetBind(int key, const char *value) {
 	con->binds.data[key] = sdscat(con->binds.data[key], value);
 }
 
+// removes a bind by freeing the string and resetting it to null so it can be properly detected as not bound
 void Con_RemoveBind(int key) {
 	if (key < 0 || key > con->binds.capacity) {
 		return;
@@ -722,7 +828,9 @@ void Con_RemoveBind(int key) {
 	}
 }
 
+// sets up button commands, which are commands prefixed with a +.
 void Con_AllocateButtons(const char **buttonNames, int buttonCount) {
+	// free the strings of the existing structures before clearing the array
 	if (con->buttons.length) {
 		int i;
 		buttonState_t button;
@@ -733,6 +841,7 @@ void Con_AllocateButtons(const char **buttonNames, int buttonCount) {
 
 	vec_clear(&con->buttons);
 
+	// remake the entries using the new string values
 	for (int i = 0; i < buttonCount; i++) {
 		buttonState_t newButton = { 0 };
 		newButton.name = sdsnew(buttonNames[i]);
@@ -740,6 +849,8 @@ void Con_AllocateButtons(const char **buttonNames, int buttonCount) {
 	}
 }
 
+// returns a pointer to a button. pointer should be stable as long as you don't call
+// Con_AllocateButtons a second time.
 buttonState_t *Con_GetButton(int buttonNum) {
 	if (buttonNum < 0 || buttonNum > con->buttons.length) {
 		return NULL;

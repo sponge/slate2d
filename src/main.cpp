@@ -271,7 +271,7 @@ void main_loop() {
 }
 
 int main(int argc, char *argv[]) {
-	// initialize console. construct imgui console, 
+	// initialize console. construct imgui console, setup handlers, and then initialize the actual console
 	IMConsole();
 	console.handlers.print = &ConH_Print;
 	console.handlers.getKeyForString = &Key_StringToKeynum;

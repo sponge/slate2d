@@ -447,6 +447,11 @@ conVar_t *Con_GetVarDefault(const char *name, const char *defaultValue, int flag
 		sdsclear(var->defaultValue);
 		var->defaultValue = sdscat(var->defaultValue, defaultValue);
 		var->flags &= ~CONVAR_USER;
+
+		// if it's ROM, overwrite the current value no matter what
+		if (flags & CONVAR_ROM) {
+			Con_SetVarForce(name, defaultValue);
+		}
 	}
 
 	return var;
@@ -485,6 +490,11 @@ conVar_t *Con_SetVar(const char *name, const char *value) {
 
 	if (var->flags & CONVAR_ROM) {
 		Con_Printf("can't set %s, is read only\n", var->name);
+		return var;
+	}
+
+	if (var->flags & CONVAR_STARTUP) {
+		Con_Printf("can't set %s, can only be set on command line\n", var->name);
 		return var;
 	}
 

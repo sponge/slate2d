@@ -271,6 +271,7 @@ void main_loop() {
 }
 
 int main(int argc, char *argv[]) {
+	// initialize console. construct imgui console, 
 	IMConsole();
 	console.handlers.print = &ConH_Print;
 	console.handlers.getKeyForString = &Key_StringToKeynum;
@@ -294,11 +295,15 @@ int main(int argc, char *argv[]) {
 		sdsfree(cmdline);
 	}
 
+	// we don't have a filesystem yet so we don't want to run the whole command line
+	// yet. pick out the convars that are important for FS initialization, and then later on
+	// we'll run the rest.
 	Con_SetVarFromStartup("fs_basepath");
 	Con_SetVarFromStartup("fs_basegame");
 	Con_SetVarFromStartup("fs_game");
 	FS_Init(argv[0]);
 
+	// add engine level commands here
 	Con_AddCommand("exec", Cmd_Exec_f);
 	Con_AddCommand("quit", Cmd_Quit_f);
 	Con_AddCommand("vid_restart", Cmd_Vid_Restart_f);
@@ -370,6 +375,8 @@ int main(int argc, char *argv[]) {
 	ImGui::StyleColorsDark();
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
 
+	// now that we've ran the user configs and initialized everything else, apply everything else on the
+	// command line here. this will set the rest of the variables and run any commands specified.
 	Con_ExecuteCommandLine();
 
 	consoleScene = new ConsoleScene();

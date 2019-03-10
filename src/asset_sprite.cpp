@@ -43,20 +43,20 @@ void* Sprite_Load(Asset &asset) {
 		SpriteAtlas *atlas = new SpriteAtlas();
 
 		// read the counts from the file (numSprites is a new field compared to standard crunch)
-		atlas->numTextures = ReadShort(&curr);
+		atlas->numImages = ReadShort(&curr);
 		atlas->numSprites = ReadShort(&curr);
 
-		atlas->textures = new Image[atlas->numTextures];
+		atlas->images = new Image[atlas->numImages];
 		atlas->sprites = new Sprite[atlas->numSprites];
 
 		// for each texture, read the texture path and number of sprites in that image
-		for (int tex = 0; tex < atlas->numTextures; tex++) {
+		for (int tex = 0; tex < atlas->numImages; tex++) {
 			const char *imgPath = ReadString(&curr);
 			int16_t texSprites = ReadShort(&curr);
 
 			// load the imgae into the GPU, copy it, and delete it
 			Image *img = (Image*)Img_LoadPath(imgPath);
-			atlas->textures[tex] = *img;
+			atlas->images[tex] = *img;
 			delete img;
 
 			Con_Printf("texture %s has %i images\n", imgPath, texSprites);
@@ -68,7 +68,7 @@ void* Sprite_Load(Asset &asset) {
 
 				// read all the sprite attributes
 				atlas->sprites[i] = {
-					&atlas->textures[tex],
+					&atlas->images[tex],
 					ReadShort(&curr),
 					ReadShort(&curr),
 					ReadShort(&curr),
@@ -86,6 +86,7 @@ void* Sprite_Load(Asset &asset) {
 
 		}
 
+		free(crunch);
 		asset.resource = (void*)atlas;
 	}
 	else {
@@ -99,21 +100,21 @@ void* Sprite_Load(Asset &asset) {
 		}
 
 		// sprites set with setSprite only ever have one texture
-		spr->textures = new Image[1];
-		spr->textures[0] = *img;
+		spr->images = new Image[1];
+		spr->images[0] = *img;
 
 		int rows = (img->h / (spr->staticHeight + spr->staticMarginY));
 		int cols = (img->w / (spr->staticWidth + spr->staticMarginX));
 
 		delete img;
 
-		spr->numTextures = 1;
+		spr->numImages = 1;
 		spr->numSprites = rows * cols;
 		spr->sprites = new Sprite[spr->numSprites];
 
 		// step through each square in the grid and generate the structure for it
 		for (int i = 0; i < spr->numSprites; i++) {
-			spr->sprites[i].texture = &spr->textures[0];
+			spr->sprites[i].texture = &spr->images[0];
 			spr->sprites[i].x = (int16_t)((i % cols) * spr->staticWidth);
 			spr->sprites[i].y = (int16_t)((i / cols) * spr->staticHeight);
 			spr->sprites[i].w = (int16_t)spr->staticWidth;
@@ -126,11 +127,16 @@ void* Sprite_Load(Asset &asset) {
 }
 
 void Sprite_Free(Asset &asset) {
-	// FIXME: free sprites
-	// Sprite *spr = (Sprite*)asset.resource;
-	// rlDeleteTextures(spr->image->hnd);
-	// free(spr->image);
-	// free(asset.resource);
+	SpriteAtlas *spr = (SpriteAtlas*)asset.resource;
+	delete spr->sprites;
+
+	for (int i = 0; i < spr->numImages; i++) {
+		rlDeleteTextures(spr->images[i].hnd);
+	}
+
+	delete spr->images;
+
+	free(asset.resource);
 }
 
 void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int marginY) {

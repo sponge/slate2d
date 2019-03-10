@@ -250,9 +250,9 @@ typedef struct {
 } Sprite;
 
 typedef struct {
-	int numTextures;
+	int numImages;
 	int numSprites;
-	Image *textures;
+	Image *images;
 	Sprite *sprites;
 
 	int staticWidth;

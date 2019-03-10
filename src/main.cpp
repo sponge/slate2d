@@ -151,7 +151,7 @@ void ConH_Error(int level, const char *message) {
 	}
 #else
 	if (level == ERR_FATAL) {
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Fatal Error", errorMessage, NULL);
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Fatal Error", message, NULL);
 	}
 #endif
 

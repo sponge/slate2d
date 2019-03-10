@@ -212,7 +212,7 @@ int crunch_main(int argc, const char* argv[])
     packers.clear();
     bitmaps.clear();
 
-    if (argc < 2)
+    if (argc < 3)
     {
         Con_Printf("invalid input, expected: \"crunch [INPUT DIRECTORY] [OUTPUT PREFIX] [OPTIONS...]\"\n");
         return EXIT_FAILURE;

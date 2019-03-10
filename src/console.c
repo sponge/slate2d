@@ -479,6 +479,10 @@ conVar_t *Con_SetVar(const char *name, const char *value) {
 		return Con_GetVarDefault(name, value, CONVAR_USER);
 	}
 
+	if (strcmp(var->string, value) == 0) {
+		return var;
+	}
+
 	if (var->flags & CONVAR_ROM) {
 		Con_Printf("can't set %s, is read only\n", var->name);
 		return var;
@@ -525,14 +529,28 @@ conVar_t *Con_ResetVar(const char *name) {
 	return Con_SetVar(name, var->defaultValue);
 }
 
-void Con_ParseCommandLine(const char *cmdline) {
-	con->sargv = sdssplitargs(cmdline, &con->sargc);
+void Con_SetupCommandLine(int argc, char *argv[]) {
+	con->sargc = argc;
+	con->sargv = argv;
 }
 
 void Con_ExecuteCommandLine() {
-	// FIXME: set everything and run commands
+	sds current = sdsempty();
+	for (int i = 1; i < con->sargc; i++) {
+		if (con->sargv[i][0] == '+') {
+			Con_Execute(current);
+			sdsclear(current);
+			current = sdscatprintf(current, "%s ", &con->sargv[i][1]);
+		}
+		else {
+			current = sdscatprintf(current, "%s ", con->sargv[i]);
+		}
 
-	sdsfreesplitres(con->sargv, con->sargc);
+	}
+
+	Con_Execute(current);
+	sdsfree(current);
+
 	con->sargc = 0;
 	con->sargv = NULL;
 }
@@ -545,18 +563,24 @@ void Con_SetVarFromStartup(const char * name) {
 	sds sname = sdsnew(name);
 	sdstolower(sname);
 
-	for (int i = 0; i < con->sargc; i++) {
+	sds currarg = sdsempty();
+
+	for (int i = 1; i < con->sargc; i++) {
 		if (strcmp(con->sargv[i], "+set") == 0) {
 			if (i + 2 < con->sargc) {
-				sdstolower(con->sargv[i + 1]);
-				if (sdscmp(con->sargv[i + 1], sname) == 0) {
+				sdsclear(currarg);
+				currarg = sdscat(currarg, con->sargv[i + 1]);
+				sdstolower(currarg);
+				if (sdscmp(currarg, sname) == 0) {
 					Con_GetVarDefault(name, con->sargv[i + 2], CONVAR_USER);
 					break;
 				}
 			}
 		}
 	}
+
 	sdsfree(sname);
+	sdsfree(currarg);
 }
 
 // input handling

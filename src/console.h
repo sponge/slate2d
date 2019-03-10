@@ -73,7 +73,7 @@ typedef struct conState {
 	// temp state
 	sds cmd; // full string of command currently running
 	sds tempArgs; // temp storage used for functions that return a string
-	sds *sargv; // used for commandling arg parsing
+	const char **sargv; // used for commandling arg parsing
 	int sargc; // used for commandling arg parsing
 	char error[1024]; // fixed sized buffer to avoid mem allocation
 } conState_t;
@@ -155,7 +155,7 @@ conVar_t * Con_ResetVar(const char * name);
 
 // pass in the command line from startup to temporarily store convars and other commands
 // so that they can be ran at a later time, after all initialization is complete.
-void Con_ParseCommandLine(const char *cmdline);
+void Con_SetupCommandLine(int argc, char *argv[]);
 
 // execute everything that was stored in the command line storage. see Con_ParseCommandLine.
 void Con_ExecuteCommandLine();

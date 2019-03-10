@@ -280,20 +280,8 @@ int main(int argc, char *argv[]) {
 	Con_Init(&console);
 	Con_AllocateKeys(MAX_KEYS);
 
-	// handle command line parsing. combine into one string and pass it in.
-	
-	if (argc > 1) {
-		sds cmdline = sdsempty();
-		for (int i = 1; i < argc; i++)
-		{
-			if (i > 1) {
-				cmdline = sdscat(cmdline, " ");
-			}
-			cmdline = sdscat(cmdline, argv[i]);
-		}
-		Con_ParseCommandLine(cmdline);
-		sdsfree(cmdline);
-	}
+	// setup console to pull cvars from command line
+	Con_SetupCommandLine(argc, argv);
 
 	// we don't have a filesystem yet so we don't want to run the whole command line
 	// yet. pick out the convars that are important for FS initialization, and then later on

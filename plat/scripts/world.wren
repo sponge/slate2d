@@ -218,11 +218,13 @@ class World {
     Draw.translate(-_cam.x, -_cam.y)
 
     for (i in 0..level.layers.count-1) {
+      Draw.setColor(255, 255, 255, 255)
       Draw.mapLayer(i)
     }
 
     for (ent in _entities) {
       if (ent.active) {
+        Draw.setColor(255, 255, 255, 255)
         ent.draw(_ticks)
       }
     }
@@ -233,6 +235,8 @@ class World {
 
     Draw.setColor(0, 0, 0, 255)
     Draw.rect(0, 0, _cam.w, 16, Fill.Solid)
+
+    Draw.setColor(255, 255, 255, 255)
 
     if (_player != null) {
       Draw.bmpText(_fixedFont, 4, 4, "S")
@@ -260,6 +264,8 @@ class World {
       }
 
       Draw.rect(0, 70, 320, 56, Fill.Solid)
+
+      Draw.setColor(255, 255, 255, 255)
 
       var str1 = ""
       var str2 = ""

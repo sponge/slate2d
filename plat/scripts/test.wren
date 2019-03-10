@@ -154,6 +154,8 @@ class Title {
     Draw.setColor(0, 255, 255, 255)
     Draw.tri(150, 180, 170, 170, 180, 180, Fill.Solid)
 
+    Draw.setColor(255, 255, 255, 255)
+
     Draw.image(_dog, 120, 120)
 
     Draw.bmpText(_font, 32, 50, "Good Dog!", 3.0)

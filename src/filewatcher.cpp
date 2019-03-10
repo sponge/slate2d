@@ -1,22 +1,29 @@
 #include <SDL/SDL.h>
 #include <physfs.h>
-#include "console/console.h"
 #include "consoleng/console.h"
 #include "main.h"
 
-#define MAX_CHECK_FILES 1024
-static char sourceFiles[MAX_CHECK_FILES][MAX_QPATH];
-static PHYSFS_sint64 sourceTime[MAX_CHECK_FILES];
-static int filesCount = 0;
+typedef struct {
+	sds name;
+	PHYSFS_sint64 lastModified;
+} fileWatcherInfo_t;
+
+typedef vec_t(fileWatcherInfo_t) fileInfo_vec_t;
+
+
+static fileInfo_vec_t sourceFiles;
 static bool fileChanged = false;
 static SDL_Thread *thread;
 
 static int FileWatcher_Thread(void *ptr) {
 	NOTUSED(ptr);
+	int i;
+	fileWatcherInfo_t *file;
+
 	while (true) {
-		for (int i = 0; i < filesCount; i++) {
-			auto mtime = PHYSFS_getLastModTime(sourceFiles[i]);
-			if (mtime > sourceTime[i]) {
+		vec_foreach_ptr(&sourceFiles, file, i) {
+			auto mtime = PHYSFS_getLastModTime(file->name);
+			if (mtime > file->lastModified) {
 				fileChanged = true;
 				return 0;
 			}
@@ -27,11 +34,6 @@ static int FileWatcher_Thread(void *ptr) {
 }
 
 void FileWatcher_TrackFile(const char *path) {
-	if (filesCount >= MAX_CHECK_FILES) {
-		Con_Printf("can't track anymore files!\n");
-		return;
-	}
-
 	PHYSFS_Stat stat;
 	int err = PHYSFS_stat(path, &stat);
 
@@ -40,16 +42,19 @@ void FileWatcher_TrackFile(const char *path) {
 		return;
 	}
 
-	for (int i = 0; i < filesCount; i++) {
-		if (strcmp(sourceFiles[i], path) == 0) {
+	int i;
+	fileWatcherInfo_t *file;
+	vec_foreach_ptr(&sourceFiles, file, i) {
+		if (strcmp(file->name, path) == 0) {
 			return;
 		}
 	}
 
-	strncpy(sourceFiles[filesCount], path, MAX_QPATH);
+	fileWatcherInfo_t newFile;
+	newFile.name = sdsnew(path);
+	newFile.lastModified = stat.modtime;
+	vec_push(&sourceFiles, newFile);
 
-	sourceTime[filesCount] = stat.modtime;
-	filesCount++;
 	Con_Printf("now tracking file for changes: %s\n", path);
 }
 
@@ -105,19 +110,23 @@ void Cmd_TrackPath_f() {
 }
 
 void Cmd_ClearFiles_f() {
-	for (int i = 0; i < MAX_CHECK_FILES; i++) {
-		sourceFiles[i][0] = '\0';
-		sourceTime[i] = 0;
+	int i;
+	fileWatcherInfo_t *file;
+	vec_foreach_ptr(&sourceFiles, file, i) {
+		sdsfree(file->name);
 	}
 
-	filesCount = 0;
+	vec_clear(&sourceFiles);
+
 	Con_Printf("cleared all file modification trackers\n");
 }
 
 void FileWatcher_StartThread() {
 	fileChanged = false;
-	for (int i = 0; i < filesCount; i++) {
-		sourceTime[i] = PHYSFS_getLastModTime(sourceFiles[i]);
+	int i;
+	fileWatcherInfo_t *file;
+	vec_foreach_ptr(&sourceFiles, file, i) {
+		file->lastModified = PHYSFS_getLastModTime(file->name);
 	}
 
 	thread = SDL_CreateThread(&FileWatcher_Thread, "filewatcher", nullptr);

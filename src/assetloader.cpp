@@ -1,5 +1,5 @@
 #include "assetloader.h"
-#include "console/console.h"
+#include "console.h"
 
 #define MAX_ASSETS 256
 Asset assets[MAX_ASSETS];

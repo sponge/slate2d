@@ -1,5 +1,5 @@
 #pragma once
-#include "console/console.h"
+#include "console.h"
 
 extern conVar_t *fs_basepath;
 extern conVar_t *fs_basegame;

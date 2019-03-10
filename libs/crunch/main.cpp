@@ -71,7 +71,7 @@
 #include "hash.hpp"
 #include "str.hpp"
 
-#include "console/console.h"
+#include "console.h"
 #include "files.h"
 
 using namespace std;

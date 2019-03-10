@@ -31,7 +31,7 @@
 #include <iostream>
 #include <algorithm>
 
-#include "console/console.h"
+#include "console.h"
 #include <cctype>
 
 using namespace std;

@@ -4,8 +4,6 @@
 #include <imgui.h>
 #include <ctype.h>
 
-#include "../consoleng/console.h"
-
 // IMGUI CONSOLE
 
 struct ConsoleUI

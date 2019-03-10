@@ -1,7 +1,7 @@
 #pragma once
 // types that are shared across the dll and engine
 #include <stdint.h>
-#include "../src/consoleng/console.h"
+#include "../src/console.h"
 
 #ifdef _MSC_VER 
 #define STRFUNCS

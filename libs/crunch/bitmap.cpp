@@ -30,7 +30,7 @@
 #include "lodepng.h"
 #include <algorithm>
 #include "hash.hpp"
-#include "console/console.h"
+#include "console.h"
 
 using namespace std;
 

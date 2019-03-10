@@ -1,6 +1,6 @@
 #include <SDL/SDL.h>
 #include <physfs.h>
-#include "consoleng/console.h"
+#include "console.h"
 #include "main.h"
 
 typedef struct {

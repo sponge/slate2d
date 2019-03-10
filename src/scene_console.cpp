@@ -1,8 +1,9 @@
 #include "scene_console.h"
+#include "imgui_console.h"
 #include <imgui.h>
 #include "imgui_impl_sdl.h"
 #include "cvar_main.h"
-#include "console/console.h"
+#include "console.h"
 
 void ConsoleScene::Startup(ClientInfo* info) {
 	inf = info;

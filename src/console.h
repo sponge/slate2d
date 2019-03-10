@@ -5,9 +5,9 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
-#include "../external/sds.h"
-#include "../external/vec.h"
-#include "../external/map.h"
+#include "external/sds.h"
+#include "external/vec.h"
+#include "external/map.h"
 
 #define CONVAR_ROM 1<<0  // value can never be changed and only set by code
 #define CONVAR_STARTUP 1<<1 // value can only be set during startup

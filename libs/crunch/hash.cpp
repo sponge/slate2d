@@ -32,7 +32,7 @@
 #include <physfs.h>
 #include "str.hpp"
 
-#include "console/console.h"
+#include "console.h"
 
 template <class T>
 void HashCombine(std::size_t& hash, const T& v)

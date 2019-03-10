@@ -1,4 +1,4 @@
-#include "console/console.h"
+#include "console.h"
 #include <crunch.h>
 
 void Cmd_Crunch_f() {

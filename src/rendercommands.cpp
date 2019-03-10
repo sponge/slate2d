@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "rendercommands.h"
 #include <tmx.h>
 #include "assetloader.h"
@@ -5,7 +6,7 @@
 #include "main.h"
 #include "input.h"
 
-#include "console/console.h"
+#include "console.h"
 
 extern ClientInfo inf;
 Canvas * activeCanvas = nullptr;

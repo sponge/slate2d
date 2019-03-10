@@ -4,7 +4,8 @@
 #include <stdlib.h>
 
 #include "console.h"
-#include "../../game/public.h"
+#include "imgui_console.h"
+#include "../game/public.h"
 
 #define CONSOLE_MAX_LINES 4000
 

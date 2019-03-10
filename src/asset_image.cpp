@@ -1,7 +1,7 @@
 #include "rlgl.h"
 #include "assetloader.h"
 #include "files.h"
-#include "console/console.h"
+#include "console.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 

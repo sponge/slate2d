@@ -1,6 +1,6 @@
 #include "assetloader.h"
 #include "external/rlgl.h"
-#include "console/console.h"
+#include "console.h"
 
 void * Canvas_Load(Asset & asset) {
 	// canvases need to be setup before load.

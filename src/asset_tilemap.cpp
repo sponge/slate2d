@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "assetloader.h"
 #include "files.h"
 #include <tmx.h>

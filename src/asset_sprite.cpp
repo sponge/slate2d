@@ -1,7 +1,7 @@
 #include "rlgl.h"
 #include "assetloader.h"
 #include "files.h"
-#include "console/console.h"
+#include "console.h"
 #include <physfs.h>
 
 byte ReadByte(byte **curr) {

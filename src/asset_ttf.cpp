@@ -1,7 +1,8 @@
+#include <assert.h>
 #include <fontstash.h>
 #include "assetloader.h"
 #include "files.h"
-#include "console/console.h"
+#include "console.h"
 #include "external/fontstash.h"
 #include "external/gl3corefontstash.h"
 #include "rendercommands.h"

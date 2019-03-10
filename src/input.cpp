@@ -1,7 +1,7 @@
 #include <SDL/SDL.h>
-
-
-#include "console/console.h"
+#include <imgui.h>
+#include <ctype.h>
+#include "console.h"
 #include "input.h"
 #include "main.h"
 #include <cmath>

@@ -35,6 +35,7 @@ extern "C" {
 #include "gamedll.h"
 
 #include "scene_console.h"
+#include "imgui_console.h"
 
 #include "../game/public.h"
 
@@ -45,7 +46,7 @@ extern "C" {
 #include "crunch_frontend.h"
 
 extern "C" {
-#include "consoleng/console.h"
+#include "console.h"
 }
 
 conState_t console;

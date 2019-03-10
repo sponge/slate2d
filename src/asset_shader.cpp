@@ -1,6 +1,6 @@
 #include "assetloader.h"
 #include "external/rlgl.h"
-#include "console/console.h"
+#include "console.h"
 #include "files.h"
 
 void * Shader_Load(Asset & asset) {

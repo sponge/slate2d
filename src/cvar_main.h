@@ -1,5 +1,5 @@
 #pragma once
-#include "console/console.h"
+#include "console.h"
 
 void RegisterMainCvars( void );
 

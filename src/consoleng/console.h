@@ -30,15 +30,27 @@ typedef struct conVar {
     bool boolean; // boolean value
 } conVar_t;
 
+typedef struct buttonState {
+	sds name; // name of the bind controlling this button
+	bool held; // if the key is being held down at all
+	int	keysHeld[8]; // which keys are holding this button down
+	int64_t timestamp; // timestamp button was first held down
+	bool wasPressed;	// set when down, can be manually cleared by user
+} buttonState_t;
+
 typedef void(*conCmd_t) ();
 
 typedef map_t(conVar_t) conVar_map_t;
 typedef map_t(conCmd_t) conCmd_map_t;
+typedef vec_t(sds) sds_vec_t;
+typedef vec_t(buttonState_t) buttonState_vec_t;
 
 typedef struct conHandlers {
 	void(*error)(int level, const char *message);
 	void(*print)(const char *message);
 	bool(*unhandledCommand)();
+	const char *(*getStringForKey)(int key);
+	int(*getKeyForString)(const char *key);
 } conHandlers_t;
 
 typedef struct conState {
@@ -46,6 +58,8 @@ typedef struct conState {
 	sds *argv;
     conVar_map_t vars;
     conCmd_map_t cmds;
+	sds_vec_t binds;
+	buttonState_vec_t buttons;
 	conHandlers_t handlers; 
 
 	// internal state
@@ -132,6 +146,24 @@ void Con_ParseCommandLine(const char *cmdline);
 void Con_ExecuteCommandLine();
 
 void Con_SetVarFromStartup(const char * name);
+
+void Con_AllocateKeys(int count);
+
+const char *Con_GetBindForKey(int key);
+
+void Con_HandleKeyPress(int key, bool down, int64_t time);
+
+const char * Con_GetStringForKey(int key);
+
+int Con_GetKeyForString(const char *key);
+
+void Con_SetBind(int key, const char *value);
+
+void Con_RemoveBind(int key);
+
+void Con_AllocateButtons(const char ** buttonNames, int buttonCount);
+
+buttonState_t * Con_GetButton(int buttonNum);
 
 #ifdef __cplusplus
 } // end extern

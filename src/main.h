@@ -10,7 +10,6 @@
 extern bool consoleActive;
 
 extern int64_t com_frameTime, frame_musec;
-extern kbutton_t buttons[12];
 
 void DropToMenu();
 void SetWindowTitle(const char *title);

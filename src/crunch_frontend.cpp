@@ -2,12 +2,9 @@
 #include <crunch.h>
 
 void Cmd_Crunch_f() {
-    const char *args[MAX_STRING_TOKENS];
-    int argc = Con_GetArgsCount();
-    for (int i = 0; i < argc; i++) {
-        args[i] = Con_GetArg(i);
-    }
-    crunch_main(argc, args);
+	extern conState_t console;
+
+    crunch_main(console.argc, (const char **)console.argv);
 }
 
 void Crunch_Init() {

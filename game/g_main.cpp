@@ -8,8 +8,7 @@
 
 ClientInfo *clientInf;
 gameImportFuncs_t *trap;
-kbutton_t buttons[MAX_KEYS];
-const char *buttoncmds[MAX_KEYS] = { "p1up", "p1down", "p1left", "p1right", "p1a", "p1b", "p1x", "p1y", "p1l", "p1r", "p1start", "p1select" };
+const char *buttoncmds[MAX_BUTTONS] = { "p1up", "p1down", "p1left", "p1right", "p1a", "p1b", "p1x", "p1y", "p1l", "p1r", "p1start", "p1select" };
 Scene *scene;
 
 #ifdef __EMSCRIPTEN__
@@ -62,6 +61,8 @@ static void Init(void *clientInfo, void *imGuiContext) {
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
+	trap->IN_AllocateButtons(buttoncmds, MAX_BUTTONS);
+
 	auto newScene = new WrenScene("scripts/main.wren", nullptr);
 	if (scene) { delete scene; }
 	scene = newScene;
@@ -71,25 +72,6 @@ static void Init(void *clientInfo, void *imGuiContext) {
 static bool Console() {
 	const char *cmd = trap->Con_GetArg(0);
 	const char *line = trap->Con_GetArgs(0);
-	// if it's a + or - command, look to see if its a known key
-	// and signal to the engine that it's been pressed.
-	// we do this here so the game dll can customize the buttons used
-	if (cmd[0] == '+' || cmd[0] == '-') {
-		for (int i = 0; i < MAX_KEYS; i++) {
-			if (strcasecmp(cmd+1, buttoncmds[i]) == 0) {
-				if (cmd[0] == '+') {
-					trap->IN_KeyDown(&buttons[i]);
-				}
-				else {
-					trap->IN_KeyUp(&buttons[i]);
-				}
-
-				return true;
-			}
-		}
-
-		return false;
-	}
 
 	// search for known commands (this could be an array but we don't have
 	// enough to make it worth it.)

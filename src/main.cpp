@@ -197,59 +197,14 @@ void main_loop() {
 		case SDL_QUIT:
 			loop = false;
 			return;
-
-		case SDL_KEYUP:
-			KeyEvent(ev.key.keysym.scancode, false, com_frameTime);
-			break;
-
 		case SDL_KEYDOWN:
 			if (ev.key.keysym.sym == SDLK_BACKQUOTE) {
 				consoleScene->consoleActive = !consoleScene->consoleActive;
 				ImGui::SetWindowFocus(nullptr);
 				break;
 			}
-			if (io.WantCaptureKeyboard) {
-				break;
-			}
-			KeyEvent(ev.key.keysym.scancode, true, com_frameTime);
-			break;
-
-		case SDL_CONTROLLERDEVICEADDED: {
-			if (ev.cdevice.which > MAX_CONTROLLERS) {
-				break;
-			}
-
-			SDL_GameController *controller = SDL_GameControllerOpen(ev.cdevice.which);
-			Con_Printf("Using controller at device index %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
-			break;
-		}
-
-		case SDL_CONTROLLERDEVICEREMOVED: {
-			SDL_GameController* controller = SDL_GameControllerFromInstanceID(ev.cdevice.which);
-			Con_Printf("Closing controller instance %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
-			SDL_GameControllerClose(controller);
-			break;
-		}
-
-		case SDL_MOUSEBUTTONUP:
-			MouseEvent(ev.button.button, false, com_frameTime);
-			break;
-
-		case SDL_MOUSEBUTTONDOWN:
-			if (io.WantCaptureKeyboard || io.WantCaptureMouse) {
-				break;
-			}
-			MouseEvent(ev.button.button, true, com_frameTime);
-			break;
-
-
-		case SDL_CONTROLLERBUTTONDOWN:
-			JoyEvent(ev.jbutton.which, ev.jbutton.button, true, com_frameTime);
-			break;
-
-		case SDL_CONTROLLERBUTTONUP:
-			JoyEvent(ev.jbutton.which, ev.jbutton.button, false, com_frameTime);
-			break;
+		default:
+			ProcessInputEvent(ev);
 		}
 	}
 	
@@ -317,8 +272,11 @@ void main_loop() {
 int main(int argc, char *argv[]) {
 	IMConsole();
 	console.handlers.print = &ConH_Print;
+	console.handlers.getKeyForString = &Key_StringToKeynum;
+	console.handlers.getStringForKey = &Key_KeynumToString;
 
 	Con_Init(&console);
+	Con_AllocateKeys(MAX_KEYS);
 
 	// handle command line parsing. combine into one string and pass it in.
 	
@@ -347,7 +305,6 @@ int main(int argc, char *argv[]) {
 	Con_AddCommand("frame_advance", Cmd_FrameAdvance_f);
 
 	RegisterMainCvars();
-	CL_InitKeyCommands();
 	FileWatcher_Init();
 	Crunch_Init();
 

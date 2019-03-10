@@ -9,5 +9,4 @@
 #endif
 
 void Com_DefaultExtension(char *path, int maxSize, const char *extension);
-#define MAX_KEYS 12
-extern kbutton_t buttons[MAX_KEYS];
+#define MAX_BUTTONS 12

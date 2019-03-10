@@ -133,24 +133,11 @@ void wren_trap_snd_pause_resume(WrenVM *vm) {
 void wren_trap_in_keypressed(WrenVM *vm) {
 	CHECK_ARGS(3, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
 
-	int key = (int)wrenGetSlotDouble(vm, 1);
+	int button = (int)wrenGetSlotDouble(vm, 1);
 	int delay = (int)wrenGetSlotDouble(vm, 2);
 	int repeat = (int)wrenGetSlotDouble(vm, 3);
 
-	if (key < 0 || key >= MAX_KEYS) {
-		wrenSetSlotBool(vm, 0, false);
-		return;
-	}
-
-	// HACK: because i'm sometimes skipping update() to run at 60, key inputs may be delayed a frame. calling
-	// this after we run an update frame lets me continue to know if the button was pressed on this frame
-	// even if an update frame was skipped 
-	if (repeat == -1) {
-		wrenSetSlotBool(vm, 0, buttons[key].wasPressed);
-		return;
-	}
-
-	wrenSetSlotBool(vm, 0, trap->IN_KeyPressed(&buttons[key], delay, repeat));
+	wrenSetSlotBool(vm, 0, trap->IN_ButtonPressed(button, delay, repeat));
 }
 
 void wren_trap_mouse_position(WrenVM *vm) {
@@ -210,8 +197,9 @@ void wren_trap_get_platform(WrenVM *vm) {
 // even if an input was skipped 
 void wren_clear_key_pressed(WrenVM *vm) {
 	NOTUSED(vm);
-	for (int i = 0; i < MAX_KEYS; i++) {
-		buttons[i].wasPressed = false;
+	for (int i = 0; i < MAX_BUTTONS; i++) {
+		buttonState_t *button = trap->IN_GetButton(i);
+		button->wasPressed = false;
 	}
 }
 

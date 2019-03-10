@@ -1,13 +1,8 @@
 #pragma once
 #include <stdio.h>
 #include <stdlib.h> 
-#include <string.h>
 #include <imgui.h>
 #include <ctype.h>
-#include "../../game/shared.h"
-
-#include <SDL/SDL_scancode.h>
-#include <SDL/SDL_gamecontroller.h>
 
 #include "../consoleng/console.h"
 
@@ -38,30 +33,3 @@ struct ConsoleUI
 };
 
 ConsoleUI* IMConsole();
-
-// COMMAND SYSTEM
-
-#define	MAX_STRING_TOKENS	256
-#define MAX_QPATH 1024
-
-#define NUM_MOUSE_BUTTONS 5
-#define MOUSE_BUTTON_LEFT 0
-#define MOUSE_BUTTON_RIGHT 1
-#define MOUSE_BUTTON_MIDDLE 2
-#define MOUSE_BUTTON_X1 3
-#define MOUSE_BUTTON_X2 4
-
-// BIND SYSTEM
-
-typedef struct {
-    bool		down;
-    int			repeats;		// if > 1, it is autorepeating
-    char		*binding;
-} qkey_t;
-
-#define MAX_CONTROLLERS 4
-extern qkey_t		keys[SDL_NUM_SCANCODES + NUM_MOUSE_BUTTONS + (SDL_CONTROLLER_BUTTON_MAX * MAX_CONTROLLERS)];
-
-void CL_InitKeyCommands(void);
-int Key_StringToKeynum(const char *str);
-const char *Key_KeynumToString(int keynum);

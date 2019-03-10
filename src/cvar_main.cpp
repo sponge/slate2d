@@ -1,5 +1,12 @@
 #include "cvar_main.h"
 
+typedef struct {
+	conVar_t   		**cvar;
+	const char		*cvarName;
+	const char		*defaultString;
+	int	     		cvarFlags;
+} conVarTable_t;
+
 conVar_t *com_errorMessage;
 conVar_t *com_lastErrorStack;
 conVar_t *vid_width;

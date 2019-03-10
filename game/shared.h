@@ -19,23 +19,6 @@ typedef unsigned char byte;
 #define ERR_FATAL 2
 #endif
 
-// CVARS
-
-typedef struct {
-	conVar_t   		**cvar;
-	const char		*cvarName;
-	const char		*defaultString;
-	int	     		cvarFlags;
-} conVarTable_t;
-
-typedef struct {
-	int			down[2];		// key nums holding it down
-	int64_t		downtime;		// musec timestamp
-	int64_t		musec;			// musec down this frame if both a down and up happened
-	bool		active;			// current state
-	bool		wasPressed;		// set when down, not cleared when up
-} kbutton_t;
-
 typedef struct {
 	int width, height;
 } ClientInfo;

@@ -93,7 +93,7 @@ void Cmd_Toggle_f() {
 		return;
 	}
 
-	Con_SetVarFloat(varName, var->integer > 0 ? 0 : 1);
+	Con_SetVarFloat(varName, var->integer > 0.0f ? 0.0f : 1.0f);
 }
 
 void Cmd_ListCmds_f() {
@@ -122,11 +122,60 @@ void Cmd_ListCmds_f() {
 	}
 }
 
+void Cmd_Bind_f(void) {
+	if (Con_GetArgsCount() < 2) {
+		Con_Printf("bind <key> <command> - bind a console string to a key\n");
+		return;
+	}
+
+	const char *keyStr = Con_GetArg(1);
+	int keyNum = Con_GetKeyForString(keyStr);
+
+	if (keyNum == -1) {
+		Con_Printf("\"%s\" isn't a valid key\n", keyStr);
+		return;
+	}
+
+	if (Con_GetArgsCount() == 2) {
+		const char *bind = Con_GetBindForKey(keyNum);
+		if (bind == NULL) {
+			Con_Printf("\"%s\" is not bound\n", keyStr);
+		}
+		else {
+			Con_Printf("\"%s\" = \"%s\"\n", keyStr, bind);
+		}
+
+		return;
+	}
+	else {
+		Con_SetBind(keyNum, Con_GetArgs(2));
+	}
+}
+
+void Cmd_Unbind_f(void) {
+	if (Con_GetArgsCount() != 2) {
+		Con_Printf("unbind <key> - remove command from key\n");
+		return;
+	}
+
+	const char *keyStr = Con_GetArg(1);
+	int keyNum = Con_GetKeyForString(keyStr);
+
+	if (keyNum == -1) {
+		Con_Printf("\"%s\" isn't a valid key\n", keyStr);
+		return;
+	}
+
+	Con_RemoveBind(keyNum);
+}
+
 // Main Console
 
 void Con_Init(conState_t *newCon) {
     map_init(&newCon->vars);
 	map_init(&newCon->cmds);
+	vec_init(&newCon->binds);
+	vec_init(&newCon->buttons);
 
 	Con_SetActive(newCon);
 
@@ -137,6 +186,11 @@ void Con_Init(conState_t *newCon) {
 	Con_AddCommand("toggle", Cmd_Toggle_f);
 	Con_AddCommand("reset", Cmd_Reset_f);
 	Con_AddCommand("vstr", Cmd_Vstr_f);
+
+	Con_AddCommand("bind", Cmd_Bind_f);
+	Con_AddCommand("unbind", Cmd_Unbind_f);
+	//Con_AddCommand("unbindall", Cmd_Unbindall_f);
+	//Con_AddCommand("bindlist", Cmd_Bindlist_f);
 }
 
 void Con_SetActive(conState_t *newCon) {
@@ -485,4 +539,159 @@ void Con_SetVarFromStartup(const char * name) {
 		}
 	}
 	sdsfree(sname);
+}
+
+// input handling
+
+void Con_AllocateKeys(int count) {
+	vec_reserve(&con->binds, count);
+	for (int i = 0; i < count; i++) {
+		vec_push(&con->binds, NULL);
+	}
+}
+
+const char *Con_GetBindForKey(int key) {
+	if (key < 0 || key > con->binds.length) {
+		return "";
+	}
+
+	return con->binds.data[key] == NULL ? "" : con->binds.data[key];
+}
+
+void Con_HandleKeyPress(int key, bool down, int64_t time) {
+	// look up the binding, process it if its a button press
+	if (key < 0 || key > con->binds.capacity) {
+		Con_Printf("Con_HandleKeyPress: key %i out of range for vec length %i", key, con->binds.length);
+		return;
+	}
+
+	const char *action = con->binds.data[key];
+
+	if (action == NULL) {
+		return;
+	}
+	else if (action[0] == '+') {
+		int buttonNum;
+		buttonState_t *button;
+
+		// go through each button to see if the name of the button matches the bind
+		vec_foreach_ptr(&con->buttons, button, buttonNum) {
+			if (strcmp(button->name, &action[1]) == 0) {
+				if (down) {
+					// put this key's id in the keysheld id so we can track separate key presses
+					for (int i = 0; i < 8; i++) {
+						if (button->keysHeld[i] == 0) {
+							button->keysHeld[i] == key;
+							break;
+						}
+					}
+
+					// if this is the first press
+					if (button->held == false) {
+						button->timestamp = time;
+						button->wasPressed = true;
+						button->held = true;
+					}
+				}
+				else {
+					bool anyKeyHeld = false;
+
+					// look through the keys held for the key being let go
+					for (int i = 0; i < 8; i++) {
+						if (button->keysHeld[i] == key) {
+							button->keysHeld[i] == 0;
+
+							// if another key is still holding this button down, dont clear the button state
+							if (button->keysHeld[i] != 0) {
+								anyKeyHeld = true;
+							}
+							break;
+						}
+					}
+
+					// no keys are holding this button down still, clear the button state
+					if (anyKeyHeld == false) {
+						button->held = false;
+						button->timestamp = false;
+					}
+				}
+
+				break;
+			}
+		}
+	}
+	else if (down) {
+		Con_Execute(action);
+	}
+}
+
+const char * Con_GetStringForKey(int key) {
+	if (con->handlers.getStringForKey == NULL) {
+		Con_Error(ERR_FATAL, "Con_GetStringForKey: input system used without setting up handlers");
+		return NULL;
+	}
+
+	return con->handlers.getStringForKey(key);
+}
+
+
+int Con_GetKeyForString(const char *key) {
+	if (con->handlers.getKeyForString == NULL) {
+		Con_Error(ERR_FATAL, "Con_GetKeyForString: input system used without setting up handlers");
+		return -1;
+	}
+
+	return con->handlers.getKeyForString(key);
+}
+
+void Con_SetBind(int key, const char *value) {
+	if (key < 0 || key > con->binds.capacity) {
+		return;
+	}
+
+	if (con->binds.data[key] != NULL) {
+		sdsclear(con->binds.data[key]);
+	}
+	else {
+		con->binds.data[key] = sdsempty();
+	}
+
+	con->binds.data[key] = sdscat(con->binds.data[key], value);
+}
+
+void Con_RemoveBind(int key) {
+	if (key < 0 || key > con->binds.capacity) {
+		return;
+	}
+
+	if (con->binds.data[key] != NULL) {
+		sdsfree(con->binds.data[key]);
+		con->binds.data[key] = NULL;
+	}
+}
+
+void Con_AllocateButtons(const char **buttonNames, int buttonCount) {
+	if (con->buttons.length) {
+		int i;
+		buttonState_t button;
+		vec_foreach(&con->buttons, button, i) {
+			sdsfree(button.name);
+		}
+	}
+
+	vec_clear(&con->buttons);
+
+	for (int i = 0; i < buttonCount; i++) {
+		buttonState_t newButton = { 0 };
+		newButton.name = sdsnew(buttonNames[i]);
+		vec_push(&con->buttons, newButton);
+	}
+}
+
+buttonState_t *Con_GetButton(int buttonNum) {
+	if (buttonNum < 0 || buttonNum > con->buttons.length) {
+		return NULL;
+	}
+
+	return &con->buttons.data[buttonNum];
 }

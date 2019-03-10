@@ -1,12 +1,13 @@
 #pragma once
+#include <SDL/SDL_events.h>
 #include "../game/shared.h"
 
-bool KeyEvent(int key, bool down, int64_t time);
-bool MouseEvent(int button, bool down, int64_t time);
-bool JoyEvent(int controller, int button, bool down, int64_t time);
-const char *IN_BindForKey(int key);
-void IN_KeyDown(kbutton_t *b);
-void IN_KeyUp(kbutton_t *b);
-float IN_KeyState(kbutton_t *key);
-bool IN_KeyPressed(kbutton_t *key, unsigned int delay, int repeat);
+#define NUM_MOUSE_BUTTONS SDL_BUTTON_X2
+#define MAX_CONTROLLERS 4
+#define MAX_KEYS (SDL_NUM_SCANCODES + NUM_MOUSE_BUTTONS + (SDL_CONTROLLER_BUTTON_MAX * MAX_CONTROLLERS))
+
+void ProcessInputEvent(SDL_Event ev);
+bool IN_ButtonPressed(int buttonId, unsigned int delay, int repeat);
 MousePosition IN_MousePosition();
+int Key_StringToKeynum(const char *str);
+const char *Key_KeynumToString(int keynum);

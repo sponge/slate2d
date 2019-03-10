@@ -169,6 +169,24 @@ void Cmd_Unbind_f(void) {
 	Con_RemoveBind(keyNum);
 }
 
+void Cmd_UnbindAll_f(void) {
+	sds bind;
+	int keyNum;
+	vec_foreach(&con->binds, bind, keyNum) {
+		Con_RemoveBind(keyNum);
+	}
+}
+
+void Cmd_BindList_f(void) {
+	sds bind;
+	int keyNum;
+	vec_foreach(&con->binds, bind, keyNum) {
+		if (bind != NULL) {
+			Con_Printf("%s: %s\n", Con_GetStringForKey(keyNum), bind);
+		}
+	}
+}
+
 // Main Console
 
 void Con_Init(conState_t *newCon) {
@@ -189,8 +207,8 @@ void Con_Init(conState_t *newCon) {
 
 	Con_AddCommand("bind", Cmd_Bind_f);
 	Con_AddCommand("unbind", Cmd_Unbind_f);
-	//Con_AddCommand("unbindall", Cmd_Unbindall_f);
-	//Con_AddCommand("bindlist", Cmd_Bindlist_f);
+	Con_AddCommand("unbindall", Cmd_UnbindAll_f);
+	Con_AddCommand("bindlist", Cmd_BindList_f);
 }
 
 void Con_SetActive(conState_t *newCon) {

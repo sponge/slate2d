@@ -41,6 +41,7 @@ void ConsoleUI::AddLog(const char* fmt, ...) {
 	ScrollToBottom = true;
 
 	if (Items.size() > CONSOLE_MAX_LINES) {
+		free(Items[0]);
 		Items.erase(Items.begin());
 	}
 }

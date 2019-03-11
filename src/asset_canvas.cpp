@@ -42,6 +42,7 @@ void Canvas_Set(AssetHandle id, int width, int height) {
 
 void Canvas_Free(Asset & asset) {
 	Canvas* canvas = reinterpret_cast<Canvas*>(asset.resource);
+	rlDeleteRenderTextures(canvas->texture);
 	delete(canvas);
 }
 

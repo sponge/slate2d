@@ -133,6 +133,10 @@ void Cmd_Exec_f() {
 	free(buffer);
 }
 
+void Cmd_Clear_f() {
+	IMConsole()->ClearLog();
+}
+
 void DropToMenu() {
 	errorVisible = true;
 	gexports->Error(ERR_GAME, com_errorMessage->string);
@@ -298,6 +302,7 @@ int main(int argc, char *argv[]) {
 	Con_AddCommand("vid_restart", Cmd_Vid_Restart_f);
 	Con_AddCommand("toggleconsole", Cmd_ToggleConsole_f);
 	Con_AddCommand("frame_advance", Cmd_FrameAdvance_f);
+	Con_AddCommand("clear", Cmd_Clear_f);
 
 	RegisterMainCvars();
 	FileWatcher_Init();

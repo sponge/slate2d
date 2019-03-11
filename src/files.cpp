@@ -55,6 +55,11 @@ void FS_AddPaksFromList(char **list, const char *basePath, const char *gamePath)
 	}
 }
 
+static void printSearchPath(void *data, const char *pathItem)
+{
+	Con_Printf("%s\n", pathItem);
+}
+
 void FS_Init(const char *argv0) {
 	int err = PHYSFS_init(argv0);
 
@@ -98,9 +103,7 @@ void FS_Init(const char *argv0) {
 
 	// print all the files we've found in order of priority
 	Con_Printf("Current filesystem search path:\n");
-	for (char **foundPath = PHYSFS_getSearchPath(); *foundPath != NULL; foundPath++) {
-		Con_Printf("%s\n", *foundPath);
-	}
+	PHYSFS_getSearchPathCallback(printSearchPath, NULL);
 	Con_Printf("\n");
 
 	// add command handler for dir to view virtual filesystem

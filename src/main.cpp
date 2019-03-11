@@ -44,6 +44,7 @@ extern "C" {
 
 #include "filewatcher.h"
 #include "crunch_frontend.h"
+#include "assetloader.h"
 
 extern "C" {
 #include "console.h"
@@ -396,6 +397,8 @@ int main(int argc, char *argv[]) {
 	}
 #endif
 
+	Con_Shutdown();
+	Asset_ClearAll();
 	ImGui_ImplSdl_Shutdown();
 	ImGui::DestroyContext();
 	SDL_GL_DeleteContext(context);

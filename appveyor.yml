@@ -1,0 +1,21 @@
+version: '{build}'
+image: Visual Studio 2017
+configuration: Release
+platform: x64
+install:
+- ps: >-
+    Start-FileDownload 'https://github.com/premake/premake-core/releases/download/v5.0.0-alpha13/premake-5.0.0-alpha13-windows.zip' 'premake.zip'
+
+    Start-FileDownload 'https://github.com/electron/rcedit/releases/download/v1.1.1/rcedit-x64.exe'
+
+    7z x premake.zip
+
+    .\premake5.exe vs2017
+build:
+  project: build/slate2d.sln
+  verbosity: minimal
+after_build:
+- cmd: package.bat plat
+artifacts:
+- path: build\package\plat.zip
+  name: Slate2D

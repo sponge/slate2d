@@ -51,7 +51,7 @@
 #include <GL/glew.h>
 #include <SDL/SDL_syswm.h>
 #else
-#include <OpenGL/gl3.h>
+#include <GL/glew.h>
 #endif
 
 // SDL data

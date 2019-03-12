@@ -162,7 +162,7 @@ void Bitmap::SaveAs(const string& file)
     unsigned int ph = static_cast<unsigned int>(height);
     if (lodepng_encode32_file(file.data(), pdata, pw, ph))
     {
-		Con_Printf("failed to save png: %s\n", file);
+		Con_Printf("failed to save png: %s\n", file.c_str());
         exit(EXIT_FAILURE);
     }
 }

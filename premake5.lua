@@ -12,7 +12,7 @@ newoption {
   default = "plat"
 }
 
-solution "game"
+solution "Slate2D"
   configurations { "Debug", "Release" }
   location "build"
   warnings "Extra"
@@ -25,6 +25,10 @@ solution "game"
     defines { "MACOS" }
     platforms { "x64" }
     buildoptions {"-Wno-unused-parameter"}
+
+  filter { "system:linux" }
+    platforms { "x64" }
+    toolset "clang"
   
   filter { "configurations:Debug" }
     defines { "DEBUG" }
@@ -97,6 +101,9 @@ solution "game"
       links { "game" }
       -- build the html bundle, overlay the default game folder on top of base
       postbuildcommands { "mkdir html; emcc -O2 --preload-file ../base --preload-file ../" .. _OPTIONS["default-game"] .. " -s ALLOW_MEMORY_GROWTH=1 -s USE_SDL=2 %{cfg.targetdir}/engine.bc -o html/index.html --shell-file ../src/emshell.html" }
+      
+    filter { "system:linux" }
+      links { "SDL2", "dl", "pthread", "GL" }
 
   -- game is a dll, except under emscripten
   project "game"
@@ -119,10 +126,11 @@ solution "game"
       targetdir "build/%{cfg.buildcfg}"
       defines "WREN_NAN_TAGGING=0"
       disablewarnings { "unknown-pragmas" }
+
     -- disable warnings for wren code since it's external
     filter { "files:game/wren/* or files:game/wreninspector.cpp" }
       disablewarnings { 4100, 4200, 4996, 4244, 4204, 4702, 4709 }
-
+     
   group "libraries"
 
     project "tmx"
@@ -133,15 +141,15 @@ solution "game"
       cppdialect "C++14"
       warnings "Off"
 
-      filter { "system:macosx or system:linux" }
-        buildoptions {"-stdlib=libc++"}
-
     project "imgui"
       language "C++"
       kind "StaticLib"
       files { "libs/imgui/**.cpp", "libs/imgui/**.h" }
       targetdir "build/%{cfg.buildcfg}"
       warnings "Off"
+      
+      filter { "system:linux" }
+        pic "On"
 
     project "physfs"
       language "C"
@@ -196,7 +204,6 @@ solution "game"
       kind "StaticLib"
       includedirs { "libs/crunch", "src/" }
       sysincludedirs { "libs/physfs", "libs/imgui", "libs/sdl" }
-      links { "physfs" }
       files { "libs/crunch/**.cpp", "libs/crunch/**.h", "libs/crunch/**.hpp" }
       targetdir "build/%{cfg.buildcfg}"
       warnings "Off"

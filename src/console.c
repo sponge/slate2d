@@ -31,6 +31,10 @@ void Cmd_Set_f() {
 	Con_SetVar(name, value);
 }
 
+int sortStrings(const void *a, const void *b) {
+	return strcmp(*(char* const*)a, *(char* const*)b);
+}
+
 // command handler for listvars, to list all variables currently registered
 void Cmd_ListVars_f() {
 	map_iter_t iter = map_iter(&con->vars);
@@ -41,6 +45,10 @@ void Cmd_ListVars_f() {
 	// any parameter to listvars is used as a simple substring match
 	const char *search = Con_GetArgsCount() > 1 ? Con_GetArg(1) : NULL;
 
+	// alloc a list so we can sort the output
+	vec_str_t sortedKeys;
+	vec_init(&sortedKeys);
+
 	while ((key = map_next(&con->vars, &iter))) {
 		count++;
 
@@ -49,8 +57,16 @@ void Cmd_ListVars_f() {
 			continue;
 		}
 
-		Con_Printf("%s\n", key);
+		conVar_t *el = map_get(&con->vars, key);
+		vec_push(&sortedKeys, el->name);
 		filteredCount++;
+	}
+
+	vec_sort(&sortedKeys, sortStrings);
+
+	int keyNum;
+	vec_foreach(&sortedKeys, key, keyNum) {
+		Con_Printf("%s\n", key);
 	}
 
 	if (search != NULL) {
@@ -59,6 +75,8 @@ void Cmd_ListVars_f() {
 	else {
 		Con_Printf("total %i vars\n", count);
 	}
+
+	vec_deinit(&sortedKeys);
 }
 
 // command handler for vstr, to run the string contents of a convar as a command
@@ -115,6 +133,10 @@ void Cmd_ListCmds_f() {
 	// any parameter to listvars is used as a simple substring match
 	const char *search = Con_GetArgsCount() > 1 ? Con_GetArg(1) : NULL;
 
+	// alloc a list so we can sort the output
+	vec_str_t sortedKeys;
+	vec_init(&sortedKeys);
+
 	while ((key = map_next(&con->cmds, &iter))) {
 		count++;
 
@@ -123,8 +145,15 @@ void Cmd_ListCmds_f() {
 			continue;
 		}
 
-		Con_Printf("%s\n", key);
+		vec_push(&sortedKeys, key);
 		filteredCount++;
+	}
+
+	vec_sort(&sortedKeys, sortStrings);
+
+	int keyNum;
+	vec_foreach(&sortedKeys, key, keyNum) {
+		Con_Printf("%s\n", key);
 	}
 
 	if (search != NULL) {
@@ -133,6 +162,8 @@ void Cmd_ListCmds_f() {
 	else {
 		Con_Printf("total %i commands\n", count);
 	}
+
+	vec_deinit(&sortedKeys);
 }
 
 // command handler for bind, to set or show a console string to run when a key is pressed
@@ -194,8 +225,8 @@ void Cmd_UnbindAll_f(void) {
 	}
 }
 
-// command handler for bindlist, prints all keys that have commands bound to them
-void Cmd_BindList_f(void) {
+// command handler for listbinds, prints all keys that have commands bound to them
+void Cmd_ListBinds_f(void) {
 	sds bind;
 	int keyNum;
 	vec_foreach(&con->binds, bind, keyNum) {
@@ -231,7 +262,7 @@ void Con_Init(conState_t *newCon) {
 	Con_AddCommand("bind", Cmd_Bind_f);
 	Con_AddCommand("unbind", Cmd_Unbind_f);
 	Con_AddCommand("unbindall", Cmd_UnbindAll_f);
-	Con_AddCommand("bindlist", Cmd_BindList_f);
+	Con_AddCommand("listbinds", Cmd_ListBinds_f);
 }
 
 // free up all memory

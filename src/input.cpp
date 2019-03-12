@@ -336,7 +336,7 @@ const char *Key_KeynumToString(int keynum) {
 		return "<KEY NOT FOUND>";
 	}
 
-	if (keynum < 0 || keynum >= SDL_NUM_SCANCODES) {
+	if (keynum < 0 || keynum >= MAX_KEYS) {
 		return "<OUT OF RANGE>";
 	}
 

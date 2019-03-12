@@ -236,9 +236,31 @@ void Con_Init(conState_t *newCon) {
 
 // free up all memory
 void Con_Shutdown() {
+	const char *key;
+	map_iter_t iter = map_iter(&con->vars);
+
+	while ((key = map_next(&con->vars, &iter))) {
+		conVar_t *var = map_get(&con->vars, key);
+		sdsfree(var->name);
+		sdsfree(var->defaultValue);
+		sdsfree(var->string);
+	}
 	map_deinit(&con->vars);
+
 	map_deinit(&con->cmds);
+
+	int i;
+	sds bind;
+	vec_foreach(&con->binds, bind, i) {
+		sdsfree(bind);
+	}
 	vec_deinit(&con->binds);
+
+	i = 0;
+	buttonState_t *button;
+	vec_foreach_ptr(&con->buttons, button, i) {
+		sdsfree(button->name);
+	}
 	vec_deinit(&con->buttons);
 }
 
@@ -247,6 +269,12 @@ void Con_Shutdown() {
 // they can just call any Con_ function without having to be passed the conState_t
 void Con_SetActive(conState_t *newCon) {
 	con = newCon;
+}
+
+// returns the active pointer, in case you want to mess with the conState directly for some
+// reason
+conState_t *Con_GetActive() {
+	return con;
 }
 
 // raise an error. if no error handler is specified, just print it and exit.

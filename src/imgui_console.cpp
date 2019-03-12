@@ -145,16 +145,25 @@ int ConsoleUI::TextEditCallback(ImGuiTextEditCallbackData* data)
 			break;
 		}
 
-		// Build a list of candidates
-		auto cb = [](const char *match, const char *cmd) {
-			if (strncasecmp(match, cmd, strlen(match)) == 0) {
-				IMConsole()->candidates.push_back(cmd);
-			}
-		};
-
 		candidates.clear();
-		//Cmd_CommandCompletion(cb, word_start); // FIXME: reimplement autocomplete
-		//Cvar_CommandCompletion(cb, word_start); // FIXME: reimplement autocomplete
+
+		conState_t *con = Con_GetActive();
+
+		map_iter_t iter = map_iter(&con->cmds);
+		const char *key;
+		while ((key = map_next(&con->cmds, &iter))) {
+			if (strncasecmp(word_start, key, strlen(word_start)) == 0) {
+				IMConsole()->candidates.push_back(key);
+			}
+		}
+
+		iter = map_iter(&con->vars);
+		key = nullptr;
+		while ((key = map_next(&con->vars, &iter))) {
+			if (strncasecmp(word_start, key, strlen(word_start)) == 0) {
+				IMConsole()->candidates.push_back(key);
+			}
+		}
 
 		if (candidates.Size == 0)
 		{

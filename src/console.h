@@ -103,6 +103,10 @@ void Con_Shutdown();
 // a function will probably be fine!
 void Con_SetActive(conState_t *newCon);
 
+// gets a pointer to the active console, in case you want the direct conState_t for any reason, typically
+// to iterate through the structures
+conState_t * Con_GetActive();
+
 // throws an error, see ERR_ constants. should be handled by error function in conState_t.handlers
 void Con_Error(int level, const char * fmt, ...);
 

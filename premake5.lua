@@ -15,7 +15,6 @@ newoption {
 solution "Slate2D"
   configurations { "Debug", "Release" }
   location "build"
-  warnings "Extra"
   symbols "On"
   systemversion "latest"
   targetdir "build/out/%{cfg.architecture}_%{cfg.buildcfg}"
@@ -59,6 +58,10 @@ solution "Slate2D"
     -- rlgl and raymath have some warnings, suppress them here
     filter { "files:src/glinit.c"}
       disablewarnings { 4204, 4100, 4267 }
+
+    -- disable warnings for sds
+    filter { "files:src/external/sds.c"}
+      warnings "Off"
 
     -- compile all .c files in c mode so we don't get name mangling
     filter { "files:**.c"}
@@ -130,6 +133,10 @@ solution "Slate2D"
     -- disable warnings for wren code since it's external
     filter { "files:game/wren/* or files:game/wreninspector.cpp" }
       disablewarnings { 4100, 4200, 4996, 4244, 4204, 4702, 4709 }
+
+    -- disable warnings for sds
+    filter { "files:../src/external/sds.c"}
+      warnings "Off"
      
   group "libraries"
 

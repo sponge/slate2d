@@ -57,7 +57,7 @@ void Cmd_ListVars_f() {
 			continue;
 		}
 
-		vec_push(&sortedKeys, key);
+		vec_push(&sortedKeys, (char*)key);
 		filteredCount++;
 	}
 
@@ -145,7 +145,7 @@ void Cmd_ListCmds_f() {
 			continue;
 		}
 
-		vec_push(&sortedKeys, key);
+		vec_push(&sortedKeys, (char*)key);
 		filteredCount++;
 	}
 

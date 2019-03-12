@@ -44,6 +44,7 @@ typedef char *sds;
 
 #ifdef _MSC_VER
 #define PACK(decl) __pragma(pack(push, 1)) decl __pragma(pack(pop))
+#pragma warning( push , 1 )
 
 #if defined(_WIN64)
 typedef __int64 ssize_t;
@@ -284,6 +285,10 @@ void sds_free(void *ptr);
 
 #ifdef REDIS_TEST
 int sdsTest(int argc, char *argv[]);
+#endif
+
+#ifdef _MSC_VER
+#pragma warning( pop )
 #endif
 
 #endif

@@ -1,6 +1,8 @@
 # Slate2D
 If you don't already know what this is, this is probably not for you!
 
+[![Build status](https://ci.appveyor.com/api/projects/status/lq4xx4et7hv8oar0?svg=true)](https://ci.appveyor.com/project/sponge/slate2d)
+
 Slate2D is my toy 2D engine. It is small, but not minimal. It has an API modelled after fantasy consoles, but without any designed
 restrictions in place. Slate2D is programmer-centric; you'll want to be familiar with C/C++, and have the ability to build and debug
 the engine yourself. Slate2D gives you the *blank slate* (get it??) to let you code.

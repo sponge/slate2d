@@ -59,7 +59,7 @@ void ProcessInputEvent(SDL_Event ev) {
 			break;
 		}
 
-		Con_HandleKeyPress(ev.button.button, true, com_frameTime);
+		Con_HandleKeyPress(SDL_NUM_SCANCODES + ev.button.button, true, com_frameTime);
 		break;
 
 	case SDL_CONTROLLERBUTTONDOWN:

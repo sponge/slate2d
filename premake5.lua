@@ -16,7 +16,10 @@ solution "Slate2D"
   configurations { "Debug", "Release" }
   location "build"
   warnings "Extra"
+  symbols "On"
   systemversion "latest"
+  targetdir "build/out/%{cfg.architecture}_%{cfg.buildcfg}"
+  objdir "build/out/obj"
 
   filter { "system:windows" }
     platforms { "x86", "x64" }
@@ -24,7 +27,6 @@ solution "Slate2D"
   filter { "system:macosx" }
     defines { "MACOS" }
     platforms { "x64" }
-    buildoptions {"-Wno-unused-parameter"}
 
   filter { "system:linux" }
     platforms { "x64" }
@@ -32,16 +34,15 @@ solution "Slate2D"
   
   filter { "configurations:Debug" }
     defines { "DEBUG" }
-    symbols "On"
     optimize "Off"
 
   filter { "configurations:Release" }
-    defines { "NDEBUG" }
-    symbols "Off"
+    defines { "RELEASE" }
     optimize "Full"
 
   project "engine"
     kind "ConsoleApp"
+    targetname "slate2d"
     language "C++"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
     -- only used in emscripten build
@@ -49,7 +50,7 @@ solution "Slate2D"
     sysincludedirs { "src/external", "libs/sdl", "libs/tmx", "libs/imgui", "libs/physfs", "libs/glew", "libs/soloud/include", "libs/crunch" }
     -- physfs uses the exe path by default, but the game data files are in the top folder
     debugargs { "+set", "fs_basepath", path.getabsolute(".")}
-    targetdir "build/bin/%{cfg.buildcfg}"
+    targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
     links { "tmx", "imgui", "physfs", "glew", "soloud", "crunch" }
     cppdialect "C++14"
     -- define so engine and emscripten packaging are always in sync on the same base game folder 
@@ -72,21 +73,21 @@ solution "Slate2D"
       links { "SDL2", "SDL2main", "opengl32" }
       defines { "_CRT_SECURE_NO_WARNINGS" }
 
-      filter { "platforms:x86", "system:windows" }
-        libdirs { "libs/sdl/lib/Win32" }
-        -- need to copy x86 sdl runtime to output
-        postbuildcommands {
-          '{COPY} "%{wks.location}../libs/sdl/lib/win32/SDL2.dll" "%{cfg.targetdir} ',
-          '{COPY} "%{wks.location}../libs/openmpt/win32/*.dll" "%{cfg.targetdir}" '
-        }
+    filter { "platforms:x86", "system:windows" }
+      libdirs { "libs/sdl/lib/Win32" }
+      -- need to copy x86 sdl runtime to output
+      postbuildcommands {
+        '{COPY} "%{wks.location}../libs/sdl/lib/Win32/SDL2.dll" "%{cfg.targetdir}" ',
+        '{COPY} "%{wks.location}../libs/openmpt/Win32/*.dll" "%{cfg.targetdir}" '
+      }
 
-      filter { "platforms:x64", "system:windows" }
-        libdirs { "libs/sdl/lib/x64" }
-        -- need to copy x64 sdl runtime to output
-        postbuildcommands {
-          '{COPY} "%{wks.location}../libs/sdl/lib/x64/SDL2.dll" "%{cfg.targetdir}" ',
-          '{COPY} "%{wks.location}../libs/openmpt/x64/*.dll" "%{cfg.targetdir}" '
-        }
+    filter { "platforms:x64", "system:windows" }
+      libdirs { "libs/sdl/lib/x64" }
+      -- need to copy x64 sdl runtime to output
+      postbuildcommands {
+        '{COPY} "%{wks.location}../libs/sdl/lib/x64/SDL2.dll" "%{cfg.targetdir}" ',
+        '{COPY} "%{wks.location}../libs/openmpt/x64/*.dll" "%{cfg.targetdir}" '
+      }
 
     -- use system installed SDL2 framework on mac
     filter { "system:macosx" }
@@ -111,7 +112,7 @@ solution "Slate2D"
     language "C++"
     files { "game/**.c", "game/**.cpp", "game/**.h", "game/**.hh" }
     sysincludedirs { "libs/tmx", "libs/imgui" }
-    targetdir "build/bin/%{cfg.buildcfg}"
+    targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
     cppdialect "C++14"
     links { "tmx", "imgui" }
 
@@ -123,7 +124,6 @@ solution "Slate2D"
     -- incompat there
     filter { "action:gmake2", "options:emscripten" }
       kind "StaticLib"
-      targetdir "build/%{cfg.buildcfg}"
       defines "WREN_NAN_TAGGING=0"
       disablewarnings { "unknown-pragmas" }
 
@@ -137,7 +137,6 @@ solution "Slate2D"
       language "C++"
       kind "StaticLib"
       files { "libs/tmx/**.c", "libs/tmx/**.h", "libs/tmx/**.cpp" }
-      targetdir "build/%{cfg.buildcfg}"
       cppdialect "C++14"
       warnings "Off"
 
@@ -145,7 +144,6 @@ solution "Slate2D"
       language "C++"
       kind "StaticLib"
       files { "libs/imgui/**.cpp", "libs/imgui/**.h" }
-      targetdir "build/%{cfg.buildcfg}"
       warnings "Off"
       
       filter { "system:linux" }
@@ -156,7 +154,6 @@ solution "Slate2D"
       kind "StaticLib"
       defines { "PHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_7Z" }
       files { "libs/physfs/**.c", "libs/physfs/**.h" }
-      targetdir "build/%{cfg.buildcfg}"
       warnings "Off"
 
       filter { "system:macosx" }
@@ -168,13 +165,11 @@ solution "Slate2D"
       defines { "GLEW_STATIC" }
       includedirs { "libs/glew" }
       files { "libs/glew/**.c", "libs/glew/**.h" }
-      targetdir "build/%{cfg.buildcfg}"
       warnings "Off"
 
     project "soloud"
       language "C++"
       kind "StaticLib"
-      targetdir "build/%{cfg.buildcfg}"
       targetname "soloud_static"
       warnings "Off"
       sysincludedirs { "libs/sdl" }
@@ -197,5 +192,4 @@ solution "Slate2D"
       includedirs { "libs/crunch", "src/" }
       sysincludedirs { "libs/physfs", "libs/imgui", "libs/sdl" }
       files { "libs/crunch/**.cpp", "libs/crunch/**.h", "libs/crunch/**.hpp" }
-      targetdir "build/%{cfg.buildcfg}"
       warnings "Off"

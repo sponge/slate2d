@@ -190,14 +190,6 @@ solution "Slate2D"
         "libs/soloud/include",
         "libs/sdl/SDL" 
       }
-      
-      filter { "system:windows" }
-        libdirs { "libs/sdl/lib/Win32" }
-        links { "SDL2" }
-
-      filter { "system:macosx" }
-        links { "SDL2.framework" }
-        linkoptions {"-F /Library/Frameworks"}
 
     project "crunch"
       language "C++"

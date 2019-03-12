@@ -57,8 +57,7 @@ void Cmd_ListVars_f() {
 			continue;
 		}
 
-		conVar_t *el = map_get(&con->vars, key);
-		vec_push(&sortedKeys, el->name);
+		vec_push(&sortedKeys, key);
 		filteredCount++;
 	}
 
@@ -66,7 +65,8 @@ void Cmd_ListVars_f() {
 
 	int keyNum;
 	vec_foreach(&sortedKeys, key, keyNum) {
-		Con_Printf("%s\n", key);
+		conVar_t *el = Con_GetVar(key);
+		Con_Printf("%s \"%s\"\n", el->name, el->string);
 	}
 
 	if (search != NULL) {

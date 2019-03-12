@@ -369,6 +369,16 @@ int main(int argc, char *argv[]) {
 	ImGui::StyleColorsDark();
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
 
+	ImGuiIO &io = ImGui::GetIO();
+#ifdef RELEASE
+	io.IniFilename = NULL;
+#endif
+
+	// not working in emscripten for some reason? assert on ImGuiKey_Space not being mapped
+#ifndef __EMSCRIPTEN__	
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+#endif
+
 	// now that we've ran the user configs and initialized everything else, apply everything else on the
 	// command line here. this will set the rest of the variables and run any commands specified.
 	Con_ExecuteCommandLine();
@@ -387,12 +397,6 @@ int main(int argc, char *argv[]) {
 	Sys_LoadDll(lib, (void **)(&gexports));
 	gexports->Init((void*)&inf, (void*)ImGui::GetCurrentContext());
 	console.handlers.unhandledCommand = gexports->Console;
-
-// not working in emscripten for some reason? assert on ImGuiKey_Space not being mapped
-#ifndef __EMSCRIPTEN__	
-	ImGuiIO &io = ImGui::GetIO();
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-#endif
 
 #ifdef __EMSCRIPTEN__
 	emscripten_set_main_loop(main_loop, 0, 1);

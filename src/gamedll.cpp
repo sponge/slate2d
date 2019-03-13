@@ -68,7 +68,11 @@ void Sys_LoadDll(const char * module, void ** exports) {
 	}
 
 	if (gameDLL == nullptr) {
-		gameDLL = SDL_LoadObject(module);
+		gameDLL = SDL_LoadObject(tempstr("./%s", module));
+	}
+
+	if (gameDLL == nullptr) {
+		Con_Error(ERR_FATAL, "Couldn't load module %s", module);
 	}
 
 	void(*gameDllEntry)(void ** exports, const void * imports) = (void(*)(void **, const void *)) SDL_LoadFunction(gameDLL, "dllEntry");

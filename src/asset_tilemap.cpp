@@ -46,13 +46,17 @@ void * TileMap_Load(Asset &asset) {
 
 	if (map == nullptr) {
 		Con_Error(ERR_GAME, "Failed to load tmx");
+		free((void*)xml);
 		return nullptr;
 	}
 
 	if (map->orient != O_ORT) {
 		Con_Error(ERR_GAME, "Non orthagonal tiles not supported");
+		free((void*)xml);
 		return nullptr;
 	}
+
+	free((void*)xml);
 
 	return (void*) map;
 }

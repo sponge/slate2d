@@ -36,6 +36,7 @@ void* Img_LoadPath(const char *path) {
 	img->hnd = tex;
 
 	free(buffer);
+	stbi_image_free(loaded);
 
 	return (void*)img;
 }

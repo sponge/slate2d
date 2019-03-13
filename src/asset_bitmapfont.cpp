@@ -35,6 +35,7 @@ void* BMPFNT_Load(Asset &asset) {
 	}
 
 	if (ch != 4) {
+		stbi_image_free(img);
 		Con_Error(ERR_FATAL, "Bitmap font %s does not have 4 components", asset.path);
 		return nullptr;
 	}
@@ -91,6 +92,7 @@ end:
 	font->h = h;
 
 	free(buffer);
+	stbi_image_free(img);
 
 	return (void*)asset.resource;
 }

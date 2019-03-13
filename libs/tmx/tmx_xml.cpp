@@ -949,6 +949,8 @@ extern "C" tmx_map* parse_xml_buffer(tmx_tileset_manager *ts_mgr, const char *bu
 	}
 
 	tmx_map *res = parse_root_map(doc, ts_mgr, NULL);
+	delete doc;
+
 	return res;
 }
 

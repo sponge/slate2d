@@ -29,14 +29,13 @@ static conVarTable_t mainCvarTable[] = {
 	{ &vid_maxfps, "vid.maxfps", "120", 0 },
 	{ &eng_pause, "engine.pause", "0", 0 },
 	{ &snd_volume, "snd.volume", "1.0", 0 },
+	{ NULL }
 };
 
-static int mainCvarTableSize = sizeof( mainCvarTable ) / sizeof( mainCvarTable[0] );
-
 void RegisterMainCvars( void ) {
-    conVarTable_t *cv;
-    int i;
-	for ( i = 0, cv = mainCvarTable ; i < mainCvarTableSize ; i++, cv++ ) {
+    conVarTable_t *cv = &mainCvarTable[0];
+	while (cv->cvar != NULL) {
         *cv->cvar = Con_GetVarDefault(cv->cvarName, cv->defaultString, cv->cvarFlags);
+		cv++;
     }
 }

@@ -84,8 +84,8 @@ void SetWindowTitle(const char *title) {
 }
 
 void Cmd_FrameAdvance_f(void) {
-	if (!com_pause->integer) {
-		Con_SetVar("com_pause", "1");
+	if (!eng_pause->integer) {
+		Con_SetVar("engine.pause", "1");
 	}
 	else {
 		frameAdvance = true;
@@ -139,7 +139,7 @@ void Cmd_Clear_f() {
 
 void DropToMenu() {
 	errorVisible = true;
-	gexports->Error(ERR_GAME, com_errorMessage->string);
+	gexports->Error(ERR_GAME, eng_errorMessage->string);
 }
 
 void ConH_Print(const char *line) {
@@ -164,7 +164,7 @@ void ConH_Error(int level, const char *message) {
 		exit(1);
 	}
 	else {
-		Con_SetVar("com_errorMessage", message);
+		Con_SetVar("engine.errorMessage", message);
 		DropToMenu();
 	}
 }
@@ -187,9 +187,9 @@ void main_loop() {
 	frame_musec = now - com_frameTime;
 	com_frameTime = now;
 
-	if (s_volume->modified) {
-		soloud.setGlobalVolume(s_volume->value);
-		s_volume->modified = false;
+	if (snd_volume->modified) {
+		soloud.setGlobalVolume(snd_volume->value);
+		snd_volume->modified = false;
 	}
 
 	FileWatcher_Tick();
@@ -218,19 +218,19 @@ void main_loop() {
 
 	ImGui_ImplSdl_NewFrame(window);
 
-	if (errorVisible && com_errorMessage->string[0] == '\0') {
+	if (errorVisible && eng_errorMessage->string[0] == '\0') {
 		errorVisible = 0;
 	}
 	else if (errorVisible) {
 		ImGui::SetNextWindowPosCenter();
 		ImGui::Begin("Error", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
-		ImGui::Text("%s", com_errorMessage->string);
-		ImGui::Text("%s", com_lastErrorStack->string);
+		ImGui::Text("%s", eng_errorMessage->string);
+		ImGui::Text("%s", eng_lastErrorStack->string);
 		ImGui::NewLine();
 		if (ImGui::Button("Close")) {
 			errorVisible = false;
-			Con_SetVar("com_errorMessage", nullptr);
-			Con_SetVar("com_lastErrorStack", nullptr);
+			Con_SetVar("engine.errorMessage", nullptr);
+			Con_SetVar("engine.lastErrorStack", nullptr);
 		}
 		ImGui::End();
 	}
@@ -244,10 +244,10 @@ void main_loop() {
 	rlMatrixMode(RL_MODELVIEW);                             // Enable internal modelview matrix
 	rlLoadIdentity();                                       // Reset internal modelview matrix
 
-	gexports->Frame(!com_pause->integer || frameAdvance ? frame_musec / 1E6 : 0);
+	gexports->Frame(!eng_pause->integer || frameAdvance ? frame_musec / 1E6 : 0);
 	consoleScene->Update(frame_musec / 1E6);
 
-	if (!com_pause->integer || frameAdvance) {
+	if (!eng_pause->integer || frameAdvance) {
 		frameAdvance = false;
 	}
 
@@ -291,9 +291,9 @@ int main(int argc, char *argv[]) {
 	// we don't have a filesystem yet so we don't want to run the whole command line
 	// yet. pick out the convars that are important for FS initialization, and then later on
 	// we'll run the rest.
-	Con_SetVarFromStartup("fs_basepath");
-	Con_SetVarFromStartup("fs_basegame");
-	Con_SetVarFromStartup("fs_game");
+	Con_SetVarFromStartup("fs.basepath");
+	Con_SetVarFromStartup("fs.basegame");
+	Con_SetVarFromStartup("fs.game");
 	FS_Init(argv[0]);
 
 	// add engine level commands here

@@ -7,28 +7,28 @@ typedef struct {
 	int	     		cvarFlags;
 } conVarTable_t;
 
-conVar_t *com_errorMessage;
-conVar_t *com_lastErrorStack;
+conVar_t *eng_errorMessage;
+conVar_t *eng_lastErrorStack;
 conVar_t *vid_width;
 conVar_t *vid_height;
 conVar_t *vid_swapinterval;
 conVar_t *vid_fullscreen;
 conVar_t *vid_showfps;
 conVar_t *vid_maxfps;
-conVar_t *com_pause;
-conVar_t *s_volume;
+conVar_t *eng_pause;
+conVar_t *snd_volume;
 
 static conVarTable_t mainCvarTable[] = {
-    { &com_errorMessage, "com_errorMessage", "", 0 },
-	{ &com_lastErrorStack, "com_lastErrorStack", "", 0 },
-    { &vid_width, "vid_width", "1280", 0 },
-    { &vid_height, "vid_height", "720", 0 },
-    { &vid_swapinterval, "vid_swapInterval", "1", 0 },
-    { &vid_fullscreen, "vid_fullscreen", "0", 0 },
-    { &vid_showfps, "vid_showfps", "0", 0 },
-	{ &vid_maxfps, "vid_maxfps", "120", 0 },
-	{ &com_pause, "com_pause", "0", 0 },
-	{ &s_volume, "s_volume", "1.0", 0 },
+    { &eng_errorMessage, "engine.errorMessage", "", 0 },
+	{ &eng_lastErrorStack, "engine.lastErrorStack", "", 0 },
+    { &vid_width, "vid.width", "1280", 0 },
+    { &vid_height, "vid.height", "720", 0 },
+    { &vid_swapinterval, "vid.swapInterval", "1", 0 },
+    { &vid_fullscreen, "vid.fullscreen", "0", 0 },
+    { &vid_showfps, "vid.showfps", "0", 0 },
+	{ &vid_maxfps, "vid.maxfps", "120", 0 },
+	{ &eng_pause, "engine.pause", "0", 0 },
+	{ &snd_volume, "snd.volume", "1.0", 0 },
 };
 
 static int mainCvarTableSize = sizeof( mainCvarTable ) / sizeof( mainCvarTable[0] );

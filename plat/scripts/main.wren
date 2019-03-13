@@ -19,7 +19,7 @@ class Main {
     SoundController.init()
     __accumTime = 0
 
-    __inspector = CVar.get("wren_inspector", 0)
+    __inspector = CVar.get("wren.inspector", 0)
 
     if (mapName == null) {
       loadScene("title", null)

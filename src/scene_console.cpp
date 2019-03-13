@@ -17,7 +17,7 @@ void ConsoleScene::Update(double) {
 }
 
 void ConsoleScene::Render() {
-	if (vid_showfps->integer || com_pause->integer) {
+	if (vid_showfps->integer || eng_pause->integer) {
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10, 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
 		ImGui::SetNextWindowPos(ImVec2((float)inf->width - 80, 0.0f));
@@ -27,7 +27,7 @@ void ConsoleScene::Render() {
 			ImGui::Text("%.0f FPS\n%.3f ms", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
 		}
 
-		if (com_pause->integer) {
+		if (eng_pause->integer) {
 			ImGui::TextColored({ 255, 255, 0, 255 }, "Paused");
 		}
 		ImGui::End();

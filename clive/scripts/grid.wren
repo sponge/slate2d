@@ -22,7 +22,7 @@ class Grid {
 
     _font = Asset.create(Asset.Font, "body", Fonts.body)
 
-    _showPathsCVar = CVar.get("debug_pathfinding", false)
+    _showPathsCVar = CVar.get("debug.pathfinding", false)
     _tiles = List.filled(_w*_h, 0)
     _paths = List.filled(_w*_h, 0)
     _towers = []

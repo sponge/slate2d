@@ -48,7 +48,7 @@ solution "Slate2D"
     removefiles { "src/imgui_impl_sdl_es2.cpp" }
     sysincludedirs { "src/external", "libs/sdl", "libs/tmx", "libs/imgui", "libs/physfs", "libs/glew", "libs/soloud/include", "libs/crunch" }
     -- physfs uses the exe path by default, but the game data files are in the top folder
-    debugargs { "+set", "fs_basepath", path.getabsolute(".")}
+    debugargs { "+set", "fs.basepath", path.getabsolute(".")}
     targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
     links { "tmx", "imgui", "physfs", "glew", "soloud", "crunch" }
     cppdialect "C++14"

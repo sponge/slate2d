@@ -9,9 +9,8 @@ import "sprites/gfx" for GfxSprite
 class Title {
   nextScene { null }
   construct new(mapName) {
-
-    _testcvar = CVar.get("vid_swapinterval", 1)
-    _newcvar = CVar.get("some_new_cvar", 0)
+    _testcvar = CVar.get("vid.swapinterval", 1)
+    _newcvar = CVar.get("some.new.cvar", 0)
     Trap.printLn("Printing cvar values")
     Trap.printLn("-----------------------------------")
     Trap.printLn(_testcvar.number())

@@ -34,8 +34,8 @@ void Cmd_Map_f(void) {
 	auto mapname = trap->Con_GetArg(1);
 	char filename[256];
 
-	trap->Con_SetVar("com_lastErrorStack", "");
-	trap->Con_SetVar("com_errorMessage", "");
+	trap->Con_SetVar("engine.lastErrorStack", "");
+	trap->Con_SetVar("engine.errorMessage", "");
 
 	if (trap->Con_GetArgCount() != 2) {
 		trap->Print("map <mapname> : load a map\n");

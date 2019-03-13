@@ -871,17 +871,17 @@ static void wren_error(WrenVM* vm, WrenErrorType type, const char* module, int l
 	}
 
 	if (clearNextError) {
-		trap->Con_SetVar("com_lastErrorStack", "");
+		trap->Con_SetVar("engine.lastErrorStack", "");
 		clearNextError = false;
 	}
 
-	conVar_t *stack = trap->Con_GetVarDefault("com_lastErrorStack", "", 0);
+	conVar_t *stack = trap->Con_GetVarDefault("engine.lastErrorStack", "", 0);
 	if (line == -1) {
-		trap->Con_SetVar("com_lastErrorStack", tempstr("%s\n%s", stack->string, message));
+		trap->Con_SetVar("engine.lastErrorStack", tempstr("%s\n%s", stack->string, message));
 		trap->Print("%s\n", message);
 	}
 	else {
-		trap->Con_SetVar("com_lastErrorStack", tempstr("%s\n(%s:%i) %s", stack->string, module, line, message));
+		trap->Con_SetVar("engine.lastErrorStack", tempstr("%s\n(%s:%i) %s", stack->string, module, line, message));
 		trap->Print("(%s:%i) %s\n", module, line, message);
 	}
 }

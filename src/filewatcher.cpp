@@ -136,7 +136,7 @@ void FileWatcher_StartThread() {
 void FileWatcher_Init() {
 	Con_AddCommand("filewatcher_add", &Cmd_TrackPath_f);
 	Con_AddCommand("filewatcher_clear", &Cmd_ClearFiles_f);
-	Con_GetVarDefault("filewatcher_execute", "", 0);
+	Con_GetVarDefault("filewatcher.execute", "", 0);
 
 	FileWatcher_StartThread();
 }

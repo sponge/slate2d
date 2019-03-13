@@ -69,9 +69,9 @@ void FS_Init(const char *argv0) {
 	}
 
 	const char *baseDir = PHYSFS_getBaseDir();
-	fs_basepath = Con_GetVarDefault("fs_basepath", baseDir, CONVAR_STARTUP);
-	fs_basegame = Con_GetVarDefault("fs_basegame", "base", CONVAR_STARTUP);
-	fs_game = Con_GetVarDefault("fs_game", DEFAULT_GAME, CONVAR_STARTUP);
+	fs_basepath = Con_GetVarDefault("fs.basepath", baseDir, CONVAR_STARTUP);
+	fs_basegame = Con_GetVarDefault("fs.basegame", "base", CONVAR_STARTUP);
+	fs_game = Con_GetVarDefault("fs.game", DEFAULT_GAME, CONVAR_STARTUP);
 
 	bool modLoaded = fs_game->string[0] != '\0';
 

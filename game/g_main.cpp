@@ -71,19 +71,13 @@ static void Init(void *clientInfo, void *imGuiContext) {
 
 static bool Console() {
 	const char *cmd = trap->Con_GetArg(0);
-	const char *line = trap->Con_GetArgs(0);
+	const char *line = trap->Con_GetArgs(1);
 
 	// search for known commands (this could be an array but we don't have
 	// enough to make it worth it.)
 	if (strcasecmp(cmd, "map") == 0) { Cmd_Map_f(); return true; }
 	if (strcasecmp(cmd, "scene") == 0) { Cmd_Scene_f(); return true; }
-
-	// if there's a scene loaded and it's not a /, pass it into the scene
-	// which is usually handled by eval'ing wren code
-	if (scene != nullptr && cmd[0] != '/') {
-		scene->Console(line);
-		return true;
-	}
+	if (strcasecmp(cmd, "eval") == 0) { scene->Console(line); return true; }
 
 	return false;	
 }

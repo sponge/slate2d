@@ -137,10 +137,6 @@ int ConsoleUI::TextEditCallback(ImGuiTextEditCallbackData* data)
 			word_start--;
 		}
 
-		if (word_start[0] == '/') {
-			word_start++;
-		}
-
 		if (word_start[0] == '\0') {
 			break;
 		}
@@ -174,9 +170,6 @@ int ConsoleUI::TextEditCallback(ImGuiTextEditCallbackData* data)
 		{
 			// Single match. Delete the beginning of the word and replace it entirely so we've got nice casing
 			data->DeleteChars((int)(word_start - data->Buf), (int)(word_end - word_start));
-			if (data->Buf[0] != '/') {
-				data->InsertChars(0, "/");
-			}
 			data->InsertChars(data->CursorPos, candidates[0]);
 			data->InsertChars(data->CursorPos, " ");
 		}
@@ -201,9 +194,6 @@ int ConsoleUI::TextEditCallback(ImGuiTextEditCallbackData* data)
 			if (match_len > 0)
 			{
 				data->DeleteChars((int)(word_start - data->Buf), (int)(word_end - word_start));
-				if (data->Buf[0] != '/') {
-					data->InsertChars(0, "/");
-				}
 				data->InsertChars(data->CursorPos, candidates[0], candidates[0] + match_len);
 			}
 

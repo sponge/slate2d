@@ -131,6 +131,7 @@ void Cmd_Exec_f() {
 	Con_Execute(str);
 
 	free(buffer);
+	sdsfree(name);
 }
 
 void Cmd_Clear_f() {

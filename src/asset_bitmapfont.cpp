@@ -100,8 +100,8 @@ end:
 void BMPFNT_Free(Asset &asset) {
 	BitmapFont *font = (BitmapFont*)asset.resource;
 	rlDeleteTextures(font->img->hnd);
-	free(font->img);
-	free(font);
+	delete font->img;
+	delete font;
 }
 
 void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight) {

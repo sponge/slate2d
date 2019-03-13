@@ -49,7 +49,7 @@ void Img_Free(Asset &asset) {
 	Image* img = (Image*)asset.resource;
 
 	rlDeleteTextures(img->hnd);
-	free(img);
+	delete img;
 }
 
 Image* Get_Img(AssetHandle id) {

@@ -133,15 +133,15 @@ void* Sprite_Load(Asset &asset) {
 
 void Sprite_Free(Asset &asset) {
 	SpriteAtlas *spr = (SpriteAtlas*)asset.resource;
-	delete spr->sprites;
+	delete[] spr->sprites;
 
 	for (int i = 0; i < spr->numImages; i++) {
 		rlDeleteTextures(spr->images[i].hnd);
 	}
 
-	delete spr->images;
+	delete[] spr->images;
 
-	free(asset.resource);
+	delete asset.resource;
 }
 
 void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int marginY) {

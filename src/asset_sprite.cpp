@@ -92,6 +92,11 @@ void* Sprite_Load(Asset &asset) {
 	else {
 		// create the atlas based off of fixed bounds
 		SpriteAtlas *spr = (SpriteAtlas*)asset.resource;
+
+		if (spr->staticWidth == 0 || spr->staticHeight == 0) {
+			Con_Error(ERR_GAME, "Sprite_Load: staticWidth and staticHeight must not be 0 (missing Sprite_Set?)");
+		}
+
 		Image *img = (Image*)Img_Load(asset);
 
 		if (img == nullptr) {

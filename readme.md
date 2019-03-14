@@ -21,7 +21,7 @@ ground.
 ## Instructions
 
 Slate2D uses [Premake5](https://premake.github.io/) to generate project files. While the engine is intended to be cross-platform,
-right now only Windows and WASM/Emscripten builds are viable. Mac builds are bitrotted. Run a premake command such as
+right now only Windows and WASM/Emscripten builds are proven. Mac builds are bitrotted, and Linux should run. Run a premake command such as
 `premake5 vs2017` to generate the project, or `premake5 --help` to see extra options specific to the project. An attempt has been made
 to make it build clean out of the box. This has been confirmed to work on *two* different computers!
 
@@ -56,7 +56,7 @@ to make it build clean out of the box. This has been confirmed to work on *two* 
 
 ## Shipped games
 
-Slate2D has still successfully been used in two game jam games!
+Despite the self-deprecating feature list, Slate2D has successfully been used in two game jam games!
 
 ![Hot Air Screenshot](https://img.itch.zone/aW1hZ2UvMzUxNTAyLzE3NTA0MjMucG5n/original/vuv6kk.png)
 [**Hot Air**](https://spongeh.itch.io/hot-air) - a Balloon Fight style game.

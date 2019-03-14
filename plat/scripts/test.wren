@@ -1,4 +1,5 @@
-import "engine" for Trap, CVar, Button, Draw, Asset, Fill, TileMap
+import "engine" for Trap, CVar, Draw, Asset, Fill, TileMap
+import "button" for Button
 import "debug" for Debug
 import "math" for Math
 import "player" for Player
@@ -9,6 +10,8 @@ import "sprites/gfx" for GfxSprite
 class Title {
   nextScene { null }
   construct new(mapName) {
+    Trap.registerButtons(["up", "down", "left", "right", "start", "jump", "shoot"])
+
     _testcvar = CVar.get("vid.swapinterval", 1)
     _newcvar = CVar.get("some.new.cvar", 0)
     Trap.printLn("Printing cvar values")

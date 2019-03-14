@@ -1,5 +1,6 @@
 import "entity" for Entity
-import "engine" for Trap, Button, Draw, Fill, Asset
+import "engine" for Trap, Draw, Fill, Asset
+import "button" for Button
 import "debug" for Debug
 import "main" for Main
 import "timer" for Timer
@@ -95,8 +96,8 @@ class Player is Entity {
 
   think(dt) {
     var dir = _disableControls ? 0 : Trap.buttonPressed(Button.Left) ? -1 : Trap.buttonPressed(Button.Right) ? 1 : 0
-    var jumpPress = _disableControls ? false : Trap.buttonPressed(Button.A)
-    var shootPress = _disableControls ? false : Trap.buttonPressed(Button.B)
+    var jumpPress = _disableControls ? false : Trap.buttonPressed(Button.Jump)
+    var shootPress = _disableControls ? false : Trap.buttonPressed(Button.Shoot)
     var speed = 0
 
     runPlatform(dt)

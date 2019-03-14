@@ -130,6 +130,22 @@ void wren_trap_snd_pause_resume(WrenVM *vm) {
 	trap->Snd_PauseResume(handle, pause);
 }
 
+void wren_trap_in_register_button(WrenVM *vm) {
+	CHECK_ARGS(1, WREN_TYPE_LIST);
+
+	int count = wrenGetListCount(vm, 1);
+	const char **names = (const char**) malloc(count * sizeof(char *));
+
+	wrenEnsureSlots(vm, count + 2);
+
+	for (int i = 0; i < count; i++) {
+		wrenGetListElement(vm, 1, i, i + 2);
+		names[i] = wrenGetSlotString(vm, i + 2);
+	}
+	
+	trap->In_AllocateButtons(names, count);
+}
+
 void wren_trap_in_button_pressed(WrenVM *vm) {
 	CHECK_ARGS(3, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
 
@@ -197,9 +213,11 @@ void wren_trap_get_platform(WrenVM *vm) {
 // even if an input was skipped 
 void wren_clear_button_pressed(WrenVM *vm) {
 	NOTUSED(vm);
-	for (int i = 0; i < MAX_BUTTONS; i++) {
-		buttonState_t *button = trap->In_GetButton(i);
+	int i = 0;
+	buttonState_t *button = trap->In_GetButton(i);
+	while (button != NULL) {
 		button->wasPressed = false;
+		button = trap->In_GetButton(++i);
 	}
 }
 
@@ -918,6 +936,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "sndPlay(_,_,_,_)", wren_trap_snd_play },
 	{ "engine", "Trap", true, "sndStop(_)", wren_trap_snd_stop },
 	{ "engine", "Trap", true, "sndPauseResume(_,_)", wren_trap_snd_pause_resume },
+	{ "engine", "Trap", true, "registerButtons(_)", wren_trap_in_register_button },
 	{ "engine", "Trap", true, "buttonPressed(_,_,_)", wren_trap_in_button_pressed },
 	{ "engine", "Trap", true, "mousePosition()", wren_trap_mouse_position },
 	{ "engine", "Trap", true, "inspect(_,_)", wren_trap_inspect },

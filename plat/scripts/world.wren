@@ -1,4 +1,4 @@
-import "engine" for Trap, Button, Draw, Asset, Fill, TileMap
+import "engine" for Trap, Draw, Asset, Fill, TileMap
 import "debug" for Debug
 import "collision" for TileCollider
 import "camera" for Camera

@@ -41,7 +41,7 @@ class GameOver {
   update(dt) {
     _t = _t + dt
 
-    if (Trap.keyPressed(Button.Start)) {
+    if (Trap.buttonPressed(Button.Start)) {
       _nextScene = "title"
     }
 

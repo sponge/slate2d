@@ -99,7 +99,7 @@ class Main {
     Timer.tick(1/60)
 
     // see the hack comment in engine.wren for why this is
-    Trap.clearKeyPressed()
+    Trap.clearButtonPressed()
   }
 
   static draw(w, h) {

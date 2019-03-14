@@ -18,7 +18,7 @@ class Game5Title {
   }
 
   update(dt) {
-    if (Trap.keyPressed(Button.Start, 0, -1)) {
+    if (Trap.buttonPressed(Button.Start, 0, -1)) {
       _nextScene = "gameselect"
     }
 
@@ -33,7 +33,7 @@ class Game5Title {
       SoundController.playOnce(_sonar, 0.5, 0, false)
     }
 
-    if (Trap.keyPressed(Button.B, 0, -1) && _nextSceneTimer == null) {
+    if (Trap.buttonPressed(Button.B, 0, -1) && _nextSceneTimer == null) {
       _nextSceneTimer = _fadeTime
     } else if (_nextSceneTimer != null && _nextSceneTimer <= 0) {
       _nextScene = ["towers", ""]

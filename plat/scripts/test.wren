@@ -88,10 +88,10 @@ class Title {
   }
 
   update(dt) {
-    _upActive = Trap.keyPressed(Button.Up)
+    _upActive = Trap.buttonPressed(Button.Up)
 
     for (i in 0..11) {
-      if (Trap.keyPressed(i, 0, 1000)) { Trap.printLn("button %(i)") }
+      if (Trap.buttonPressed(i, 0, 1000)) { Trap.printLn("button %(i)") }
     }
 
     _time = _time + dt

@@ -46,9 +46,9 @@ class Player is Entity {
       return
     }
 
-    _flap = Trap.keyPressed(Button.A) || Trap.keyPressed(Button.B)
-    var lPressed = Trap.keyPressed(Button.Left)
-    var rPressed = Trap.keyPressed(Button.Right)
+    _flap = Trap.buttonPressed(Button.A) || Trap.buttonPressed(Button.B)
+    var lPressed = Trap.buttonPressed(Button.Left)
+    var rPressed = Trap.buttonPressed(Button.Right)
 
     // draw them in the right direction
     if (lPressed || rPressed) {

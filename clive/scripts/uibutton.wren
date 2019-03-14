@@ -37,7 +37,7 @@ class UIButton {
   }
 
   clicked(mx, my) {
-    return Math.pointInRect(mx, my, x, y, w, h) && Trap.keyPressed(Button.B, 0, -1)
+    return Math.pointInRect(mx, my, x, y, w, h) && Trap.buttonPressed(Button.B, 0, -1)
   }
 }
 

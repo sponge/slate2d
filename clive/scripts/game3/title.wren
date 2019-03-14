@@ -93,7 +93,7 @@ class Game3Title {
       _actionQueue = ActionQueue.new(_selftestActions)
     }
 
-    if (_enableSkip && Trap.keyPressed(Button.B, 0, -1)) {
+    if (_enableSkip && Trap.buttonPressed(Button.B, 0, -1)) {
       if (_mode == "title") {
         _nextScene = ["td", "maps/e3m1.tmx"]
       } else if (_skipWarningTime == null) {

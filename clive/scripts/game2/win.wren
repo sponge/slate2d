@@ -39,7 +39,7 @@ class Game2Win {
   update(dt) {
     _time = _time + dt
 
-    if (Trap.keyPressed(Button.B, 0, -1) || Trap.keyPressed(Button.Start, 0, -1)) {
+    if (Trap.buttonPressed(Button.B, 0, -1) || Trap.buttonPressed(Button.Start, 0, -1)) {
       _nextScene = "gameselect"
     }
 

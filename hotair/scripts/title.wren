@@ -89,11 +89,11 @@ class Title {
 
     _snow = _snow.where{|s| s[1] < 180 }.toList
 
-    var confirmed = Trap.keyPressed(Button.Start, 0, -1) || Trap.keyPressed(Button.A, 0, -1)
-    var up = Trap.keyPressed(Button.Up, 0, -1)
-    var down = Trap.keyPressed(Button.Down, 0, -1)
-    var left = Trap.keyPressed(Button.Left, 0, -1)
-    var right = Trap.keyPressed(Button.Right, 0, -1)
+    var confirmed = Trap.buttonPressed(Button.Start, 0, -1) || Trap.buttonPressed(Button.A, 0, -1)
+    var up = Trap.buttonPressed(Button.Up, 0, -1)
+    var down = Trap.buttonPressed(Button.Down, 0, -1)
+    var left = Trap.buttonPressed(Button.Left, 0, -1)
+    var right = Trap.buttonPressed(Button.Right, 0, -1)
 
     if (up) {
       _selectedItem = _selectedItem - 1

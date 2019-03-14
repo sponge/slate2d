@@ -48,7 +48,7 @@ class Game1Title {
 
     _actionQueue.update(dt)
 
-    if (_time > 3 && Trap.keyPressed(Button.B, 0, -1)) {
+    if (_time > 3 && Trap.buttonPressed(Button.B, 0, -1)) {
       _nextScene = ["td", "maps/e1m1.tmx"]
     }
   }

@@ -290,7 +290,7 @@ class TD {
     var mouse = Trap.mousePosition()
 
     _pauseMenu.pauseUpdate(dt)
-    if (_pauseMenu.pauseClicked() || Trap.keyPressed(Button.Start, 0, -1)) {
+    if (_pauseMenu.pauseClicked() || Trap.buttonPressed(Button.Start, 0, -1)) {
       _paused = _paused ? false : true
     }
 

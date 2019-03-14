@@ -217,17 +217,17 @@ class Game {
   }
 
   pauseUpdate() {
-    if (Trap.keyPressed(Button.Start, 0, -1)) {
+    if (Trap.buttonPressed(Button.Start, 0, -1)) {
       if (_pauseQuitSelected) {
         _nextScene = "title"
       }
       _paused = false
     }
 
-    if (Trap.keyPressed(Button.Left, 0, -1)) {
+    if (Trap.buttonPressed(Button.Left, 0, -1)) {
       _pauseQuitSelected = true
     }
-    if (Trap.keyPressed(Button.Right, 0, -1)) {
+    if (Trap.buttonPressed(Button.Right, 0, -1)) {
       _pauseQuitSelected = false
     }
   }
@@ -240,7 +240,7 @@ class Game {
 
     _t = _t + dt
 
-    if (!_paused && Trap.keyPressed(Button.Start, 0, -1)) {
+    if (!_paused && Trap.buttonPressed(Button.Start, 0, -1)) {
       _paused = true
       _pauseQuitSelected = false
     }

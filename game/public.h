@@ -22,10 +22,10 @@ typedef struct gameImportFuncs_s {
 	char** (*FS_List)(const char *path);
 	void (*FS_FreeList)(void * listVar);
 
-	void(*IN_AllocateButtons)(const char **buttonNames, int buttonCount);
-	buttonState_t*(*IN_GetButton)(int buttonNum);
-	bool (*IN_ButtonPressed)(int buttonId, unsigned int delay, int repeat);
-	MousePosition (*IN_MousePosition)();
+	void(*In_AllocateButtons)(const char **buttonNames, int buttonCount);
+	buttonState_t*(*In_GetButton)(int buttonNum);
+	bool (*In_ButtonPressed)(int buttonId, unsigned int delay, int repeat);
+	MousePosition (*In_MousePosition)();
 
 	void(*SubmitRenderCommands)(renderCommandList_t *list);
 

@@ -42,11 +42,11 @@ class Help {
   update(dt) {
     _t = _t + dt
 
-    if (!Trap.keyPressed(Button.Start)) {
+    if (!Trap.buttonPressed(Button.Start)) {
       _canReturn = true
     }
 
-    if (Trap.keyPressed(Button.Start) && _canReturn) {
+    if (Trap.buttonPressed(Button.Start) && _canReturn) {
       _nextScene = "title"
     }
   }

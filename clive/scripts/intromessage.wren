@@ -27,7 +27,7 @@ class IntroMessage {
   update(dt) {
     _time = _time + dt
 
-    if (Trap.keyPressed(Button.B, 0, -1)) {
+    if (Trap.buttonPressed(Button.B, 0, -1)) {
       SoundController.playOnce(_click)
       nextScene = ["gameselect", "tutorial"]
     }

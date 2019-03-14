@@ -68,7 +68,7 @@ class GameSelect {
       }
     }
 
-    // if (Trap.keyPressed(Button.B, 0, -1)) {
+    // if (Trap.buttonPressed(Button.B, 0, -1)) {
     //   Debug.printLn("hit")
     // }
   }

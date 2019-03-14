@@ -145,7 +145,7 @@ const void *RB_UseShader(const void *data) {
 	}
 
 	if (shasset->locMouse != -1) {
-		auto mousePos = IN_MousePosition();
+		auto mousePos = In_MousePosition();
 		const float iMouse[2] = { (float) mousePos.x, (float) mousePos.y };
 		SetShaderValue(shader, shasset->locMouse, iMouse, 2);
 	}

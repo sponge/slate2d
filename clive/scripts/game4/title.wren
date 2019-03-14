@@ -156,7 +156,7 @@ class Game4Title {
       _things[k].update(dt)
     }
 
-    if (_time > 3 && Trap.keyPressed(Button.B, 0, -1)) {
+    if (_time > 3 && Trap.buttonPressed(Button.B, 0, -1)) {
       startGame()
     }
   }

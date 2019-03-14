@@ -61,7 +61,7 @@ static void Init(void *clientInfo, void *imGuiContext) {
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
-	trap->IN_AllocateButtons(buttoncmds, MAX_BUTTONS);
+	trap->In_AllocateButtons(buttoncmds, MAX_BUTTONS);
 
 	auto newScene = new WrenScene("scripts/main.wren", nullptr);
 	if (scene) { delete scene; }

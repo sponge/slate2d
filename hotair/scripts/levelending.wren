@@ -23,7 +23,7 @@ class LevelEnding {
   }
 
   update(dt) {
-    if (Trap.keyPressed(Button.Start, 0, -1)) {
+    if (Trap.buttonPressed(Button.Start, 0, -1)) {
       _nextScene = ["game", _nextLevel]
     }
   }

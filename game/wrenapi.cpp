@@ -130,18 +130,18 @@ void wren_trap_snd_pause_resume(WrenVM *vm) {
 	trap->Snd_PauseResume(handle, pause);
 }
 
-void wren_trap_in_keypressed(WrenVM *vm) {
+void wren_trap_in_button_pressed(WrenVM *vm) {
 	CHECK_ARGS(3, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
 
 	int button = (int)wrenGetSlotDouble(vm, 1);
 	int delay = (int)wrenGetSlotDouble(vm, 2);
 	int repeat = (int)wrenGetSlotDouble(vm, 3);
 
-	wrenSetSlotBool(vm, 0, trap->IN_ButtonPressed(button, delay, repeat));
+	wrenSetSlotBool(vm, 0, trap->In_ButtonPressed(button, delay, repeat));
 }
 
 void wren_trap_mouse_position(WrenVM *vm) {
-	MousePosition mousePos = trap->IN_MousePosition();
+	MousePosition mousePos = trap->In_MousePosition();
 
 	wrenEnsureSlots(vm, 3);
 	wrenSetSlotNewList(vm, 0);
@@ -195,10 +195,10 @@ void wren_trap_get_platform(WrenVM *vm) {
 // HACK: because i'm sometimes skipping update() to run at 60, key inputs may be delayed a frame. calling
 // this after we run an update frame lets me continue to know if the button was pressed on this frame
 // even if an input was skipped 
-void wren_clear_key_pressed(WrenVM *vm) {
+void wren_clear_button_pressed(WrenVM *vm) {
 	NOTUSED(vm);
 	for (int i = 0; i < MAX_BUTTONS; i++) {
-		buttonState_t *button = trap->IN_GetButton(i);
+		buttonState_t *button = trap->In_GetButton(i);
 		button->wasPressed = false;
 	}
 }
@@ -918,13 +918,13 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "sndPlay(_,_,_,_)", wren_trap_snd_play },
 	{ "engine", "Trap", true, "sndStop(_)", wren_trap_snd_stop },
 	{ "engine", "Trap", true, "sndPauseResume(_,_)", wren_trap_snd_pause_resume },
-	{ "engine", "Trap", true, "keyPressed(_,_,_)", wren_trap_in_keypressed },
+	{ "engine", "Trap", true, "buttonPressed(_,_,_)", wren_trap_in_button_pressed },
 	{ "engine", "Trap", true, "mousePosition()", wren_trap_mouse_position },
 	{ "engine", "Trap", true, "inspect(_,_)", wren_trap_inspect },
 	{ "engine", "Trap", true, "getResolution()", wren_trap_get_resolution },
 	{ "engine", "Trap", true, "setWindowTitle(_)", wren_trap_set_window_title },
 	{ "engine", "Trap", true, "getPlatform()", wren_trap_get_platform },
-	{ "engine", "Trap", true, "clearKeyPressed()", wren_clear_key_pressed},
+	{ "engine", "Trap", true, "clearButtonPressed()", wren_clear_button_pressed},
 
 	{ "engine", "CVar", false, "bool()", wren_cvar_bool },
 	{ "engine", "CVar", false, "number()", wren_cvar_number },

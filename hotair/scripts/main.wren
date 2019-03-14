@@ -74,7 +74,7 @@ class Main {
 
 
     // see the hack comment in engine.wren for why this is
-    Trap.clearKeyPressed()
+    Trap.clearButtonPressed()
   }
 
   static draw(w, h) {

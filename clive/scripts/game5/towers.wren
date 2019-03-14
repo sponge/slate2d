@@ -203,7 +203,7 @@ class Towers {
   update(dt) {
     _time = _time + dt
 
-    if (Trap.keyPressed(Button.Start, 0, -1)) {
+    if (Trap.buttonPressed(Button.Start, 0, -1)) {
       _paused = _paused ? false : true
     }
 
@@ -243,7 +243,7 @@ class Towers {
       _fade = _fade > 255 ? 255 : _fade
     }
 
-    if (Trap.keyPressed(Button.B, 0, -1)) {
+    if (Trap.buttonPressed(Button.B, 0, -1)) {
       _player.jump()
     }
 

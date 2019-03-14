@@ -9,15 +9,15 @@ class Trap {
   static sndPlay(assetHandle) { sndPlay(assetHandle, 1.0, 0, false) }
   foreign static sndStop(handle)
   foreign static sndPauseResume(handle, pause)
-  foreign static keyPressed(key, delay, repeat)
-  static keyPressed(key) { keyPressed(key, 0, 0) }
+  foreign static buttonPressed(key, delay, repeat)
+  static buttonPressed(key) { buttonPressed(key, 0, 0) }
   foreign static mousePosition()
   foreign static inspect(obj, title)
   static inspect(obj) { inspect(obj, null) }
   foreign static getResolution()
   foreign static setWindowTitle(title)
   foreign static getPlatform()
-  foreign static clearKeyPressed()
+  foreign static clearButtonPressed()
   // HACK: because i'm sometimes skipping update() to run at 60, key inputs may be delayed a frame. calling
   // this after we run an update frame lets me continue to know if the button was pressed on this frame
   // even if an update frame was skipped

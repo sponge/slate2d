@@ -72,7 +72,7 @@ void ProcessInputEvent(SDL_Event ev) {
 	}
 }
 
-bool IN_ButtonPressed(int buttonId, unsigned int delay, int repeat) {
+bool In_ButtonPressed(int buttonId, unsigned int delay, int repeat) {
 	buttonState_t *button = Con_GetButton(buttonId);
 
 	if (button == NULL || button->held == false) {
@@ -115,7 +115,7 @@ bool IN_ButtonPressed(int buttonId, unsigned int delay, int repeat) {
 	return lastRepeatCount != repeatCount;
 }
 
-MousePosition IN_MousePosition() {
+MousePosition In_MousePosition() {
 	MousePosition mousePos;
 	SDL_GetMouseState(&mousePos.x, &mousePos.y);
 	return mousePos;

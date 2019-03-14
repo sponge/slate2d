@@ -1,6 +1,7 @@
 import "random" for Random
 
-import "engine" for Draw, Asset, TileMap, Trap, Button, Fill
+import "engine" for Draw, Asset, TileMap, Trap, Fill
+import "button" for Button
 import "math" for Math
 import "camera" for Camera
 import "timer" for Timer

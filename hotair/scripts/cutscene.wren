@@ -1,5 +1,6 @@
 import "random" for Random
-import "engine" for Draw, Asset, TileMap, Trap, Button
+import "engine" for Draw, Asset, TileMap, Trap
+import "button" for Button
 import "math" for Math
 import "actionqueue" for ActionQueue
 import "soundcontroller" for SoundController

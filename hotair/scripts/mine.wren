@@ -1,4 +1,5 @@
-import "engine" for Draw, Asset, Trap, Button, Fill
+import "engine" for Draw, Asset, Trap, Fill
+import "button" for Button
 import "math" for Math
 import "entity" for Entity
 import "random" for Random

@@ -33,6 +33,8 @@ class Main {
 
     Trap.setWindowTitle("Hot Air")
 
+    Trap.registerButtons(["up", "down", "left", "right", "start", "flap"])
+
     Timer.init()
     Debug.init()
     SoundController.init()

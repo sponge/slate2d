@@ -1,4 +1,5 @@
-import "engine" for Asset, Draw, Trap, Button
+import "engine" for Asset, Draw, Trap
+import "button" for Button
 import "soundcontroller" for SoundController
 
 class Ending {

@@ -1,4 +1,5 @@
-import "engine" for Draw, Asset, TileMap, Trap, Button, Fill, Align
+import "engine" for Draw, Asset, TileMap, Trap, Fill, Align
+import "button" for Button
 import "soundcontroller" for SoundController
 import "random" for Random
 import "math" for Math
@@ -89,7 +90,7 @@ class Title {
 
     _snow = _snow.where{|s| s[1] < 180 }.toList
 
-    var confirmed = Trap.buttonPressed(Button.Start, 0, -1) || Trap.buttonPressed(Button.A, 0, -1)
+    var confirmed = Trap.buttonPressed(Button.Start, 0, -1) || Trap.buttonPressed(Button.Flap, 0, -1)
     var up = Trap.buttonPressed(Button.Up, 0, -1)
     var down = Trap.buttonPressed(Button.Down, 0, -1)
     var left = Trap.buttonPressed(Button.Left, 0, -1)

@@ -1,4 +1,5 @@
-import "engine" for Asset, Draw, Trap, Button, Align
+import "engine" for Asset, Draw, Trap, Align
+import "button" for Button
 
 class Help {
   nextScene { _nextScene}

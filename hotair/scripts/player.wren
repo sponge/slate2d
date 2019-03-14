@@ -1,4 +1,5 @@
-import "engine" for Draw, Asset, Trap, Button, Fill
+import "engine" for Draw, Asset, Trap, Fill
+import "button" for Button
 import "math" for Math
 import "timer" for Timer
 import "entity" for Entity
@@ -46,7 +47,7 @@ class Player is Entity {
       return
     }
 
-    _flap = Trap.buttonPressed(Button.A) || Trap.buttonPressed(Button.B)
+    _flap = Trap.buttonPressed(Button.Flap)
     var lPressed = Trap.buttonPressed(Button.Left)
     var rPressed = Trap.buttonPressed(Button.Right)
 

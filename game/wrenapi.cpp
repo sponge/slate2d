@@ -144,6 +144,8 @@ void wren_trap_in_register_button(WrenVM *vm) {
 	}
 	
 	trap->In_AllocateButtons(names, count);
+
+	free(names);
 }
 
 void wren_trap_in_button_pressed(WrenVM *vm) {

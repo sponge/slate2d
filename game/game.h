@@ -9,4 +9,3 @@
 #endif
 
 void Com_DefaultExtension(char *path, int maxSize, const char *extension);
-#define MAX_BUTTONS 12

@@ -8,7 +8,6 @@
 
 ClientInfo *clientInf;
 gameImportFuncs_t *trap;
-const char *buttoncmds[MAX_BUTTONS] = { "p1up", "p1down", "p1left", "p1right", "p1a", "p1b", "p1x", "p1y", "p1l", "p1r", "p1start", "p1select" };
 Scene *scene;
 
 #ifdef __EMSCRIPTEN__
@@ -60,8 +59,6 @@ static void Init(void *clientInfo, void *imGuiContext) {
 	clientInf = (ClientInfo*) clientInfo;
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
-
-	trap->In_AllocateButtons(buttoncmds, MAX_BUTTONS);
 
 	auto newScene = new WrenScene("scripts/main.wren", nullptr);
 	if (scene) { delete scene; }

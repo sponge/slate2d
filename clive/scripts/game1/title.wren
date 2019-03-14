@@ -1,5 +1,6 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Fill, Button
+import "engine" for Draw, Asset, Trap, Fill
+import "button" for Button
 import "math" for Math
 import "soundcontroller" for SoundController
 import "actionqueue" for ActionQueue
@@ -48,7 +49,7 @@ class Game1Title {
 
     _actionQueue.update(dt)
 
-    if (_time > 3 && Trap.buttonPressed(Button.B, 0, -1)) {
+    if (_time > 3 && Trap.buttonPressed(Button.Click, 0, -1)) {
       _nextScene = ["td", "maps/e1m1.tmx"]
     }
   }

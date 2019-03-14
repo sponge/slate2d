@@ -1,4 +1,5 @@
-import "engine" for Draw, Trap, Asset, Button
+import "engine" for Draw, Trap, Asset
+import "button" for Button
 
 class GameOver {
   nextScene { _nextScene }
@@ -35,7 +36,7 @@ class GameOver {
   update(dt) {
     _time = _time + dt
 
-    if (Trap.buttonPressed(Button.B, 0, -1)) {
+    if (Trap.buttonPressed(Button.Click, 0, -1)) {
       _nextScene = ["td", _mapName]
     }
   }

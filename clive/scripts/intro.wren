@@ -1,5 +1,6 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Fill, Button
+import "engine" for Draw, Asset, Trap, Fill
+import "button" for Button
 import "debug" for Debug
 import "soundcontroller" for SoundController
 
@@ -26,7 +27,7 @@ class Intro {
   update(dt) {
     _time = _time + dt
 
-    if (Trap.buttonPressed(Button.B, 0, -1)) {
+    if (Trap.buttonPressed(Button.Click, 0, -1)) {
       SoundController.playOnce(_clickSound)
       nextScene = "credits"
     }

@@ -1,4 +1,5 @@
-import "engine" for Draw, Asset, Trap, Fill, Button, TileMap, CVar, Align
+import "engine" for Draw, Asset, Trap, Fill, TileMap, CVar, Align
+import "button" for Button
 import "timer" for Timer
 import "debug" for Debug
 import "grid" for Grid

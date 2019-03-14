@@ -37,6 +37,8 @@ class Main {
 
     __inspector = CVar.get("wren.inspector", 0)
 
+    Trap.registerButtons(["rotate", "click", "start"])
+
     __scenes = {
       "intro": Intro,
       "credits": Credits,

@@ -1,4 +1,5 @@
-import "engine" for Draw, Trap, Asset, Button, Align
+import "engine" for Draw, Trap, Asset, Align
+import "button" for Button
 
 class Game3Win {
   nextScene { _nextScene }

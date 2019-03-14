@@ -1,4 +1,5 @@
-import "engine" for Draw, Trap, Asset, Align, Button
+import "engine" for Draw, Trap, Asset, Align
+import "button" for Button
 import "soundcontroller" for SoundController
 
 class Game5Title {
@@ -33,7 +34,7 @@ class Game5Title {
       SoundController.playOnce(_sonar, 0.5, 0, false)
     }
 
-    if (Trap.buttonPressed(Button.B, 0, -1) && _nextSceneTimer == null) {
+    if (Trap.buttonPressed(Button.Click, 0, -1) && _nextSceneTimer == null) {
       _nextSceneTimer = _fadeTime
     } else if (_nextSceneTimer != null && _nextSceneTimer <= 0) {
       _nextScene = ["towers", ""]

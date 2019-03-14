@@ -1,5 +1,6 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Fill, Button, Align
+import "engine" for Draw, Asset, Trap, Fill, Align
+import "button" for Button
 import "math" for Math
 import "soundcontroller" for SoundController
 import "debug" for Debug
@@ -93,7 +94,7 @@ class Game3Title {
       _actionQueue = ActionQueue.new(_selftestActions)
     }
 
-    if (_enableSkip && Trap.buttonPressed(Button.B, 0, -1)) {
+    if (_enableSkip && Trap.buttonPressed(Button.Click, 0, -1)) {
       if (_mode == "title") {
         _nextScene = ["td", "maps/e3m1.tmx"]
       } else if (_skipWarningTime == null) {

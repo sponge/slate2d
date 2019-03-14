@@ -1,4 +1,5 @@
-import "engine" for Draw, Asset, Trap, Fill, Button, TileMap
+import "engine" for Draw, Asset, Trap, Fill, TileMap
+import "button" for Button
 import "entities/entity" for Entity
 import "debug" for Debug
 import "math" for Math

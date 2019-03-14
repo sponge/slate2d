@@ -1,4 +1,5 @@
-import "engine" for Draw, Asset, Trap, Fill, Button, TileMap, CVar, Align
+import "engine" for Draw, Asset, Trap, Fill, TileMap, CVar, Align
+import "button" for Button
 import "math" for Math
 import "debug" for Debug
 import "fonts" for Fonts
@@ -146,7 +147,7 @@ class Grid {
 
   update(dt) {
     // if right click, deselect the current piece
-    if (!_td.paused && _td.pieceTray.activeTool && _td.pieceTray.activeTool.category != "piece" && Trap.buttonPressed(Button.A, 0, -1)) {
+    if (!_td.paused && _td.pieceTray.activeTool && _td.pieceTray.activeTool.category != "piece" && Trap.buttonPressed(Button.Rotate, 0, -1)) {
       _td.pieceTray.deselectPiece()
     }
 
@@ -158,7 +159,7 @@ class Grid {
     if (button != null) {
       if (button.category == "tower") {
         // if it's a valid placement, place the tower
-        if (_td.pieceTray.canAfford() && !isNotValidPiecePlacement(tx / _tw, ty / _th, 2, 2) && Trap.buttonPressed(Button.B, 0, -1)) {
+        if (_td.pieceTray.canAfford() && !isNotValidPiecePlacement(tx / _tw, ty / _th, 2, 2) && Trap.buttonPressed(Button.Click, 0, -1)) {
           setTower(tx / _tw, ty / _th, button.variation)
           _td.pieceTray.spendCurrent()
         }
@@ -167,11 +168,11 @@ class Grid {
         ty = ty - _th
 
         // rotate piece
-        if (Trap.buttonPressed(Button.A, 0, -1)) {
+        if (Trap.buttonPressed(Button.Rotate, 0, -1)) {
           Debug.printLn("rotate")
           _td.pieceTray.rotateActivePiece()
         // if there's a click, attempt to place the wall
-        } else if (_td.pieceTray.canAfford() && Trap.buttonPressed(Button.B, 0, -1)) {
+        } else if (_td.pieceTray.canAfford() && Trap.buttonPressed(Button.Click, 0, -1)) {
           var piece = _td.pieceTray.queuedPieces[button.variation]
           var success = setWallPiece(tx/_tw, ty/_th, _td.pieceTray.activePiece)
           // call into the piece tray to deduct currency, generate new piece, etc
@@ -181,7 +182,7 @@ class Grid {
         }
       } else if (button.category == "grass") {
         // if it's a valid placement, place the tower
-        if (_td.pieceTray.canAfford() && !isNotValidPiecePlacement(tx / _tw, ty / _th, 1, 1) && Trap.buttonPressed(Button.B, 0, -1)) {
+        if (_td.pieceTray.canAfford() && !isNotValidPiecePlacement(tx / _tw, ty / _th, 1, 1) && Trap.buttonPressed(Button.Click, 0, -1)) {
           setGrass(tx / _tw, ty / _th)
           _td.pieceTray.spendCurrent()
         }

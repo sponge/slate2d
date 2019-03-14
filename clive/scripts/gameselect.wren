@@ -1,5 +1,6 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Fill, Button, Align
+import "engine" for Draw, Asset, Trap, Fill, Align
+import "button" for Button
 import "debug" for Debug
 import "uibutton" for GameSelectButton
 import "soundcontroller" for SoundController
@@ -68,7 +69,7 @@ class GameSelect {
       }
     }
 
-    // if (Trap.buttonPressed(Button.B, 0, -1)) {
+    // if (Trap.buttonPressed(Button.Click, 0, -1)) {
     //   Debug.printLn("hit")
     // }
   }

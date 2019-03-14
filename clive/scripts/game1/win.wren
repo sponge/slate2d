@@ -1,4 +1,5 @@
-import "engine" for Draw, Trap, Asset, Button, Align
+import "engine" for Draw, Trap, Asset, Align
+import "button" for Button
 
 class Game1Win {
   nextScene { _nextScene }
@@ -23,7 +24,7 @@ class Game1Win {
   update(dt) {
     _time = _time + dt
 
-    if (Trap.buttonPressed(Button.B, 0, -1) || Trap.buttonPressed(Button.Start, 0, -1)) {
+    if (Trap.buttonPressed(Button.Click, 0, -1) || Trap.buttonPressed(Button.Start, 0, -1)) {
       _nextScene = "gameselect"
     }
   }

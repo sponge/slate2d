@@ -1,5 +1,6 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Fill, Button, ImageFlags, Align
+import "engine" for Draw, Asset, Trap, Fill, ImageFlags, Align
+import "button" for Button
 import "debug" for Debug
 import "uibutton" for TextButton
 import "soundcontroller" for SoundController
@@ -27,7 +28,7 @@ class IntroMessage {
   update(dt) {
     _time = _time + dt
 
-    if (Trap.buttonPressed(Button.B, 0, -1)) {
+    if (Trap.buttonPressed(Button.Click, 0, -1)) {
       SoundController.playOnce(_click)
       nextScene = ["gameselect", "tutorial"]
     }

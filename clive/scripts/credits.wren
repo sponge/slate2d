@@ -1,4 +1,5 @@
-import "engine" for Draw, Asset, Trap, Fill, Button, Align
+import "engine" for Draw, Asset, Trap, Fill, Align
+import "button" for Button
 import "fonts" for Fonts
 import "soundcontroller" for SoundController
 
@@ -20,7 +21,7 @@ class Credits {
   update(dt) {
     _time = _time + dt
 
-    if (Trap.buttonPressed(Button.B, 0, -1)) {
+    if (Trap.buttonPressed(Button.Click, 0, -1)) {
       SoundController.playOnce(_clickSound)
       nextScene = "intromessage"
     }

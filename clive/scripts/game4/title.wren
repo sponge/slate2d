@@ -1,5 +1,6 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Fill, Button, Align
+import "engine" for Draw, Asset, Trap, Fill, Align
+import "button" for Button
 import "math" for Math
 import "soundcontroller" for SoundController
 import "actionqueue" for ActionQueue
@@ -156,7 +157,7 @@ class Game4Title {
       _things[k].update(dt)
     }
 
-    if (_time > 3 && Trap.buttonPressed(Button.B, 0, -1)) {
+    if (_time > 3 && Trap.buttonPressed(Button.Click, 0, -1)) {
       startGame()
     }
   }

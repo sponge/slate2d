@@ -1,4 +1,5 @@
-import "engine" for Asset, Draw, Align, Trap, Button
+import "engine" for Asset, Draw, Align, Trap
+import "button" for Button
 import "random" for Random
 import "bagrandomizer" for BagRandomizer
 import "soundcontroller" for SoundController
@@ -243,7 +244,7 @@ class Towers {
       _fade = _fade > 255 ? 255 : _fade
     }
 
-    if (Trap.buttonPressed(Button.B, 0, -1)) {
+    if (Trap.buttonPressed(Button.Click, 0, -1)) {
       _player.jump()
     }
 

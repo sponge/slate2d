@@ -1,4 +1,5 @@
-import "engine" for Draw, Trap, Asset, Button, Align
+import "engine" for Draw, Trap, Asset, Align
+import "button" for Button
 import "britnames" for BritNames
 import "debug" for Debug
 import "soundcontroller" for SoundController

@@ -1,4 +1,5 @@
-import "engine" for Asset, Trap, Draw, Align, Button
+import "engine" for Asset, Trap, Draw, Align
+import "button" for Button
 import "soundcontroller" for SoundController
 import "pausemenu" for PauseMenu
 

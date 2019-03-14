@@ -1,4 +1,5 @@
-import "engine" for Draw, Asset, Trap, Fill, Button, ImageFlags, Align
+import "engine" for Draw, Asset, Trap, Fill, ImageFlags, Align
+import "button" for Button
 import "debug" for Debug
 import "math" for Math
 import "soundcontroller" for SoundController
@@ -37,7 +38,7 @@ class UIButton {
   }
 
   clicked(mx, my) {
-    return Math.pointInRect(mx, my, x, y, w, h) && Trap.buttonPressed(Button.B, 0, -1)
+    return Math.pointInRect(mx, my, x, y, w, h) && Trap.buttonPressed(Button.Click, 0, -1)
   }
 }
 

@@ -1,5 +1,6 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, Trap, Fill, Button, ImageFlags
+import "engine" for Draw, Asset, Trap, Fill, ImageFlags
+import "button" for Button
 import "debug" for Debug
 import "uibutton" for TextButton
 import "soundcontroller" for SoundController

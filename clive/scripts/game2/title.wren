@@ -1,4 +1,5 @@
-import "engine" for Draw, Trap, Button, Asset
+import "engine" for Draw, Trap, Asset
+import "button" for Button
 import "soundcontroller" for SoundController
 
 class Game2Title {
@@ -31,7 +32,7 @@ class Game2Title {
   update(dt) {
     _time = _time + dt
 
-    if (Trap.buttonPressed(Button.B, 0, -1)) {
+    if (Trap.buttonPressed(Button.Click, 0, -1)) {
       _nextScene = ["td", "maps/e2m1.tmx"]
     }
 

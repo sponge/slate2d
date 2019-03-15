@@ -617,8 +617,10 @@ conVar_t *Con_SetVar(const char *name, const char *value) {
 		return Con_GetVarDefault(name, value, CONVAR_USER);
 	}
 
+	const char *val = value == NULL ? "" : value;
+
 	// don't do anything if the value hasn't changed
-	if (strcmp(var->string, value) == 0) {
+	if (strcmp(var->string, val) == 0) {
 		return var;
 	}
 
@@ -636,7 +638,7 @@ conVar_t *Con_SetVar(const char *name, const char *value) {
 		return var;
 	}
 
-	return Con_SetVarForce(name, value);
+	return Con_SetVarForce(name, val);
 }
 
 // shortcut to set a float value directly instead of turning it into a string

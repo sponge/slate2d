@@ -119,6 +119,7 @@ void* Sprite_Load(Asset &asset) {
 
 		// step through each square in the grid and generate the structure for it
 		for (int i = 0; i < spr->numSprites; i++) {
+			spr->sprites[i] = { 0 };
 			spr->sprites[i].texture = &spr->images[0];
 			spr->sprites[i].x = (int16_t)((i % cols) * spr->staticWidth);
 			spr->sprites[i].y = (int16_t)((i / cols) * spr->staticHeight);

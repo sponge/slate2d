@@ -335,8 +335,8 @@ const void *RB_DrawSprite(const void *data) {
 	Image *img = crunch->texture;
 
 	DrawImage(
-		cmd->x,
-		cmd->y,
+		cmd->x - crunch->framex,
+		cmd->y - crunch->framey,
 		(float)crunch->w * cmd->w,
 		(float)crunch->h * cmd->h,
 		(float)crunch->x,

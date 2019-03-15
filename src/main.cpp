@@ -282,6 +282,7 @@ int main(int argc, char *argv[]) {
 	console.handlers.print = &ConH_Print;
 	console.handlers.getKeyForString = &Key_StringToKeynum;
 	console.handlers.getStringForKey = &Key_KeynumToString;
+	console.handlers.error = &ConH_Error;
 
 	Con_Init(&console);
 	Con_AllocateKeys(MAX_KEYS);

@@ -1,7 +1,7 @@
 @echo off
 set name=%1
 
-rmdir /S /Q build\package
+if exist build\package rmdir /S /Q build\package
 
 mkdir build\package\%name%\base
 copy build\bin\x86_64_Release\slate2d.exe build\package\%name%\%name%.exe

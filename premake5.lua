@@ -160,7 +160,7 @@ solution "Slate2D"
       language "C"
       kind "StaticLib"
       defines { "PHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_7Z" }
-      files { "libs/physfs/**.c", "libs/physfs/**.h" }
+      files { "libs/physfs/**.c", "libs/physfs/**.h", "libs/physfs/**.m" }
       warnings "Off"
 
       filter { "system:macosx" }
@@ -171,6 +171,7 @@ solution "Slate2D"
       kind "StaticLib"
       defines { "GLEW_STATIC" }
       includedirs { "libs/glew" }
+      sysincludedirs { "libs/glew" }
       files { "libs/glew/**.c", "libs/glew/**.h" }
       warnings "Off"
 
@@ -195,6 +196,7 @@ solution "Slate2D"
 
     project "crunch"
       language "C++"
+      cppdialect "C++14"
       kind "StaticLib"
       includedirs { "libs/crunch", "src/" }
       sysincludedirs { "libs/physfs", "libs/imgui", "libs/sdl" }

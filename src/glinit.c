@@ -15,6 +15,8 @@
 #ifdef __EMSCRIPTEN__
 #include "GLES2/gl2.h"
 #include "GLES2/gl2ext.h"
+#elif MACOS
+#include <OpenGL/gl3.h>
 #else
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -27,9 +29,11 @@
 
 bool initGL(int width, int height) {
 #ifndef __EMSCRIPTEN__
+#ifndef MACOS
 	if (glewInit() != GLEW_OK) {
 		return false;
 	}
+#endif
 #endif
 
 	rlglInit(width, height);

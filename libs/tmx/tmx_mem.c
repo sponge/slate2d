@@ -4,7 +4,7 @@
 
 #include <string.h>
 #include <assert.h>
-#include <malloc.h>
+#include <stdlib.h>
 
 #include "tmx.h"
 #include "tsx.h"

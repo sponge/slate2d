@@ -568,8 +568,12 @@ int GetPixelDataSize(int width, int height, int format);// Get pixel data size i
     #else
         #define GLAD_IMPLEMENTATION
         #if defined(RLGL_STANDALONE)
-			#define GLEW_STATIC
-            #include <GL/glew.h>		// GLAD extensions loading library, includes OpenGL headers
+            #ifdef MACOS
+                #include <OpenGL/gl3.h>
+            #else
+			    #define GLEW_STATIC
+                #include <GL/glew.h>		// GLAD extensions loading library, includes OpenGL headers
+            #endif
         #else
             #include "external/glad.h"  // GLAD extensions loading library, includes OpenGL headers
         #endif

@@ -50,6 +50,8 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <SDL/SDL_syswm.h>
+#elif MACOS
+#include <OpenGL/gl3.h>
 #else
 #include <GL/glew.h>
 #endif

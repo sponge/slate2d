@@ -129,7 +129,17 @@ static void LoadBitmap(const string& prefix, const string& path)
         Con_Printf("\t %s\n", path.c_str());
     }
     
-    bitmaps.push_back(new Bitmap(path, prefix + GetFileName(path), optPremultiply, optTrim));
+	string name, dir;
+	SplitFileName(path, &dir, &name, nullptr);
+
+	string bitmapName = dir + name;
+	if (bitmapName[0] == '/') {
+		bitmapName.erase(0, 1);
+	}
+	std::replace(bitmapName.begin(), bitmapName.end(), '/', '_');
+	std::replace(bitmapName.begin(), bitmapName.end(), ' ', '_');
+
+    bitmaps.push_back(new Bitmap(prefix + "/" + path, bitmapName, optPremultiply, optTrim));
 }
 
 static void LoadBitmaps(const string& root, const string& prefix)
@@ -137,10 +147,10 @@ static void LoadBitmaps(const string& root, const string& prefix)
     int err;
     PHYSFS_Stat stat;
 
-    char **files = PHYSFS_enumerateFiles(root.c_str());
+    char **files = PHYSFS_enumerateFiles((prefix + "/" + root).c_str());
     char **i;
     for (i = files; *i != NULL; i++) {
-        const string fullPath = root + "/" + *i;
+        const string fullPath = prefix + "/" + (root.length() ? root + "/" : root) + *i;
 
         err = PHYSFS_stat(fullPath.c_str(), &stat);
         if (err == 0) {
@@ -151,20 +161,11 @@ static void LoadBitmaps(const string& root, const string& prefix)
 
         int len = strlen(fullPath.c_str());
 
-        string virtPath = prefix + "/" + fullPath;
-
         if (stat.filetype == PHYSFS_FILETYPE_DIRECTORY) {
-            LoadBitmaps(virtPath, "");
+            LoadBitmaps(*i, prefix);
         }
         else if (strncmp(fullPath.c_str() + len - 4, ".png", 4) == 0) {
-            const char *realPath = PHYSFS_getRealDir(virtPath.c_str());
-
-            if (realPath == nullptr) {
-                Con_Printf("realpath returning nullptr for virtual path %s\n", virtPath.c_str());
-                continue;
-            }
-
-            LoadBitmap("", string(realPath) + "/" + root + "/" + *i);
+            LoadBitmap(prefix, root + "/" + *i);
         } 
     }
 
@@ -255,7 +256,7 @@ int crunch_main(int argc, const char* argv[])
     optVerbose = false;
     optForce = false;
     optUnique = false;
-    if (argc < 3) {
+    if (argc <= 3) {
         optPremultiply = optTrim = optUnique = true;
     }
     else {
@@ -272,8 +273,8 @@ int crunch_main(int argc, const char* argv[])
                 optForce = true;
             else if (arg == "-u" || arg == "--unique")
                 optUnique = true;
-            else if (arg == "-r" || arg == "--rotate")
-                optRotate = true;
+            //else if (arg == "-r" || arg == "--rotate")
+            //    optRotate = true;
             else if (arg.find("--size") == 0)
                 optSize = GetPackSize(arg.substr(6));
             else if (arg.find("-s") == 0)
@@ -332,7 +333,7 @@ int crunch_main(int argc, const char* argv[])
         Con_Printf("\t--verbose: %s\n", optVerbose ? "true" : "false");
         Con_Printf("\t--force: %s\n", optForce ? "true" : "false");
         Con_Printf("\t--unique: %s\n", optUnique ? "true" : "false");
-        Con_Printf("\t--rotate: %s\n", optRotate ? "true" : "false");
+        //Con_Printf("\t--rotate: %s\n", optRotate ? "true" : "false");
         Con_Printf("\t--size: %i\n", optSize);
         Con_Printf("\t--pad: %i\n", optPadding);
     }
@@ -351,10 +352,10 @@ int crunch_main(int argc, const char* argv[])
         Con_Printf("loading images...\n");
     for (size_t i = 0; i < inputs.size(); ++i)
     {
-        if (inputs[i].rfind('.') != string::npos)
-            LoadBitmap("", inputs[i]);
-        else
-            LoadBitmaps(inputs[i], "");
+		if (inputs[i].rfind('.') != string::npos)
+			LoadBitmap("", inputs[i]);
+		else
+			LoadBitmaps("", inputs[i]);
     }
     
     //Sort the bitmaps by area

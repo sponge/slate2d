@@ -33,6 +33,7 @@
 #include "str.hpp"
 
 #include "console.h"
+#include "files.h"
 
 template <class T>
 void HashCombine(std::size_t& hash, const T& v)
@@ -52,44 +53,44 @@ void HashString(size_t& hash, const string& str)
 
 void HashFile(size_t& hash, const string& file)
 {
-    ifstream stream(file, ios::binary | ios::ate);
-    streamsize size = stream.tellg();
-    stream.seekg(0, ios::beg);
-    vector<char> buffer(size + 1);
-    if (!stream.read(buffer.data(), size))
-    {
+
+	char *contents;
+	int sz = FS_ReadFile(file.c_str(), (void**)&contents);
+
+	if (sz == -1) {
 		Con_Printf("failed to read file: %s", file.c_str());
-        exit(EXIT_FAILURE);
-    }
-    buffer[size] = '\0';
-    string text(buffer.begin(), buffer.end());
-    HashCombine(hash, text);
+		exit(EXIT_FAILURE);
+	}
+
+	string fileStr = string(contents, sz);
+	HashCombine(hash, fileStr);
+
+	free(contents);
 }
 
 void HashFiles(size_t& hash, const string& root)
 {   
-    /*
-    tinydir_dir dir;
-    tinydir_open(&dir, StrToPath(root).data());
-    
-    while (dir.has_next)
-    {
-        tinydir_file file;
-        tinydir_readfile(&dir, &file);
-        
-        if (file.is_dir)
-        {
-            if (dot1 != PathToStr(file.name) && dot2 != PathToStr(file.name))
-                HashFiles(hash, PathToStr(file.path));
-        }
-        else if (PathToStr(file.extension) == "png")
-            HashFile(hash, PathToStr(file.path));
-        
-        tinydir_next(&dir);
-    }
-    
-    tinydir_close(&dir);
-    */
+	char **list = FS_List(root.c_str());
+
+	char **i;
+	for (i = list; *i != NULL; i++) {
+		PHYSFS_Stat stat;
+		int ret = PHYSFS_stat((root + "/" +*i).c_str(), &stat);
+		string fullPath = (root + "/" + *i).c_str();
+		if (ret == 0) {
+			Con_Printf("failed to stat file: %s", fullPath);
+			exit(EXIT_FAILURE);
+			continue;
+		}
+		if (stat.filetype == PHYSFS_FILETYPE_DIRECTORY) {
+			HashFiles(hash, fullPath.c_str());
+		}
+		else if (stat.filetype == PHYSFS_FILETYPE_REGULAR) {
+			HashFile(hash, fullPath.c_str());
+		}
+	}
+
+	FS_FreeList(list);
 }
 
 void HashData(size_t& hash, const char* data, size_t size)

@@ -31,6 +31,7 @@
 #include <algorithm>
 #include "hash.hpp"
 #include "console.h"
+#include "files.h"
 
 using namespace std;
 
@@ -40,11 +41,23 @@ Bitmap::Bitmap(const string& file, const string& name, bool premultiply, bool tr
     //Load the png file
     unsigned char* pdata;
     unsigned int pw, ph;
-    if (lodepng_decode32_file(&pdata, &pw, &ph, file.data()))
+
+	unsigned char *buf;
+	auto sz = FS_ReadFile(file.c_str(), (void **)&buf);
+
+	if (sz <= 0) {
+		Con_Printf("failed to read png: %s\n", file.c_str());
+		exit(EXIT_FAILURE);
+	}
+
+    if (lodepng_decode_memory(&pdata, &pw, &ph, buf, sz, LCT_RGBA, 8))
     {
 		Con_Printf("failed to load png: %s\n", file.c_str());
         exit(EXIT_FAILURE);
     }
+
+	free(buf);
+
     int w = static_cast<int>(pw);
     int h = static_cast<int>(ph);
     uint32_t* pixels = reinterpret_cast<uint32_t*>(pdata);

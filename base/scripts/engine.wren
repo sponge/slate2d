@@ -69,7 +69,7 @@ class Draw {
   static scale(factor) { scale(factor, factor) }
   foreign static rotate(angle)
   foreign static translate(x, y)
-  foreign static setScissor(x, y, w, h)
+  foreign static setScissor(x, y, w, h) // NOTE: (0,0) is bottom left
   foreign static resetScissor()
   foreign static useCanvas(id)
   foreign static useShader(id)

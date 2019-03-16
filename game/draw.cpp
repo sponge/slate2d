@@ -1,4 +1,4 @@
-#include "public.h"
+#include "../src/shared.h"
 #include "draw.h"
 #include <assert.h>
 #include <cstring>

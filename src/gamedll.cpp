@@ -1,7 +1,7 @@
 #include <SDL/SDL.h>
 
 #include "gamedll.h"
-#include "../game/public.h"
+#include "shared.h"
 #include "console.h"
 #include "main.h"
 #include "files.h"

@@ -1,5 +1,5 @@
 #include "wrenapi.h"
-#include "public.h"
+#include "../src/shared.h"
 #include "game.h"
 #include "draw.h"
 #include <cstring>

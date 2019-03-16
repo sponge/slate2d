@@ -1,5 +1,5 @@
 #include "files.h"
-#include "../game/shared.h"
+#include "shared.h"
 #include "console.h"
 #include "stb_image.h"
 #include "assetloader.h"

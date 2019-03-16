@@ -1,5 +1,5 @@
 #include "scene_wren.h"
-#include "public.h"
+#include "../src/shared.h"
 #include "wrenapi.h"
 
 void WrenScene::Startup(ClientInfo* info) {

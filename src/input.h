@@ -1,6 +1,6 @@
 #pragma once
 #include <SDL/SDL_events.h>
-#include "../game/shared.h"
+#include "shared.h"
 
 #define NUM_MOUSE_BUTTONS SDL_BUTTON_X2
 #define MAX_CONTROLLERS 4

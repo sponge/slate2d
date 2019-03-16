@@ -1,5 +1,5 @@
 #include <imgui.h>
-#include "public.h"
+#include "../src/shared.h"
 #include "draw.h"
 #include <stdio.h>
 #include "scene_wren.h"

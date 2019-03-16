@@ -1,7 +1,7 @@
 #include <assert.h>
 #include "assetloader.h"
 #include "files.h"
-#include "../game/shared.h"
+#include "../shared.h"
 
 #include <soloud.h>
 #include <soloud_wav.h>

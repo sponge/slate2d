@@ -37,7 +37,7 @@ extern "C" {
 #include "scene_console.h"
 #include "imgui_console.h"
 
-#include "../game/public.h"
+#include "shared.h"
 
 #include <soloud.h>
 #include <soloud_thread.h>

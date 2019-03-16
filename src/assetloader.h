@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../game/shared.h"
 #include "external/rlgl.h"
+#include "shared.h"
 #include <tmx.h>
 
 AssetHandle Asset_Find(const char *name);

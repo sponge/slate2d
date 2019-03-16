@@ -1,5 +1,5 @@
 #pragma once
-#include "shared.h"
+#include "../src/shared.h"
 
 class WrenScene : public Scene {
 public:

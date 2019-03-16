@@ -2,7 +2,7 @@
 #include <vector>
 #include <tmx.h>
 
-#include "../game/shared.h"
+#include "shared.h"
 
 class ConsoleScene : public Scene {
 public:

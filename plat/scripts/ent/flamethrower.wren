@@ -71,11 +71,11 @@ class Flame is Entity {
     if (_dim == Dim.V) {
       var f = flicker ? 1 : 0
       var flip = _flipped ? 2+f : 0+f
-      Draw.sprite(world.spr, spr, x-1, y, 1, 1, flip, 1, 2)
+      Draw.sprite(world.spr, spr, x-1, y, 1, flip, 1, 2)
     } else {
       var f = flicker ? 2 : 0
       var flip = _flipped ? 4+1+f : 4+f
-      Draw.sprite(world.spr, spr, x, y-1, 1, 1, flip, 1, 2)
+      Draw.sprite(world.spr, spr, x, y-1, 1, flip, 1, 2)
     }
   }
 }

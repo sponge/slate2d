@@ -102,6 +102,6 @@ class Snail is Entity {
 
     var offset = _shell ? 1 : 0 //world.ticks / 8 % 2
     // -1 to account for 6x7 hitbox
-    drawSprite(288 + offset, drawX - 1, y - 1, 1, 1, dx > 0 ? 1 : 0)
+    drawSprite(288 + offset, drawX - 1, y - 1, 1, dx > 0 ? 1 : 0)
   }
 }

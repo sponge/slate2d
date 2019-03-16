@@ -252,7 +252,7 @@ class World {
       }
 
       for (i in 0..2) {
-        Draw.sprite(_spr, i < _player.health ? 265 : 281, 275+(i*14), 4, 1, 1, 0, 2, 1)
+        Draw.sprite(_spr, i < _player.health ? 265 : 281, 275+(i*14), 4, 1, 0, 2, 1)
       }
     }
 

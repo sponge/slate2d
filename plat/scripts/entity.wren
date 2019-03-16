@@ -201,8 +201,7 @@ class Entity {
   }
 
   drawSprite(id, x, y) { Draw.sprite(world.spr, id, x, y) }
-  drawSprite(id, x, y, alpha) { Draw.sprite(world.spr, id, x, y, alpha) }
-  drawSprite(id, x, y, alpha, scale, flipBits) { Draw.sprite(world.spr, id, x, y, alpha, scale, flipBits) }
+  drawSprite(id, x, y, scale, flipBits) { Draw.sprite(world.spr, id, x, y, scale, flipBits) }
 
   // return true or false based on if the receiving entity wants to collide this frame
   canCollide(other, side, d){ true }

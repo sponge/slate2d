@@ -89,7 +89,7 @@ class GameSelect {
        item.draw()
     }
 
-    Draw.sprite(_banner, 0, w/2 - 225, 10, 1, 3)
+    Draw.sprite(_banner, 0, w/2 - 225, 10, 3)
 
     Draw.setTextStyle(_bodyFont, 64, 1.0, Align.Center|Align.Top)
     // shadow

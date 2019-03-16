@@ -71,20 +71,20 @@ class Game2Title {
   }
 
   drawSon(x, y) {
-    Draw.image(_logo, x, y, 104, 60, 1, 1, 0, 113, 0)
+    Draw.image(_logo, x, y, 104, 60, 1, 0, 113, 0)
   }
 
   drawA(x, y) {
-    Draw.image(_logo, x, y, 33, 60, 1, 1, 0, 220, 0)
+    Draw.image(_logo, x, y, 33, 60, 1, 0, 220, 0)
   }
 
   drawBle(x, y) {
-    Draw.image(_logo, x, y, 91, 60, 1, 1, 0, 254, 0)
+    Draw.image(_logo, x, y, 91, 60, 1, 0, 254, 0)
   }
 
   drawSoftware(x, y) {
     if (_softwareWidth > 0) {
-      Draw.image(_logo, x, y, _softwareWidth, 24, 1, 1, 0, 2, 65)
+      Draw.image(_logo, x, y, _softwareWidth, 24, 1, 0, 2, 65)
     }
   }
 

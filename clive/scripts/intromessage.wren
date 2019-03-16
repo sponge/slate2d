@@ -50,7 +50,7 @@ class IntroMessage {
 
     Draw.setColor(255, 255, 255, 255)
 
-    Draw.sprite(_banner, 0, w/2 - 225, 10, 1, 3)
+    Draw.sprite(_banner, 0, w/2 - 225, 10, 3)
 
     Draw.setTextStyle(_bodyFont, 32, 1.0, Align.Left+Align.Top)
     Draw.text(128, 80, h/720*w-256, "Thanks for purchasing Clive Sturridge's Battlement Defense Legacy Collection!\n\nWhat you are about to play is a museum-grade collection of classic tower defense games, created by the iconic British programmer and designer, Sir Clive Sturridge. Sir Clive's incredible forethought and unceasing commitment to producing quality games has made him a living legend and household name across the world.\n\nWe present, for the first time ever, all of his work in a single collection.

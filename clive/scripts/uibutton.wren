@@ -136,7 +136,9 @@ class GameSelectButton is UIButton {
     var scale = _scale * 0.5
     var width = _imgW * scale
     var height = _imgH * scale
-    Draw.image(_imgHnd, x + ((w - width) / 2), y+10, width * (1/scale), height * (1/scale), _alpha, scale)
+    Draw.setColor(255, 255, 255, _alpha * 255)
+    Draw.image(_imgHnd, x + ((w - width) / 2), y+10, width * (1/scale), height * (1/scale), scale)
+    Draw.setColor(255, 255, 255, 255)
   }
 }
 

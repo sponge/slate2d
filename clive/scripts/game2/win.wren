@@ -60,7 +60,7 @@ class Game2Win {
   }
 
   draw(w, h) {
-    Draw.clear(0, 0, 0, 255)
+    Draw.clear()
     Draw.scale(h/360)
 
     drawCenteredText(_font, 320, 16, "THE POUND IS SAVED!", 2.0)
@@ -85,10 +85,10 @@ Tester: Nigel Humphreys
     drawCenteredText(_font, 320, 350, "CRACKED BY ALLiGATOR 1988", 1.0)
 
     for (goat in _goats) {
-      Draw.sprite(_goatSpr, 0, goat[0], goat[1], 1.0, 1, 1)
+      Draw.sprite(_goatSpr, 0, goat[0], goat[1], 1, 1)
     }
 
     var frame = (_time * 8% 4).floor
-    Draw.sprite(_spr, 8 + (frame * 2), 550, 70, 1.0, 4, 0, 2, 2)
+    Draw.sprite(_spr, 8 + (frame * 2), 550, 70, 4, 0, 2, 2)
   }
 }

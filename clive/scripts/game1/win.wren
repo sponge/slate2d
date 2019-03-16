@@ -58,6 +58,6 @@ class Game1Win {
     y = y + 16
 
     var frame = (_time * 8% 4).floor
-    Draw.sprite(_spr, 8 + (frame * 2), w/2 - 8, h/2 - 32, 255, 1, 0, 2, 2)
+    Draw.sprite(_spr, 8 + (frame * 2), w/2 - 8, h/2 - 32, 1, 0, 2, 2)
   }
 }

@@ -603,7 +603,13 @@ void wren_dc_submit(WrenVM *vm) {
 
 void wren_dc_clear(WrenVM *vm) {
 	NOTUSED(vm);
-	DC_Clear();
+	CHECK_ARGS(4, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
+
+	byte r = (byte)wrenGetSlotDouble(vm, 1);
+	byte g = (byte)wrenGetSlotDouble(vm, 2);
+	byte b = (byte)wrenGetSlotDouble(vm, 3);
+	byte a = (byte)wrenGetSlotDouble(vm, 4);
+	DC_Clear(r, g, b, a);
 }
 #pragma endregion
 
@@ -983,7 +989,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Draw", true, "mapLayer(_,_,_,_,_,_,_)", wren_dc_drawmaplayer },
 	{ "engine", "Draw", true, "sprite(_,_,_,_,_,_,_,_,_)", wren_dc_drawsprite },
 	{ "engine", "Draw", true, "submit()", wren_dc_submit },
-	{ "engine", "Draw", true, "clear()", wren_dc_clear },
+	{ "engine", "Draw", true, "clear(_,_,_,_)", wren_dc_clear },
 
 	{ "engine", "TileMap", true, "setCurrent(_)", wren_map_setcurrent },
 	{ "engine", "TileMap", true, "layerByName(_)", wren_map_getlayerbyname },

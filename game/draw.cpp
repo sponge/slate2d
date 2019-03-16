@@ -26,10 +26,15 @@ void *R_GetCommandBuffer(int bytes) {
 
 void DC_Submit() {
 	trap->SubmitRenderCommands(&cmdList);
+	memset(&cmdList, 0, sizeof(cmdList));
 }
 
-void DC_Clear() {
-	memset(&cmdList, 0, sizeof(cmdList));
+void DC_Clear(byte r, byte g, byte b, byte a) {
+	GET_COMMAND(clearCommand_t, RC_CLEAR);
+	cmd->color[0] = r;
+	cmd->color[1] = g;
+	cmd->color[2] = b;
+	cmd->color[3] = a;
 }
 
 void DC_SetColor(byte r, byte g, byte b, byte a) {

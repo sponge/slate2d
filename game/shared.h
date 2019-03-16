@@ -52,6 +52,11 @@ typedef struct {
 
 typedef struct {
 	byte commandId;
+	byte	color[4];
+} clearCommand_t;
+
+typedef struct {
+	byte commandId;
 } resetTransformCommand_t;
 
 typedef struct {
@@ -165,6 +170,7 @@ typedef struct {
 typedef enum {
 	RC_END_OF_LIST,
 	RC_SET_COLOR,
+	RC_CLEAR,
 	RC_SET_TEXT_STYLE,
 	RC_RESET_TRANSFORM,
 	RC_SCALE,

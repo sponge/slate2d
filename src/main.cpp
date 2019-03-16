@@ -236,9 +236,6 @@ void main_loop() {
 		ImGui::End();
 	}
 
-	rlClearColor(0, 0, 0, 255);
-	rlClearScreenBuffers();
-
 	rlMatrixMode(RL_PROJECTION);                            // Enable internal projection matrix
 	rlLoadIdentity();                                       // Reset internal projection matrix
 	rlOrtho(0.0, inf.width, inf.height, 0.0, 0.0, 1.0); // Recalculate internal projection matrix

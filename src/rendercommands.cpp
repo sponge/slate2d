@@ -27,6 +27,15 @@ const void *RB_SetColor(const void *data) {
 	return (const void *)(cmd + 1);
 }
 
+const void *RB_Clear(const void *data) {
+	auto cmd = (const clearCommand_t *)data;
+
+	rlClearColor(cmd->color[0], cmd->color[1], cmd->color[2], cmd->color[3]);
+	rlClearScreenBuffers();
+
+	return (const void *)(cmd + 1);
+}
+
 const void *RB_ResetTransform(const void *data) {
 	auto cmd = (const resetTransformCommand_t *)data;
 
@@ -80,9 +89,6 @@ const void *RB_UseCanvas(const void *data) {
 	assert(canvas != nullptr);
 
 	rlEnableRenderTexture(canvas->texture.id);
-
-	rlClearColor(0, 0, 0, 0);
-	rlClearScreenBuffers();
 
 	// Initialize viewport and internal projection/modelview matrices
 	rlViewport(0, 0, canvas->w, canvas->h);
@@ -507,6 +513,10 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 
 		case RC_SET_COLOR:
 			data = RB_SetColor(data);
+			break;
+
+		case RC_CLEAR:
+			data = RB_Clear(data);
 			break;
 
 		case RC_RESET_TRANSFORM:

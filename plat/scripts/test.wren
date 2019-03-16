@@ -134,9 +134,7 @@ class Title {
     Draw.rect(120 + (_time/80).sin * 80, 3, 16, 16, Fill.Outline)
 
     Draw.setColor(60, 0, 90, 255)
-    Draw.setScissor(0, 0, 280, 110)
     Draw.circle(270, 100, 20, Fill.Outline)
-    Draw.resetScissor()
 
     Draw.setColor(0, 255, 0, 255)
     Draw.line(0, 0, 320, 180)

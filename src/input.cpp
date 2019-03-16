@@ -73,7 +73,7 @@ void ProcessInputEvent(SDL_Event ev) {
 }
 
 bool In_ButtonPressed(int buttonId, unsigned int delay, int repeat) {
-	buttonState_t *button = Con_GetButton(buttonId);
+	const buttonState_t *button = Con_GetButton(buttonId);
 
 	if (button == NULL || button->held == false) {
 		return false;
@@ -105,6 +105,10 @@ bool In_ButtonPressed(int buttonId, unsigned int delay, int repeat) {
 
 	if (muRepeat == 0) {
 		return true;
+	}
+
+	if (muRepeat < 0) {
+		return false;
 	}
 
 	int64_t repeatCount = heldTime / muRepeat;

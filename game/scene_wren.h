@@ -5,7 +5,7 @@ class WrenScene : public Scene {
 public:
 	WrenScene(const char *mainScriptName, const char *mapFileName) : mainScriptName(mainScriptName), mapFileName(mapFileName) {};
 	void Startup(ClientInfo* i) override;
-	void Update(double dt) override;
+	bool Update(double dt) override;
 	void Render() override;
 	~WrenScene();
 

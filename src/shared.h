@@ -31,7 +31,7 @@ class Scene {
 public:
 	virtual ~Scene() {};
 	virtual void Startup(ClientInfo* i) = 0;
-	virtual void Update(double dt) = 0;
+	virtual bool Update(double dt) = 0;
 	virtual void Render() = 0;
 	virtual void Console(const char *line) = 0;
 };
@@ -319,7 +319,7 @@ typedef struct gameImportFuncs_s {
 typedef struct gameExportFuncs_s {
 	void(*Init)(void *clientInfo, void *imGuiContext);
 	bool(*Console)();
-	void(*Frame)(double dt);
+	bool(*Frame)(double dt);
 	void(*Error)(int level, const char *msg);
 } gameExportFuncs_t;
 

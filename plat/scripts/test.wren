@@ -93,7 +93,7 @@ class Title {
   update(dt) {
     _upActive = Trap.buttonPressed(Button.Up)
 
-    for (i in 0..11) {
+    for (i in 0..Button.NumButtons) {
       if (Trap.buttonPressed(i, 0, 1000)) { Trap.printLn("button %(i)") }
     }
 

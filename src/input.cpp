@@ -93,7 +93,7 @@ bool In_ButtonPressed(int buttonId, unsigned int delay, int repeat) {
 	//	key->downtime
 	//);
 
-	if (com_frameTime >= firstTrigger && com_frameTime - frame_musec < firstTrigger) {
+	if (com_frameTime >= firstTrigger && last_update_musec < firstTrigger) {
 		return true;
 	}
 

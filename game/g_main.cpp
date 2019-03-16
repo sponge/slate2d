@@ -79,16 +79,19 @@ static bool Console() {
 	return false;	
 }
 
-static void Frame(double dt) {
+static bool Frame(double dt) {
 	if (scene == nullptr) {
-		return;
+		return true;
 	}
 
+	bool ranUpdate = false;
 	if (dt != 0) {
-		scene->Update(dt);
+		ranUpdate = scene->Update(dt);
 	}
 
 	scene->Render();
+
+	return ranUpdate;
 }
 
 static void Error(int level, const char *msg) {

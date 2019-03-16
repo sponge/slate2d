@@ -60,7 +60,7 @@ class Main {
     if (__accumTime >= 1/60) {
       __accumTime = __accumTime - 1/60
     } else {
-      return
+      return false
     }
 
     Debug.persist(true)
@@ -73,10 +73,6 @@ class Main {
     } else {
       Timer.tick(1)
     }
-
-
-    // see the hack comment in engine.wren for why this is
-    Trap.clearButtonPressed()
   }
 
   static draw(w, h) {

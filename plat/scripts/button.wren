@@ -6,4 +6,5 @@ class Button {
   static Start { 4 }
   static Jump { 5 }
   static Shoot { 6 }
+  static NumButtons { 7 }
 }

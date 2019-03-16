@@ -7,7 +7,7 @@
 
 extern bool consoleActive;
 
-extern int64_t com_frameTime, frame_musec;
+extern int64_t last_update_musec, com_frameTime, frame_musec;
 
 void DropToMenu();
 void SetWindowTitle(const char *title);

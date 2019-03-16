@@ -11,8 +11,8 @@ void WrenScene::Startup(ClientInfo* info) {
 	}
 }
 
-void WrenScene::Update(double dt) {
-	Wren_Update(vm, dt);
+bool WrenScene::Update(double dt) {
+	return Wren_Update(vm, dt);
 }
 
 void WrenScene::Render() {

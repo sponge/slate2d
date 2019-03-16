@@ -12,16 +12,13 @@ class Trap {
   foreign static registerButtons(names)
   foreign static buttonPressed(key, delay, repeat)
   static buttonPressed(key) { buttonPressed(key, 0, 0) }
+  static buttonPressedOnce(key) { buttonPressed(key, 0, -1) }
   foreign static mousePosition()
   foreign static inspect(obj, title)
   static inspect(obj) { inspect(obj, null) }
   foreign static getResolution()
   foreign static setWindowTitle(title)
   foreign static getPlatform()
-  foreign static clearButtonPressed()
-  // HACK: because i'm sometimes skipping update() to run at 60, key inputs may be delayed a frame. calling
-  // this after we run an update frame lets me continue to know if the button was pressed on this frame
-  // even if an update frame was skipped
 }
 
 foreign class CVar {

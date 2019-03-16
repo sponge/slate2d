@@ -89,7 +89,7 @@ class Main {
     if (__accumTime >= 1/60) {
       __accumTime = __accumTime - 1/60
     } else {
-      return
+      return false
     }
 
     Debug.persist(true)
@@ -99,9 +99,6 @@ class Main {
       __scene.update(1/60)
     }
     Timer.tick(1/60)
-
-    // see the hack comment in engine.wren for why this is
-    Trap.clearButtonPressed()
   }
 
   static draw(w, h) {

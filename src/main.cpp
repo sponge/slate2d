@@ -54,7 +54,7 @@ conState_t console;
 
 SoLoud::Soloud soloud;
 ClientInfo inf;
-int64_t frame_musec = 0, com_frameTime = 0;
+int64_t last_update_musec = 0, frame_musec = 0, com_frameTime = 0;
 //float frame_accum;
 bool frameAdvance = false;
 bool errorVisible = false;
@@ -242,7 +242,11 @@ void main_loop() {
 	rlMatrixMode(RL_MODELVIEW);                             // Enable internal modelview matrix
 	rlLoadIdentity();                                       // Reset internal modelview matrix
 
-	gexports->Frame(!eng_pause->integer || frameAdvance ? frame_musec / 1E6 : 0);
+	bool ranFrame = gexports->Frame(!eng_pause->integer || frameAdvance ? frame_musec / 1E6 : 0);
+	if (ranFrame) {
+		last_update_musec = com_frameTime;
+	}
+
 	consoleScene->Update(frame_musec / 1E6);
 
 	if (!eng_pause->integer || frameAdvance) {

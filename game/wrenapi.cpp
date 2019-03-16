@@ -210,19 +210,6 @@ void wren_trap_get_platform(WrenVM *vm) {
 	wrenSetSlotString(vm, 0, platform);
 }
 
-// HACK: because i'm sometimes skipping update() to run at 60, key inputs may be delayed a frame. calling
-// this after we run an update frame lets me continue to know if the button was pressed on this frame
-// even if an input was skipped 
-void wren_clear_button_pressed(WrenVM *vm) {
-	NOTUSED(vm);
-	int i = 0;
-	buttonState_t *button = trap->In_GetButton(i);
-	while (button != NULL) {
-		button->wasPressed = false;
-		button = trap->In_GetButton(++i);
-	}
-}
-
 #pragma endregion
 
 #pragma region CVar Module
@@ -949,7 +936,6 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Trap", true, "getResolution()", wren_trap_get_resolution },
 	{ "engine", "Trap", true, "setWindowTitle(_)", wren_trap_set_window_title },
 	{ "engine", "Trap", true, "getPlatform()", wren_trap_get_platform },
-	{ "engine", "Trap", true, "clearButtonPressed()", wren_clear_button_pressed},
 
 	{ "engine", "CVar", false, "bool()", wren_cvar_bool },
 	{ "engine", "CVar", false, "number()", wren_cvar_number },
@@ -1146,12 +1132,14 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	return vm;
 }
 
-void Wren_Update(WrenVM *vm, double dt) {
+bool Wren_Update(WrenVM *vm, double dt) {
 	wrenHandles_t* hnd = (wrenHandles_t*)wrenGetUserData(vm);
 	wrenEnsureSlots(vm, 2);
 	wrenSetSlotHandle(vm, 0, hnd->instanceHnd);
 	wrenSetSlotDouble(vm, 1, dt);
 	wrenCall(vm, hnd->updateHnd);
+	
+	return wrenGetSlotType(vm, 0) == WREN_TYPE_BOOL ? wrenGetSlotBool(vm, 0) : true;
 }
 
 void Wren_Draw(WrenVM *vm, int w, int h) {

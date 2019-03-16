@@ -9,11 +9,12 @@ void ConsoleScene::Startup(ClientInfo* info) {
 	inf = info;
 }
 
-void ConsoleScene::Update(double) {
+bool ConsoleScene::Update(double) {
 	if (!consoleActive) {
-		return;
+		return true;
 	}
 
+	return true;
 }
 
 void ConsoleScene::Render() {

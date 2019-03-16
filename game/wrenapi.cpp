@@ -511,21 +511,20 @@ void wren_dc_drawtext(WrenVM *vm) {
 }
 
 void wren_dc_drawimage(WrenVM *vm) {
-	CHECK_ARGS(10, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM,
-		WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
+	CHECK_ARGS(9, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM,
+		WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
 
 	AssetHandle imgId = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	float x = (float)wrenGetSlotDouble(vm, 2);
 	float y = (float)wrenGetSlotDouble(vm, 3);
 	float w = (float)wrenGetSlotDouble(vm, 4);
 	float h = (float)wrenGetSlotDouble(vm, 5);
-	float alpha = (float)wrenGetSlotDouble(vm, 6);
-	float scale = (float)wrenGetSlotDouble(vm, 7);
-	byte flipBits = (byte)wrenGetSlotDouble(vm, 8);
-	float ox = (float)wrenGetSlotDouble(vm, 9);
-	float oy = (float)wrenGetSlotDouble(vm, 10);
+	float scale = (float)wrenGetSlotDouble(vm, 6);
+	byte flipBits = (byte)wrenGetSlotDouble(vm, 7);
+	float ox = (float)wrenGetSlotDouble(vm, 8);
+	float oy = (float)wrenGetSlotDouble(vm, 9);
 
-	DC_DrawImage(imgId, x, y, w, h, alpha, scale, flipBits, ox, oy);
+	DC_DrawImage(imgId, x, y, w, h, scale, flipBits, ox, oy);
 }
 
 void wren_dc_drawline(WrenVM *vm) {
@@ -579,21 +578,20 @@ void wren_dc_drawmaplayer(WrenVM *vm) {
 }
 
 void wren_dc_drawsprite(WrenVM *vm) {
-	CHECK_ARGS(9, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM,
+	CHECK_ARGS(8, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM,
 		WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, 
-		WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
+		WREN_TYPE_NUM, WREN_TYPE_NUM);
 
 	AssetHandle sprId = (AssetHandle)wrenGetSlotDouble(vm, 1);
 	int id = (int)wrenGetSlotDouble(vm, 2);
 	float x = (float)wrenGetSlotDouble(vm, 3);
 	float y = (float)wrenGetSlotDouble(vm, 4);
-	float alpha = (float)wrenGetSlotDouble(vm, 5);
-	float scale = (float)wrenGetSlotDouble(vm, 6);
-	byte flipBits = (byte)wrenGetSlotDouble(vm, 7);
-	int w = (int)wrenGetSlotDouble(vm, 8);
-	int h = (int)wrenGetSlotDouble(vm, 9);
+	float scale = (float)wrenGetSlotDouble(vm, 5);
+	byte flipBits = (byte)wrenGetSlotDouble(vm, 6);
+	int w = (int)wrenGetSlotDouble(vm, 7);
+	int h = (int)wrenGetSlotDouble(vm, 8);
 
-	DC_DrawSprite(sprId, id, x, y, alpha, scale, flipBits, w, h);
+	DC_DrawSprite(sprId, id, x, y, scale, flipBits, w, h);
 }
 
 void wren_dc_submit(WrenVM *vm) {
@@ -982,12 +980,12 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Draw", true, "rect(_,_,_,_,_)", wren_dc_drawrect },
 	{ "engine", "Draw", true, "setTextStyle(_,_,_,_)", wren_dc_settextstyle },
 	{ "engine", "Draw", true, "text(_,_,_,_)", wren_dc_drawtext },
-	{ "engine", "Draw", true, "image(_,_,_,_,_,_,_,_,_,_)", wren_dc_drawimage },
+	{ "engine", "Draw", true, "image(_,_,_,_,_,_,_,_,_)", wren_dc_drawimage },
 	{ "engine", "Draw", true, "line(_,_,_,_)", wren_dc_drawline },
 	{ "engine", "Draw", true, "circle(_,_,_,_)", wren_dc_drawcircle },
 	{ "engine", "Draw", true, "tri(_,_,_,_,_,_,_)", wren_dc_drawtri },
 	{ "engine", "Draw", true, "mapLayer(_,_,_,_,_,_,_)", wren_dc_drawmaplayer },
-	{ "engine", "Draw", true, "sprite(_,_,_,_,_,_,_,_,_)", wren_dc_drawsprite },
+	{ "engine", "Draw", true, "sprite(_,_,_,_,_,_,_,_)", wren_dc_drawsprite },
 	{ "engine", "Draw", true, "submit()", wren_dc_submit },
 	{ "engine", "Draw", true, "clear(_,_,_,_)", wren_dc_clear },
 

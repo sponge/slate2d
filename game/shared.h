@@ -127,7 +127,7 @@ typedef struct {
 
 typedef struct {
 	byte commandId;
-	float x, y, w, h, ox, oy, angle, alpha, scale;
+	float x, y, w, h, ox, oy, angle, scale;
 	byte flipBits;
 	unsigned int imgId;
 } drawImageCommand_t;
@@ -137,7 +137,6 @@ typedef struct {
 	unsigned int spr;
 	int id;
 	float x, y;
-	float alpha;
 	float scale;
 	byte flipBits;
 	int w, h;

@@ -83,12 +83,11 @@ class Draw {
     Draw.text(x, y, 0, text)
   }
   static bmpText(fntId, x, y, text) { bmpText(fntId, x, y, text, 1.0) }
-  foreign static image(imgId, x, y, w, h, alpha, scale, flipBits, ox, oy)
-  static image(imgId, x, y, w, h, alpha, scale, flipBits) { image(imgId, x, y, w, h, alpha, scale, flipBits, 0, 0) }
-  static image(imgId, x, y, w, h, alpha, scale) { image(imgId, x, y, w, h, alpha, scale, 0, 0, 0) }
-  static image(imgId, x, y, w, h, alpha) { image(imgId, x, y, w, h, alpha, 1.0, 0, 0, 0) }
-  static image(imgId, x, y, w, h) { image(imgId, x, y, w, h, 1.0, 1.0, 0, 0, 0) }
-  static image(imgId, x, y) { image(imgId, x, y, 0, 0, 1.0, 1.0, 0, 0, 0) }
+  foreign static image(imgId, x, y, w, h, scale, flipBits, ox, oy)
+  static image(imgId, x, y, w, h, scale, flipBits) { image(imgId, x, y, w, h, scale, flipBits, 0, 0) }
+  static image(imgId, x, y, w, h, scale) { image(imgId, x, y, w, h, scale, 0, 0, 0) }
+  static image(imgId, x, y, w, h) { image(imgId, x, y, w, h, 1.0, 0, 0, 0) }
+  static image(imgId, x, y) { image(imgId, x, y, 0, 0, 1.0, 0, 0, 0) }
   foreign static line(x1, y1, x2, y2)
   foreign static circle(x, y, radius, outline)
   foreign static tri(x1, y1, x2, y2, x3, y3, outline)
@@ -96,11 +95,10 @@ class Draw {
   static mapLayer(layer, x, y, cellX, cellY) { mapLayer(layer, x, y, cellX, cellY, 0, 0) }
   static mapLayer(layer, x, y) { mapLayer(layer, x, y, 0, 0, 0, 0) }
   static mapLayer(layer) { mapLayer(layer, 0, 0, 0, 0, 0, 0) }
-  foreign static sprite(spr, id, x, y, alpha, scale, flipBits, w, h)
-  static sprite(sprId, id, x, y, alpha, scale, flipBits) { sprite(sprId, id, x, y, alpha, scale, flipBits, 1, 1) }
-  static sprite(sprId, id, x, y, alpha, scale) { sprite(sprId, id, x, y, alpha, scale, 0, 1, 1) }
-  static sprite(sprId, id, x, y, alpha) { sprite(sprId, id, x, y, alpha, 1.0, 0, 1, 1) }
-  static sprite(sprId, id, x, y) { sprite(sprId, id, x, y, 1.0, 1.0, 0, 1, 1) }
+  foreign static sprite(spr, id, x, y, scale, flipBits, w, h)
+  static sprite(sprId, id, x, y, scale, flipBits) { sprite(sprId, id, x, y, scale, flipBits, 1, 1) }
+  static sprite(sprId, id, x, y, scale) { sprite(sprId, id, x, y, scale, 0, 1, 1) }
+  static sprite(sprId, id, x, y) { sprite(sprId, id, x, y, 1.0, 0, 1, 1) }
 
   foreign static submit()
   foreign static clear(r, g, b, a)

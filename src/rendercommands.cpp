@@ -253,7 +253,7 @@ const void *RB_DrawText(const void *data) {
 	return (const void *)(text + cmd->strSz);
 }
 
-void DrawImage(float x, float y, float w, float h, float ox, float oy, float alpha, float scale, byte flipBits, unsigned int handle, int imgW, int imgH) {
+void DrawImage(float x, float y, float w, float h, float ox, float oy, float scale, byte flipBits, unsigned int handle, int imgW, int imgH) {
 	bool flipX = flipBits & FLIP_H;
 	bool flipY = flipBits & FLIP_V;
 	bool flipDiag = flipBits & FLIP_DIAG;
@@ -273,8 +273,7 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float alp
 	}
 
 	rlBegin(RL_QUADS);
-	// FIXME: alpha * 255 bad! we use 0 - 255 everywhere but 0 - 1 here. come back to this and make it consistent everywhere!
-	rlColor4ub(state.color[0], state.color[1], state.color[2], (byte)(alpha * 255));
+	rlColor4ub(state.color[0], state.color[1], state.color[2], state.color[3]);
 
 	rlNormal3f(0, 0, 1);
 
@@ -315,13 +314,13 @@ const void *RB_DrawImage(const void *data) {
 		float h = cmd->h == 0 ? canvas->h : cmd->h;
 		byte flipBits = cmd->flipBits;
 		flipBits ^= FLIP_V;
-		DrawImage(cmd->x, cmd->y, w, h, cmd->ox, cmd->oy, cmd->alpha, cmd->scale, flipBits, canvas->texture.texture.id, canvas->w, canvas->h);
+		DrawImage(cmd->x, cmd->y, w, h, cmd->ox, cmd->oy, cmd->scale, flipBits, canvas->texture.texture.id, canvas->w, canvas->h);
 	}
 	else {
 		Image *image = Get_Img(cmd->imgId);
 		float w = cmd->w == 0 ? image->w : cmd->w;
 		float h = cmd->h == 0 ? image->h : cmd->h;
-		DrawImage(cmd->x, cmd->y, w, h, cmd->ox, cmd->oy, cmd->alpha, cmd->scale, cmd->flipBits, image->hnd, image->w, image->h);
+		DrawImage(cmd->x, cmd->y, w, h, cmd->ox, cmd->oy, cmd->scale, cmd->flipBits, image->hnd, image->w, image->h);
 	}
 	return (const void *)(cmd + 1);
 }
@@ -347,7 +346,6 @@ const void *RB_DrawSprite(const void *data) {
 		(float)crunch->h * cmd->h,
 		(float)crunch->x,
 		(float)crunch->y,
-		cmd->alpha,
 		cmd->scale,
 		cmd->flipBits,
 		img->hnd,
@@ -496,7 +494,7 @@ const void *RB_DrawMapLayer(const void *data) {
 					(float)ts->tile_height,
 					(float)tile->ul_x,
 					(float)tile->ul_y,
-					1.0f, 1.0f, flipBits, image->hnd, image->w, image->h
+					1.0f, flipBits, image->hnd, image->w, image->h
 				);
 			}
 		}

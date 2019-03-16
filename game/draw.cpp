@@ -126,7 +126,7 @@ void DC_DrawText(float x, float y, float w, const char *text) {
 	strncpy((char*)strStart, text, strlen(text));
 }
 
-void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h, float alpha, float scale, byte flipBits, float ox, float oy) {
+void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h, float scale, byte flipBits, float ox, float oy) {
 	GET_COMMAND(drawImageCommand_t, RC_DRAW_IMAGE)
 	cmd->x = x;
 	cmd->y = y;
@@ -134,19 +134,17 @@ void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h, float 
 	cmd->h = h;
 	cmd->ox = ox;
 	cmd->oy = oy;
-	cmd->alpha = alpha;
 	cmd->scale = scale;
 	cmd->flipBits = flipBits;
 	cmd->imgId = imgId;
 }
 
-void DC_DrawSprite(unsigned int spr, int id, float x, float y, float alpha, float scale, byte flipBits, int w, int h) {
+void DC_DrawSprite(unsigned int spr, int id, float x, float y, float scale, byte flipBits, int w, int h) {
 	GET_COMMAND(drawSpriteCommand_t, RC_DRAW_SPRITE);
 	cmd->spr = spr;
 	cmd->id = id;
 	cmd->x = x;
 	cmd->y = y;
-	cmd->alpha = alpha;
 	cmd->scale = scale;
 	cmd->flipBits = flipBits;
 	cmd->w = w;

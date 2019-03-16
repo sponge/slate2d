@@ -913,7 +913,7 @@ void Con_AllocateButtons(const char **buttonNames, int buttonCount) {
 // returns a pointer to a button. pointer should be stable as long as you don't call
 // Con_AllocateButtons a second time.
 buttonState_t *Con_GetButton(int buttonNum) {
-	if (buttonNum < 0 || buttonNum > con->buttons.length) {
+	if (buttonNum < 0 || buttonNum >= con->buttons.length) {
 		return NULL;
 	}
 

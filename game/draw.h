@@ -5,7 +5,7 @@ void DC_ResetTransform();
 void DC_Scale(float x, float y);
 void DC_Rotate(float angle);
 void DC_Translate(float x, float y);
-void DC_SetScissor(float x, float y, float w, float h);
+void DC_SetScissor(int x, int y, int w, int h);
 void DC_ResetScissor();
 void DC_UseCanvas(unsigned int canvasId);
 void DC_ResetCanvas();

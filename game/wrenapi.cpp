@@ -437,10 +437,10 @@ void wren_dc_translate(WrenVM *vm) {
 void wren_dc_setscissor(WrenVM *vm) {
 	CHECK_ARGS(4, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
 
-	float x = (float) wrenGetSlotDouble(vm, 1);
-	float y = (float) wrenGetSlotDouble(vm, 2);
-	float w = (float) wrenGetSlotDouble(vm, 3);
-	float h = (float) wrenGetSlotDouble(vm, 4);
+	int x = (int) wrenGetSlotDouble(vm, 1);
+	int y = (int) wrenGetSlotDouble(vm, 2);
+	int w = (int) wrenGetSlotDouble(vm, 3);
+	int h = (int) wrenGetSlotDouble(vm, 4);
 
 	DC_SetScissor(x, y, w, h);
 }

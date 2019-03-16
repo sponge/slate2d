@@ -66,7 +66,7 @@ void DC_Translate(float x, float y) {
 	cmd->y = y;
 }
 
-void DC_SetScissor(float x, float y, float w, float h) {
+void DC_SetScissor(int x, int y, int w, int h) {
 	GET_COMMAND(setScissorCommand_t, RC_SET_SCISSOR)
 	cmd->x = x;
 	cmd->y = y;

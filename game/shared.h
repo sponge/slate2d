@@ -77,7 +77,7 @@ typedef struct {
 
 typedef struct {
 	byte commandId;
-	float x, y, w, h;
+	int x, y, w, h;
 } setScissorCommand_t;
 
 typedef struct {

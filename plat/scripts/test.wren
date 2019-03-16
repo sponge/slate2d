@@ -115,10 +115,10 @@ class Title {
       Trap.printWin("window name", "scrolling test", i)
     }
 
-    Draw.clear()
     Draw.resetTransform()
 
     Draw.useCanvas(_canvas)
+    Draw.clear(0, 0, 0, 255)
 
     Draw.useShader(_shader)
     Draw.rect(0, 0, 320, 180, false)
@@ -130,7 +130,7 @@ class Title {
     Draw.mapLayer(_worldLayer, 4, 4, 0, 14, 8, 99)
     Draw.mapLayer(_bgLayer, 4, 4, 0, 14, 8, 99)
 
-    Draw.setColor(255, 0, 0, 255)
+    Draw.setColor(255, 0, 0, 128)
     Draw.rect(120 + (_time/80).sin * 80, 3, 16, 16, Fill.Outline)
 
     Draw.setColor(60, 0, 90, 255)

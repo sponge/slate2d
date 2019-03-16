@@ -103,7 +103,7 @@ class Draw {
   static sprite(sprId, id, x, y) { sprite(sprId, id, x, y, 1.0, 1.0, 0, 1, 1) }
 
   foreign static submit()
-  foreign static clear()
+  foreign static clear(r, g, b, a)
 }
 
 class ImageFlags {

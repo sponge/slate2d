@@ -60,7 +60,7 @@ class Game2Win {
   }
 
   draw(w, h) {
-    Draw.clear()
+    Draw.clear(0, 0, 0, 255)
     Draw.scale(h/360)
 
     drawCenteredText(_font, 320, 16, "THE POUND IS SAVED!", 2.0)

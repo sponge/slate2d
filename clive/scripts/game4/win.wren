@@ -58,7 +58,7 @@ class Game4Win {
   }
 
   draw(w, h) {
-    Draw.clear()
+    Draw.clear(0, 0, 0, 255)
     Draw.scale(h/720)
 
     Draw.setTextStyle(_font, 36, 1.0, Align.Center+Align.Top)

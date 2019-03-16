@@ -326,7 +326,7 @@ class Game {
   }
 
   draw(w, h) {
-    Draw.clear()
+    Draw.clear(0, 0, 0, 255)
     Draw.resetTransform()
     Draw.scale(h / _cam.h)
 

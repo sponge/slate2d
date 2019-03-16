@@ -344,7 +344,7 @@ class TD {
   }
 
   draw(w, h) {
-    Draw.clear()
+    Draw.clear(0, 0, 0, 255)
     Draw.resetTransform()
     _scale = h / _vHeight
     Draw.scale(_scale)

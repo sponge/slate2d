@@ -64,7 +64,7 @@ class GameOver {
   }
 
   draw(w, h) {
-    Draw.clear()
+    Draw.clear(0, 0, 0, 255)
     Draw.resetTransform()
     Draw.scale(h / 180)
 

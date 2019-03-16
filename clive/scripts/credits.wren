@@ -50,7 +50,7 @@ class Credits {
   }
 
   draw(w, h) {
-    Draw.clear()
+    Draw.clear(0, 0, 0, 255)
     Draw.resetTransform()
 
     Draw.setColor(0, 57, 113, 255)

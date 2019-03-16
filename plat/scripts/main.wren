@@ -61,7 +61,7 @@ class Main {
 
   static draw(w, h) {
     Debug.persist(false)
-    Draw.clear()
+    Draw.clear(0, 0, 0, 255)
     if (__scene != null) {
       __scene.draw(w, h)
     }

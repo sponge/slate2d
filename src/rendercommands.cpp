@@ -62,12 +62,12 @@ const void *RB_Translate(const void *data) {
 const void *RB_SetScissor(const void *data) {
 	auto cmd = (const setScissorCommand_t *)data;
 
-	//if (cmd->w <= 0 || cmd->h <= 0) {
-	//	rlViewport(0, 0, 1280, 720);
-	//}
-	//else {
-	//	rlViewport(cmd->x, cmd->y, cmd->w, cmd->h);
-	//}
+	if (cmd->w <= 0 || cmd->h <= 0) {
+		EndScissorMode();
+	}
+	else {
+		BeginScissorMode(cmd->x, cmd->y, cmd->w, cmd->h);
+	}
 
 	return (const void *)(cmd + 1);
 }

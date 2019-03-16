@@ -489,6 +489,9 @@ void BeginShaderMode(Shader shader);              // Begin custom shader drawing
 void EndShaderMode(void);                         // End custom shader drawing (use default shader)
 void BeginBlendMode(int mode);                    // Begin blending mode (alpha, additive, multiplied)
 void EndBlendMode(void);                          // End blending mode (reset to default: alpha blending)
+void BeginScissorMode(int x, int y, int width, int height);
+void EndScissorMode(void);
+
 
 // VR control functions
 VrDeviceInfo GetVrDeviceInfo(int vrDeviceType);   // Get VR device information for some standard devices

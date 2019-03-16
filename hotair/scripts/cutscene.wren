@@ -125,13 +125,13 @@ class Cutscene {
         _bubble,
         _uncleState["x"] + 16,
         _uncleState["y"] - 17 - (24 * (_uncleState["scale"] - 1)),
-        0, 0, 1.0, _uncleState["scale"])
+        0, 0, _uncleState["scale"])
       Draw.sprite(
         _icons,
         _uncleState["icon"],
         _uncleState["x"] + 16 + (6 * _uncleState["scale"]),
         _uncleState["y"] - 14 - (22 * (_uncleState["scale"] - 1)),
-        1.0, _uncleState["scale"])
+        _uncleState["scale"])
     } else {
     }
   }

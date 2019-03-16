@@ -483,7 +483,7 @@ class Game {
       frame = _t % 48 < 24 ? 1 : 0
     }
 
-    Draw.sprite(_bg, frame, x, 64, 1.0, 2.0)
+    Draw.sprite(_bg, frame, x, 64, 2.0)
   }
 
   drawGrass(range) {
@@ -499,7 +499,7 @@ class Game {
       var x = -32 + (-_cam.x * (i+1) / 5 + i*4) % 32
       while (x < _cam.w) {
         var y = i * 6 + grassStart
-        Draw.image(_shag, x, y, 32, 16, 1.0, 1.0, i % 2 == 0 ? 1 : 0)
+        Draw.image(_shag, x, y, 32, 16, 1.0, i % 2 == 0 ? 1 : 0)
 
         x = x + 32
       }

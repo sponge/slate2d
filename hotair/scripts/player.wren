@@ -166,11 +166,14 @@ class Player is Entity {
     offs[0] = offs[0] + dx / 2 * 8 * -1
 
     // balloons
-    Draw.sprite(_mouth, 2, x+offs[0], y+offs[1], _invuln ? 0.4 : 1.0, 1.0, 0, 1, 1)
+    Draw.setColor(255, 255, 255, _invuln ? 100 : 255)
+    Draw.sprite(_mouth, 2, x+offs[0], y+offs[1], 1.0, 0, 1, 1)
 
     // sprite
     var spr = _flap ? 1 : 0
-    Draw.sprite(_mouth, spr, x - 3, y - 2, _invuln ? 0.4 : 1.0, 1.0, _flip, 1, 1)
+    Draw.sprite(_mouth, spr, x - 3, y - 2, 1.0, _flip, 1, 1)
+    Draw.setColor(255, 255, 255, 255)
+
 
     // starting platform
     if (!_launched) {

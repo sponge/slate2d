@@ -157,10 +157,10 @@ class Title {
     var topIcon = _currentIcon
     var bottomIcon = _currentIcon
     while (x <= w / (h/180)) {
-      Draw.sprite(_icons, 16, x - _cycle, 5, 1.0, 1.0, 0, 2, 2)
+      Draw.sprite(_icons, 16, x - _cycle, 5, 1.0, 0, 2, 2)
       Draw.sprite(_icons, topIcon, x - _cycle +3, 5+1)
 
-      Draw.sprite(_icons, 16, x + _cycle, 156, 1.0, 1.0, 0, 2, 2)
+      Draw.sprite(_icons, 16, x + _cycle, 156, 1.0, 0, 2, 2)
       Draw.sprite(_icons, bottomIcon, x + _cycle +3, 156+1)
 
       x = x + 32
@@ -168,7 +168,7 @@ class Title {
       bottomIcon = bottomIcon == 0 ? _iconCount - 1 : bottomIcon - 1
     }
 
-    Draw.image(_logo, 320/2 - 80, 38, 0, 0, 1.0, 1.0)
+    Draw.image(_logo, 320/2 - 80, 38, 0, 0, 1.0)
 
     Draw.setTextStyle(_font, 1.0, 1.0, Align.Center)
     Draw.text(0, 78, 320, "a game for the 2018 awful holiday jam")

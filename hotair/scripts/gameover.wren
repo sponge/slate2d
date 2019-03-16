@@ -75,7 +75,7 @@ class GameOver {
       var x = 32 * i + 100
       var y = 40 - ((i * step).sin * 24)
       var flip = x < 160 ? 1 : 0
-      Draw.image(_bubble, x, y, 0, 0, 1.0, 1.0, flip)
+      Draw.image(_bubble, x, y, 0, 0, 1.0, flip)
       Draw.sprite(_icons, (_startIcon + i) % _iconCount, flip == 1 ? x + 3 : x + 6, y + 3)
       i = i + 1
     }

@@ -41,11 +41,11 @@ class Mine is Entity {
 
   draw() {
     if (_flip) {
-      Draw.sprite(_icons, 16, x-16, y-4, 1.0, 1.0, 1, 2, 2)
+      Draw.sprite(_icons, 16, x-16, y-4, 1.0, 1, 2, 2)
     } else {
-      Draw.sprite(_icons, 16, x+24, y-4, 1.0, 1.0, 0, 2, 2)
+      Draw.sprite(_icons, 16, x+24, y-4, 1.0, 0, 2, 2)
     }
-    Draw.sprite(_icons, _spr, x-3, y-3, 1.0, 1.0, 0, 1, 1)
+    Draw.sprite(_icons, _spr, x-3, y-3, 1.0, 0, 1, 1)
   }
 
   die(hitByPlayer) {

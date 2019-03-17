@@ -1,6 +1,6 @@
 #include <physfs.h>
 #include <string.h>
-#include "../game/shared.h"
+#include "shared.h"
 #include "console.h"
 
 conVar_t *fs_basepath;

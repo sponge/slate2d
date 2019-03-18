@@ -1,8 +1,6 @@
 #include <assert.h>
 #include "assetloader.h"
 #include "files.h"
-#include "../shared.h"
-
 #include <soloud.h>
 #include <soloud_wav.h>
 #include <soloud_thread.h>

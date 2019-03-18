@@ -4,16 +4,15 @@
             "name": "Mac",
             "includePath": [
                 "/usr/include",
+                "${workspaceRoot}/src/external",
                 "${workspaceRoot}/libs/glew",
                 "${workspaceRoot}/libs/imgui",
-                "${workspaceRoot}/libs/lua",
-                "${workspaceRoot}/libs/luasocket",
-                "${workspaceRoot}/libs/nanovg",
                 "${workspaceRoot}/libs/physfs",
                 "${workspaceRoot}/libs/sdl",
-                "${workspaceRoot}/libs/soloud",
+                "${workspaceRoot}/libs/soloud/include",
                 "${workspaceRoot}/libs/tmx",
-                "${workspaceFolder}/src"
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/libs/crunch"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
@@ -27,12 +26,15 @@
             "macFrameworkPath": [
                 "/System/Library/Frameworks",
                 "/Library/Frameworks"
-            ]
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++17"
         },
         {
             "name": "Linux",
             "includePath": [
                 "/usr/include",
+                "${workspaceRoot}/src/external",
                 "${workspaceRoot}/libs/glew",
                 "${workspaceRoot}/libs/imgui",
                 "${workspaceRoot}/libs/lua",
@@ -41,7 +43,9 @@
                 "${workspaceRoot}/libs/physfs",
                 "${workspaceRoot}/libs/sdl",
                 "${workspaceRoot}/libs/soloud",
-                "${workspaceRoot}/libs/tmx"
+                "${workspaceRoot}/libs/tmx",
+                "${workspaceFolder}/libs/crunch",
+                "${workspaceFolder}/src"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
@@ -52,7 +56,9 @@
                     "${workspaceRoot}"
                 ]
             },
-            "intelliSenseMode": "clang-x64"
+            "intelliSenseMode": "clang-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
         },
         {
             "name": "Win32",
@@ -65,7 +71,6 @@
                 "${workspaceRoot}/src/external",
                 "${workspaceRoot}/libs/glew",
                 "${workspaceRoot}/libs/imgui",
-                "${workspaceRoot}/libs/luasocket",
                 "${workspaceRoot}/libs/physfs",
                 "${workspaceRoot}/libs/sdl",
                 "${workspaceRoot}/libs/soloud/include",

@@ -25,17 +25,6 @@ typedef struct {
 	int width, height;
 } ClientInfo;
 
-// SCENE
-
-class Scene {
-public:
-	virtual ~Scene() {};
-	virtual void Startup(ClientInfo* i) = 0;
-	virtual bool Update(double dt) = 0;
-	virtual void Render() = 0;
-	virtual void Console(const char *line) = 0;
-};
-
 // RENDER COMMANDS
 
 #define	MAX_RENDER_COMMANDS	0x40000

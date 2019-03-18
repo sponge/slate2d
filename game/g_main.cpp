@@ -2,13 +2,13 @@
 #include "../src/shared.h"
 #include "draw.h"
 #include <stdio.h>
-#include "scene_wren.h"
 #include "game.h"
 #include "external/sds.h"
+#include "wrenapi.h"
 
 ClientInfo *clientInf;
 gameImportFuncs_t *trap;
-Scene *scene;
+WrenVM *vm;
 
 #ifdef __EMSCRIPTEN__
 extern
@@ -22,10 +22,15 @@ void Cmd_Scene_f(void) {
 		sceneParams = nullptr;
 	}
 
-	auto newScene = new WrenScene(mainScriptName, sceneParams);
-	if (scene) { delete scene; }
-	scene = newScene;
-	scene->Startup(clientInf);
+	if (vm != nullptr) {
+		Wren_Scene_Shutdown(vm);
+		Wren_FreeVM(vm);
+	}
+
+	vm = Wren_Init(mainScriptName, sceneParams);
+	if (vm != nullptr) {
+		trap->Con_SetVar("engine.errorMessage", "");
+	}
 }
 
 // map (name) - load a map and switch to the game scene
@@ -49,10 +54,15 @@ void Cmd_Map_f(void) {
 		return;
 	}
 
-	auto newScene = new WrenScene("scripts/main.wren", filename);
-	if (scene) { delete scene; }
-	scene = newScene;
-	scene->Startup(clientInf);
+	if (vm != nullptr) {
+		Wren_Scene_Shutdown(vm);
+		Wren_FreeVM(vm);
+	}
+
+	vm = Wren_Init("scripts/main.wren", filename);
+	if (vm != nullptr) {
+		trap->Con_SetVar("engine.errorMessage", "");
+	}
 }
 
 static void Init(void *clientInfo, void *imGuiContext) {
@@ -60,10 +70,15 @@ static void Init(void *clientInfo, void *imGuiContext) {
 
 	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
 
-	auto newScene = new WrenScene("scripts/main.wren", nullptr);
-	if (scene) { delete scene; }
-	scene = newScene;
-	scene->Startup(clientInf);
+	if (vm != nullptr) {
+		Wren_Scene_Shutdown(vm);
+		Wren_FreeVM(vm);
+	}
+
+	vm = Wren_Init("scripts/main.wren", nullptr);
+	if (vm != nullptr) {
+		trap->Con_SetVar("engine.errorMessage", "");
+	}
 }
 
 static bool Console() {
@@ -74,22 +89,22 @@ static bool Console() {
 	// enough to make it worth it.)
 	if (strcasecmp(cmd, "map") == 0) { Cmd_Map_f(); return true; }
 	if (strcasecmp(cmd, "scene") == 0) { Cmd_Scene_f(); return true; }
-	if (strcasecmp(cmd, "eval") == 0) { scene->Console(line); return true; }
+	if (strcasecmp(cmd, "eval") == 0) { Wren_Console(vm, line); return true; }
 
 	return false;	
 }
 
 static bool Frame(double dt) {
-	if (scene == nullptr) {
+	if (vm == nullptr) {
 		return true;
 	}
 
 	bool ranUpdate = false;
 	if (dt != 0) {
-		ranUpdate = scene->Update(dt);
+		ranUpdate = Wren_Update(vm, dt);
 	}
 
-	scene->Render();
+	Wren_Draw(vm, clientInf->width, clientInf->height);
 
 	return ranUpdate;
 }
@@ -97,8 +112,11 @@ static bool Frame(double dt) {
 static void Error(int level, const char *msg) {
 	NOTUSED(msg);
 	NOTUSED(level);
-	delete scene;
-	scene = nullptr;
+	
+	if (vm) {
+		Wren_FreeVM(vm);
+		vm = nullptr;
+	}
 }
 
 static gameExportFuncs_t gameExports = {

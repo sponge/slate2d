@@ -3,6 +3,7 @@
 #include <stdlib.h> 
 #include <imgui.h>
 #include <ctype.h>
+#include "shared.h"
 
 // IMGUI CONSOLE
 
@@ -14,6 +15,7 @@ struct ConsoleUI
     ImVector<char*>       History;
     int                   HistoryPos;    // -1: new line, 0..History.Size-1 browsing history.
     ImVector<const char*> candidates;
+	bool                  consoleActive;
 
     ConsoleUI();
     ~ConsoleUI();
@@ -24,7 +26,7 @@ struct ConsoleUI
 
     void ClearLog();
     void AddLog(const char* fmt, ...) IM_FMTARGS(2);
-    void Draw(const char* title, bool* p_open);
+    void Draw(ClientInfo *inf);
     void ExecCommand(const char * command_line);
     static int TextEditCallbackStub(ImGuiTextEditCallbackData * data);
     int TextEditCallback(ImGuiTextEditCallbackData* data);

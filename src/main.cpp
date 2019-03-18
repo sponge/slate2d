@@ -34,7 +34,6 @@ extern "C" {
 
 #include "gamedll.h"
 
-#include "scene_console.h"
 #include "imgui_console.h"
 
 #include "shared.h"
@@ -61,7 +60,6 @@ bool errorVisible = false;
 
 gameExportFuncs_t * gexports;
 SDL_Window *window;
-ConsoleScene *consoleScene;
 
 const char * __cdecl tempstr(const char *format, ...) {
 	va_list		argptr;
@@ -91,14 +89,6 @@ void Cmd_FrameAdvance_f(void) {
 		frameAdvance = true;
 	}
 }
-
-void Cmd_ToggleConsole_f(void) {
-	if (consoleScene == nullptr) {
-		return;
-	}
-	consoleScene->consoleActive = !consoleScene->consoleActive;
-}
-
 void Cmd_Vid_Restart_f(void) {
 	inf.width = vid_width->integer;
 	inf.height = vid_height->integer;
@@ -206,7 +196,7 @@ void main_loop() {
 			return;
 		case SDL_KEYDOWN:
 			if (ev.key.keysym.sym == SDLK_BACKQUOTE) {
-				consoleScene->consoleActive = !consoleScene->consoleActive;
+				IMConsole()->consoleActive = !IMConsole()->consoleActive;
 				ImGui::SetWindowFocus(nullptr);
 				break;
 			}
@@ -247,13 +237,11 @@ void main_loop() {
 		last_update_musec = com_frameTime;
 	}
 
-	consoleScene->Update(frame_musec / 1E6);
-
 	if (!eng_pause->integer || frameAdvance) {
 		frameAdvance = false;
 	}
 
-	consoleScene->Render();
+	IMConsole()->Draw(&inf);
 
 	ImGui::Render();
 	ImGui_ImplSdl_RenderDrawData(ImGui::GetDrawData());
@@ -303,7 +291,6 @@ int main(int argc, char *argv[]) {
 	Con_AddCommand("exec", Cmd_Exec_f);
 	Con_AddCommand("quit", Cmd_Quit_f);
 	Con_AddCommand("vid_restart", Cmd_Vid_Restart_f);
-	Con_AddCommand("toggleconsole", Cmd_ToggleConsole_f);
 	Con_AddCommand("frame_advance", Cmd_FrameAdvance_f);
 	Con_AddCommand("clear", Cmd_Clear_f);
 
@@ -385,9 +372,6 @@ int main(int argc, char *argv[]) {
 	// now that we've ran the user configs and initialized everything else, apply everything else on the
 	// command line here. this will set the rest of the variables and run any commands specified.
 	Con_ExecuteCommandLine();
-
-	consoleScene = new ConsoleScene();
-	consoleScene->Startup(&inf);
 
 #ifdef _WIN32
 	static const char *lib = "game.dll";

@@ -11,7 +11,6 @@ extern "C" {
 #include <string>
 #include <map>
 #include <imgui.h>
-#include "scene_wren.h"
 
 static unsigned int mapId;
 extern ClientInfo *clientInf;

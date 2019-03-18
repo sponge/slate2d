@@ -78,7 +78,7 @@ void HashFiles(size_t& hash, const string& root)
 		int ret = PHYSFS_stat((root + "/" +*i).c_str(), &stat);
 		string fullPath = (root + "/" + *i).c_str();
 		if (ret == 0) {
-			Con_Printf("failed to stat file: %s", fullPath);
+			Con_Printf("failed to stat file: %s", fullPath.c_str());
 			exit(EXIT_FAILURE);
 			continue;
 		}

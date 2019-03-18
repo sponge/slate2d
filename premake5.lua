@@ -24,7 +24,7 @@ solution "Slate2D"
     platforms { "x86", "x64" }
 
   filter { "system:macosx" }
-    defines { "MACOS" }
+    defines { "MACOS", "GL_SILENCE_DEPRECATION" }
     platforms { "x64" }
 
   filter { "system:linux" }

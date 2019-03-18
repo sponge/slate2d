@@ -55,7 +55,10 @@ void Sound_Free(Asset &asset) {
 
 void Mod_Free(Asset &asset) {
 	SoLoud::Openmpt* mod = (SoLoud::Openmpt*) asset.resource;
-	delete mod;
+	// this probably leaks but if openmpt fails to init then this will crash
+	if (mod->mDataLen != 0) {
+		delete mod;
+	}
 }
 
 unsigned int Snd_Play(AssetHandle assetHandle, float volume, float pan, bool loop) {

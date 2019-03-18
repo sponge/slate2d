@@ -12,7 +12,8 @@
                 "${workspaceRoot}/libs/physfs",
                 "${workspaceRoot}/libs/sdl",
                 "${workspaceRoot}/libs/soloud",
-                "${workspaceRoot}/libs/tmx"
+                "${workspaceRoot}/libs/tmx",
+                "${workspaceFolder}/src"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,

@@ -8,25 +8,39 @@
       "name": "Launch (Debug)",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceRoot}/build/bin/Debug/engine.exe",   
+      "program": "${workspaceRoot}/build/bin/x86_64_Debug/slate2d.exe",   
       "preLaunchTask": "Build (Debug x64)",
-      "args": ["+set fs_basepath ${workspaceRoot}"],
+      "args": ["+set", "fs.basepath", "${workspaceRoot}"],
       "stopAtEntry": false,
-      "cwd": "${workspaceFolder}/build/bin/Debug/",
+      "cwd": "${workspaceFolder}/build/bin/x86_64_Debug/",
       "environment": [],
-      "externalConsole": true
+      "externalConsole": true,
+      "osx": {
+        "type":"cppdbg",
+        "preLaunchTask": "MacOS Build (Debug x64)",
+        "program": "${workspaceRoot}/build/bin/x86_64_Debug/slate2d",
+        "MIMode": "lldb",
+        "externalConsole": false
+      }
     },
     {
       "name": "Launch (Release)",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceRoot}/build/bin/Release/engine.exe",   
+      "program": "${workspaceRoot}/build/bin/x86_64_Release/slate2d.exe",   
       "preLaunchTask": "Build (Release x64)",
-      "args": ["+set fs_basepath ${workspaceRoot}"],
+      "args": ["+set", "fs.basepath", "${workspaceRoot}"],
       "stopAtEntry": false,
-      "cwd": "${workspaceFolder}/build/bin/Release/",
+      "cwd": "${workspaceFolder}/build/bin/x86_64_Release/",
       "environment": [],
-      "externalConsole": true
+      "externalConsole": true,
+      "osx": {
+        "type":"cppdbg",
+        "preLaunchTask": "MacOS Build (Release x64)",
+        "program": "${workspaceRoot}/build/bin/x86_64_Release/slate2d.app",
+        "MIMode": "lldb",
+        "externalConsole": false
+      }
     }
   ]
 }

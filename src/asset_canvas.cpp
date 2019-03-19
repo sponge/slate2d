@@ -13,9 +13,12 @@ void * Canvas_Load(Asset & asset) {
 
 	canvas->texture = rlLoadRenderTexture(canvas->w, canvas->h);
 
-	if ((asset.flags & IMAGEFLAGS_LINEAR_FILTER) == false) {
+	if (asset.flags & IMAGEFLAGS_LINEAR_FILTER) {
+		rlTextureParameters(canvas->texture.texture.id, RL_TEXTURE_MAG_FILTER, RL_FILTER_LINEAR);
+		rlTextureParameters(canvas->texture.texture.id, RL_TEXTURE_MIN_FILTER, RL_FILTER_LINEAR);
+	} else {
 		rlTextureParameters(canvas->texture.texture.id, RL_TEXTURE_MAG_FILTER, RL_FILTER_NEAREST);
-		rlTextureParameters(canvas->texture.texture.id, RL_TEXTURE_MIN_FILTER, RL_FILTER_NEAREST);
+		rlTextureParameters(canvas->texture.texture.id, RL_TEXTURE_MIN_FILTER, RL_FILTER_NEAREST);		
 	}
 
 	return (void*)canvas;

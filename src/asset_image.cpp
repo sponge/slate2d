@@ -5,7 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-void* Img_LoadPath(const char *path) {
+Image* Img_LoadPath(const char *path, int flags) {
 	unsigned char *buffer;
 	auto sz = FS_ReadFile(path, (void**)&buffer);
 
@@ -41,16 +41,22 @@ void* Img_LoadPath(const char *path) {
 		return nullptr;
 	}
 
-	// FIXME: nearest flags
+	if (flags & IMAGEFLAGS_LINEAR_FILTER) {
+		rlTextureParameters(tex, RL_TEXTURE_MAG_FILTER, RL_FILTER_LINEAR);
+		rlTextureParameters(tex, RL_TEXTURE_MIN_FILTER, RL_FILTER_LINEAR);
+	} else {
+		rlTextureParameters(tex, RL_TEXTURE_MAG_FILTER, RL_FILTER_NEAREST);
+		rlTextureParameters(tex, RL_TEXTURE_MIN_FILTER, RL_FILTER_NEAREST);		
+	}
 
 	img->hnd = tex;
 
-
-	return (void*)img;
+	return img;
 }
 
 void* Img_Load(Asset &asset) {
-	return Img_LoadPath(asset.path);
+	Image *img = Img_LoadPath(asset.path, asset.flags);
+	return (void*) img;
 }
 
 void Img_Free(Asset &asset) {

@@ -55,7 +55,7 @@ void* Sprite_Load(Asset &asset) {
 			int16_t texSprites = ReadShort(&curr);
 
 			// load the imgae into the GPU, copy it, and delete it
-			Image *img = (Image*)Img_LoadPath(imgPath);
+			Image *img = Img_LoadPath(imgPath, asset.flags);
 			atlas->images[tex] = *img;
 			delete img;
 

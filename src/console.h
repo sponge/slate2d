@@ -121,7 +121,7 @@ void Con_Print(const char *text);
 void Con_Printf(const char *fmt, ...);
 
 // adds a new command handler "name" takes a void(void) function for callback
-// if a command already exists, the callback is overriden. (FIXME: i think?)
+// if a command already exists, the callback is overriden.
 void Con_AddCommand(const char *name, conCmd_t cb);
 
 // removes the command handler "name"

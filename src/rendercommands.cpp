@@ -436,7 +436,6 @@ const void *RB_DrawTri(const void *data) {
 		rlBegin(RL_QUADS);
 		rlColor4ub(state.color[0], state.color[1], state.color[2], state.color[3]);
 
-		// FIXME: order of 2 and 3 matters. how to figure this out here and swap them?
 		rlVertex2f(cmd->x1, cmd->y1);
 		rlVertex2f(cmd->x2, cmd->y2);
 		rlVertex2f(cmd->x2, cmd->y2);

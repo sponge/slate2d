@@ -118,8 +118,10 @@ void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int
 	}
 
 	auto font = new BitmapFont();
-	// FIXME: unsafe?
-	memcpy(font->glyphs, glyphs, strlen(glyphs));
+	
+	size_t len = strlen(glyphs);
+	len = len > 256 ? 256 : len;
+	memcpy(font->glyphs, glyphs, len);
 	font->charSpacing = charSpacing;
 	font->glyphWidth = glyphWidth;
 	font->spaceWidth = spaceWidth;

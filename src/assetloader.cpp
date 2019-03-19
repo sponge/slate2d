@@ -5,12 +5,12 @@
 Asset assets[MAX_ASSETS];
 unsigned int nextAsset = 0;
 
-typedef struct AssetLoadHandler {
+typedef struct {
 	void*(*Load)(Asset &asset);
 	void(*Free)(Asset &asset);
 } AssetLoadHandler_t;
 
-static AssetLoadHandler assetHandler[ASSET_MAX] = {
+static AssetLoadHandler_t assetHandler[ASSET_MAX] = {
 	{}, // ASSET_ANY
 	{Img_Load, Img_Free},
 	{Sprite_Load, Sprite_Free},

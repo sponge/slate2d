@@ -19,7 +19,12 @@ void* Img_LoadPath(const char *path) {
 	int imgBpp;
 	unsigned char *loaded = stbi_load_from_memory(buffer, sz, &img->w, &img->h, &imgBpp, 0);
 
-	// FIXME: error handling?
+	free(buffer);
+
+	if (loaded == nullptr) {
+		Con_Error(ERR_GAME, "Img_LoadPath: failed to decode PNG %s", path);
+		return nullptr;
+	}
 
 	unsigned int format = 0;
 	if (imgBpp == 1) format = UNCOMPRESSED_GRAYSCALE;
@@ -29,14 +34,17 @@ void* Img_LoadPath(const char *path) {
 
 	unsigned int tex = rlLoadTexture(loaded, img->w, img->h, format, 1);
 
-	// FIXME: error handling?
+	stbi_image_free(loaded);
+
+	if (tex == 0) {
+		Con_Error(ERR_GAME, "Img_LoadPath: couldn't upload texture %s", path);
+		return nullptr;
+	}
 
 	// FIXME: nearest flags
 
 	img->hnd = tex;
 
-	free(buffer);
-	stbi_image_free(loaded);
 
 	return (void*)img;
 }

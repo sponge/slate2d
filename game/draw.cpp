@@ -5,8 +5,6 @@
 
 #define GET_COMMAND(type, id) type *cmd; cmd = (type *)R_GetCommandBuffer(sizeof(*cmd)); if (!cmd) { return; } cmd->commandId = id;
 
-// FIXME: wrap me in a class instead?
-
 static renderCommandList_t cmdList;
 
 void *R_GetCommandBuffer(int bytes) {

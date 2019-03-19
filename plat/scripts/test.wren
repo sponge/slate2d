@@ -121,9 +121,11 @@ class Title {
     Draw.clear(0, 0, 0, 255)
 
     Draw.useShader(_shader)
+    Draw.setColor(0, 0, 0, 255)
     Draw.rect(0, 0, 320, 180, false)
     Draw.useShader(null)
 
+    Draw.setColor(255, 255, 255, 255)
     Draw.mapLayer(_bgLayer)
     Draw.mapLayer(_worldLayer)
 

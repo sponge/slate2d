@@ -153,7 +153,7 @@ class Goat is Entity {
       _dx = xShorter ? 0 : Math.sign(_grid.goalX-x)
       _dy = xShorter ? Math.sign(_grid.goalY-y) : 0
 
-      // FIXME: if wall is in the way
+      // if wall is in the way
       if (_grid.isWall(x+_dx, y+_dy)) {
         _nextUpdate = _td.time + _destroyInterval
         _mode = "destroy"

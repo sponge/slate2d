@@ -84,7 +84,6 @@ class Main {
     if (fiber == null) return
     var result = fiber.try()
     if (fiber.error != null) {
-      // TODO: Include callstack.
       Trap.printLn("Runtime error: %(fiber.error)")
       return
     }

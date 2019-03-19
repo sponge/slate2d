@@ -102,13 +102,6 @@ int TTF_BreakLines(const char *string, const char *end, float breakRowWidth, TTF
 	fonsTextIterInit(ctx, &iter, 0, 0, string, end);
 	prevIter = iter;
 	while (fonsTextIterNext(ctx, &iter, &q)) {
-		// FIXME: error checking
-		/*
-		if (iter.prevGlyphIndex < 0 && nvg__allocTextAtlas(ctx)) { // can not retrieve glyph?
-			iter = prevIter;
-			fonsTextIterNext(ctx, &iter, &q); // try again
-		}
-		*/
 		prevIter = iter;
 		switch (iter.codepoint) {
 		case 9:			// \t

@@ -12,7 +12,7 @@ void * tmx_img_load(const char *path) {
 
 void tmx_img_free(void *address) {
 	NOTUSED(address);
-	// FIXME: should i do this? other things could be using the asset
+	// leave the asset around, since they'll often be cleared by the next scene load
 }
 
 void *tmx_fs(const char *filename, int *outSz) {

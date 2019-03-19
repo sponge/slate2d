@@ -135,7 +135,7 @@ void DropToMenu() {
 
 void ConH_Print(const char *line) {
 	IMConsole()->AddLog("%s", line);
-	printf(line);
+	printf("%s", line);
 }
 
 void ConH_Error(int level, const char *message) {
@@ -205,8 +205,6 @@ void main_loop() {
 		}
 	}
 	
-	//Cbuf_Execute(); // FIXME: the events would add keypresses to a buffer and then execute them all at once
-
 	ImGui_ImplSdl_NewFrame(window);
 
 	if (errorVisible && eng_errorMessage->string[0] == '\0') {
@@ -348,8 +346,10 @@ int main(int argc, char *argv[]) {
 		Con_Error(ERR_FATAL, "There was an error with OpenGL configuration.");
 	}
 
-	soloud.init();
-	// FIXME: check result code?
+	SoLoud::result result = soloud.init();
+	if (result != 0) {
+		Con_Error(ERR_FATAL, "Error initializing audio: %s", soloud.getErrorString(result));
+	}
 
 	SDL_GL_MakeCurrent(window, context);
 

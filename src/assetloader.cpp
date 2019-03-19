@@ -1,9 +1,9 @@
 #include "assetloader.h"
 #include "console.h"
+#include "external/vec.h"
 
-#define MAX_ASSETS 256
-Asset assets[MAX_ASSETS];
-unsigned int nextAsset = 0;
+typedef vec_t(Asset) asset_vec_t;
+asset_vec_t assets;
 
 typedef struct {
 	void*(*Load)(Asset &asset);
@@ -25,8 +25,8 @@ static AssetLoadHandler_t assetHandler[ASSET_MAX] = {
 };
 
 AssetHandle Asset_Find(const char *name) {
-	for (int i = 0; i < MAX_ASSETS; i++) {
-		Asset *asset = &assets[i];
+	for (int i = 0; i < assets.length; i++) {
+		Asset *asset = &assets.data[i];
 		if (strcmp(asset->name, name) == 0) {
 			return asset->id;
 		}
@@ -36,11 +36,11 @@ AssetHandle Asset_Find(const char *name) {
 }
 
 Asset* Asset_Get(AssetType_t type, AssetHandle id) {
-	if (id > MAX_ASSETS) {
+	if (id >= assets.length) {
 		return nullptr;
 	}
 
-	Asset* asset = &assets[id];
+	Asset* asset = &assets.data[id];
 	if (type != ASSET_ANY && type != asset->type) {
 		return nullptr;
 	}
@@ -49,6 +49,11 @@ Asset* Asset_Get(AssetType_t type, AssetHandle id) {
 }
 
 AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *path, int flags) {
+	if (assets.data == nullptr) {
+		vec_init(&assets);
+		vec_reserve(&assets, 256);
+	}
+
 	if (assetType < 0 || assetType > ASSET_MAX) {
 		Con_Printf("asset_create: assetType out of range name:%s path:%s", name, path);
 		return INVALID_ASSET;
@@ -62,25 +67,20 @@ AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *pa
 		return found;
 	}
 
-	if (nextAsset >= MAX_ASSETS) {
-		return INVALID_ASSET;
-	}
+	Asset asset = {0};
+	asset.id = assets.length;
+	asset.type = assetType;
+	asset.flags = flags;
+	strncpy(asset.path, path, sizeof(asset.path));
+	strncpy(asset.name, name, sizeof(asset.name));
 
-	Asset *asset = &assets[nextAsset];
-	asset->id = nextAsset;
-	asset->type = assetType;
-	asset->flags = flags;
-	strncpy(asset->path, path, sizeof(asset->path));
-	strncpy(asset->name, name, sizeof(asset->name));
-	asset->resource = nullptr;
-
-	nextAsset++;
+	vec_push(&assets, asset);
 	
-	return asset->id;
+	return asset.id;
 }
 
 void Asset_Load(AssetHandle i) {
-	Asset &asset = assets[i];
+	Asset &asset = assets.data[i];
 	if (asset.type == ASSET_ANY || asset.loaded) {
 		return;
 	}
@@ -96,20 +96,20 @@ void Asset_Load(AssetHandle i) {
 }
 
 void Asset_LoadAll() {
-	for (int i = 0; i < MAX_ASSETS; i++) {
+	for (int i = 0; i < assets.length; i++) {
 		Asset_Load(i);
 	}
 }
 
 void Asset_ClearAll() {
-	for (int i = 0; i < MAX_ASSETS; i++) {
-		Asset &asset = assets[i];
+	for (int i = 0; i < assets.length; i++) {
+		Asset &asset = assets.data[i];
 		if (asset.loaded == false) {
 			continue;
 		}
 		assetHandler[asset.type].Free(asset);
-		asset.resource = nullptr;
+		asset = {0};
 	}
-	memset(assets, 0, sizeof(Asset) * MAX_ASSETS);
-	nextAsset = 0;
+
+	vec_clear(&assets);
 }

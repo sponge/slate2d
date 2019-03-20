@@ -69,8 +69,12 @@ void Shader_Set(AssetHandle id, bool isFile, char *vs, char *fs) {
 void Shader_Free(Asset & asset) {
 	ShaderAsset *res = (ShaderAsset*)asset.resource;
 
-	UnloadShader(*res->shader);
+	if (GetShaderDefault().id == res->shader->id) {
+		Con_Print("not freeing default shader\n");
+	} else {
+		UnloadShader(*res->shader);
+		delete res->shader;
+	}
 
-	delete res->shader;
 	delete res;
 }

@@ -240,7 +240,7 @@ void BMPFNT_TextBox(const drawTextCommand_t *cmd, const char *string) {
 
 	int halign = state.align & (FONS_ALIGN_LEFT | FONS_ALIGN_CENTER | FONS_ALIGN_RIGHT);
 	const char *current = string, *prev = string;
-	float currWidth = 0;
+	int currWidth = 0;
 	float currY = cmd->y;
 	const char* lineStart = NULL;
 	int type = TEXT_SPACE, ptype = TEXT_SPACE;
@@ -275,25 +275,24 @@ void BMPFNT_TextBox(const drawTextCommand_t *cmd, const char *string) {
 		if (type == TEXT_NEWLINE) {
 			writeLine = true;
 		}
-		else if (lineStart == nullptr) {
-			if (type == TEXT_CHAR) {
+		else if (type != TEXT_IGNORE) {
+			if (lineStart == nullptr) {
 				lineStart = current;
 			}
-		}
-		else if (type != TEXT_IGNORE) {
-			float thisWidth = 0;
+
+			int thisWidth = 0;
 			if (type == TEXT_SPACE) {
-				thisWidth = font->spaceWidth * state.size;
+				thisWidth = font->spaceWidth;
 			}
 			else {
 				BitmapGlyph &glyph = font->offsets[currChar];
-				thisWidth = (glyph.end - glyph.start + font->charSpacing) * state.size;
+				thisWidth = glyph.end - glyph.start + font->charSpacing;
 			}
 
 			if (cmd->w > 0 && currWidth + thisWidth >= cmd->w) {
 				writeLine = true;
 			} else {
-				currWidth += thisWidth;
+				currWidth += thisWidth * state.size;
 			}
 		}
 

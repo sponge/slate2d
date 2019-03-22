@@ -30,6 +30,7 @@ extern "C" {
 
 #include "files.h"
 #include "input.h"
+#include "keys.h"
 #include "cvar_main.h"
 
 #include "gamedll.h"

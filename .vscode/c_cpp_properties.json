@@ -3,7 +3,6 @@
         {
             "name": "Mac",
             "includePath": [
-                "/usr/include",
                 "${workspaceRoot}/src/external",
                 "${workspaceRoot}/libs/glew",
                 "${workspaceRoot}/libs/imgui",
@@ -18,7 +17,6 @@
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "",
                 "path": [
-                    "/usr/include",
                     "${workspaceRoot}"
                 ]
             },

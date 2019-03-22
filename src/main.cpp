@@ -267,8 +267,8 @@ int main(int argc, char *argv[]) {
 	// initialize console. construct imgui console, setup handlers, and then initialize the actual console
 	IMConsole();
 	console.handlers.print = &ConH_Print;
-	console.handlers.getKeyForString = &Key_StringToKeynum;
-	console.handlers.getStringForKey = &Key_KeynumToString;
+	console.handlers.getKeyForString = &In_GetKeyNum;
+	console.handlers.getStringForKey = &In_GetKeyName;
 	console.handlers.error = &ConH_Error;
 
 	Con_Init(&console);

@@ -18,4 +18,4 @@ if exist %name%\icon.ico rcedit-x64 "build\package\%name%\%name%.exe" --set-icon
 "c:\Program Files\7-Zip\7z.exe" a -tzip build\package\%name%\base\pak00.pk3 .\base\*
 "c:\Program Files\7-Zip\7z.exe" u -tzip build\package\%name%\base\pak00.pk3 .\%name%\*
 
-"c:\Program Files\7-Zip\7z.exe" a -tzip build\package\%name%.zip .\build\package\*
+"c:\Program Files\7-Zip\7z.exe" a -tzip build\%name%.zip .\build\package\*

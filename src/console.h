@@ -109,7 +109,12 @@ conState_t * Con_GetActive();
 
 // throws an error, see ERR_ constants. should be handled by error function in conState_t.handlers
 void Con_RawError(int level, const char * fmt, ...);
-#define Con_Error(level, fmt, ...) Con_RawError(level, "%s: " fmt, __func__, __VA_ARGS__)
+
+// error macros to automatically prefix function name to error message. use Con_Errorf if you wish to pass
+// additional args into the error string
+#define Con_Error(level, fmt) Con_RawError(level, "%s: " fmt, __func__)
+#define Con_Errorf(level, fmt, ...) Con_RawError(level, "%s: " fmt, __func__, __VA_ARGS__)
+
 
 // parses and handles the string. this is the main entry point to using the
 // console and is typically what you will want to pass user input to.

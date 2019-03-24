@@ -47,7 +47,7 @@ void* TTF_Load(Asset &asset) {
 	auto sz = FS_ReadFile(asset.path, (void **)&font);
 
 	if (sz == -1) {
-		Con_Error(ERR_GAME, "couldn't load file %s", asset.path);
+		Con_Errorf(ERR_GAME, "couldn't load file %s", asset.path);
 		return nullptr;
 	}
 
@@ -304,7 +304,7 @@ int Asset_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
 	assert(asset != nullptr);
 
 	if (asset->type != ASSET_BITMAPFONT && asset->type != ASSET_FONT) {
-		Con_Error(ERR_GAME, "asset not font or bmpfont");
+		Con_Errorf(ERR_GAME, "asset %s not font or bmpfont", asset->name);
 		return -1;
 	}
 

@@ -310,7 +310,7 @@ const char* ini_get(ini_t *ini, const char *section, const char *key) {
 
 
 int ini_sget(
-  const ini_t *ini, const char *section, const char *key,
+  ini_t *ini, const char *section, const char *key,
   const char *scanfmt, void *dst
 ) {
   const char *val = ini_get(ini, section, key);

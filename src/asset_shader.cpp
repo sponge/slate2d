@@ -7,7 +7,7 @@ void * Shader_Load(Asset & asset) {
 
 	// shaders need to be setup before load.
 	if (asset.resource == nullptr) {
-		Con_Error(ERR_FATAL, "shader not setup before load %s", asset.name);
+		Con_Errorf(ERR_FATAL, "shader not setup before load %s", asset.name);
 		return nullptr;
 	}
 

@@ -5,7 +5,7 @@
 void * Canvas_Load(Asset & asset) {
 	// canvases need to be setup before load.
 	if (asset.resource == nullptr) {
-		Con_Error(ERR_FATAL, "canvas not setup before load %s", asset.name);
+		Con_Errorf(ERR_FATAL, "canvas not setup before load %s", asset.name);
 		return nullptr;
 	}
 
@@ -38,7 +38,7 @@ void Canvas_Set(AssetHandle id, int width, int height) {
 	}
 
 	if (width == 0 || height == 0) {
-		Con_Error(ERR_GAME, "width and height must be > 0");
+		Con_Errorf(ERR_GAME, "canvas %s width and height must be > 0", asset->name);
 		return;
 	}
 

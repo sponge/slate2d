@@ -73,13 +73,13 @@ void Sys_LoadDll(const char * module, void ** exports) {
 	}
 
 	if (gameDLL == nullptr) {
-		Con_Error(ERR_FATAL, "Couldn't load module %s", module);
+		Con_Errorf(ERR_FATAL, "Couldn't load module %s", module);
 	}
 
 	void(*gameDllEntry)(void ** exports, const void * imports) = (void(*)(void **, const void *)) SDL_LoadFunction(gameDLL, "dllEntry");
 
 	if (gameDllEntry == nullptr) {
-		Con_Error(ERR_FATAL, "Couldn't find dllEntry in %s", module);
+		Con_Errorf(ERR_FATAL, "Couldn't find dllEntry in %s", module);
 		return;
 	}
 

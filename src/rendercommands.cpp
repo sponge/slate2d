@@ -602,7 +602,7 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 			return;
 
 		default:
-			Con_Error(ERR_FATAL, "Bad render command byte id %i", *(const int *)data);
+			Con_Errorf(ERR_FATAL, "Bad render command byte id %i", *(const int *)data);
 			return;
 		}
 	}

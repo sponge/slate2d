@@ -309,7 +309,7 @@ conState_t *Con_GetActive() {
 }
 
 // raise an error. if no error handler is specified, just print it and exit.
-void Con_RawError(int level, const char *function, const char *fmt, ...) {
+void Con_RawError(int level, const char *fmt, ...) {
 	if (level == ERR_NONE) {
 		return;
 	}

@@ -307,7 +307,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0) {
-		Con_Error(ERR_FATAL, "There was an error initing SDL2: %s", SDL_GetError());
+		Con_Errorf(ERR_FATAL, "There was an error initing SDL2: %s", SDL_GetError());
 	}
 
 	atexit(SDL_Quit);
@@ -325,7 +325,7 @@ int main(int argc, char *argv[]) {
 	window = SDL_CreateWindow("Slate2D", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, inf.width, inf.height, SDL_WINDOW_OPENGL);
 
 	if (window == NULL) {
-		Con_Error(ERR_FATAL, "There was an error creating the window: %s", SDL_GetError());
+		Con_Errorf(ERR_FATAL, "There was an error creating the window: %s", SDL_GetError());
 	}
 
 	SDL_SetWindowFullscreen(window, vid_fullscreen->integer == 2 ? SDL_WINDOW_FULLSCREEN : vid_fullscreen->integer == 1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
@@ -339,7 +339,7 @@ int main(int argc, char *argv[]) {
 	SDL_GL_SetSwapInterval(vid_swapinterval->integer);
 
 	if (context == NULL) {
-		Con_Error(ERR_FATAL, "There was an error creating OpenGL context: %s", SDL_GetError());
+		Con_Errorf(ERR_FATAL, "There was an error creating OpenGL context: %s", SDL_GetError());
 	}
 
 	const unsigned char *version = glGetString(GL_VERSION);
@@ -349,7 +349,7 @@ int main(int argc, char *argv[]) {
 
 	SoLoud::result result = soloud.init();
 	if (result != 0) {
-		Con_Error(ERR_FATAL, "Error initializing audio: %s", soloud.getErrorString(result));
+		Con_Errorf(ERR_FATAL, "Error initializing audio: %s", soloud.getErrorString(result));
 	}
 
 	SDL_GL_MakeCurrent(window, context);

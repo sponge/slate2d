@@ -19,7 +19,7 @@ enum TextCodepointType {
 void* BMPFNT_Load(Asset &asset) {
 	// bitmap fonts need to be setup before load.
 	if (asset.resource == nullptr) {
-		Con_Error(ERR_FATAL, "bitmap font not setup before load %s", asset.path);
+		Con_Errorf(ERR_FATAL, "bitmap font not setup before load %s", asset.path);
 		return nullptr;
 	}
 
@@ -30,13 +30,13 @@ void* BMPFNT_Load(Asset &asset) {
 	auto img = stbi_load_from_memory((stbi_uc*)buffer, sz, &w, &h, &ch, 0);
 
 	if (img == nullptr) {
-		Con_Error(ERR_FATAL, "Failed to load bmpfont %s", asset.path);
+		Con_Errorf(ERR_FATAL, "Failed to load bmpfont %s", asset.path);
 		return nullptr;
 	}
 
 	if (ch != 4) {
 		stbi_image_free(img);
-		Con_Error(ERR_FATAL, "Bitmap font %s does not have 4 components", asset.path);
+		Con_Errorf(ERR_FATAL, "Bitmap font %s does not have 4 components", asset.path);
 		return nullptr;
 	}
 
@@ -109,7 +109,7 @@ void BMPFNT_ParseINI(Asset &asset, ini_t *ini) {
 	
 	const char * glyphs = ini_get(ini, asset.name, "glyphs");
 	if (glyphs == nullptr) {
-		Con_Error(ERR_FATAL, "missing key glyphs for asset %s", asset.name);
+		Con_Errorf(ERR_FATAL, "missing key glyphs for asset %s", asset.name);
 		return;
 	}
 

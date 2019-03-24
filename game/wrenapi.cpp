@@ -97,7 +97,7 @@ void wren_trap_error(WrenVM *vm) {
 
 	int err = (int) wrenGetSlotDouble(vm, 1);
 	const char *str = wrenGetSlotString(vm, 2);
-	trap->Error(err, tempstr("%s",str));
+	trap->Error(err, tempstr("wren script: %s",str));
 }
 
 void wren_trap_snd_play(WrenVM *vm) {
@@ -1074,12 +1074,12 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	char *mainStr;
 	int mainSz = trap->FS_ReadFile(mainScriptName, (void**)&mainStr);
 	if (mainSz <= 0) {
-		trap->Error(ERR_GAME, "wren error: couldn't load %s", mainScriptName);
+		trap->Error(ERR_GAME, "%s: couldn't load %s", __func__, mainScriptName);
 		return nullptr;
 	}
 
 	if (wrenInterpret(vm, mainStr) != WREN_RESULT_SUCCESS) {
-		trap->Error(ERR_GAME, "wren error: can't compile %s", mainScriptName);
+		trap->Error(ERR_GAME, "%s: can't compile %s", __func__, mainScriptName);
 		return nullptr;
 	}
 
@@ -1091,7 +1091,7 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	WrenHandle *gameClass = wrenGetSlotHandle(vm, 0);
 
 	if (gameClass == nullptr) {
-		trap->Error(ERR_GAME, "wren error: couldn't find Game class");
+		trap->Error(ERR_GAME, "%s: couldn't find Game class", __func__);
 		return nullptr;
 	}
 
@@ -1106,13 +1106,13 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	hnd->consoleHnd = wrenMakeCallHandle(vm, "console(_)");
 
 	if (hnd->updateHnd == nullptr) {
-		trap->Error(ERR_GAME, "wren error: couldn't find static update(_) on Main");
+		trap->Error(ERR_GAME, "%s: couldn't find static update(_) on Main", __func__);
 		Wren_FreeVM(vm);
 		return nullptr;
 	}
 
 	if (hnd->drawHnd == nullptr) {
-		trap->Error(ERR_GAME, "wren error: couldn't find static draw(_,_) on Main");
+		trap->Error(ERR_GAME, "%s: couldn't find static draw(_,_) on Main", __func__);
 		Wren_FreeVM(vm);
 		return nullptr;
 	}
@@ -1131,7 +1131,7 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	//wrenReleaseHandle(vm, gameClass);
 
 	if (wrenGetSlotCount(vm) == 0) {
-		trap->Error(ERR_GAME, "wren error: couldn't instantiate new Game class");
+		trap->Error(ERR_GAME, "%s: couldn't instantiate new Game class", __func__);
 		return nullptr;
 	}
 

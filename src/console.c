@@ -309,7 +309,7 @@ conState_t *Con_GetActive() {
 }
 
 // raise an error. if no error handler is specified, just print it and exit.
-void Con_Error(int level, const char *fmt, ...) {
+void Con_RawError(int level, const char *function, const char *fmt, ...) {
 	if (level == ERR_NONE) {
 		return;
 	}
@@ -317,7 +317,7 @@ void Con_Error(int level, const char *fmt, ...) {
 	va_list args;
 
 	va_start(args, fmt);
-	vsnprintf(con->error, 1024, fmt, args);
+	vsnprintf(con->error, sizeof(con->error), fmt, args);
 	va_end(args);
 
 	if (con->handlers.error) {
@@ -541,7 +541,7 @@ conVar_t *Con_GetVar(const char *name) {
 // returns a convar, which can be newly made.
 conVar_t *Con_GetVarDefault(const char *name, const char *defaultValue, int flags) {
 	if (!name || !defaultValue) {
-		Con_Error(ERR_FATAL, "Con_GetVarDefault: convar name or default value is null");
+		Con_Error(ERR_FATAL, "convar name or default value is null");
 		return NULL;
 	}
 
@@ -842,7 +842,7 @@ void Con_HandleKeyPress(int key, bool down, int64_t time) {
 // mostly wrapper for handler, only really used for bindlist
 const char * Con_GetStringForKey(int key) {
 	if (con->handlers.getStringForKey == NULL) {
-		Con_Error(ERR_FATAL, "Con_GetStringForKey: input system used without setting up handlers");
+		Con_Error(ERR_FATAL, "input system used without setting up handlers");
 		return NULL;
 	}
 
@@ -853,7 +853,7 @@ const char * Con_GetStringForKey(int key) {
 // mostly wrapper for handler, used to parse bind commands and convert them to key numbers
 int Con_GetKeyForString(const char *key) {
 	if (con->handlers.getKeyForString == NULL) {
-		Con_Error(ERR_FATAL, "Con_GetKeyForString: input system used without setting up handlers");
+		Con_Error(ERR_FATAL, "input system used without setting up handlers");
 		return -1;
 	}
 

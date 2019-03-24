@@ -5,7 +5,7 @@
 void * Canvas_Load(Asset & asset) {
 	// canvases need to be setup before load.
 	if (asset.resource == nullptr) {
-		Con_Error(ERR_FATAL, "Canvas_Load: canvas not setup before load %s", asset.name);
+		Con_Error(ERR_FATAL, "canvas not setup before load %s", asset.name);
 		return nullptr;
 	}
 
@@ -28,17 +28,17 @@ void Canvas_Set(AssetHandle id, int width, int height) {
 	Asset *asset = Asset_Get(ASSET_CANVAS, id);
 
 	if (asset == nullptr) {
-		Con_Error(ERR_GAME, "Sprite_Set: asset not found");
+		Con_Error(ERR_GAME, "asset not found");
 		return;
 	}
 
 	if (asset->loaded == true) {
-		Con_Printf("WARNING: Asset_Set: trying to set already loaded asset\n");
+		Con_Printf("WARNING: trying to set already loaded asset\n");
 		return;
 	}
 
 	if (width == 0 || height == 0) {
-		Con_Error(ERR_GAME, "Sprite_Set: width and height must be > 0");
+		Con_Error(ERR_GAME, "width and height must be > 0");
 		return;
 	}
 

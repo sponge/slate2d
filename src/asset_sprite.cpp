@@ -35,7 +35,7 @@ void* Sprite_Load(Asset &asset) {
 		byte *curr = crunch;
 
 		if (len == -1) {
-			Con_Error(ERR_GAME, "Sprite_Load: couldn't read file %s", asset.path);
+			Con_Error(ERR_GAME, "couldn't read file %s", asset.path);
 			return nullptr;
 		}
 
@@ -94,13 +94,13 @@ void* Sprite_Load(Asset &asset) {
 		SpriteAtlas *spr = (SpriteAtlas*)asset.resource;
 
 		if (spr->staticWidth == 0 || spr->staticHeight == 0) {
-			Con_Error(ERR_GAME, "Sprite_Load: staticWidth and staticHeight must not be 0 (missing Sprite_Set?)");
+			Con_Error(ERR_FATAL, "staticWidth and staticHeight must not be 0 (missing Sprite_Set?)");
 		}
 
 		Image *img = (Image*)Img_Load(asset);
 
 		if (img == nullptr) {
-			Con_Error(ERR_GAME, "Sprite_Load: image failed to load");
+			Con_Error(ERR_FATAL, "image failed to load");
 			return nullptr;
 		}
 
@@ -159,17 +159,17 @@ void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int
 	Asset *asset = Asset_Get(ASSET_SPRITE, assetHandle);
 
 	if (asset == nullptr) {
-		Con_Error(ERR_GAME, "Sprite_Set: asset not found");
+		Con_Error(ERR_FATAL, "asset not found");
 		return;
 	}
 	
 	if (strcmp("bin", FS_FileExtension(asset->path)) == 0) {
-		Con_Error(ERR_GAME, "Sprite_Set: can't call set on a crunched sprite");
+		Con_Error(ERR_FATAL, "can't call set on a crunched sprite");
 		return;
 	}
 
 	if (width <= 0 || height <= 0) {
-		Con_Error(ERR_GAME, "Sprite_Set: width and height must be greater than 0");
+		Con_Error(ERR_FATAL, "width and height must be greater than 0");
 		return;
 	}
 

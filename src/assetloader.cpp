@@ -98,7 +98,7 @@ void Asset_Load(AssetHandle i) {
 	Con_Printf("asset_load: %s name:%s path:%s\n", assetStrings[asset.type], asset.name, asset.path);
 	void *resourcePtr = assetHandler[asset.type].Load(asset);
 	if (resourcePtr == nullptr) {
-		Con_Error(ERR_FATAL, "asset_loadall: got nullptr while loading %s", asset.name);
+		Con_Error(ERR_FATAL, "got nullptr while loading %s", asset.name);
 		return;
 	}
 	asset.resource = resourcePtr;
@@ -129,7 +129,7 @@ void Asset_LoadINI(const char *path) {
 	int sz = FS_ReadFile(path, (void**)&inistr);
 
 	if (sz == -1) {
-		Con_Error(ERR_FATAL, "Asset_LoadINI: failed to read file %s", path);
+		Con_Error(ERR_FATAL, "failed to read file %s", path);
 		return;
 	}
 
@@ -138,7 +138,7 @@ void Asset_LoadINI(const char *path) {
 	free(inistr);
 
 	if (ini == nullptr) {
-		Con_Error(ERR_FATAL, "Asset_LoadINI: failed to parse ini %s", path);
+		Con_Error(ERR_FATAL, "failed to parse ini %s", path);
 		return;
 	}
 
@@ -156,7 +156,7 @@ void Asset_LoadINI(const char *path) {
 
 		const char *type = ini_get(ini, iter.section, "type");
 		if (type == nullptr) {
-			Con_Error(ERR_FATAL, "Asset_LoadINI: section %s missing type key", iter.section);
+			Con_Error(ERR_FATAL, "section %s missing type key", iter.section);
 			return;
 		}
 
@@ -169,13 +169,13 @@ void Asset_LoadINI(const char *path) {
 		}
 
 		if (assetType == ASSET_ANY) {
-			Con_Error(ERR_FATAL, "Asset_LoadINI: section %s has invalid type %s", iter.section, type);
+			Con_Error(ERR_FATAL, "section %s has invalid type %s", iter.section, type);
 			return;
 		}
 
 		const char *assetPath = ini_get(ini, iter.section, "path");
 		if (assetPath == nullptr && (assetType != ASSET_SHADER && assetType != ASSET_CANVAS)) {
-			Con_Error(ERR_FATAL, "Asset_LoadINI: section %s missing path key", iter.section);
+			Con_Error(ERR_FATAL, "section %s missing path key", iter.section);
 			return;
 		}
 

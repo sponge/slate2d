@@ -11,7 +11,7 @@ void *R_GetCommandBuffer(int bytes) {
 	// always leave room for the end of list command
 	if (cmdList.used + bytes + 4 > MAX_RENDER_COMMANDS) {
 		if (bytes > MAX_RENDER_COMMANDS - 4) {
-			trap->Error(ERR_FATAL, "R_GetCommandBuffer: bad size %i", bytes);
+			trap->Error(ERR_FATAL, "%s: bad size %i", __func__, bytes);
 		}
 		// if we run out of room, just start dropping commands
 		return NULL;

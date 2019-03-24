@@ -10,7 +10,7 @@ Image* Img_LoadPath(const char *path, int flags) {
 	auto sz = FS_ReadFile(path, (void**)&buffer);
 
 	if (sz == -1) {
-		Con_Error(ERR_GAME, "Img_LoadPath: Couldn't read image %s", path);
+		Con_Error(ERR_GAME, "Couldn't read image %s", path);
 		return nullptr;
 	}
 
@@ -22,7 +22,7 @@ Image* Img_LoadPath(const char *path, int flags) {
 	free(buffer);
 
 	if (loaded == nullptr) {
-		Con_Error(ERR_GAME, "Img_LoadPath: failed to decode PNG %s", path);
+		Con_Error(ERR_GAME, "failed to decode PNG %s", path);
 		return nullptr;
 	}
 
@@ -37,7 +37,7 @@ Image* Img_LoadPath(const char *path, int flags) {
 	stbi_image_free(loaded);
 
 	if (tex == 0) {
-		Con_Error(ERR_GAME, "Img_LoadPath: couldn't upload texture %s", path);
+		Con_Error(ERR_GAME, "couldn't upload texture %s", path);
 		return nullptr;
 	}
 

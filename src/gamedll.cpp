@@ -14,7 +14,7 @@ extern ClientInfo inf;
 static gameImportFuncs_t GAMEtraps = {
 	Con_Execute,
 	Con_Printf,
-	Con_Error,
+	Con_RawError,
 	SetWindowTitle,
 	Con_GetVarDefault,
 	Con_GetVar,

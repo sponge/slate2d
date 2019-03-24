@@ -217,7 +217,7 @@ const void *RB_SetTextStyle(const void *data) {
 	assert(asset != nullptr);
 
 	if (asset->type != ASSET_BITMAPFONT && asset->type != ASSET_FONT) {
-		Con_Error(ERR_GAME, "RB_SetTextStyle: asset not font or bmpfont");
+		Con_Error(ERR_GAME, "asset not font or bmpfont");
 		return (const void *)(cmd + 1);
 	}
 

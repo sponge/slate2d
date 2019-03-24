@@ -108,7 +108,8 @@ void Con_SetActive(conState_t *newCon);
 conState_t * Con_GetActive();
 
 // throws an error, see ERR_ constants. should be handled by error function in conState_t.handlers
-void Con_Error(int level, const char * fmt, ...);
+void Con_RawError(int level, const char * fmt, ...);
+#define Con_Error(level, fmt, ...) Con_RawError(level, "%s: " fmt, __func__, __VA_ARGS__)
 
 // parses and handles the string. this is the main entry point to using the
 // console and is typically what you will want to pass user input to.

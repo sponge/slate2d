@@ -104,6 +104,23 @@ void BMPFNT_Free(Asset &asset) {
 	delete font;
 }
 
+void BMPFNT_ParseINI(Asset &asset, ini_t *ini) {
+	int glyphWidth = 0, charSpacing = 0 , spaceWidth = 0 , lineHeight = 0;
+	
+	const char * glyphs = ini_get(ini, asset.name, "glyphs");
+	if (glyphs == nullptr) {
+		Con_Error(ERR_FATAL, "BMPFNT_ParseINI: missing key glyphs for asset %s", asset.name);
+		return;
+	}
+
+	ini_sget(ini, asset.name, "glyphwidth", "%i", &glyphWidth);
+	ini_sget(ini, asset.name, "charspacing", "%i", &charSpacing);
+	ini_sget(ini, asset.name, "spacewidth", "%i", &spaceWidth);
+	ini_sget(ini, asset.name, "lineheight", "%i", &lineHeight);
+
+	BMPFNT_Set(asset.id, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight);
+}
+
 void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight) {
 	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
 

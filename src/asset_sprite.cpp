@@ -145,6 +145,16 @@ void Sprite_Free(Asset &asset) {
 	delete asset.resource;
 }
 
+void Sprite_ParseINI(Asset &asset, ini_t *ini) {
+	int width = 0, height = 0, marginX = 0, marginY = 0;
+	ini_sget(ini, asset.name, "width", "%i", &width);
+	ini_sget(ini, asset.name, "height", "%i", &height);
+	ini_sget(ini, asset.name, "marginx", "%i", &marginX);
+	ini_sget(ini, asset.name, "marginy", "%i", &marginY);
+
+	Sprite_Set(asset.id, width, height, marginX, marginY);
+}
+
 void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int marginY) {
 	Asset *asset = Asset_Get(ASSET_SPRITE, assetHandle);
 
@@ -155,6 +165,11 @@ void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int
 	
 	if (strcmp("bin", FS_FileExtension(asset->path)) == 0) {
 		Con_Error(ERR_GAME, "Sprite_Set: can't call set on a crunched sprite");
+		return;
+	}
+
+	if (width <= 0 || height <= 0) {
+		Con_Error(ERR_GAME, "Sprite_Set: width and height must be greater than 0");
 		return;
 	}
 

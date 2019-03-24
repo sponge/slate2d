@@ -305,6 +305,14 @@ void wren_asset_clearall(WrenVM *vm) {
 	trap->Asset_ClearAll();
 }
 
+void wren_asset_loadini(WrenVM *vm) {
+	CHECK_ARGS(1, WREN_TYPE_STRING);
+	NOTUSED(vm);
+
+	const char *name = wrenGetSlotString(vm, 1);
+	trap->Asset_LoadINI(name);
+}
+
 void wren_asset_bmpfnt_set(WrenVM *vm) {
 	CHECK_ARGS(6, WREN_TYPE_NUM, WREN_TYPE_STRING, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
 
@@ -946,6 +954,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Asset", true, "load(_)", wren_asset_load },
 	{ "engine", "Asset", true, "loadAll()", wren_asset_loadall },
 	{ "engine", "Asset", true, "clearAll()", wren_asset_clearall },
+	{ "engine", "Asset", true, "loadINI(_)", wren_asset_loadini },
 	{ "engine", "Asset", true, "bmpfntSet(_,_,_,_,_,_)", wren_asset_bmpfnt_set },
 	{ "engine", "Asset", true, "textWidth(_,_,_)", wren_asset_textwidth },
 	{ "engine", "Asset", true, "spriteSet(_,_,_,_,_)", wren_asset_sprite_set },

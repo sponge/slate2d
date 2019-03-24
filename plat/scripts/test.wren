@@ -24,32 +24,28 @@ class Title {
     _newcvar.set("changed the value")
 
     Trap.print(mapName+"\n")
-    _dog = Asset.create(Asset.Image, "dog", "gfx/dog.png")
-    _music = Asset.create(Asset.Mod, "music", "music/frantic_-_dog_doesnt_care.it")
-    _speech = Asset.create(Asset.Speech, "speech", "great job! you are a good dog!")
 
-    _font = Asset.create(Asset.BitmapFont, "font", "gfx/good_neighbors.png")
-    Asset.bmpfntSet(_font, "!\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 0, -1, 7, 16)
+    Asset.loadINI("worldassets.ini")
 
-    _fixedFont = Asset.create(Asset.BitmapFont, "fixedfont", "gfx/panicbomber.png")
-    Asset.bmpfntSet(_fixedFont, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
+    _dog = Asset.find("dog")
+    _music = Asset.find("music")
+    _speech = Asset.find("speech")
 
-    _fixedFontBlue = Asset.create(Asset.BitmapFont, "fixedfontblue", "gfx/panicbomber_blue.png")
-    Asset.bmpfntSet(_fixedFontBlue, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
+    _font = Asset.find("font")
 
-    _spr = Asset.create(Asset.Sprite, "spr", "maps/tilesets/plat.gif")
-    Asset.spriteSet(_spr, 8, 8, 0, 0)
+    _fixedFont = Asset.find("fixedfont")
+    _fixedFontBlue = Asset.find("fixedfontblue")
 
-    _crunchSpr = Asset.create(Asset.Sprite, "crunchspr", "sprites/gfx.bin")
+    _spr = Asset.find("spr")
+
+    _crunchSpr = Asset.find("crunchspr")
 
     var tmapId = Asset.create(Asset.TileMap, mapName, mapName)
     TileMap.setCurrent(tmapId)
 
-    _canvas = Asset.create(Asset.Canvas, "canvas", "")
-    Asset.canvasSet(_canvas, 320, 180)
+    _canvas = Asset.find("canvas")
 
-    _shader = Asset.create(Asset.Shader, "shader_plasma", "")
-    Asset.shaderSet(_shader, true, "shaders/base.vs", "shaders/plasma.fs")
+    _shader = Asset.find("shader_plasma")
 
     Asset.loadAll()
 

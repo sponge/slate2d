@@ -37,6 +37,11 @@ void Canvas_Set(AssetHandle id, int width, int height) {
 		return;
 	}
 
+	if (width == 0 || height == 0) {
+		Con_Error(ERR_GAME, "Sprite_Set: width and height must be > 0");
+		return;
+	}
+
 	auto *canvas = new Canvas();
 	canvas->w = width;
 	canvas->h = height;
@@ -49,3 +54,10 @@ void Canvas_Free(Asset & asset) {
 	delete(canvas);
 }
 
+void Canvas_ParseINI(Asset &asset, ini_t *ini) {
+	int width = 0, height = 0;
+	ini_sget(ini, asset.name, "width", "%i", &width);
+	ini_sget(ini, asset.name, "height", "%i", &height);
+
+	Canvas_Set(asset.id, width, height);
+}

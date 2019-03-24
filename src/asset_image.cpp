@@ -66,6 +66,14 @@ void Img_Free(Asset &asset) {
 	delete img;
 }
 
+void Img_ParseINI(Asset &asset, ini_t *ini) {
+	int linearFilter = 0;
+	ini_sget(ini, asset.name, "linearfilter", "%i", &linearFilter);
+	if (linearFilter > 0) {
+		asset.flags = IMAGEFLAGS_LINEAR_FILTER;
+	}
+}
+
 Image* Get_Img(AssetHandle id) {
 	Asset* asset = Asset_Get(ASSET_IMAGE, id);
 	assert(asset != nullptr && asset->resource != nullptr);

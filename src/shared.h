@@ -292,11 +292,12 @@ typedef struct gameImportFuncs_s {
 	void(*Asset_Load)(AssetHandle assetHandle);
 	void(*Asset_LoadAll)();
 	void(*Asset_ClearAll)();
+	void(*Asset_LoadINI)(const char *path);
 	void(*Asset_BMPFNT_Set)(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight);
 	int(*Asset_TextWidth)(AssetHandle assetHandle, const char *string, float scale);
 	void(*Asset_Sprite_Set)(AssetHandle assetHandle, int width, int height, int marginX, int marginY);
 	void(*Asset_Canvas_Set)(AssetHandle assetHandle, int width, int height);
-	void(*Asset_Shader_Set)(AssetHandle id, bool isFile, char *vs, char *fs);
+	void(*Asset_Shader_Set)(AssetHandle id, bool isFile, const char *vs, const char *fs);
 	Image* (*Get_Img)(AssetHandle id);
 	tmx_map* (*Get_TileMap)(AssetHandle id);
 

@@ -2,6 +2,9 @@
 
 #include "external/rlgl.h"
 #include "shared.h"
+extern "C" {
+#include "external/ini.h"
+}
 #include <tmx.h>
 
 AssetHandle Asset_Find(const char *name);
@@ -10,18 +13,21 @@ AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *pa
 void Asset_Load(AssetHandle i);
 void Asset_LoadAll();
 void Asset_ClearAll();
+void Asset_LoadINI(const char *path);
 
 // image assets
 
 void* Img_Load(Asset &asset);
 Image* Img_LoadPath(const char *path, int flags = 0);
 void Img_Free(Asset &asset);
+void Img_ParseINI(Asset &asset, ini_t *ini);
 Image* Get_Img(AssetHandle id);
 
 // sprite assets
 
 void* Sprite_Load(Asset &asset);
 void Sprite_Free(Asset &asset);
+void Sprite_ParseINI(Asset & asset, ini_t * ini);
 void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int marginY);
 
 // ttf font assets
@@ -55,6 +61,7 @@ typedef struct BitmapFont {
 
 void* BMPFNT_Load(Asset &asset);
 void BMPFNT_Free(Asset &asset);
+void BMPFNT_ParseINI(Asset & asset, ini_t * ini);
 void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight);
 int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale, const char *end = nullptr);
 int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, const char *string, const char *end = nullptr);
@@ -88,6 +95,7 @@ struct Canvas {
 void * Canvas_Load(Asset &asset);
 void Canvas_Set(AssetHandle id, int width, int height);
 void Canvas_Free(Asset &asset);
+void Canvas_ParseINI(Asset & asset, ini_t * ini);
 
 // shader assets
 
@@ -99,5 +107,6 @@ struct ShaderAsset {
 };
 
 void * Shader_Load(Asset & asset);
-void Shader_Set(AssetHandle id, bool isFile, char *vs, char *fs);
+void Shader_Set(AssetHandle id, bool isFile, const char *vs, const char *fs);
 void Shader_Free(Asset & asset);
+void Shader_ParseINI(Asset & asset, ini_t * ini);

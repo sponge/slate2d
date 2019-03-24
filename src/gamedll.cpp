@@ -36,6 +36,7 @@ static gameImportFuncs_t GAMEtraps = {
 	Asset_Load,
 	Asset_LoadAll,
 	Asset_ClearAll,
+	Asset_LoadINI,
 	BMPFNT_Set,
 	Asset_TextWidth,
 	Sprite_Set,

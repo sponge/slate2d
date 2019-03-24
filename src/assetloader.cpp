@@ -1,27 +1,33 @@
 #include "assetloader.h"
 #include "console.h"
 #include "external/vec.h"
+#include "files.h"
+extern "C" {
+#include "external/ini.h"
+}
 
 typedef vec_t(Asset) asset_vec_t;
 asset_vec_t assets;
 
 typedef struct {
+	const char *iniType;
 	void*(*Load)(Asset &asset);
 	void(*Free)(Asset &asset);
+	void(*ParseINI)(Asset &asset, ini_t *ini);
 } AssetLoadHandler_t;
 
 static AssetLoadHandler_t assetHandler[ASSET_MAX] = {
 	{}, // ASSET_ANY
-	{Img_Load, Img_Free},
-	{Sprite_Load, Sprite_Free},
-	{Speech_Load, Speech_Free},
-	{Sound_Load, Sound_Free},
-	{Sound_Load, Mod_Free},
-	{TTF_Load, TTF_Free},
-	{BMPFNT_Load, BMPFNT_Free},
-	{TileMap_Load, TileMap_Free},
-	{Canvas_Load, Canvas_Free},
-	{Shader_Load, Shader_Free},
+	{"image", Img_Load, Img_Free, Img_ParseINI},
+	{"sprite", Sprite_Load, Sprite_Free, Sprite_ParseINI},
+	{"speech", Speech_Load, Speech_Free},
+	{"sound", Sound_Load, Sound_Free},
+	{"mod", Sound_Load, Mod_Free},
+	{"ttf", TTF_Load, TTF_Free},
+	{"bitmapfont", BMPFNT_Load, BMPFNT_Free, BMPFNT_ParseINI},
+	{"tilemap", TileMap_Load, TileMap_Free},
+	{"canvas", Canvas_Load, Canvas_Free, Canvas_ParseINI},
+	{"shader", Shader_Load, Shader_Free, Shader_ParseINI},
 };
 
 AssetHandle Asset_Find(const char *name) {
@@ -52,6 +58,10 @@ AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *pa
 	if (assets.data == nullptr) {
 		vec_init(&assets);
 		vec_reserve(&assets, 256);
+	}
+
+	if (path == nullptr) {
+		path = "";
 	}
 
 	if (assetType < 0 || assetType > ASSET_MAX) {
@@ -112,4 +122,71 @@ void Asset_ClearAll() {
 	}
 
 	vec_clear(&assets);
+}
+
+void Asset_LoadINI(const char *path) {
+	char *inistr;
+	int sz = FS_ReadFile(path, (void**)&inistr);
+
+	if (sz == -1) {
+		Con_Error(ERR_FATAL, "Asset_LoadINI: failed to read file %s", path);
+		return;
+	}
+
+	ini_t* ini = ini_load_mem(inistr, sz);
+
+	free(inistr);
+
+	if (ini == nullptr) {
+		Con_Error(ERR_FATAL, "Asset_LoadINI: failed to parse ini %s", path);
+		return;
+	}
+
+	ini_iter_t iter;
+	ini_iter_init(ini, &iter);
+
+	const char *lastSection = nullptr;
+	while (ini_iter_next(&iter) != nullptr) {
+		if (iter.section == lastSection) {
+			continue;
+		}
+
+		Con_Printf("new section: %s\n", iter.section);
+		lastSection = iter.section;
+
+		const char *type = ini_get(ini, iter.section, "type");
+		if (type == nullptr) {
+			Con_Error(ERR_FATAL, "Asset_LoadINI: section %s missing type key", iter.section);
+			return;
+		}
+
+		AssetType_t assetType = ASSET_ANY;
+
+		for (int i = 1; i < ASSET_MAX; i++) {
+			if (strcasecmp(type, assetHandler[i].iniType) == 0) {
+				assetType = (AssetType_t) i;
+			}
+		}
+
+		if (assetType == ASSET_ANY) {
+			Con_Error(ERR_FATAL, "Asset_LoadINI: section %s has invalid type %s", iter.section, type);
+			return;
+		}
+
+		const char *assetPath = ini_get(ini, iter.section, "path");
+		if (assetPath == nullptr && (assetType != ASSET_SHADER && assetType != ASSET_CANVAS)) {
+			Con_Error(ERR_FATAL, "Asset_LoadINI: section %s missing path key", iter.section);
+			return;
+		}
+
+		AssetHandle hnd = Asset_Create(assetType, iter.section, assetPath, 0);
+
+		if (assetHandler[assetType].ParseINI != nullptr) {
+			assetHandler[assetType].ParseINI(assets.data[hnd], ini);
+		}
+	}
+
+	ini_free(ini);
+
+	Con_Print("hello world\n");
 }

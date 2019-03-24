@@ -44,7 +44,7 @@ void * Shader_Load(Asset & asset) {
 	return (void*)shasset;
 }
 
-void Shader_Set(AssetHandle id, bool isFile, char *vs, char *fs) {
+void Shader_Set(AssetHandle id, bool isFile, const char *vs, const char *fs) {
 	Asset *asset = Asset_Get(ASSET_SHADER, id);
 
 	if (asset == nullptr) {
@@ -77,4 +77,11 @@ void Shader_Free(Asset & asset) {
 	}
 
 	delete res;
+}
+
+void Shader_ParseINI(Asset &asset, ini_t *ini) {
+	const char *vs = ini_get(ini, asset.name, "vs");
+	const char *fs = ini_get(ini, asset.name, "fs");
+
+	Shader_Set(asset.id, true, vs, fs);
 }

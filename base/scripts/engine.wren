@@ -36,6 +36,7 @@ class Asset {
   foreign static load(assetHandle)
   foreign static loadAll()
   foreign static clearAll()
+  foreign static loadINI(path)
   foreign static bmpfntSet(assetHandle, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight)
   foreign static textWidth(fntId, text, scale)
   static textWidth(fntId, text) { textWidth(fntId, text, 1.0) }

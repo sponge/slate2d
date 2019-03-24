@@ -146,6 +146,10 @@ void Sprite_Free(Asset &asset) {
 }
 
 void Sprite_ParseINI(Asset &asset, ini_t *ini) {
+	if (strcmp("bin", FS_FileExtension(asset.path)) == 0) {
+		return;
+	}
+	
 	int width = 0, height = 0, marginX = 0, marginY = 0;
 	ini_sget(ini, asset.name, "width", "%i", &width);
 	ini_sget(ini, asset.name, "height", "%i", &height);

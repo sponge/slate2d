@@ -11,23 +11,27 @@ asset_vec_t assets;
 
 typedef struct {
 	const char *iniType;
+	int iniFlags;
+	void(*ParseINI)(Asset &asset, ini_t *ini);
 	void*(*Load)(Asset &asset);
 	void(*Free)(Asset &asset);
-	void(*ParseINI)(Asset &asset, ini_t *ini);
+
 } AssetLoadHandler_t;
+
+#define INIFLAGS_OPTIONALPATH 1
 
 static AssetLoadHandler_t assetHandler[ASSET_MAX] = {
 	{}, // ASSET_ANY
-	{"image", Img_Load, Img_Free, Img_ParseINI},
-	{"sprite", Sprite_Load, Sprite_Free, Sprite_ParseINI},
-	{"speech", Speech_Load, Speech_Free},
-	{"sound", Sound_Load, Sound_Free},
-	{"mod", Sound_Load, Mod_Free},
-	{"ttf", TTF_Load, TTF_Free},
-	{"bitmapfont", BMPFNT_Load, BMPFNT_Free, BMPFNT_ParseINI},
-	{"tilemap", TileMap_Load, TileMap_Free},
-	{"canvas", Canvas_Load, Canvas_Free, Canvas_ParseINI},
-	{"shader", Shader_Load, Shader_Free, Shader_ParseINI},
+	{"image", 0, Img_ParseINI, Img_Load, Img_Free },
+	{"sprite", 0, Sprite_ParseINI, Sprite_Load, Sprite_Free },
+	{"speech", INIFLAGS_OPTIONALPATH, Speech_ParseINI, Speech_Load, Speech_Free },
+	{"sound", 0, nullptr, Sound_Load, Sound_Free },
+	{"mod", 0, nullptr, Sound_Load, Mod_Free },
+	{"ttf", 0, nullptr, TTF_Load, TTF_Free },
+	{"bitmapfont", 0, BMPFNT_ParseINI, BMPFNT_Load, BMPFNT_Free },
+	{"tilemap", 0, nullptr, TileMap_Load, TileMap_Free },
+	{"canvas", INIFLAGS_OPTIONALPATH, Canvas_ParseINI, Canvas_Load, Canvas_Free },
+	{"shader", INIFLAGS_OPTIONALPATH, Shader_ParseINI, Shader_Load, Shader_Free },
 };
 
 AssetHandle Asset_Find(const char *name) {
@@ -174,7 +178,7 @@ void Asset_LoadINI(const char *path) {
 		}
 
 		const char *assetPath = ini_get(ini, iter.section, "path");
-		if (assetPath == nullptr && (assetType != ASSET_SHADER && assetType != ASSET_CANVAS)) {
+		if (assetPath == nullptr && (assetHandler[assetType].iniFlags & INIFLAGS_OPTIONALPATH) == false) {
 			Con_Errorf(ERR_FATAL, "section %s missing path key", iter.section);
 			return;
 		}

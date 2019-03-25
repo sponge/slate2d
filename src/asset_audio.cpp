@@ -21,6 +21,17 @@ void Speech_Free(Asset &asset) {
 	delete speech;
 }
 
+void Speech_ParseINI(Asset &asset, ini_t *ini) {
+	const char *text = ini_get(ini, asset.name, "text");
+
+	if (text == nullptr) {
+		Con_Errorf(ERR_FATAL, "asset %s is missing required field \"text\"", asset.name);
+		return;
+	}
+	
+	strncpy(asset.path, text, sizeof(asset.path));
+}
+
 void* Sound_Load(Asset &asset) {
 	unsigned char *musicbuf;
 	auto sz = FS_ReadFile(asset.path, (void **)&musicbuf);

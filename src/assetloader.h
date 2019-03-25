@@ -71,6 +71,7 @@ void BMPFNT_TextBox(const drawTextCommand_t *cmd, const char *string);
 
 void* Speech_Load(Asset &asset);
 void Speech_Free(Asset &asset);
+void Speech_ParseINI(Asset &asset, ini_t *ini);
 void* Sound_Load(Asset &asset);
 void Sound_Free(Asset &asset);
 void Mod_Free(Asset &asset);

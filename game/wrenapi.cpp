@@ -285,7 +285,15 @@ void wren_asset_find(WrenVM *vm) {
 	CHECK_ARGS(1, WREN_TYPE_STRING);
 
 	const char *name = wrenGetSlotString(vm, 1);
-	wrenSetSlotDouble(vm, 0, trap->Asset_Find(name));
+
+	int id = trap->Asset_Find(name);
+	
+	if (id < 0) {
+		trap->Error(ERR_FATAL, "can't find asset %s", name);
+		return;
+	}
+
+	wrenSetSlotDouble(vm, 0, id);
 }
 
 void wren_asset_load(WrenVM *vm) {
@@ -1181,11 +1189,11 @@ void Wren_Scene_Shutdown(WrenVM *vm) {
 void Wren_FreeVM(WrenVM *vm) {
 	wrenHandles_t* hnd = (wrenHandles_t*)wrenGetUserData(vm);
 
-	wrenReleaseHandle(vm, hnd->drawHnd);
-	wrenReleaseHandle(vm, hnd->updateHnd);
-	wrenReleaseHandle(vm, hnd->shutdownHnd);
-	wrenReleaseHandle(vm, hnd->instanceHnd);
-	wrenReleaseHandle(vm, hnd->consoleHnd);
+	if (hnd->drawHnd) wrenReleaseHandle(vm, hnd->drawHnd);
+	if (hnd->updateHnd)	wrenReleaseHandle(vm, hnd->updateHnd);
+	if (hnd->shutdownHnd) wrenReleaseHandle(vm, hnd->shutdownHnd);
+	if (hnd->instanceHnd)	wrenReleaseHandle(vm, hnd->instanceHnd);
+	if (hnd->consoleHnd) wrenReleaseHandle(vm, hnd->consoleHnd);
 
 	delete hnd;
 

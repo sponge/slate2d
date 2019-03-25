@@ -25,7 +25,7 @@ class Title {
 
     Trap.print(mapName+"\n")
 
-    Asset.loadINI("worldassets.ini")
+    Asset.loadINI("testassets.ini")
 
     _dog = Asset.find("dog")
     _music = Asset.find("music")

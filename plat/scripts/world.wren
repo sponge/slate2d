@@ -111,25 +111,17 @@ class World {
       spawn(obj["type"], obj, obj["x"], obj["y"] - level.th)
     }
 
-    _font = Asset.create(Asset.BitmapFont, "font", "gfx/good_neighbors.png")
-    Asset.bmpfntSet(_font, "!\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 0, -1, 7, 16)
+    Asset.loadINI("worldassets.ini")
 
-    _fixedFont = Asset.create(Asset.BitmapFont, "fixedfont", "gfx/panicbomber.png")
-    Asset.bmpfntSet(_fixedFont, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
-
-    _fixedFontBlue = Asset.create(Asset.BitmapFont, "fixedfontblue", "gfx/panicbomber_blue.png")
-    Asset.bmpfntSet(_fixedFontBlue, " !\"#$\%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 8, 0, 8, 8)
-
-    _spr = Asset.create(Asset.Sprite, "spr", "maps/tilesets/plat.gif")
-    Asset.spriteSet(_spr, 8, 8, 0, 0)
-
+    _font = Asset.find("font")
+    _fixedFont = Asset.find("fixedfont")
+    _fixedFontBlue = Asset.find("fixedfontblue")
+    _spr = Asset.find("spr")
     _music = Asset.create(Asset.Mod, "music", level.music)
-    _deathMusic = Asset.create(Asset.Mod, "deathmusic", "music/victory_ditty_24.mod")
-    _victoryMusic = Asset.create(Asset.Mod, "victorymusic", "music/jingles_22.mod")
-    _winSpeech = Asset.create(Asset.Speech, "speech", "great job! you are a good dog!")
-    _loseSpeech = Asset.create(Asset.Speech, "losespeech", "bad dog bad dog bad dog bad dog bad dog bad dog")
-
-
+    _deathMusic = Asset.find("deathmusic")
+    _victoryMusic = Asset.find("victorymusic")
+    _winSpeech = Asset.find("winspeech")
+    _loseSpeech = Asset.find("losespeech")
 
     Asset.loadAll()
 

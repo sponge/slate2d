@@ -3,6 +3,7 @@
 #include "external/vec.h"
 #include "files.h"
 extern "C" {
+#include "external/sds.h"
 #include "external/ini.h"
 }
 
@@ -85,8 +86,8 @@ AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *pa
 	asset.id = assets.length;
 	asset.type = assetType;
 	asset.flags = flags;
-	strncpy(asset.path, path, sizeof(asset.path));
-	strncpy(asset.name, name, sizeof(asset.name));
+	asset.path = sdsnew(path);
+	asset.name = sdsnew(name);
 
 	vec_push(&assets, asset);
 	
@@ -122,6 +123,8 @@ void Asset_ClearAll() {
 			continue;
 		}
 		assetHandler[asset.type].Free(asset);
+		sdsfree((sds)asset.name);
+		sdsfree((sds)asset.path);
 		asset = {0};
 	}
 

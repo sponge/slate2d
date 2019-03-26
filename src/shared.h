@@ -221,8 +221,8 @@ typedef struct {
 	AssetHandle id;
 	AssetType_t type;
 	bool loaded;
-	char name[64];
-	char path[64];
+	const char *name;
+	const char *path;
 	int flags;
 	void *resource;
 } Asset;

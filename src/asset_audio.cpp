@@ -1,6 +1,7 @@
 #include <assert.h>
 #include "assetloader.h"
 #include "files.h"
+#include "external/sds.h"
 #include <soloud.h>
 #include <soloud_wav.h>
 #include <soloud_thread.h>
@@ -29,7 +30,7 @@ void Speech_ParseINI(Asset &asset, ini_t *ini) {
 		return;
 	}
 	
-	strncpy(asset.path, text, sizeof(asset.path));
+	asset.path = sdsnew(text);
 }
 
 void* Sound_Load(Asset &asset) {

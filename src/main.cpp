@@ -50,6 +50,8 @@ extern "C" {
 #include "console.h"
 }
 
+#include "external/fontstash.h"
+
 conState_t console;
 
 SoLoud::Soloud soloud;
@@ -244,6 +246,13 @@ void main_loop() {
 
 	ImGui::Render();
 	ImGui_ImplSdl_RenderDrawData(ImGui::GetDrawData());
+
+	if (debug_fontAtlas->integer) {
+		rlLoadIdentity();
+		extern FONScontext *ctx;
+		if (ctx != nullptr) fonsDrawDebug(ctx, 0, 0);
+		rlglDraw();
+	}
 
 	SDL_GL_SwapWindow(window);
 

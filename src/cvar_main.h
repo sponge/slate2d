@@ -13,3 +13,4 @@ extern conVar_t *vid_fullscreen;
 extern conVar_t *vid_showfps;
 extern conVar_t *eng_pause;
 extern conVar_t *snd_volume;
+extern conVar_t *debug_fontAtlas;

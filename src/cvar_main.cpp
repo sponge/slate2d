@@ -17,6 +17,7 @@ conVar_t *vid_showfps;
 conVar_t *vid_maxfps;
 conVar_t *eng_pause;
 conVar_t *snd_volume;
+conVar_t *debug_fontAtlas;
 
 static conVarTable_t mainCvarTable[] = {
     { &eng_errorMessage, "engine.errorMessage", "", 0 },
@@ -29,6 +30,7 @@ static conVarTable_t mainCvarTable[] = {
 	{ &vid_maxfps, "vid.maxfps", "120", 0 },
 	{ &eng_pause, "engine.pause", "0", 0 },
 	{ &snd_volume, "snd.volume", "1.0", 0 },
+	{ &debug_fontAtlas, "debug.fontAtlas", "0", 0 },
 	{ NULL }
 };
 

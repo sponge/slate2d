@@ -6,14 +6,100 @@
 #include "rendercommands.h"
 #include "rlgl.h"
 #include "external/fontstash.h"
+#include "external/gl3corefontstash.h"
 
 extern ClientInfo inf;
+extern FONScontext *ctx;
 
-enum TextCodepointType {
-	TEXT_SPACE,
-	TEXT_NEWLINE,
-	TEXT_CHAR,
-	TEXT_IGNORE,
+
+static void* bitmap_loadFont(FONScontext *context, unsigned char *data, int dataSize) {
+	return data;
+}
+
+static void bitmap_freeFont(void *usrdata) {
+	Con_Printf("%s\n", __func__);
+}
+
+static void bitmap_getFontVMetrics(void *usrdata, int *ascent, int *descent, int *lineGap) {
+	BitmapFont_t *font = (BitmapFont_t*) usrdata;
+
+	*ascent = font->h;
+	*descent = 0;
+	*lineGap = font->h * font->lineHeight;
+}
+
+static float bitmap_getPixelHeightScale(void *usrdata, float size) {
+	return size;
+}
+
+static int bitmap_getGlyphIndex(void *usrdata, int codepoint) {
+	if (codepoint > 255) {
+		Con_Printf("WARNING: codepoint %i > 255", codepoint);
+		return 0;
+	}
+
+	// ugh, add 1 here because 0 is considered failure, but 0 is also a valid glyph position
+	return codepoint + 1;
+}
+
+static int bitmap_buildGlyphBitmap(void *usrdata, int glyph, float size, float scale, int *advance, int *lsb, int *x0, int *y0, int *x1, int *y1) {
+	BitmapFont_t *font = (BitmapFont_t*) usrdata;
+	BitmapGlyph &bglyph = font->offsets[--glyph];
+
+	// this is misleading: advance should be the glyph width.
+	// if x0 is set to start and x1 is set to end, it breaks rendering
+	*advance = bglyph.end - bglyph.start;
+	*lsb = 0;
+	*x0 = 0;
+	*x1 = bglyph.end - bglyph.start;
+	*y0 = 0;
+	*y1 = font->h;
+
+	// handle spaces by making it take up no room and just advance by the asset's spcaewidth
+	if (glyph == 32) {
+		*advance = font->spaceWidth;
+		*x1 = 0;
+		*y1 = 0;
+	}
+
+	return 1;
+}
+
+static void bitmap_renderGlyphBitmap(void *usrdata, FONScolor *output, int outWidth, int outHeight, int outStride, float scaleX, float scaleY, int glyph) {
+	BitmapFont_t *font = (BitmapFont_t*) usrdata;
+	BitmapGlyph &bglyph = font->offsets[--glyph];
+	
+	for (int y = 0; y < outHeight; ++y) {
+		for (int x = 0; x < outWidth; ++x) {
+				unsigned char *offset = &font->img[(y * font->w + x + bglyph.start) * 4];
+
+				output[y * outStride + x].r = *offset;
+				output[y * outStride + x].g = *(offset + 1);
+				output[y * outStride + x].b = *(offset + 2);
+				output[y * outStride + x].a = *(offset + 3);
+		}
+	}
+}
+
+
+static int bitmap_getGlyphKernAdvance(void *usrdata, int glyph1, int glyph2) {
+	return 0;
+}
+
+static int bitmap_engineSupportsScaling(void *usrdata) {
+	return 0;
+}
+
+FONSfontEngine bmpfntEngine = {
+	bitmap_loadFont,
+	bitmap_freeFont,
+	bitmap_getFontVMetrics,
+	bitmap_getPixelHeightScale,
+	bitmap_getGlyphIndex,
+	bitmap_buildGlyphBitmap,
+	bitmap_renderGlyphBitmap,
+	bitmap_getGlyphKernAdvance,
+	bitmap_engineSupportsScaling
 };
 
 void* BMPFNT_Load(Asset &asset) {
@@ -23,11 +109,17 @@ void* BMPFNT_Load(Asset &asset) {
 		return nullptr;
 	}
 
+	if (ctx == nullptr) {
+		ctx = glfonsCreate(512, 512, FONS_ZERO_TOPLEFT);
+	}
+
 	void *buffer;
 	auto sz = FS_ReadFile(asset.path, &buffer);
 
 	int w, h, ch;
 	auto img = stbi_load_from_memory((stbi_uc*)buffer, sz, &w, &h, &ch, 0);
+
+	free(buffer);
 
 	if (img == nullptr) {
 		Con_Errorf(ERR_FATAL, "Failed to load bmpfont %s", asset.path);
@@ -87,20 +179,19 @@ void* BMPFNT_Load(Asset &asset) {
 
 end:
 
-	font->img = (Image*) Img_Load(asset);
+	font->img = img;
 	font->w = w;
 	font->h = h;
 
-	free(buffer);
-	stbi_image_free(img);
+	font->hnd = fonsAddFontMemWithEngine(ctx, asset.name, (unsigned char *)asset.resource, sizeof(asset.resource), 0, &bmpfntEngine);
 
 	return (void*)asset.resource;
 }
 
 void BMPFNT_Free(Asset &asset) {
 	BitmapFont *font = (BitmapFont*)asset.resource;
-	rlDeleteTextures(font->img->hnd);
-	delete font->img;
+
+	stbi_image_free(font->img);
 	delete font;
 }
 
@@ -145,210 +236,4 @@ void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int
 	font->lineHeight = lineHeight;
 	
 	asset->resource = (void*)font;
-}
-
-int BMPFNT_TextWidth(AssetHandle assetHandle, const char *string, float scale, const char *end) {
-	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
-
-	if (asset == nullptr) {
-		Con_Error(ERR_GAME, "asset not valid");
-		return 0;
-	}
-
-	BitmapFont *font = (BitmapFont*)asset->resource;
-
-	if (font == nullptr) {
-		Con_Error(ERR_GAME, "asset resource not valid");
-		return 0;
-	}
-
-	if (end == nullptr) {
-		end = string + strlen(string);
-	}
-
-	int currX = 0;
-	int maxX = 0;
-
-	int i = 0;
-	while (&string[i] != end) {
-		if (string[i] == '\n') {
-			currX = 0;
-			i++;
-			continue;
-		}
-
-		if (string[i] == ' ') {
-			currX += font->spaceWidth;
-			i++;
-			continue;
-		}
-
-		BitmapGlyph &glyph = font->offsets[string[i]];
-
-		currX += glyph.end - glyph.start + font->charSpacing;
-
-		if (currX > maxX) {
-			maxX = currX;
-		}
-		
-		i++;
-
-	}
-
-	currX -= font->charSpacing;
-
-	return (int) (maxX * scale);
-}
-
-int BMPFNT_DrawText(AssetHandle assetHandle, float x, float y, const char *string, const char *end) {
-	Asset *asset = Asset_Get(ASSET_BITMAPFONT, assetHandle);
-
-	if (asset == nullptr) {
-		Con_Error(ERR_GAME, "asset not valid");
-		return 0;
-	}
-
-	BitmapFont *font = (BitmapFont*)asset->resource;
-
-	if (font == nullptr) {
-		Con_Error(ERR_GAME, "asset resource not valid");
-		return 0;
-	}
-
-	if (end == nullptr) {
-		end = string + strlen(string);
-	}
-
-	float currX = x, currY = y;
-	int i = 0;
-	while (&string[i] != end) {
-		if (string[i] == '\n') {
-			currY += font->lineHeight * state.size;
-			currX = x;
-			i++;
-			continue;
-		}
-		
-		if (string[i] == ' ') {
-			currX += font->spaceWidth * state.size;
-			i++;
-			continue;
-		}
-
-		BitmapGlyph &glyph = font->offsets[string[i]];
-
-		DrawImage(currX, currY, (float) (glyph.end - glyph.start), (float)font->h, (float)glyph.start, 0.0f, state.size, 0, font->img->hnd, font->img->w, font->img->h);
-
-		currX += (glyph.end - glyph.start + font->charSpacing) * state.size;
-
-		i++;
-	}
-
-	return (int)(currX - font->charSpacing - x);
-}
-
-void BMPFNT_TextBox(const drawTextCommand_t *cmd, const char *string) {
-	BitmapFont *font = (BitmapFont*)state.font->resource;
-
-	if (font == nullptr) {
-		Con_Error(ERR_GAME, "asset resource not valid");
-		return;
-	}
-
-	int halign = state.align & (FONS_ALIGN_LEFT | FONS_ALIGN_CENTER | FONS_ALIGN_RIGHT);
-	const char *current = string, *prev = string;
-	int currWidth = 0;
-	float currY = cmd->y;
-	const char* lineStart = NULL;
-	int type = TEXT_SPACE, ptype = TEXT_SPACE;
-	bool writeLine = false;
-
-	for (; current[0] != '\0'; ++current) {
-		char currChar = current[0];
-		//char prevChar = prev[0];
-
-		switch (currChar) {
-			case 9: // \t
-			case 11: // \v
-			case 12: // \f
-			case 32: // space
-			case 0x00a0: // NBSP
-				type = TEXT_SPACE;
-				break;
-			case 10:		// \n
-				type = TEXT_NEWLINE;
-				break;
-			case 13:		// \r
-				type = TEXT_IGNORE;
-				break;
-			case 0x0085:	// NEL
-				type = TEXT_NEWLINE;
-				break;
-			default:
-				type = TEXT_CHAR;
-				break;
-		}
-
-		if (type == TEXT_NEWLINE) {
-			writeLine = true;
-		}
-		else if (type != TEXT_IGNORE) {
-			if (lineStart == nullptr) {
-				lineStart = current;
-			}
-
-			int thisWidth = 0;
-			if (type == TEXT_SPACE) {
-				thisWidth = font->spaceWidth;
-			}
-			else {
-				BitmapGlyph &glyph = font->offsets[currChar];
-				thisWidth = glyph.end - glyph.start + font->charSpacing;
-			}
-
-			if (cmd->w > 0 && currWidth + thisWidth >= cmd->w) {
-				writeLine = true;
-			} else {
-				currWidth += thisWidth * state.size;
-			}
-		}
-
-		if (writeLine) {
-			if (lineStart != nullptr) {
-				float x = cmd->x;
-				if (cmd->w > 0 && state.align & (FONS_ALIGN_CENTER | FONS_ALIGN_RIGHT)) {
-					// FIXME: this should be unnecessary, but currWidth and width are not equal
-					int width = BMPFNT_TextWidth(state.font->id, lineStart, state.size, prev);
-					x += halign & FONS_ALIGN_CENTER ? (cmd->w - width) / 2 : 0;
-					x += halign & FONS_ALIGN_RIGHT ? cmd->w - width : 0;
-				}
-				BMPFNT_DrawText(state.font->id, x, currY, lineStart, prev);
-				if (type != TEXT_NEWLINE) {
-					current -= 2;
-				}
-			}
-
-			lineStart = nullptr;
-			currWidth = 0;
-			currY += font->lineHeight * state.size;
-			writeLine = false;
-		}
-
-		ptype = type;
-		prev = current;
-	}
-
-	if (lineStart != nullptr) {
-		float x = cmd->x;
-
-		if (cmd->w > 0 && state.align & (FONS_ALIGN_CENTER | FONS_ALIGN_RIGHT)) {
-			// FIXME: this should be unnecessary, but currWidth and width are not equal
-			// note: not entirely copy paste, nullptr instead of prev
-			int width = BMPFNT_TextWidth(state.font->id, lineStart, state.size, nullptr);
-			x += halign & FONS_ALIGN_CENTER ? (cmd->w - width) / 2 : 0;
-			x += halign & FONS_ALIGN_RIGHT ? cmd->w - width : 0;
-		}
-
-		BMPFNT_DrawText(state.font->id, x, currY, lineStart, nullptr);	
-	}
 }

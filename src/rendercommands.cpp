@@ -228,12 +228,16 @@ const void *RB_SetTextStyle(const void *data) {
 
 	if (asset->type == ASSET_FONT) {
 		TTFFont_t *fnt = (TTFFont_t*)asset->resource;
-
+		fonsSetSpacing(ctx, 0);
 		fonsSetFont(ctx, fnt->hnd);
-		fonsSetSize(ctx, (float)cmd->size);
-		fonsSetAlign(ctx, cmd->align);
+	} else {
+		BitmapFont_t *fnt = (BitmapFont_t*)asset->resource;
+		fonsSetSpacing(ctx, fnt->charSpacing);
+		fonsSetFont(ctx, fnt->hnd);
 	}
 
+	fonsSetSize(ctx, (float)cmd->size);
+	fonsSetAlign(ctx, cmd->align);
 
 	return (const void *)(cmd + 1);
 }
@@ -242,13 +246,8 @@ const void *RB_DrawText(const void *data) {
 	auto cmd = (const drawTextCommand_t *)data;
 	const char *text = (const char *)cmd + sizeof(drawTextCommand_t);
 
-	if (state.font->type == ASSET_BITMAPFONT) {
-		BMPFNT_TextBox(cmd, text);
-	}
-	else if (state.font->type == ASSET_FONT) {
-		fonsSetColor(ctx, (state.color[0]) | (state.color[1] << 8) | (state.color[2] << 16) | (state.color[3] << 24));
-		TTF_TextBox(cmd, text);
-	}
+	fonsSetColor(ctx, (state.color[0]) | (state.color[1] << 8) | (state.color[2] << 16) | (state.color[3] << 24));
+	TTF_TextBox(cmd, text);
 
 	return (const void *)(text + cmd->strSz);
 }

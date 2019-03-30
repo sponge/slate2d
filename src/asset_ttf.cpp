@@ -308,13 +308,17 @@ int Asset_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
 		return -1;
 	}
 
+	int hnd;
 	if (asset->type == ASSET_BITMAPFONT) {
-		return BMPFNT_TextWidth(assetHandle, string, scale);
+		BitmapFont_t *fnt = (BitmapFont_t*)asset->resource;
+		hnd = fnt->hnd;	
 	} else {
 		TTFFont_t *fnt = (TTFFont_t*)asset->resource;
-
-		fonsSetFont(ctx, fnt->hnd);
-		fonsSetSize(ctx, scale);
-		return (int) fonsTextBounds(ctx, 0, 0, string, nullptr, nullptr);
+		hnd = fnt->hnd;
 	}
+
+	fonsSetFont(ctx, hnd);
+	fonsSetSize(ctx, scale);
+	return (int) fonsTextBounds(ctx, 0, 0, string, nullptr, nullptr);
+
 }

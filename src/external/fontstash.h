@@ -122,6 +122,7 @@ struct FONSfontEngine {
 	int   (*buildGlyphBitmap)(void *usrdata, int glyph, float size, float scale, int *advance, int *lsb, int *x0, int *y0, int *x1, int *y1);
 	void  (*renderGlyphBitmap)(void *usrdata, FONScolor *output, int outWidth, int outHeight, int outStride, float scaleX, float scaleY, int glyph);
 	int   (*getGlyphKernAdvance)(void *usrdata, int glyph1, int glyph2);
+	int   (*engineSupportsScaling)(void *usrdata); // sponge edit
 };
 typedef struct FONSfontEngine FONSfontEngine;
 
@@ -404,6 +405,11 @@ static int fons__tt_getGlyphKernAdvance(void *usrdata, int glyph1, int glyph2)
 	return stbtt_GetGlyphKernAdvance(&font->font, glyph1, glyph2);
 }
 
+// sponge edit: truetype always supports font scaling, that's the whole point
+static int fons__tt_engineSupportsScaling(void *usrdata, int glyph) {
+	return 1;
+}
+
 #endif
 
 static FONSfontEngine *fons__tt_getEngine() {
@@ -416,6 +422,7 @@ static FONSfontEngine *fons__tt_getEngine() {
 		fons__tt_buildGlyphBitmap,
 		fons__tt_renderGlyphBitmap,
 		fons__tt_getGlyphKernAdvance,
+		fons__tt_engineSupportsScaling
 	};
 	return &e;
 }
@@ -1217,7 +1224,10 @@ static FONSglyph* fons__getGlyph(FONScontext* stash, FONSfont* font, unsigned in
 	h = fons__hashint(codepoint) & (FONS_HASH_LUT_SIZE-1);
 	i = font->lut[h];
 	while (i != -1) {
-		if (font->glyphs[i].codepoint == codepoint && font->glyphs[i].size == isize && font->glyphs[i].blur == iblur)
+		// sponge edit: add additional function to override scaling behavior. if the engine doesn't
+		// support scaling (bitmap fonts), don't use up atlas space for multiple sizes.
+		int sizeMatch = font->e->engineSupportsScaling(font->edata) == 0 || font->glyphs[i].size == isize;
+		if (font->glyphs[i].codepoint == codepoint && sizeMatch && font->glyphs[i].blur == iblur)
 			return &font->glyphs[i];
 		i = font->glyphs[i].next;
 	}
@@ -1262,7 +1272,9 @@ static FONSglyph* fons__getGlyph(FONScontext* stash, FONSfont* font, unsigned in
 	glyph->y0 = (short)gy;
 	glyph->x1 = (short)(glyph->x0+gw);
 	glyph->y1 = (short)(glyph->y0+gh);
-	glyph->xadv = (short)(scale * advance * 10.0f);
+	// sponge edit: don't multiply by scale here, since we're reusing glyphs for multiple
+	// sizes in bitmap fonts
+	glyph->xadv = (short)(advance * 10.0f);
 	glyph->xoff = (short)(x0 - pad);
 	glyph->yoff = (short)(y0 - pad);
 	glyph->next = 0;
@@ -1336,10 +1348,14 @@ static void fons__getQuad(FONScontext* stash, FONSfont* font,
 		rx = (float)(int)(*x + xoff);
 		ry = (float)(int)(*y + yoff);
 
+		// sponge edit: scale up the vertex here by scale amount if using a bitmap font
+		float scaleFactor = font->e->engineSupportsScaling(font->edata) > 0 ? 1 : scale;
+
 		q->x0 = rx;
 		q->y0 = ry;
-		q->x1 = rx + x1 - x0;
-		q->y1 = ry + y1 - y0;
+		// sponge edit: multiply by scaleFactor here for font engines that don't support scaling
+		q->x1 = rx + (x1 - x0) * scaleFactor;
+		q->y1 = ry + (y1 - y0) * scaleFactor;
 
 		q->s0 = x0 * stash->itw;
 		q->t0 = y0 * stash->ith;
@@ -1360,7 +1376,8 @@ static void fons__getQuad(FONScontext* stash, FONSfont* font,
 		q->t1 = y1 * stash->ith;
 	}
 
-	*x += (int)(glyph->xadv / 10.0f + 0.5f);
+	// sponge edit: multiply xadv by scale here since we're not doing it above anymore
+	*x += (int)(glyph->xadv * scale / 10.0f + 0.5f);
 }
 
 static void fons__flush(FONScontext* stash)

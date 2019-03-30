@@ -6,6 +6,7 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float sca
 
 struct RenderState {
 	byte color[4] = { 255, 255, 255, 255 };
+	// FIXME: are these 4 fields still necessary?
 	Asset *font;
 	int align = 1;
 	float lineHeight = 1.0f;

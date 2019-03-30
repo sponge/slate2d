@@ -406,7 +406,7 @@ static int fons__tt_getGlyphKernAdvance(void *usrdata, int glyph1, int glyph2)
 }
 
 // sponge edit: truetype always supports font scaling, that's the whole point
-static int fons__tt_engineSupportsScaling(void *usrdata, int glyph) {
+static int fons__tt_engineSupportsScaling(void *usrdata) {
 	return 1;
 }
 

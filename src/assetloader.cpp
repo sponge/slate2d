@@ -6,9 +6,13 @@ extern "C" {
 #include "external/sds.h"
 #include "external/ini.h"
 }
+#include "external/fontstash.h"
+#include "external/gl3corefontstash.h"
 
 typedef vec_t(Asset) asset_vec_t;
 asset_vec_t assets;
+
+extern FONScontext *ctx;
 
 typedef struct {
 	const char *iniType;
@@ -16,7 +20,6 @@ typedef struct {
 	void(*ParseINI)(Asset &asset, ini_t *ini);
 	void*(*Load)(Asset &asset);
 	void(*Free)(Asset &asset);
-
 } AssetLoadHandler_t;
 
 #define INIFLAGS_OPTIONALPATH 1
@@ -129,6 +132,11 @@ void Asset_ClearAll() {
 	}
 
 	vec_clear(&assets);
+
+	if (ctx != nullptr) {
+		glfonsDelete(ctx);
+		ctx = nullptr;
+	}
 }
 
 void Asset_LoadINI(const char *path) {

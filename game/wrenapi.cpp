@@ -345,6 +345,17 @@ void wren_asset_textwidth(WrenVM *vm) {
 	wrenSetSlotDouble(vm, 0, width);
 }
 
+void wren_asset_breakstring(WrenVM *vm) {
+	CHECK_ARGS(2, WREN_TYPE_NUM, WREN_TYPE_STRING);
+
+	int width = (int)wrenGetSlotDouble(vm, 1);
+	const char *text = wrenGetSlotString(vm, 2);
+
+	const char *out = trap->Asset_BreakString(width, text);
+
+	wrenSetSlotString(vm, 0, out);
+}
+
 void wren_asset_sprite_set(WrenVM *vm) {
 	CHECK_ARGS(5, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
 
@@ -502,14 +513,15 @@ void wren_dc_drawrect(WrenVM *vm) {
 }
 
 void wren_dc_drawtext(WrenVM *vm) {
-	CHECK_ARGS(4, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_STRING);
+	CHECK_ARGS(5, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_STRING, WREN_TYPE_NUM);
 
 	float x = (float)wrenGetSlotDouble(vm, 1);
 	float y = (float)wrenGetSlotDouble(vm, 2);
 	float w = (float)wrenGetSlotDouble(vm, 3);
 	const char *text = wrenGetSlotString(vm, 4);
+	int len = (int)wrenGetSlotDouble(vm, 5);
 
-	DC_DrawText(x, y, w, text);
+	DC_DrawText(x, y, w, text, len);
 }
 
 void wren_dc_drawimage(WrenVM *vm) {
@@ -965,6 +977,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Asset", true, "loadINI(_)", wren_asset_loadini },
 	{ "engine", "Asset", true, "bmpfntSet(_,_,_,_,_,_)", wren_asset_bmpfnt_set },
 	{ "engine", "Asset", true, "textWidth(_,_,_)", wren_asset_textwidth },
+	{ "engine", "Asset", true, "breakString(_,_)", wren_asset_breakstring },
 	{ "engine", "Asset", true, "spriteSet(_,_,_,_,_)", wren_asset_sprite_set },
 	{ "engine", "Asset", true, "imageSize(_)", wren_asset_image_size },
 	{ "engine", "Asset", true, "canvasSet(_,_,_)", wren_asset_canvas_set },
@@ -981,7 +994,7 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Draw", true, "useShader(_)", wren_dc_useshader },
 	{ "engine", "Draw", true, "rect(_,_,_,_,_)", wren_dc_drawrect },
 	{ "engine", "Draw", true, "setTextStyle(_,_,_,_)", wren_dc_settextstyle },
-	{ "engine", "Draw", true, "text(_,_,_,_)", wren_dc_drawtext },
+	{ "engine", "Draw", true, "text(_,_,_,_,_)", wren_dc_drawtext },
 	{ "engine", "Draw", true, "image(_,_,_,_,_,_,_,_,_)", wren_dc_drawimage },
 	{ "engine", "Draw", true, "line(_,_,_,_)", wren_dc_drawline },
 	{ "engine", "Draw", true, "circle(_,_,_,_)", wren_dc_drawcircle },

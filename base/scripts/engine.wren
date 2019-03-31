@@ -40,6 +40,7 @@ class Asset {
   foreign static bmpfntSet(assetHandle, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight)
   foreign static textWidth(fntId, text, scale)
   static textWidth(fntId, text) { textWidth(fntId, text, 1.0) }
+  foreign static breakString(width, text)
   foreign static imageSize(assetHandle)
   foreign static spriteSet(assetHandle, w, h, marginX, marginY)
   foreign static canvasSet(assetHandle, w, h)
@@ -75,7 +76,8 @@ class Draw {
   foreign static setTextStyle(fntId, size, lineHeight, align)
   static setTextStyle(fntId, size, lineHeight) { setTextStyle(fntId, size, 1.0, 1) }
   static setTextStyle(fntId, size) { setTextStyle(fntId, size, 1.0) }
-  foreign static text(x, y, w, text)
+  foreign static text(x, y, w, text, length)
+  static text(x, y, w, string) { text(x, y, w, string, 0) }
   static bmpText(fntId, x, y, text, scale) {
     setTextStyle(fntId, scale, 1, Align.Left)
     Draw.text(x, y, 0, text)

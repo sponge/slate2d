@@ -112,16 +112,17 @@ void DC_SetTextStyle(unsigned int fntId, float size, float lineHeight, int align
 	cmd->align = align;
 }
 
-void DC_DrawText(float x, float y, float w, const char *text) {
+void DC_DrawText(float x, float y, float w, const char *text, int len) {
 	GET_COMMAND(drawTextCommand_t, RC_DRAW_TEXT)
 
 	cmd->x = x;
 	cmd->y = y;
 	cmd->w = w;
-	cmd->strSz = (unsigned int) strlen(text) + 1;
+	size_t inLen = strlen(text);
+	cmd->strSz = (unsigned int) len > 0 && len < inLen ? len + 1 : inLen + 1;
 
 	void *strStart = R_GetCommandBuffer(cmd->strSz);
-	strncpy((char*)strStart, text, strlen(text));
+	strncpy((char*)strStart, text, cmd->strSz - 1);
 }
 
 void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h, float scale, byte flipBits, float ox, float oy) {

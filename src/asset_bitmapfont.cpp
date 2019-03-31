@@ -11,7 +11,6 @@
 extern ClientInfo inf;
 extern FONScontext *ctx;
 
-
 static void* bitmap_loadFont(FONScontext *context, unsigned char *data, int dataSize) {
 	return data;
 }
@@ -115,6 +114,10 @@ void* BMPFNT_Load(Asset &asset) {
 
 	void *buffer;
 	auto sz = FS_ReadFile(asset.path, &buffer);
+
+	if (sz == -1) {
+		Con_Errorf(ERR_FATAL, "Failed to find file %s", asset.path);
+	}
 
 	int w, h, ch;
 	auto img = stbi_load_from_memory((stbi_uc*)buffer, sz, &w, &h, &ch, 0);

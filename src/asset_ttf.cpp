@@ -266,6 +266,38 @@ int TTF_BreakLines(const char *string, const char *end, float breakRowWidth, TTF
 	return nrows;
 }
 
+static sds splitStr;
+const char * TTF_BreakString(int w, const char *in) {
+	TTFtextRow rows[2];
+	int nrows = 0, i;
+	int oldAlign = state.align;
+	int halign = state.align & (FONS_ALIGN_LEFT | FONS_ALIGN_CENTER | FONS_ALIGN_RIGHT);
+	int valign = state.align & (FONS_ALIGN_TOP | FONS_ALIGN_MIDDLE | FONS_ALIGN_BOTTOM | FONS_ALIGN_BASELINE);
+	float lineh;
+
+	fonsVertMetrics(ctx, nullptr, nullptr, &lineh);
+	fonsSetAlign(ctx, FONS_ALIGN_LEFT | valign);
+
+	if (splitStr != nullptr) {
+		sdsfree(splitStr);
+	}
+	splitStr = sdsempty();
+
+	while ((nrows = TTF_BreakLines(in, nullptr, w, rows, 2)) > 0) {
+		for (i = 0; i < nrows; i++) {
+			TTFtextRow* row = &rows[i];
+
+			splitStr = sdscatlen(splitStr, row->start, row->end - row->start);
+			splitStr = sdscat(splitStr, "\n");
+		}
+		in = rows[nrows - 1].next;
+	}
+
+	fonsSetAlign(ctx, oldAlign);
+
+	return splitStr;
+}
+
 void TTF_TextBox(const drawTextCommand_t *cmd, const char *string) {
 	TTFtextRow rows[2];
 	int nrows = 0, i;
@@ -320,5 +352,4 @@ int Asset_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
 	fonsSetFont(ctx, hnd);
 	fonsSetSize(ctx, scale);
 	return (int) fonsTextBounds(ctx, 0, 0, string, nullptr, nullptr);
-
 }

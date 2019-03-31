@@ -13,7 +13,7 @@ void DC_UseShader(unsigned int shaderId);
 void DC_ResetShader();
 void DC_DrawRect(float x, float y, float w, float h, bool outline = false);
 void DC_SetTextStyle(unsigned int fntId, float size, float lineHeight, int align);
-void DC_DrawText(float x, float y, float h, const char *text);
+void DC_DrawText(float x, float y, float h, const char *text, int len);
 void DC_DrawImage(unsigned int imgId, float x, float y, float w = 0.0f, float h = 0.0f, float scale = 1.0f, byte flipBits = 0, float ox = 0.0f, float oy = 0.0f);
 void DC_DrawSprite(unsigned int sprite, int id, float x, float y, float scale = 1.0f, byte flipBits = 0, int w = 1, int h = 1);
 void DC_DrawLine(float x1, float y1, float x2, float y2);

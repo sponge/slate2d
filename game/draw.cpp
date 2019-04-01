@@ -118,10 +118,10 @@ void DC_DrawText(float x, float y, float w, const char *text, int len) {
 	cmd->x = x;
 	cmd->y = y;
 	cmd->w = w;
-	size_t inLen = strlen(text);
-	cmd->strSz = (unsigned int) len > 0 && len < inLen ? len + 1 : inLen + 1;
+	cmd->len = len;
+	cmd->strSz = (unsigned int) strlen(text) + 1;
 
-	void *strStart = R_GetCommandBuffer(cmd->strSz);
+	void* strStart = R_GetCommandBuffer(cmd->strSz);
 	strncpy((char*)strStart, text, cmd->strSz - 1);
 }
 

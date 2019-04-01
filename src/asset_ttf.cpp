@@ -68,7 +68,7 @@ void TTF_Free(Asset &asset) {
 	delete fnt;
 }
 
-int TTF_BreakLines(const char *string, const char *end, float breakRowWidth, TTFtextRow* rows, int maxRows) {
+int TTF_BreakLines(const char *string, int *currCount, int maxCount, float breakRowWidth, TTFtextRow* rows, int maxRows) {
 	FONStextIter iter, prevIter;
 	FONSquad q;
 	int nrows = 0;
@@ -86,20 +86,17 @@ int TTF_BreakLines(const char *string, const char *end, float breakRowWidth, TTF
 	float breakMaxX = 0;
 	int type = TTF_SPACE, ptype = TTF_SPACE;
 	unsigned int pcodepoint = 0;
+	const char* end = string + strlen(string);
 
 	if (maxRows == 0) {
 		return 0;
 	}
 
-	if (end == NULL) {
-		end = string + strlen(string);
-	}
-
-	if (string == end) {
+	if (maxCount != 0 && *currCount >= maxCount) {
 		return 0;
 	}
 
-	fonsTextIterInit(ctx, &iter, 0, 0, string, end);
+	fonsTextIterInit(ctx, &iter, 0, 0, string, nullptr);
 	prevIter = iter;
 	while (fonsTextIterNext(ctx, &iter, &q)) {
 		prevIter = iter;
@@ -245,6 +242,17 @@ int TTF_BreakLines(const char *string, const char *end, float breakRowWidth, TTF
 					breakWidth = 0.0;
 					breakMaxX = 0.0;
 				}
+
+				if ((type == TTF_CHAR || type == TTF_CJK_CHAR || type == TTF_SPACE) && maxCount != 0 && ++(*currCount) >= maxCount) {
+					rows[nrows].start = rowStart;
+					rows[nrows].end = iter.str;
+					rows[nrows].width = rowWidth;
+					rows[nrows].minx = rowMinX;
+					rows[nrows].maxx = rowMaxX;
+					rows[nrows].next = iter.str;
+					nrows++;
+					return nrows;
+				}
 			}
 		}
 
@@ -283,7 +291,7 @@ const char * TTF_BreakString(int w, const char *in) {
 	}
 	splitStr = sdsempty();
 
-	while ((nrows = TTF_BreakLines(in, nullptr, w, rows, 2)) > 0) {
+	while ((nrows = TTF_BreakLines(in, NULL, 0, w, rows, 2)) > 0) {
 		for (i = 0; i < nrows; i++) {
 			TTFtextRow* row = &rows[i];
 
@@ -298,7 +306,7 @@ const char * TTF_BreakString(int w, const char *in) {
 	return splitStr;
 }
 
-void TTF_TextBox(const drawTextCommand_t *cmd, const char *string) {
+void TTF_TextBox(const drawTextCommand_t *cmd, const char *string, int count) {
 	TTFtextRow rows[2];
 	int nrows = 0, i;
 	int oldAlign = state.align;
@@ -313,7 +321,9 @@ void TTF_TextBox(const drawTextCommand_t *cmd, const char *string) {
 	float y = cmd->y;
 	lineh *= state.lineHeight;
 
-	while ((nrows = TTF_BreakLines(string, nullptr, cmd->w, rows, 2)) > 0) {
+	int currCount = 0;
+
+	while ((nrows = TTF_BreakLines(string, &currCount, count, cmd->w, rows, 2)) > 0) {
 		for (i = 0; i < nrows; i++) {
 			TTFtextRow* row = &rows[i];
 			if (halign & FONS_ALIGN_LEFT)

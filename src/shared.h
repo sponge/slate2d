@@ -105,10 +105,12 @@ typedef struct {
 
 // strSz is the size of the string. the actual string lives
 // in the buffer right after this command so it can be any
-// reasonable size.
+// reasonable size. len is separate here so the engine can
+// parse out color codes without the game code needing to
+// understand them.
 typedef struct {
 	byte commandId;
-	float x, y, w;
+	float x, y, w, len;
 	unsigned int strSz;
 } drawTextCommand_t;
 

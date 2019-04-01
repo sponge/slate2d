@@ -1,4 +1,4 @@
-import "engine" for Trap, CVar, Draw, Asset, Fill, TileMap
+import "engine" for Trap, CVar, Draw, Asset, Fill, TileMap, Align
 import "button" for Button
 import "debug" for Debug
 import "math" for Math
@@ -84,6 +84,9 @@ class Title {
 
     var len = Asset.textWidth(_font, "hello world")
     Trap.printLn("length of text is %(len)")
+
+    Draw.setTextStyle(_font, 3, 1.0, Align.Left)
+    _splitStr = Asset.breakString(400, "Lorem ^6ipsum ^gdolor sit ^0amet, consectetur adipiscing elit. Vivamus nec ^jaugue ut leo tempor pharetra eu vel velit. Vestibulum mattis bibendum imperdiet. Donec pretium ex sapien, bibendum efficitur augue tincidunt vel. Mauris eu erat eu felis accumsan laoreet. Praesent in massa nibh. Vivamus hendrerit enim et posuere aliquet. Vestibulum vitae lectus erat. Nam tempus tincidunt aliquet. Nulla et odio ac erat blandit eleifend sed id est. Integer quis lorem ut massa efficitur ornare nec nec leo. Phasellus eu molestie orci. Nam facilisis massa eu risus maximus, sed consequat lacus rhoncus. Mauris varius accumsan dapibus.")
   }
 
   update(dt) {
@@ -112,6 +115,10 @@ class Title {
     }
 
     Draw.resetTransform()
+
+    Draw.setTextStyle(_font, 2, 1.0, Align.Left)
+    Draw.text(100, 10, 0, _splitStr, _time / 2 + 1)
+    return
 
     Draw.useCanvas(_canvas)
     Draw.clear(0, 0, 0, 255)

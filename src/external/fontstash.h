@@ -510,6 +510,9 @@ struct FONSstate
 	int align;
 	float size;
 	unsigned int color;
+	// sponge edit: text formatting
+	unsigned int origColor;
+	unsigned int origColorUsed;
 	float blur;
 	float spacing;
 };
@@ -585,6 +588,70 @@ static void fons__tmpfree(void* ptr, void* up)
 
 #define FONS_UTF8_ACCEPT 0
 #define FONS_UTF8_REJECT 12
+
+// sponge edit text formatting
+#define FONS_MAX_COLORCODES 32
+static unsigned int colorCodes[FONS_MAX_COLORCODES] = {
+	0xbe4a2fff,
+	0xd77643ff,
+	0xead4aaff,
+	0xe4a672ff,
+	0xb86f50ff,
+	0x733e39ff,
+	0x3e2731ff,
+	0xa22633ff,
+	0xe43b44ff,
+	0xf77622ff,
+	0xfeae34ff,
+	0xfee761ff,
+	0x63c74dff,
+	0x3e8948ff,
+	0x265c42ff,
+	0x193c3eff,
+	0x124e89ff,
+	0x0099dbff,
+	0x2ce8f5ff,
+	0xffffffff,
+	0xc0cbdcff,
+	0x8b9bb4ff,
+	0x5a6988ff,
+	0x3a4466ff,
+	0x262b44ff,
+	0x181425ff,
+	0xff0044ff,
+	0x68386cff,
+	0xb55088ff,
+	0xf6757aff,
+	0xe8b796ff,
+	0xc28569ff
+};
+
+const char* fons__decmarkup(const char* str, const char* end, FONSstate* state) {
+	if (str[0] != '^') {
+		return str;
+	}
+
+	if (str[1] == '^' || str + 1 == end) {
+		return str + 1;
+	}
+
+	if (state != NULL) {
+		if (str[1] == '0') {
+			state->color = state->origColor;
+			state->origColorUsed = 0;
+		}
+		else {
+			if (state->origColorUsed == 0) {
+				state->origColor = state->color;
+				state->origColorUsed = 1;
+			}
+			state->color = colorCodes[(*(str + 1)) % FONS_MAX_COLORCODES];
+		}
+	}
+	//Con_Printf("str is ^, color is %\n", *(str + 1));
+
+	return str + 2;
+}
 
 static unsigned int fons__decutf8(unsigned int* state, unsigned int* codep, unsigned int byte)
 {
@@ -1477,6 +1544,12 @@ FONS_DEF float fonsDrawText(FONScontext* stash,
 	y += fons__getVertAlign(stash, font, state->align, isize);
 
 	for (; str != end; ++str) {
+		// sponge edit: text formatting
+		str = fons__decmarkup(str, end, state);
+		if (str == end) {
+			break;
+		}
+
 		if (fons__decutf8(&utf8state, &codepoint, *(const unsigned char*)str))
 			continue;
 		glyph = fons__getGlyph(stash, font, codepoint, isize, iblur);
@@ -1497,6 +1570,10 @@ FONS_DEF float fonsDrawText(FONScontext* stash,
 		prevGlyphIndex = glyph != NULL ? glyph->index : -1;
 	}
 	fons__flush(stash);
+
+	// sponge edit: text formatting
+	state->color = state->origColor;
+	state->origColorUsed = 0;
 
 	return x;
 }
@@ -1556,6 +1633,12 @@ FONS_DEF int fonsTextIterNext(FONScontext* stash, FONStextIter* iter, FONSquad* 
 		return 0;
 
 	for (; str != iter->end; str++) {
+		// sponge edit: text formatting
+		str = fons__decmarkup(str, iter->end, NULL);
+		if (str == iter->end) {
+			break;
+		}
+
 		if (fons__decutf8(&iter->utf8state, &iter->codepoint, *(const unsigned char*)str))
 			continue;
 		str++;
@@ -1657,6 +1740,12 @@ FONS_DEF float fonsTextBounds(FONScontext* stash,
 		end = str + strlen(str);
 
 	for (; str != end; ++str) {
+		// sponge edit: text formatting
+		str = fons__decmarkup(str, end, NULL);
+		if (str == end) {
+			break;
+		}
+
 		if (fons__decutf8(&utf8state, &codepoint, *(const unsigned char*)str))
 			continue;
 		glyph = fons__getGlyph(stash, font, codepoint, isize, iblur);

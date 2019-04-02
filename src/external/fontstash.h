@@ -591,39 +591,40 @@ static void fons__tmpfree(void* ptr, void* up)
 
 // sponge edit text formatting
 #define FONS_MAX_COLORCODES 32
+// 0xAABBGGRR
 static unsigned int colorCodes[FONS_MAX_COLORCODES] = {
-	0xbe4a2fff,
-	0xd77643ff,
-	0xead4aaff,
-	0xe4a672ff,
-	0xb86f50ff,
-	0x733e39ff,
-	0x3e2731ff,
-	0xa22633ff,
-	0xe43b44ff,
-	0xf77622ff,
-	0xfeae34ff,
-	0xfee761ff,
-	0x63c74dff,
-	0x3e8948ff,
-	0x265c42ff,
-	0x193c3eff,
-	0x124e89ff,
-	0x0099dbff,
-	0x2ce8f5ff,
-	0xffffffff,
-	0xc0cbdcff,
-	0x8b9bb4ff,
-	0x5a6988ff,
-	0x3a4466ff,
-	0x262b44ff,
-	0x181425ff,
-	0xff0044ff,
-	0x68386cff,
-	0xb55088ff,
-	0xf6757aff,
-	0xe8b796ff,
-	0xc28569ff
+	0xFF2F4ABE,
+	0xFF4376D7,
+	0xFFAAD4EA,
+	0xFF72A6E4,
+	0xFF506FB8,
+	0xFF393E73,
+	0xFF31273E,
+	0xFF3326A2,
+	0xFF443BE4,
+	0xFF2276F7,
+	0xFF34AEFE,
+	0xFF61E7FE,
+	0xFF4DC763,
+	0xFF48893E,
+	0xFF425C26,
+	0xFF3E3C19,
+	0xFF894E12,
+	0xFFDB9900,
+	0xFFF5E82C,
+	0xFFFFFFFF,
+	0xFFDCCBC0,
+	0xFFB49B8B,
+	0xFF88695A,
+	0xFF66443A,
+	0xFF442B26,
+	0xFF251418,
+	0xFF4400FF,
+	0xFF6C3868,
+	0xFF8850B5,
+	0xFF7A75F6,
+	0xFF96B7E8,
+	0xFF6985C2
 };
 
 const char* fons__decmarkup(const char* str, const char* end, FONSstate* state) {
@@ -636,19 +637,29 @@ const char* fons__decmarkup(const char* str, const char* end, FONSstate* state) 
 	}
 
 	if (state != NULL) {
-		if (str[1] == '0') {
-			state->color = state->origColor;
-			state->origColorUsed = 0;
+		char idx = *(str+1);
+		int valid = 0;
+		if (idx >= '1' && idx <= '9') {
+			idx -= 49;
+			valid = 1;
+		} else if (idx >= 'a' && idx <= 'w') {
+			idx -= 88;
+			valid = 1;
 		}
-		else {
-			if (state->origColorUsed == 0) {
+
+		if (valid) {
+			if (!state->origColorUsed) {
 				state->origColor = state->color;
 				state->origColorUsed = 1;
 			}
-			state->color = colorCodes[(*(str + 1)) % FONS_MAX_COLORCODES];
+			state->color = colorCodes[idx % FONS_MAX_COLORCODES];
+		} else {
+			if (state->origColorUsed) {
+				state->color = state->origColor;
+				state->origColorUsed = 0;
+			}
 		}
 	}
-	//Con_Printf("str is ^, color is %\n", *(str + 1));
 
 	return str + 2;
 }
@@ -1570,10 +1581,6 @@ FONS_DEF float fonsDrawText(FONScontext* stash,
 		prevGlyphIndex = glyph != NULL ? glyph->index : -1;
 	}
 	fons__flush(stash);
-
-	// sponge edit: text formatting
-	state->color = state->origColor;
-	state->origColorUsed = 0;
 
 	return x;
 }

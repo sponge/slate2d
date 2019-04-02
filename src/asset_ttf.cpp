@@ -68,39 +68,10 @@ void TTF_Free(Asset &asset) {
 	delete fnt;
 }
 
-int TTF_BreakLines(const char *string, int *currCount, int maxCount, float breakRowWidth, TTFtextRow* rows, int maxRows) {
-	FONStextIter iter, prevIter;
-	FONSquad q;
-	int nrows = 0;
-	float rowStartX = 0;
-	float rowWidth = 0;
-	float rowMinX = 0;
-	float rowMaxX = 0;
-	const char* rowStart = NULL;
-	const char* rowEnd = NULL;
-	const char* wordStart = NULL;
-	float wordStartX = 0;
-	float wordMinX = 0;
-	const char* breakEnd = NULL;
-	float breakWidth = 0;
-	float breakMaxX = 0;
-	int type = TTF_SPACE, ptype = TTF_SPACE;
-	unsigned int pcodepoint = 0;
-	const char* end = string + strlen(string);
+int TTF_CodepointType(int codepoint, int pcodepoint) {
+	int type;
 
-	if (maxRows == 0) {
-		return 0;
-	}
-
-	if (maxCount != 0 && *currCount >= maxCount) {
-		return 0;
-	}
-
-	fonsTextIterInit(ctx, &iter, 0, 0, string, nullptr);
-	prevIter = iter;
-	while (fonsTextIterNext(ctx, &iter, &q)) {
-		prevIter = iter;
-		switch (iter.codepoint) {
+	switch (codepoint) {
 		case 9:			// \t
 		case 11:		// \v
 		case 12:		// \f
@@ -118,17 +89,85 @@ int TTF_BreakLines(const char *string, int *currCount, int maxCount, float break
 			type = TTF_NEWLINE;
 			break;
 		default:
-			if ((iter.codepoint >= 0x4E00 && iter.codepoint <= 0x9FFF) ||
-				(iter.codepoint >= 0x3000 && iter.codepoint <= 0x30FF) ||
-				(iter.codepoint >= 0xFF00 && iter.codepoint <= 0xFFEF) ||
-				(iter.codepoint >= 0x1100 && iter.codepoint <= 0x11FF) ||
-				(iter.codepoint >= 0x3130 && iter.codepoint <= 0x318F) ||
-				(iter.codepoint >= 0xAC00 && iter.codepoint <= 0xD7AF))
+			if ((codepoint >= 0x4E00 && codepoint <= 0x9FFF) ||
+				(codepoint >= 0x3000 && codepoint <= 0x30FF) ||
+				(codepoint >= 0xFF00 && codepoint <= 0xFFEF) ||
+				(codepoint >= 0x1100 && codepoint <= 0x11FF) ||
+				(codepoint >= 0x3130 && codepoint <= 0x318F) ||
+				(codepoint >= 0xAC00 && codepoint <= 0xD7AF))
 				type = TTF_CJK_CHAR;
 			else
 				type = TTF_CHAR;
 			break;
 		}
+
+		return type;
+}
+
+const char *TTF_CountChars(const char *string, int count) {
+	if (count == 0) {
+		return nullptr;
+	}
+
+	FONStextIter iter, prevIter;
+	FONSquad q;
+	unsigned int pcodepoint = 0, type = 0;;
+	fonsTextIterInit(ctx, &iter, 0, 0, string, nullptr);
+	prevIter = iter;
+	while (fonsTextIterNext(ctx, &iter, &q)) {
+		prevIter = iter;
+		
+		type = TTF_CodepointType(iter.codepoint, pcodepoint);
+
+		if (type == TTF_CHAR || type == TTF_CJK_CHAR) {
+			count--;
+		}
+
+		if (count == 0) {
+			return iter.str;
+		}
+	}
+
+	return iter.str;
+}
+
+int TTF_BreakLines(const char *string, const char *end, float breakRowWidth, TTFtextRow* rows, int maxRows) {
+	FONStextIter iter, prevIter;
+	FONSquad q;
+	int nrows = 0;
+	float rowStartX = 0;
+	float rowWidth = 0;
+	float rowMinX = 0;
+	float rowMaxX = 0;
+	const char* rowStart = NULL;
+	const char* rowEnd = NULL;
+	const char* wordStart = NULL;
+	float wordStartX = 0;
+	float wordMinX = 0;
+	const char* breakEnd = NULL;
+	float breakWidth = 0;
+	float breakMaxX = 0;
+	int type = TTF_SPACE, ptype = TTF_SPACE;
+	unsigned int pcodepoint = 0;
+
+	if (maxRows == 0) {
+		return 0;
+	}
+
+	if (end == NULL) {
+		end = string + strlen(string);
+	}
+
+	if (string == end) {
+		return 0;
+	}
+
+	fonsTextIterInit(ctx, &iter, 0, 0, string, end);
+	prevIter = iter;
+	while (fonsTextIterNext(ctx, &iter, &q)) {
+		prevIter = iter;
+		
+		type = TTF_CodepointType(iter.codepoint, pcodepoint);
 
 		if (type == TTF_NEWLINE) {
 			// Always handle new lines.
@@ -242,17 +281,6 @@ int TTF_BreakLines(const char *string, int *currCount, int maxCount, float break
 					breakWidth = 0.0;
 					breakMaxX = 0.0;
 				}
-
-				if ((type == TTF_CHAR || type == TTF_CJK_CHAR || type == TTF_SPACE) && maxCount != 0 && ++(*currCount) >= maxCount) {
-					rows[nrows].start = rowStart;
-					rows[nrows].end = iter.str;
-					rows[nrows].width = rowWidth;
-					rows[nrows].minx = rowMinX;
-					rows[nrows].maxx = rowMaxX;
-					rows[nrows].next = iter.str;
-					nrows++;
-					return nrows;
-				}
 			}
 		}
 
@@ -291,7 +319,7 @@ const char * TTF_BreakString(int w, const char *in) {
 	}
 	splitStr = sdsempty();
 
-	while ((nrows = TTF_BreakLines(in, NULL, 0, w, rows, 2)) > 0) {
+	while ((nrows = TTF_BreakLines(in, nullptr, w, rows, 2)) > 0) {
 		for (i = 0; i < nrows; i++) {
 			TTFtextRow* row = &rows[i];
 
@@ -314,6 +342,8 @@ void TTF_TextBox(const drawTextCommand_t *cmd, const char *string, int count) {
 	int valign = state.align & (FONS_ALIGN_TOP | FONS_ALIGN_MIDDLE | FONS_ALIGN_BOTTOM | FONS_ALIGN_BASELINE);
 	float lineh;
 
+	fonsPushState(ctx);
+
 	fonsVertMetrics(ctx, nullptr, nullptr, &lineh);
 	fonsSetAlign(ctx, FONS_ALIGN_LEFT | valign);
 
@@ -321,9 +351,9 @@ void TTF_TextBox(const drawTextCommand_t *cmd, const char *string, int count) {
 	float y = cmd->y;
 	lineh *= state.lineHeight;
 
-	int currCount = 0;
+	const char *end = TTF_CountChars(string, count);
 
-	while ((nrows = TTF_BreakLines(string, &currCount, count, cmd->w, rows, 2)) > 0) {
+	while ((nrows = TTF_BreakLines(string, end, cmd->w, rows, 2)) > 0) {
 		for (i = 0; i < nrows; i++) {
 			TTFtextRow* row = &rows[i];
 			if (halign & FONS_ALIGN_LEFT)
@@ -337,7 +367,7 @@ void TTF_TextBox(const drawTextCommand_t *cmd, const char *string, int count) {
 		string = rows[nrows - 1].next;
 	}
 
-	fonsSetAlign(ctx, oldAlign);
+	fonsPopState(ctx);
 }
 
 int Asset_TextWidth(AssetHandle assetHandle, const char *string, float scale) {

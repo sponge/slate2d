@@ -590,7 +590,7 @@ static void fons__tmpfree(void* ptr, void* up)
 #define FONS_UTF8_REJECT 12
 
 // sponge edit text formatting
-#define FONS_MAX_COLORCODES 32
+#define FONS_MAX_COLORCODES 34
 // 0xAABBGGRR
 static unsigned int colorCodes[FONS_MAX_COLORCODES] = {
 	0xFF2F4ABE,
@@ -624,7 +624,9 @@ static unsigned int colorCodes[FONS_MAX_COLORCODES] = {
 	0xFF8850B5,
 	0xFF7A75F6,
 	0xFF96B7E8,
-	0xFF6985C2
+	0xFF6985C2,
+	0xFF000000,
+	0xFFFFFFFF
 };
 
 const char* fons__decmarkup(const char* str, const char* end, FONSstate* state) {
@@ -642,7 +644,7 @@ const char* fons__decmarkup(const char* str, const char* end, FONSstate* state) 
 		if (idx >= '1' && idx <= '9') {
 			idx -= 49;
 			valid = 1;
-		} else if (idx >= 'a' && idx <= 'w') {
+		} else if (idx >= 'a' && idx <= 'y') {
 			idx -= 88;
 			valid = 1;
 		}

@@ -87,6 +87,7 @@ class Title {
 
     Draw.setTextStyle(_font, 3, 1.0, Align.Left)
     _splitStr = Asset.breakString(400, "Lorem ^6ipsum ^gdolor sit ^0amet, consectetur adipiscing elit. Vivamus nec ^jaugue ut leo tempor pharetra eu vel velit. Vestibulum mattis bibendum imperdiet. Donec pretium ex sapien, bibendum efficitur augue tincidunt vel. Mauris eu erat eu felis accumsan laoreet. Praesent in massa nibh. Vivamus hendrerit enim et posuere aliquet. Vestibulum vitae lectus erat. Nam tempus tincidunt aliquet. Nulla et odio ac erat blandit eleifend sed id est. Integer quis lorem ut massa efficitur ornare nec nec leo. Phasellus eu molestie orci. Nam facilisis massa eu risus maximus, sed consequat lacus rhoncus. Mauris varius accumsan dapibus.")
+    //_splitStr = Asset.breakString(400, "^00 ^11 ^22 ^33 ^44 ^55 ^66 ^77 ^88 ^99 ^aa ^bb ^cc ^dd ^ee ^ff ^gg ^hh ^ii ^jj ^kk ^ll ^mm ^nn ^oo ^pp ^qq ^rr ^ss ^tt ^uu ^vv ^ww ^xx ^yy")
   }
 
   update(dt) {

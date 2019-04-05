@@ -70,6 +70,28 @@ void ConsoleUI::Draw(ClientInfo *inf) {
 		return;
 	}
 
+	if (ImGui::BeginMainMenuBar()) {
+		if (ImGui::BeginMenu("Slate2D")) {
+			if (ImGui::MenuItem("Quit")) {
+				Con_Execute("quit");
+			}
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Debug Windows")) {
+			if (ImGui::MenuItem("Asset Inspector", nullptr, debug_assets->boolean)) {
+				Con_SetVarFloat("debug.assets", debug_assets->integer ? 0 : 1);
+			}
+
+			if (ImGui::MenuItem("Wren Inspector", nullptr, debug_wrenInspector->boolean)) {
+					Con_SetVarFloat("debug.wrenInspector", debug_wrenInspector->integer ? 0 : 1);
+			}
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMainMenuBar();
+	}
 
 	ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiSetCond_FirstUseEver);
 	if (!ImGui::Begin("Console", &consoleActive))

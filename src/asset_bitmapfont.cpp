@@ -7,6 +7,7 @@
 #include "rlgl.h"
 #include "external/fontstash.h"
 #include "external/gl3corefontstash.h"
+#include <imgui.h>
 
 extern ClientInfo inf;
 extern FONScontext *ctx;
@@ -198,6 +199,22 @@ void BMPFNT_Free(Asset &asset) {
 	delete font;
 }
 
+void BMPFNT_Reload(Asset &asset) {
+	BitmapFont_t *fnt = (BitmapFont_t*) asset.resource;
+	
+	// copy over the old settings out so we can restore them after
+	char glyphs[sizeof(fnt->glyphs)];
+	memcpy(glyphs, &fnt->glyphs, sizeof(fnt->glyphs));
+	int glyphWidth = fnt->glyphWidth;
+	int charSpacing = fnt->charSpacing;
+	int spaceWidth = fnt->spaceWidth;
+	int lineHeight = fnt->lineHeight;
+
+	Asset_Unload(asset.id);
+	BMPFNT_Set(asset.id, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight);
+	Asset_Load(asset.id);
+}
+
 void BMPFNT_ParseINI(Asset &asset, ini_t *ini) {
 	int glyphWidth = 0, charSpacing = 0 , spaceWidth = 0 , lineHeight = 0;
 	
@@ -239,4 +256,82 @@ void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int
 	font->lineHeight = lineHeight;
 	
 	asset->resource = (void*)font;
+}
+
+void BMPFNT_Inspect(Asset& asset, bool deselected) {
+	static int zoom = 1;
+	static Image* img = nullptr;
+	static int currentGlyph;
+
+	// we need to load the entire image into the gpu since fontstash handles this normally
+	// if we're deselecting, free that texture free
+	if (deselected && img != nullptr) {
+		rlDeleteTextures(img->hnd);
+		delete img;
+		img = nullptr;
+		currentGlyph = 0;
+		return;
+	}
+
+	BitmapFont* fnt = (BitmapFont*)asset.resource;
+
+	char glyphChar[2] = "";
+	glyphChar[0] = fnt->glyphs[currentGlyph];
+
+	ImGui::Text("Size: %ix%i", fnt->w, fnt->h);
+	ImGui::Text("Glyphs: \"%s\"", fnt->glyphs);
+	fnt->glyphWidth == 0 ? ImGui::Text("Glyph Width: variable") : ImGui::Text("Glyph Width: %ipx", fnt->glyphWidth);
+	ImGui::Text("Character Spacing: %ipx", fnt->charSpacing);
+	ImGui::Text("Line Height: %ipx", fnt->lineHeight);
+	ImGui::Text("Space Width: %ipx", fnt->spaceWidth);
+
+	// unload the old display texture if reloading
+	if (ImGui::Button("Reload")) {
+		rlDeleteTextures(img->hnd);
+		delete img;
+		img = nullptr;
+		BMPFNT_Reload(asset);
+		fnt = (BitmapFont*)asset.resource;
+	}
+
+	// if we're newly clicking on this item, or have reloaded, load the image into the gpu
+	if (img == nullptr) {
+		img = Img_LoadPath(asset.path, asset.flags);
+	}
+
+	ImGui::SameLine();
+	ImGui::SliderInt("Zoom", &zoom, 1, 8, "%dx");
+
+	// preview glyph dropdown. make a string with 2 chars, the char and a null, so we can
+	// treat it like a string
+	ImGui::PushItemWidth(64);
+	if (ImGui::BeginCombo("Show Glyph", &glyphChar[0])) {
+		for (int i = 0; i < sizeof(fnt->glyphs); i++) {
+			if (fnt->glyphs[i] == '\0') {
+				continue;
+			}
+
+			char title[2] = "";
+			title[0] = fnt->glyphs[i];
+			if (ImGui::Selectable(&title[0], i == currentGlyph)) {
+				currentGlyph = i;
+			}
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::PopItemWidth();
+
+	ImGui::BeginChildFrame(ImGui::GetID("inspector value"), ImVec2(0, 0), ImGuiWindowFlags_HorizontalScrollbar);
+	BitmapGlyph &offs = fnt->offsets[fnt->glyphs[currentGlyph]];
+
+	// figure out color and coords for glyph selection rect. need to offset by the
+	// window position since we're adding to the draw list directly.
+	ImU32 color = ImGui::ColorConvertFloat4ToU32(ImVec4(1, 0, 0, 1));
+	ImVec2 w = ImGui::GetCursorScreenPos();
+	ImVec2 top = ImVec2(w.x + offs.start * zoom, w.y);
+	ImVec2 bottom = ImVec2(w.x + offs.end * zoom, w.y + fnt->h * zoom);
+	ImGui::GetWindowDrawList()->AddRectFilled(top, bottom, color);
+
+	ImGui::Image((ImTextureID)img->hnd, ImVec2(img->w * zoom, img->h * zoom));
+	ImGui::EndChildFrame();
 }

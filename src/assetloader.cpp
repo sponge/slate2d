@@ -22,7 +22,7 @@ typedef struct {
 	void(*ParseINI)(Asset &asset, ini_t *ini);
 	void*(*Load)(Asset &asset);
 	void(*Free)(Asset &asset);
-	void(*Inspect)(Asset& asset);
+	void(*Inspect)(Asset& asset, bool deselected);
 } AssetLoadHandler_t;
 
 #define INIFLAGS_OPTIONALPATH 1
@@ -31,13 +31,13 @@ static AssetLoadHandler_t assetHandler[ASSET_MAX] = {
 	{}, // ASSET_ANY
 	{"image", 0, Img_ParseINI, Img_Load, Img_Free, Img_Inspect },
 	{"sprite", 0, Sprite_ParseINI, Sprite_Load, Sprite_Free },
-	{"speech", INIFLAGS_OPTIONALPATH, Speech_ParseINI, Speech_Load, Speech_Free },
-	{"sound", 0, nullptr, Sound_Load, Sound_Free },
-	{"mod", 0, nullptr, Sound_Load, Mod_Free },
+	{"speech", INIFLAGS_OPTIONALPATH, Speech_ParseINI, Speech_Load, Speech_Free, Sound_Inspect },
+	{"sound", 0, nullptr, Sound_Load, Sound_Free, Sound_Inspect },
+	{"mod", 0, nullptr, Sound_Load, Mod_Free, Sound_Inspect },
 	{"ttf", 0, nullptr, TTF_Load, TTF_Free },
-	{"bitmapfont", 0, BMPFNT_ParseINI, BMPFNT_Load, BMPFNT_Free },
+	{"bitmapfont", 0, BMPFNT_ParseINI, BMPFNT_Load, BMPFNT_Free, BMPFNT_Inspect },
 	{"tilemap", 0, nullptr, TileMap_Load, TileMap_Free },
-	{"canvas", INIFLAGS_OPTIONALPATH, Canvas_ParseINI, Canvas_Load, Canvas_Free },
+	{"canvas", INIFLAGS_OPTIONALPATH, Canvas_ParseINI, Canvas_Load, Canvas_Free, Canvas_Inspect },
 	{"shader", INIFLAGS_OPTIONALPATH, Shader_ParseINI, Shader_Load, Shader_Free },
 };
 
@@ -120,6 +120,18 @@ void Asset_LoadAll() {
 	for (int i = 0; i < assets.length; i++) {
 		Asset_Load(i);
 	}
+}
+
+void Asset_Unload(AssetHandle i) {
+	Asset &asset = assets.data[i];
+	if (asset.type == ASSET_ANY || !asset.loaded) {
+		return;
+	}
+
+	Con_Printf("asset_unload: %s name:%s path:%s\n", assetStrings[asset.type], asset.name, asset.path);
+	assetHandler[asset.type].Free(asset);
+	asset.resource = nullptr;
+	asset.loaded = false;
 }
 
 void Asset_ClearAll() {
@@ -211,6 +223,7 @@ void Asset_LoadINI(const char *path) {
 
 void Asset_DrawInspector() {
 	static int currentItem;
+	int lastItem = -1;
 
 	if (!debug_assets->boolean) {
 		if (debug_assets->boolean == false && debug_assets->integer == 1) {
@@ -220,33 +233,47 @@ void Asset_DrawInspector() {
 		return;
 	}
 
+	ImGui::SetNextWindowSizeConstraints(ImVec2(640, 250), ImVec2(9999, 9999));
 	if (ImGui::Begin("Asset Inspector", &debug_assets->boolean)) {
+		if (currentItem >= assets.length) {
+			currentItem = assets.length - 1;
+		}
+
 		ImVec2 window = ImGui::GetWindowSize();
 
 		ImGui::Columns(2);
-		ImGui::SetColumnWidth(0, window.x * 0.3);
-		ImGui::SetColumnWidth(1, window.x * 0.7);
+		int width = window.x * 0.3 > 250 ? 250 : window.x * 0.3;
+		ImGui::SetColumnWidth(0, width);
+		ImGui::SetColumnWidth(1, window.x - width);
 
-		ImGui::PushItemWidth(ImGui::GetColumnWidth() - 8);
-		if (ImGui::ListBoxHeader("Assets", ImVec2(0, -1)))
+		if (ImGui::ListBoxHeader("##Assets", ImVec2(-0.1, -0.1)))
 		{
 			for (int i = 0; i < assets.length; i++) {
 				if (ImGui::Selectable(assets.data[i].name, i == currentItem)) {
+					lastItem = currentItem;
 					currentItem = i;
-
 				}
 			}
 			ImGui::ListBoxFooter();
 		}
+
 		ImGui::NextColumn();
-		//ImGui::BeginChildFrame(ImGui::GetID("inspector value"), ImVec2(0, 0));
 		Asset& asset = assets.data[currentItem];
 		ImGui::Text("Name: %s", asset.name);
-		ImGui::Text("Path: %s", asset.path);
-		if (assetHandler[asset.type].Inspect != nullptr) {
-			assetHandler[asset.type].Inspect(asset);
+		ImGui::Text("Type: %s", assetHandler[asset.type].iniType);
+		if (asset.path[0] != '\0') {
+			ImGui::Text("Path: %s", asset.path);
 		}
-		//ImGui::EndChildFrame();
+
+		if (lastItem != -1) {
+			Asset &lastAsset = assets.data[lastItem];
+			if (assetHandler[lastAsset.type].Inspect != nullptr) {
+				assetHandler[lastAsset.type].Inspect(lastAsset, true);
+			}
+		}
+		if (assetHandler[asset.type].Inspect != nullptr) {
+			assetHandler[asset.type].Inspect(asset, false);
+		}
 	}
 	ImGui::End();
 }

@@ -11,6 +11,7 @@ AssetHandle Asset_Find(const char *name);
 Asset* Asset_Get(AssetType_t type, AssetHandle id);
 AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *path, int flags = 0);
 void Asset_Load(AssetHandle i);
+void Asset_Unload(AssetHandle i);
 void Asset_LoadAll();
 void Asset_ClearAll();
 void Asset_LoadINI(const char *path);
@@ -21,9 +22,10 @@ void Asset_DrawInspector();
 void* Img_Load(Asset &asset);
 Image* Img_LoadPath(const char *path, int flags = 0);
 void Img_Free(Asset &asset);
+void Img_Reload(Asset &asset);
 void Img_ParseINI(Asset &asset, ini_t *ini);
 Image* Get_Img(AssetHandle id);
-void Img_Inspect(Asset& asset);
+void Img_Inspect(Asset& asset, bool deselected);
 
 // sprite assets
 
@@ -64,8 +66,10 @@ typedef struct BitmapFont {
 
 void* BMPFNT_Load(Asset &asset);
 void BMPFNT_Free(Asset &asset);
+void BMPFNT_Reload(Asset &asset);
 void BMPFNT_ParseINI(Asset & asset, ini_t * ini);
 void BMPFNT_Set(AssetHandle assetHandle, const char *glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight);
+void BMPFNT_Inspect(Asset& asset, bool deselected);
 
 // audio assets
 
@@ -75,6 +79,8 @@ void Speech_ParseINI(Asset &asset, ini_t *ini);
 void* Sound_Load(Asset &asset);
 void Sound_Free(Asset &asset);
 void Mod_Free(Asset &asset);
+void Sound_Inspect(Asset& asset, bool deselected);
+
 
 unsigned int Snd_Play(AssetHandle assetHandle, float volume, float pan, bool loop);
 void Snd_Stop(unsigned int handle);
@@ -97,6 +103,7 @@ void * Canvas_Load(Asset &asset);
 void Canvas_Set(AssetHandle id, int width, int height);
 void Canvas_Free(Asset &asset);
 void Canvas_ParseINI(Asset & asset, ini_t * ini);
+void Canvas_Inspect(Asset& asset, bool deselected);
 
 // shader assets
 

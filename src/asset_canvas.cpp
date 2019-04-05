@@ -1,6 +1,7 @@
 #include "assetloader.h"
 #include "external/rlgl.h"
 #include "console.h"
+#include <imgui.h>
 
 void * Canvas_Load(Asset & asset) {
 	// canvases need to be setup before load.
@@ -60,4 +61,17 @@ void Canvas_ParseINI(Asset &asset, ini_t *ini) {
 	ini_sget(ini, asset.name, "height", "%i", &height);
 
 	Canvas_Set(asset.id, width, height);
+}
+
+void Canvas_Inspect(Asset& asset, bool deselected)
+{
+	static int zoom = 1;
+
+	Canvas* canvas = (Canvas*)asset.resource;
+
+	ImGui::Text("Size: %ix%i", canvas->w, canvas->h);
+	ImGui::SliderInt("Zoom", &zoom, 1, 8, "%dx");
+	ImGui::BeginChildFrame(ImGui::GetID("inspector value"), ImVec2(0, 0), ImGuiWindowFlags_HorizontalScrollbar);
+	ImGui::Image((ImTextureID)canvas->texture.texture.id, ImVec2(canvas->w * zoom, canvas->h * zoom), ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::EndChildFrame();
 }

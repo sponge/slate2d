@@ -7,6 +7,7 @@
 #include <soloud_thread.h>
 #include <soloud_speech.h>
 #include <soloud_openmpt.h>
+#include <imgui.h>
 
 extern SoLoud::Soloud soloud;
 
@@ -95,4 +96,35 @@ void Snd_Stop(unsigned int handle) {
 
 void Snd_PauseResume(unsigned int handle, bool pause) {
 	soloud.setPause(handle, pause);
+}
+
+void Sound_Inspect(Asset& asset, bool deselected) {
+	static int busHandle;
+	static int handle;
+	static SoLoud::Bus bus;
+
+	if (deselected) {
+		bus.stop();
+		soloud.stop(busHandle);
+		return;
+	}
+
+	bus.setVisualizationEnable(true);
+	SoLoud::AudioSource *src = (SoLoud::AudioSource*) asset.resource;
+	
+	ImGui::Text("Channels: %i", src->mChannels);
+	ImGui::Text("Sample Rate: %0.f", src->mBaseSamplerate);
+	
+	int voice = soloud.getVoiceFromHandle(handle);
+	if (ImGui::Button(voice == -1 ? "Play" : "Stop")) {
+		if (voice != -1) {
+			bus.stop();
+		} else {
+			busHandle = soloud.play(bus);
+			handle = bus.play(*src);
+		}
+	}
+
+	float *fft = bus.calcFFT();
+	ImGui::PlotHistogram("##FFT", fft, 256 / 2, 0, nullptr, 0, 20, ImVec2(0, 160), 8);
 }

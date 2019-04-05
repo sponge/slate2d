@@ -67,6 +67,11 @@ void Img_Free(Asset &asset) {
 	delete img;
 }
 
+void Img_Reload(Asset &asset) {
+		Asset_Unload(asset.id);
+		Asset_Load(asset.id);
+}
+
 void Img_ParseINI(Asset &asset, ini_t *ini) {
 	int linearFilter = 0;
 	ini_sget(ini, asset.name, "linearfilter", "%i", &linearFilter);
@@ -81,13 +86,15 @@ Image* Get_Img(AssetHandle id) {
 	return (Image*) asset->resource;
 }
 
-void Img_Inspect(Asset& asset)
-{
+void Img_Inspect(Asset& asset, bool deselected) {
 	static int zoom = 1;
+
 	Image* img = (Image*)asset.resource;
+	ImGui::Text("Size: %ix%i", img->w, img->h);
 
 	if (ImGui::Button("Reload")) {
-		Con_Print("reload asset");
+		Img_Reload(asset);
+		img = (Image*)asset.resource;
 	}
 
 	ImGui::SameLine();

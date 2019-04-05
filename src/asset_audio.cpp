@@ -104,6 +104,7 @@ void Sound_Inspect(Asset& asset, bool deselected) {
 	static SoLoud::Bus bus;
 
 	if (deselected) {
+		soloud.stopAll();
 		bus.stop();
 		soloud.stop(busHandle);
 		return;

@@ -117,9 +117,9 @@ class Title {
 
     Draw.resetTransform()
 
-    Draw.setTextStyle(_font, 2, 1.0, Align.Left)
-    Draw.text(100, 10, 0, _splitStr, _time / 2 + 1)
-    return
+    //Draw.setTextStyle(_font, 2, 1.0, Align.Left)
+    //Draw.text(100, 10, 0, _splitStr, _time / 2 + 1)
+    //return
 
     Draw.useCanvas(_canvas)
     Draw.clear(0, 0, 0, 255)

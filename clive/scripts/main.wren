@@ -35,7 +35,7 @@ class Main {
     Debug.init()
     __accumTime = 0
 
-    __inspector = CVar.get("wren.inspector", 0)
+    __inspector = CVar.get("debug.wrenInspector", 0)
 
     Trap.registerButtons(["rotate", "click", "start"])
 

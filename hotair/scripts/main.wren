@@ -17,7 +17,7 @@ class Main {
 
   static init(mapName) {
     __accumTime = 0
-    __inspector = CVar.get("wren.inspector", 0)
+    __inspector = CVar.get("debug.wrenInspector", 0)
 
     __scenes = {
       "title": Title,

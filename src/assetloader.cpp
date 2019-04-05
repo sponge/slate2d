@@ -8,6 +8,8 @@ extern "C" {
 }
 #include "external/fontstash.h"
 #include "external/gl3corefontstash.h"
+#include <imgui.h>
+#include "cvar_main.h"
 
 typedef vec_t(Asset) asset_vec_t;
 asset_vec_t assets;
@@ -20,13 +22,14 @@ typedef struct {
 	void(*ParseINI)(Asset &asset, ini_t *ini);
 	void*(*Load)(Asset &asset);
 	void(*Free)(Asset &asset);
+	void(*Inspect)(Asset& asset);
 } AssetLoadHandler_t;
 
 #define INIFLAGS_OPTIONALPATH 1
 
 static AssetLoadHandler_t assetHandler[ASSET_MAX] = {
 	{}, // ASSET_ANY
-	{"image", 0, Img_ParseINI, Img_Load, Img_Free },
+	{"image", 0, Img_ParseINI, Img_Load, Img_Free, Img_Inspect },
 	{"sprite", 0, Sprite_ParseINI, Sprite_Load, Sprite_Free },
 	{"speech", INIFLAGS_OPTIONALPATH, Speech_ParseINI, Speech_Load, Speech_Free },
 	{"sound", 0, nullptr, Sound_Load, Sound_Free },
@@ -204,4 +207,46 @@ void Asset_LoadINI(const char *path) {
 	ini_free(ini);
 
 	Con_Print("hello world\n");
+}
+
+void Asset_DrawInspector() {
+	static int currentItem;
+
+	if (!debug_assets->boolean) {
+		if (debug_assets->boolean == false && debug_assets->integer == 1) {
+			Con_SetVar("debug.assets", 0);
+		}
+
+		return;
+	}
+
+	if (ImGui::Begin("Asset Inspector", &debug_assets->boolean)) {
+		ImVec2 window = ImGui::GetWindowSize();
+
+		ImGui::Columns(2);
+		ImGui::SetColumnWidth(0, window.x * 0.3);
+		ImGui::SetColumnWidth(1, window.x * 0.7);
+
+		ImGui::PushItemWidth(ImGui::GetColumnWidth() - 8);
+		if (ImGui::ListBoxHeader("Assets", ImVec2(0, -1)))
+		{
+			for (int i = 0; i < assets.length; i++) {
+				if (ImGui::Selectable(assets.data[i].name, i == currentItem)) {
+					currentItem = i;
+
+				}
+			}
+			ImGui::ListBoxFooter();
+		}
+		ImGui::NextColumn();
+		//ImGui::BeginChildFrame(ImGui::GetID("inspector value"), ImVec2(0, 0));
+		Asset& asset = assets.data[currentItem];
+		ImGui::Text("Name: %s", asset.name);
+		ImGui::Text("Path: %s", asset.path);
+		if (assetHandler[asset.type].Inspect != nullptr) {
+			assetHandler[asset.type].Inspect(asset);
+		}
+		//ImGui::EndChildFrame();
+	}
+	ImGui::End();
 }

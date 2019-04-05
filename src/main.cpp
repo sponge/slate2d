@@ -243,6 +243,7 @@ void main_loop() {
 	}
 
 	IMConsole()->Draw(&inf);
+	Asset_DrawInspector();
 
 	ImGui::Render();
 	ImGui_ImplSdl_RenderDrawData(ImGui::GetDrawData());

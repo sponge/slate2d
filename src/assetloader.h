@@ -14,6 +14,7 @@ void Asset_Load(AssetHandle i);
 void Asset_LoadAll();
 void Asset_ClearAll();
 void Asset_LoadINI(const char *path);
+void Asset_DrawInspector();
 
 // image assets
 
@@ -22,6 +23,7 @@ Image* Img_LoadPath(const char *path, int flags = 0);
 void Img_Free(Asset &asset);
 void Img_ParseINI(Asset &asset, ini_t *ini);
 Image* Get_Img(AssetHandle id);
+void Img_Inspect(Asset& asset);
 
 // sprite assets
 

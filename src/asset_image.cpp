@@ -4,6 +4,7 @@
 #include "console.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+#include <imgui.h>
 
 Image* Img_LoadPath(const char *path, int flags) {
 	unsigned char *buffer;
@@ -78,4 +79,20 @@ Image* Get_Img(AssetHandle id) {
 	Asset* asset = Asset_Get(ASSET_IMAGE, id);
 	assert(asset != nullptr && asset->resource != nullptr);
 	return (Image*) asset->resource;
+}
+
+void Img_Inspect(Asset& asset)
+{
+	static int zoom = 1;
+	Image* img = (Image*)asset.resource;
+
+	if (ImGui::Button("Reload")) {
+		Con_Print("reload asset");
+	}
+
+	ImGui::SameLine();
+	ImGui::SliderInt("Zoom", &zoom, 1, 8, "%dx");
+	ImGui::BeginChildFrame(ImGui::GetID("inspector value"), ImVec2(0, 0), ImGuiWindowFlags_HorizontalScrollbar);
+	ImGui::Image((ImTextureID)img->hnd, ImVec2(img->w * zoom, img->h * zoom));
+	ImGui::EndChildFrame();
 }

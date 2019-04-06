@@ -85,8 +85,13 @@ void ConsoleUI::Draw(ClientInfo *inf) {
 			}
 
 			if (ImGui::MenuItem("Wren Inspector", nullptr, debug_wrenInspector->boolean)) {
-					Con_SetVarFloat("debug.wrenInspector", debug_wrenInspector->integer ? 0 : 1);
+				Con_SetVarFloat("debug.wrenInspector", debug_wrenInspector->integer ? 0 : 1);
 			}
+
+			if (ImGui::MenuItem("Font Atlas", nullptr, debug_fontAtlas->boolean)) {
+				Con_SetVarFloat("debug.fontAtlas", debug_fontAtlas->integer ? 0 : 1);
+			}
+
 			ImGui::EndMenu();
 		}
 

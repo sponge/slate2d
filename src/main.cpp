@@ -251,7 +251,7 @@ void main_loop() {
 	if (debug_fontAtlas->integer) {
 		rlLoadIdentity();
 		extern FONScontext *ctx;
-		if (ctx != nullptr) fonsDrawDebug(ctx, 0, 0);
+		if (ctx != nullptr) fonsDrawDebug(ctx, 0, 32);
 		rlglDraw();
 	}
 

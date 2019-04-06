@@ -2,6 +2,7 @@
 #include "external/rlgl.h"
 #include "console.h"
 #include "files.h"
+#include <imgui.h>
 
 void * Shader_Load(Asset & asset) {
 
@@ -37,8 +38,6 @@ void * Shader_Load(Asset & asset) {
 		*shader = LoadShaderCode(shasset->vs, shasset->fs);
 	}
 
-	sdsfree(shasset->fs);
-	sdsfree(shasset->vs);
 	shasset->shader = shader;
 
 	return (void*)shasset;
@@ -69,6 +68,9 @@ void Shader_Set(AssetHandle id, bool isFile, const char *vs, const char *fs) {
 void Shader_Free(Asset & asset) {
 	ShaderAsset *res = (ShaderAsset*)asset.resource;
 
+	sdsfree(res->fs);
+	sdsfree(res->vs);
+
 	if (GetShaderDefault().id == res->shader->id) {
 		Con_Print("not freeing default shader\n");
 	} else {
@@ -84,4 +86,18 @@ void Shader_ParseINI(Asset &asset, ini_t *ini) {
 	const char *fs = ini_get(ini, asset.name, "fs");
 
 	Shader_Set(asset.id, true, vs, fs);
+}
+
+void Shader_Inspect(Asset& asset, bool deselected) {
+	ShaderAsset *res = (ShaderAsset*)asset.resource;
+
+	if (res->isFile) {
+		ImGui::Text("Vertex Shader Path: %s", res->vs);
+		ImGui::Text("Fragment Shader Path: %s", res->fs);
+	} else {
+		ImGui::Text("Vertex Shader:");
+		ImGui::TextWrapped("%s", res->vs);
+		ImGui::Text("Fragment Shader:");
+		ImGui::TextWrapped("%s", res->fs);
+	}
 }

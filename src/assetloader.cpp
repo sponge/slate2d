@@ -38,7 +38,7 @@ static AssetLoadHandler_t assetHandler[ASSET_MAX] = {
 	{"bitmapfont", 0, BMPFNT_ParseINI, BMPFNT_Load, BMPFNT_Free, BMPFNT_Inspect },
 	{"tilemap", 0, nullptr, TileMap_Load, TileMap_Free },
 	{"canvas", INIFLAGS_OPTIONALPATH, Canvas_ParseINI, Canvas_Load, Canvas_Free, Canvas_Inspect },
-	{"shader", INIFLAGS_OPTIONALPATH, Shader_ParseINI, Shader_Load, Shader_Free },
+	{"shader", INIFLAGS_OPTIONALPATH, Shader_ParseINI, Shader_Load, Shader_Free, Shader_Inspect },
 };
 
 AssetHandle Asset_Find(const char *name) {

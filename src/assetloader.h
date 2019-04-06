@@ -118,3 +118,4 @@ void * Shader_Load(Asset & asset);
 void Shader_Set(AssetHandle id, bool isFile, const char *vs, const char *fs);
 void Shader_Free(Asset & asset);
 void Shader_ParseINI(Asset & asset, ini_t * ini);
+void Shader_Inspect(Asset& asset, bool deselected);

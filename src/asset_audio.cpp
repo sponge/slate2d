@@ -99,14 +99,11 @@ void Snd_PauseResume(unsigned int handle, bool pause) {
 }
 
 void Sound_Inspect(Asset& asset, bool deselected) {
-	static int busHandle;
 	static int handle;
 	static SoLoud::Bus bus;
 
 	if (deselected) {
 		soloud.stopAll();
-		bus.stop();
-		soloud.stop(busHandle);
 		return;
 	}
 
@@ -121,7 +118,8 @@ void Sound_Inspect(Asset& asset, bool deselected) {
 		if (voice != -1) {
 			bus.stop();
 		} else {
-			busHandle = soloud.play(bus);
+			soloud.stopAll();
+			soloud.play(bus);
 			handle = bus.play(*src);
 		}
 	}

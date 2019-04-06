@@ -31,8 +31,10 @@ void Img_Inspect(Asset& asset, bool deselected);
 
 void* Sprite_Load(Asset &asset);
 void Sprite_Free(Asset &asset);
+void Sprite_Reload(Asset& asset);
 void Sprite_ParseINI(Asset & asset, ini_t * ini);
 void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int marginY);
+void Sprite_Inspect(Asset& asset, bool deselected);
 
 // ttf font assets
 

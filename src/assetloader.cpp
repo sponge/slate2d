@@ -30,7 +30,7 @@ typedef struct {
 static AssetLoadHandler_t assetHandler[ASSET_MAX] = {
 	{}, // ASSET_ANY
 	{"image", 0, Img_ParseINI, Img_Load, Img_Free, Img_Inspect },
-	{"sprite", 0, Sprite_ParseINI, Sprite_Load, Sprite_Free },
+	{"sprite", 0, Sprite_ParseINI, Sprite_Load, Sprite_Free, Sprite_Inspect },
 	{"speech", INIFLAGS_OPTIONALPATH, Speech_ParseINI, Speech_Load, Speech_Free, Sound_Inspect },
 	{"sound", 0, nullptr, Sound_Load, Sound_Free, Sound_Inspect },
 	{"mod", 0, nullptr, Sound_Load, Mod_Free, Sound_Inspect },

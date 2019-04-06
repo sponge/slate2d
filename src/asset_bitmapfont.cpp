@@ -213,6 +213,7 @@ void BMPFNT_Reload(Asset &asset) {
 	Asset_Unload(asset.id);
 	BMPFNT_Set(asset.id, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight);
 	Asset_Load(asset.id);
+	fonsResetAtlas(ctx, 512, 512);
 }
 
 void BMPFNT_ParseINI(Asset &asset, ini_t *ini) {

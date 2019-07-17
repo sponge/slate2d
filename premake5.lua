@@ -40,7 +40,7 @@ solution "Slate2D"
     optimize "Full"
 
   project "engine"
-    kind "ConsoleApp"
+    kind "SharedLib"
     targetname "slate2d"
     language "C++"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
@@ -67,13 +67,9 @@ solution "Slate2D"
     filter { "files:**.c"}
       language "C"
 
-    -- hide the console window in release mode
-    filter { "configurations:Release" }
-      kind "WindowedApp"
-
     -- link SDL bins in the source tree on windows
     filter { "system:windows" }
-      links { "SDL2", "SDL2main", "opengl32" }
+      links { "SDL2", "opengl32" }
       defines { "_CRT_SECURE_NO_WARNINGS" }
 
     filter { "platforms:x86", "system:windows" }
@@ -110,33 +106,33 @@ solution "Slate2D"
       links { "SDL2", "dl", "pthread", "GL" }
 
   -- game is a dll, except under emscripten
-  project "game"
-    kind "SharedLib"
-    language "C++"
-    files { "game/**.c", "game/**.cpp", "game/**.h", "game/**.hh" }
-    sysincludedirs { "libs/tmx", "libs/imgui" }
-    targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
-    cppdialect "C++14"
-    links { "tmx", "imgui" }
+  -- project "game"
+  --   kind "SharedLib"
+  --   language "C++"
+  --   files { "game/**.c", "game/**.cpp", "game/**.h", "game/**.hh" }
+  --   sysincludedirs { "libs/tmx", "libs/imgui" }
+  --   targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
+  --   cppdialect "C++14"
+  --   links { "tmx", "imgui" }
 
-    filter { "system:windows" }
-      defines { "_CRT_SECURE_NO_WARNINGS" }
+  --   filter { "system:windows" }
+  --     defines { "_CRT_SECURE_NO_WARNINGS" }
 
-    -- emscripten doesn't really support dynamic dlls. the dll is setup to work
-    -- as a static lib, just need to disable NaN tagging within wren due to an
-    -- incompat there
-    filter { "action:gmake2", "options:emscripten" }
-      kind "StaticLib"
-      defines "WREN_NAN_TAGGING=0"
-      disablewarnings { "unknown-pragmas" }
+  --   -- emscripten doesn't really support dynamic dlls. the dll is setup to work
+  --   -- as a static lib, just need to disable NaN tagging within wren due to an
+  --   -- incompat there
+  --   filter { "action:gmake2", "options:emscripten" }
+  --     kind "StaticLib"
+  --     defines "WREN_NAN_TAGGING=0"
+  --     disablewarnings { "unknown-pragmas" }
 
-    -- disable warnings for wren code since it's external
-    filter { "files:game/wren/* or files:game/wreninspector.cpp" }
-      disablewarnings { 4100, 4200, 4996, 4244, 4204, 4702, 4709 }
+  --   -- disable warnings for wren code since it's external
+  --   filter { "files:game/wren/* or files:game/wreninspector.cpp" }
+  --     disablewarnings { 4100, 4200, 4996, 4244, 4204, 4702, 4709 }
 
-    -- disable warnings for sds
-    filter { "files:../src/external/sds.c"}
-      warnings "Off"
+  --   -- disable warnings for sds
+  --   filter { "files:../src/external/sds.c"}
+  --     warnings "Off"
      
   group "libraries"
 
@@ -159,7 +155,7 @@ solution "Slate2D"
     project "physfs"
       language "C"
       kind "StaticLib"
-      defines { "PHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_7Z" }
+      defines { "PHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_7Z", "PHYSFS_DECL=" }
       files { "libs/physfs/**.c", "libs/physfs/**.h", "libs/physfs/**.m" }
       warnings "Off"
 

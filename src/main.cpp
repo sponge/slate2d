@@ -33,8 +33,6 @@ extern "C" {
 #include "keys.h"
 #include "cvar_main.h"
 
-#include "gamedll.h"
-
 #include "imgui_console.h"
 
 #include "shared.h"
@@ -51,6 +49,8 @@ extern "C" {
 }
 
 #include "external/fontstash.h"
+#include "main.h"
+#include "rendercommands.h"
 
 conState_t console;
 
@@ -61,8 +61,8 @@ int64_t last_update_musec = 0, frame_musec = 0, com_frameTime = 0;
 bool frameAdvance = false;
 bool errorVisible = false;
 
-gameExportFuncs_t * gexports;
 SDL_Window *window;
+SDL_GLContext context;
 
 const char * __cdecl tempstr(const char *format, ...) {
 	va_list		argptr;
@@ -133,7 +133,8 @@ void Cmd_Clear_f() {
 
 void DropToMenu() {
 	errorVisible = true;
-	gexports->Error(ERR_GAME, eng_errorMessage->string);
+	// FIXME: handle differently in dll
+	//gexports->Error(ERR_GAME, eng_errorMessage->string);
 }
 
 void ConH_Print(const char *line) {
@@ -233,10 +234,11 @@ void main_loop() {
 	rlMatrixMode(RL_MODELVIEW);                             // Enable internal modelview matrix
 	rlLoadIdentity();                                       // Reset internal modelview matrix
 
-	bool ranFrame = gexports->Frame(!eng_pause->integer || frameAdvance ? frame_musec / 1E6 : 0);
-	if (ranFrame) {
-		last_update_musec = com_frameTime;
-	}
+	// FIXME: frame call is here
+	//bool ranFrame = gexports->Frame(!eng_pause->integer || frameAdvance ? frame_musec / 1E6 : 0);
+	//if (ranFrame) {
+	//	last_update_musec = com_frameTime;
+	//}
 
 	if (!eng_pause->integer || frameAdvance) {
 		frameAdvance = false;
@@ -274,7 +276,7 @@ void main_loop() {
 
 }
 
-int main(int argc, char *argv[]) {
+SLT_API void SLT_Init(int argc, char* argv[]) {
 	// initialize console. construct imgui console, setup handlers, and then initialize the actual console
 	IMConsole();
 	console.handlers.print = &ConH_Print;
@@ -340,7 +342,7 @@ int main(int argc, char *argv[]) {
 
 	SDL_SetWindowFullscreen(window, vid_fullscreen->integer == 2 ? SDL_WINDOW_FULLSCREEN : vid_fullscreen->integer == 1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 
-	SDL_GLContext context = SDL_GL_CreateContext(window);
+	context = SDL_GL_CreateContext(window);
 
 	if (!initGL(inf.width, inf.height)) {
 		Con_Error(ERR_FATAL, "Could not init GL.");
@@ -352,7 +354,7 @@ int main(int argc, char *argv[]) {
 		Con_Errorf(ERR_FATAL, "There was an error creating OpenGL context: %s", SDL_GetError());
 	}
 
-	const unsigned char *version = glGetString(GL_VERSION);
+	const unsigned char* version = glGetString(GL_VERSION);
 	if (version == NULL) {
 		Con_Error(ERR_FATAL, "There was an error with OpenGL configuration.");
 	}
@@ -370,7 +372,7 @@ int main(int argc, char *argv[]) {
 	ImGui::StyleColorsDark();
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
 
-	ImGuiIO &io = ImGui::GetIO();
+	ImGuiIO& io = ImGui::GetIO();
 #ifdef RELEASE
 	io.IniFilename = NULL;
 #endif
@@ -384,31 +386,174 @@ int main(int argc, char *argv[]) {
 	// command line here. this will set the rest of the variables and run any commands specified.
 	Con_ExecuteCommandLine();
 
-#ifdef _WIN32
-	static const char *lib = "game.dll";
-#elif defined MACOS
-	static const char *lib = "libgame.dylib";
-#else
-	static const char *lib = "libgame.so";
-#endif
+	// FIXME: needs to do something
+	//console.handlers.unhandledCommand = gexports->Console;
+}
 
-	Sys_LoadDll(lib, (void **)(&gexports));
-	gexports->Init((void*)&inf, (void*)ImGui::GetCurrentContext());
-	console.handlers.unhandledCommand = gexports->Console;
-
-#ifdef __EMSCRIPTEN__
-	emscripten_set_main_loop(main_loop, 0, 1);
-#else
-	while (loop) {
-		main_loop();
-	}
-#endif
-
+SLT_API void SLT_Shutdown() {
 	Con_Shutdown();
 	Asset_ClearAll();
 	ImGui_ImplSdl_Shutdown();
 	ImGui::DestroyContext();
 	SDL_GL_DeleteContext(context);
+}
+
+int main(int argc, char *argv[]) {
+
+#ifdef __EMSCRIPTEN__
+	emscripten_set_main_loop(main_loop, 0, 1);
+#else
+	//while (loop) {
+	//	main_loop();
+	//}
+#endif
 
 	return 0;
+}
+
+SLT_API void SLT_SendConsoleCommand(const char* text) {
+	Con_Execute(text);
+}
+
+SLT_API void SLT_Print(const char* fmt, ...) {
+	// FIXME: vargs stuff
+}
+
+SLT_API void SLT_Error(int level, const char* error, ...) {
+	// FIXME: vargs stuff
+}
+
+SLT_API void SLT_SetWindowTitle(const char* title) {
+	SetWindowTitle(title);
+}
+
+
+SLT_API conVar_t* SLT_Con_GetVarDefault(const char* var_name, const char* var_value, int flags) {
+	return Con_GetVarDefault(var_name, var_value, flags);
+}
+
+SLT_API conVar_t* SLT_Con_GetVar(const char* name) {
+	return Con_GetVar(name);
+}
+
+SLT_API conVar_t* SLT_Con_SetVar(const char* var_name, const char* value) {
+	return Con_SetVar(var_name, value);
+}
+
+
+SLT_API int SLT_Con_GetArgCount(void) {
+	return Con_GetArgsCount();
+}
+
+SLT_API const char* SLT_Con_GetArg(int arg) {
+	return Con_GetArg(arg);
+}
+
+SLT_API const char* SLT_Con_GetArgs(int start) {
+	return Con_GetArgs(start);
+}
+
+SLT_API int SLT_FS_ReadFile(const char* path, void** buffer) {
+	return FS_ReadFile(path, buffer);
+}
+
+SLT_API bool SLT_FS_Exists(const char* file) {
+	return FS_Exists(file);
+}
+
+SLT_API char** SLT_FS_List(const char* path) {
+	return FS_List(path);
+}
+
+SLT_API void SLT_FS_FreeList(void* listVar) {
+	FS_FreeList(listVar);
+}
+
+SLT_API void SLT_In_AllocateButtons(const char** buttonNames, int buttonCount) {
+	Con_AllocateButtons(buttonNames, buttonCount);
+}
+
+SLT_API buttonState_t* SLT_In_GetButton(int buttonNum) {
+	return Con_GetButton(buttonNum);
+}
+
+SLT_API bool SLT_In_ButtonPressed(int buttonId, unsigned int delay, int repeat) {
+	return In_ButtonPressed(buttonId, delay, repeat);
+}
+
+SLT_API MousePosition SLT_In_MousePosition() {
+	return In_MousePosition();
+}
+
+SLT_API void SLT_SubmitRenderCommands(renderCommandList_t* list) {
+	SubmitRenderCommands(list);
+}
+
+
+SLT_API AssetHandle SLT_Asset_Create(AssetType_t assetType, const char* name, const char* path, int flags) {
+	return Asset_Create(assetType, name, path, flags);
+}
+
+SLT_API AssetHandle SLT_Asset_Find(const char* name) {
+	return Asset_Find(name);
+}
+
+SLT_API void SLT_Asset_Load(AssetHandle assetHandle) {
+	Asset_Load(assetHandle);
+}
+
+SLT_API void SLT_Asset_LoadAll() {
+	Asset_LoadAll();
+}
+
+SLT_API void SLT_Asset_ClearAll() {
+	Asset_ClearAll();
+}
+
+SLT_API void SLT_Asset_LoadINI(const char* path) {
+	Asset_LoadINI(path);
+}
+
+SLT_API void SLT_Asset_BMPFNT_Set(AssetHandle assetHandle, const char* glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight) {
+	SLT_Asset_BMPFNT_Set(assetHandle, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight);
+}
+
+SLT_API int SLT_Asset_TextWidth(AssetHandle assetHandle, const char* string, float scale) {
+	return Asset_TextWidth(assetHandle, string, scale);
+}
+
+SLT_API const char* SLT_Asset_BreakString(int width, const char* in) {
+	return SLT_Asset_BreakString(width, in);
+}
+
+SLT_API void SLT_Asset_Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int marginY) {
+	Sprite_Set(assetHandle, width, height, marginX, marginY);
+}
+
+SLT_API void SLT_Asset_Canvas_Set(AssetHandle assetHandle, int width, int height) {
+	Canvas_Set(assetHandle, width, height);
+}
+
+SLT_API void SLT_Asset_Shader_Set(AssetHandle id, bool isFile, const char* vs, const char* fs) {
+	Shader_Set(id, isFile, vs, fs);
+}
+
+SLT_API Image* SLT_Get_Img(AssetHandle id) {
+	return Get_Img(id);
+}
+
+SLT_API tmx_map* SLT_Get_TileMap(AssetHandle id) {
+	return Get_TileMap(id);
+}
+
+SLT_API unsigned int SLT_Snd_Play(AssetHandle asset, float volume, float pan, bool loop) {
+	return Snd_Play(asset, volume, pan, loop);
+}
+
+SLT_API void SLT_Snd_Stop(unsigned int handle) {
+	Snd_Stop(handle);
+}
+
+SLT_API void SLT_Snd_PauseResume(unsigned int handle, bool pause) {
+	Snd_PauseResume(handle, pause);
 }

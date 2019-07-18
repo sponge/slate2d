@@ -109,12 +109,12 @@ conState_t * Con_GetActive();
 
 // throws an error, see ERR_ constants. should be handled by error function in conState_t.handlers
 void Con_RawError(int level, const char * fmt, ...);
+void Con_RawErrorV(int level, const char* fmt, va_list args);
 
 // error macros to automatically prefix function name to error message. use Con_Errorf if you wish to pass
 // additional args into the error string
 #define Con_Error(level, fmt) Con_RawError(level, "%s: " fmt, __func__)
 #define Con_Errorf(level, fmt, ...) Con_RawError(level, "%s: " fmt, __func__, __VA_ARGS__)
-
 
 // parses and handles the string. this is the main entry point to using the
 // console and is typically what you will want to pass user input to.
@@ -124,7 +124,8 @@ void Con_Execute(const char *cmd);
 void Con_Print(const char *text);
 
 // print wrapper, will call printf if a handler isn't set.
-void Con_Printf(const char *fmt, ...);
+void Con_Printf(const char* fmt, ...);
+void Con_PrintfV(const char* fmt, va_list args);
 
 // adds a new command handler "name" takes a void(void) function for callback
 // if a command already exists, the callback is overriden.

@@ -41,7 +41,7 @@ bool wrenCheckArgs(WrenVM *vm, int count, ...) {
 			continue;
 		}
 		else if (slot != result) {
-			trap->Print("Expected %s in paramter %i, got %s.", wrenGetTypeString(result), i, wrenGetTypeString(slot));
+			SLT_Print("Expected %s in paramter %i, got %s.", wrenGetTypeString(result), i, wrenGetTypeString(slot));
 			wrenDebugPrintStackTrace(vm);
 			va_end(args);
 			return false;
@@ -56,7 +56,7 @@ bool wrenCheckArgs(WrenVM *vm, int count, ...) {
 #pragma region Trap Module
 void wren_trap_print(WrenVM *vm) {
 	const char *str = wrenGetSlotString(vm, 1);
-	trap->Print("%s", str);
+	SLT_Print("%s", str);
 }
 
 void wren_trap_dbgwin(WrenVM *vm) {
@@ -89,7 +89,7 @@ void wren_trap_console(WrenVM *vm) {
 	CHECK_ARGS(1, WREN_TYPE_STRING);
 
 	const char *str = wrenGetSlotString(vm, 1);
-	trap->SendConsoleCommand(str);
+	SLT_SendConsoleCommand(str);
 }
 
 void wren_trap_error(WrenVM *vm) {
@@ -97,7 +97,7 @@ void wren_trap_error(WrenVM *vm) {
 
 	int err = (int) wrenGetSlotDouble(vm, 1);
 	const char *str = wrenGetSlotString(vm, 2);
-	trap->Error(err, tempstr("wren script: %s",str));
+	SLT_Error(err, tempstr("wren script: %s",str));
 }
 
 void wren_trap_snd_play(WrenVM *vm) {
@@ -108,7 +108,7 @@ void wren_trap_snd_play(WrenVM *vm) {
 	float pan = (float)wrenGetSlotDouble(vm, 3);
 	bool loop = wrenGetSlotBool(vm, 4);
 
-	unsigned int hnd = trap->Snd_Play(assetHandle, volume, pan, loop);
+	unsigned int hnd = SLT_Snd_Play(assetHandle, volume, pan, loop);
 	wrenSetSlotDouble(vm, 0, hnd);
 }
 
@@ -117,7 +117,7 @@ void wren_trap_snd_stop(WrenVM *vm) {
 		CHECK_ARGS(1, WREN_TYPE_NUM);
 
 		unsigned int handle = (unsigned int)wrenGetSlotDouble(vm, 1);
-		trap->Snd_Stop(handle);
+		SLT_Snd_Stop(handle);
 	}
 }
 
@@ -126,7 +126,7 @@ void wren_trap_snd_pause_resume(WrenVM *vm) {
 
 	unsigned int handle = (unsigned int)wrenGetSlotDouble(vm, 1);
 	bool pause = wrenGetSlotBool(vm, 2);
-	trap->Snd_PauseResume(handle, pause);
+	SLT_Snd_PauseResume(handle, pause);
 }
 
 void wren_trap_in_register_button(WrenVM *vm) {
@@ -142,7 +142,7 @@ void wren_trap_in_register_button(WrenVM *vm) {
 		names[i] = wrenGetSlotString(vm, i + 2);
 	}
 	
-	trap->In_AllocateButtons(names, count);
+	SLT_In_AllocateButtons(names, count);
 
 	free(names);
 }
@@ -154,11 +154,11 @@ void wren_trap_in_button_pressed(WrenVM *vm) {
 	int delay = (int)wrenGetSlotDouble(vm, 2);
 	int repeat = (int)wrenGetSlotDouble(vm, 3);
 
-	wrenSetSlotBool(vm, 0, trap->In_ButtonPressed(button, delay, repeat));
+	wrenSetSlotBool(vm, 0, SLT_In_ButtonPressed(button, delay, repeat));
 }
 
 void wren_trap_mouse_position(WrenVM *vm) {
-	MousePosition mousePos = trap->In_MousePosition();
+	MousePosition mousePos = SLT_In_MousePosition();
 
 	wrenEnsureSlots(vm, 3);
 	wrenSetSlotNewList(vm, 0);
@@ -192,7 +192,7 @@ void wren_trap_set_window_title(WrenVM *vm) {
 		return;
 	}
 
-	trap->SetWindowTitle(title);
+	SLT_SetWindowTitle(title);
 }
 
 void wren_trap_get_platform(WrenVM *vm) {
@@ -252,18 +252,18 @@ void wren_cvar_set(WrenVM *vm) {
 		double value = wrenGetSlotDouble(vm, 1);
 		char cvarStr[1024];
 		snprintf(cvarStr, 1024, "%f", value);
-		trap->Con_SetVar((*var)->name, cvarStr);
+		SLT_Con_SetVar((*var)->name, cvarStr);
 	}
 	else if (valType == WREN_TYPE_BOOL) {
 		bool value = wrenGetSlotBool(vm, 1);
-		trap->Con_SetVar((*var)->name, value ? "1" : "0");
+		SLT_Con_SetVar((*var)->name, value ? "1" : "0");
 	}
 	else if (valType == WREN_TYPE_STRING) {
 		const char *value = wrenGetSlotString(vm, 1);
-		trap->Con_SetVar((*var)->name, value);
+		SLT_Con_SetVar((*var)->name, value);
 	}
 	else {
-		trap->Con_SetVar((*var)->name, "0");
+		SLT_Con_SetVar((*var)->name, "0");
 	}
 }
 
@@ -278,7 +278,7 @@ void wren_asset_create(WrenVM *vm) {
 	const char *path = wrenGetSlotString(vm, 3);
 	int flags = (int)wrenGetSlotDouble(vm, 4);
 
-	wrenSetSlotDouble(vm, 0, trap->Asset_Create(assetType, name, path, flags));
+	wrenSetSlotDouble(vm, 0, SLT_Asset_Create(assetType, name, path, flags));
 }
 
 void wren_asset_find(WrenVM *vm) {
@@ -286,10 +286,10 @@ void wren_asset_find(WrenVM *vm) {
 
 	const char *name = wrenGetSlotString(vm, 1);
 
-	int id = trap->Asset_Find(name);
+	int id = SLT_Asset_Find(name);
 	
 	if (id < 0) {
-		trap->Error(ERR_FATAL, "can't find asset %s", name);
+		SLT_Error(ERR_FATAL, "can't find asset %s", name);
 		return;
 	}
 
@@ -300,17 +300,17 @@ void wren_asset_load(WrenVM *vm) {
 	CHECK_ARGS(1, WREN_TYPE_NUM);
 
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
-	trap->Asset_Load(assetHandle);
+	SLT_Asset_Load(assetHandle);
 }
 
 void wren_asset_loadall(WrenVM *vm) {
 	NOTUSED(vm);
-	trap->Asset_LoadAll();
+	SLT_Asset_LoadAll();
 }
 
 void wren_asset_clearall(WrenVM *vm) {
 	NOTUSED(vm);
-	trap->Asset_ClearAll();
+	SLT_Asset_ClearAll();
 }
 
 void wren_asset_loadini(WrenVM *vm) {
@@ -318,7 +318,7 @@ void wren_asset_loadini(WrenVM *vm) {
 	NOTUSED(vm);
 
 	const char *name = wrenGetSlotString(vm, 1);
-	trap->Asset_LoadINI(name);
+	SLT_Asset_LoadINI(name);
 }
 
 void wren_asset_bmpfnt_set(WrenVM *vm) {
@@ -331,7 +331,7 @@ void wren_asset_bmpfnt_set(WrenVM *vm) {
 	int intWidth = (int)wrenGetSlotDouble(vm, 5);
 	int lineHeight = (int)wrenGetSlotDouble(vm, 6);
 
-	trap->Asset_BMPFNT_Set(assetHandle, glyphs, glyphWidth, charSpacing, intWidth, lineHeight);
+	SLT_Asset_BMPFNT_Set(assetHandle, glyphs, glyphWidth, charSpacing, intWidth, lineHeight);
 }
 
 void wren_asset_textwidth(WrenVM *vm) {
@@ -341,7 +341,7 @@ void wren_asset_textwidth(WrenVM *vm) {
 	const char *text = wrenGetSlotString(vm, 2);
 	float scale = (float)wrenGetSlotDouble(vm, 3);
 
-	double width = trap->Asset_TextWidth(fntId, text, scale);
+	double width = SLT_Asset_TextWidth(fntId, text, scale);
 	wrenSetSlotDouble(vm, 0, width);
 }
 
@@ -351,7 +351,7 @@ void wren_asset_breakstring(WrenVM *vm) {
 	int width = (int)wrenGetSlotDouble(vm, 1);
 	const char *text = wrenGetSlotString(vm, 2);
 
-	const char *out = trap->Asset_BreakString(width, text);
+	const char *out = SLT_Asset_BreakString(width, text);
 
 	wrenSetSlotString(vm, 0, out);
 }
@@ -365,7 +365,7 @@ void wren_asset_sprite_set(WrenVM *vm) {
 	int marginX = (int)wrenGetSlotDouble(vm, 4);
 	int marginY = (int)wrenGetSlotDouble(vm, 5);
 
-	trap->Asset_Sprite_Set(assetHandle, width, height, marginX, marginY);
+	SLT_Asset_Sprite_Set(assetHandle, width, height, marginX, marginY);
 }
 
 void wren_asset_canvas_set(WrenVM *vm) {
@@ -375,7 +375,7 @@ void wren_asset_canvas_set(WrenVM *vm) {
 	int width = (int)wrenGetSlotDouble(vm, 2);
 	int height = (int)wrenGetSlotDouble(vm, 3);
 
-	trap->Asset_Canvas_Set(assetHandle, width, height);
+	SLT_Asset_Canvas_Set(assetHandle, width, height);
 }
 
 void wren_asset_shader_set(WrenVM *vm) {
@@ -386,7 +386,7 @@ void wren_asset_shader_set(WrenVM *vm) {
 	char *vs = (char*) wrenGetSlotString(vm, 3);
 	char *fs = (char*) wrenGetSlotString(vm, 4);
 
-	trap->Asset_Shader_Set(assetHandle, isFile, vs, fs);
+	SLT_Asset_Shader_Set(assetHandle, isFile, vs, fs);
 }
 
 void wren_asset_image_size(WrenVM *vm) {
@@ -394,7 +394,7 @@ void wren_asset_image_size(WrenVM *vm) {
 
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 
-	Image *img = trap->Get_Img(assetHandle);
+	Image *img = SLT_Get_Img(assetHandle);
 
 	wrenEnsureSlots(vm, 3);
 	wrenSetSlotNewList(vm, 0);
@@ -679,7 +679,7 @@ void wren_map_getlayerbyname(WrenVM *vm) {
 
 	const char *name = wrenGetSlotString(vm, 1);
 
-	tmx_map *map = trap->Get_TileMap(mapId);
+	tmx_map *map = SLT_Get_TileMap(mapId);
 	int id = Map_GetLayerByName(map, name);
 
 	wrenSetSlotDouble(vm, 0, id);
@@ -707,7 +707,7 @@ void wren_map_getobjectsinlayer(WrenVM *vm) {
 		wrenSetSlotString(vm, s++, keys[i]);
 	}
 
-	tmx_map *map = trap->Get_TileMap(mapId);
+	tmx_map *map = SLT_Get_TileMap(mapId);
 	tmx_object *obj = Map_LayerObjects(map, id, nullptr);
 	while (obj != nullptr) {
 		// ensure enough slots for map object + map values
@@ -757,7 +757,7 @@ void wren_map_getmapproperties(WrenVM *vm) {
 	static const char *keys[] = { "width", "height", "tileWidth", "tileHeight", "backgroundColor", "properties" };
 	static const int keySz = sizeof(keys) / sizeof(*keys);
 
-	const tmx_map *map = trap->Get_TileMap(mapId);
+	const tmx_map *map = SLT_Get_TileMap(mapId);
 
 	int totalSlots = 1; // total num of slots for wrenEnsureSlots
 	int s = 1; // current slot we're on
@@ -796,7 +796,7 @@ void wren_map_getlayerproperties(WrenVM *vm) {
 
 	int id = (int)wrenGetSlotDouble(vm, 1);
 
-	tmx_map *map = trap->Get_TileMap(mapId);
+	tmx_map *map = SLT_Get_TileMap(mapId);
 	tmx_layer *layer = Map_GetLayer(map, id);
 
 	if (layer == nullptr) {
@@ -837,7 +837,7 @@ void wren_map_getlayerproperties(WrenVM *vm) {
 }
 
 void wren_map_gettileproperties(WrenVM *vm) {
-	tmx_map *map = trap->Get_TileMap(mapId);
+	tmx_map *map = SLT_Get_TileMap(mapId);
 
 	int totalSlots = 2; // total num of slots for wrenEnsureSlots
 	int s = 1; // current slot we're on
@@ -875,7 +875,7 @@ void wren_map_gettile(WrenVM *vm) {
 	unsigned int x = (unsigned int)wrenGetSlotDouble(vm, 2);
 	unsigned int y = (unsigned int)wrenGetSlotDouble(vm, 3);
 	
-	tmx_map *map = trap->Get_TileMap(mapId);
+	tmx_map *map = SLT_Get_TileMap(mapId);
 	int gid = Map_GetTile(map, layer, x, y);
 
 	wrenSetSlotDouble(vm, 0, gid);
@@ -886,7 +886,7 @@ void wren_map_getlayernames(WrenVM *vm) {
 
 	wrenSetSlotNewList(vm, 0);
 
-	tmx_map *map = trap->Get_TileMap(mapId);
+	tmx_map *map = SLT_Get_TileMap(mapId);
 	tmx_layer *layer = Map_GetLayer(map, i);
 	while (layer != nullptr) {
 		wrenEnsureSlots(vm, i + 2);
@@ -909,18 +909,18 @@ static void wren_error(WrenVM* vm, WrenErrorType type, const char* module, int l
 	}
 
 	if (clearNextError) {
-		trap->Con_SetVar("engine.lastErrorStack", "");
+		SLT_Con_SetVar("engine.lastErrorStack", "");
 		clearNextError = false;
 	}
 
-	conVar_t *stack = trap->Con_GetVarDefault("engine.lastErrorStack", "", 0);
+	conVar_t *stack = SLT_Con_GetVarDefault("engine.lastErrorStack", "", 0);
 	if (line == -1) {
-		trap->Con_SetVar("engine.lastErrorStack", tempstr("%s\n%s", stack->string, message));
-		trap->Print("%s\n", message);
+		SLT_Con_SetVar("engine.lastErrorStack", tempstr("%s\n%s", stack->string, message));
+		SLT_Print("%s\n", message);
 	}
 	else {
-		trap->Con_SetVar("engine.lastErrorStack", tempstr("%s\n(%s:%i) %s", stack->string, module, line, message));
-		trap->Print("(%s:%i) %s\n", module, line, message);
+		SLT_Con_SetVar("engine.lastErrorStack", tempstr("%s\n(%s:%i) %s", stack->string, module, line, message));
+		SLT_Print("(%s:%i) %s\n", module, line, message);
 	}
 }
 
@@ -930,7 +930,7 @@ char* wren_loadModuleFn(WrenVM* vm, const char* name) {
 	char *script = nullptr;
 	const char *path = tempstr("scripts/%s.wren", name);
 
-	int sz = trap->FS_ReadFile(path, (void**)&script);
+	int sz = SLT_FS_ReadFile(path, (void**)&script);
 	if (sz <= 0) {
 		return nullptr;
 	}
@@ -1040,18 +1040,18 @@ void cvarAllocate(WrenVM *vm) {
 		double value = wrenGetSlotDouble(vm, 2);
 		char cvarStr[1024];
 		snprintf(cvarStr, 1024, "%g", value);
-		*var = trap->Con_GetVarDefault(name, cvarStr, 0);
+		*var = SLT_Con_GetVarDefault(name, cvarStr, 0);
 	}
 	else if (valType == WREN_TYPE_BOOL) {
 		bool value = wrenGetSlotBool(vm, 2);
-		*var = trap->Con_GetVarDefault(name, value ? "1" : "0", 0);
+		*var = SLT_Con_GetVarDefault(name, value ? "1" : "0", 0);
 	}
 	else if (valType == WREN_TYPE_STRING) {
 		const char *value = wrenGetSlotString(vm, 2);
-		*var = trap->Con_GetVarDefault(name, value, 0);
+		*var = SLT_Con_GetVarDefault(name, value, 0);
 	}
 	else {
-		*var = trap->Con_GetVarDefault(name, "0", 0);
+		*var = SLT_Con_GetVarDefault(name, "0", 0);
 	}
 }
 
@@ -1093,14 +1093,14 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 
 	// load passed in script name as our main function
 	char *mainStr;
-	int mainSz = trap->FS_ReadFile(mainScriptName, (void**)&mainStr);
+	int mainSz = SLT_FS_ReadFile(mainScriptName, (void**)&mainStr);
 	if (mainSz <= 0) {
-		trap->Error(ERR_GAME, "%s: couldn't load %s", __func__, mainScriptName);
+		SLT_Error(ERR_GAME, "%s: couldn't load %s", __func__, mainScriptName);
 		return nullptr;
 	}
 
 	if (wrenInterpret(vm, mainStr) != WREN_RESULT_SUCCESS) {
-		trap->Error(ERR_GAME, "%s: can't compile %s", __func__, mainScriptName);
+		SLT_Error(ERR_GAME, "%s: can't compile %s", __func__, mainScriptName);
 		return nullptr;
 	}
 
@@ -1112,7 +1112,7 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	WrenHandle *gameClass = wrenGetSlotHandle(vm, 0);
 
 	if (gameClass == nullptr) {
-		trap->Error(ERR_GAME, "%s: couldn't find Game class", __func__);
+		SLT_Error(ERR_GAME, "%s: couldn't find Game class", __func__);
 		return nullptr;
 	}
 
@@ -1127,13 +1127,13 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	hnd->consoleHnd = wrenMakeCallHandle(vm, "console(_)");
 
 	if (hnd->updateHnd == nullptr) {
-		trap->Error(ERR_GAME, "%s: couldn't find static update(_) on Main", __func__);
+		SLT_Error(ERR_GAME, "%s: couldn't find static update(_) on Main", __func__);
 		Wren_FreeVM(vm);
 		return nullptr;
 	}
 
 	if (hnd->drawHnd == nullptr) {
-		trap->Error(ERR_GAME, "%s: couldn't find static draw(_,_) on Main", __func__);
+		SLT_Error(ERR_GAME, "%s: couldn't find static draw(_,_) on Main", __func__);
 		Wren_FreeVM(vm);
 		return nullptr;
 	}
@@ -1152,7 +1152,7 @@ WrenVM *Wren_Init(const char *mainScriptName, const char *constructorStr) {
 	//wrenReleaseHandle(vm, gameClass);
 
 	if (wrenGetSlotCount(vm) == 0) {
-		trap->Error(ERR_GAME, "%s: couldn't instantiate new Game class", __func__);
+		SLT_Error(ERR_GAME, "%s: couldn't instantiate new Game class", __func__);
 		return nullptr;
 	}
 

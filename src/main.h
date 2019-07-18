@@ -14,7 +14,11 @@ extern int64_t last_update_musec, com_frameTime, frame_musec;
 void DropToMenu();
 void SetWindowTitle(const char *title);
 
+#ifdef COMPILE_DLL
 #define SLT_API extern "C" __declspec(dllexport)
+#else
+#define SLT_API extern "C" __declspec(dllimport)
+#endif
 
 SLT_API void SLT_Init(int argc, char* argv[]);
 SLT_API void SLT_Shutdown();

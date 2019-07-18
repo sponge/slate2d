@@ -60,6 +60,7 @@ int64_t last_update_musec = 0, frame_musec = 0, com_frameTime = 0;
 //float frame_accum;
 bool frameAdvance = false;
 bool errorVisible = false;
+long long now = 0;
 
 SDL_Window *window;
 SDL_GLContext context;
@@ -164,10 +165,8 @@ void ConH_Error(int level, const char *message) {
 	}
 }
 
-static bool loop = true;
-
 static void Cmd_Quit_f(void) {
-	loop = false;
+	// FIXME: do something
 }
 
 auto start = std::chrono::steady_clock::now();
@@ -176,9 +175,8 @@ static inline long long measure_now() {
 	return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - start).count();
 }
 
-void main_loop() {
-
-	auto now = measure_now();
+SLT_API double SLT_StartFrame() {
+	now = measure_now();
 	frame_musec = now - com_frameTime;
 	com_frameTime = now;
 
@@ -196,8 +194,7 @@ void main_loop() {
 
 		switch (ev.type) {
 		case SDL_QUIT:
-			loop = false;
-			return;
+			return -1;
 		case SDL_KEYDOWN:
 			if (ev.key.keysym.sym == SDLK_BACKQUOTE) {
 				IMConsole()->consoleActive = !IMConsole()->consoleActive;
@@ -234,12 +231,10 @@ void main_loop() {
 	rlMatrixMode(RL_MODELVIEW);                             // Enable internal modelview matrix
 	rlLoadIdentity();                                       // Reset internal modelview matrix
 
-	// FIXME: frame call is here
-	//bool ranFrame = gexports->Frame(!eng_pause->integer || frameAdvance ? frame_musec / 1E6 : 0);
-	//if (ranFrame) {
-	//	last_update_musec = com_frameTime;
-	//}
+	return !eng_pause->integer || frameAdvance ? frame_musec / 1E6 : 0;
+}
 
+SLT_API void SLT_EndFrame() {
 	if (!eng_pause->integer || frameAdvance) {
 		frameAdvance = false;
 	}
@@ -252,8 +247,9 @@ void main_loop() {
 
 	if (debug_fontAtlas->integer) {
 		rlLoadIdentity();
-		extern FONScontext *ctx;
-		if (ctx != nullptr) fonsDrawDebug(ctx, 0, 32);
+		// FIXME: this was bad in the first place but now its really broke
+		//extern FONScontext* ctx;
+		//if (ctx != nullptr) fonsDrawDebug(ctx, 0, 32);
 		rlglDraw();
 	}
 
@@ -263,7 +259,7 @@ void main_loop() {
 	// we're close-ish and then burn loop the rest. we get a majority of the cpu/power gains
 	// while still remaining pretty accurate on frametimes.
 	if (vid_maxfps->integer > 0) {
-		long long target = now + (long long) (1000.0f / vid_maxfps->integer * 1000);
+		long long target = now + (long long)(1000.0f / vid_maxfps->integer * 1000);
 		long long currentSleepTime = measure_now();
 		while (currentSleepTime <= target) {
 			long long amt = (target - currentSleepTime) - 2000;
@@ -273,7 +269,6 @@ void main_loop() {
 			currentSleepTime = measure_now();
 		}
 	}
-
 }
 
 SLT_API void SLT_Init(int argc, char* argv[]) {
@@ -398,29 +393,22 @@ SLT_API void SLT_Shutdown() {
 	SDL_GL_DeleteContext(context);
 }
 
-int main(int argc, char *argv[]) {
-
-#ifdef __EMSCRIPTEN__
-	emscripten_set_main_loop(main_loop, 0, 1);
-#else
-	//while (loop) {
-	//	main_loop();
-	//}
-#endif
-
-	return 0;
-}
-
 SLT_API void SLT_SendConsoleCommand(const char* text) {
 	Con_Execute(text);
 }
 
 SLT_API void SLT_Print(const char* fmt, ...) {
-	// FIXME: vargs stuff
+	va_list args;
+	va_start(args, fmt);
+	Con_PrintfV(fmt, args);
+	va_end(args);
 }
 
 SLT_API void SLT_Error(int level, const char* error, ...) {
-	// FIXME: vargs stuff
+	va_list args;
+	va_start(args, error);
+	Con_RawErrorV(level, error, args);
+	va_end(args);
 }
 
 SLT_API void SLT_SetWindowTitle(const char* title) {
@@ -515,7 +503,7 @@ SLT_API void SLT_Asset_LoadINI(const char* path) {
 }
 
 SLT_API void SLT_Asset_BMPFNT_Set(AssetHandle assetHandle, const char* glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight) {
-	SLT_Asset_BMPFNT_Set(assetHandle, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight);
+	BMPFNT_Set(assetHandle, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight);
 }
 
 SLT_API int SLT_Asset_TextWidth(AssetHandle assetHandle, const char* string, float scale) {
@@ -523,7 +511,7 @@ SLT_API int SLT_Asset_TextWidth(AssetHandle assetHandle, const char* string, flo
 }
 
 SLT_API const char* SLT_Asset_BreakString(int width, const char* in) {
-	return SLT_Asset_BreakString(width, in);
+	return TTF_BreakString(width, in);
 }
 
 SLT_API void SLT_Asset_Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int marginY) {

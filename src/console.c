@@ -310,19 +310,24 @@ conState_t *Con_GetActive() {
 
 // raise an error. if no error handler is specified, just print it and exit.
 void Con_RawError(int level, const char *fmt, ...) {
+	va_list args;
+
+	va_start(args, fmt);
+	Con_RawErrorV(level, fmt, args);
+	va_end(args);
+}
+
+void Con_RawErrorV(int level, const char* fmt, va_list args) {
 	if (level == ERR_NONE) {
 		return;
 	}
 
-	va_list args;
-
-	va_start(args, fmt);
 	vsnprintf(con->error, sizeof(con->error), fmt, args);
-	va_end(args);
 
 	if (con->handlers.error) {
 		con->handlers.error(level, con->error);
-	} else {
+	}
+	else {
 		Con_Print(con->error);
 		exit(1);
 	}
@@ -343,8 +348,12 @@ void Con_Printf(const char *fmt, ...) {
 	va_list args;
 
 	va_start(args, fmt);
-	sds text = sdscatvprintf(sdsempty(), fmt, args);
+	Con_PrintfV(fmt, args);
 	va_end(args);
+}
+
+void Con_PrintfV(const char* fmt, va_list args) {
+	sds text = sdscatvprintf(sdsempty(), fmt, args);
 
 	Con_Print(text);
 

@@ -7,7 +7,6 @@
 #include "wrenapi.h"
 
 ClientInfo *clientInf;
-gameImportFuncs_t *trap;
 WrenVM *vm;
 
 #ifdef __EMSCRIPTEN__
@@ -16,8 +15,8 @@ extern
 void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 
 void Cmd_Scene_f(void) {
-	const char *mainScriptName = trap->Con_GetArg(1);
-	const char *sceneParams = trap->Con_GetArgs(2);
+	const char *mainScriptName = SLT_Con_GetArg(1);
+	const char *sceneParams = SLT_Con_GetArgs(2);
 	if (sceneParams[0] == '\0') {
 		sceneParams = nullptr;
 	}
@@ -29,28 +28,28 @@ void Cmd_Scene_f(void) {
 
 	vm = Wren_Init(mainScriptName, sceneParams);
 	if (vm != nullptr) {
-		trap->Con_SetVar("engine.errorMessage", "");
+		SLT_Con_SetVar("engine.errorMessage", "");
 	}
 }
 
 // map (name) - load a map and switch to the game scene
 void Cmd_Map_f(void) {
-	auto mapname = trap->Con_GetArg(1);
+	auto mapname = SLT_Con_GetArg(1);
 	char filename[256];
 
-	trap->Con_SetVar("engine.lastErrorStack", "");
-	trap->Con_SetVar("engine.errorMessage", "");
+	SLT_Con_SetVar("engine.lastErrorStack", "");
+	SLT_Con_SetVar("engine.errorMessage", "");
 
-	if (trap->Con_GetArgCount() != 2) {
-		trap->Print("map <mapname> : load a map\n");
+	if (SLT_Con_GetArgCount() != 2) {
+		SLT_Print("map <mapname> : load a map\n");
 		return;
 	}
 
 	snprintf(filename, sizeof(filename), "maps/%s", mapname);
 	Com_DefaultExtension(filename, sizeof(filename), ".tmx");
 
-	if (!trap->FS_Exists(filename)) {
-		trap->Print("Map does not exist: %s\n", filename);
+	if (!SLT_FS_Exists(filename)) {
+		SLT_Print("Map does not exist: %s\n", filename);
 		return;
 	}
 
@@ -61,7 +60,7 @@ void Cmd_Map_f(void) {
 
 	vm = Wren_Init("scripts/main.wren", filename);
 	if (vm != nullptr) {
-		trap->Con_SetVar("engine.errorMessage", "");
+		SLT_Con_SetVar("engine.errorMessage", "");
 	}
 }
 
@@ -77,13 +76,13 @@ static void Init(void *clientInfo, void *imGuiContext) {
 
 	vm = Wren_Init("scripts/main.wren", nullptr);
 	if (vm != nullptr) {
-		trap->Con_SetVar("engine.errorMessage", "");
+		SLT_Con_SetVar("engine.errorMessage", "");
 	}
 }
 
 static bool Console() {
-	const char *cmd = trap->Con_GetArg(0);
-	const char *line = trap->Con_GetArgs(1);
+	const char *cmd = SLT_Con_GetArg(0);
+	const char *line = SLT_Con_GetArgs(1);
 
 	// search for known commands (this could be an array but we don't have
 	// enough to make it worth it.)
@@ -117,22 +116,6 @@ static void Error(int level, const char *msg) {
 		Wren_FreeVM(vm);
 		vm = nullptr;
 	}
-}
-
-static gameExportFuncs_t gameExports = {
-	Init,
-	Console,
-	Frame,
-	Error
-};
-
-extern "C" 
-#ifdef _WIN32
-__declspec(dllexport)
-#endif
-void dllEntry(void ** exports, void * imports) {
-	*exports = &gameExports;
-	trap = (gameImportFuncs_t *)imports;
 }
 
 #ifndef __EMSCRIPTEN__
@@ -178,3 +161,25 @@ void Com_DefaultExtension(char *path, int maxSize, const char *extension) {
 	snprintf(path, maxSize, "%s%s", oldPath, extension);
 }
 #endif
+
+int main(int argc, char* argv[]) {
+	SLT_Init(argc, argv);
+
+#ifdef __EMSCRIPTEN__
+	emscripten_set_main_loop(main_loop, 0, 1);
+#else
+	//main_loop();
+#endif
+
+	double dt = 0;
+	while ((dt = SLT_StartFrame()) >= 0) {
+		DC_Clear(30, 30, 30, 255);
+		DC_SetColor(128, 0, 0, 255);
+		DC_DrawRect(20, 20, 20, 20);
+
+		DC_Submit();
+		SLT_EndFrame();
+	}
+
+	SLT_Shutdown();
+}

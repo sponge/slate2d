@@ -1,7 +1,6 @@
 #include "wrenapi.h"
 #include "../src/shared.h"
 #include "game.h"
-#include "draw.h"
 #include <cstring>
 #include "wren/wren.hpp"
 extern "C" {

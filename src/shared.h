@@ -25,163 +25,13 @@ typedef struct {
 	int width, height;
 } ClientInfo;
 
-// RENDER COMMANDS
-
-#define	MAX_RENDER_COMMANDS	0x40000
-
 #define IMAGEFLAGS_LINEAR_FILTER 1 << 0
-
-typedef struct {
-	byte	cmds[MAX_RENDER_COMMANDS];
-	int		used;
-} renderCommandList_t;
-
-typedef struct {
-	byte	commandId;
-	byte	color[4];
-} setColorCommand_t;
-
-typedef struct {
-	byte commandId;
-	byte	color[4];
-} clearCommand_t;
-
-typedef struct {
-	byte commandId;
-} resetTransformCommand_t;
-
-typedef struct {
-	byte	commandId;
-	float	x, y;
-} scaleCommand_t;
-
-typedef struct {
-	byte	commandId;
-	float	angle;
-} rotateCommand_t;
-
-typedef struct {
-	byte	commandId;
-	float	x;
-	float	y;
-} translateCommand_t;
-
-typedef struct {
-	byte commandId;
-	int x, y, w, h;
-} setScissorCommand_t;
-
-typedef struct {
-	byte	commandId;
-	unsigned int canvasId;
-} useCanvasCommand_t;
-
-typedef struct {
-	byte	commandId;
-} resetCanvasCommand_t;
-
-typedef struct {
-	byte	commandId;
-	unsigned int shaderId;
-} useShaderCommand_t;
-
-typedef struct {
-	byte	commandId;
-} resetShaderCommand_t;
-
-typedef struct {
-	byte	commandId;
-	byte	outline;
-	float	x, y, w, h;
-} drawRectCommand_t;
-
-typedef struct {
-	byte	commandId;
-	unsigned int fntId;
-	float size;
-	float lineHeight;
-	int align;
-} setTextStyleCommand_t;
-
-// strSz is the size of the string. the actual string lives
-// in the buffer right after this command so it can be any
-// reasonable size. len is separate here so the engine can
-// parse out color codes without the game code needing to
-// understand them.
-typedef struct {
-	byte commandId;
-	float x, y, w, len;
-	unsigned int strSz;
-} drawTextCommand_t;
 
 #define FLIP_H 1
 #define FLIP_V 2
 #define FLIP_DIAG 4
 
-typedef struct {
-	byte commandId;
-	float x, y, w, h, ox, oy, angle, scale;
-	byte flipBits;
-	unsigned int imgId;
-} drawImageCommand_t;
-
-typedef struct {
-	byte commandId;
-	unsigned int spr;
-	int id;
-	float x, y;
-	float scale;
-	byte flipBits;
-	int w, h;
-} drawSpriteCommand_t;
-
-typedef struct {
-	byte commandId;
-	float x1, y1, x2, y2;
-} drawLineCommand_t;
-
-typedef struct {
-	byte	commandId;
-	byte	outline;
-	float x, y, radius;
-} drawCircleCommand_t;
-
-typedef struct {
-	byte	commandId;
-	byte	outline;
-	float x1, y1, x2, y2, x3, y3;
-} drawTriCommand_t;
-
-typedef struct {
-	byte commandId;
-	float x, y;
-	unsigned int mapId;
-	unsigned int layer, cellX, cellY, cellW, cellH;
-} drawMapCommand_t;
-
-typedef enum {
-	RC_END_OF_LIST,
-	RC_SET_COLOR,
-	RC_CLEAR,
-	RC_SET_TEXT_STYLE,
-	RC_RESET_TRANSFORM,
-	RC_SCALE,
-	RC_ROTATE,
-	RC_TRANSLATE,
-	RC_SET_SCISSOR,
-	RC_USE_CANVAS,
-	RC_RESET_CANVAS,
-	RC_USE_SHADER,
-	RC_RESET_SHADER,
-	RC_DRAW_RECT,
-	RC_DRAW_TEXT,
-	RC_DRAW_IMAGE,
-	RC_DRAW_SPRITE,
-	RC_DRAW_LINE,
-	RC_DRAW_CIRCLE,
-	RC_DRAW_TRI,
-	RC_DRAW_MAP_LAYER,
-} renderCommand_t;
+#define	MAX_RENDER_COMMANDS	0x50000
 
 // ASSETS
 
@@ -277,7 +127,6 @@ typedef struct {
 	#endif
 #endif
 
-
 SLT_API void SLT_Init(int argc, char* argv[]);
 SLT_API void SLT_Shutdown();
 
@@ -307,8 +156,6 @@ SLT_API buttonState_t* SLT_In_GetButton(int buttonNum);
 SLT_API bool SLT_In_ButtonPressed(int buttonId, unsigned int delay, int repeat);
 SLT_API MousePosition SLT_In_MousePosition();
 
-SLT_API void SLT_SubmitRenderCommands(renderCommandList_t* list);
-
 SLT_API AssetHandle SLT_Asset_Create(AssetType_t assetType, const char* name, const char* path, int flags);
 SLT_API AssetHandle SLT_Asset_Find(const char* name);
 SLT_API void SLT_Asset_Load(AssetHandle assetHandle);
@@ -327,3 +174,26 @@ SLT_API tmx_map* SLT_Get_TileMap(AssetHandle id);
 SLT_API unsigned int SLT_Snd_Play(AssetHandle asset, float volume, float pan, bool loop);
 SLT_API void SLT_Snd_Stop(unsigned int handle);
 SLT_API void SLT_Snd_PauseResume(unsigned int handle, bool pause);
+
+SLT_API void DC_SetColor(byte r, byte g, byte b, byte a);
+SLT_API void DC_ResetTransform();
+SLT_API void DC_Scale(float x, float y);
+SLT_API void DC_Rotate(float angle);
+SLT_API void DC_Translate(float x, float y);
+SLT_API void DC_SetScissor(int x, int y, int w, int h);
+SLT_API void DC_ResetScissor();
+SLT_API void DC_UseCanvas(unsigned int canvasId);
+SLT_API void DC_ResetCanvas();
+SLT_API void DC_UseShader(unsigned int shaderId);
+SLT_API void DC_ResetShader();
+SLT_API void DC_DrawRect(float x, float y, float w, float h, bool outline = false);
+SLT_API void DC_SetTextStyle(unsigned int fntId, float size, float lineHeight, int align);
+SLT_API void DC_DrawText(float x, float y, float h, const char* text, int len);
+SLT_API void DC_DrawImage(unsigned int imgId, float x, float y, float w = 0.0f, float h = 0.0f, float scale = 1.0f, byte flipBits = 0, float ox = 0.0f, float oy = 0.0f);
+SLT_API void DC_DrawSprite(unsigned int sprite, int id, float x, float y, float scale = 1.0f, byte flipBits = 0, int w = 1, int h = 1);
+SLT_API void DC_DrawLine(float x1, float y1, float x2, float y2);
+SLT_API void DC_DrawCircle(float x, float y, float radius, bool outline = false);
+SLT_API void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, bool outline = false);
+SLT_API void DC_DrawMapLayer(unsigned int mapId, unsigned int layer, float x = 0, float y = 0, unsigned int cellX = 0, unsigned int cellY = 0, unsigned int cellW = 0, unsigned int cellH = 0);
+SLT_API void DC_Submit();
+SLT_API void DC_Clear(byte r, byte g, byte b, byte a);

@@ -7,6 +7,8 @@ extern "C" {
 }
 #include <tmx.h>
 
+#include "rendercommands.h"
+
 AssetHandle Asset_Find(const char *name);
 Asset* Asset_Get(AssetType_t type, AssetHandle id);
 AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *path, int flags = 0);

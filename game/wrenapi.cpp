@@ -12,7 +12,7 @@ extern "C" {
 #include <imgui.h>
 
 static unsigned int mapId;
-extern ClientInfo *clientInf;
+extern const ClientInfo *clientInf;
 
 static const char *wrenTypeStrings[] =
 {

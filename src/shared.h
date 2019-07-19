@@ -145,6 +145,7 @@ SLT_API conVar_t* SLT_Con_SetVar(const char* var_name, const char* value);
 SLT_API int SLT_Con_GetArgCount(void);
 SLT_API const char* SLT_Con_GetArg(int arg);
 SLT_API const char* SLT_Con_GetArgs(int start);
+SLT_API void SLT_Con_AddCommand(const char* name, conCmd_t cmd);
 
 SLT_API int SLT_FS_ReadFile(const char* path, void** buffer);
 SLT_API bool SLT_FS_Exists(const char* file);
@@ -174,6 +175,11 @@ SLT_API tmx_map* SLT_Get_TileMap(AssetHandle id);
 SLT_API unsigned int SLT_Snd_Play(AssetHandle asset, float volume, float pan, bool loop);
 SLT_API void SLT_Snd_Stop(unsigned int handle);
 SLT_API void SLT_Snd_PauseResume(unsigned int handle, bool pause);
+
+SLT_API const void* SLT_GetClientInfo();
+SLT_API const void* SLT_GetImguiContext();
+
+SLT_API void SLT_UpdateLastFrameTime();
 
 SLT_API void DC_SetColor(byte r, byte g, byte b, byte a);
 SLT_API void DC_ResetTransform();

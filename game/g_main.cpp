@@ -5,8 +5,9 @@
 #include "external/sds.h"
 #include "wrenapi.h"
 
-ClientInfo *clientInf;
+const ClientInfo *clientInf;
 WrenVM *vm;
+static bool loop = true;
 
 #ifdef __EMSCRIPTEN__
 extern
@@ -63,48 +64,13 @@ void Cmd_Map_f(void) {
 	}
 }
 
-static void Init(void *clientInfo, void *imGuiContext) {
-	clientInf = (ClientInfo*) clientInfo;
-
-	ImGui::SetCurrentContext((ImGuiContext*)imGuiContext);
-
-	if (vm != nullptr) {
-		Wren_Scene_Shutdown(vm);
-		Wren_FreeVM(vm);
-	}
-
-	vm = Wren_Init("scripts/main.wren", nullptr);
-	if (vm != nullptr) {
-		SLT_Con_SetVar("engine.errorMessage", "");
-	}
-}
-
-static bool Console() {
-	const char *cmd = SLT_Con_GetArg(0);
-	const char *line = SLT_Con_GetArgs(1);
-
-	// search for known commands (this could be an array but we don't have
-	// enough to make it worth it.)
-	if (strcasecmp(cmd, "map") == 0) { Cmd_Map_f(); return true; }
-	if (strcasecmp(cmd, "scene") == 0) { Cmd_Scene_f(); return true; }
-	if (strcasecmp(cmd, "eval") == 0) { Wren_Console(vm, line); return true; }
-
-	return false;	
-}
-
-static bool Frame(double dt) {
+void Cmd_Eval_f(void) {
 	if (vm == nullptr) {
-		return true;
+		return;
 	}
 
-	bool ranUpdate = false;
-	if (dt != 0) {
-		ranUpdate = Wren_Update(vm, dt);
-	}
-
-	Wren_Draw(vm, clientInf->width, clientInf->height);
-
-	return ranUpdate;
+	const char* line = SLT_Con_GetArg(1);
+	Wren_Console(vm, line);
 }
 
 static void Error(int level, const char *msg) {
@@ -161,24 +127,54 @@ void Com_DefaultExtension(char *path, int maxSize, const char *extension) {
 }
 #endif
 
+void main_loop() {
+	if (vm == nullptr) {
+		SLT_UpdateLastFrameTime();
+		return;
+	}
+
+	bool ranUpdate = false;
+	double dt = SLT_StartFrame();
+	if (dt < 0) {
+		loop = false;
+		return;
+	} else if (dt > 0) {
+		ranUpdate = Wren_Update(vm, dt);
+	}
+
+	Wren_Draw(vm, clientInf->width, clientInf->height);
+	SLT_EndFrame();
+
+	SLT_UpdateLastFrameTime();
+}
+
 int main(int argc, char* argv[]) {
 	SLT_Init(argc, argv);
+
+	SLT_Con_AddCommand("map", Cmd_Map_f);
+	SLT_Con_AddCommand("scene", Cmd_Scene_f);
+	SLT_Con_AddCommand("eval", Cmd_Eval_f);
+
+	clientInf = (ClientInfo*)SLT_GetClientInfo();
+	ImGui::SetCurrentContext((ImGuiContext*)SLT_GetImguiContext());
+
+	if (vm != nullptr) {
+		Wren_Scene_Shutdown(vm);
+		Wren_FreeVM(vm);
+	}
+
+	vm = Wren_Init("scripts/main.wren", nullptr);
+	if (vm != nullptr) {
+		SLT_Con_SetVar("engine.errorMessage", "");
+	}
 
 #ifdef __EMSCRIPTEN__
 	emscripten_set_main_loop(main_loop, 0, 1);
 #else
-	//main_loop();
-#endif
-
-	double dt = 0;
-	while ((dt = SLT_StartFrame()) >= 0) {
-		DC_Clear(30, 30, 30, 255);
-		DC_SetColor(128, 0, 0, 255);
-		DC_DrawRect(20, 20, 20, 20);
-
-		DC_Submit();
-		SLT_EndFrame();
+	while (loop) {
+		main_loop();
 	}
+#endif
 
 	SLT_Shutdown();
 }

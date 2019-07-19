@@ -64,6 +64,7 @@ long long now = 0;
 static renderCommandList_t cmdList;
 SDL_Window *window;
 SDL_GLContext context;
+bool shouldQuit = false;
 
 const char * __cdecl tempstr(const char *format, ...) {
 	va_list		argptr;
@@ -166,7 +167,7 @@ void ConH_Error(int level, const char *message) {
 }
 
 static void Cmd_Quit_f(void) {
-	// FIXME: do something
+	shouldQuit = true;
 }
 
 auto start = std::chrono::steady_clock::now();
@@ -176,6 +177,10 @@ static inline long long measure_now() {
 }
 
 SLT_API double SLT_StartFrame() {
+	if (shouldQuit) {
+		return -1;
+	}
+
 	now = measure_now();
 	frame_musec = now - com_frameTime;
 	com_frameTime = now;
@@ -415,7 +420,6 @@ SLT_API void SLT_SetWindowTitle(const char* title) {
 	SetWindowTitle(title);
 }
 
-
 SLT_API conVar_t* SLT_Con_GetVarDefault(const char* var_name, const char* var_value, int flags) {
 	return Con_GetVarDefault(var_name, var_value, flags);
 }
@@ -428,7 +432,6 @@ SLT_API conVar_t* SLT_Con_SetVar(const char* var_name, const char* value) {
 	return Con_SetVar(var_name, value);
 }
 
-
 SLT_API int SLT_Con_GetArgCount(void) {
 	return Con_GetArgsCount();
 }
@@ -439,6 +442,10 @@ SLT_API const char* SLT_Con_GetArg(int arg) {
 
 SLT_API const char* SLT_Con_GetArgs(int start) {
 	return Con_GetArgs(start);
+}
+
+SLT_API void SLT_Con_AddCommand(const char *name, conCmd_t cmd) {
+	Con_AddCommand(name, cmd);
 }
 
 SLT_API int SLT_FS_ReadFile(const char* path, void** buffer) {
@@ -546,6 +553,17 @@ SLT_API void SLT_Snd_PauseResume(unsigned int handle, bool pause) {
 	Snd_PauseResume(handle, pause);
 }
 
+SLT_API const void* SLT_GetClientInfo() {
+	return &inf;
+}
+
+SLT_API const void* SLT_GetImguiContext() {
+	return ImGui::GetCurrentContext();
+}
+
+SLT_API void SLT_UpdateLastFrameTime() {
+	last_update_musec = com_frameTime;
+}
 
 #define GET_COMMAND(type, id) type *cmd; cmd = (type *)R_GetCommandBuffer(sizeof(*cmd)); if (!cmd) { return; } cmd->commandId = id;
 

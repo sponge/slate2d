@@ -40,7 +40,7 @@ solution "Slate2D"
     defines { "RELEASE" }
     optimize "Full"
 
-  project "engine"
+  project "libslate2d"
     kind "SharedLib"
     targetname "slate2d"
     language "C++"
@@ -104,7 +104,7 @@ solution "Slate2D"
     filter { "system:linux" }
       links { "SDL2", "dl", "pthread", "GL" }
 
-  project "game"
+  project "wrengame"
     kind "ConsoleApp"
     language "C++"
     targetname "slate2d"
@@ -113,7 +113,7 @@ solution "Slate2D"
     targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
     cppdialect "C++14"
     debugargs { "+set", "fs.basepath", path.getabsolute(".")}
-    links { "tmx", "imgui", "sdl2main", "engine" }
+    links { "tmx", "imgui", "sdl2main", "libslate2d" }
 
     filter { "platforms:x86", "system:windows" }
       libdirs { "libs/sdl/lib/Win32" }

@@ -318,6 +318,8 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 		Con_Execute("exec autoexec.cfg\n");
 	}
 
+	SDL_SetMainReady();
+
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0) {
 		Con_Errorf(ERR_FATAL, "There was an error initing SDL2: %s", SDL_GetError());
 	}

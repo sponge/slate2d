@@ -334,7 +334,7 @@ const char * TTF_BreakString(int w, const char *in) {
 	return splitStr;
 }
 
-void TTF_TextBox(const drawTextCommand_t *cmd, const char *string, int count) {
+void TTF_TextBox(float x, float y, float w, const char *string, int count) {
 	TTFtextRow rows[2];
 	int nrows = 0, i;
 	int oldAlign = state.align;
@@ -347,21 +347,19 @@ void TTF_TextBox(const drawTextCommand_t *cmd, const char *string, int count) {
 	fonsVertMetrics(ctx, nullptr, nullptr, &lineh);
 	fonsSetAlign(ctx, FONS_ALIGN_LEFT | valign);
 
-	float x = cmd->x;
-	float y = cmd->y;
 	lineh *= state.lineHeight;
 
 	const char *end = TTF_CountChars(string, count);
 
-	while ((nrows = TTF_BreakLines(string, end, cmd->w, rows, 2)) > 0) {
+	while ((nrows = TTF_BreakLines(string, end, w, rows, 2)) > 0) {
 		for (i = 0; i < nrows; i++) {
 			TTFtextRow* row = &rows[i];
 			if (halign & FONS_ALIGN_LEFT)
 				fonsDrawText(ctx, x, y, row->start, row->end);
 			else if (halign & FONS_ALIGN_CENTER)
-				fonsDrawText(ctx, x + cmd->w * 0.5f - row->width*0.5f, y, row->start, row->end);
+				fonsDrawText(ctx, x + w * 0.5f - row->width*0.5f, y, row->start, row->end);
 			else if (halign & FONS_ALIGN_RIGHT)
-				fonsDrawText(ctx, x + cmd->w - row->width, y, row->start, row->end);
+				fonsDrawText(ctx, x + w - row->width, y, row->start, row->end);
 			y += lineh;
 		}
 		string = rows[nrows - 1].next;

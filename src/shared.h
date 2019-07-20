@@ -6,7 +6,6 @@
 #include "../src/console.h"
 
 #ifdef _MSC_VER 
-#define STRFUNCS
 #define strncasecmp _strnicmp
 #define strcasecmp _stricmp
 #endif
@@ -30,8 +29,6 @@ typedef struct {
 #define FLIP_H 1
 #define FLIP_V 2
 #define FLIP_DIAG 4
-
-#define	MAX_RENDER_COMMANDS	0x50000
 
 // ASSETS
 
@@ -70,44 +67,9 @@ static const char* assetStrings[] = {
 };
 
 typedef struct {
-	AssetHandle id;
-	AssetType_t type;
-	bool loaded;
-	const char *name;
-	const char *path;
-	int flags;
-	void *resource;
-} Asset;
-
-typedef struct {
 	unsigned int hnd;
 	int w, h;
 } Image;
-
-typedef struct {
-	Image *texture;
-	int16_t x;
-	int16_t y;
-	int16_t w;
-	int16_t h;
-	int16_t framex;
-	int16_t framey;
-	int16_t framew;
-	int16_t frameh;
-	byte rotated;
-} Sprite;
-
-typedef struct {
-	int numImages;
-	int numSprites;
-	Image *images;
-	Sprite *sprites;
-
-	int staticWidth;
-	int staticHeight;
-	int staticMarginX;
-	int staticMarginY;
-} SpriteAtlas;
 
 typedef struct {
 	int x, y;

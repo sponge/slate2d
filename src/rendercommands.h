@@ -1,11 +1,12 @@
 #pragma once
-#include "shared.h"
+#include "assetloader.h"
+
+#define	MAX_RENDER_COMMANDS	0x50000
 
 typedef struct {
 	byte	cmds[MAX_RENDER_COMMANDS];
 	int		used;
 } renderCommandList_t;
-
 
 typedef struct {
 	byte	commandId;

@@ -247,7 +247,7 @@ const void *RB_DrawText(const void *data) {
 	const char *text = (const char *)cmd + sizeof(drawTextCommand_t);
 
 	fonsSetColor(ctx, (state.color[0]) | (state.color[1] << 8) | (state.color[2] << 16) | (state.color[3] << 24));
-	TTF_TextBox(cmd, text, cmd->len);
+	TTF_TextBox(cmd->x, cmd->y, cmd->w, text, cmd->len);
 
 	return (const void *)(text + cmd->strSz);
 }

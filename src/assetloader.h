@@ -7,7 +7,15 @@ extern "C" {
 }
 #include <tmx.h>
 
-#include "rendercommands.h"
+typedef struct {
+	AssetHandle id;
+	AssetType_t type;
+	bool loaded;
+	const char* name;
+	const char* path;
+	int flags;
+	void* resource;
+} Asset;
 
 AssetHandle Asset_Find(const char *name);
 Asset* Asset_Get(AssetType_t type, AssetHandle id);
@@ -31,6 +39,31 @@ void Img_Inspect(Asset& asset, bool deselected);
 
 // sprite assets
 
+typedef struct {
+	Image* texture;
+	int16_t x;
+	int16_t y;
+	int16_t w;
+	int16_t h;
+	int16_t framex;
+	int16_t framey;
+	int16_t framew;
+	int16_t frameh;
+	byte rotated;
+} Sprite;
+
+typedef struct {
+	int numImages;
+	int numSprites;
+	Image* images;
+	Sprite* sprites;
+
+	int staticWidth;
+	int staticHeight;
+	int staticMarginX;
+	int staticMarginY;
+} SpriteAtlas;
+
 void* Sprite_Load(Asset &asset);
 void Sprite_Free(Asset &asset);
 void Sprite_Reload(Asset& asset);
@@ -48,7 +81,7 @@ typedef struct TTFFont{
 void* TTF_Load(Asset &asset);
 void TTF_Free(Asset &asset);
 
-void TTF_TextBox(const drawTextCommand_t *data, const char *text, int count);
+void TTF_TextBox(float x, float y, float w, const char *text, int count);
 const char * TTF_BreakString(int w, const char *in);
 int Asset_TextWidth(AssetHandle assetHandle, const char *string, float scale);
 

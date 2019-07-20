@@ -7,6 +7,7 @@
 #include "imgui_console.h"
 #include "shared.h"
 #include "cvar_main.h"
+#include "main.h"
 
 #define CONSOLE_MAX_LINES 4000
 

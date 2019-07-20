@@ -1,18 +1,11 @@
 #pragma once
-// shared.h is shared between the engine and the dll
+// shared.h is shared between the dll and the exe
 
 #include <tmx.h>
 #include <stdint.h>
 #include "../src/console.h"
 
-#ifdef _MSC_VER 
-#define strncasecmp _strnicmp
-#define strcasecmp _stricmp
-#endif
-
 const char * __cdecl tempstr(const char *format, ...);
-
-typedef unsigned char byte;
 
 #ifndef ERR_NONE
 #define ERR_NONE 0
@@ -143,7 +136,7 @@ SLT_API const void* SLT_GetImguiContext();
 
 SLT_API void SLT_UpdateLastFrameTime();
 
-SLT_API void DC_SetColor(byte r, byte g, byte b, byte a);
+SLT_API void DC_SetColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 SLT_API void DC_ResetTransform();
 SLT_API void DC_Scale(float x, float y);
 SLT_API void DC_Rotate(float angle);
@@ -157,11 +150,11 @@ SLT_API void DC_ResetShader();
 SLT_API void DC_DrawRect(float x, float y, float w, float h, bool outline = false);
 SLT_API void DC_SetTextStyle(unsigned int fntId, float size, float lineHeight, int align);
 SLT_API void DC_DrawText(float x, float y, float h, const char* text, int len);
-SLT_API void DC_DrawImage(unsigned int imgId, float x, float y, float w = 0.0f, float h = 0.0f, float scale = 1.0f, byte flipBits = 0, float ox = 0.0f, float oy = 0.0f);
-SLT_API void DC_DrawSprite(unsigned int sprite, int id, float x, float y, float scale = 1.0f, byte flipBits = 0, int w = 1, int h = 1);
+SLT_API void DC_DrawImage(unsigned int imgId, float x, float y, float w = 0.0f, float h = 0.0f, float scale = 1.0f, uint8_t flipBits = 0, float ox = 0.0f, float oy = 0.0f);
+SLT_API void DC_DrawSprite(unsigned int sprite, int id, float x, float y, float scale = 1.0f, uint8_t flipBits = 0, int w = 1, int h = 1);
 SLT_API void DC_DrawLine(float x1, float y1, float x2, float y2);
 SLT_API void DC_DrawCircle(float x, float y, float radius, bool outline = false);
 SLT_API void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, bool outline = false);
 SLT_API void DC_DrawMapLayer(unsigned int mapId, unsigned int layer, float x = 0, float y = 0, unsigned int cellX = 0, unsigned int cellY = 0, unsigned int cellW = 0, unsigned int cellH = 0);
 SLT_API void DC_Submit();
-SLT_API void DC_Clear(byte r, byte g, byte b, byte a);
+SLT_API void DC_Clear(uint8_t r, uint8_t g, uint8_t b, uint8_t a);

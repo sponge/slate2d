@@ -252,7 +252,7 @@ const void *RB_DrawText(const void *data) {
 	return (const void *)(text + cmd->strSz);
 }
 
-void DrawImage(float x, float y, float w, float h, float ox, float oy, float scale, byte flipBits, unsigned int handle, int imgW, int imgH) {
+void DrawImage(float x, float y, float w, float h, float ox, float oy, float scale, uint8_t flipBits, unsigned int handle, int imgW, int imgH) {
 	bool flipX = flipBits & FLIP_H;
 	bool flipY = flipBits & FLIP_V;
 	bool flipDiag = flipBits & FLIP_DIAG;
@@ -311,7 +311,7 @@ const void *RB_DrawImage(const void *data) {
 		Canvas *canvas = (Canvas*) asset->resource;
 		float w = cmd->w == 0 ? canvas->w : cmd->w;
 		float h = cmd->h == 0 ? canvas->h : cmd->h;
-		byte flipBits = cmd->flipBits;
+		uint8_t flipBits = cmd->flipBits;
 		flipBits ^= FLIP_V;
 		DrawImage(cmd->x, cmd->y, w, h, cmd->ox, cmd->oy, cmd->scale, flipBits, canvas->texture.texture.id, canvas->w, canvas->h);
 	}
@@ -476,7 +476,7 @@ const void *RB_DrawMapLayer(const void *data) {
 					continue;
 				}
 
-				byte flipBits = (raw & TMX_FLIPPED_HORIZONTALLY ? FLIP_H : 0) | (raw & TMX_FLIPPED_VERTICALLY ? FLIP_V : 0) | (raw & TMX_FLIPPED_DIAGONALLY ? FLIP_DIAG : 0);
+				uint8_t flipBits = (raw & TMX_FLIPPED_HORIZONTALLY ? FLIP_H : 0) | (raw & TMX_FLIPPED_VERTICALLY ? FLIP_V : 0) | (raw & TMX_FLIPPED_DIAGONALLY ? FLIP_DIAG : 0);
 
 				tmx_tile *tile = map->tiles[gid];
 				tmx_tileset *ts = tile->tileset;
@@ -505,7 +505,7 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 	const void *data = list->cmds;
 
 	while (1) {
-		switch (*(const byte *)data) {
+		switch (*(const uint8_t *)data) {
 
 		case RC_SET_COLOR:
 			data = RB_SetColor(data);

@@ -49,7 +49,7 @@ typedef struct {
 	int16_t framey;
 	int16_t framew;
 	int16_t frameh;
-	byte rotated;
+	uint8_t rotated;
 } Sprite;
 
 typedef struct {

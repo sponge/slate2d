@@ -143,7 +143,7 @@ void* BMPFNT_Load(Asset &asset) {
 
 	if (font->glyphWidth > 0) {
 		while (font->glyphs[currGlyph] != 0) {
-			byte glyph = (byte)font->glyphs[currGlyph];
+			uint8_t glyph = (uint8_t)font->glyphs[currGlyph];
 			font->offsets[glyph].start = currGlyph * font->glyphWidth;
 			font->offsets[glyph].end = (currGlyph + 1) * font->glyphWidth;
 
@@ -161,7 +161,7 @@ void* BMPFNT_Load(Asset &asset) {
 				if (foundStart == false) {
 					// if it's not transparent, and we haven't started the next offset yet, start it now
 					foundStart = true;
-					font->offsets[(byte)font->glyphs[currGlyph]].start = x;
+					font->offsets[(uint8_t)font->glyphs[currGlyph]].start = x;
 					break;
 				}
 				else {
@@ -170,7 +170,7 @@ void* BMPFNT_Load(Asset &asset) {
 			}
 			else if (y == h - 1 && foundStart == true) {
 				// if we're currently tracking a letter, and we found a col full of blank, the last row is where it ends
-				font->offsets[(byte)font->glyphs[currGlyph]].end = x;
+				font->offsets[(uint8_t)font->glyphs[currGlyph]].end = x;
 				currGlyph++;
 				foundStart = false;
 				// if there are no more glyphs left to track, we've reached the end

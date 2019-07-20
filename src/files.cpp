@@ -2,6 +2,7 @@
 #include <string.h>
 #include "shared.h"
 #include "console.h"
+#include "main.h"
 
 conVar_t *fs_basepath;
 conVar_t *fs_basegame;

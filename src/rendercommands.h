@@ -4,71 +4,71 @@
 #define	MAX_RENDER_COMMANDS	0x50000
 
 typedef struct {
-	byte	cmds[MAX_RENDER_COMMANDS];
+	uint8_t	cmds[MAX_RENDER_COMMANDS];
 	int		used;
 } renderCommandList_t;
 
 typedef struct {
-	byte	commandId;
-	byte	color[4];
+	uint8_t	commandId;
+	uint8_t	color[4];
 } setColorCommand_t;
 
 typedef struct {
-	byte commandId;
-	byte	color[4];
+	uint8_t commandId;
+	uint8_t	color[4];
 } clearCommand_t;
 
 typedef struct {
-	byte commandId;
+	uint8_t commandId;
 } resetTransformCommand_t;
 
 typedef struct {
-	byte	commandId;
+	uint8_t	commandId;
 	float	x, y;
 } scaleCommand_t;
 
 typedef struct {
-	byte	commandId;
+	uint8_t	commandId;
 	float	angle;
 } rotateCommand_t;
 
 typedef struct {
-	byte	commandId;
+	uint8_t	commandId;
 	float	x;
 	float	y;
 } translateCommand_t;
 
 typedef struct {
-	byte commandId;
+	uint8_t commandId;
 	int x, y, w, h;
 } setScissorCommand_t;
 
 typedef struct {
-	byte	commandId;
+	uint8_t	commandId;
 	unsigned int canvasId;
 } useCanvasCommand_t;
 
 typedef struct {
-	byte	commandId;
+	uint8_t	commandId;
 } resetCanvasCommand_t;
 
 typedef struct {
-	byte	commandId;
+	uint8_t	commandId;
 	unsigned int shaderId;
 } useShaderCommand_t;
 
 typedef struct {
-	byte	commandId;
+	uint8_t	commandId;
 } resetShaderCommand_t;
 
 typedef struct {
-	byte	commandId;
-	byte	outline;
+	uint8_t	commandId;
+	uint8_t	outline;
 	float	x, y, w, h;
 } drawRectCommand_t;
 
 typedef struct {
-	byte	commandId;
+	uint8_t	commandId;
 	unsigned int fntId;
 	float size;
 	float lineHeight;
@@ -81,47 +81,47 @@ typedef struct {
 // parse out color codes without the game code needing to
 // understand them.
 typedef struct {
-	byte commandId;
+	uint8_t commandId;
 	float x, y, w, len;
 	unsigned int strSz;
 } drawTextCommand_t;
 
 typedef struct {
-	byte commandId;
+	uint8_t commandId;
 	float x, y, w, h, ox, oy, angle, scale;
-	byte flipBits;
+	uint8_t flipBits;
 	unsigned int imgId;
 } drawImageCommand_t;
 
 typedef struct {
-	byte commandId;
+	uint8_t commandId;
 	unsigned int spr;
 	int id;
 	float x, y;
 	float scale;
-	byte flipBits;
+	uint8_t flipBits;
 	int w, h;
 } drawSpriteCommand_t;
 
 typedef struct {
-	byte commandId;
+	uint8_t commandId;
 	float x1, y1, x2, y2;
 } drawLineCommand_t;
 
 typedef struct {
-	byte	commandId;
-	byte	outline;
+	uint8_t	commandId;
+	uint8_t	outline;
 	float x, y, radius;
 } drawCircleCommand_t;
 
 typedef struct {
-	byte	commandId;
-	byte	outline;
+	uint8_t	commandId;
+	uint8_t	outline;
 	float x1, y1, x2, y2, x3, y3;
 } drawTriCommand_t;
 
 typedef struct {
-	byte commandId;
+	uint8_t commandId;
 	float x, y;
 	unsigned int mapId;
 	unsigned int layer, cellX, cellY, cellW, cellH;
@@ -152,10 +152,10 @@ typedef enum {
 } renderCommand_t;
 
 void SubmitRenderCommands(renderCommandList_t *list);
-void DrawImage(float x, float y, float w, float h, float ox, float oy, float scale, byte flipBits, unsigned int handle, int imgW, int imgH);
+void DrawImage(float x, float y, float w, float h, float ox, float oy, float scale, uint8_t flipBits, unsigned int handle, int imgW, int imgH);
 
 struct RenderState {
-	byte color[4] = { 255, 255, 255, 255 };
+	uint8_t color[4] = { 255, 255, 255, 255 };
 	// FIXME: are these 4 fields still necessary?
 	Asset *font;
 	int align = 1;

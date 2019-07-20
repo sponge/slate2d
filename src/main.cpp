@@ -587,7 +587,7 @@ SLT_API void DC_Submit() {
 	memset(&cmdList, 0, sizeof(cmdList));
 }
 
-SLT_API void DC_Clear(byte r, byte g, byte b, byte a) {
+SLT_API void DC_Clear(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
 	GET_COMMAND(clearCommand_t, RC_CLEAR);
 	cmd->color[0] = r;
 	cmd->color[1] = g;
@@ -595,7 +595,7 @@ SLT_API void DC_Clear(byte r, byte g, byte b, byte a) {
 	cmd->color[3] = a;
 }
 
-SLT_API void DC_SetColor(byte r, byte g, byte b, byte a) {
+SLT_API void DC_SetColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
 	GET_COMMAND(setColorCommand_t, RC_SET_COLOR)
 		cmd->color[0] = r;
 	cmd->color[1] = g;
@@ -685,7 +685,7 @@ SLT_API void DC_DrawText(float x, float y, float w, const char* text, int len) {
 	strncpy((char*)strStart, text, cmd->strSz - 1);
 }
 
-SLT_API void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h, float scale, byte flipBits, float ox, float oy) {
+SLT_API void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h, float scale, uint8_t flipBits, float ox, float oy) {
 	GET_COMMAND(drawImageCommand_t, RC_DRAW_IMAGE)
 		cmd->x = x;
 	cmd->y = y;
@@ -698,7 +698,7 @@ SLT_API void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h
 	cmd->imgId = imgId;
 }
 
-SLT_API void DC_DrawSprite(unsigned int spr, int id, float x, float y, float scale, byte flipBits, int w, int h) {
+SLT_API void DC_DrawSprite(unsigned int spr, int id, float x, float y, float scale, uint8_t flipBits, int w, int h) {
 	GET_COMMAND(drawSpriteCommand_t, RC_DRAW_SPRITE);
 	cmd->spr = spr;
 	cmd->id = id;

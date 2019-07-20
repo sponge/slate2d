@@ -410,10 +410,10 @@ void wren_asset_image_size(WrenVM *vm) {
 void wren_dc_setcolor(WrenVM *vm) {
 	CHECK_ARGS(4, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
 
-	byte r = (byte) wrenGetSlotDouble(vm, 1);
-	byte g = (byte) wrenGetSlotDouble(vm, 2);
-	byte b = (byte) wrenGetSlotDouble(vm, 3);
-	byte a = (byte) wrenGetSlotDouble(vm, 4);
+	uint8_t r = (uint8_t) wrenGetSlotDouble(vm, 1);
+	uint8_t g = (uint8_t) wrenGetSlotDouble(vm, 2);
+	uint8_t b = (uint8_t) wrenGetSlotDouble(vm, 3);
+	uint8_t a = (uint8_t) wrenGetSlotDouble(vm, 4);
 	DC_SetColor(r, g, b, a);
 }
 
@@ -533,7 +533,7 @@ void wren_dc_drawimage(WrenVM *vm) {
 	float w = (float)wrenGetSlotDouble(vm, 4);
 	float h = (float)wrenGetSlotDouble(vm, 5);
 	float scale = (float)wrenGetSlotDouble(vm, 6);
-	byte flipBits = (byte)wrenGetSlotDouble(vm, 7);
+	uint8_t flipBits = (uint8_t)wrenGetSlotDouble(vm, 7);
 	float ox = (float)wrenGetSlotDouble(vm, 8);
 	float oy = (float)wrenGetSlotDouble(vm, 9);
 
@@ -600,7 +600,7 @@ void wren_dc_drawsprite(WrenVM *vm) {
 	float x = (float)wrenGetSlotDouble(vm, 3);
 	float y = (float)wrenGetSlotDouble(vm, 4);
 	float scale = (float)wrenGetSlotDouble(vm, 5);
-	byte flipBits = (byte)wrenGetSlotDouble(vm, 6);
+	uint8_t flipBits = (uint8_t)wrenGetSlotDouble(vm, 6);
 	int w = (int)wrenGetSlotDouble(vm, 7);
 	int h = (int)wrenGetSlotDouble(vm, 8);
 
@@ -616,10 +616,10 @@ void wren_dc_clear(WrenVM *vm) {
 	NOTUSED(vm);
 	CHECK_ARGS(4, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM, WREN_TYPE_NUM);
 
-	byte r = (byte)wrenGetSlotDouble(vm, 1);
-	byte g = (byte)wrenGetSlotDouble(vm, 2);
-	byte b = (byte)wrenGetSlotDouble(vm, 3);
-	byte a = (byte)wrenGetSlotDouble(vm, 4);
+	uint8_t r = (uint8_t)wrenGetSlotDouble(vm, 1);
+	uint8_t g = (uint8_t)wrenGetSlotDouble(vm, 2);
+	uint8_t b = (uint8_t)wrenGetSlotDouble(vm, 3);
+	uint8_t a = (uint8_t)wrenGetSlotDouble(vm, 4);
 	DC_Clear(r, g, b, a);
 }
 #pragma endregion

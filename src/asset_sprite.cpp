@@ -5,22 +5,22 @@
 #include <physfs.h>
 #include <imgui.h>
 
-byte ReadByte(byte **curr) {
-	byte ret = (byte)**curr;
+uint8_t ReadByte(uint8_t **curr) {
+	uint8_t ret = (uint8_t)**curr;
 	*curr += 1;
 
 	return ret;
 }
 
-int16_t ReadShort(byte **curr) {
-	byte lo = ReadByte(curr);
-	byte hi = ReadByte(curr);
+int16_t ReadShort(uint8_t **curr) {
+	uint8_t lo = ReadByte(curr);
+	uint8_t hi = ReadByte(curr);
 	int16_t ret = (hi << 8) | lo;
 
 	return ret;
 }
 
-const char* ReadString(byte **curr) {
+const char* ReadString(uint8_t **curr) {
 	const char *name = (const char*)*curr;
 	*curr += strlen(name) + 1;
 
@@ -35,9 +35,9 @@ void* Sprite_Load(Asset &asset) {
 	// if the sprite ends in bin, load it through crunch, otherwise generate the sprite
 	if (IsCrunchAsset(asset)) {
 		// read the bin file
-		byte *crunch;
+		uint8_t *crunch;
 		int len = FS_ReadFile(asset.path, (void**)&crunch);
-		byte *curr = crunch;
+		uint8_t *curr = crunch;
 
 		if (len == -1) {
 			Con_Errorf(ERR_GAME, "couldn't read file %s", asset.path);

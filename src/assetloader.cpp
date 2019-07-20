@@ -1,3 +1,4 @@
+#include "main.h"
 #include "assetloader.h"
 #include "console.h"
 #include "external/vec.h"

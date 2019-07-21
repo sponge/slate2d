@@ -104,13 +104,13 @@ SLT_API const char* SLT_Con_GetArgs(int start);
 SLT_API void SLT_Con_AddCommand(const char* name, conCmd_t cmd);
 
 SLT_API int SLT_FS_ReadFile(const char* path, void** buffer);
-SLT_API bool SLT_FS_Exists(const char* file);
+SLT_API uint8_t SLT_FS_Exists(const char* file);
 SLT_API char** SLT_FS_List(const char* path);
 SLT_API void SLT_FS_FreeList(void* listVar);
 
 SLT_API void SLT_In_AllocateButtons(const char** buttonNames, int buttonCount);
 SLT_API buttonState_t* SLT_In_GetButton(int buttonNum);
-SLT_API bool SLT_In_ButtonPressed(int buttonId, unsigned int delay, int repeat);
+SLT_API uint8_t SLT_In_ButtonPressed(int buttonId, unsigned int delay, int repeat);
 SLT_API MousePosition SLT_In_MousePosition();
 
 SLT_API AssetHandle SLT_Asset_Create(AssetType_t assetType, const char* name, const char* path, int flags);
@@ -124,13 +124,13 @@ SLT_API int SLT_Asset_TextWidth(AssetHandle assetHandle, const char* string, flo
 SLT_API const char* SLT_Asset_BreakString(int width, const char* in);
 SLT_API void SLT_Asset_Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int marginY);
 SLT_API void SLT_Asset_Canvas_Set(AssetHandle assetHandle, int width, int height);
-SLT_API void SLT_Asset_Shader_Set(AssetHandle id, bool isFile, const char* vs, const char* fs);
+SLT_API void SLT_Asset_Shader_Set(AssetHandle id, uint8_t isFile, const char* vs, const char* fs);
 SLT_API Image* SLT_Get_Img(AssetHandle id);
 SLT_API tmx_map* SLT_Get_TileMap(AssetHandle id);
 
-SLT_API unsigned int SLT_Snd_Play(AssetHandle asset, float volume, float pan, bool loop);
+SLT_API unsigned int SLT_Snd_Play(AssetHandle asset, float volume, float pan, uint8_t loop);
 SLT_API void SLT_Snd_Stop(unsigned int handle);
-SLT_API void SLT_Snd_PauseResume(unsigned int handle, bool pause);
+SLT_API void SLT_Snd_PauseResume(unsigned int handle, uint8_t pause);
 
 SLT_API const void* SLT_GetClientInfo();
 SLT_API const void* SLT_GetImguiContext();
@@ -148,14 +148,14 @@ SLT_API void DC_UseCanvas(unsigned int canvasId);
 SLT_API void DC_ResetCanvas();
 SLT_API void DC_UseShader(unsigned int shaderId);
 SLT_API void DC_ResetShader();
-SLT_API void DC_DrawRect(float x, float y, float w, float h, bool outline = false);
+SLT_API void DC_DrawRect(float x, float y, float w, float h, uint8_t outline = 0);
 SLT_API void DC_SetTextStyle(unsigned int fntId, float size, float lineHeight, int align);
 SLT_API void DC_DrawText(float x, float y, float h, const char* text, int len);
 SLT_API void DC_DrawImage(unsigned int imgId, float x, float y, float w = 0.0f, float h = 0.0f, float scale = 1.0f, uint8_t flipBits = 0, float ox = 0.0f, float oy = 0.0f);
 SLT_API void DC_DrawSprite(unsigned int sprite, int id, float x, float y, float scale = 1.0f, uint8_t flipBits = 0, int w = 1, int h = 1);
 SLT_API void DC_DrawLine(float x1, float y1, float x2, float y2);
-SLT_API void DC_DrawCircle(float x, float y, float radius, bool outline = false);
-SLT_API void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, bool outline = false);
+SLT_API void DC_DrawCircle(float x, float y, float radius, uint8_t outline = 0);
+SLT_API void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, uint8_t outline = 0);
 SLT_API void DC_DrawMapLayer(unsigned int mapId, unsigned int layer, float x = 0, float y = 0, unsigned int cellX = 0, unsigned int cellY = 0, unsigned int cellW = 0, unsigned int cellH = 0);
 SLT_API void DC_Submit();
 SLT_API void DC_Clear(uint8_t r, uint8_t g, uint8_t b, uint8_t a);

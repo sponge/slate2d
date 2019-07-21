@@ -16,7 +16,7 @@ static void* bitmap_loadFont(FONScontext *context, unsigned char *data, int data
 }
 
 static void bitmap_freeFont(void *usrdata) {
-	Con_Printf("%s\n", __func__);
+	Con_Printf("%s\n", "bitmap_freeFont not implemented yet");
 }
 
 static void bitmap_getFontVMetrics(void *usrdata, int *ascent, int *descent, int *lineGap) {

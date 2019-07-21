@@ -467,8 +467,8 @@ SLT_API int SLT_FS_ReadFile(const char* path, void** buffer) {
 	return FS_ReadFile(path, buffer);
 }
 
-SLT_API bool SLT_FS_Exists(const char* file) {
-	return FS_Exists(file);
+SLT_API uint8_t SLT_FS_Exists(const char* file) {
+	return FS_Exists(file) ? 1 : 0;
 }
 
 SLT_API char** SLT_FS_List(const char* path) {
@@ -487,8 +487,8 @@ SLT_API buttonState_t* SLT_In_GetButton(int buttonNum) {
 	return Con_GetButton(buttonNum);
 }
 
-SLT_API bool SLT_In_ButtonPressed(int buttonId, unsigned int delay, int repeat) {
-	return In_ButtonPressed(buttonId, delay, repeat);
+SLT_API uint8_t SLT_In_ButtonPressed(int buttonId, unsigned int delay, int repeat) {
+	return In_ButtonPressed(buttonId, delay, repeat) ? 1 : 0;
 }
 
 SLT_API MousePosition SLT_In_MousePosition() {
@@ -543,8 +543,8 @@ SLT_API void SLT_Asset_Canvas_Set(AssetHandle assetHandle, int width, int height
 	Canvas_Set(assetHandle, width, height);
 }
 
-SLT_API void SLT_Asset_Shader_Set(AssetHandle id, bool isFile, const char* vs, const char* fs) {
-	Shader_Set(id, isFile, vs, fs);
+SLT_API void SLT_Asset_Shader_Set(AssetHandle id, uint8_t isFile, const char* vs, const char* fs) {
+	Shader_Set(id, isFile > 0, vs, fs);
 }
 
 SLT_API Image* SLT_Get_Img(AssetHandle id) {
@@ -555,16 +555,16 @@ SLT_API tmx_map* SLT_Get_TileMap(AssetHandle id) {
 	return Get_TileMap(id);
 }
 
-SLT_API unsigned int SLT_Snd_Play(AssetHandle asset, float volume, float pan, bool loop) {
-	return Snd_Play(asset, volume, pan, loop);
+SLT_API unsigned int SLT_Snd_Play(AssetHandle asset, float volume, float pan, uint8_t loop) {
+	return Snd_Play(asset, volume, pan, loop > 0);
 }
 
 SLT_API void SLT_Snd_Stop(unsigned int handle) {
 	Snd_Stop(handle);
 }
 
-SLT_API void SLT_Snd_PauseResume(unsigned int handle, bool pause) {
-	Snd_PauseResume(handle, pause);
+SLT_API void SLT_Snd_PauseResume(unsigned int handle, uint8_t pause) {
+	Snd_PauseResume(handle, pause > 0);
 }
 
 SLT_API const void* SLT_GetClientInfo() {
@@ -668,9 +668,9 @@ SLT_API void DC_ResetShader() {
 	GET_COMMAND(resetShaderCommand_t, RC_RESET_SHADER)
 }
 
-SLT_API void DC_DrawRect(float x, float y, float w, float h, bool outline) {
+SLT_API void DC_DrawRect(float x, float y, float w, float h, uint8_t outline) {
 	GET_COMMAND(drawRectCommand_t, RC_DRAW_RECT)
-		cmd->outline = outline;
+		cmd->outline = outline > 0;
 	cmd->x = x;
 	cmd->y = y;
 	cmd->w = w;
@@ -732,17 +732,17 @@ SLT_API void DC_DrawLine(float x1, float y1, float x2, float y2) {
 	cmd->y2 = y2;
 }
 
-SLT_API void DC_DrawCircle(float x, float y, float radius, bool outline) {
+SLT_API void DC_DrawCircle(float x, float y, float radius, uint8_t outline) {
 	GET_COMMAND(drawCircleCommand_t, RC_DRAW_CIRCLE);
-	cmd->outline = outline;
+	cmd->outline = outline > 0;
 	cmd->x = x;
 	cmd->y = y;
 	cmd->radius = radius;
 }
 
-SLT_API void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, bool outline) {
+SLT_API void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, uint8_t outline) {
 	GET_COMMAND(drawTriCommand_t, RC_DRAW_TRI);
-	cmd->outline = outline;
+	cmd->outline = outline > 0;
 	cmd->x1 = x1;
 	cmd->y1 = y1;
 	cmd->x2 = x2;

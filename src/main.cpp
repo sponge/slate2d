@@ -65,6 +65,7 @@ static renderCommandList_t cmdList;
 SDL_Window *window;
 SDL_GLContext context;
 bool shouldQuit = false;
+bool frameStarted = false;
 void(*hostErrHandler)(int level, const char *msg);
 
 const char * __cdecl tempstr(const char *format, ...) {
@@ -177,9 +178,17 @@ SLT_API double SLT_StartFrame() {
 		return -1;
 	}
 
+	if (frameStarted) {
+		return 0;
+	}
+
+	frameStarted = true;
+
 	now = measure_now();
 	frame_musec = now - com_frameTime;
 	com_frameTime = now;
+
+	memset(&cmdList, 0, sizeof(cmdList));
 
 	if (snd_volume->modified) {
 		soloud.setGlobalVolume(snd_volume->value);
@@ -236,6 +245,12 @@ SLT_API double SLT_StartFrame() {
 }
 
 SLT_API void SLT_EndFrame() {
+	if (!frameStarted) {
+		return;
+	}
+
+	frameStarted = false;
+
 	if (!eng_pause->integer || frameAdvance) {
 		frameAdvance = false;
 	}
@@ -483,7 +498,6 @@ SLT_API MousePosition SLT_In_MousePosition() {
 SLT_API void SLT_SubmitRenderCommands(renderCommandList_t* list) {
 	SubmitRenderCommands(list);
 }
-
 
 SLT_API AssetHandle SLT_Asset_Create(AssetType_t assetType, const char* name, const char* path, int flags) {
 	return Asset_Create(assetType, name, path, flags);

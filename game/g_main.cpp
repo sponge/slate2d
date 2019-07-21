@@ -11,9 +11,6 @@ WrenVM *vm;
 static bool loop = true;
 jmp_buf env;
 
-#ifdef __EMSCRIPTEN__
-extern
-#endif
 void Com_DefaultExtension(char *path, int maxSize, const char *extension);
 
 void Cmd_Scene_f(void) {
@@ -82,17 +79,19 @@ static void Error(int level, const char *msg) {
 	if (vm) {
 		Wren_FreeVM(vm);
 		vm = nullptr;
-		SLT_Asset_ClearAll();
+	}
+
+	SLT_Asset_ClearAll();
+	if (env) {
 		longjmp(env, 1);
 	}
 }
 
-#ifndef __EMSCRIPTEN__
-const char * __cdecl tempstr(const char *format, ...) {
+const char* __cdecl gtempstr(const char* format, ...) {
 	va_list		argptr;
 	static char		string[2][32000];	// in case va is called by nested functions
 	static int		index = 0;
-	char	*buf;
+	char* buf;
 
 	buf = string[index & 1];
 	index++;
@@ -104,11 +103,6 @@ const char * __cdecl tempstr(const char *format, ...) {
 	return buf;
 }
 
-/*
-==================
-Com_DefaultExtension
-==================
-*/
 void Com_DefaultExtension(char *path, int maxSize, const char *extension) {
 	char	oldPath[1024];
 	char    *src;
@@ -129,23 +123,27 @@ void Com_DefaultExtension(char *path, int maxSize, const char *extension) {
 	strncpy(oldPath, path, sizeof(oldPath));
 	snprintf(path, maxSize, "%s%s", oldPath, extension);
 }
-#endif
 
 void main_loop() {
-	setjmp(env);
-
-	if (vm == nullptr) {
-		SLT_UpdateLastFrameTime();
-		return;
-	}
-
 	bool ranUpdate = false;
 	double dt = SLT_StartFrame();
 	if (dt < 0) {
 		loop = false;
+		SLT_EndFrame();
 		return;
-	} else if (dt > 0) {
-		ranUpdate = Wren_Update(vm, dt);
+	}
+	else {
+		if (vm == nullptr) {
+			SLT_UpdateLastFrameTime();
+			DC_Clear(0, 0, 0, 255);
+			DC_Submit();
+			SLT_EndFrame();
+			return;
+		}
+
+		if (dt > 0) {
+			ranUpdate = Wren_Update(vm, dt);
+		}
 	}
 
 	Wren_Draw(vm, clientInf->width, clientInf->height);
@@ -178,6 +176,7 @@ int main(int argc, char* argv[]) {
 #ifdef __EMSCRIPTEN__
 	emscripten_set_main_loop(main_loop, 0, 1);
 #else
+	setjmp(env);
 	while (loop) {
 		main_loop();
 	}

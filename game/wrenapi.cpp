@@ -96,7 +96,7 @@ void wren_trap_error(WrenVM *vm) {
 
 	int err = (int) wrenGetSlotDouble(vm, 1);
 	const char *str = wrenGetSlotString(vm, 2);
-	SLT_Error(err, tempstr("wren script: %s",str));
+	SLT_Error(err, gtempstr("wren script: %s",str));
 }
 
 void wren_trap_snd_play(WrenVM *vm) {
@@ -914,11 +914,11 @@ static void wren_error(WrenVM* vm, WrenErrorType type, const char* module, int l
 
 	conVar_t *stack = SLT_Con_GetVarDefault("engine.lastErrorStack", "", 0);
 	if (line == -1) {
-		SLT_Con_SetVar("engine.lastErrorStack", tempstr("%s\n%s", stack->string, message));
+		SLT_Con_SetVar("engine.lastErrorStack", gtempstr("%s\n%s", stack->string, message));
 		SLT_Print("%s\n", message);
 	}
 	else {
-		SLT_Con_SetVar("engine.lastErrorStack", tempstr("%s\n(%s:%i) %s", stack->string, module, line, message));
+		SLT_Con_SetVar("engine.lastErrorStack", gtempstr("%s\n(%s:%i) %s", stack->string, module, line, message));
 		SLT_Print("(%s:%i) %s\n", module, line, message);
 	}
 }
@@ -927,7 +927,7 @@ char* wren_loadModuleFn(WrenVM* vm, const char* name) {
 	NOTUSED(vm);
 
 	char *script = nullptr;
-	const char *path = tempstr("scripts/%s.wren", name);
+	const char *path = gtempstr("scripts/%s.wren", name);
 
 	int sz = SLT_FS_ReadFile(path, (void**)&script);
 	if (sz <= 0) {

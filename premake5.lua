@@ -19,7 +19,7 @@ solution "Slate2D"
   systemversion "latest"
   targetdir "build/out/%{cfg.architecture}_%{cfg.buildcfg}"
   objdir "build/out/obj"
-  startproject "game"
+  startproject "wrengame"
 
   filter { "system:windows" }
     platforms { "x86", "x64" }

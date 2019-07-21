@@ -10,7 +10,6 @@
 #include <imgui.h>
 
 extern ClientInfo inf;
-extern FONScontext *ctx;
 
 static void* bitmap_loadFont(FONScontext *context, unsigned char *data, int dataSize) {
 	return data;

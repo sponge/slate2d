@@ -11,9 +11,6 @@ extern bool consoleActive;
 
 extern int64_t last_update_musec, com_frameTime, frame_musec;
 
-void DropToMenu();
-void SetWindowTitle(const char *title);
-
 #ifdef _MSC_VER 
 #define strncasecmp _strnicmp
 #define strcasecmp _stricmp

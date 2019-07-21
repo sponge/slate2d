@@ -11,11 +11,10 @@ extern "C" {
 #include "external/gl3corefontstash.h"
 #include <imgui.h>
 #include "cvar_main.h"
+#include "rendercommands.h"
 
 typedef vec_t(Asset) asset_vec_t;
 asset_vec_t assets;
-
-extern FONScontext *ctx;
 
 typedef struct {
 	const char *iniType;

@@ -65,6 +65,7 @@ static renderCommandList_t cmdList;
 SDL_Window *window;
 SDL_GLContext context;
 bool shouldQuit = false;
+void(*hostErrHandler)(int level, const char *msg);
 
 const char * __cdecl tempstr(const char *format, ...) {
 	va_list		argptr;
@@ -133,12 +134,6 @@ void Cmd_Clear_f() {
 	IMConsole()->ClearLog();
 }
 
-void DropToMenu() {
-	errorVisible = true;
-	// FIXME: handle differently in dll
-	//gexports->Error(ERR_GAME, eng_errorMessage->string);
-}
-
 void ConH_Print(const char *line) {
 	IMConsole()->AddLog("%s", line);
 	printf("%s", line);
@@ -162,7 +157,8 @@ void ConH_Error(int level, const char *message) {
 	}
 	else {
 		Con_SetVar("engine.errorMessage", message);
-		DropToMenu();
+		errorVisible = true;
+		hostErrHandler(level, message);
 	}
 }
 
@@ -252,9 +248,7 @@ SLT_API void SLT_EndFrame() {
 
 	if (debug_fontAtlas->integer) {
 		rlLoadIdentity();
-		// FIXME: this was bad in the first place but now its really broke
-		//extern FONScontext* ctx;
-		//if (ctx != nullptr) fonsDrawDebug(ctx, 0, 32);
+		if (ctx != nullptr) fonsDrawDebug(ctx, 0, 32);
 		rlglDraw();
 	}
 
@@ -398,6 +392,10 @@ SLT_API void SLT_Shutdown() {
 	ImGui_ImplSdl_Shutdown();
 	ImGui::DestroyContext();
 	SDL_GL_DeleteContext(context);
+}
+
+SLT_API void SLT_Con_SetErrorHandler(void(*errHandler)(int level, const char *msg)) {
+	hostErrHandler = errHandler;
 }
 
 SLT_API void SLT_SendConsoleCommand(const char* text) {

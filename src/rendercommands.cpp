@@ -5,15 +5,11 @@
 #include "rlgl.h"
 #include "main.h"
 #include "input.h"
-
+#include "external/fontstash.h"
 #include "console.h"
 
 extern ClientInfo inf;
 Canvas * activeCanvas = nullptr;
-
-#include "external/fontstash.h"
-extern FONScontext *ctx;
-
 RenderState state;
 
 const void *RB_SetColor(const void *data) {

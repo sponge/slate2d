@@ -4,10 +4,12 @@
 #include "game.h"
 #include "external/sds.h"
 #include "wrenapi.h"
+#include <setjmp.h>
 
 const ClientInfo *clientInf;
 WrenVM *vm;
 static bool loop = true;
+jmp_buf env;
 
 #ifdef __EMSCRIPTEN__
 extern
@@ -80,6 +82,8 @@ static void Error(int level, const char *msg) {
 	if (vm) {
 		Wren_FreeVM(vm);
 		vm = nullptr;
+		SLT_Asset_ClearAll();
+		longjmp(env, 1);
 	}
 }
 
@@ -128,6 +132,8 @@ void Com_DefaultExtension(char *path, int maxSize, const char *extension) {
 #endif
 
 void main_loop() {
+	setjmp(env);
+
 	if (vm == nullptr) {
 		SLT_UpdateLastFrameTime();
 		return;
@@ -151,6 +157,7 @@ void main_loop() {
 int main(int argc, char* argv[]) {
 	SLT_Init(argc, argv);
 
+	SLT_Con_SetErrorHandler(Error);
 	SLT_Con_AddCommand("map", Cmd_Map_f);
 	SLT_Con_AddCommand("scene", Cmd_Scene_f);
 	SLT_Con_AddCommand("eval", Cmd_Eval_f);

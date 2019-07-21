@@ -182,20 +182,9 @@ SLT_API double SLT_StartFrame() {
 		return 0;
 	}
 
-	frameStarted = true;
-
 	now = measure_now();
 	frame_musec = now - com_frameTime;
 	com_frameTime = now;
-
-	memset(&cmdList, 0, sizeof(cmdList));
-
-	if (snd_volume->modified) {
-		soloud.setGlobalVolume(snd_volume->value);
-		snd_volume->modified = false;
-	}
-
-	FileWatcher_Tick();
 
 	SDL_Event ev;
 	ImGuiIO &io = ImGui::GetIO();
@@ -215,6 +204,17 @@ SLT_API double SLT_StartFrame() {
 			ProcessInputEvent(ev);
 		}
 	}
+
+	frameStarted = true;
+
+	memset(&cmdList, 0, sizeof(cmdList));
+
+	if (snd_volume->modified) {
+		soloud.setGlobalVolume(snd_volume->value);
+		snd_volume->modified = false;
+	}
+
+	FileWatcher_Tick();
 	
 	ImGui_ImplSdl_NewFrame(window);
 

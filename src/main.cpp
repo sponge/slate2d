@@ -396,9 +396,6 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 	// now that we've ran the user configs and initialized everything else, apply everything else on the
 	// command line here. this will set the rest of the variables and run any commands specified.
 	Con_ExecuteCommandLine();
-
-	// FIXME: needs to do something
-	//console.handlers.unhandledCommand = gexports->Console;
 }
 
 SLT_API void SLT_Shutdown() {
@@ -411,6 +408,10 @@ SLT_API void SLT_Shutdown() {
 
 SLT_API void SLT_Con_SetErrorHandler(void(*errHandler)(int level, const char *msg)) {
 	hostErrHandler = errHandler;
+}
+
+SLT_API void SLT_Con_SetDefaultCommandHandler(bool(*cmdHandler)()) {
+	console.handlers.unhandledCommand = cmdHandler;
 }
 
 SLT_API void SLT_SendConsoleCommand(const char* text) {

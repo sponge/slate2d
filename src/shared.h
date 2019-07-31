@@ -85,6 +85,7 @@ typedef struct {
 SLT_API void SLT_Init(int argc, char* argv[]);
 SLT_API void SLT_Shutdown();
 SLT_API void SLT_Con_SetErrorHandler(void(*errHandler)(int level, const char *msg));
+SLT_API void SLT_Con_SetDefaultCommandHandler(bool(*cmdHandler)());
 
 SLT_API double SLT_StartFrame();
 SLT_API void SLT_EndFrame();

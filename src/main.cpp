@@ -59,7 +59,6 @@ ClientInfo inf;
 int64_t last_update_musec = 0, frame_musec = 0, com_frameTime = 0;
 //float frame_accum;
 bool frameAdvance = false;
-bool errorVisible = false;
 long long now = 0;
 static renderCommandList_t cmdList;
 SDL_Window *window;
@@ -158,7 +157,6 @@ void ConH_Error(int level, const char *message) {
 	}
 	else {
 		Con_SetVar("engine.errorMessage", message);
-		errorVisible = true;
 		hostErrHandler(level, message);
 	}
 }
@@ -218,17 +216,13 @@ SLT_API double SLT_StartFrame() {
 	
 	ImGui_ImplSdl_NewFrame(window);
 
-	if (errorVisible && eng_errorMessage->string[0] == '\0') {
-		errorVisible = 0;
-	}
-	else if (errorVisible) {
+	if (eng_errorMessage->string[0] != '\0') {
 		ImGui::SetNextWindowPosCenter();
 		ImGui::Begin("Error", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
 		ImGui::Text("%s", eng_errorMessage->string);
 		ImGui::Text("%s", eng_lastErrorStack->string);
 		ImGui::NewLine();
 		if (ImGui::Button("Close")) {
-			errorVisible = false;
 			Con_SetVar("engine.errorMessage", nullptr);
 			Con_SetVar("engine.lastErrorStack", nullptr);
 		}

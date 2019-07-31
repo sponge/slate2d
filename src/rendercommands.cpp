@@ -217,10 +217,8 @@ const void *RB_SetTextStyle(const void *data) {
 		return (const void *)(cmd + 1);
 	}
 
-	state.font = asset;
 	state.lineHeight = cmd->lineHeight;
 	state.align = cmd->align;
-	state.size = cmd->size;
 
 	if (asset->type == ASSET_FONT) {
 		TTFFont_t *fnt = (TTFFont_t*)asset->resource;

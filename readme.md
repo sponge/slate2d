@@ -8,38 +8,37 @@ restrictions in place. Slate2D is programmer-centric; you'll want to be familiar
 the engine yourself. Slate2D gives you the *blank slate* (get it??) to let you code.
 
 Slate2D will feel somewhat familiar for anyone who has ever worked with engines like Source, Quake, or Doom. Convars, commands, and
-binds are all present. The game is loaded into the engine by way of shared library, and rendering is abstracted out into high-level
-render commands, which are handled by the engine. This means your game DLL can be relatively pure, and won't rely on linking to
-graphics or system libraries.
+binds are all present. Everything is provided through a library, `libslate2d`. This keeps the game's entry point relatively simple.
+A game loop with mouse, keyboard, and controller support including rebindable keys only requires a few functions.
 
-The default game DLL integrates the [Wren](https://github.com/wren-lang/wren) scripting language. Although the intent originally was
-to write game code in C, I found the Wren language and really enjoyed writing code in it. It's easy enough to swap out, though. Other
-scripting languages like Duktape or Lua could be used, or any language that can build a shared library and call C functions. If
-you've found some neat programming thing, and wish you had an easy way to draw some graphics with it, Slate2D can get you off the
-ground.
+The default library host integrates the [Wren](https://github.com/wren-lang/wren) scripting language. Although the intent originally was
+to write game code in C, I found the Wren language and really enjoyed writing code in it. It's easy enough to swap out, though. Any
+language that can load a shared library and call C functions can be used. Nim, Python, Node.js, and C# have all been able to load the
+shared library and setup a main loop. If you've found some neat programming thing, and wish you had an easy way to draw some graphics
+with it, Slate2D can get you off the ground.
 
 ## Instructions
 
-Slate2D uses [Premake5](https://premake.github.io/) to generate project files. While the engine is intended to be cross-platform,
-right now only Windows and WASM/Emscripten builds are proven. Mac builds are bitrotted, and Linux should run. Run a premake command such as
-`premake5 vs2017` to generate the project, or `premake5 --help` to see extra options specific to the project. An attempt has been made
-to make it build clean out of the box. This has been confirmed to work on *two* different computers!
+Slate2D uses [Premake5](https://premake.github.io/) to generate project files. The engine should generally run on Windows, Mac, Linux,
+and WASM/Emscripten, but only Windows and Mac are often checked. Run a premake command such as `premake5 vs2017` to generate the project,
+or `premake5 --help` to see extra options specific to the project. An attempt has been made to make it build clean out of the box. This
+has been confirmed to work on *two* different computers!
 
 ## Other features
 - Asset loader to let you work with asset handles instead of files
   - PNG images
   - Spritesheets: Minimize draw calls by loading a sprite atlas
-  - Fonts: TTF and sprite-based
+  - Fonts: TTF and sprite-based, drawn out of an atlas
   - Audio: OGG and tracker formats
   - Tilemaps: Load and draw TMX maps
   - Shaders: Customize drawing of shapes and sprites
   - Canvas: Draw onto an off-screen texture
   - Text to Speech: The most important
-- Built in object inspector for Wren objects.
-- Watch for changed files, and run a command on modification.
-- Optional automatic sprite atlas packer.
-- No documentation.
-- Inconsistent usage of C and C++ patterns, and code style.
+- Built in object inspector for Wren objects
+- Watch for changed files, and run a command on modification
+- Optional automatic sprite atlas packer
+- No documentation
+- Inconsistent usage of C and C++ patterns, and code style
 - It mostly works!
 
 ## Libraries used

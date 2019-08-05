@@ -5,6 +5,7 @@ if exist build\package rmdir /S /Q build\package
 
 mkdir build\package\%name%\base
 copy build\bin\x86_64_Release\slate2d.exe build\package\%name%\%name%.exe
+copy build\bin\x86_64_Release\slate2d.dll build\package\%name%\
 copy build\bin\x86_64_Release\SDL2.dll build\package\%name%\
 copy build\bin\x86_64_Release\libopenmpt.dll build\package\%name%\
 copy build\bin\x86_64_Release\openmpt-mpg123.dll build\package\%name%\

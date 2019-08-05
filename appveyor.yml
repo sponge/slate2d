@@ -22,6 +22,8 @@ after_build:
 
     package.bat hotair
 artifacts:
+- path: build\package\plat\slate2d.dll
+  name: Slate2D - x64 DLL
 - path: build\plat.zip
   name: Slate2D - Platformer
 - path: build\clive.zip

@@ -9,8 +9,6 @@
 
 FONScontext *ctx;
 
-extern ClientInfo inf;
-
 enum TTFcodepointType {
 	TTF_SPACE,
 	TTF_NEWLINE,

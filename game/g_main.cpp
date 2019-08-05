@@ -6,7 +6,6 @@
 #include "wrenapi.h"
 #include <setjmp.h>
 
-const ClientInfo *clientInf;
 WrenVM *vm;
 static bool loop = true;
 jmp_buf env;
@@ -146,7 +145,9 @@ void main_loop() {
 		}
 	}
 
-	Wren_Draw(vm, clientInf->width, clientInf->height);
+	int width, height;
+	SLT_GetResolution(&width, &height);
+	Wren_Draw(vm, width, height);
 	SLT_EndFrame();
 
 	SLT_UpdateLastFrameTime();
@@ -160,7 +161,6 @@ int main(int argc, char* argv[]) {
 	SLT_Con_AddCommand("scene", Cmd_Scene_f);
 	SLT_Con_AddCommand("eval", Cmd_Eval_f);
 
-	clientInf = (ClientInfo*)SLT_GetClientInfo();
 	ImGui::SetCurrentContext((ImGuiContext*)SLT_GetImguiContext());
 
 	if (vm != nullptr) {

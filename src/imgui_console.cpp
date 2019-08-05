@@ -5,7 +5,6 @@
 
 #include "console.h"
 #include "imgui_console.h"
-#include "shared.h"
 #include "cvar_main.h"
 #include "main.h"
 
@@ -48,12 +47,12 @@ void ConsoleUI::AddLog(const char* fmt, ...) {
 	}
 }
 
-void ConsoleUI::Draw(ClientInfo *inf) {
+void ConsoleUI::Draw(int width, int height) {
 
 	if (vid_showfps->integer || eng_pause->integer) {
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10, 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
-		ImGui::SetNextWindowPos(ImVec2((float)inf->width - 80, 0.0f));
+		ImGui::SetNextWindowPos(ImVec2((float)width - 80, 0.0f));
 		ImGui::SetNextWindowSize(ImVec2(80, 0));
 		ImGui::Begin("##fps", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
 		if (vid_showfps->integer) {

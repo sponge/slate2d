@@ -55,7 +55,6 @@ extern "C" {
 conState_t console;
 
 SoLoud::Soloud soloud;
-ClientInfo inf;
 int64_t last_update_musec = 0, frame_musec = 0, com_frameTime = 0;
 //float frame_accum;
 bool frameAdvance = false;
@@ -96,10 +95,7 @@ void Cmd_FrameAdvance_f(void) {
 	}
 }
 void Cmd_Vid_Restart_f(void) {
-	inf.width = vid_width->integer;
-	inf.height = vid_height->integer;
-
-	SDL_SetWindowSize(window, inf.width, inf.height);
+	SDL_SetWindowSize(window, vid_width->integer, vid_height->integer);
 	SDL_GL_SetSwapInterval(vid_swapinterval->integer);
 	SDL_SetWindowFullscreen(window, vid_fullscreen->integer == 2 ? SDL_WINDOW_FULLSCREEN : vid_fullscreen->integer == 1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }
@@ -231,7 +227,7 @@ SLT_API double SLT_StartFrame() {
 
 	rlMatrixMode(RL_PROJECTION);                            // Enable internal projection matrix
 	rlLoadIdentity();                                       // Reset internal projection matrix
-	rlOrtho(0.0, inf.width, inf.height, 0.0, 0.0, 1.0); // Recalculate internal projection matrix
+	rlOrtho(0.0, vid_width->integer, vid_height->integer, 0.0, 0.0, 1.0); // Recalculate internal projection matrix
 	rlMatrixMode(RL_MODELVIEW);                             // Enable internal modelview matrix
 	rlLoadIdentity();                                       // Reset internal modelview matrix
 
@@ -249,7 +245,7 @@ SLT_API void SLT_EndFrame() {
 		frameAdvance = false;
 	}
 
-	IMConsole()->Draw(&inf);
+	IMConsole()->Draw(vid_width->integer, vid_height->integer);
 	Asset_DrawInspector();
 
 	ImGui::Render();
@@ -337,9 +333,7 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 #endif
 
-	inf.width = vid_width->integer;
-	inf.height = vid_height->integer;
-	window = SDL_CreateWindow("Slate2D", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, inf.width, inf.height, SDL_WINDOW_OPENGL);
+	window = SDL_CreateWindow("Slate2D", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, vid_width->integer, vid_height->integer, SDL_WINDOW_OPENGL);
 
 	if (window == NULL) {
 		Con_Errorf(ERR_FATAL, "There was an error creating the window: %s", SDL_GetError());
@@ -349,7 +343,7 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 
 	context = SDL_GL_CreateContext(window);
 
-	if (!initGL(inf.width, inf.height)) {
+	if (!initGL(vid_width->integer, vid_height->integer)) {
 		Con_Error(ERR_FATAL, "Could not init GL.");
 	}
 
@@ -562,8 +556,9 @@ SLT_API void SLT_Snd_PauseResume(unsigned int handle, uint8_t pause) {
 	Snd_PauseResume(handle, pause > 0);
 }
 
-SLT_API const void* SLT_GetClientInfo() {
-	return &inf;
+SLT_API void SLT_GetResolution(int* width, int* height) {
+	*width = vid_width->integer;
+	*height = vid_height->integer;
 }
 
 SLT_API const void* SLT_GetImguiContext() {

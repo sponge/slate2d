@@ -3,7 +3,6 @@
 #include <stdlib.h> 
 #include <imgui.h>
 #include <ctype.h>
-#include "shared.h"
 
 // IMGUI CONSOLE
 
@@ -26,7 +25,7 @@ struct ConsoleUI
 
     void ClearLog();
     void AddLog(const char* fmt, ...) IM_FMTARGS(2);
-    void Draw(ClientInfo *inf);
+    void Draw(int width, int height);
     void ExecCommand(const char * command_line);
     static int TextEditCallbackStub(ImGuiTextEditCallbackData * data);
     int TextEditCallback(ImGuiTextEditCallbackData* data);

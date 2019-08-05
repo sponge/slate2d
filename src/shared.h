@@ -13,10 +13,6 @@ const char * __cdecl tempstr(const char *format, ...);
 #define ERR_FATAL 2
 #endif
 
-typedef struct {
-	int width, height;
-} ClientInfo;
-
 #define IMAGEFLAGS_LINEAR_FILTER 1 << 0
 
 #define FLIP_H 1
@@ -133,7 +129,7 @@ SLT_API unsigned int SLT_Snd_Play(AssetHandle asset, float volume, float pan, ui
 SLT_API void SLT_Snd_Stop(unsigned int handle);
 SLT_API void SLT_Snd_PauseResume(unsigned int handle, uint8_t pause);
 
-SLT_API const void* SLT_GetClientInfo();
+SLT_API void SLT_GetResolution(int *width, int *height);
 SLT_API const void* SLT_GetImguiContext();
 
 SLT_API void SLT_UpdateLastFrameTime();

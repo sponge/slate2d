@@ -9,8 +9,6 @@
 #include "external/gl3corefontstash.h"
 #include <imgui.h>
 
-extern ClientInfo inf;
-
 static void* bitmap_loadFont(FONScontext *context, unsigned char *data, int dataSize) {
 	return data;
 }

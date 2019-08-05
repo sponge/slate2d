@@ -8,7 +8,7 @@
 #include "external/fontstash.h"
 #include "console.h"
 
-extern ClientInfo inf;
+extern conVar_t* vid_width, * vid_height;
 Canvas * activeCanvas = nullptr;
 RenderState state;
 
@@ -104,10 +104,10 @@ const void *RB_ResetCanvas(const void *data) {
 
 	rlDisableRenderTexture();
 	// Initialize viewport and internal projection/modelview matrices
-	rlViewport(0, 0, inf.width, inf.height);
+	rlViewport(0, 0, vid_width->integer, vid_height->integer);
 	rlMatrixMode(RL_PROJECTION);                        // Switch to PROJECTION matrix
 	rlLoadIdentity();                                   // Reset current matrix (PROJECTION)
-	rlOrtho(0, inf.width, inf.height, 0, 0.0f, 1.0f); // Orthographic projection with top-left corner at (0,0)
+	rlOrtho(0, vid_width->integer, vid_height->integer, 0, 0.0f, 1.0f); // Orthographic projection with top-left corner at (0,0)
 	rlMatrixMode(RL_MODELVIEW);                         // Switch back to MODELVIEW matrix
 	rlLoadIdentity();
 
@@ -131,7 +131,7 @@ const void *RB_UseShader(const void *data) {
 			SetShaderValue(shader, shasset->locResolution, iResolution, 3);
 		}
 		else {
-			const float iResolution[3] = { (float) inf.width, (float) inf.height, 1.0f };
+			const float iResolution[3] = { vid_width->value, vid_height->value, 1.0f };
 			SetShaderValue(shader, shasset->locResolution, iResolution, 3);
 		}
 	}

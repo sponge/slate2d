@@ -12,7 +12,6 @@ extern "C" {
 #include <imgui.h>
 
 static unsigned int mapId;
-extern const ClientInfo *clientInf;
 
 static const char *wrenTypeStrings[] =
 {
@@ -175,8 +174,11 @@ void wren_trap_get_resolution(WrenVM *vm) {
 	wrenEnsureSlots(vm, 3);
 	wrenSetSlotNewList(vm, 0);
 
-	wrenSetSlotDouble(vm, 1, clientInf->width);
-	wrenSetSlotDouble(vm, 2, clientInf->height);
+	int width, height;
+	SLT_GetResolution(&width, &height);
+
+	wrenSetSlotDouble(vm, 1, width);
+	wrenSetSlotDouble(vm, 2, height);
 
 	wrenInsertInList(vm, 0, -1, 1);
 	wrenInsertInList(vm, 0, -1, 2);

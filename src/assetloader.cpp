@@ -13,6 +13,23 @@ extern "C" {
 #include "cvar_main.h"
 #include "rendercommands.h"
 
+// when adding a new asset in shared.h, add the string representation here
+// used for asset system debugging
+static const char* assetStrings[] = {
+	"ASSET_ANY",
+	"ASSET_IMAGE",
+	"ASSET_SPRITE",
+	"ASSET_SPEECH",
+	"ASSET_SOUND",
+	"ASSET_MOD",
+	"ASSET_FONT",
+	"ASSET_BITMAPFONT",
+	"ASSET_TILEMAP",
+	"ASSET_CANVAS",
+	"ASSET_SHADER",
+	"ASSET_MAX",
+};
+
 typedef vec_t(Asset) asset_vec_t;
 asset_vec_t assets;
 

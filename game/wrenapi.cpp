@@ -395,7 +395,7 @@ void wren_asset_image_size(WrenVM *vm) {
 
 	AssetHandle assetHandle = (AssetHandle)wrenGetSlotDouble(vm, 1);
 
-	Image *img = SLT_Get_Img(assetHandle);
+	const Image *img = SLT_Get_Img(assetHandle);
 
 	wrenEnsureSlots(vm, 3);
 	wrenSetSlotNewList(vm, 0);
@@ -680,7 +680,7 @@ void wren_map_getlayerbyname(WrenVM *vm) {
 
 	const char *name = wrenGetSlotString(vm, 1);
 
-	tmx_map *map = SLT_Get_TileMap(mapId);
+	const tmx_map *map = SLT_Get_TileMap(mapId);
 	int id = Map_GetLayerByName(map, name);
 
 	wrenSetSlotDouble(vm, 0, id);
@@ -708,7 +708,7 @@ void wren_map_getobjectsinlayer(WrenVM *vm) {
 		wrenSetSlotString(vm, s++, keys[i]);
 	}
 
-	tmx_map *map = SLT_Get_TileMap(mapId);
+	const tmx_map *map = SLT_Get_TileMap(mapId);
 	tmx_object *obj = Map_LayerObjects(map, id, nullptr);
 	while (obj != nullptr) {
 		// ensure enough slots for map object + map values
@@ -797,7 +797,7 @@ void wren_map_getlayerproperties(WrenVM *vm) {
 
 	int id = (int)wrenGetSlotDouble(vm, 1);
 
-	tmx_map *map = SLT_Get_TileMap(mapId);
+	const tmx_map *map = SLT_Get_TileMap(mapId);
 	tmx_layer *layer = Map_GetLayer(map, id);
 
 	if (layer == nullptr) {
@@ -838,7 +838,7 @@ void wren_map_getlayerproperties(WrenVM *vm) {
 }
 
 void wren_map_gettileproperties(WrenVM *vm) {
-	tmx_map *map = SLT_Get_TileMap(mapId);
+	const tmx_map *map = SLT_Get_TileMap(mapId);
 
 	int totalSlots = 2; // total num of slots for wrenEnsureSlots
 	int s = 1; // current slot we're on
@@ -876,7 +876,7 @@ void wren_map_gettile(WrenVM *vm) {
 	unsigned int x = (unsigned int)wrenGetSlotDouble(vm, 2);
 	unsigned int y = (unsigned int)wrenGetSlotDouble(vm, 3);
 	
-	tmx_map *map = SLT_Get_TileMap(mapId);
+	const tmx_map *map = SLT_Get_TileMap(mapId);
 	int gid = Map_GetTile(map, layer, x, y);
 
 	wrenSetSlotDouble(vm, 0, gid);
@@ -887,7 +887,7 @@ void wren_map_getlayernames(WrenVM *vm) {
 
 	wrenSetSlotNewList(vm, 0);
 
-	tmx_map *map = SLT_Get_TileMap(mapId);
+	const tmx_map *map = SLT_Get_TileMap(mapId);
 	tmx_layer *layer = Map_GetLayer(map, i);
 	while (layer != nullptr) {
 		wrenEnsureSlots(vm, i + 2);
@@ -914,7 +914,7 @@ static void wren_error(WrenVM* vm, WrenErrorType type, const char* module, int l
 		clearNextError = false;
 	}
 
-	conVar_t *stack = SLT_Con_GetVarDefault("engine.lastErrorStack", "", 0);
+	const conVar_t *stack = SLT_Con_GetVarDefault("engine.lastErrorStack", "", 0);
 	if (line == -1) {
 		SLT_Con_SetVar("engine.lastErrorStack", gtempstr("%s\n%s", stack->string, message));
 		SLT_Print("%s\n", message);
@@ -1032,7 +1032,7 @@ WrenForeignMethodFn wren_bindForeignMethodFn(WrenVM* vm, const char* module, con
 void cvarAllocate(WrenVM *vm) {
 	wrenEnsureSlots(vm, 3);
 
-	conVar_t** var = (conVar_t**)wrenSetSlotNewForeign(vm, 0, 0, sizeof(conVar_t*));
+	const conVar_t** var = (const conVar_t**)wrenSetSlotNewForeign(vm, 0, 0, sizeof(const conVar_t*));
 	const char* name = wrenGetSlotString(vm, 1);
 
 	auto valType = wrenGetSlotType(vm, 2);

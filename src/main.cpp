@@ -428,15 +428,15 @@ SLT_API void SLT_SetWindowTitle(const char* title) {
 	SetWindowTitle(title);
 }
 
-SLT_API conVar_t* SLT_Con_GetVarDefault(const char* var_name, const char* var_value, int flags) {
+SLT_API const conVar_t* SLT_Con_GetVarDefault(const char* var_name, const char* var_value, int flags) {
 	return Con_GetVarDefault(var_name, var_value, flags);
 }
 
-SLT_API conVar_t* SLT_Con_GetVar(const char* name) {
+SLT_API const conVar_t* SLT_Con_GetVar(const char* name) {
 	return Con_GetVar(name);
 }
 
-SLT_API conVar_t* SLT_Con_SetVar(const char* var_name, const char* value) {
+SLT_API const conVar_t* SLT_Con_SetVar(const char* var_name, const char* value) {
 	return Con_SetVar(var_name, value);
 }
 
@@ -476,7 +476,7 @@ SLT_API void SLT_In_AllocateButtons(const char** buttonNames, int buttonCount) {
 	Con_AllocateButtons(buttonNames, buttonCount);
 }
 
-SLT_API buttonState_t* SLT_In_GetButton(int buttonNum) {
+SLT_API const buttonState_t* SLT_In_GetButton(int buttonNum) {
 	return Con_GetButton(buttonNum);
 }
 
@@ -540,11 +540,11 @@ SLT_API void SLT_Asset_Shader_Set(AssetHandle id, uint8_t isFile, const char* vs
 	Shader_Set(id, isFile > 0, vs, fs);
 }
 
-SLT_API Image* SLT_Get_Img(AssetHandle id) {
+SLT_API const Image* SLT_Get_Img(AssetHandle id) {
 	return Get_Img(id);
 }
 
-SLT_API tmx_map* SLT_Get_TileMap(AssetHandle id) {
+SLT_API const tmx_map* SLT_Get_TileMap(AssetHandle id) {
 	return Get_TileMap(id);
 }
 
@@ -634,7 +634,7 @@ SLT_API void DC_Translate(float x, float y) {
 
 SLT_API void DC_SetScissor(int x, int y, int w, int h) {
 	GET_COMMAND(setScissorCommand_t, RC_SET_SCISSOR)
-		cmd->x = x;
+	cmd->x = x;
 	cmd->y = y;
 	cmd->w = w;
 	cmd->h = h;
@@ -644,18 +644,18 @@ SLT_API void DC_ResetScissor() {
 	DC_SetScissor(0, 0, 0, 0);
 }
 
-SLT_API void DC_UseCanvas(unsigned int canvasId) {
+SLT_API void DC_UseCanvas(AssetHandle canvasId) {
 	GET_COMMAND(useCanvasCommand_t, RC_USE_CANVAS)
-		cmd->canvasId = canvasId;
+	cmd->canvasId = canvasId;
 }
 
 SLT_API void DC_ResetCanvas() {
 	GET_COMMAND(resetCanvasCommand_t, RC_RESET_CANVAS)
 }
 
-SLT_API void DC_UseShader(unsigned int shaderId) {
+SLT_API void DC_UseShader(AssetHandle shaderId) {
 	GET_COMMAND(useShaderCommand_t, RC_USE_SHADER)
-		cmd->shaderId = shaderId;
+	cmd->shaderId = shaderId;
 }
 
 SLT_API void DC_ResetShader() {
@@ -664,17 +664,16 @@ SLT_API void DC_ResetShader() {
 
 SLT_API void DC_DrawRect(float x, float y, float w, float h, uint8_t outline) {
 	GET_COMMAND(drawRectCommand_t, RC_DRAW_RECT)
-		cmd->outline = outline > 0;
+	cmd->outline = outline > 0;
 	cmd->x = x;
 	cmd->y = y;
 	cmd->w = w;
 	cmd->h = h;
 }
 
-SLT_API void DC_SetTextStyle(unsigned int fntId, float size, float lineHeight, int align) {
+SLT_API void DC_SetTextStyle(AssetHandle fntId, float size, float lineHeight, int align) {
 	GET_COMMAND(setTextStyleCommand_t, RC_SET_TEXT_STYLE)
-
-		cmd->fntId = fntId;
+	cmd->fntId = fntId;
 	cmd->size = size;
 	cmd->lineHeight = lineHeight;
 	cmd->align = align;
@@ -682,8 +681,7 @@ SLT_API void DC_SetTextStyle(unsigned int fntId, float size, float lineHeight, i
 
 SLT_API void DC_DrawText(float x, float y, float w, const char* text, int len) {
 	GET_COMMAND(drawTextCommand_t, RC_DRAW_TEXT)
-
-		cmd->x = x;
+	cmd->x = x;
 	cmd->y = y;
 	cmd->w = w;
 	cmd->len = len;
@@ -695,7 +693,7 @@ SLT_API void DC_DrawText(float x, float y, float w, const char* text, int len) {
 
 SLT_API void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h, float scale, uint8_t flipBits, float ox, float oy) {
 	GET_COMMAND(drawImageCommand_t, RC_DRAW_IMAGE)
-		cmd->x = x;
+	cmd->x = x;
 	cmd->y = y;
 	cmd->w = w;
 	cmd->h = h;

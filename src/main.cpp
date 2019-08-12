@@ -286,6 +286,10 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 	Con_Init(&console);
 	Con_AllocateKeys(MAX_KEYS);
 
+	// setup some default buttons so you don't have to do anything to get generic input
+	const char* defaultButtons[] = { "up", "down", "left", "right", "a", "b", "x", "y", "l", "r", "start", "select" };
+	Con_AllocateButtons(&defaultButtons[0], 12);
+
 	// setup console to pull cvars from command line
 	Con_SetupCommandLine(argc, argv);
 

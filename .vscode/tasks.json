@@ -4,172 +4,187 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "MacOS Build (Release x64)",
-      "type": "shell",
+      "label": "Generate Premake Project",
       "group": "build",
-      "command": "make",
-      "args": [
-        "config=release_x64"
-      ],
+      "type": "shell",
+      "command": "premake5",
       "options": {
-        "cwd": "${workspaceRoot}/build"
+        "cwd": "${workspaceRoot}"
       },
-      "problemMatcher": {
-        "owner": "cpp",
-        "fileLocation": [
-          "relative",
-          "${workspaceRoot}/build"
-        ],
-        "pattern": {
-          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
-          "file": 1,
-          "line": 2,
-          "column": 3,
-          "severity": 4,
-          "message": 5
-        }
-      }
-    },
-    {
-      "label": "MacOS Build (Debug x64)",
-      "type": "shell",
-      "group": "build",
-      "command": "make",
-      "args": [
-        "config=debug_x64"
-      ],
-      "options": {
-        "cwd": "${workspaceRoot}/build"
+      "osx": {
+        "args": [
+          "gmake2"
+        ]
       },
-      "problemMatcher": {
-        "owner": "cpp",
-        "fileLocation": [
-          "relative",
-          "${workspaceRoot}/build"
-        ],
-        "pattern": {
-          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
-          "file": 1,
-          "line": 2,
-          "column": 3,
-          "severity": 4,
-          "message": 5
-        }
-      }
-    },
-    {
-      "label": "MacOS Clean (Release x64)",
-      "group": "build",
-      "type": "shell",
-      "command": "make",
-      "args": [
-        "config=release_x64",
-        "clean"
-      ],
-      "options": {
-        "cwd": "${workspaceRoot}/build"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "MacOS Clean (Debug x64)",
-      "group": "build",
-      "type": "shell",
-      "command": "make",
-      "args": [
-        "config=debug_x64",
-        "clean"
-      ],
-      "options": {
-        "cwd": "${workspaceRoot}/build"
+      "windows": {
+        "args": [
+          "vs2019"
+        ]
       },
       "problemMatcher": []
     },
     {
       "label": "Build (Release x64)",
-      "type": "process",
       "group": {
         "kind": "build",
         "isDefault": true
       },
-      "command": "cmd",
-      "args": [
-        "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
-      ],
-      "options": {
-        "env": {
-          "operation": "Build",
-          "platform": "x64",
-          "configuration": "Release",
-          "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
+      "osx": {
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "config=release_x64"
+        ],
+        "options": {
+          "cwd": "${workspaceRoot}/build"
+        },
+        "problemMatcher": {
+          "owner": "cpp",
+          "fileLocation": [
+            "relative",
+            "${workspaceRoot}/build"
+          ],
+          "pattern": {
+            "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "severity": 4,
+            "message": 5
+          }
         }
       },
-      "problemMatcher": [
-        "$msCompile"
-      ]
-    },
-    {
-      "label": "Rebuild (Release x64)",
-      "command": "cmd",
-      "type": "process",
-      "args": [
-        "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
-      ],
-      "group": "build",
-      "options": {
-        "env": {
-          "operation": "Clean,Build",
-          "platform": "x64",
-          "configuration": "Release",
-          "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
-        }
-      },
-      "problemMatcher": [
-        "$msCompile"
-      ]
+      "windows": {
+        "type": "process",
+        "command": "cmd",
+        "args": [
+          "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
+        ],
+        "options": {
+          "env": {
+            "operation": "Build",
+            "platform": "x64",
+            "configuration": "Release",
+            "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
+          }
+        },
+        "problemMatcher": [
+          "$msCompile"
+        ]
+      }
     },
     {
       "label": "Build (Debug x64)",
-      "command": "cmd",
-      "type": "process",
-      "args": [
-        "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
-      ],
       "group": {
         "kind": "build",
         "isDefault": true
       },
-      "options": {
-        "env": {
-          "operation": "Build",
-          "platform": "x64",
-          "configuration": "Debug",
-          "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
+      "osx": {
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "config=debug_x64"
+        ],
+        "options": {
+          "cwd": "${workspaceRoot}/build"
+        },
+        "problemMatcher": {
+          "owner": "cpp",
+          "fileLocation": [
+            "relative",
+            "${workspaceRoot}/build"
+          ],
+          "pattern": {
+            "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "severity": 4,
+            "message": 5
+          }
         }
       },
-      "problemMatcher": [
-        "$msCompile"
-      ]
+      "windows": {
+        "command": "cmd",
+        "type": "process",
+        "args": [
+          "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
+        ],
+        "options": {
+          "env": {
+            "operation": "Build",
+            "platform": "x64",
+            "configuration": "Debug",
+            "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
+          }
+        },
+        "problemMatcher": [
+          "$msCompile"
+        ]
+      }
     },
     {
-      "label": "Rebuild (Debug x64)",
-      "command": "cmd",
-      "type": "process",
-      "args": [
-        "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
-      ],
+      "label": "Clean (Release x64)",
       "group": "build",
-      "options": {
-        "env": {
-          "operation": "Clean,Build",
-          "platform": "x64",
-          "configuration": "Debug",
-          "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
-        }
+      "problemMatcher": [],
+      "osx": {
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "config=release_x64",
+          "clean"
+        ],
+        "options": {
+          "cwd": "${workspaceRoot}/build"
+        },
       },
-      "problemMatcher": [
-        "$msCompile"
-      ]
+      "windows": {
+        "command": "cmd",
+        "type": "process",
+        "args": [
+          "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
+        ],
+        "group": "build",
+        "options": {
+          "env": {
+            "operation": "Clean",
+            "platform": "x64",
+            "configuration": "Release",
+            "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
+          }
+        },
+      },
+    },
+    {
+      "label": "Clean (Debug x64)",
+      "group": "build",
+      "problemMatcher": [],
+      "osx": {
+        "type": "shell",
+        "command": "make",
+        "args": [
+          "config=debug_x64",
+          "clean"
+        ],
+        "options": {
+          "cwd": "${workspaceRoot}/build"
+        },
+      },
+      "windows": {
+        "command": "cmd",
+        "type": "process",
+        "args": [
+          "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
+        ],
+        "options": {
+          "env": {
+            "operation": "Clean",
+            "platform": "x64",
+            "configuration": "Debug",
+            "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
+          }
+        },
+      }
     }
   ]
 }

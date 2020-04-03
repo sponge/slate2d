@@ -56,7 +56,7 @@ solution "Slate2D"
     defines { "DEFAULT_GAME=\"" .. _OPTIONS["default-game"] .. "\"", "COMPILE_DLL"}
 
     -- rlgl and raymath have some warnings, suppress them here
-    filter { "files:src/glinit.c"}
+    filter { "files:src/glinit.c", "system:windows"}
       disablewarnings { 4204, 4100, 4267 }
 
     -- disable warnings for sds
@@ -90,8 +90,8 @@ solution "Slate2D"
 
     -- use system installed SDL2 framework on mac
     filter { "system:macosx" }
-      links { "OpenGL.framework", "SDL2.framework", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework" }
-      linkoptions {"-stdlib=libc++", "-F /Library/Frameworks"}
+      links { "OpenGL.framework", "SDL2", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework" }
+      linkoptions {"-stdlib=libc++", "-L /usr/local/lib"}
 
     -- emscripten uses opengl es2, not gl3
     filter { "action:gmake2", "options:emscripten" }
@@ -130,7 +130,7 @@ solution "Slate2D"
       disablewarnings { "unknown-pragmas" }
 
     -- disable warnings for wren code since it's external
-    filter { "files:game/wren/* or files:game/wreninspector.cpp" }
+    filter { "files:game/wren/* or files:game/wreninspector.cpp", "system:windows" }
       disablewarnings { 4100, 4200, 4996, 4244, 4204, 4702, 4709 }
 
     -- disable warnings for sds

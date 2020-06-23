@@ -16,8 +16,8 @@
       "environment": [],
       "externalConsole": true,
       "osx": {
-        "type":"cppdbg",
-        "preLaunchTask": "MacOS Build (Debug x64)",
+        "type": "cppdbg",
+        "preLaunchTask": "Build (Debug x64)",
         "program": "${workspaceRoot}/build/bin/x86_64_Debug/slate2d",
         "MIMode": "lldb",
         "externalConsole": false
@@ -35,8 +35,8 @@
       "environment": [],
       "externalConsole": true,
       "osx": {
-        "type":"cppdbg",
-        "preLaunchTask": "MacOS Build (Release x64)",
+        "type": "cppdbg",
+        "preLaunchTask": "Build (Release x64)",
         "program": "${workspaceRoot}/build/bin/x86_64_Release/slate2d.app",
         "MIMode": "lldb",
         "externalConsole": false

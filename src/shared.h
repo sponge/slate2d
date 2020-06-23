@@ -55,17 +55,23 @@ typedef struct {
 	int x, y;
 } MousePosition;
 
+#ifdef __cplusplus
+	#define EXTERNC extern "C"
+#else
+	#define EXTERNC 
+#endif
+
 #ifdef _MSC_VER 
 	#ifdef COMPILE_DLL
-	#define SLT_API extern "C" __declspec(dllexport)
+		#define SLT_API EXTERNC __declspec(dllexport)
 	#else
-	#define SLT_API extern "C" __declspec(dllimport)
+		#define SLT_API EXTERNC __declspec(dllimport)
 	#endif
 #else
 	#ifdef COMPILE_DLL
-		#define SLT_API extern "C" __attribute__ ((visibility ("default")))
+		#define SLT_API EXTERNC __attribute__ ((visibility ("default")))
 	#else
-		#define SLT_API extern "C"
+		#define SLT_API EXTERNC
 	#endif
 #endif
 
@@ -284,7 +290,7 @@ SLT_API void DC_UseShader(AssetHandle shaderId);
 SLT_API void DC_ResetShader();
 
 // draws a rectangle at the given screen coordinates. outline or fill can be toggled with 1 or 0.
-SLT_API void DC_DrawRect(float x, float y, float w, float h, uint8_t outline = 0);
+SLT_API void DC_DrawRect(float x, float y, float w, float h, uint8_t outline);
 
 // sets an ASSET_FONT or ASSET_BITMAPFONT to be used for all text operations. size is in points for TTF, but scaling
 // factor for TTF. lineHeight is a scaling multiplier, and align is a bitmask of horizontal and vertical alignment
@@ -296,24 +302,24 @@ SLT_API void DC_DrawText(float x, float y, float h, const char* text, int len);
 
 // draws an ASSET_IMAGE at the specified location. scale is a size multiplier, flipBits allows for mirroring the
 // image, and ox and oy will offset the texture position by the specified amount.
-SLT_API void DC_DrawImage(unsigned int imgId, float x, float y, float w = 0.0f, float h = 0.0f, float scale = 1.0f, uint8_t flipBits = 0, float ox = 0.0f, float oy = 0.0f);
+SLT_API void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h, float scale, uint8_t flipBits, float ox, float oy);
 
 // draws an ASSET_SPRITE at the specified location. scale is a multiplier, flipBits allows for mirroring the sprite,
 // and w and h specify how many tiles wide or tall to draw.
-SLT_API void DC_DrawSprite(unsigned int spriteId, int id, float x, float y, float scale = 1.0f, uint8_t flipBits = 0, int w = 1, int h = 1);
+SLT_API void DC_DrawSprite(unsigned int spriteId, int id, float x, float y, float scale, uint8_t flipBits, int w, int h);
 
 // draws a line at the given coordinates.
 SLT_API void DC_DrawLine(float x1, float y1, float x2, float y2);
 
 // draws a circle with a given radius at the specified coordinates. outline or fill can be toggled with 1 or 0.
-SLT_API void DC_DrawCircle(float x, float y, float radius, uint8_t outline = 0);
+SLT_API void DC_DrawCircle(float x, float y, float radius, uint8_t outline);
 
 // draw a triangle at the specified coordinates. outline or fill can be toggled with 1 or 0.
-SLT_API void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, uint8_t outline = 0);
+SLT_API void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, uint8_t outline);
 
 // draws an individual layer of an ASSET_TILEMAP at the given coordinates. subsets of tilemaps can be drawn by using
 // cellX/cellY/cellW/cellH, 0 will draw the entire layer.
-SLT_API void DC_DrawMapLayer(unsigned int mapId, unsigned int layer, float x = 0, float y = 0, unsigned int cellX = 0, unsigned int cellY = 0, unsigned int cellW = 0, unsigned int cellH = 0);
+SLT_API void DC_DrawMapLayer(unsigned int mapId, unsigned int layer, float x, float y, unsigned int cellX, unsigned int cellY, unsigned int cellW, unsigned int cellH);
 
 // submit all queued up drawing commands, and clear the queued commands. this will parse and call the GL commands for
 // all the drawing commands.

@@ -46,6 +46,7 @@ extern "C" {
 
 extern "C" {
 #include "console.h"
+#include "external/sds.h"
 }
 
 #include "external/fontstash.h"

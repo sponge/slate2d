@@ -339,7 +339,7 @@ void Con_Print(const char *text) {
 		con->handlers.print(text);
 	}
 	else {
-		printf(text);
+		printf("%s", text);
 	}
 }
 

@@ -2,6 +2,9 @@
 #include <physfs.h>
 #include "console.h"
 #include "main.h"
+extern "C" {
+#include "external/sds.h"
+}
 
 typedef struct {
 	sds name;

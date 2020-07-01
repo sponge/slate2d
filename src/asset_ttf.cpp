@@ -6,6 +6,9 @@
 #include "external/fontstash.h"
 #include "external/gl3corefontstash.h"
 #include "rendercommands.h"
+extern "C" {
+#include "external/sds.h"
+}
 
 FONScontext *ctx;
 

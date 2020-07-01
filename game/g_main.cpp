@@ -2,9 +2,9 @@
 #include "../src/shared.h"
 #include <stdio.h>
 #include "game.h"
-#include "external/sds.h"
 #include "wrenapi.h"
 #include <setjmp.h>
+#include <stdarg.h>
 
 WrenVM *vm;
 static bool loop = true;

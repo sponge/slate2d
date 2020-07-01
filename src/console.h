@@ -6,8 +6,8 @@
 extern "C" {
 #endif
 
+#include <stdarg.h>
 #include <stdbool.h>
-#include "external/sds.h"
 #include "external/vec.h"
 #include "external/map.h"
 
@@ -23,13 +23,13 @@ extern "C" {
 
 // console variable type
 typedef struct {
-	sds name; // name of the var
-	sds defaultValue; // default string value, specified by Con_GetVarDefault
+	const char *name; // name of the var
+	const char *defaultValue; // default string value, specified by Con_GetVarDefault
 	int flags; // bitmask of flags for var
 	bool modified; // set to true when changed, can be set to false by anyone
 	int modifiedCount; // how many times the var has been changed
 
-	sds string; // string value of the var
+	const char *string; // string value of the var
 	float value; // float value
 	int integer; // integer value
 	bool boolean; // boolean value
@@ -39,7 +39,7 @@ typedef struct {
 // they are used for player actions, like "jump" or "shoot" or "left" and let you query
 // the held state of the button, and for how long they've been held.
 typedef struct {
-	sds name; // name of the bind controlling this button
+	const char *name; // name of the bind controlling this button
 	bool held; // if the key is being held down at all
 	int	keysHeld[8]; // which keys are holding this button down
 	int64_t timestamp; // timestamp button was first held down
@@ -53,7 +53,6 @@ typedef void(*conCmd_t) ();
 // dynamic array/map types for console state
 typedef map_t(conVar_t) conVar_map_t;
 typedef map_t(conCmd_t) conCmd_map_t;
-typedef vec_t(sds) sds_vec_t;
 typedef vec_t(buttonState_t) buttonState_vec_t;
 
 // event handlers for places where the console needs to interact with your application. these
@@ -76,16 +75,16 @@ typedef struct {
 // the main keeper of console state. this is the good stuff!
 typedef struct {
 	int argc; // number of args
-	sds *argv; // array of sds strings for each parameter
+	const char **argv; // array of sds strings for each parameter
 	conVar_map_t vars; // map of var_name -> conVar_t for all known convars
 	conCmd_map_t cmds; // map of command name -> void(void) function receiver
-	sds_vec_t binds; // array of key num -> sds string containing command to run on key press
+	vec_str_t binds; // array of key num -> sds string containing command to run on key press
 	buttonState_vec_t buttons; // array of buttons, which are commands preceded by a + and track held state
 	conHandlers_t handlers; // see conHandlers_t, developer-specified handlers for various console events
 
 	// temp state
-	sds cmd; // full string of command currently running
-	sds tempArgs; // temp storage used for functions that return a string
+	const char *cmd; // full string of command currently running
+	const char *tempArgs; // temp storage used for functions that return a string
 	const char **sargv; // used for commandling arg parsing
 	int sargc; // used for commandling arg parsing
 	char error[1024]; // fixed sized buffer to avoid mem allocation

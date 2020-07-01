@@ -59,8 +59,8 @@ void Shader_Set(AssetHandle id, bool isFile, const char *vs, const char *fs) {
 	auto shader = new ShaderAsset();
 
 	shader->isFile = isFile;
-	shader->fs = sdsnew(fs);
-	shader->vs = sdsnew(vs);
+	shader->fs = strdup(fs);
+	shader->vs = strdup(vs);
 
 	asset->resource = shader;
 }
@@ -68,8 +68,8 @@ void Shader_Set(AssetHandle id, bool isFile, const char *vs, const char *fs) {
 void Shader_Free(Asset & asset) {
 	ShaderAsset *res = (ShaderAsset*)asset.resource;
 
-	sdsfree(res->fs);
-	sdsfree(res->vs);
+	free((void*)res->fs);
+	free((void*)res->vs);
 
 	if (GetShaderDefault().id == res->shader->id) {
 		Con_Print("not freeing default shader\n");

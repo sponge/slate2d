@@ -7,6 +7,7 @@ extern "C" {
 #endif
 
 #include <stdarg.h>
+#include <stdint.h>
 #include <stdbool.h>
 #include "external/vec.h"
 #include "external/map.h"

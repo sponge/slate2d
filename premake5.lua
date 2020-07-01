@@ -70,7 +70,7 @@ solution "Slate2D"
     -- link SDL bins in the source tree on windows
     filter { "system:windows" }
       links { "SDL2", "opengl32" }
-      defines { "_CRT_SECURE_NO_WARNINGS" }
+      defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE" }
 
     filter { "platforms:x86", "system:windows" }
       libdirs { "libs/sdl/lib/Win32" }
@@ -122,7 +122,7 @@ solution "Slate2D"
       libdirs { "libs/sdl/lib/x64" }
 
     filter { "system:windows" }
-      defines { "_CRT_SECURE_NO_WARNINGS" }
+      defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE" }
 
     -- NaN tagging doesn't work in wren
     filter { "action:gmake2", "options:emscripten" }

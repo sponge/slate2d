@@ -545,8 +545,8 @@ SLT_API const Image* SLT_Get_Img(AssetHandle id) {
 	return Get_Img(id);
 }
 
-SLT_API const tmx_map* SLT_Get_TileMap(AssetHandle id) {
-	return Get_TileMap(id);
+SLT_API const tmx_map* SLT_Get_TMX(AssetHandle id) {
+	return Get_TMX(id);
 }
 
 SLT_API unsigned int SLT_Snd_Play(AssetHandle asset, float volume, float pan, uint8_t loop) {

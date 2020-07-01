@@ -123,11 +123,11 @@ unsigned int Snd_Play(AssetHandle assetHandle, float volume, float pan, bool loo
 void Snd_Stop(unsigned int handle);
 void Snd_PauseResume(unsigned int handle, bool pause);
 
-// tilemap assets
+// TMX assets
 
-void * TileMap_Load(Asset &asset);
-void TileMap_Free(Asset &asset);
-tmx_map* Get_TileMap(AssetHandle id);
+void * TMX_Load(Asset &asset);
+void TMX_Free(Asset &asset);
+tmx_map* Get_TMX(AssetHandle id);
 
 // canvas assets
 

@@ -680,7 +680,7 @@ void wren_map_getlayerbyname(WrenVM *vm) {
 
 	const char *name = wrenGetSlotString(vm, 1);
 
-	const tmx_map *map = SLT_Get_TileMap(mapId);
+	const tmx_map *map = SLT_Get_TMX(mapId);
 	int id = Map_GetLayerByName(map, name);
 
 	wrenSetSlotDouble(vm, 0, id);
@@ -708,7 +708,7 @@ void wren_map_getobjectsinlayer(WrenVM *vm) {
 		wrenSetSlotString(vm, s++, keys[i]);
 	}
 
-	const tmx_map *map = SLT_Get_TileMap(mapId);
+	const tmx_map *map = SLT_Get_TMX(mapId);
 	tmx_object *obj = Map_LayerObjects(map, id, nullptr);
 	while (obj != nullptr) {
 		// ensure enough slots for map object + map values
@@ -758,7 +758,7 @@ void wren_map_getmapproperties(WrenVM *vm) {
 	static const char *keys[] = { "width", "height", "tileWidth", "tileHeight", "backgroundColor", "properties" };
 	static const int keySz = sizeof(keys) / sizeof(*keys);
 
-	const tmx_map *map = SLT_Get_TileMap(mapId);
+	const tmx_map *map = SLT_Get_TMX(mapId);
 
 	int totalSlots = 1; // total num of slots for wrenEnsureSlots
 	int s = 1; // current slot we're on
@@ -797,7 +797,7 @@ void wren_map_getlayerproperties(WrenVM *vm) {
 
 	int id = (int)wrenGetSlotDouble(vm, 1);
 
-	const tmx_map *map = SLT_Get_TileMap(mapId);
+	const tmx_map *map = SLT_Get_TMX(mapId);
 	tmx_layer *layer = Map_GetLayer(map, id);
 
 	if (layer == nullptr) {
@@ -838,7 +838,7 @@ void wren_map_getlayerproperties(WrenVM *vm) {
 }
 
 void wren_map_gettileproperties(WrenVM *vm) {
-	const tmx_map *map = SLT_Get_TileMap(mapId);
+	const tmx_map *map = SLT_Get_TMX(mapId);
 
 	int totalSlots = 2; // total num of slots for wrenEnsureSlots
 	int s = 1; // current slot we're on
@@ -876,7 +876,7 @@ void wren_map_gettile(WrenVM *vm) {
 	unsigned int x = (unsigned int)wrenGetSlotDouble(vm, 2);
 	unsigned int y = (unsigned int)wrenGetSlotDouble(vm, 3);
 	
-	const tmx_map *map = SLT_Get_TileMap(mapId);
+	const tmx_map *map = SLT_Get_TMX(mapId);
 	int gid = Map_GetTile(map, layer, x, y);
 
 	wrenSetSlotDouble(vm, 0, gid);
@@ -887,7 +887,7 @@ void wren_map_getlayernames(WrenVM *vm) {
 
 	wrenSetSlotNewList(vm, 0);
 
-	const tmx_map *map = SLT_Get_TileMap(mapId);
+	const tmx_map *map = SLT_Get_TMX(mapId);
 	tmx_layer *layer = Map_GetLayer(map, i);
 	while (layer != nullptr) {
 		wrenEnsureSlots(vm, i + 2);

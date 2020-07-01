@@ -28,7 +28,7 @@ void *tmx_fs(const char *filename, int *outSz) {
 	return xml;
 }
 
-void * TileMap_Load(Asset &asset) {
+void * TMX_Load(Asset &asset) {
 	tmx_img_load_func = &tmx_img_load;
 	tmx_img_free_func = &tmx_img_free;
 	tmx_file_read_func = &tmx_fs;
@@ -61,12 +61,12 @@ void * TileMap_Load(Asset &asset) {
 	return (void*) map;
 }
 
-void TileMap_Free(Asset &asset) {
+void TMX_Free(Asset &asset) {
 	tmx_map_free((tmx_map*) asset.resource);
 }
 
-tmx_map* Get_TileMap(AssetHandle id) {
-	Asset *asset = Asset_Get(ASSET_TILEMAP, id);
+tmx_map* Get_TMX(AssetHandle id) {
+	Asset *asset = Asset_Get(ASSET_TMX, id);
 	assert(asset != nullptr && asset->resource != nullptr);
 	return (tmx_map*)asset->resource;
 }

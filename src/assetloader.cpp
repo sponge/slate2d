@@ -23,7 +23,7 @@ static const char* assetStrings[] = {
 	"ASSET_MOD",
 	"ASSET_FONT",
 	"ASSET_BITMAPFONT",
-	"ASSET_TILEMAP",
+	"ASSET_TMX",
 	"ASSET_CANVAS",
 	"ASSET_SHADER",
 	"ASSET_MAX",
@@ -52,7 +52,7 @@ static AssetLoadHandler_t assetHandler[ASSET_MAX] = {
 	{"mod", 0, nullptr, Sound_Load, Mod_Free, Sound_Inspect },
 	{"ttf", 0, nullptr, TTF_Load, TTF_Free },
 	{"bitmapfont", 0, BMPFNT_ParseINI, BMPFNT_Load, BMPFNT_Free, BMPFNT_Inspect },
-	{"tilemap", 0, nullptr, TileMap_Load, TileMap_Free },
+	{"tmx", 0, nullptr, TMX_Load, TMX_Free },
 	{"canvas", INIFLAGS_OPTIONALPATH, Canvas_ParseINI, Canvas_Load, Canvas_Free, Canvas_Inspect },
 	{"shader", INIFLAGS_OPTIONALPATH, Shader_ParseINI, Shader_Load, Shader_Free, Shader_Inspect },
 };

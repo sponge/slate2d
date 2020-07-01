@@ -40,7 +40,7 @@ typedef enum {
 	ASSET_MOD,
 	ASSET_FONT,
 	ASSET_BITMAPFONT,
-	ASSET_TILEMAP,
+	ASSET_TMX,
 	ASSET_CANVAS,
 	ASSET_SHADER,
 	ASSET_MAX
@@ -233,7 +233,7 @@ SLT_API void SLT_Asset_Shader_Set(AssetHandle id, uint8_t isFile, const char* vs
 SLT_API const Image* SLT_Get_Img(AssetHandle id);
 
 // returns a complex tmx structure.
-SLT_API const tmx_map* SLT_Get_TileMap(AssetHandle id);
+SLT_API const tmx_map* SLT_Get_TMX(AssetHandle id);
 
 
 // plays an ASSET_SPEECH, ASSET_SOUND, or ASSET_MOD at the given settings. returns a handle that can be used to
@@ -317,7 +317,7 @@ SLT_API void DC_DrawCircle(float x, float y, float radius, uint8_t outline);
 // draw a triangle at the specified coordinates. outline or fill can be toggled with 1 or 0.
 SLT_API void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, uint8_t outline);
 
-// draws an individual layer of an ASSET_TILEMAP at the given coordinates. subsets of tilemaps can be drawn by using
+// draws an individual layer of an ASSET_TMX at the given coordinates. subsets of tilemaps can be drawn by using
 // cellX/cellY/cellW/cellH, 0 will draw the entire layer.
 SLT_API void DC_DrawMapLayer(unsigned int mapId, unsigned int layer, float x, float y, unsigned int cellX, unsigned int cellY, unsigned int cellW, unsigned int cellH);
 

@@ -1,15 +1,19 @@
---
 newoption {
   trigger = "emscripten",
   description = "use with gmake2 to build emscripten ready makefile",
   default = false
 }
 
--- for use by the virtual filesystem, and emscripten packaging.
 newoption {
   trigger = "default-game",
   description = "default game data dir, sets DEFAULT_GAME for engine and emscripten packaging",
   default = "plat"
+}
+
+newoption {
+  trigger = "static",
+  description = "compiles slate2d as a static library",
+  default = false
 }
 
 solution "Slate2D"
@@ -53,7 +57,7 @@ solution "Slate2D"
     links { "tmx", "imgui", "physfs", "glew", "soloud", "crunch" }
     cppdialect "C++14"
     -- define so engine and emscripten packaging are always in sync on the same base game folder 
-    defines { "DEFAULT_GAME=\"" .. _OPTIONS["default-game"] .. "\"", "COMPILE_DLL"}
+    defines { "DEFAULT_GAME=\"" .. _OPTIONS["default-game"] .. "\"", "SLT_COMPILE_DLL"}
 
     -- rlgl and raymath have some warnings, suppress them here
     filter { "files:src/glinit.c", "system:windows"}
@@ -104,6 +108,10 @@ solution "Slate2D"
     filter { "system:linux" }
       links { "SDL2", "dl", "pthread", "GL" }
 
+    filter { "options:static" }
+      kind "StaticLib"
+      defines { "SLT_STATIC" }
+
   project "wrengame"
     kind "ConsoleApp"
     language "C++"
@@ -136,6 +144,9 @@ solution "Slate2D"
     -- disable warnings for sds
     filter { "files:../src/external/sds.c"}
       warnings "Off"
+     
+    filter { "options:static" }
+      defines { "SLT_STATIC" }
      
   group "libraries"
 

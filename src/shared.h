@@ -1,5 +1,8 @@
 #pragma once
-// shared.h is shared between the dll and the exe
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <tmx.h>
 #include <stdint.h>
@@ -55,24 +58,22 @@ typedef struct {
 	int x, y;
 } MousePosition;
 
-#ifdef __cplusplus
-	#define EXTERNC extern "C"
+#ifdef _MSC_VER 
+	#ifdef SLT_COMPILE_DLL
+		#define SLT_API __declspec(dllexport)
+	#else
+		#define SLT_API __declspec(dllimport)
+	#endif
 #else
-	#define EXTERNC 
+	#ifdef SLT_COMPILE_DLL
+		#define SLT_API __attribute__ ((visibility ("default")))
+	#else
+		#define SLT_API
+	#endif
 #endif
 
-#ifdef _MSC_VER 
-	#ifdef COMPILE_DLL
-		#define SLT_API EXTERNC __declspec(dllexport)
-	#else
-		#define SLT_API EXTERNC __declspec(dllimport)
-	#endif
-#else
-	#ifdef COMPILE_DLL
-		#define SLT_API EXTERNC __attribute__ ((visibility ("default")))
-	#else
-		#define SLT_API EXTERNC
-	#endif
+#ifdef SLT_STATIC
+	#define SLT_API 
 #endif
 
 // first function that should be call. argc and argv must be C-style argv, where argv[0] is the working path
@@ -327,3 +328,7 @@ SLT_API void DC_Submit();
 
 // clears the screen and fills it with the specified color, 0-255.
 SLT_API void DC_Clear(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+
+#ifdef __cplusplus
+}
+#endif

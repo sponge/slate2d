@@ -17,16 +17,8 @@ build:
 after_build:
 - cmd: >-
     package.bat plat
-
-    package.bat clive
-
-    package.bat hotair
 artifacts:
 - path: build\bin\x86_64_Release\slate2d.dll
   name: Slate2D - x64 DLL
 - path: build\plat.zip
   name: Slate2D - Platformer
-- path: build\clive.zip
-  name: Slate2D - Clive Sturridge
-- path: build\hotair.zip
-  name: Slate2D - Hot Air

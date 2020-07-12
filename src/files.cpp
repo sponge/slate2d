@@ -1,6 +1,6 @@
 #include <physfs.h>
 #include <string.h>
-#include "shared.h"
+#include "slate2d.h"
 #include "console.h"
 #include "main.h"
 

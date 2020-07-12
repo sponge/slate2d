@@ -1,6 +1,6 @@
 #pragma once
 #include <SDL/SDL_events.h>
-#include "shared.h"
+#include "slate2d.h"
 
 void ProcessInputEvent(SDL_Event ev);
 bool In_ButtonPressed(int buttonId, unsigned int delay, int repeat);

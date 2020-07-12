@@ -1,5 +1,5 @@
 #include "files.h"
-#include "shared.h"
+#include "slate2d.h"
 #include "console.h"
 #include "stb_image.h"
 #include "assetloader.h"

@@ -35,7 +35,7 @@ extern "C" {
 
 #include "imgui_console.h"
 
-#include "shared.h"
+#include "slate2d.h"
 
 #include <soloud.h>
 #include <soloud_thread.h>

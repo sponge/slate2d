@@ -1,5 +1,5 @@
 #include <imgui.h>
-#include "../src/shared.h"
+#include "../src/slate2d.h"
 #include <stdio.h>
 #include "game.h"
 #include "wrenapi.h"

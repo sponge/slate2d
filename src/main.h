@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-#include "shared.h"
+#include "slate2d.h"
 
 #ifndef NOTUSED
 #define NOTUSED(v) for (;;) { (void)(1 ? (void)0 : ( (void)(v) ) ); break; }

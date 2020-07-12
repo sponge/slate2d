@@ -12,7 +12,7 @@ extern "C" {
 #include "cvar_main.h"
 #include "rendercommands.h"
 
-// when adding a new asset in shared.h, add the string representation here
+// when adding a new asset in slate2d.h, add the string representation here
 // used for asset system debugging
 static const char* assetStrings[] = {
 	"ASSET_ANY",

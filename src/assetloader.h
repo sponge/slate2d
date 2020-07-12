@@ -1,7 +1,7 @@
 #pragma once
 
 #include "external/rlgl.h"
-#include "shared.h"
+#include "slate2d.h"
 extern "C" {
 #include "external/ini.h"
 }

@@ -98,14 +98,14 @@ void ConsoleUI::Draw(int width, int height) {
 		ImGui::EndMainMenuBar();
 	}
 
-	ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiSetCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
 	if (!ImGui::Begin("Console", &consoleActive))
 	{
 		ImGui::End();
 		return;
 	}
 
-	ImGui::BeginChild("ScrollingRegion", ImVec2(0, -ImGui::GetItemsLineHeightWithSpacing()), false, ImGuiWindowFlags_HorizontalScrollbar);
+	ImGui::BeginChild("ScrollingRegion", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()), false, ImGuiWindowFlags_HorizontalScrollbar);
 	if (ImGui::BeginPopupContextWindow())
 	{
 		if (ImGui::Selectable("Clear")) ClearLog();
@@ -140,7 +140,7 @@ void ConsoleUI::Draw(int width, int height) {
 	ImGui::PopItemWidth();
 
 	// Demonstrate keeping auto focus on the input box
-	if (ImGui::IsItemHovered() || (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)))
+	if (ImGui::IsItemHovered() || (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)))
 		ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
 
 	ImGui::End();

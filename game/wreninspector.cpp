@@ -74,7 +74,7 @@ static void renderEditor(WrenVM *vm) {
 
 		ImGui::SameLine();
 
-		if (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
+		if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
 			ImGui::SetKeyboardFocusHere(1);
 		}
 

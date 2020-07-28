@@ -214,7 +214,7 @@ SLT_API double SLT_StartFrame() {
 	ImGui_ImplSdl_NewFrame(window);
 
 	if (eng_errorMessage->string[0] != '\0') {
-		ImGui::SetNextWindowPosCenter();
+		ImGui::SetNextWindowPos(ImVec2(vid_width->integer / 2, vid_height->integer), 0, ImVec2(0.5, 0.5));
 		ImGui::Begin("Error", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
 		ImGui::Text("%s", eng_errorMessage->string);
 		ImGui::Text("%s", eng_lastErrorStack->string);
@@ -377,12 +377,14 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
 
 	ImGuiIO& io = ImGui::GetIO();
+
 #ifdef RELEASE
 	io.IniFilename = NULL;
 #endif
 
 	// not working in emscripten for some reason? assert on ImGuiKey_Space not being mapped
 #ifndef __EMSCRIPTEN__	
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 #endif
 

@@ -54,7 +54,7 @@ class Asset {
   static Mod { 5 }
   static Font { 6 }
   static BitmapFont { 7 }
-  static TileMap { 8 }
+  static TMX { 8 }
   static Canvas { 9 }
   static Shader { 10 }
   static Max { 11 }
@@ -123,7 +123,7 @@ class Fill {
   static Outline { true }
 }
 
-class TileMap {
+class TMX {
   foreign static setCurrent(assetHandle)
   foreign static layerByName(name)
   foreign static layerNames()

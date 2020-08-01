@@ -1,4 +1,4 @@
-import "engine" for Trap, Draw, Asset, Fill, TileMap
+import "engine" for Trap, Draw, Asset, Fill, TMX
 import "debug" for Debug
 import "collision" for TileCollider
 import "camera" for Camera
@@ -22,11 +22,11 @@ class Level {
   backgroundColor { _backgroundColor }
 
   construct new(mapName) {
-    var tmapId = Asset.create(Asset.TileMap, "tilemap", mapName)
-    TileMap.setCurrent(tmapId)
+    var tmapId = Asset.create(Asset.TMX, "tilemap", mapName)
+    TMX.setCurrent(tmapId)
     Asset.loadAll()
 
-    var mapProps = TileMap.getMapProperties()
+    var mapProps = TMX.getMapProperties()
 
     _w = mapProps["width"]
     _h = mapProps["height"]
@@ -34,9 +34,9 @@ class Level {
     _th = mapProps["tileHeight"]
     _maxX = _w * _tw
     _maxY = _h * _th
-    _layers = TileMap.layerNames()
+    _layers = TMX.layerNames()
 
-    _worldLayer = TileMap.layerByName("world")
+    _worldLayer = TMX.layerByName("world")
     if (_worldLayer == -1) {
       Trap.error(2, "can't find layer named world")
       return
@@ -58,15 +58,15 @@ class Level {
       return 0
     }
 
-    return TileMap.getTile(_worldLayer, x, y)
+    return TMX.getTile(_worldLayer, x, y)
   }
 
   objects() {
     var merged = []
 
     for (layer in _layers) {
-      var id = TileMap.layerByName(layer)
-      var objects = TileMap.objectsInLayer(id)
+      var id = TMX.layerByName(layer)
+      var objects = TMX.objectsInLayer(id)
       for (obj in objects) {
         merged.add(obj)
       }

@@ -1005,14 +1005,14 @@ static const wrenMethodDef methods[] = {
 	{ "engine", "Draw", true, "submit()", wren_dc_submit },
 	{ "engine", "Draw", true, "clear(_,_,_,_)", wren_dc_clear },
 
-	{ "engine", "TileMap", true, "setCurrent(_)", wren_map_setcurrent },
-	{ "engine", "TileMap", true, "layerByName(_)", wren_map_getlayerbyname },
-	{ "engine", "TileMap", true, "layerNames()", wren_map_getlayernames },
-	{ "engine", "TileMap", true, "objectsInLayer(_)", wren_map_getobjectsinlayer },
-	{ "engine", "TileMap", true, "getMapProperties()", wren_map_getmapproperties },
-	{ "engine", "TileMap", true, "getLayerProperties(_)", wren_map_getlayerproperties },
-	{ "engine", "TileMap", true, "getTileProperties()", wren_map_gettileproperties },
-	{ "engine", "TileMap", true, "getTile(_,_,_)", wren_map_gettile },
+	{ "engine", "TMX", true, "setCurrent(_)", wren_map_setcurrent },
+	{ "engine", "TMX", true, "layerByName(_)", wren_map_getlayerbyname },
+	{ "engine", "TMX", true, "layerNames()", wren_map_getlayernames },
+	{ "engine", "TMX", true, "objectsInLayer(_)", wren_map_getobjectsinlayer },
+	{ "engine", "TMX", true, "getMapProperties()", wren_map_getmapproperties },
+	{ "engine", "TMX", true, "getLayerProperties(_)", wren_map_getlayerproperties },
+	{ "engine", "TMX", true, "getTileProperties()", wren_map_gettileproperties },
+	{ "engine", "TMX", true, "getTile(_,_,_)", wren_map_gettile },
 };
 static const int methodsCount = sizeof(methods) / sizeof(wrenMethodDef);
 

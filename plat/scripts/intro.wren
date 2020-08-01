@@ -1,5 +1,5 @@
 import "timer" for Timer
-import "engine" for Draw, Asset, TileMap, Trap
+import "engine" for Draw, Asset, TMX, Trap
 import "soundcontroller" for SoundController
 
 class Intro {
@@ -7,11 +7,11 @@ class Intro {
   nextScene=(params) { _nextScene = params }
 
   construct new(mapName) {
-    var tmapId = Asset.create(Asset.TileMap, mapName, mapName)
-    TileMap.setCurrent(tmapId)
+    var tmapId = Asset.create(Asset.TMX, mapName, mapName)
+    TMX.setCurrent(tmapId)
     Asset.load(tmapId)
 
-    var mapProps = TileMap.getMapProperties()
+    var mapProps = TMX.getMapProperties()
 
     _nextScene = null
 

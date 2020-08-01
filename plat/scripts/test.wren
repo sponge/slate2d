@@ -1,4 +1,4 @@
-import "engine" for Trap, CVar, Draw, Asset, Fill, TileMap, Align
+import "engine" for Trap, CVar, Draw, Asset, Fill, TMX, Align
 import "button" for Button
 import "debug" for Debug
 import "math" for Math
@@ -40,8 +40,8 @@ class Title {
 
     _crunchSpr = Asset.find("crunchspr")
 
-    var tmapId = Asset.create(Asset.TileMap, mapName, mapName)
-    TileMap.setCurrent(tmapId)
+    var tmapId = Asset.create(Asset.TMX, mapName, mapName)
+    TMX.setCurrent(tmapId)
 
     _canvas = Asset.find("canvas")
 
@@ -63,23 +63,23 @@ class Title {
     Trap.sndPlay(_music, 1.0, 0.0, true)
     //Trap.sndPlay(_speech, 1.0, 0.0, false)
 
-    _bgLayer = TileMap.layerByName("bg")
-    _worldLayer = TileMap.layerByName("world")
+    _bgLayer = TMX.layerByName("bg")
+    _worldLayer = TMX.layerByName("world")
 
-    var objectLayer = TileMap.layerByName("objects")
-    var objs = TileMap.objectsInLayer(objectLayer)
+    var objectLayer = TMX.layerByName("objects")
+    var objs = TMX.objectsInLayer(objectLayer)
     Trap.printLn(objs)
 
-    var tiles = TileMap.getTileProperties()
+    var tiles = TMX.getTileProperties()
     Trap.printLn(tiles)
 
-    var gid = TileMap.getTile(_worldLayer, 0, 20)
+    var gid = TMX.getTile(_worldLayer, 0, 20)
     Trap.printLn(gid)
 
-    var mapProps = TileMap.getMapProperties()
+    var mapProps = TMX.getMapProperties()
     Trap.printLn(mapProps)
 
-    var layerProps = TileMap.getLayerProperties(_worldLayer)
+    var layerProps = TMX.getLayerProperties(_worldLayer)
     Trap.printLn(layerProps)
 
     var len = Asset.textWidth(_font, "hello world")

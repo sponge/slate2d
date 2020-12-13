@@ -20,17 +20,17 @@ solution "Slate2D"
   configurations { "Debug", "Release" }
   location "build"
   symbols "On"
-  systemversion "latest"
   targetdir "build/out/%{cfg.architecture}_%{cfg.buildcfg}"
   objdir "build/out/obj"
   startproject "wrengame"
 
   filter { "system:windows" }
     platforms { "x86", "x64" }
+    systemversion "latest"
 
   filter { "system:macosx" }
     defines { "MACOS", "GL_SILENCE_DEPRECATION" }
-    platforms { "x64" }
+    platforms { "x64", "ARM" }
 
   filter { "system:linux" }
     platforms { "x64" }
@@ -92,10 +92,16 @@ solution "Slate2D"
         '{COPY} "%{wks.location}../libs/openmpt/x64/*.dll" "%{cfg.targetdir}" '
       }
 
-    -- use system installed SDL2 framework on mac
+    -- use SDL2 from homebrew
     filter { "system:macosx" }
-      links { "OpenGL.framework", "SDL2", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework" }
-      linkoptions {"-stdlib=libc++", "-L /usr/local/lib"}
+      links { "SDL2", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework", "OpenGL.framework" }
+      linkoptions {"-stdlib=libc++"}
+
+    filter { "system:macosx", "platforms:arm" }
+      linkoptions {"-L /opt/homebrew/lib"}
+
+    filter { "system:macosx", "platforms:x64" }
+      linkoptions {"-L /usr/local/lib"}
 
     -- emscripten uses opengl es2, not gl3
     filter { "action:gmake2", "options:emscripten" }
@@ -121,7 +127,7 @@ solution "Slate2D"
     targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
     cppdialect "C++14"
     debugargs { "+set", "fs.basepath", path.getabsolute(".")}
-    links { "tmx", "imgui", "sdl2main", "libslate2d" }
+    links { "tmx", "imgui", "SDL2main", "libslate2d" }
 
     filter { "platforms:x86", "system:windows" }
       libdirs { "libs/sdl/lib/Win32" }
@@ -131,6 +137,13 @@ solution "Slate2D"
 
     filter { "system:windows" }
       defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE" }
+
+    -- use SDL2 from homebrew
+    filter { "system:macosx", "platforms:arm" }
+      linkoptions {"-stdlib=libc++", "-L /opt/homebrew/lib"}
+
+    filter { "system:macosx", "platforms:x64" }
+      linkoptions {"-stdlib=libc++", "-L /usr/local/lib"}
 
     -- NaN tagging doesn't work in wren
     filter { "action:gmake2", "options:emscripten" }

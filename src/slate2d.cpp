@@ -314,7 +314,7 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 	Crunch_Init();
 
 	if (!FS_Exists("default.cfg")) {
-		Con_Error(ERR_FATAL, "Filesystem error, check fs_basepath is set correctly. (Could not find default.cfg)");
+		Con_Error(ERR_FATAL, "Filesystem error, check fs.basepath is set correctly. (Could not find default.cfg)");
 	}
 
 	Con_Execute("exec default.cfg\n");

@@ -9,7 +9,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/build/bin/x86_64_Debug/slate2d.exe",   
-      "preLaunchTask": "Build (Debug x64)",
+      "preLaunchTask": "Build (Debug)",
       "args": ["+set", "fs.basepath", "${workspaceRoot}"],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}/build/bin/x86_64_Debug/",
@@ -17,7 +17,7 @@
       "externalConsole": true,
       "osx": {
         "type": "cppdbg",
-        "preLaunchTask": "Build (Debug x64)",
+        "preLaunchTask": "Build (Debug)",
         "program": "${workspaceRoot}/build/bin/x86_64_Debug/slate2d",
         "MIMode": "lldb",
         "externalConsole": false
@@ -28,7 +28,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/build/bin/x86_64_Release/slate2d.exe",   
-      "preLaunchTask": "Build (Release x64)",
+      "preLaunchTask": "Build (Release)",
       "args": ["+set", "fs.basepath", "${workspaceRoot}"],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}/build/bin/x86_64_Release/",
@@ -36,7 +36,7 @@
       "externalConsole": true,
       "osx": {
         "type": "cppdbg",
-        "preLaunchTask": "Build (Release x64)",
+        "preLaunchTask": "Build (Release)",
         "program": "${workspaceRoot}/build/bin/x86_64_Release/slate2d.app",
         "MIMode": "lldb",
         "externalConsole": false

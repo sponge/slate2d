@@ -24,7 +24,7 @@
       "problemMatcher": []
     },
     {
-      "label": "Build (Release x64)",
+      "label": "Build (Release)",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -33,6 +33,7 @@
         "type": "shell",
         "command": "make",
         "args": [
+          "--jobs=8",
           "config=release_x64"
         ],
         "options": {
@@ -74,7 +75,7 @@
       }
     },
     {
-      "label": "Build (Debug x64)",
+      "label": "Build (Debug)",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -83,6 +84,7 @@
         "type": "shell",
         "command": "make",
         "args": [
+          "--jobs=8",
           "config=debug_x64"
         ],
         "options": {
@@ -124,7 +126,7 @@
       }
     },
     {
-      "label": "Clean (Release x64)",
+      "label": "Clean (Release)",
       "group": "build",
       "problemMatcher": [],
       "osx": {
@@ -156,7 +158,7 @@
       },
     },
     {
-      "label": "Clean (Debug x64)",
+      "label": "Clean (Debug)",
       "group": "build",
       "problemMatcher": [],
       "osx": {

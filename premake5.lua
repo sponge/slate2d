@@ -229,3 +229,10 @@ workspace "Slate2D"
       sysincludedirs { "libs/physfs", "libs/imgui", "libs/sdl" }
       files { "libs/crunch/**.cpp", "libs/crunch/**.h", "libs/crunch/**.hpp" }
       warnings "Off"
+
+    project "quickjs"
+      language "C"
+      kind "StaticLib"
+      files { "libs/quickjs/**.c", "libs/quickjs/**.h" }
+      defines { "JS_STRICT_NAN_BOXING", "CONFIG_BIGNUM" }
+      warnings "Off"

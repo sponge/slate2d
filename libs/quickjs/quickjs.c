@@ -41614,6 +41614,13 @@ static JSValue js_math_random(JSContext *ctx, JSValueConst this_val,
     return __JS_NewFloat64(ctx, u.d - 1.0);
 }
 
+// sponge: fix windows release builds, using intrinsics instead of functions
+#if defined(_MSC_VER)
+#pragma function(fabs)
+#pragma function(floor)
+#pragma function(ceil)
+#endif
+
 static const JSCFunctionListEntry js_math_funcs[] = {
     JS_CFUNC_MAGIC_DEF("min", 2, js_math_min_max, 0 ),
     JS_CFUNC_MAGIC_DEF("max", 2, js_math_min_max, 1 ),

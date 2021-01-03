@@ -25,16 +25,16 @@ workspace "Slate2D"
   startproject "wrengame"
 
   filter "system:windows"
-    platforms { "x86", "x64" }
+    platforms { "x86", "x86_64" }
     systemversion "latest"
     flags "MultiProcessorCompile"
 
   filter "system:macosx"
     defines { "MACOS", "GL_SILENCE_DEPRECATION" }
-    platforms { "x64", "arm64" }
+    platforms { "x86_64", "arm64" }
 
   filter "system:linux"
-    platforms "x64"
+    platforms "x86_64"
     toolset "clang"
   
   filter "configurations:Debug"
@@ -43,7 +43,7 @@ workspace "Slate2D"
 
   filter "configurations:Release"
     defines "RELEASE"
-    optimize "Full"
+    optimize "On"
 
   project "libslate2d"
     kind "SharedLib"
@@ -85,7 +85,7 @@ workspace "Slate2D"
         '{COPY} "%{wks.location}../libs/openmpt/Win32/*.dll" "%{cfg.targetdir}" '
       }
 
-    filter { "platforms:x64", "system:windows" }
+    filter { "platforms:x86_64", "system:windows" }
       libdirs "libs/sdl/lib/x64"
       -- need to copy x64 sdl runtime to output
       postbuildcommands {
@@ -101,7 +101,7 @@ workspace "Slate2D"
     filter { "system:macosx", "platforms:arm64" }
       linkoptions "-L /opt/homebrew/lib"
 
-    filter { "system:macosx", "platforms:x64" }
+    filter { "system:macosx", "platforms:x86_64" }
       linkoptions "-L /usr/local/lib"
 
     -- emscripten uses opengl es2, not gl3
@@ -136,7 +136,7 @@ workspace "Slate2D"
     filter { "platforms:x86", "system:windows" }
       libdirs "libs/sdl/lib/Win32"
 
-    filter { "platforms:x64", "system:windows" }
+    filter { "platforms:x86_64", "system:windows" }
       libdirs "libs/sdl/lib/x64"
 
     filter "system:windows"
@@ -146,7 +146,7 @@ workspace "Slate2D"
     filter { "system:macosx", "platforms:arm64" }
       linkoptions {"-stdlib=libc++", "-L /opt/homebrew/lib" }
 
-    filter { "system:macosx", "platforms:x64" }
+    filter { "system:macosx", "platforms:x86_64" }
       linkoptions {"-stdlib=libc++", "-L /usr/local/lib" }
 
     -- NaN tagging doesn't work in wren

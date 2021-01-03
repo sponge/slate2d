@@ -7,6 +7,7 @@
       "label": "Generate Premake Project",
       "group": "build",
       "type": "shell",
+      
       "command": "premake5",
       "options": {
         "cwd": "${workspaceRoot}"
@@ -34,7 +35,7 @@
         "command": "make",
         "args": [
           "--jobs=8",
-          "config=release_x64"
+          "config=release_x86_64"
         ],
         "options": {
           "cwd": "${workspaceRoot}/build"
@@ -64,7 +65,7 @@
         "options": {
           "env": {
             "operation": "Build",
-            "platform": "x64",
+            "platform": "x86_64",
             "configuration": "Release",
             "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
           }
@@ -85,7 +86,7 @@
         "command": "make",
         "args": [
           "--jobs=8",
-          "config=debug_x64"
+          "config=debug_x86_64"
         ],
         "options": {
           "cwd": "${workspaceRoot}/build"
@@ -115,7 +116,7 @@
         "options": {
           "env": {
             "operation": "Build",
-            "platform": "x64",
+            "platform": "x86_64",
             "configuration": "Debug",
             "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
           }
@@ -133,7 +134,7 @@
         "type": "shell",
         "command": "make",
         "args": [
-          "config=release_x64",
+          "config=release_x86_64",
           "clean"
         ],
         "options": {
@@ -150,7 +151,7 @@
         "options": {
           "env": {
             "operation": "Clean",
-            "platform": "x64",
+            "platform": "x86_64",
             "configuration": "Release",
             "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
           }
@@ -165,7 +166,7 @@
         "type": "shell",
         "command": "make",
         "args": [
-          "config=debug_x64",
+          "config=debug_x86_64",
           "clean"
         ],
         "options": {
@@ -181,7 +182,7 @@
         "options": {
           "env": {
             "operation": "Clean",
-            "platform": "x64",
+            "platform": "x86_64",
             "configuration": "Debug",
             "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
           }

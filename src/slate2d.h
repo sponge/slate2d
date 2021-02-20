@@ -58,7 +58,9 @@ typedef struct {
 	int x, y;
 } MousePosition;
 
-#ifdef _MSC_VER 
+#ifdef SLT_STATIC
+	#define SLT_API 
+#elif _MSC_VER 
 	#ifdef SLT_COMPILE_DLL
 		#define SLT_API __declspec(dllexport)
 	#else
@@ -70,10 +72,6 @@ typedef struct {
 	#else
 		#define SLT_API
 	#endif
-#endif
-
-#ifdef SLT_STATIC
-	#define SLT_API 
 #endif
 
 // first function that should be call. argc and argv must be C-style argv, where argv[0] is the working path

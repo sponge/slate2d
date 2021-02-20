@@ -22,19 +22,19 @@ workspace "Slate2D"
   symbols "On"
   targetdir "build/out/%{cfg.architecture}_%{cfg.buildcfg}"
   objdir "build/out/obj"
-  startproject "wrengame"
+  startproject "jsgame"
 
   filter "system:windows"
-    platforms { "x86", "x86_64" }
+    platforms { "x86", "x64" }
     systemversion "latest"
     flags "MultiProcessorCompile"
 
   filter "system:macosx"
     defines { "MACOS", "GL_SILENCE_DEPRECATION" }
-    platforms { "x86_64", "arm64" }
+    platforms { "x64", "arm64" }
 
   filter "system:linux"
-    platforms "x86_64"
+    platforms "x64"
     toolset "clang"
   
   filter "configurations:Debug"
@@ -43,7 +43,7 @@ workspace "Slate2D"
 
   filter "configurations:Release"
     defines "RELEASE"
-    optimize "On"
+    optimize "Full"
 
   project "libslate2d"
     kind "SharedLib"
@@ -85,7 +85,7 @@ workspace "Slate2D"
         '{COPY} "%{wks.location}../libs/openmpt/Win32/*.dll" "%{cfg.targetdir}" '
       }
 
-    filter { "platforms:x86_64", "system:windows" }
+    filter { "platforms:x64", "system:windows" }
       libdirs "libs/sdl/lib/x64"
       -- need to copy x64 sdl runtime to output
       postbuildcommands {
@@ -101,7 +101,7 @@ workspace "Slate2D"
     filter { "system:macosx", "platforms:arm64" }
       linkoptions "-L /opt/homebrew/lib"
 
-    filter { "system:macosx", "platforms:x86_64" }
+    filter { "system:macosx", "platforms:x64" }
       linkoptions "-L /usr/local/lib"
 
     -- emscripten uses opengl es2, not gl3
@@ -136,7 +136,7 @@ workspace "Slate2D"
     filter { "platforms:x86", "system:windows" }
       libdirs "libs/sdl/lib/Win32"
 
-    filter { "platforms:x86_64", "system:windows" }
+    filter { "platforms:x64", "system:windows" }
       libdirs "libs/sdl/lib/x64"
 
     filter "system:windows"
@@ -146,7 +146,7 @@ workspace "Slate2D"
     filter { "system:macosx", "platforms:arm64" }
       linkoptions {"-stdlib=libc++", "-L /opt/homebrew/lib" }
 
-    filter { "system:macosx", "platforms:x86_64" }
+    filter { "system:macosx", "platforms:x64" }
       linkoptions {"-stdlib=libc++", "-L /usr/local/lib" }
 
     -- NaN tagging doesn't work in wren
@@ -164,6 +164,36 @@ workspace "Slate2D"
      
     filter "options:static"
       defines "SLT_STATIC"
+
+    project "jsgame"
+      kind "ConsoleApp"
+      language "C++"
+      targetname "jslate2d"
+      files { "jsgame/**.cpp", "jsgame/**.h" }
+      sysincludedirs { "libs/tmx", "libs/quickjs", "libs/imgui" }
+      targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
+      cppdialect "C++latest"
+      debugargs { "+set", "fs.basepath", path.getabsolute(".")}
+      links { "tmx", "imgui", "SDL2main", "libslate2d", "quickjs" }
+  
+      filter { "platforms:x86", "system:windows" }
+        libdirs "libs/sdl/lib/Win32"
+  
+      filter { "platforms:x64", "system:windows" }
+        libdirs "libs/sdl/lib/x64"
+  
+      filter "system:windows"
+        defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE" }
+  
+      -- use SDL2 from homebrew
+      filter { "system:macosx", "platforms:arm64" }
+        linkoptions {"-stdlib=libc++", "-L /opt/homebrew/lib" }
+  
+      filter { "system:macosx", "platforms:x64" }
+        linkoptions {"-stdlib=libc++", "-L /usr/local/lib" }
+       
+      filter "options:static"
+        defines "SLT_STATIC"
      
   group "libraries"
 
@@ -233,6 +263,6 @@ workspace "Slate2D"
     project "quickjs"
       language "C"
       kind "StaticLib"
-      files { "libs/quickjs/**.c", "libs/quickjs/**.h" }
+      files { "libs/quickjs/**.c", "libs/quickjs/**gi.h" }
       defines { "JS_STRICT_NAN_BOXING", "CONFIG_BIGNUM" }
       warnings "Off"

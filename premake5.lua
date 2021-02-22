@@ -1,7 +1,7 @@
 require('vstudio')
 
 premake.override(premake.vstudio.vc2010, "languageStandard", function(base, prj)
-  if prj.filename == "quickjs" then
+  if prj.filename == "quickjs" or prj.filename == "jsgame" then
     premake.w('<LanguageStandard_C>stdc11</LanguageStandard_C>')
   end
   base(prj)
@@ -181,9 +181,10 @@ workspace "Slate2D"
       files { "jsgame/**.cpp", "jsgame/**.h" }
       sysincludedirs { "libs/tmx", "libs/quickjs", "libs/imgui" }
       targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
-      cppdialect "C++17"
       debugargs { "+set", "fs.basepath", path.getabsolute(".")}
-      links { "tmx", "imgui", "SDL2main", "libslate2d", "quickjs", "ws2_32" }
+      links { "tmx", "imgui", "SDL2main", "libslate2d", "quickjs" }
+      -- allows builds on x64 windows but crashes on launch
+      -- defines { "JS_NAN_BOXING" }
   
       filter { "platforms:x86", "system:windows" }
         libdirs "libs/sdl/lib/Win32"
@@ -192,7 +193,9 @@ workspace "Slate2D"
         libdirs "libs/sdl/lib/x64"
   
       filter "system:windows"
+        cppdialect "C++latest"
         defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE" }
+        links { "ws2_32" }
   
       -- use SDL2 from homebrew
       filter { "system:macosx", "platforms:arm64" }
@@ -272,5 +275,5 @@ workspace "Slate2D"
     project "quickjs"
       kind "StaticLib"
       files { "libs/quickjs/**.c", "libs/quickjs/**.h" }
-      defines { "JS_STRICT_NAN_BOXING", "CONFIG_BIGNUM", "CONFIG_VERSION=\"2020-11-08\"" }
+      defines { "CONFIG_VERSION=\"2020-11-08\"" }
       warnings "Off"

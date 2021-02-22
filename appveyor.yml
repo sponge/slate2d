@@ -1,7 +1,7 @@
 version: '{build}'
 image: Visual Studio 2019
 configuration: Release
-platform: x64
+platform: x86
 install:
 - ps: >-
     Start-FileDownload 'https://github.com/premake/premake-core/releases/download/v5.0.0-alpha15/premake-5.0.0-alpha15-windows.zip' 'premake.zip'
@@ -14,11 +14,6 @@ install:
 build:
   project: build/slate2d.sln
   verbosity: minimal
-after_build:
-- cmd: >-
-    package.bat plat
 artifacts:
-- path: build\bin\x86_64_Release\slate2d.dll
-  name: Slate2D - x64 DLL
-- path: build\plat.zip
-  name: Slate2D - Platformer
+- path: build\bin\x86_Release\slate2d.dll
+  name: Slate2D - x86 DLL

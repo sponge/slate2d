@@ -1,3 +1,12 @@
+require('vstudio')
+
+premake.override(premake.vstudio.vc2010, "languageStandard", function(base, prj)
+  if prj.filename == "quickjs" then
+    premake.w('<LanguageStandard_C>stdc11</LanguageStandard_C>')
+  end
+  base(prj)
+end)
+
 newoption {
   trigger = "emscripten",
   description = "use with gmake2 to build emscripten ready makefile",
@@ -174,7 +183,7 @@ workspace "Slate2D"
       targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
       cppdialect "C++17"
       debugargs { "+set", "fs.basepath", path.getabsolute(".")}
-      links { "tmx", "imgui", "SDL2main", "libslate2d", "quickjs" }
+      links { "tmx", "imgui", "SDL2main", "libslate2d", "quickjs", "ws2_32" }
   
       filter { "platforms:x86", "system:windows" }
         libdirs "libs/sdl/lib/Win32"
@@ -261,7 +270,6 @@ workspace "Slate2D"
       warnings "Off"
 
     project "quickjs"
-      language "C"
       kind "StaticLib"
       files { "libs/quickjs/**.c", "libs/quickjs/**.h" }
       defines { "JS_STRICT_NAN_BOXING", "CONFIG_BIGNUM", "CONFIG_VERSION=\"2020-11-08\"" }

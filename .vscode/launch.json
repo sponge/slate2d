@@ -8,7 +8,7 @@
       "name": "Launch (Debug)",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceRoot}/build/bin/x86_64_Debug/slate2d.exe",   
+      "program": "${workspaceRoot}/build/bin/x86_64_Debug/jslate2d.exe",   
       "preLaunchTask": "Build (Debug)",
       "args": ["+set", "fs.basepath", "${workspaceRoot}"],
       "stopAtEntry": false,
@@ -18,7 +18,7 @@
       "osx": {
         "type": "cppdbg",
         "preLaunchTask": "Build (Debug)",
-        "program": "${workspaceRoot}/build/bin/x86_64_Debug/slate2d",
+        "program": "${workspaceRoot}/build/bin/x86_64_Debug/jslate2d",
         "MIMode": "lldb",
         "externalConsole": false
       }
@@ -27,7 +27,7 @@
       "name": "Launch (Release)",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceRoot}/build/bin/x86_64_Release/slate2d.exe",   
+      "program": "${workspaceRoot}/build/bin/x86_64_Release/jslate2d.exe",   
       "preLaunchTask": "Build (Release)",
       "args": ["+set", "fs.basepath", "${workspaceRoot}"],
       "stopAtEntry": false,
@@ -37,7 +37,7 @@
       "osx": {
         "type": "cppdbg",
         "preLaunchTask": "Build (Release)",
-        "program": "${workspaceRoot}/build/bin/x86_64_Release/slate2d.app",
+        "program": "${workspaceRoot}/build/bin/x86_64_Release/jslate2d.app",
         "MIMode": "lldb",
         "externalConsole": false
       }

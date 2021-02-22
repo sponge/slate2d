@@ -10,32 +10,31 @@ bool loop = true;
 JSRuntime *rt;
 
 JSModuleDef* physfs_module_loader(JSContext* ctx, const char* module_name, void* opaque) {
-    JSModuleDef* m;
+	JSModuleDef* m;
 
 	char* script = nullptr;
 	int sz = SLT_FS_ReadFile(module_name, (void**)&script);
 
-    if (sz <= 0) {
-        JS_ThrowReferenceError(ctx, "could not load module filename '%s'",
-            module_name);
-        return NULL;
-    }
+	if (sz <= 0) {
+		JS_ThrowReferenceError(ctx, "could not load module filename '%s'",module_name);
+		return NULL;
+	}
 
-    /* compile the module */
+	/* compile the module */
 	JSValue func_val;
 
-    func_val = JS_Eval(ctx, (char*)script, sz, module_name,
-        JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY);
+	func_val = JS_Eval(ctx, (char*)script, sz, module_name, JS_EVAL_TYPE_MODULE|JS_EVAL_FLAG_COMPILE_ONLY);
 	free(script);
-    if (JS_IsException(func_val))
-        return NULL;
-    /* XXX: could propagate the exception */
-    js_module_set_import_meta(ctx, func_val, true, false);
-    /* the module is already referenced, so we must free it */
-    m = (JSModuleDef*)JS_VALUE_GET_PTR(func_val);
-    JS_FreeValue(ctx, func_val);
 
-    return m;
+	if (JS_IsException(func_val))
+		return NULL;
+	/* XXX: could propagate the exception */
+	js_module_set_import_meta(ctx, func_val, true, false);
+	/* the module is already referenced, so we must free it */
+	m = (JSModuleDef*)JS_VALUE_GET_PTR(func_val);
+	JS_FreeValue(ctx, func_val);
+
+	return m;
 }
 
 void main_loop() {

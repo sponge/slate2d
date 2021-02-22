@@ -172,7 +172,7 @@ workspace "Slate2D"
       files { "jsgame/**.cpp", "jsgame/**.h" }
       sysincludedirs { "libs/tmx", "libs/quickjs", "libs/imgui" }
       targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
-      cppdialect "C++latest"
+      cppdialect "C++17"
       debugargs { "+set", "fs.basepath", path.getabsolute(".")}
       links { "tmx", "imgui", "SDL2main", "libslate2d", "quickjs" }
   
@@ -263,6 +263,6 @@ workspace "Slate2D"
     project "quickjs"
       language "C"
       kind "StaticLib"
-      files { "libs/quickjs/**.c", "libs/quickjs/**gi.h" }
-      defines { "JS_STRICT_NAN_BOXING", "CONFIG_BIGNUM" }
+      files { "libs/quickjs/**.c", "libs/quickjs/**.h" }
+      defines { "JS_STRICT_NAN_BOXING", "CONFIG_BIGNUM", "CONFIG_VERSION=\"2020-11-08\"" }
       warnings "Off"

@@ -35,7 +35,7 @@
         "command": "make",
         "args": [
           "--jobs=8",
-          "config=release_x86_64"
+          "config=release_x64"
         ],
         "options": {
           "cwd": "${workspaceRoot}/build"
@@ -86,7 +86,7 @@
         "command": "make",
         "args": [
           "--jobs=8",
-          "config=debug_x86_64"
+          "config=debug_x64"
         ],
         "options": {
           "cwd": "${workspaceRoot}/build"
@@ -134,7 +134,7 @@
         "type": "shell",
         "command": "make",
         "args": [
-          "config=release_x86_64",
+          "config=release_x64",
           "clean"
         ],
         "options": {
@@ -166,7 +166,7 @@
         "type": "shell",
         "command": "make",
         "args": [
-          "config=debug_x86_64",
+          "config=debug_x64",
           "clean"
         ],
         "options": {

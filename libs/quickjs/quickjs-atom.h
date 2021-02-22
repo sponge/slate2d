@@ -113,6 +113,7 @@ DEF(caller, "caller")
 DEF(_eval_, "<eval>")
 DEF(_ret_, "<ret>")
 DEF(_var_, "<var>")
+DEF(_arg_var_, "<arg_var>")
 DEF(_with_, "<with>")
 DEF(lastIndex, "lastIndex")
 DEF(target, "target")
@@ -222,9 +223,6 @@ DEF(BigFloatEnv, "BigFloatEnv")
 DEF(BigDecimal, "BigDecimal")
 DEF(OperatorSet, "OperatorSet")
 DEF(Operators, "Operators")
-#endif
-#ifdef CONFIG_JSX
-DEF(JSX, "JSX")
 #endif
 DEF(Map, "Map")
 DEF(Set, "Set") /* Map + 1 */

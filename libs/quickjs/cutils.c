@@ -26,32 +26,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <assert.h>
 
 #include "cutils.h"
-
-#ifdef _MSC_VER
-
- // From: https://stackoverflow.com/a/26085827
-int gettimeofday(struct timeval * tp, struct timezone * tzp)
-{
-  static const uint64_t EPOCH = ((uint64_t)116444736000000000ULL);
-
-  SYSTEMTIME  system_time;
-  FILETIME    file_time;
-  uint64_t    time;
-
-  GetSystemTime(&system_time);
-  SystemTimeToFileTime(&system_time, &file_time);
-  time = ((uint64_t)file_time.dwLowDateTime);
-  time += ((uint64_t)file_time.dwHighDateTime) << 32;
-
-  tp->tv_sec = (long)((time - EPOCH) / 10000000L);
-  tp->tv_usec = (long)(system_time.wMilliseconds * 1000);
-
-  return 0;
-}
-#endif
-
 
 void pstrcpy(char *buf, int buf_size, const char *str)
 {
@@ -113,15 +90,14 @@ static void *dbuf_default_realloc(void *opaque, void *ptr, size_t size)
 void dbuf_init2(DynBuf *s, void *opaque, DynBufReallocFunc *realloc_func)
 {
     memset(s, 0, sizeof(*s));
-    if (!realloc_func)
-        realloc_func = dbuf_default_realloc;
+    assert(realloc_func != NULL);
     s->opaque = opaque;
     s->realloc_func = realloc_func;
 }
 
 void dbuf_init(DynBuf *s)
 {
-    dbuf_init2(s, NULL, NULL);
+    dbuf_init2(s, NULL, dbuf_default_realloc);
 }
 
 /* return < 0 if error */
@@ -321,7 +297,7 @@ int unicode_from_utf8(const uint8_t *p, int max_len, const uint8_t **pp)
             return -1;
         c = (c << 6) | (b & 0x3f);
     }
-    if (c < (int)utf8_min_code[l - 1])
+    if (c < utf8_min_code[l - 1])
         return -1;
     *pp = p;
     return c;

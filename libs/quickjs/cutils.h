@@ -29,30 +29,27 @@
 #include <inttypes.h>
 
 #ifdef _MSC_VER
-  #include <windows.h>
-  #include <intrin.h>
-#else 
-  #include <sys/time.h>
+#include <intrin.h>
 #endif
 
 /* set if CPU is big endian */
 #undef WORDS_BIGENDIAN
 
-#ifndef __has_attribute
-  #define likely(x)    (x)
-  #define unlikely(x)  (x)
-  #define force_inline __forceinline
-  #define no_inline __declspec(noinline)
-  #define __maybe_unused
-  #define __attribute__(x)
-  #define __attribute(x)
-  typedef intptr_t ssize_t;
+#if defined(_MSC_VER)
+#define likely(x)    (x)
+#define unlikely(x)  (x)
+#define force_inline __forceinline
+#define no_inline __declspec(noinline)
+#define __maybe_unused
+#define __attribute__(x)
+#define __attribute(x)
+typedef intptr_t ssize_t;
 #else
-  #define likely(x)       __builtin_expect(!!(x), 1)
-  #define unlikely(x)     __builtin_expect(!!(x), 0)
-  #define force_inline inline __attribute__((always_inline))
-  #define no_inline __attribute__((noinline))
-  #define __maybe_unused __attribute__((unused))
+#define likely(x)       __builtin_expect(!!(x), 1)
+#define unlikely(x)     __builtin_expect(!!(x), 0)
+#define force_inline inline __attribute__((always_inline))
+#define no_inline __attribute__((noinline))
+#define __maybe_unused __attribute__((unused))
 #endif
 
 #define xglue(x, y) x ## y
@@ -67,7 +64,6 @@
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 #endif
 
-typedef int BOOL;
 
 #ifndef FALSE
 enum {
@@ -171,7 +167,7 @@ static inline int ctz32(unsigned int a)
 #ifdef _MSC_VER
     unsigned long idx;
     _BitScanForward(&idx, a);
-    return 31 ^ idx;
+    return idx;
 #else
     return __builtin_ctz(a);
 #endif
@@ -320,7 +316,7 @@ typedef struct DynBuf {
     uint8_t *buf;
     size_t size;
     size_t allocated_size;
-    BOOL error; /* true if a memory allocation error occurred */
+    int error; /* true if a memory allocation error occurred */
     DynBufReallocFunc *realloc_func;
     void *opaque; /* for realloc_func */
 } DynBuf;
@@ -348,7 +344,7 @@ static inline int dbuf_put_u64(DynBuf *s, uint64_t val)
 int __attribute__((format(printf, 2, 3))) dbuf_printf(DynBuf *s,
                                                       const char *fmt, ...);
 void dbuf_free(DynBuf *s);
-static inline BOOL dbuf_error(DynBuf *s) {
+static inline int dbuf_error(DynBuf *s) {
     return s->error;
 }
 static inline void dbuf_set_error(DynBuf *s)

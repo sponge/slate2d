@@ -61,8 +61,11 @@ int main(int argc, char* argv[]) {
 	ImGui::SetCurrentContext((ImGuiContext*)SLT_GetImguiContext());
 
 	rt = JS_NewRuntime();
-	auto ctx = JS_NewContext(rt);
+	JSContext *ctx = JS_NewContext(rt);
 	JSValue global = JS_GetGlobalObject(ctx);
+
+	// get console functions from here for now
+	js_std_add_helpers(ctx, argc, argv);
 
 	JS_SetModuleLoaderFunc(rt, nullptr, physfs_module_loader, nullptr);
 
@@ -74,17 +77,36 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	JS_Eval(ctx, script, strlen(script), "main.js", 0);
+	JSValue val = JS_Eval(ctx, script, strlen(script), "main.js", JS_EVAL_TYPE_MODULE);
+	if (JS_IsException(val)) {
+		js_std_dump_error(ctx);
+		return 1;
+	}
+	JS_FreeValue(ctx, val);
 
 	JSValue updateFunc = JS_GetPropertyStr(ctx, global, "update");
 	JSValue drawFunc = JS_GetPropertyStr(ctx, global, "draw");
 
+	if (!JS_IsFunction(ctx, updateFunc)) {
+		SLT_Error(ERR_FATAL, "globalThis.update was not a function");
+		return 1;		
+	}
+
+	if (!JS_IsFunction(ctx, drawFunc)) {
+		SLT_Error(ERR_FATAL, "globalThis.draw was not a function");
+		return 1;		
+	}
+
 	for (int i = 0; i < 3; ++i) {
 		JSValue jsResult = JS_Call(ctx, updateFunc, global, 0, nullptr);
+		if (JS_IsException(jsResult)) {
+			js_std_dump_error(ctx);
+		}
 
 		int32_t result;
 		JS_ToInt32(ctx, &result, jsResult);
 		SLT_Print("%i\n", result);
+		JS_FreeValue(ctx, jsResult);
 	}
 
 #ifdef __EMSCRIPTEN__
@@ -94,6 +116,8 @@ int main(int argc, char* argv[]) {
 		main_loop();
 	}
 
+	JS_FreeContext(ctx);
+	JS_FreeRuntime(rt);
 	SLT_Shutdown();
 #endif
 }

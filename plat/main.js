@@ -1,11 +1,12 @@
+import { testmodule } from "testmodule.js";
+
 let i = 0;
-function draw() {
+globalThis.draw = function() {
   console.log("hello draw");
 }
 
-function update() {
-  i += 1;
+globalThis.update = function() {
+  i += testmodule(i);
+  console.log(testmodule);
   return i;
 }
-
-console.log("ran main");

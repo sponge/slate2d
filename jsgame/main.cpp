@@ -7,11 +7,13 @@ extern "C" {
 }
 
 bool loop = true;
+JSContext *ctx;
 JSRuntime *rt;
+JSValue global;
+JSValue updateFunc;
+JSValue drawFunc;
 
 JSModuleDef* physfs_module_loader(JSContext* ctx, const char* module_name, void* opaque) {
-	JSModuleDef* m;
-
 	char* script = nullptr;
 	int sz = SLT_FS_ReadFile(module_name, (void**)&script);
 
@@ -21,9 +23,7 @@ JSModuleDef* physfs_module_loader(JSContext* ctx, const char* module_name, void*
 	}
 
 	/* compile the module */
-	JSValue func_val;
-
-	func_val = JS_Eval(ctx, (char*)script, sz, module_name, JS_EVAL_TYPE_MODULE|JS_EVAL_FLAG_COMPILE_ONLY);
+	JSValue func_val = JS_Eval(ctx, (char*)script, sz, module_name, JS_EVAL_TYPE_MODULE|JS_EVAL_FLAG_COMPILE_ONLY);
 	free(script);
 
 	if (JS_IsException(func_val))
@@ -31,7 +31,7 @@ JSModuleDef* physfs_module_loader(JSContext* ctx, const char* module_name, void*
 	/* XXX: could propagate the exception */
 	js_module_set_import_meta(ctx, func_val, true, false);
 	/* the module is already referenced, so we must free it */
-	m = (JSModuleDef*)JS_VALUE_GET_PTR(func_val);
+	JSModuleDef* m = (JSModuleDef*)JS_VALUE_GET_PTR(func_val);
 	JS_FreeValue(ctx, func_val);
 
 	return m;
@@ -46,8 +46,21 @@ void main_loop() {
 		return;
 	}
 
-	DC_Clear(0, 0, 0, 255);
-	DC_Submit();
+	JSValue jsResult;
+
+  JSValueConst arg = JS_NewFloat64(ctx, dt);
+	jsResult = JS_Call(ctx, updateFunc, global, 1, &arg);
+	if (JS_IsException(jsResult)) {
+		js_std_dump_error(ctx);
+	}
+	JS_FreeValue(ctx, arg);
+	JS_FreeValue(ctx, jsResult);
+
+	jsResult = JS_Call(ctx, drawFunc, global, 0, nullptr);
+	if (JS_IsException(jsResult)) {
+		js_std_dump_error(ctx);
+	}
+	JS_FreeValue(ctx, jsResult);
 
 	ImGui::ShowDemoWindow();
 
@@ -61,8 +74,8 @@ int main(int argc, char* argv[]) {
 	ImGui::SetCurrentContext((ImGuiContext*)SLT_GetImguiContext());
 
 	rt = JS_NewRuntime();
-	JSContext *ctx = JS_NewContext(rt);
-	JSValue global = JS_GetGlobalObject(ctx);
+	ctx = JS_NewContext(rt);
+	global = JS_GetGlobalObject(ctx);
 
 	// get console functions from here for now
 	js_std_add_helpers(ctx, argc, argv);
@@ -84,8 +97,8 @@ int main(int argc, char* argv[]) {
 	}
 	JS_FreeValue(ctx, val);
 
-	JSValue updateFunc = JS_GetPropertyStr(ctx, global, "update");
-	JSValue drawFunc = JS_GetPropertyStr(ctx, global, "draw");
+	updateFunc = JS_GetPropertyStr(ctx, global, "update");
+	drawFunc = JS_GetPropertyStr(ctx, global, "draw");
 
 	if (!JS_IsFunction(ctx, updateFunc)) {
 		SLT_Error(ERR_FATAL, "globalThis.update was not a function");
@@ -97,17 +110,17 @@ int main(int argc, char* argv[]) {
 		return 1;		
 	}
 
-	for (int i = 0; i < 3; ++i) {
-		JSValue jsResult = JS_Call(ctx, updateFunc, global, 0, nullptr);
-		if (JS_IsException(jsResult)) {
-			js_std_dump_error(ctx);
-		}
-
-		int32_t result;
-		JS_ToInt32(ctx, &result, jsResult);
-		SLT_Print("%i\n", result);
-		JS_FreeValue(ctx, jsResult);
+	JSValue startFunc = JS_GetPropertyStr(ctx, global, "start");
+	if (!JS_IsFunction(ctx, startFunc)) {
+		SLT_Error(ERR_FATAL, "globalThis.start was not a function");
+		return 1;		
 	}
+
+	JSValue jsResult = JS_Call(ctx, startFunc, global, 0, nullptr);
+	if (JS_IsException(jsResult)) {
+		js_std_dump_error(ctx);
+	}
+	JS_FreeValue(ctx, jsResult);
 
 #ifdef __EMSCRIPTEN__
 	emscripten_set_main_loop(main_loop, 0, 1);
@@ -115,6 +128,11 @@ int main(int argc, char* argv[]) {
 	while (loop) {
 		main_loop();
 	}
+
+	JS_FreeValue(ctx, global);
+	JS_FreeValue(ctx, startFunc);
+	JS_FreeValue(ctx, updateFunc);
+	JS_FreeValue(ctx, drawFunc);
 
 	JS_FreeContext(ctx);
 	JS_FreeRuntime(rt);

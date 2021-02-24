@@ -1,12 +1,13 @@
 import { testmodule } from "testmodule.js";
 
-let i = 0;
+globalThis.start = function() {
+  console.log("start");
+};
+
 globalThis.draw = function() {
   console.log("hello draw");
-}
+};
 
-globalThis.update = function() {
-  i += testmodule(i);
-  console.log(testmodule);
-  return i;
-}
+globalThis.update = function(dt) {
+  console.log(dt);
+};

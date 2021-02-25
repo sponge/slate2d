@@ -1,6 +1,6 @@
 #include "quickjs-debugger.h"
 
-#include <unistd.h>
+//#include <unistd.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,8 +13,8 @@ struct js_transport_data {
 } js_transport_data;
 
 
-static void __dump( const char* desc, const char* buffer, ssize_t length ) {
-
+static void __dump( const char* desc, const char* buffer, int length ) {
+#if 0
 	printf( "%s (%d)\n", desc, (int)length );
 
 	for( ssize_t i=0; i<length; i+=8 ) {
@@ -44,10 +44,12 @@ static void __dump( const char* desc, const char* buffer, ssize_t length ) {
 
 		printf( "\n" );
 	}
-
+#endif
 }
 
 static size_t js_transport_read(void *udata, char *buffer, size_t length) {
+    return -1;
+#if 0
     struct js_transport_data* data = (struct js_transport_data *)udata;
     if (data->handle <= 0)
         return -1;
@@ -72,9 +74,12 @@ static size_t js_transport_read(void *udata, char *buffer, size_t length) {
         return -6;
 
     return ret;
+#endif
 }
 
 static size_t js_transport_write(void *udata, const char *buffer, size_t length) {
+    return -1;
+#if 0
     struct js_transport_data* data = (struct js_transport_data *)udata;
     if (data->handle <= 0)
         return -1;
@@ -94,9 +99,12 @@ static size_t js_transport_write(void *udata, const char *buffer, size_t length)
         return -4;
 
     return ret;
+#endif
 }
 
 static size_t js_transport_peek(void *udata) {
+    return -1;
+#if 0
     WSAPOLLFD  fds[1];
     int poll_rc;
 
@@ -118,9 +126,11 @@ static size_t js_transport_peek(void *udata) {
         return 0;
     // has data
     return 1;
+#endif
 }
 
 static void js_transport_close(JSContext* ctx, void *udata) {
+#if 0
     struct js_transport_data* data = (struct js_transport_data *)udata;
     if (data->handle <= 0)
         return;
@@ -131,10 +141,11 @@ static void js_transport_close(JSContext* ctx, void *udata) {
     free(udata);
 
 	WSACleanup();
+#endif
 }
 
 void js_debugger_connect(JSContext *ctx, char *address) {
-
+#if 0
 	WSADATA wsaData;
 	WSAStartup(MAKEWORD(2, 2), &wsaData);
 
@@ -165,4 +176,32 @@ void js_debugger_connect(JSContext *ctx, char *address) {
     struct js_transport_data *data = (struct js_transport_data *)malloc(sizeof(struct js_transport_data));
     data->handle = client;
     js_debugger_attach(ctx, js_transport_read, js_transport_write, js_transport_peek, js_transport_close, data);
+#endif
+}
+
+void js_debugger_wait_connection(JSContext* ctx, const char* address) {
+#if 0
+    struct sockaddr_in addr = js_debugger_parse_sockaddr(address);
+
+    int server = socket(AF_INET, SOCK_STREAM, 0);
+    assert(server >= 0);
+
+    int reuseAddress = 1;
+    assert(setsockopt(server, SOL_SOCKET, SO_REUSEADDR, (const char*)&reuseAddress, sizeof(reuseAddress)) >= 0);
+
+    assert(bind(server, (struct sockaddr*)&addr, sizeof(addr)) >= 0);
+
+    listen(server, 1);
+
+    struct sockaddr_in client_addr;
+    socklen_t client_addr_size = (socklen_t)sizeof(addr);
+    int client = accept(server, (struct sockaddr*)&client_addr, &client_addr_size);
+    close(server);
+    assert(client >= 0);
+
+    struct js_transport_data* data = (struct js_transport_data*)malloc(sizeof(struct js_transport_data));
+    memset(data, 0, sizeof(js_transport_data));
+    data->handle = client;
+    js_debugger_attach(ctx, js_transport_read, js_transport_write, js_transport_peek, js_transport_close, data);
+#endif
 }

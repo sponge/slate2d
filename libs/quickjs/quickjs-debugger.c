@@ -1,8 +1,10 @@
 #include "quickjs-debugger.h"
 #include <time.h>
 #include <math.h>
+#ifndef _WIN32
 #include <sys/socket.h>
 #include <netinet/in.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>

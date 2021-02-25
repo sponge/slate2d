@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <stdint.h>
+#include <physfs.h>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -461,6 +462,10 @@ SLT_API void SLT_Con_AddCommand(const char *name, conCmd_t cmd) {
 
 SLT_API int SLT_FS_ReadFile(const char* path, void** buffer) {
 	return FS_ReadFile(path, buffer);
+}
+
+SLT_API const char* SLT_FS_RealDir(const char *path) {
+	return PHYSFS_getRealDir(path);
 }
 
 SLT_API uint8_t SLT_FS_Exists(const char* file) {

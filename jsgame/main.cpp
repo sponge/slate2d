@@ -1,9 +1,11 @@
 #include "../src/slate2d.h"
 #include <imgui.h>
+#include <string>
 #include "main.h"
 extern "C" {
 #include <quickjs.h>
 #include <quickjs-libc.h>
+#include <quickjs-debugger.h>
 }
 
 bool loop = true;
@@ -23,7 +25,9 @@ JSModuleDef* physfs_module_loader(JSContext* ctx, const char* module_name, void*
 	}
 
 	/* compile the module */
-	JSValue func_val = JS_Eval(ctx, (char*)script, sz, module_name, JS_EVAL_TYPE_MODULE|JS_EVAL_FLAG_COMPILE_ONLY);
+	const char *realdir = SLT_FS_RealDir(module_name);
+	std::string fullpath = realdir == nullptr ? module_name : std::string(realdir) + "/" + std::string(module_name);
+	JSValue func_val = JS_Eval(ctx, (char*)script, sz, fullpath.c_str(), JS_EVAL_TYPE_MODULE|JS_EVAL_FLAG_COMPILE_ONLY);
 	free(script);
 
 	if (JS_IsException(func_val))
@@ -90,7 +94,9 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	JSValue val = JS_Eval(ctx, script, strlen(script), "main.js", JS_EVAL_TYPE_MODULE);
+	const char *realdir = SLT_FS_RealDir("main.js");
+	std::string fullpath = std::string(realdir) + "/main.js";
+	JSValue val = JS_Eval(ctx, script, strlen(script), fullpath.c_str(), JS_EVAL_TYPE_MODULE);
 	if (JS_IsException(val)) {
 		js_std_dump_error(ctx);
 		return 1;

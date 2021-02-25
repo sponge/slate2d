@@ -151,6 +151,10 @@ SLT_API void SLT_Con_AddCommand(const char* name, conCmd_t cmd);
 // length of the file, or -1 if the file does not exist.
 SLT_API int SLT_FS_ReadFile(const char* path, void** buffer);
 
+// finds a file at a path, and returns the real dir on disk. it may be a full filesystem path, or it may
+// be the zip file that contains it.
+SLT_API const char* SLT_FS_RealDir(const char *path);
+
 // returns true or false if the file exists at the given path in the virtual filesystem.
 SLT_API uint8_t SLT_FS_Exists(const char* file);
 

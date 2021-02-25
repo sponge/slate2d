@@ -3,6 +3,12 @@
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Debug JS",
+      "configurations": ["Launch with JS (Debug)", "Attach QuickJS"]
+    }
+  ],
   "configurations": [
     {
       "name": "Launch (Debug)",
@@ -14,6 +20,25 @@
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}/build/bin/x86_64_Debug/",
       "environment": [],
+      "externalConsole": true,
+      "osx": {
+        "type": "cppdbg",
+        "preLaunchTask": "Build (Debug)",
+        "program": "${workspaceRoot}/build/bin/x86_64_Debug/jslate2d",
+        "MIMode": "lldb",
+        "externalConsole": false
+      }
+    },
+    {
+      "name": "Launch with JS (Debug)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceRoot}/build/bin/x86_64_Debug/jslate2d.exe",   
+      "preLaunchTask": "Build (Debug)",
+      "args": ["+set", "fs.basepath", "${workspaceRoot}"],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/build/bin/x86_64_Debug/",
+      "environment": [{"name": "QUICKJS_DEBUG_LISTEN_ADDRESS", "value": "127.0.0.1:6666"}],
       "externalConsole": true,
       "osx": {
         "type": "cppdbg",
@@ -41,6 +66,14 @@
         "MIMode": "lldb",
         "externalConsole": false
       }
+    },
+    {
+      "name": "Attach QuickJS",
+      "type": "quickjs",
+      "request": "attach",
+      "mode": "connect",
+      "address": "127.0.0.1",
+      "port": 6666
     }
   ]
 }

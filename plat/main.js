@@ -10,4 +10,5 @@ globalThis.draw = function() {
 
 globalThis.update = function(dt) {
   console.log(dt);
+  testmodule(1);
 };

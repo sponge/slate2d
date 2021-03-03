@@ -6,6 +6,7 @@ extern "C" {
 #include <quickjs.h>
 #include <quickjs-libc.h>
 #include <quickjs-debugger.h>
+#include <cutils.h>
 }
 
 bool loop = true;
@@ -14,6 +15,52 @@ JSRuntime *rt;
 JSValue global;
 JSValue updateFunc;
 JSValue drawFunc;
+
+static JSValue js_draw_rect(JSContext *ctx, JSValueConst this_val,
+                           int argc, JSValueConst *argv)
+{
+    double x, y, w, h;
+		int outline;
+
+    if (JS_ToFloat64(ctx, &x, argv[0])) return JS_EXCEPTION;
+    if (JS_ToFloat64(ctx, &y, argv[1])) return JS_EXCEPTION;
+		if (JS_ToFloat64(ctx, &w, argv[2])) return JS_EXCEPTION;
+		if (JS_ToFloat64(ctx, &h, argv[3])) return JS_EXCEPTION;
+    if (JS_ToInt32(ctx, &outline, argv[4])) return JS_EXCEPTION;
+		
+		DC_DrawRect(x, y, w, h, outline > 0);
+
+    return JS_UNDEFINED;
+}
+
+static JSValue js_draw_submit(JSContext *ctx, JSValueConst this_val,
+                           int argc, JSValueConst *argv)
+{
+		DC_Submit();
+    return JS_UNDEFINED;
+}
+
+static const JSCFunctionListEntry js_draw_funcs[] = {
+    JS_CFUNC_DEF("rect", 5, js_draw_rect),
+		JS_CFUNC_DEF("submit", 0, js_draw_submit)
+};
+
+static int js_draw_init(JSContext *ctx, JSModuleDef *m)
+{    
+    JS_SetModuleExportList(ctx, m, js_draw_funcs,
+                           countof(js_draw_funcs));
+    return 0;
+}
+
+JSModuleDef *js_init_module_draw(JSContext *ctx, const char *module_name)
+{
+    JSModuleDef *m;
+    m = JS_NewCModule(ctx, module_name, js_draw_init);
+    if (!m)
+        return NULL;
+    JS_AddModuleExportList(ctx, m, js_draw_funcs, countof(js_draw_funcs));
+    return m;
+}
 
 JSModuleDef* physfs_module_loader(JSContext* ctx, const char* module_name, void* opaque) {
 	char* script = nullptr;
@@ -60,6 +107,8 @@ void main_loop() {
 	JS_FreeValue(ctx, arg);
 	JS_FreeValue(ctx, jsResult);
 
+	DC_Clear(0, 0, 0, 255); // FIXME don't put here
+
 	jsResult = JS_Call(ctx, drawFunc, global, 0, nullptr);
 	if (JS_IsException(jsResult)) {
 		js_std_dump_error(ctx);
@@ -83,6 +132,7 @@ int main(int argc, char* argv[]) {
 
 	// get console functions from here for now
 	js_std_add_helpers(ctx, argc, argv);
+	js_init_module_draw(ctx, "draw");
 
 	JS_SetModuleLoaderFunc(rt, nullptr, physfs_module_loader, nullptr);
 

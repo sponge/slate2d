@@ -233,8 +233,6 @@ void Asset_LoadINI(const char *path) {
 	}
 
 	ini_free(ini);
-
-	Con_Print("hello world\n");
 }
 
 void Asset_DrawInspector() {

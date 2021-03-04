@@ -297,7 +297,7 @@ SLT_API void DC_DrawRect(float x, float y, float w, float h, uint8_t outline);
 
 // sets an ASSET_FONT or ASSET_BITMAPFONT to be used for all text operations. size is in points for TTF, but scaling
 // factor for TTF. lineHeight is a scaling multiplier, and align is a bitmask of horizontal and vertical alignment
-SLT_API void DC_SetTextStyle(AssetHandle fntId, float size, float lineHeight, int align);
+SLT_API void DC_SetTextStyle(AssetHandle fontId, float size, float lineHeight, int align);
 
 // draws text at the specified x and y coordinates. h sets a maximum height for multiple line text. if len is
 // specified, only that many characters will be drawn, excluding color codes.

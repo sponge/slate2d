@@ -5,6 +5,13 @@ extern "C" {
 }
 
 static JSValue js_slt_printwin(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+    const char *title, *key, *value;
+
+    if ((title = JS_ToCString(ctx, argv[0])) == NULL) return JS_EXCEPTION;
+    if ((key = JS_ToCString(ctx, argv[1])) == NULL) return JS_EXCEPTION;
+    if ((value = JS_ToCString(ctx, argv[2])) == NULL) return JS_EXCEPTION;
+
+    // FIXME: imgui stuff
     return JS_UNDEFINED;
 }
 
@@ -29,17 +36,14 @@ static JSValue js_slt_console(JSContext *ctx, JSValueConst this_val, int argc, J
 }
 
 static JSValue js_slt_sndplay(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    int asset;
-    double volume;
-    double pan;
-    int loop;
+    int asset, loop;
+    double volume, pan;
 
     if (JS_ToInt32(ctx, &asset, argv[0])) return JS_EXCEPTION;
     if (JS_ToFloat64(ctx, &volume, argv[1])) return JS_EXCEPTION;
     if (JS_ToFloat64(ctx, &pan, argv[2])) return JS_EXCEPTION;
     if (JS_ToInt32(ctx, &loop, argv[3])) return JS_EXCEPTION;
 
-    return JS_NewInt32(ctx, SLT_Snd_Play(asset,volume,pan,loop));
 }
 
 static JSValue js_slt_sndstop(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
@@ -52,8 +56,7 @@ static JSValue js_slt_sndstop(JSContext *ctx, JSValueConst this_val, int argc, J
 }
 
 static JSValue js_slt_sndpauseresume(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    int handle;
-    int paused;
+    int handle, paused;
 
     if (JS_ToInt32(ctx, &handle, argv[0])) return JS_EXCEPTION;
     if (JS_ToInt32(ctx, &paused, argv[1])) return JS_EXCEPTION;
@@ -77,15 +80,12 @@ static JSValue js_slt_registerbuttons(JSContext *ctx, JSValueConst this_val, int
 }
 
 static JSValue js_slt_buttonpressed(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    int buttonNum;
-    int delay;
-    int repeat;
+    int buttonNum, delay, repeat;
 
     if (JS_ToInt32(ctx, &buttonNum, argv[0])) return JS_EXCEPTION;
     if (JS_ToInt32(ctx, &delay, argv[1])) return JS_EXCEPTION;
     if (JS_ToInt32(ctx, &repeat, argv[2])) return JS_EXCEPTION;
 
-    return JS_NewBool(ctx, SLT_In_ButtonPressed(buttonNum,delay,repeat));
 }
 
 static JSValue js_slt_setwindowtitle(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {

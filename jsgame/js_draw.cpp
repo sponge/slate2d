@@ -5,10 +5,7 @@ extern "C" {
 }
 
 static JSValue js_draw_setcolor(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    int r;
-    int g;
-    int b;
-    int a;
+    int r, g, b, a;
 
     if (JS_ToInt32(ctx, &r, argv[0])) return JS_EXCEPTION;
     if (JS_ToInt32(ctx, &g, argv[1])) return JS_EXCEPTION;
@@ -25,8 +22,7 @@ static JSValue js_draw_resettransform(JSContext *ctx, JSValueConst this_val, int
 }
 
 static JSValue js_draw_scale(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    double x;
-    double y;
+    double x, y;
 
     if (JS_ToFloat64(ctx, &x, argv[0])) return JS_EXCEPTION;
     if (JS_ToFloat64(ctx, &y, argv[1])) return JS_EXCEPTION;
@@ -45,8 +41,7 @@ static JSValue js_draw_rotate(JSContext *ctx, JSValueConst this_val, int argc, J
 }
 
 static JSValue js_draw_translate(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    double x;
-    double y;
+    double x, y;
 
     if (JS_ToFloat64(ctx, &x, argv[0])) return JS_EXCEPTION;
     if (JS_ToFloat64(ctx, &y, argv[1])) return JS_EXCEPTION;
@@ -56,10 +51,7 @@ static JSValue js_draw_translate(JSContext *ctx, JSValueConst this_val, int argc
 }
 
 static JSValue js_draw_setscissor(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    int x;
-    int y;
-    int w;
-    int h;
+    int x, y, w, h;
 
     if (JS_ToInt32(ctx, &x, argv[0])) return JS_EXCEPTION;
     if (JS_ToInt32(ctx, &y, argv[1])) return JS_EXCEPTION;
@@ -104,10 +96,7 @@ static JSValue js_draw_resetshader(JSContext *ctx, JSValueConst this_val, int ar
 }
 
 static JSValue js_draw_rect(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    double x;
-    double y;
-    double w;
-    double h;
+    double x, y, w, h;
     int outline;
 
     if (JS_ToFloat64(ctx, &x, argv[0])) return JS_EXCEPTION;
@@ -121,10 +110,8 @@ static JSValue js_draw_rect(JSContext *ctx, JSValueConst this_val, int argc, JSV
 }
 
 static JSValue js_draw_settextstyle(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    int fontId;
-    double size;
-    double lineHeight;
-    int align;
+    int fontId, align;
+    double size, lineHeight;
 
     if (JS_ToInt32(ctx, &fontId, argv[0])) return JS_EXCEPTION;
     if (JS_ToFloat64(ctx, &size, argv[1])) return JS_EXCEPTION;
@@ -136,9 +123,7 @@ static JSValue js_draw_settextstyle(JSContext *ctx, JSValueConst this_val, int a
 }
 
 static JSValue js_draw_text(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    double x;
-    double y;
-    double h;
+    double x, y, h;
     const char * text;
     int len;
 
@@ -153,15 +138,8 @@ static JSValue js_draw_text(JSContext *ctx, JSValueConst this_val, int argc, JSV
 }
 
 static JSValue js_draw_image(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    int imgId;
-    double x;
-    double y;
-    double w;
-    double h;
-    double scale;
-    int flipBits;
-    double ox;
-    double oy;
+    int imgId, flipBits;
+    double x, y, w, h, scale, ox, oy;
 
     if (JS_ToInt32(ctx, &imgId, argv[0])) return JS_EXCEPTION;
     if (JS_ToFloat64(ctx, &x, argv[1])) return JS_EXCEPTION;
@@ -178,14 +156,8 @@ static JSValue js_draw_image(JSContext *ctx, JSValueConst this_val, int argc, JS
 }
 
 static JSValue js_draw_sprite(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    int spriteId;
-    int id;
-    double x;
-    double y;
-    double scale;
-    double flipBits;
-    int w;
-    int h;
+    int spriteId, id, w, h;
+    double x, y, scale, flipBits;
 
     if (JS_ToInt32(ctx, &spriteId, argv[0])) return JS_EXCEPTION;
     if (JS_ToInt32(ctx, &id, argv[1])) return JS_EXCEPTION;
@@ -201,10 +173,7 @@ static JSValue js_draw_sprite(JSContext *ctx, JSValueConst this_val, int argc, J
 }
 
 static JSValue js_draw_line(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    double x1;
-    double y1;
-    double x2;
-    double y2;
+    double x1, y1, x2, y2;
 
     if (JS_ToFloat64(ctx, &x1, argv[0])) return JS_EXCEPTION;
     if (JS_ToFloat64(ctx, &y1, argv[1])) return JS_EXCEPTION;
@@ -216,9 +185,7 @@ static JSValue js_draw_line(JSContext *ctx, JSValueConst this_val, int argc, JSV
 }
 
 static JSValue js_draw_circle(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    double x;
-    double y;
-    double radius;
+    double x, y, radius;
     int outline;
 
     if (JS_ToFloat64(ctx, &x, argv[0])) return JS_EXCEPTION;
@@ -231,12 +198,7 @@ static JSValue js_draw_circle(JSContext *ctx, JSValueConst this_val, int argc, J
 }
 
 static JSValue js_draw_tri(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    double x1;
-    double y1;
-    double x2;
-    double y2;
-    double x3;
-    double y3;
+    double x1, y1, x2, y2, x3, y3;
     int outline;
 
     if (JS_ToFloat64(ctx, &x1, argv[0])) return JS_EXCEPTION;
@@ -252,14 +214,8 @@ static JSValue js_draw_tri(JSContext *ctx, JSValueConst this_val, int argc, JSVa
 }
 
 static JSValue js_draw_maplayer(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    int mapId;
-    int layer;
-    double x;
-    double y;
-    int cellX;
-    int cellY;
-    int cellW;
-    int cellH;
+    int mapId, layer, cellX, cellY, cellW, cellH;
+    double x, y;
 
     if (JS_ToInt32(ctx, &mapId, argv[0])) return JS_EXCEPTION;
     if (JS_ToInt32(ctx, &layer, argv[1])) return JS_EXCEPTION;
@@ -280,10 +236,7 @@ static JSValue js_draw_submit(JSContext *ctx, JSValueConst this_val, int argc, J
 }
 
 static JSValue js_draw_clear(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    int r;
-    int g;
-    int b;
-    int a;
+    int r, g, b, a;
 
     if (JS_ToInt32(ctx, &r, argv[0])) return JS_EXCEPTION;
     if (JS_ToInt32(ctx, &g, argv[1])) return JS_EXCEPTION;

@@ -1,6 +1,7 @@
 import { testmodule } from "testmodule.js";
 import * as Draw from "draw";
 import * as SLT from "slate2d";
+import * as Assets from "assets";
 
 globalThis.start = function() {
   console.log("start");
@@ -13,8 +14,8 @@ globalThis.draw = function() {
   const mouse = SLT.mouse();
   const res = SLT.resolution();
 
-  const x = (t * 100) % res.w;
-  const y = Math.sin(x / 50) * 100 + 200;
+  const x = Math.floor((t * 100) % res.w);
+  const y = Math.floor(Math.sin(x / 50) * 100 + 200);
   const sz = Math.cos(t) * 32 + 32
   Draw.rect(x, y, sz, sz, true);
 
@@ -24,6 +25,9 @@ globalThis.draw = function() {
   Draw.setColor(255, 255, 255, 128);
   Draw.rect(mouse.x, mouse.y, 16, 16);
   Draw.submit();
+  SLT.printWin("test", "key", "val");
+  SLT.printWin("test", "x", x);
+  SLT.printWin("test", "y", y);
 };
 
 globalThis.update = function(dt) {

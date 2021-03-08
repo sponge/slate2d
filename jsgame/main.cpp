@@ -88,6 +88,7 @@ int main(int argc, char* argv[]) {
 	js_std_add_helpers(ctx, argc, argv);
 	js_init_module_draw(ctx, "draw");
 	js_init_module_slt(ctx, "slate2d");
+	js_init_module_assets(ctx, "assets");
 
 	JS_SetModuleLoaderFunc(rt, nullptr, physfs_module_loader, nullptr);
 

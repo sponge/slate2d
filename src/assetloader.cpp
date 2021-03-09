@@ -271,6 +271,11 @@ void Asset_DrawInspector() {
 			ImGui::ListBoxFooter();
 		}
 
+		if (currentItem < 0) {
+			ImGui::End();
+			return;
+		}
+
 		ImGui::NextColumn();
 		Asset& asset = assets.data[currentItem];
 		ImGui::Text("Name: %s", asset.name);

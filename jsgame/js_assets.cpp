@@ -5,8 +5,46 @@ extern "C" {
 }
 
 static JSValue js_assets_create(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+  if (!JS_IsObject(argv[0])) return JS_ThrowTypeError(ctx, "options arg is not an object");
+
+  JSValueConst assetType = JS_GetPropertyStr(ctx, argv[0], "type");
+  const char *assetTypeStr = JS_ToCString(ctx, assetType);
+  JS_FreeValue(ctx, assetType);
+
+  if (assetTypeStr == nullptr) {
+    return JS_ThrowTypeError(ctx, "options.type is missing or not a string");
+  }
+
+  if (strcmp(assetTypeStr, "image") == 0) {
+
+  } else if (strcmp(assetTypeStr, "sprite") == 0) {
+
+  } else if (strcmp(assetTypeStr, "speech") == 0) {
+    JSValueConst text = JS_GetPropertyStr(ctx, argv[0], "text");
+    const char *textStr = JS_ToCString(ctx, text);
+    JS_FreeValue(ctx, text);
+    JS_FreeCString(ctx, textStr);
+    //SLT_Asset_Create(ASSET_SPEECH, )
+  } else if (strcmp(assetTypeStr, "sound") == 0) {
+
+  } else if (strcmp(assetTypeStr, "mod") == 0) {
+
+  } else if (strcmp(assetTypeStr, "font") == 0) {
+
+  } else if (strcmp(assetTypeStr, "bitmapfont") == 0) {
+
+  } else if (strcmp(assetTypeStr, "canvas") == 0) {
+
+  } else if (strcmp(assetTypeStr, "shader") == 0) {
+
+  } else {
+    // error
+  }
+  JS_FreeCString(ctx, assetTypeStr);
+
   // FIXME: implement me
   // SLT_Asset_Create();
+
   return JS_UNDEFINED;
 }
 
@@ -15,8 +53,10 @@ static JSValue js_assets_find(JSContext *ctx, JSValueConst this_val, int argc, J
 
   if ((name = JS_ToCString(ctx, argv[0])) == NULL) return JS_EXCEPTION;
 
-  SLT_Asset_Find(name);
-  return JS_UNDEFINED;
+  AssetHandle id = SLT_Asset_Find(name);
+
+  JS_FreeCString(ctx, name);
+  return JS_NewInt32(ctx, id);
 }
 
 static JSValue js_assets_load(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
@@ -44,6 +84,8 @@ static JSValue js_assets_loadini(JSContext *ctx, JSValueConst this_val, int argc
   if ((path = JS_ToCString(ctx, argv[0])) == NULL) return JS_EXCEPTION;
 
   SLT_Asset_LoadINI(path);
+
+  JS_FreeCString(ctx, path);
   return JS_UNDEFINED;
 }
 
@@ -56,8 +98,10 @@ static JSValue js_assets_textwidth(JSContext *ctx, JSValueConst this_val, int ar
   if ((str = JS_ToCString(ctx, argv[1])) == NULL) return JS_EXCEPTION;
   if (JS_ToFloat64(ctx, &scale, argv[2])) return JS_EXCEPTION;
 
-  SLT_Asset_TextWidth(assetHandle,str,scale);
-  return JS_UNDEFINED;
+  int w = SLT_Asset_TextWidth(assetHandle,str,scale);
+
+  JS_FreeCString(ctx, str);
+  return JS_NewInt32(ctx, w);
 }
 
 static JSValue js_assets_breakstring(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
@@ -67,8 +111,10 @@ static JSValue js_assets_breakstring(JSContext *ctx, JSValueConst this_val, int 
   if (JS_ToInt32(ctx, &width, argv[0])) return JS_EXCEPTION;
   if ((in = JS_ToCString(ctx, argv[1])) == NULL) return JS_EXCEPTION;
 
-  SLT_Asset_BreakString(width,in);
-  return JS_UNDEFINED;
+  const char *out = SLT_Asset_BreakString(width,in);
+
+  JS_FreeCString(ctx, in);
+  return JS_NewString(ctx, out);
 }
 
 static JSValue js_assets_imagesize(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
@@ -76,8 +122,12 @@ static JSValue js_assets_imagesize(JSContext *ctx, JSValueConst this_val, int ar
 
   if (JS_ToInt32(ctx, &assetHandle, argv[0])) return JS_EXCEPTION;
 
-  SLT_Get_Img(assetHandle);
-  return JS_UNDEFINED;
+  const Image *img = SLT_Get_Img(assetHandle);
+
+  JSValue obj = JS_NewObject(ctx);
+  JS_SetPropertyStr(ctx, obj, "w", JS_NewInt32(ctx, img->w));
+  JS_SetPropertyStr(ctx, obj, "h", JS_NewInt32(ctx, img->h));
+  return obj;
 }
 
 static const JSCFunctionListEntry js_assets_funcs[] = {

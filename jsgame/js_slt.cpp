@@ -31,6 +31,9 @@ static JSValue js_slt_printwin(JSContext *ctx, JSValueConst this_val, int argc, 
 	Separator();
 	End();
 
+  JS_FreeCString(ctx, title);
+  JS_FreeCString(ctx, key);
+  JS_FreeCString(ctx, value);
   return JS_UNDEFINED;
 }
 
@@ -42,6 +45,8 @@ static JSValue js_slt_error(JSContext *ctx, JSValueConst this_val, int argc, JSV
   if ((error = JS_ToCString(ctx, argv[1])) == NULL) return JS_EXCEPTION;
 
   SLT_Error(level,error);
+
+  JS_FreeCString(ctx, error);
   return JS_UNDEFINED;
 }
 
@@ -51,6 +56,8 @@ static JSValue js_slt_console(JSContext *ctx, JSValueConst this_val, int argc, J
   if ((text = JS_ToCString(ctx, argv[0])) == NULL) return JS_EXCEPTION;
 
   SLT_SendConsoleCommand(text);
+
+  JS_FreeCString(ctx, text);
   return JS_UNDEFINED;
 }
 
@@ -87,13 +94,20 @@ static JSValue js_slt_sndpauseresume(JSContext *ctx, JSValueConst this_val, int 
 static JSValue js_slt_registerbuttons(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
   if (!JS_IsArray(ctx, argv[0])) return JS_EXCEPTION;
   int len = 0;
-  JS_ToInt32(ctx, &len, JS_GetPropertyStr(ctx, argv[0], "length"));
+  JSValueConst lenVal = JS_GetPropertyStr(ctx, argv[0], "length");
+  JS_ToInt32(ctx, &len, lenVal);
+  JS_FreeValue(ctx, lenVal);
   const char **strings = (const char **)malloc(sizeof(void*) * len);
   for (int i = 0; i < len; i++) {
     JSValueConst val = JS_GetPropertyUint32(ctx, argv[0], i);
     strings[i] = JS_ToCString(ctx, val);
+    JS_FreeValue(ctx, val);
   }
   SLT_In_AllocateButtons(&strings[0], len);
+
+  for (int i = 0; i < len; i++) {
+    JS_FreeCString(ctx, strings[i]);
+  }
   free((void*)strings);
   return JS_UNDEFINED;
 }
@@ -112,6 +126,8 @@ static JSValue js_slt_setwindowtitle(JSContext *ctx, JSValueConst this_val, int 
   if ((title = JS_ToCString(ctx, argv[0])) == NULL) return JS_EXCEPTION;
 
   SLT_SetWindowTitle(title);
+
+  JS_FreeCString(ctx, title);
   return JS_UNDEFINED;
 }
 

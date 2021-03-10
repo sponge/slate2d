@@ -17,9 +17,6 @@ const char * __cdecl tempstr(const char *format, ...);
 #define ERR_FATAL 2
 #endif
 
-// for ASSET_IMAGE, should the image be loaded with linear filtering as opposed to nearest
-#define IMAGEFLAGS_LINEAR_FILTER 1 << 0
-
 // for drawing images flipped
 #define FLIP_H 1
 #define FLIP_V 2
@@ -185,21 +182,41 @@ SLT_API uint8_t SLT_In_ButtonPressed(int buttonNum, unsigned int delay, int repe
 SLT_API MousePosition SLT_In_MousePosition();
 
 
-// creates or returns an existing asset handle of an asset with the given assetType, and name. use this to load
-// your game assets, see AssetType_t for the supported asset types. assets must be loaded using SLT_Asset_Load and
-// SLT_AssetLoadAll before being used.
-SLT_API AssetHandle SLT_Asset_Create(AssetType_t assetType, const char* name, const char* path, int flags);
+// creates or returns an existing asset handle to an image. linearFilter specifics if image should be drawn with
+// teture filtering
+SLT_API AssetHandle SLT_Asset_LoadImage(const char *name, const char *path, bool linearFilter);
+
+// creates or returns an existing asset handle to a spritesheet. all sprites must have the same width and height
+// and the same margin
+SLT_API AssetHandle SLT_Asset_LoadSprite(const char *name, const char *path, int spriteWidth, int spriteHeight, int marginX, int marginY);
+
+// creates or returns an existing asset handle to a speech synthesized sound.
+SLT_API AssetHandle SLT_Asset_LoadSpeech(const char *name, const char *text);
+
+// creates or returns an existing asset handle to a sound file
+SLT_API AssetHandle SLT_Asset_LoadSound(const char *name, const char *path);
+
+// creates or returns an existing asset handle to a MOD music file
+SLT_API AssetHandle SLT_Asset_LoadMod(const char *name, const char *path);
+
+// creates or returns an existing asset handle to a TTF file
+SLT_API AssetHandle SLT_Asset_LoadFont(const char *name, const char *path);
+
+// creates or returns an existing asset handle to a bitmap font. glyphs should be a string where each character is in same
+// order as the bitmap file. glyphWidth specifies a fixed size for bitmap fonts, otherwise Slate2D looks for a fully
+// transparent row. charSpacing will add or remove pixels when rendering characters, spaceWidth is the space of the 
+// space chracter (0x20) and lineHeight is how much space to leave between lines of text.
+SLT_API AssetHandle SLT_Asset_LoadBitmapFont(const char *name, const char *path, const char *glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight);
+
+// creates or returns an existing asset handle to an off-screen texture that can be drawn on.
+SLT_API AssetHandle SLT_Asset_LoadCanvas(const char *name, int width, int height);
+
+// creates or returns an existing asset handle to a shader. loads either shader source directly, or the shader at the given paths
+// if isFile is 1.
+SLT_API AssetHandle SLT_Asset_LoadShader(const char *name, bool isFile, const char *vs, const char *fs);
 
 // finds an asset with the given name, and returns a handle. INVALID_ASSET (-1) is returned if the asset is not found.
 SLT_API AssetHandle SLT_Asset_Find(const char* name);
-
-// load an asset with the given handle. asset loading errors are fatal. Slate2D will block until the loading
-// is complete, so you can split up loading to multiple frames if desired.
-SLT_API void SLT_Asset_Load(AssetHandle assetHandle);
-
-// load all currently created but not loaded assets. asset loading errors are fatal, so completion of the function
-// should mean all assets are ready to use.
-SLT_API void SLT_Asset_LoadAll();
 
 // unload all active assets, freeing memory and invaliding all asset handles.
 SLT_API void SLT_Asset_ClearAll();
@@ -210,12 +227,6 @@ SLT_API void SLT_Asset_ClearAll();
 // these are the only docs you're gettin if you don't want to read the source code, buddy.
 SLT_API void SLT_Asset_LoadINI(const char* path);
 
-// if creating an ASSET_BMPFNT, setup bitmap fonts here. glyphs should be a string where each character is in same
-// order as the bitmap file. glyphWidth specifies a fixed size for bitmap fonts, otherwise Slate2D looks for a fully
-// transparent row. charSpacing will add or remove pixels when rendering characters, spaceWidth is the space of the 
-// space chracter (0x20) and lineHeight is how much space to leave between lines of text.
-SLT_API void SLT_Asset_BMPFNT_Set(AssetHandle assetHandle, const char* glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight);
-
 // returns the width of a string, rendered with an TTF or bitmap font asset handle, at the given scale.
 SLT_API int SLT_Asset_TextWidth(AssetHandle assetHandle, const char* string, float scale);
 
@@ -223,21 +234,8 @@ SLT_API int SLT_Asset_TextWidth(AssetHandle assetHandle, const char* string, flo
 // returns a pointer to the split up string that is only valid until the next call to SLT_Asset_BreakString.
 SLT_API const char* SLT_Asset_BreakString(int width, const char* in);
 
-// if creating an ASSET_SPRITE, sets the dimensions of an individual sprite, and the spacing between sprites.
-SLT_API void SLT_Asset_Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int marginY);
-
-// if creating an ASSET_CANVAS, sets the size of the off-screen texture that can be drawn on.
-SLT_API void SLT_Asset_Canvas_Set(AssetHandle assetHandle, int width, int height);
-
-// if creating an ASSET_SHADER, loads either shader code, or the shader at the given paths if isFile is 1.
-SLT_API void SLT_Asset_Shader_Set(AssetHandle id, uint8_t isFile, const char* vs, const char* fs);
-
 // returns image metrics for a given asset handle. 
 SLT_API const Image* SLT_Get_Img(AssetHandle id);
-
-// returns a complex tmx structure.
-SLT_API const tmx_map* SLT_Get_TMX(AssetHandle id);
-
 
 // plays an ASSET_SPEECH, ASSET_SOUND, or ASSET_MOD at the given settings. returns a handle that can be used to
 // call SLT_Snd_Stop or SLT_Snd_PauseResume with.

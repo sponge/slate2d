@@ -500,20 +500,66 @@ SLT_API void SLT_SubmitRenderCommands(renderCommandList_t* list) {
 	SubmitRenderCommands(list);
 }
 
-SLT_API AssetHandle SLT_Asset_Create(AssetType_t assetType, const char* name, const char* path, int flags) {
-	return Asset_Create(assetType, name, path, flags);
+SLT_API AssetHandle SLT_Asset_LoadImage(const char *name, const char *path, bool linearFilter) {
+	AssetHandle id = Asset_Create(ASSET_IMAGE, name, path, linearFilter ? 1 : 0);
+	Asset_Load(id);
+	return id;
+}
+
+SLT_API AssetHandle SLT_Asset_LoadSprite(const char *name, const char *path, int spriteWidth, int spriteHeight, int marginX, int marginY) {
+	AssetHandle id = Asset_Create(ASSET_SPRITE, name, path);
+	Sprite_Set(id, spriteWidth, spriteHeight, marginX, marginY);
+	Asset_Load(id);
+	return id;
+}
+
+SLT_API AssetHandle SLT_Asset_LoadSpeech(const char *name, const char *text) {
+	AssetHandle id = Asset_Create(ASSET_SPEECH, name, text);
+	Asset_Load(id);
+	return id;
+}
+
+SLT_API AssetHandle SLT_Asset_LoadSound(const char *name, const char *path) {
+	AssetHandle id = Asset_Create(ASSET_SOUND, name, path);
+	Asset_Load(id);
+	return id;
+}
+
+SLT_API AssetHandle SLT_Asset_LoadMod(const char *name, const char *path) {
+	AssetHandle id = Asset_Create(ASSET_MOD, name, path);
+	Asset_Load(id);
+	return id;
+}
+
+SLT_API AssetHandle SLT_Asset_LoadFont(const char *name, const char *path) {
+	AssetHandle id = Asset_Create(ASSET_FONT, name, path);
+	Asset_Load(id);
+	return id;
+}
+
+SLT_API AssetHandle SLT_Asset_LoadBitmapFont(const char *name, const char *path, const char *glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight) {
+	AssetHandle id = Asset_Create(ASSET_BITMAPFONT, name, path);
+	BMPFNT_Set(id, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight);
+	Asset_Load(id);
+	return id;
+}
+
+SLT_API AssetHandle SLT_Asset_LoadCanvas(const char *name, int width, int height) {
+	AssetHandle id = Asset_Create(ASSET_BITMAPFONT, name, nullptr);
+	Canvas_Set(id, width, height);
+	Asset_Load(id);
+	return id;
+}
+
+SLT_API AssetHandle SLT_Asset_LoadShader(const char *name, bool isFile, const char *vs, const char *fs) {
+	AssetHandle id = Asset_Create(ASSET_BITMAPFONT, name, nullptr);
+	Shader_Set(id, isFile > 0, vs, fs);
+	Asset_Load(id);
+	return id;
 }
 
 SLT_API AssetHandle SLT_Asset_Find(const char* name) {
 	return Asset_Find(name);
-}
-
-SLT_API void SLT_Asset_Load(AssetHandle assetHandle) {
-	Asset_Load(assetHandle);
-}
-
-SLT_API void SLT_Asset_LoadAll() {
-	Asset_LoadAll();
 }
 
 SLT_API void SLT_Asset_ClearAll() {
@@ -536,24 +582,8 @@ SLT_API const char* SLT_Asset_BreakString(int width, const char* in) {
 	return TTF_BreakString(width, in);
 }
 
-SLT_API void SLT_Asset_Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int marginY) {
-	Sprite_Set(assetHandle, width, height, marginX, marginY);
-}
-
-SLT_API void SLT_Asset_Canvas_Set(AssetHandle assetHandle, int width, int height) {
-	Canvas_Set(assetHandle, width, height);
-}
-
-SLT_API void SLT_Asset_Shader_Set(AssetHandle id, uint8_t isFile, const char* vs, const char* fs) {
-	Shader_Set(id, isFile > 0, vs, fs);
-}
-
 SLT_API const Image* SLT_Get_Img(AssetHandle id) {
 	return Get_Img(id);
-}
-
-SLT_API const tmx_map* SLT_Get_TMX(AssetHandle id) {
-	return Get_TMX(id);
 }
 
 SLT_API unsigned int SLT_Snd_Play(AssetHandle asset, float volume, float pan, uint8_t loop) {

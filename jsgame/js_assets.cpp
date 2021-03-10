@@ -59,20 +59,6 @@ static JSValue js_assets_find(JSContext *ctx, JSValueConst this_val, int argc, J
   return JS_NewInt32(ctx, id);
 }
 
-static JSValue js_assets_load(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-  int assetHandle;
-
-  if (JS_ToInt32(ctx, &assetHandle, argv[0])) return JS_EXCEPTION;
-
-  SLT_Asset_Load(assetHandle);
-  return JS_UNDEFINED;
-}
-
-static JSValue js_assets_loadall(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-  SLT_Asset_LoadAll();
-  return JS_UNDEFINED;
-}
-
 static JSValue js_assets_clearall(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
   SLT_Asset_ClearAll();
   return JS_UNDEFINED;
@@ -133,8 +119,6 @@ static JSValue js_assets_imagesize(JSContext *ctx, JSValueConst this_val, int ar
 static const JSCFunctionListEntry js_assets_funcs[] = {
   JS_CFUNC_DEF("create", 1, js_assets_create),
   JS_CFUNC_DEF("find", 1, js_assets_find),
-  JS_CFUNC_DEF("load", 1, js_assets_load),
-  JS_CFUNC_DEF("loadAll", 0, js_assets_loadall),
   JS_CFUNC_DEF("clearAll", 0, js_assets_clearall),
   JS_CFUNC_DEF("loadINI", 1, js_assets_loadini),
   JS_CFUNC_DEF("textWidth", 3, js_assets_textwidth),

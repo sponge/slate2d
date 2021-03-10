@@ -42,7 +42,7 @@ Image* Img_LoadPath(const char *path, int flags) {
 		return nullptr;
 	}
 
-	if (flags & IMAGEFLAGS_LINEAR_FILTER) {
+	if (flags) {
 		rlTextureParameters(tex, RL_TEXTURE_MAG_FILTER, RL_FILTER_LINEAR);
 		rlTextureParameters(tex, RL_TEXTURE_MIN_FILTER, RL_FILTER_LINEAR);
 	} else {
@@ -76,7 +76,7 @@ void Img_ParseINI(Asset &asset, ini_t *ini) {
 	int linearFilter = 0;
 	ini_sget(ini, asset.name, "linearfilter", "%i", &linearFilter);
 	if (linearFilter > 0) {
-		asset.flags = IMAGEFLAGS_LINEAR_FILTER;
+		asset.flags = 1;
 	}
 }
 

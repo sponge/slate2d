@@ -14,7 +14,7 @@ void * Canvas_Load(Asset & asset) {
 
 	canvas->texture = rlLoadRenderTexture(canvas->w, canvas->h);
 
-	if (asset.flags & IMAGEFLAGS_LINEAR_FILTER) {
+	if (asset.flags) {
 		rlTextureParameters(canvas->texture.texture.id, RL_TEXTURE_MAG_FILTER, RL_FILTER_LINEAR);
 		rlTextureParameters(canvas->texture.texture.id, RL_TEXTURE_MIN_FILTER, RL_FILTER_LINEAR);
 	} else {

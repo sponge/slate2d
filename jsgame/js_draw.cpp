@@ -213,22 +213,22 @@ static JSValue js_draw_tri(JSContext *ctx, JSValueConst this_val, int argc, JSVa
     return JS_UNDEFINED;
 }
 
-static JSValue js_draw_maplayer(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    int mapId, layer, cellX, cellY, cellW, cellH;
-    double x, y;
+// static JSValue js_draw_maplayer(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+//     int mapId, layer, cellX, cellY, cellW, cellH;
+//     double x, y;
 
-    if (JS_ToInt32(ctx, &mapId, argv[0])) return JS_EXCEPTION;
-    if (JS_ToInt32(ctx, &layer, argv[1])) return JS_EXCEPTION;
-    if (JS_ToFloat64(ctx, &x, argv[2])) return JS_EXCEPTION;
-    if (JS_ToFloat64(ctx, &y, argv[3])) return JS_EXCEPTION;
-    if (JS_ToInt32(ctx, &cellX, argv[4])) return JS_EXCEPTION;
-    if (JS_ToInt32(ctx, &cellY, argv[5])) return JS_EXCEPTION;
-    if (JS_ToInt32(ctx, &cellW, argv[6])) return JS_EXCEPTION;
-    if (JS_ToInt32(ctx, &cellH, argv[7])) return JS_EXCEPTION;
+//     if (JS_ToInt32(ctx, &mapId, argv[0])) return JS_EXCEPTION;
+//     if (JS_ToInt32(ctx, &layer, argv[1])) return JS_EXCEPTION;
+//     if (JS_ToFloat64(ctx, &x, argv[2])) return JS_EXCEPTION;
+//     if (JS_ToFloat64(ctx, &y, argv[3])) return JS_EXCEPTION;
+//     if (JS_ToInt32(ctx, &cellX, argv[4])) return JS_EXCEPTION;
+//     if (JS_ToInt32(ctx, &cellY, argv[5])) return JS_EXCEPTION;
+//     if (JS_ToInt32(ctx, &cellW, argv[6])) return JS_EXCEPTION;
+//     if (JS_ToInt32(ctx, &cellH, argv[7])) return JS_EXCEPTION;
 
-    DC_DrawMapLayer(mapId,layer,x,y,cellX,cellY,cellW,cellH);
-    return JS_UNDEFINED;
-}
+//     DC_DrawMapLayer(mapId,layer,x,y,cellX,cellY,cellW,cellH);
+//     return JS_UNDEFINED;
+// }
 
 static JSValue js_draw_submit(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
     DC_Submit();
@@ -264,7 +264,7 @@ static const JSCFunctionListEntry js_draw_funcs[] = {
 	JS_CFUNC_DEF("line", 4, js_draw_line),
 	JS_CFUNC_DEF("circle", 4, js_draw_circle),
 	JS_CFUNC_DEF("tri", 7, js_draw_tri),
-	JS_CFUNC_DEF("mapLayer", 7, js_draw_maplayer),
+//	JS_CFUNC_DEF("mapLayer", 7, js_draw_maplayer),
 	JS_CFUNC_DEF("sprite", 8, js_draw_sprite),
 	JS_CFUNC_DEF("submit", 0, js_draw_submit),
 	JS_CFUNC_DEF("clear", 4, js_draw_clear),

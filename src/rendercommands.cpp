@@ -1,6 +1,5 @@
 #include <assert.h>
 #include "rendercommands.h"
-#include <tmx.h>
 #include "assetloader.h"
 #include "rlgl.h"
 #include "main.h"
@@ -443,8 +442,9 @@ const void *RB_DrawTri(const void *data) {
 
 const void *RB_DrawMapLayer(const void *data) {
 	auto cmd = (const drawMapCommand_t *)data;
-
-	tmx_map *map = (tmx_map *)Asset_Get(ASSET_TMX, cmd->mapId)->resource;
+ 
+	/*
+	tmx_map *map = (tmx_map *)Asset_Get(ASSET_TILEMAP, cmd->mapId)->resource;
 
 	tmx_layer *layer = map->ly_head;
 	unsigned int i = 0;
@@ -491,6 +491,7 @@ const void *RB_DrawMapLayer(const void *data) {
 			}
 		}
 	}
+	*/
 
 	return (const void *)(cmd + 1);
 }

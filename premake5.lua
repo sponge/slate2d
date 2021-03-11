@@ -61,10 +61,10 @@ workspace "Slate2D"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
     -- only used in emscripten build
     removefiles "src/imgui_impl_sdl_es2.cpp"
-    sysincludedirs { "src/external", "libs/sdl", "libs/tmx", "libs/imgui", "libs/physfs", "libs/glew", "libs/soloud/include", "libs/crunch" }
+    sysincludedirs { "src/external", "libs/sdl", "libs/imgui", "libs/physfs", "libs/glew", "libs/soloud/include", "libs/crunch" }
     -- physfs uses the exe path by default, but the game data files are in the top folder
     targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
-    links { "tmx", "imgui", "physfs", "glew", "soloud", "crunch" }
+    links { "imgui", "physfs", "glew", "soloud", "crunch" }
     cppdialect "C++14"
     -- define so engine and emscripten packaging are always in sync on the same base game folder 
     defines { "DEFAULT_GAME=\"" .. _OPTIONS["default-game"] .. "\"", "SLT_COMPILE_DLL" }
@@ -179,10 +179,10 @@ workspace "Slate2D"
     language "C++"
     targetname "jslate2d"
     files { "jsgame/**.cpp", "jsgame/**.h" }
-    sysincludedirs { "libs/tmx", "libs/quickjs", "libs/imgui" }
+    sysincludedirs { "libs/quickjs", "libs/imgui" }
     targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
     debugargs { "+set", "fs.basepath", path.getabsolute(".")}
-    links { "tmx", "imgui", "SDL2main", "libslate2d", "quickjs" }
+    links { "imgui", "SDL2main", "libslate2d", "quickjs" }
     -- allows builds on x64 windows but crashes on launch
     -- defines { "JS_NAN_BOXING" }
 
@@ -208,13 +208,6 @@ workspace "Slate2D"
       defines "SLT_STATIC"
      
   group "libraries"
-
-    project "tmx"
-      language "C++"
-      kind "StaticLib"
-      files { "libs/tmx/**.c", "libs/tmx/**.h", "libs/tmx/**.cpp" }
-      cppdialect "C++14"
-      warnings "Off"
 
     project "imgui"
       language "C++"

@@ -4,7 +4,6 @@
 extern "C" {
 #endif
 
-#include <tmx.h>
 #include <stdint.h>
 #include "../src/console.h"
 
@@ -40,7 +39,7 @@ typedef enum {
 	ASSET_MOD,
 	ASSET_FONT,
 	ASSET_BITMAPFONT,
-	ASSET_TMX,
+	ASSET_TILEMAP,
 	ASSET_CANVAS,
 	ASSET_SHADER,
 	ASSET_MAX
@@ -320,7 +319,7 @@ SLT_API void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float 
 
 // draws an individual layer of an ASSET_TMX at the given coordinates. subsets of tilemaps can be drawn by using
 // cellX/cellY/cellW/cellH, 0 will draw the entire layer.
-SLT_API void DC_DrawMapLayer(unsigned int mapId, unsigned int layer, float x, float y, unsigned int cellX, unsigned int cellY, unsigned int cellW, unsigned int cellH);
+//SLT_API void DC_DrawMapLayer(unsigned int mapId, unsigned int layer, float x, float y, unsigned int cellX, unsigned int cellY, unsigned int cellW, unsigned int cellH);
 
 // submit all queued up drawing commands, and clear the queued commands. this will parse and call the GL commands for
 // all the drawing commands.

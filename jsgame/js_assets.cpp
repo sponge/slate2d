@@ -33,6 +33,8 @@ static JSValue js_assets_create(JSContext *ctx, JSValueConst this_val, int argc,
 
   } else if (strcmp(assetTypeStr, "bitmapfont") == 0) {
 
+  } else if (strcmp(assetTypeStr, "tilemap") == 0) {
+
   } else if (strcmp(assetTypeStr, "canvas") == 0) {
 
   } else if (strcmp(assetTypeStr, "shader") == 0) {

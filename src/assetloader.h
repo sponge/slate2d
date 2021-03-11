@@ -5,7 +5,6 @@
 extern "C" {
 #include "external/ini.h"
 }
-#include <tmx.h>
 
 typedef struct {
 	AssetHandle id;
@@ -123,11 +122,10 @@ unsigned int Snd_Play(AssetHandle assetHandle, float volume, float pan, bool loo
 void Snd_Stop(unsigned int handle);
 void Snd_PauseResume(unsigned int handle, bool pause);
 
-// TMX assets
+// tilemap assets
 
-void * TMX_Load(Asset &asset);
-void TMX_Free(Asset &asset);
-tmx_map* Get_TMX(AssetHandle id);
+void * TileMap_Load(Asset &asset);
+void TileMap_Free(Asset &asset);
 
 // canvas assets
 

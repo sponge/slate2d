@@ -131,49 +131,6 @@ workspace "Slate2D"
       kind "StaticLib"
       defines "SLT_STATIC"
 
-  -- project "wrengame"
-  --   kind "ConsoleApp"
-  --   language "C++"
-  --   targetname "slate2d"
-  --   files { "game/**.c", "game/**.cpp", "game/**.h", "game/**.hh" }
-  --   sysincludedirs { "libs/tmx", "libs/imgui" }
-  --   targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
-  --   cppdialect "C++14"
-  --   debugargs { "+set", "fs.basepath", path.getabsolute(".")}
-  --   links { "tmx", "imgui", "SDL2main", "libslate2d" }
-
-  --   filter { "platforms:x86", "system:windows" }
-  --     libdirs "libs/sdl/lib/Win32"
-
-  --   filter { "platforms:x64", "system:windows" }
-  --     libdirs "libs/sdl/lib/x64"
-
-  --   filter "system:windows"
-  --     defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE" }
-
-  --   -- use SDL2 from homebrew
-  --   filter { "system:macosx", "platforms:arm64" }
-  --     linkoptions {"-stdlib=libc++", "-L /opt/homebrew/lib" }
-
-  --   filter { "system:macosx", "platforms:x64" }
-  --     linkoptions {"-stdlib=libc++", "-L /usr/local/lib" }
-
-  --   -- NaN tagging doesn't work in wren
-  --   filter { "action:gmake2", "options:emscripten" }
-  --     defines "WREN_NAN_TAGGING=0"
-  --     disablewarnings "unknown-pragmas"
-
-  --   -- disable warnings for wren code since it's external
-  --   filter { "files:game/wren/* or files:game/wreninspector.cpp", "system:windows" }
-  --     disablewarnings { 4100, 4200, 4996, 4244, 4204, 4702, 4709 }
-
-  --   -- disable warnings for sds
-  --   filter "files:../src/external/sds.c"
-  --     warnings "Off"
-     
-  --   filter "options:static"
-  --     defines "SLT_STATIC"
-
   project "jsgame"
     kind "ConsoleApp"
     language "C++"

@@ -11,11 +11,10 @@ Slate2D will feel somewhat familiar for anyone who has ever worked with engines 
 binds are all present. Everything is provided through a library, `libslate2d`. This keeps the game's entry point relatively simple.
 A game loop with mouse, keyboard, and controller support including rebindable keys only requires a few functions.
 
-The default library host integrates the [Wren](https://github.com/wren-lang/wren) scripting language. Although the intent originally was
-to write game code in C, I found the Wren language and really enjoyed writing code in it. It's easy enough to swap out, though. Any
-language that can load a shared library and call C functions can be used. Nim, Python, Node.js, and C# have all been able to load the
-shared library and setup a main loop. If you've found some neat programming thing, and wish you had an easy way to draw some graphics
-with it, Slate2D can get you off the ground.
+The default library host allows you to write games in JavaScript, through [QuickJS](https://bellard.org/quickjs/), but Slate2D can be
+used with any language that can load a shared library and call C functions can be used. Nim, Python, Node.js, and C# have all been 
+able to load the shared library and setup a main loop. If you've found some neat programming thing, and wish you had an easy way to 
+draw some graphics with it, Slate2D can get you off the ground.
 
 ## Instructions
 

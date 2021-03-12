@@ -9,6 +9,8 @@ extern "C" {
 #include <quickjs-debugger.h>
 }
 
+// TODO: eval command, reload js without restarting game
+
 bool loop = true;
 JSContext *ctx;
 JSRuntime *rt;
@@ -96,7 +98,7 @@ int main(int argc, char* argv[]) {
 	int sz = SLT_FS_ReadFile("main.js", (void**)&script);
 
 	if (sz <= 0) {
-		SLT_Error(ERR_FATAL, "Couldn't find main.js");
+		SLT_Error(ERR_GAME, "Couldn't find main.js");
 		return 1;
 	}
 
@@ -113,18 +115,18 @@ int main(int argc, char* argv[]) {
 	drawFunc = JS_GetPropertyStr(ctx, global, "draw");
 
 	if (!JS_IsFunction(ctx, updateFunc)) {
-		SLT_Error(ERR_FATAL, "globalThis.update was not a function");
+		SLT_Error(ERR_GAME, "globalThis.update was not a function");
 		return 1;		
 	}
 
 	if (!JS_IsFunction(ctx, drawFunc)) {
-		SLT_Error(ERR_FATAL, "globalThis.draw was not a function");
+		SLT_Error(ERR_GAME, "globalThis.draw was not a function");
 		return 1;		
 	}
 
 	JSValue startFunc = JS_GetPropertyStr(ctx, global, "start");
 	if (!JS_IsFunction(ctx, startFunc)) {
-		SLT_Error(ERR_FATAL, "globalThis.start was not a function");
+		SLT_Error(ERR_GAME, "globalThis.start was not a function");
 		return 1;		
 	}
 

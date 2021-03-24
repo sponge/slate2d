@@ -15,21 +15,65 @@ static JSValue js_assets_create(JSContext *ctx, JSValueConst this_val, int argc,
     return JS_ThrowTypeError(ctx, "options.type is missing or not a string");
   }
 
+  AssetHandle hnd;
+
+  JSValueConst name = JS_GetPropertyStr(ctx, argv[0], "name");
+  const char *nameStr = JS_ToCString(ctx, name);
+  JS_FreeValue(ctx, name);
+
+  if (assetTypeStr == nullptr) {
+    return JS_ThrowTypeError(ctx, "options.name is missing or not a string");
+  }
+
   if (strcmp(assetTypeStr, "image") == 0) {
+    JSValueConst path = JS_GetPropertyStr(ctx, argv[0], "path");
+    const char *pathStr = JS_ToCString(ctx, path);
+
+    JSValueConst linearFilterVal = JS_GetPropertyStr(ctx, argv[0], "linearFilter");
+    bool linearFilter = JS_ToBool(ctx, linearFilterVal);
+    JS_FreeValue(ctx, linearFilterVal);
+
+    hnd = SLT_Asset_LoadImage(nameStr, pathStr, linearFilter);
+
+    JS_FreeValue(ctx, path);
+    JS_FreeCString(ctx, pathStr);
 
   } else if (strcmp(assetTypeStr, "sprite") == 0) {
 
   } else if (strcmp(assetTypeStr, "speech") == 0) {
     JSValueConst text = JS_GetPropertyStr(ctx, argv[0], "text");
     const char *textStr = JS_ToCString(ctx, text);
+    hnd = SLT_Asset_LoadSpeech(nameStr, textStr);
+
     JS_FreeValue(ctx, text);
     JS_FreeCString(ctx, textStr);
-    //SLT_Asset_Create(ASSET_SPEECH, )
+
   } else if (strcmp(assetTypeStr, "sound") == 0) {
+    JSValueConst path = JS_GetPropertyStr(ctx, argv[0], "path");
+    const char *pathStr = JS_ToCString(ctx, path);
+
+    hnd = SLT_Asset_LoadSound(nameStr, pathStr);
+
+    JS_FreeValue(ctx, path);
+    JS_FreeCString(ctx, pathStr);
 
   } else if (strcmp(assetTypeStr, "mod") == 0) {
+    JSValueConst path = JS_GetPropertyStr(ctx, argv[0], "path");
+    const char *pathStr = JS_ToCString(ctx, path);
+
+    hnd = SLT_Asset_LoadMod(nameStr, pathStr);
+
+    JS_FreeValue(ctx, path);
+    JS_FreeCString(ctx, pathStr);
 
   } else if (strcmp(assetTypeStr, "font") == 0) {
+    JSValueConst path = JS_GetPropertyStr(ctx, argv[0], "path");
+    const char *pathStr = JS_ToCString(ctx, path);
+
+    hnd = SLT_Asset_LoadFont(nameStr, pathStr);
+
+    JS_FreeValue(ctx, path);
+    JS_FreeCString(ctx, pathStr);
 
   } else if (strcmp(assetTypeStr, "bitmapfont") == 0) {
 
@@ -42,12 +86,11 @@ static JSValue js_assets_create(JSContext *ctx, JSValueConst this_val, int argc,
   } else {
     // error
   }
+
+  JS_FreeCString(ctx, nameStr);
   JS_FreeCString(ctx, assetTypeStr);
 
-  // FIXME: implement me
-  // SLT_Asset_Create();
-
-  return JS_UNDEFINED;
+  return JS_NewInt32(ctx, hnd);
 }
 
 static JSValue js_assets_find(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {

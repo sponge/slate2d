@@ -31,7 +31,6 @@ static JSValue js_assets_create(JSContext *ctx, JSValueConst this_val, int argc,
 
     JSValueConst linearFilterVal = JS_GetPropertyStr(ctx, argv[0], "linearFilter");
     bool linearFilter = JS_ToBool(ctx, linearFilterVal);
-    JS_FreeValue(ctx, linearFilterVal);
 
     hnd = SLT_Asset_LoadImage(nameStr, pathStr, linearFilter);
 
@@ -39,6 +38,15 @@ static JSValue js_assets_create(JSContext *ctx, JSValueConst this_val, int argc,
     JS_FreeCString(ctx, pathStr);
 
   } else if (strcmp(assetTypeStr, "sprite") == 0) {
+    JSValueConst path = JS_GetPropertyStr(ctx, argv[0], "path");
+    const char *pathStr = JS_ToCString(ctx, path);
+
+    JSValueConst sprWidth = JS_GetPropertyStr(ctx, argv[0], "spriteWidth");
+
+    //hnd = SLT_Asset_LoadSprite(nameStr, pathStr, spriteWidth, spriteHeight, marginX, marginY);
+
+    JS_FreeValue(ctx, path);
+    JS_FreeCString(ctx, pathStr);
 
   } else if (strcmp(assetTypeStr, "speech") == 0) {
     JSValueConst text = JS_GetPropertyStr(ctx, argv[0], "text");
@@ -84,7 +92,9 @@ static JSValue js_assets_create(JSContext *ctx, JSValueConst this_val, int argc,
   } else if (strcmp(assetTypeStr, "shader") == 0) {
 
   } else {
-    // error
+    JS_FreeCString(ctx, nameStr);
+    JS_FreeCString(ctx, assetTypeStr);
+    return JS_ThrowTypeError(ctx, "Unrecognized options.type");
   }
 
   JS_FreeCString(ctx, nameStr);

@@ -3,10 +3,18 @@ import * as Draw from "draw";
 import * as SLT from "slate2d";
 import * as Assets from "assets";
 
+let dog;
+
 globalThis.start = function() {
   console.log("start");
   console.log("platform is " + SLT.platform);
   SLT.registerButtons(['up', 'down', 'left', 'right']);
+
+  dog = Assets.create({
+    name: 'dog',
+    type: 'image',
+    path: 'gfx/dog.png'
+  });
 };
 
 let t = 0;
@@ -19,6 +27,7 @@ globalThis.draw = function() {
   const sz = Math.cos(t) * 32 + 32
   Draw.rect(x, y, sz, sz, true);
 
+  Draw.image(dog, 0, 0, 32, 32, 1, 0, 0, 0);
   Draw.tri(10, 20, 400, 400, 400, 100, true);
   Draw.setColor(128, 0, 0, 255);
   Draw.line(0, 0, res.w, res.h);

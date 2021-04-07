@@ -8,8 +8,8 @@
                 "${workspaceRoot}/libs/imgui",
                 "${workspaceRoot}/libs/physfs",
                 "${workspaceRoot}/libs/sdl",
+                "${workspaceRoot}/libs/quickjs",
                 "${workspaceRoot}/libs/soloud/include",
-                "${workspaceRoot}/libs/tmx",
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/libs/crunch"
             ],

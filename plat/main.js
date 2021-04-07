@@ -10,7 +10,7 @@ globalThis.start = function() {
   console.log("platform is " + SLT.platform);
   SLT.registerButtons(['up', 'down', 'left', 'right']);
 
-  dog = Assets.create({
+  dog = Assets.load({
     name: 'dog',
     type: 'image',
     path: 'gfx/dog.png'

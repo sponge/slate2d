@@ -4,7 +4,7 @@ extern "C" {
 #include <cutils.h>
 }
 
-static JSValue js_assets_create(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+static JSValue js_assets_load(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
   if (!JS_IsObject(argv[0])) return JS_ThrowTypeError(ctx, "options arg is not an object");
 
   JSValueConst assetType = JS_GetPropertyStr(ctx, argv[0], "type");
@@ -172,7 +172,7 @@ static JSValue js_assets_imagesize(JSContext *ctx, JSValueConst this_val, int ar
 }
 
 static const JSCFunctionListEntry js_assets_funcs[] = {
-  JS_CFUNC_DEF("create", 1, js_assets_create),
+  JS_CFUNC_DEF("load", 1, js_assets_load),
   JS_CFUNC_DEF("find", 1, js_assets_find),
   JS_CFUNC_DEF("clearAll", 0, js_assets_clearall),
   JS_CFUNC_DEF("loadINI", 1, js_assets_loadini),

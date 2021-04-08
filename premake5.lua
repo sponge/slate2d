@@ -133,9 +133,9 @@ workspace "Slate2D"
 
   project "jsgame"
     kind "ConsoleApp"
-    language "C"
+    language "C++"
     targetname "jslate2d"
-    files { "jsgame/**.c", "jsgame/**.h" }
+    files { "jsgame/**.cpp", "jsgame/**.h" }
     sysincludedirs { "libs/quickjs", "libs/imgui" }
     targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
     debugargs { "+set", "fs.basepath", path.getabsolute(".")}
@@ -224,7 +224,7 @@ workspace "Slate2D"
 
     project "quickjs"
       kind "StaticLib"
-      files { "libs/quickjs/**.c", "libs/quickjs/**.h", "src/external/sds.c" }
+      files { "libs/quickjs/**.c", "libs/quickjs/**.h" }
       defines { "CONFIG_VERSION=\"2020-11-08\"" }
       warnings "Off"
       filter { "not system:windows" }

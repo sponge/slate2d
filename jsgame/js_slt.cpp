@@ -1,38 +1,40 @@
 #include "../src/slate2d.h"
-//#include <imgui.h>
+#include <imgui.h>
+extern "C" {
 #include <quickjs.h>
 #include <cutils.h>
+}
 
 static JSValue js_slt_printwin(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
- // using namespace ImGui;
- // const char *title, *key, *value;
+  using namespace ImGui;
+  const char *title, *key, *value;
 
- // if ((title = JS_ToCString(ctx, argv[0])) == NULL) return JS_EXCEPTION;
- // if ((key = JS_ToCString(ctx, argv[1])) == NULL) return JS_EXCEPTION;
- // if ((value = JS_ToCString(ctx, argv[2])) == NULL) return JS_EXCEPTION;
+  if ((title = JS_ToCString(ctx, argv[0])) == NULL) return JS_EXCEPTION;
+  if ((key = JS_ToCString(ctx, argv[1])) == NULL) return JS_EXCEPTION;
+  if ((value = JS_ToCString(ctx, argv[2])) == NULL) return JS_EXCEPTION;
 
-	//SetNextWindowSize(ImVec2(250, 500), ImGuiCond_FirstUseEver);
-	//Begin(title, nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoFocusOnAppearing);
+	SetNextWindowSize(ImVec2(250, 500), ImGuiCond_FirstUseEver);
+	Begin(title, nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoFocusOnAppearing);
 
-	//float width = GetWindowContentRegionWidth();
-	//float keyWidth = CalcTextSize(key).x;
-	//float valWidth = CalcTextSize(value).x;
+	float width = GetWindowContentRegionWidth();
+	float keyWidth = CalcTextSize(key).x;
+	float valWidth = CalcTextSize(value).x;
 
-	//Text("%s", key);
-	//if (keyWidth + valWidth + 20 < width) {
- //   SameLine();
-	//}
-	//int x = (int)(width - valWidth);
-	//x = x < 5 ? 5 : x;
-	//SetCursorPosX((float)x);
-	//Text("%s", value);
-	//Separator();
-	//End();
+	Text("%s", key);
+	if (keyWidth + valWidth + 20 < width) {
+    SameLine();
+	}
+	int x = (int)(width - valWidth);
+	x = x < 5 ? 5 : x;
+	SetCursorPosX((float)x);
+	Text("%s", value);
+	Separator();
+	End();
 
- // JS_FreeCString(ctx, title);
- // JS_FreeCString(ctx, key);
- // JS_FreeCString(ctx, value);
- // return JS_UNDEFINED;
+  JS_FreeCString(ctx, title);
+  JS_FreeCString(ctx, key);
+  JS_FreeCString(ctx, value);
+  return JS_UNDEFINED;
 }
 
 static JSValue js_slt_error(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
@@ -168,7 +170,7 @@ static const JSCFunctionListEntry js_slt_funcs[] = {
   JS_CFUNC_DEF("registerButtons", 1, js_slt_registerbuttons),
   JS_CFUNC_DEF("buttonPressed", 3, js_slt_buttonpressed),
   JS_CFUNC_DEF("setWindowTitle", 1, js_slt_setwindowtitle),
-  //JS_PROP_STRING_DEF("platform", platform, 0), // FIXME: ugh msvc
+  JS_PROP_STRING_DEF("platform", platform, 0),
   JS_CFUNC_DEF("mouse", 0, js_slt_getmouse),
   JS_CFUNC_DEF("resolution", 0, js_slt_getresolution),
 };

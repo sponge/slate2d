@@ -1,6 +1,8 @@
 #include "../src/slate2d.h"
+extern "C" {
 #include <quickjs.h>
 #include <cutils.h>
+}
 
 static JSValue js_assets_load(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
   if (!JS_IsObject(argv[0])) return JS_ThrowTypeError(ctx, "options arg is not an object");
@@ -9,7 +11,7 @@ static JSValue js_assets_load(JSContext *ctx, JSValueConst this_val, int argc, J
   const char *assetTypeStr = JS_ToCString(ctx, assetType);
   JS_FreeValue(ctx, assetType);
 
-  if (assetTypeStr == NULL) {
+  if (assetTypeStr == nullptr) {
     return JS_ThrowTypeError(ctx, "options.type is missing or not a string");
   }
 
@@ -19,7 +21,7 @@ static JSValue js_assets_load(JSContext *ctx, JSValueConst this_val, int argc, J
   const char *nameStr = JS_ToCString(ctx, name);
   JS_FreeValue(ctx, name);
 
-  if (assetTypeStr == NULL) {
+  if (assetTypeStr == nullptr) {
     return JS_ThrowTypeError(ctx, "options.name is missing or not a string");
   }
 

@@ -1,6 +1,8 @@
 #include "../src/slate2d.h"
+extern "C" {
 #include <quickjs.h>
 #include <cutils.h>
+}
 
 static JSValue js_draw_setcolor(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
     int r, g, b, a;

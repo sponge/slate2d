@@ -1,13 +1,11 @@
 #include "../src/slate2d.h"
-#include <imgui.h>
-#include <string>
+//#include <imgui.h>
 #include "main.h"
 #include "js_libs.h"
-extern "C" {
 #include <quickjs.h>
 #include <quickjs-libc.h>
 #include <quickjs-debugger.h>
-}
+#include "../src/external/sds.h"
 
 // TODO: eval command, reload js without restarting game
 
@@ -19,7 +17,7 @@ JSValue updateFunc;
 JSValue drawFunc;
 
 JSModuleDef* physfs_module_loader(JSContext* ctx, const char* module_name, void* opaque) {
-	char* script = nullptr;
+	char* script = NULL;
 	int sz = SLT_FS_ReadFile(module_name, (void**)&script);
 
 	if (sz <= 0) {
@@ -29,10 +27,19 @@ JSModuleDef* physfs_module_loader(JSContext* ctx, const char* module_name, void*
 
 	/* compile the module */
 	const char *realdir = SLT_FS_RealDir(module_name);
-	std::string fullpath = realdir == nullptr ? module_name : std::string(realdir) + "/" + std::string(module_name);
-	JSValue func_val = JS_Eval(ctx, (char*)script, sz, fullpath.c_str(), JS_EVAL_TYPE_MODULE|JS_EVAL_FLAG_COMPILE_ONLY);
+	sds fullpath;
+	if (realdir == NULL) {
+		fullpath = sdsnew(module_name);
+	}
+	else {
+		fullpath = sdsnew(realdir);
+		fullpath = sdscat(fullpath, "/");
+		fullpath = sdscat(fullpath, module_name);
+	}
+	JSValue func_val = JS_Eval(ctx, (char*)script, sz, fullpath, JS_EVAL_TYPE_MODULE|JS_EVAL_FLAG_COMPILE_ONLY);
+	sdsfree(fullpath);
 	free(script);
-
+	
 	if (JS_IsException(func_val))
 		return NULL;
 	/* XXX: could propagate the exception */
@@ -65,13 +72,13 @@ void main_loop() {
 
 	DC_Clear(0, 0, 0, 255); // FIXME don't put here
 
-	jsResult = JS_Call(ctx, drawFunc, global, 0, nullptr);
+	jsResult = JS_Call(ctx, drawFunc, global, 0, NULL);
 	if (JS_IsException(jsResult)) {
 		js_std_dump_error(ctx);
 	}
 	JS_FreeValue(ctx, jsResult);
 
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 
 	SLT_EndFrame();
 	SLT_UpdateLastFrameTime();
@@ -80,7 +87,7 @@ void main_loop() {
 int main(int argc, char* argv[]) {
 	SLT_Init(argc, argv);
 
-	ImGui::SetCurrentContext((ImGuiContext*)SLT_GetImguiContext());
+	//ImGui::SetCurrentContext((ImGuiContext*)SLT_GetImguiContext());
 
 	rt = JS_NewRuntime();
 	ctx = JS_NewContext(rt);
@@ -92,9 +99,9 @@ int main(int argc, char* argv[]) {
 	js_init_module_slt(ctx, "slate2d");
 	js_init_module_assets(ctx, "assets");
 
-	JS_SetModuleLoaderFunc(rt, nullptr, physfs_module_loader, nullptr);
+	JS_SetModuleLoaderFunc(rt, NULL, physfs_module_loader, NULL);
 
-	char* script = nullptr;
+	char* script = NULL;
 	int sz = SLT_FS_ReadFile("main.js", (void**)&script);
 
 	if (sz <= 0) {
@@ -103,8 +110,10 @@ int main(int argc, char* argv[]) {
 	}
 
 	const char *realdir = SLT_FS_RealDir("main.js");
-	std::string fullpath = std::string(realdir) + "/main.js";
-	JSValue val = JS_Eval(ctx, script, strlen(script), fullpath.c_str(), JS_EVAL_TYPE_MODULE);
+	sds fullpath = sdsnew(realdir);
+	fullpath = sdscat(fullpath, "/main.js");
+	JSValue val = JS_Eval(ctx, script, strlen(script), fullpath, JS_EVAL_TYPE_MODULE);
+	sdsfree(fullpath);
 	if (JS_IsException(val)) {
 		js_std_dump_error(ctx);
 		return 1;
@@ -130,7 +139,7 @@ int main(int argc, char* argv[]) {
 		return 1;		
 	}
 
-	JSValue jsResult = JS_Call(ctx, startFunc, global, 0, nullptr);
+	JSValue jsResult = JS_Call(ctx, startFunc, global, 0, NULL);
 	if (JS_IsException(jsResult)) {
 		js_std_dump_error(ctx);
 	}

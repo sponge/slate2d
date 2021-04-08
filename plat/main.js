@@ -7,7 +7,7 @@ let dog;
 
 globalThis.start = function() {
   console.log("start");
-  console.log("platform is " + SLT.platform);
+  //console.log("platform is " + SLT.platform); // ugh MSVC
   SLT.registerButtons(['up', 'down', 'left', 'right']);
 
   dog = Assets.load({

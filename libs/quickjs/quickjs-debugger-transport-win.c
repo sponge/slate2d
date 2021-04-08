@@ -144,7 +144,7 @@ static void js_transport_close(JSContext* ctx, void *udata) {
 #endif
 }
 
-void js_debugger_connect(JSContext *ctx, char *address) {
+void js_debugger_connect(JSContext *ctx, const char *address) {
 #if 0
 	WSADATA wsaData;
 	WSAStartup(MAKEWORD(2, 2), &wsaData);

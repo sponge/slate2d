@@ -1,5 +1,12 @@
 require('vstudio')
 
+
+-- toolset clang on vs isn't supported in alpha15, so just do this for now
+premake.override(premake.vstudio.vc2010, "platformToolset", function(base, prj)
+  base(prj)
+  premake.w('<PlatformToolset>ClangCL</PlatformToolset>')
+end)
+
 premake.override(premake.vstudio.vc2010, "languageStandard", function(base, prj)
   if prj.filename == "quickjs" or prj.filename == "jsgame" then
     premake.w('<LanguageStandard_C>stdc11</LanguageStandard_C>')

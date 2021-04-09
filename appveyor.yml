@@ -1,7 +1,7 @@
 version: '{build}'
 image: Visual Studio 2019
 configuration: Release
-platform: Win32
+platform: x64
 install:
 - ps: >-
     Start-FileDownload 'https://github.com/premake/premake-core/releases/download/v5.0.0-alpha15/premake-5.0.0-alpha15-windows.zip' 'premake.zip'
@@ -11,9 +11,11 @@ install:
     7z x premake.zip
 
     .\premake5.exe vs2019
+
+    vcpkg integrate remove
 build:
   project: build/slate2d.sln
   verbosity: minimal
 artifacts:
-- path: build\bin\x86_Release\slate2d.dll
-  name: Slate2D - x86 DLL
+- path: build\bin\x86_64_Release\slate2d.dll
+  name: Slate2D - x64 DLL

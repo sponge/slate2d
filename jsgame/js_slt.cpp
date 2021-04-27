@@ -160,6 +160,19 @@ static JSValue js_slt_getresolution(JSContext *ctx, JSValueConst this_val, int a
   return obj;
 }
 
+static JSValue js_slt_readfile(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+  const char *path = JS_ToCString(ctx, argv[0]);
+
+  char *buffer;
+  if (SLT_FS_ReadFile(path, (void **)&buffer) == -1) {
+    JS_FreeCString(ctx, path);
+    return JS_EXCEPTION;
+  }
+
+  JS_FreeCString(ctx, path);
+  return JS_NewString(ctx, buffer);
+}
+
 static const JSCFunctionListEntry js_slt_funcs[] = {
   JS_CFUNC_DEF("printWin", 1, js_slt_printwin),
   JS_CFUNC_DEF("error", 2, js_slt_error),
@@ -173,6 +186,7 @@ static const JSCFunctionListEntry js_slt_funcs[] = {
   JS_PROP_STRING_DEF("platform", platform, 0),
   JS_CFUNC_DEF("mouse", 0, js_slt_getmouse),
   JS_CFUNC_DEF("resolution", 0, js_slt_getresolution),
+  JS_CFUNC_DEF("readFile", 1, js_slt_readfile),
 };
 
 static int js_slt_init(JSContext *ctx, JSModuleDef *m) {    

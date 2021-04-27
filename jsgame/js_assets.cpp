@@ -41,9 +41,14 @@ static JSValue js_assets_load(JSContext *ctx, JSValueConst this_val, int argc, J
     JSValueConst path = JS_GetPropertyStr(ctx, argv[0], "path");
     const char *pathStr = JS_ToCString(ctx, path);
 
-    JSValueConst sprWidth = JS_GetPropertyStr(ctx, argv[0], "spriteWidth");
+    // TODO literally any error checking
+    int spriteWidth, spriteHeight, marginX, marginY;
+    JS_ToInt32(ctx, &spriteWidth, JS_GetPropertyStr(ctx, argv[0], "spriteWidth"));
+    JS_ToInt32(ctx, &spriteHeight, JS_GetPropertyStr(ctx, argv[0], "spriteHeight"));
+    JS_ToInt32(ctx, &marginX, JS_GetPropertyStr(ctx, argv[0], "marginX"));
+    JS_ToInt32(ctx, &marginY, JS_GetPropertyStr(ctx, argv[0], "marginY"));
 
-    //hnd = SLT_Asset_LoadSprite(nameStr, pathStr, spriteWidth, spriteHeight, marginX, marginY);
+    hnd = SLT_Asset_LoadSprite(nameStr, pathStr, spriteWidth, spriteHeight, marginX, marginY);
 
     JS_FreeValue(ctx, path);
     JS_FreeCString(ctx, pathStr);

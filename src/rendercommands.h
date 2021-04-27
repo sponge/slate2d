@@ -123,9 +123,10 @@ typedef struct {
 
 typedef struct {
 	uint8_t commandId;
-	float x, y;
-	unsigned int mapId;
-	unsigned int layer, cellX, cellY, cellW, cellH;
+	unsigned int sprId;
+	int *tiles;
+	int w, h;
+	int x, y;
 } drawMapCommand_t;
 
 typedef enum {

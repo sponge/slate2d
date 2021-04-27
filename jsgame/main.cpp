@@ -104,7 +104,7 @@ int main(int argc, char* argv[]) {
 
 	const char *realdir = SLT_FS_RealDir("main.js");
 	std::string fullpath = std::string(realdir) + "/main.js";
-	JSValue val = JS_Eval(ctx, script, strlen(script), fullpath.c_str(), JS_EVAL_TYPE_MODULE);
+	JSValue val = JS_Eval(ctx, script, strlen(script), "main.js", JS_EVAL_TYPE_MODULE);
 	if (JS_IsException(val)) {
 		js_std_dump_error(ctx);
 		return 1;

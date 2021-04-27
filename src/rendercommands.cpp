@@ -442,6 +442,51 @@ const void *RB_DrawTri(const void *data) {
 
 const void *RB_DrawMapLayer(const void *data) {
 	auto cmd = (const drawMapCommand_t *)data;
+
+	Asset* asset = Asset_Get(ASSET_SPRITE, cmd->sprId);
+	SpriteAtlas* spr = (SpriteAtlas*)asset->resource;
+
+	//if (cmd->id > spr->numSprites) {
+	//	Con_Printf("WARNING: draw sprite %s out of index %i > %i\n", asset->name, cmd->id, spr->numSprites - 1);
+	//	return (const void*)(cmd + 1);
+	//}
+
+	for (int i = 0; i < cmd->w * cmd->h; i++) {
+		int x = i % cmd->w;
+		int y = i / cmd->h;
+		Sprite* crunch = &spr->sprites[cmd->tiles[i]];
+		Image* img = crunch->texture;
+		DrawImage(
+			//  offset + current x/y         - start tile offset         
+			cmd->x + x * crunch->w,
+			cmd->y + y * crunch->h,
+			(float)crunch->w,
+			(float)crunch->h,
+			(float)crunch->x,
+			(float)crunch->y,
+			1.0f,
+			0,
+			img->hnd,
+			img->w,
+			img->h
+		);
+	}
+
+	return (const void*)(cmd + 1);
+	/*
+	DrawImage(
+		cmd->x - crunch->framex,
+		cmd->y - crunch->framey,
+		(float)crunch->w * cmd->w,
+		(float)crunch->h * cmd->h,
+		(float)crunch->x,
+		(float)crunch->y,
+		cmd->scale,
+		cmd->flipBits,
+		img->hnd,
+		img->w,
+		img->h
+	);
  
 	/*
 	tmx_map *map = (tmx_map *)Asset_Get(ASSET_TILEMAP, cmd->mapId)->resource;

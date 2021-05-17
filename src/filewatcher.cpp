@@ -146,7 +146,7 @@ void FileWatcher_Init() {
 
 void FileWatcher_Tick() {
 	if (fileChanged) {
-		auto v = Con_GetVarString("filewatcher_execute");
+		auto v = Con_GetVarString("filewatcher.execute");
 		Con_Execute(v);
 
 		FileWatcher_StartThread();

@@ -29,6 +29,8 @@ globalThis.start = function() {
 
 let t = 0;
 globalThis.draw = function() {
+  Draw.clear(0, 0, 0, 255);
+
   const mouse = SLT.mouse();
   const res = SLT.resolution();
 
@@ -52,4 +54,7 @@ globalThis.draw = function() {
 globalThis.update = function(dt) {
   t += dt;
   testmodule(1);
+  // if (t > 3) {
+  //   throw new Error("test exception");
+  // }
 };

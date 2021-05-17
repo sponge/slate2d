@@ -12,9 +12,9 @@ binds are all present. Everything is provided through a library, `libslate2d`. T
 A game loop with mouse, keyboard, and controller support including rebindable keys only requires a few functions.
 
 The default library host allows you to write games in JavaScript, through [QuickJS](https://bellard.org/quickjs/), but Slate2D can be
-used with any language that can load a shared library and call C functions can be used. Nim, Python, Node.js, and C# have all been 
-able to load the shared library and setup a main loop. If you've found some neat programming thing, and wish you had an easy way to 
-draw some graphics with it, Slate2D can get you off the ground.
+used with any language that can load a shared library and call C functions. Nim, Python, Node.js, and C# have been successfully used
+in the past. If you've found some neat programming thing, and wish you had an easy way to draw some graphics with it, Slate2D can get
+you off the ground.
 
 ## Instructions
 

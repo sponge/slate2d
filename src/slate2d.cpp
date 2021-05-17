@@ -155,7 +155,7 @@ void ConH_Error(int level, const char *message) {
 	}
 	else {
 		Con_SetVar("engine.errorMessage", message);
-		hostErrHandler(level, message);
+		if (hostErrHandler) hostErrHandler(level, message);
 	}
 }
 
@@ -215,7 +215,7 @@ SLT_API double SLT_StartFrame() {
 	ImGui_ImplSdl_NewFrame(window);
 
 	if (eng_errorMessage->string[0] != '\0') {
-		ImGui::SetNextWindowPos(ImVec2(vid_width->integer / 2, vid_height->integer), 0, ImVec2(0.5, 0.5));
+		ImGui::SetNextWindowPos(ImVec2(vid_width->integer / 2, vid_height->integer / 2), 0, ImVec2(0.5, 0.5));
 		ImGui::Begin("Error", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
 		ImGui::Text("%s", eng_errorMessage->string);
 		ImGui::Text("%s", eng_lastErrorStack->string);

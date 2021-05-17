@@ -141,6 +141,7 @@ workspace "Slate2D"
   project "jsgame"
     kind "ConsoleApp"
     language "C++"
+    cppdialect "C++latest"
     targetname "jslate2d"
     files { "jsgame/**.cpp", "jsgame/**.h" }
     sysincludedirs { "libs/quickjs", "libs/imgui" }
@@ -157,7 +158,6 @@ workspace "Slate2D"
       libdirs "libs/sdl/lib/x64"
 
     filter "system:windows"
-      cppdialect "C++latest"
       defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE" }
       links { "ws2_32" }
 

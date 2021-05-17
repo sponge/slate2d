@@ -1,29 +1,88 @@
 #include "../src/slate2d.h"
+#include <string>
 extern "C" {
 #include <quickjs.h>
 #include <cutils.h>
 }
 
+namespace QJS {
+  class Value {
+  private:
+    const char *cStr = nullptr;
+  public:
+    JSContext *ctx;
+    JSValueConst val;
+    bool noFree = false;
+
+    Value(JSContext *ctx, JSValueConst val, bool noFree = false) : ctx(ctx), val(val), noFree(noFree) {
+      if (isString()) {
+        cStr = JS_ToCString(ctx, val);
+      }
+    }
+
+    ~Value() {
+      if (!noFree) JS_FreeValue(ctx, val);
+      if (cStr != nullptr) JS_FreeCString(ctx, cStr);
+    }
+
+    operator bool () const {
+      return !JS_IsUndefined(val) && !JS_IsNull(val);
+    }
+
+    const Value operator[](std::string str) const {
+      JSValueConst ret = JS_GetPropertyStr(ctx, val, str.c_str());
+      return Value(ctx, ret);
+    }
+
+    const Value operator[](const char *str) const {
+      JSValueConst ret = JS_GetPropertyStr(ctx, val, str);
+      return Value(ctx, ret);
+    }
+
+    bool isString() const {
+      return JS_IsString(val);
+    }
+
+    bool isObject() const {
+      return JS_IsObject(val);
+    }
+
+    bool isUndefined() const {
+      return JS_IsUndefined(val);
+    }
+
+    // note: returns string "undefined" if value is undefined
+    // use isString or asCString != nullptr to check if value is a string
+    std::string asString() const {
+      return JS_ToCString(ctx, val);
+    }
+
+    const char * asCString() const {
+      return cStr;
+    }
+  };
+}
+
+// FIXME: probably needs better checking of types on invalid/missing properties.
+// FIXME: generalize some of the getters, check https://github.com/PetterS/quickjs/blob/master/module.c for inspiration
 static JSValue js_assets_load(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-  if (!JS_IsObject(argv[0])) return JS_ThrowTypeError(ctx, "options arg is not an object");
+  auto assetSettings = QJS::Value(ctx, argv[0], true);
 
-  JSValueConst assetType = JS_GetPropertyStr(ctx, argv[0], "type");
-  const char *assetTypeStr = JS_ToCString(ctx, assetType);
-  JS_FreeValue(ctx, assetType);
+  if (!assetSettings.isObject()) {
+    return JS_ThrowTypeError(ctx, "options arg is not an object");
+  }
 
-  if (assetTypeStr == nullptr) {
+  auto assetTypeStr = assetSettings["type"].asCString();
+  if (!assetTypeStr) {
     return JS_ThrowTypeError(ctx, "options.type is missing or not a string");
   }
 
-  AssetHandle hnd;
-
-  JSValueConst name = JS_GetPropertyStr(ctx, argv[0], "name");
-  const char *nameStr = JS_ToCString(ctx, name);
-  JS_FreeValue(ctx, name);
-
-  if (assetTypeStr == nullptr) {
+  const char *nameStr = assetSettings["name"].asCString();
+  if (!nameStr) {
     return JS_ThrowTypeError(ctx, "options.name is missing or not a string");
   }
+
+  AssetHandle hnd;
 
   if (strcmp(assetTypeStr, "image") == 0) {
     JSValueConst path = JS_GetPropertyStr(ctx, argv[0], "path");
@@ -41,10 +100,22 @@ static JSValue js_assets_load(JSContext *ctx, JSValueConst this_val, int argc, J
     JSValueConst path = JS_GetPropertyStr(ctx, argv[0], "path");
     const char *pathStr = JS_ToCString(ctx, path);
 
-    JSValueConst sprWidth = JS_GetPropertyStr(ctx, argv[0], "spriteWidth");
+    int sprWidth, sprHeight, marginX, marginY;
+    JSValueConst sprWidthVal = JS_GetPropertyStr(ctx, argv[0], "spriteWidth");
+    if (JS_ToInt32(ctx, &sprWidth, sprWidthVal)) return JS_EXCEPTION;
 
-    //hnd = SLT_Asset_LoadSprite(nameStr, pathStr, spriteWidth, spriteHeight, marginX, marginY);
+    JSValueConst sprHeightVal = JS_GetPropertyStr(ctx, argv[0], "spriteHeight");
+    if (JS_ToInt32(ctx, &sprHeight, sprHeightVal)) return JS_EXCEPTION;
 
+    JSValueConst marginXVal = JS_GetPropertyStr(ctx, argv[0], "marginX");
+    if (JS_ToInt32(ctx, &marginX, marginXVal)) return JS_EXCEPTION;
+
+    JSValueConst marginYVal = JS_GetPropertyStr(ctx, argv[0], "marginY");
+    if (JS_ToInt32(ctx, &marginY, marginYVal)) return JS_EXCEPTION;
+
+    hnd = SLT_Asset_LoadSprite(nameStr, pathStr, sprWidth, sprHeight, marginX, marginY);
+
+    // FIXME: this won't get hit on return early
     JS_FreeValue(ctx, path);
     JS_FreeCString(ctx, pathStr);
 

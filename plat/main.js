@@ -3,7 +3,7 @@ import * as Draw from "draw";
 import * as SLT from "slate2d";
 import * as Assets from "assets";
 
-let dog;
+let dog, dogSpr;
 
 globalThis.start = function() {
   console.log("start");
@@ -15,6 +15,16 @@ globalThis.start = function() {
     type: 'image',
     path: 'gfx/dog.png'
   });
+
+  dogSpr = Assets.load({
+    name: 'dogspr',
+    type: 'sprite',
+    path: 'gfx/dog.png',
+    spriteWidth: 16,
+    spriteHeight: 16,
+    marginX: 0,
+    marginY: 0,
+  })
 };
 
 let t = 0;

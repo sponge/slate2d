@@ -9,15 +9,14 @@ namespace QJS {
   class Value {
   private:
     const char *cStr = nullptr;
+    std::string str;
   public:
     JSContext *ctx;
     JSValueConst val;
     bool noFree = false;
 
     Value(JSContext *ctx, JSValueConst val, bool noFree = false) : ctx(ctx), val(val), noFree(noFree) {
-      if (isString()) {
-        cStr = JS_ToCString(ctx, val);
-      }
+        cStr = isString() ? JS_ToCString(ctx, val) : nullptr;
     }
 
     ~Value() {
@@ -25,8 +24,8 @@ namespace QJS {
       if (cStr != nullptr) JS_FreeCString(ctx, cStr);
     }
 
-    operator bool () const {
-      return !JS_IsUndefined(val) && !JS_IsNull(val);
+    operator bool() const {
+      return JS_ToBool(ctx, val);
     }
 
     const Value operator[](std::string str) const {
@@ -47,24 +46,41 @@ namespace QJS {
       return JS_IsObject(val);
     }
 
+    bool isNumber() const {
+      return JS_IsNumber(val);
+    }
+
     bool isUndefined() const {
       return JS_IsUndefined(val);
     }
 
     // note: returns string "undefined" if value is undefined
     // use isString or asCString != nullptr to check if value is a string
-    std::string asString() const {
-      return JS_ToCString(ctx, val);
+    const std::string asString() const {
+        const char *tempStr = JS_ToCString(ctx, val);
+        std::string str = tempStr;
+        JS_FreeCString(ctx, tempStr);
+
+        return str;
     }
 
+    // note: returns null if not a string.
+    // asString will return the string "undefined" like it does in JS
     const char * asCString() const {
       return cStr;
+    }
+
+    int32_t asInt32() const {
+      int32_t ret;
+      JS_ToInt32(ctx, &ret, val);
+      return ret;
     }
   };
 }
 
-// FIXME: probably needs better checking of types on invalid/missing properties.
-// FIXME: generalize some of the getters, check https://github.com/PetterS/quickjs/blob/master/module.c for inspiration
+#define CHECKSTR(key) assetSettings[key].asCString(); if (!assetSettings[key].asCString()) return JS_ThrowTypeError(ctx, "options." key "is not a string");
+#define CHECKINT32(key) assetSettings[key].asInt32(); if (!assetSettings[key].isNumber()) return JS_ThrowTypeError(ctx, "options." key "is not an int");
+
 static JSValue js_assets_load(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
   auto assetSettings = QJS::Value(ctx, argv[0], true);
 
@@ -72,104 +88,67 @@ static JSValue js_assets_load(JSContext *ctx, JSValueConst this_val, int argc, J
     return JS_ThrowTypeError(ctx, "options arg is not an object");
   }
 
-  auto assetTypeStr = assetSettings["type"].asCString();
-  if (!assetTypeStr) {
+  if (!assetSettings["type"].isString()) {
     return JS_ThrowTypeError(ctx, "options.type is missing or not a string");
   }
 
-  const char *nameStr = assetSettings["name"].asCString();
-  if (!nameStr) {
-    return JS_ThrowTypeError(ctx, "options.name is missing or not a string");
-  }
+  const char *name = CHECKSTR("name")
 
   AssetHandle hnd;
 
-  if (strcmp(assetTypeStr, "image") == 0) {
-    JSValueConst path = JS_GetPropertyStr(ctx, argv[0], "path");
-    const char *pathStr = JS_ToCString(ctx, path);
+  auto assetType = assetSettings["type"].asString();
+  if (assetType == "image") {
+    const char *path = CHECKSTR("path")
+    bool linearFilter = assetSettings["linearFilter"];
+    hnd = SLT_Asset_LoadImage(name, path, linearFilter);
 
-    JSValueConst linearFilterVal = JS_GetPropertyStr(ctx, argv[0], "linearFilter");
-    bool linearFilter = JS_ToBool(ctx, linearFilterVal);
+  } else if (assetType == "sprite") {
+    const char *path = CHECKSTR("path")
+    int32_t sprWidth = CHECKINT32("spriteWidth")
+    int32_t sprHeight = CHECKINT32("spriteHeight")
+    int32_t marginX = CHECKINT32("marginX")
+    int32_t marginY = CHECKINT32("marginY")
+    hnd = SLT_Asset_LoadSprite(name, path, sprWidth, sprHeight, marginX, marginY);
 
-    hnd = SLT_Asset_LoadImage(nameStr, pathStr, linearFilter);
+  } else if (assetType == "speech") {
+    const char *text = CHECKSTR("text")
+    hnd = SLT_Asset_LoadSpeech(name, text);
 
-    JS_FreeValue(ctx, path);
-    JS_FreeCString(ctx, pathStr);
+  } else if (assetType == "sound") {
+    const char *path = CHECKSTR("path")
+    hnd = SLT_Asset_LoadSound(name, path);
 
-  } else if (strcmp(assetTypeStr, "sprite") == 0) {
-    JSValueConst path = JS_GetPropertyStr(ctx, argv[0], "path");
-    const char *pathStr = JS_ToCString(ctx, path);
+  } else if (assetType == "mod") {
+    const char *path = CHECKSTR("path")
+    hnd = SLT_Asset_LoadMod(name, path);
 
-    int sprWidth, sprHeight, marginX, marginY;
-    JSValueConst sprWidthVal = JS_GetPropertyStr(ctx, argv[0], "spriteWidth");
-    if (JS_ToInt32(ctx, &sprWidth, sprWidthVal)) return JS_EXCEPTION;
+  } else if (assetType == "font") {
+    const char *path = CHECKSTR("path")
+    hnd = SLT_Asset_LoadFont(name, path);
 
-    JSValueConst sprHeightVal = JS_GetPropertyStr(ctx, argv[0], "spriteHeight");
-    if (JS_ToInt32(ctx, &sprHeight, sprHeightVal)) return JS_EXCEPTION;
+  } else if (assetType == "bitmapfont") {
+    const char *path = CHECKSTR("path")
+    const char *glyphs = CHECKSTR("glyphs");
+    int32_t glyphWidth = CHECKINT32("glyphWidth")
+    int32_t charSpacing = CHECKINT32("charSpacing")
+    int32_t spaceWidth = CHECKINT32("spaceWidth")
+    int32_t lineHeight = CHECKINT32("lineHeight")
+    hnd = SLT_Asset_LoadBitmapFont(name, path, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight);
 
-    JSValueConst marginXVal = JS_GetPropertyStr(ctx, argv[0], "marginX");
-    if (JS_ToInt32(ctx, &marginX, marginXVal)) return JS_EXCEPTION;
+  } else if (assetType == "canvas") {
+    int32_t width = CHECKINT32("width")
+    int32_t height = CHECKINT32("height")
+    hnd = SLT_Asset_LoadCanvas(name, width, height);
 
-    JSValueConst marginYVal = JS_GetPropertyStr(ctx, argv[0], "marginY");
-    if (JS_ToInt32(ctx, &marginY, marginYVal)) return JS_EXCEPTION;
-
-    hnd = SLT_Asset_LoadSprite(nameStr, pathStr, sprWidth, sprHeight, marginX, marginY);
-
-    // FIXME: this won't get hit on return early
-    JS_FreeValue(ctx, path);
-    JS_FreeCString(ctx, pathStr);
-
-  } else if (strcmp(assetTypeStr, "speech") == 0) {
-    JSValueConst text = JS_GetPropertyStr(ctx, argv[0], "text");
-    const char *textStr = JS_ToCString(ctx, text);
-    hnd = SLT_Asset_LoadSpeech(nameStr, textStr);
-
-    JS_FreeValue(ctx, text);
-    JS_FreeCString(ctx, textStr);
-
-  } else if (strcmp(assetTypeStr, "sound") == 0) {
-    JSValueConst path = JS_GetPropertyStr(ctx, argv[0], "path");
-    const char *pathStr = JS_ToCString(ctx, path);
-
-    hnd = SLT_Asset_LoadSound(nameStr, pathStr);
-
-    JS_FreeValue(ctx, path);
-    JS_FreeCString(ctx, pathStr);
-
-  } else if (strcmp(assetTypeStr, "mod") == 0) {
-    JSValueConst path = JS_GetPropertyStr(ctx, argv[0], "path");
-    const char *pathStr = JS_ToCString(ctx, path);
-
-    hnd = SLT_Asset_LoadMod(nameStr, pathStr);
-
-    JS_FreeValue(ctx, path);
-    JS_FreeCString(ctx, pathStr);
-
-  } else if (strcmp(assetTypeStr, "font") == 0) {
-    JSValueConst path = JS_GetPropertyStr(ctx, argv[0], "path");
-    const char *pathStr = JS_ToCString(ctx, path);
-
-    hnd = SLT_Asset_LoadFont(nameStr, pathStr);
-
-    JS_FreeValue(ctx, path);
-    JS_FreeCString(ctx, pathStr);
-
-  } else if (strcmp(assetTypeStr, "bitmapfont") == 0) {
-
-  } else if (strcmp(assetTypeStr, "tilemap") == 0) {
-
-  } else if (strcmp(assetTypeStr, "canvas") == 0) {
-
-  } else if (strcmp(assetTypeStr, "shader") == 0) {
+  } else if (assetType ==  "shader") {
+    bool isFile = assetSettings["isFile"];
+    const char *vs = CHECKSTR("vs");
+    const char *fs = CHECKSTR("fs");
+    hnd = SLT_Asset_LoadShader(name, isFile, vs, fs);
 
   } else {
-    JS_FreeCString(ctx, nameStr);
-    JS_FreeCString(ctx, assetTypeStr);
     return JS_ThrowTypeError(ctx, "Unrecognized options.type");
   }
-
-  JS_FreeCString(ctx, nameStr);
-  JS_FreeCString(ctx, assetTypeStr);
 
   return JS_NewInt32(ctx, hnd);
 }

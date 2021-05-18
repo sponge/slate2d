@@ -43,6 +43,7 @@ public:
 	JSValue updateFunc;
 	JSValue drawFunc;
 	JSValue startFunc;
+	JSValue saveFunc;
 
 	SLTJSInstance() {
 		rt = JS_NewRuntime();
@@ -63,6 +64,7 @@ public:
 		JS_FreeValue(ctx, startFunc);
 		JS_FreeValue(ctx, updateFunc);
 		JS_FreeValue(ctx, drawFunc);
+		JS_FreeValue(ctx, saveFunc);
 
 		JS_FreeContext(ctx);
 		JS_FreeRuntime(rt);
@@ -77,31 +79,36 @@ public:
 			return false;
 		}
 
-		const char *realdir = SLT_FS_RealDir("main.js");
-		std::string fullpath = std::string(realdir) + "/main.js";
-		JSValue val = JS_Eval(ctx, script, strlen(script), fullpath.c_str(), JS_EVAL_TYPE_MODULE);
-		if (JS_IsException(val)) {
+		const char *import = "import main from 'main.js'; globalThis.main = main";
+		JSValue imported = JS_Eval(ctx, import, strlen(import), "<import>", JS_EVAL_TYPE_MODULE);
+		if (JS_IsException(imported)) {
 			js_std_dump_error(ctx);
 			return false;
 		}
-		JS_FreeValue(ctx, val);
 
-		updateFunc = JS_GetPropertyStr(ctx, global, "update");
-		drawFunc = JS_GetPropertyStr(ctx, global, "draw");
+		JSValue main = JS_GetPropertyStr(ctx, global, "main");
+		if (!JS_IsObject(main)) {
+			SLT_Error(ERR_GAME, "main.js did not export a module.");
+			return false;
+		}
+
+		updateFunc = JS_GetPropertyStr(ctx, main, "update");
+		drawFunc = JS_GetPropertyStr(ctx, main, "draw");
+		startFunc = JS_GetPropertyStr(ctx, main, "start");
+		saveFunc = JS_GetPropertyStr(ctx, main, "save");
 
 		if (!JS_IsFunction(ctx, updateFunc)) {
-			SLT_Error(ERR_GAME, "globalThis.update was not a function");
+			SLT_Error(ERR_GAME, "Module did not export an update function.");
 			return false;		
 		}
 
 		if (!JS_IsFunction(ctx, drawFunc)) {
-			SLT_Error(ERR_GAME, "globalThis.draw was not a function");
+			SLT_Error(ERR_GAME, "Module did not export a draw function.");
 			return false;		
 		}
 
-		startFunc = JS_GetPropertyStr(ctx, global, "start");
 		if (!JS_IsFunction(ctx, startFunc)) {
-			SLT_Error(ERR_GAME, "globalThis.start was not a function");
+			SLT_Error(ERR_GAME, "Module did not export a start function.");
 			return false;		
 		}
 
@@ -158,20 +165,34 @@ public:
 	}
 
 	std::string CallSave() const {
-		JSValue saveFunc = JS_GetPropertyStr(ctx, global, "save");
-		if (JS_IsFunction(ctx, saveFunc)) {
-			JSValue saveResult = JS_Call(ctx, saveFunc, global, 0, nullptr);
-			if (JS_IsString(saveResult)) {
-				const char *tempStr = JS_ToCString(ctx, saveResult);
-				std::string ret = tempStr;
-				JS_FreeCString(ctx, tempStr);
-				JS_FreeValue(ctx, saveFunc);
-				return ret;
-			}
+		if (!JS_IsFunction(ctx, saveFunc)) {
+			return "";
 		}
 
-		JS_FreeValue(ctx, saveFunc);
-		return "";
+		JSValue saveResult = JS_Call(ctx, saveFunc, global, 0, nullptr);
+		if (!JS_IsString(saveResult)) {
+			JS_FreeValue(ctx, saveResult);
+			return "";
+		}
+
+		const char *tempStr = JS_ToCString(ctx, saveResult);
+		std::string ret = tempStr;
+		JS_FreeCString(ctx, tempStr);
+		return ret;
+	}
+
+	bool Eval(const char *code) const {
+		JSValue result = JS_EvalThis(ctx, global, code, strlen(code), "eval", 0);
+		const char *resultStr = JS_ToCString(ctx, result);
+		Con_Print(resultStr);
+
+		if (JS_IsException(result)) {
+			JS_FreeValue(ctx, result);
+			return false;
+		}
+
+		JS_FreeValue(ctx, result);
+		return true;
 	}
 };
 
@@ -239,6 +260,11 @@ int main(int argc, char* argv[]) {
 
 	Con_AddCommand("js_clearState", []() {
 		state = "";
+	});
+
+	Con_AddCommand("js_eval", []() {
+		const char *js = SLT_Con_GetArgs(1);
+		instance->Eval(js);
 	});
 
 	ImGui::SetCurrentContext((ImGuiContext*)SLT_GetImguiContext());

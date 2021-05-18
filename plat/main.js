@@ -6,11 +6,11 @@ import * as Assets from "assets";
 let dog, dogSpr;
 let state = {t: 0};
 
-globalThis.save = function() {
+function save() {
   return JSON.stringify(state);
 }
 
-globalThis.start = function(initialState) {
+function start(initialState) {
   console.log("start");
   console.log("platform is " + SLT.platform);
   SLT.registerButtons(['up', 'down', 'left', 'right']);
@@ -36,7 +36,7 @@ globalThis.start = function(initialState) {
   })
 };
 
-globalThis.draw = function() {
+function draw() {
   Draw.clear(0, 0, 0, 255);
 
   const mouse = SLT.mouse();
@@ -61,10 +61,12 @@ globalThis.draw = function() {
   SLT.printWin("test", "y", y);
 };
 
-globalThis.update = function(dt) {
+function update(dt) {
   state.t += dt;
   testmodule(1);
   // if (t > 3) {
   //   throw new Error("test exception");
   // }
 };
+
+export default { draw, update, start, save };

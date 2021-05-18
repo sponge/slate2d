@@ -9,8 +9,6 @@ extern "C" {
 #include <quickjs-debugger.h>
 }
 
-// TODO: eval command, savestate/loadstate JS functions to call on hot reload
-
 JSModuleDef* physfs_module_loader(JSContext* ctx, const char* module_name, void* opaque) {
 	char* script = nullptr;
 	int sz = SLT_FS_ReadFile(module_name, (void**)&script);
@@ -110,8 +108,9 @@ public:
 		return true;
 	}
 
-	bool CallStart() const {
-		JSValue jsResult = JS_Call(ctx, startFunc, global, 0, nullptr);
+	bool CallStart(const char *state) const {
+		JSValueConst jsState = state == nullptr || strlen(state) == 0 ? JS_UNDEFINED : JS_NewString(ctx, state);
+		JSValue jsResult = JS_Call(ctx, startFunc, global, 1, &jsState);
 		if (JS_IsException(jsResult)) {
 			js_std_dump_error(ctx);
 			JS_FreeValue(ctx, jsResult);
@@ -157,10 +156,28 @@ public:
 		JS_FreeValue(ctx, jsResult);
 		return true;
 	}
+
+	std::string CallSave() const {
+		JSValue saveFunc = JS_GetPropertyStr(ctx, global, "save");
+		if (JS_IsFunction(ctx, saveFunc)) {
+			JSValue saveResult = JS_Call(ctx, saveFunc, global, 0, nullptr);
+			if (JS_IsString(saveResult)) {
+				const char *tempStr = JS_ToCString(ctx, saveResult);
+				std::string ret = tempStr;
+				JS_FreeCString(ctx, tempStr);
+				JS_FreeValue(ctx, saveFunc);
+				return ret;
+			}
+		}
+
+		JS_FreeValue(ctx, saveFunc);
+		return "";
+	}
 };
 
 bool loop = true;
 SLTJSInstance *instance;
+std::string state = "";
 
 void main_loop() {
 	conVar_t *errVar = Con_GetVar("engine.errorMessage");
@@ -172,7 +189,7 @@ void main_loop() {
 			instance = nullptr;
 		}
 
-		if (!instance->CallStart()) {
+		if (!instance->CallStart(state.c_str())) {
 			delete instance;
 			instance = nullptr;
 		}
@@ -214,7 +231,15 @@ finish:
 int main(int argc, char* argv[]) {
 	SLT_Init(argc, argv);
 
-	Con_AddCommand("js_reload", []() { delete instance; instance = nullptr; });
+	Con_AddCommand("js_reload", []() {
+		state = instance->CallSave();
+		delete instance;
+		instance = nullptr;
+	});
+
+	Con_AddCommand("js_clearState", []() {
+		state = "";
+	});
 
 	ImGui::SetCurrentContext((ImGuiContext*)SLT_GetImguiContext());
 

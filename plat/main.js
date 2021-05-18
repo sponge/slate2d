@@ -4,11 +4,20 @@ import * as SLT from "slate2d";
 import * as Assets from "assets";
 
 let dog, dogSpr;
+let state = {t: 0};
 
-globalThis.start = function() {
+globalThis.save = function() {
+  return JSON.stringify(state);
+}
+
+globalThis.start = function(initialState) {
   console.log("start");
   console.log("platform is " + SLT.platform);
   SLT.registerButtons(['up', 'down', 'left', 'right']);
+
+  if (initialState) {
+    state = JSON.parse(initialState);
+  }
 
   dog = Assets.load({
     name: 'dog',
@@ -27,12 +36,13 @@ globalThis.start = function() {
   })
 };
 
-let t = 0;
 globalThis.draw = function() {
   Draw.clear(0, 0, 0, 255);
 
   const mouse = SLT.mouse();
   const res = SLT.resolution();
+
+  let t = state.t;
 
   const x = Math.floor((t * 100) % res.w);
   const y = Math.floor(Math.sin(x / 50) * 100 + 200);
@@ -52,7 +62,7 @@ globalThis.draw = function() {
 };
 
 globalThis.update = function(dt) {
-  t += dt;
+  state.t += dt;
   testmodule(1);
   // if (t > 3) {
   //   throw new Error("test exception");

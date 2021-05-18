@@ -62,6 +62,7 @@ public:
 	JSValue drawFunc;
 	JSValue startFunc;
 	JSValue saveFunc;
+	JSValue main;
 
 	SLTJSInstance() {
 		rt = JS_NewRuntime();
@@ -83,19 +84,22 @@ public:
 		JS_FreeValue(ctx, updateFunc);
 		JS_FreeValue(ctx, drawFunc);
 		JS_FreeValue(ctx, saveFunc);
+		// note we don't free main since it's a global object managed by the js
 
 		JS_FreeContext(ctx);
 		JS_FreeRuntime(rt);
 	}
 
 	bool Init() {
-		const char *import = "import main from './main.js'; globalThis.main = main";
+		const char *import = "import main from './main.js'; \
+		typeof main == 'function' ? globalThis.main = new main() : globalThis.main = main";
+
 		JSValue imported = JS_Eval(ctx, import, strlen(import), "<import>", JS_EVAL_TYPE_MODULE);
 		if (JS_IsException(imported)) {
 			return false;
 		}
 
-		JSValue main = JS_GetPropertyStr(ctx, global, "main");
+		main = JS_GetPropertyStr(ctx, global, "main");
 		if (!JS_IsObject(main)) {
 			SLT_Error(ERR_GAME, "main.js did not export a module.");
 			return false;
@@ -128,7 +132,7 @@ public:
 
 	bool CallStart(const char *state) const {
 		JSValueConst jsState = state == nullptr || strlen(state) == 0 ? JS_UNDEFINED : JS_NewString(ctx, state);
-		JSValue jsResult = JS_Call(ctx, startFunc, global, 1, &jsState);
+		JSValue jsResult = JS_Call(ctx, startFunc, main, 1, &jsState);
 		if (JS_IsException(jsResult)) {
 			return false;
 		}
@@ -141,7 +145,7 @@ public:
 		JSValue jsResult;
 
 		JSValueConst arg = JS_NewFloat64(ctx, dt);
-		jsResult = JS_Call(ctx, updateFunc, global, 1, &arg);
+		jsResult = JS_Call(ctx, updateFunc, main, 1, &arg);
 		if (JS_IsException(jsResult)) {
 			return false;
 		}
@@ -153,7 +157,7 @@ public:
 	}
 
 	bool CallDraw() const {
-		JSValue jsResult = JS_Call(ctx, drawFunc, global, 0, nullptr);
+		JSValue jsResult = JS_Call(ctx, drawFunc, main, 0, nullptr);
 		if (JS_IsException(jsResult)) {
 			return false;
 		}
@@ -167,7 +171,7 @@ public:
 			return "";
 		}
 
-		JSValue saveResult = JS_Call(ctx, saveFunc, global, 0, nullptr);
+		JSValue saveResult = JS_Call(ctx, saveFunc, main, 0, nullptr);
 		if (JS_IsException(saveResult)) {
 			Error("Caught exception in Save()");
 			return "";
@@ -298,6 +302,8 @@ int main(int argc, char* argv[]) {
 	SLT_Init(argc, argv);
 
 	SLT_Con_AddCommand("js_reload", []() {
+		SLT_Con_SetVar("engine.errorMessage", "");
+		SLT_Con_SetVar("engine.lastErrorStack", "");
 		if (instance) {
 			state = instance->CallSave();
 			delete instance;

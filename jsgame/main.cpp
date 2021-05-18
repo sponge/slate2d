@@ -92,7 +92,6 @@ public:
 		const char *import = "import main from './main.js'; globalThis.main = main";
 		JSValue imported = JS_Eval(ctx, import, strlen(import), "<import>", JS_EVAL_TYPE_MODULE);
 		if (JS_IsException(imported)) {
-			js_std_dump_error(ctx);
 			return false;
 		}
 
@@ -131,10 +130,6 @@ public:
 		JSValueConst jsState = state == nullptr || strlen(state) == 0 ? JS_UNDEFINED : JS_NewString(ctx, state);
 		JSValue jsResult = JS_Call(ctx, startFunc, global, 1, &jsState);
 		if (JS_IsException(jsResult)) {
-			js_std_dump_error(ctx);
-			JS_FreeValue(ctx, jsResult);
-			SLT_Error(ERR_GAME, "Exception in globalThis.start. Check stdout for details until I fix this.");
-
 			return false;
 		}
 
@@ -148,11 +143,6 @@ public:
 		JSValueConst arg = JS_NewFloat64(ctx, dt);
 		jsResult = JS_Call(ctx, updateFunc, global, 1, &arg);
 		if (JS_IsException(jsResult)) {
-			js_std_dump_error(ctx);
-			JS_FreeValue(ctx, arg);
-			JS_FreeValue(ctx, jsResult);
-
-			SLT_Error(ERR_GAME, "Exception in globalThis.update. Check stdout for details until I fix this.");
 			return false;
 		}
 
@@ -165,10 +155,6 @@ public:
 	bool CallDraw() const {
 		JSValue jsResult = JS_Call(ctx, drawFunc, global, 0, nullptr);
 		if (JS_IsException(jsResult)) {
-			js_std_dump_error(ctx);
-			JS_FreeValue(ctx, jsResult);
-
-			SLT_Error(ERR_GAME, "Exception in globalThis.draw. Check stdout for details until I fix this.");
 			return false;
 		}
 
@@ -182,6 +168,11 @@ public:
 		}
 
 		JSValue saveResult = JS_Call(ctx, saveFunc, global, 0, nullptr);
+		if (JS_IsException(saveResult)) {
+			Error("Caught exception in Save()");
+			return "";
+		}
+
 		if (!JS_IsString(saveResult)) {
 			JS_FreeValue(ctx, saveResult);
 			return "";
@@ -206,6 +197,44 @@ public:
 		JS_FreeValue(ctx, result);
 		return true;
 	}
+
+	std::string DumpObject(JSValue val) const {
+    const char *str;
+		std::string out = "";
+    
+    str = JS_ToCString(ctx, val);
+    if (str) {
+			out += str;
+			out += "\n";
+			JS_FreeCString(ctx, str);
+    } else {
+			out += "[exception]\n";
+    }
+
+		return out;
+	}
+
+	std::string GetException() const {
+		std::string out = "";
+    JSValue exception_val = JS_GetException(ctx);
+    bool is_error = JS_IsError(ctx, exception_val);
+    out += DumpObject(exception_val);
+    if (is_error) {
+        JSValue val = JS_GetPropertyStr(ctx, exception_val, "stack");
+        if (!JS_IsUndefined(val)) {
+            out += DumpObject(val);
+        }
+        JS_FreeValue(ctx, val);
+    }
+    JS_FreeValue(ctx, exception_val);
+
+		return out;
+	}
+
+	void Error(const char *message) const {
+			SLT_Con_SetVar("engine.lastErrorStack", GetException().c_str());
+			SLT_Error(ERR_GAME, message);
+	}
 };
 
 bool loop = true;
@@ -218,16 +247,16 @@ void main_loop() {
 		SLT_Asset_ClearAll();
 		instance = new SLTJSInstance();
 		if (!instance->Init()) {
+			instance->Error("Exception while parsing main.js");
 			delete instance;
 			instance = nullptr;
-			SLT_Error(ERR_GAME, "JS error while loading main.js.");
 			return;
 		}
 
 		if (!instance->CallStart(state.c_str())) {
+			instance->Error("Exception while calling Start()");
 			delete instance;
 			instance = nullptr;
-			SLT_Error(ERR_GAME, "JS error while calling start function.");
 			return;
 		}
 	}
@@ -247,18 +276,18 @@ void main_loop() {
 	}
 
 	if (!instance->CallUpdate(dt)) {
-		goto error;
+			instance->Error("Exception while calling Update()");
+			delete instance;
+			instance = nullptr;
+			goto finish;
 	}
 
 	if (!instance->CallDraw()) {
-		goto error;
+			instance->Error("Exception while calling Draw()");
+			delete instance;
+			instance = nullptr;
+			goto finish;
 	}
-
-	goto finish;
-
-error:
-	delete instance;
-	instance = nullptr;
 
 finish:
 	SLT_EndFrame();
@@ -268,11 +297,12 @@ finish:
 int main(int argc, char* argv[]) {
 	SLT_Init(argc, argv);
 
-	
 	SLT_Con_AddCommand("js_reload", []() {
-		state = instance->CallSave();
-		delete instance;
-		instance = nullptr;
+		if (instance) {
+			state = instance->CallSave();
+			delete instance;
+			instance = nullptr;
+		}
 	});
 
 	SLT_Con_AddCommand("js_clearState", []() {
@@ -280,8 +310,10 @@ int main(int argc, char* argv[]) {
 	});
 
 	SLT_Con_AddCommand("js_eval", []() {
-		const char *js = SLT_Con_GetArgs(1);
-		instance->Eval(js);
+		if (instance) {
+			const char *js = SLT_Con_GetArgs(1);
+			instance->Eval(js);
+		}
 	});
 
 	ImGui::SetCurrentContext((ImGuiContext*)SLT_GetImguiContext());
@@ -293,7 +325,10 @@ int main(int argc, char* argv[]) {
 		main_loop();
 	}
 
-	delete instance;
+	if (instance) {
+		delete instance;
+	}
+
 	SLT_Shutdown();
 #endif
 }

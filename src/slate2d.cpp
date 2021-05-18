@@ -138,7 +138,9 @@ void ConH_Print(const char *line) {
 }
 
 void ConH_Error(int level, const char *message) {
+	Con_Print("==============================\nERROR\n==============================\n");
 	Con_Print(message);
+	Con_Print(eng_lastErrorStack->string);
 
 #if defined(_WIN32) && defined(DEBUG)
 	if (level == ERR_FATAL) {

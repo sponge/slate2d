@@ -196,7 +196,7 @@ public:
 	bool Eval(const char *code) const {
 		JSValue result = JS_EvalThis(ctx, global, code, strlen(code), "eval", 0);
 		const char *resultStr = JS_ToCString(ctx, result);
-		Con_Print(resultStr);
+		SLT_Print(resultStr);
 
 		if (JS_IsException(result)) {
 			JS_FreeValue(ctx, result);
@@ -213,7 +213,7 @@ SLTJSInstance *instance;
 std::string state = "";
 
 void main_loop() {
-	conVar_t *errVar = Con_GetVar("engine.errorMessage");
+	conVar_t *errVar = SLT_Con_GetVar("engine.errorMessage");
 	if (instance == nullptr && strlen(errVar->string) == 0) {
 		SLT_Asset_ClearAll();
 		instance = new SLTJSInstance();
@@ -268,17 +268,18 @@ finish:
 int main(int argc, char* argv[]) {
 	SLT_Init(argc, argv);
 
-	Con_AddCommand("js_reload", []() {
+	
+	SLT_Con_AddCommand("js_reload", []() {
 		state = instance->CallSave();
 		delete instance;
 		instance = nullptr;
 	});
 
-	Con_AddCommand("js_clearState", []() {
+	SLT_Con_AddCommand("js_clearState", []() {
 		state = "";
 	});
 
-	Con_AddCommand("js_eval", []() {
+	SLT_Con_AddCommand("js_eval", []() {
 		const char *js = SLT_Con_GetArgs(1);
 		instance->Eval(js);
 	});

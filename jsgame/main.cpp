@@ -10,15 +10,33 @@ extern "C" {
 }
 
 JSModuleDef* physfs_module_loader(JSContext* ctx, const char* module_name, void* opaque) {
+	// nasty hacky code ahead.
+	// use main.js because it will return pak00.pk3 when running out of a pk3 file. this probably breaks cases
+	// where you have js files in multiple pk3s though but i don't care about that right now. maybe we just need
+	// to chop off (file).pk3 if it is in the end of the path?
+	const char *root = SLT_FS_RealDir("/main.js");
+
+	// if module_name resolves to the full path, chop off the prefix to give us the virtual path
+	// relative to where main.js is since physicsfs doesn't support ./ or ../ at all
+	const char *base = strstr(module_name, root);
+	const char *virtualPath;
+	if (base != nullptr) {
+		virtualPath = base + strlen(root);
+	} else {
+		virtualPath = module_name;
+	}
+
+	// virtualPath should now be something like /test/testmodule.js
 	char* script = nullptr;
-	int sz = SLT_FS_ReadFile(module_name, (void**)&script);
+	int sz = SLT_FS_ReadFile(virtualPath, (void**)&script);
 
 	if (sz <= 0) {
 		JS_ThrowReferenceError(ctx, "could not load module filename '%s'",module_name);
 		return NULL;
 	}
 
-	/* compile the module */
+	// compile the module here. realdir is used because if we're running from the filesystem, it'll
+	// give full filesystem paths that the debugger will use.
 	const char *realdir = SLT_FS_RealDir(module_name);
 	std::string fullpath = realdir == nullptr ? module_name : std::string(realdir) + "/" + std::string(module_name);
 	JSValue func_val = JS_Eval(ctx, (char*)script, sz, fullpath.c_str(), JS_EVAL_TYPE_MODULE|JS_EVAL_FLAG_COMPILE_ONLY);
@@ -71,15 +89,7 @@ public:
 	}
 
 	bool Init() {
-		char* script = nullptr;
-		int sz = SLT_FS_ReadFile("main.js", (void**)&script);
-
-		if (sz <= 0) {
-			SLT_Error(ERR_GAME, "Couldn't find main.js");
-			return false;
-		}
-
-		const char *import = "import main from 'main.js'; globalThis.main = main";
+		const char *import = "import main from './main.js'; globalThis.main = main";
 		JSValue imported = JS_Eval(ctx, import, strlen(import), "<import>", JS_EVAL_TYPE_MODULE);
 		if (JS_IsException(imported)) {
 			js_std_dump_error(ctx);
@@ -96,6 +106,8 @@ public:
 		drawFunc = JS_GetPropertyStr(ctx, main, "draw");
 		startFunc = JS_GetPropertyStr(ctx, main, "start");
 		saveFunc = JS_GetPropertyStr(ctx, main, "save");
+
+		JS_FreeValue(ctx, main);
 
 		if (!JS_IsFunction(ctx, updateFunc)) {
 			SLT_Error(ERR_GAME, "Module did not export an update function.");
@@ -208,11 +220,15 @@ void main_loop() {
 		if (!instance->Init()) {
 			delete instance;
 			instance = nullptr;
+			SLT_Error(ERR_GAME, "JS error while loading main.js.");
+			return;
 		}
 
 		if (!instance->CallStart(state.c_str())) {
 			delete instance;
 			instance = nullptr;
+			SLT_Error(ERR_GAME, "JS error while calling start function.");
+			return;
 		}
 	}
 

@@ -1,4 +1,4 @@
-import { testmodule } from "testmodule.js";
+import { testmodule, testmodule2, testmodule3, testmodule4 } from "./test/testmodule.js";
 import * as Draw from "draw";
 import * as SLT from "slate2d";
 import * as Assets from "assets";
@@ -64,6 +64,8 @@ function draw() {
 function update(dt) {
   state.t += dt;
   testmodule(1);
+  testmodule4(4);
+
   // if (t > 3) {
   //   throw new Error("test exception");
   // }

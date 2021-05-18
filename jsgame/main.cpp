@@ -213,7 +213,7 @@ SLTJSInstance *instance;
 std::string state = "";
 
 void main_loop() {
-	conVar_t *errVar = SLT_Con_GetVar("engine.errorMessage");
+	const conVar_t *errVar = SLT_Con_GetVar("engine.errorMessage");
 	if (instance == nullptr && strlen(errVar->string) == 0) {
 		SLT_Asset_ClearAll();
 		instance = new SLTJSInstance();

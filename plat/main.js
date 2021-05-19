@@ -8,7 +8,9 @@ class Main {
     this.dog = undefined;
     this.dogSpr = undefined;
     this.state = {t: 0};
-
+    this.test = [1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5];
+    this.test2 = "hello world";
+    this.test3 = new Promise(() => {}, () => {});
     console.log("constructed!");
   }
 
@@ -76,6 +78,7 @@ class Main {
     this.state.t += dt;
     testmodule(1);
     testmodule4(4);
+    SLT.showObj("main class", this);
   
     // if (t > 3) {
     //   throw new Error("test exception");

@@ -37,6 +37,86 @@ static JSValue js_slt_printwin(JSContext *ctx, JSValueConst this_val, int argc, 
   return JS_UNDEFINED;
 }
 
+void RenderObjRecursively(JSContext *ctx, JSValue obj, const char *nodeName) {
+  JSPropertyEnum *tab_atom;
+  uint32_t tab_atom_count;
+
+  ImGui::PushID(obj.u.ptr);
+
+  ImGui::TableNextRow();
+  ImGui::TableSetColumnIndex(0);
+  ImGui::AlignTextToFramePadding();
+  bool node_open = ImGui::TreeNode(nodeName, "%s", nodeName);
+  ImGui::TableSetColumnIndex(1);
+  const char *nodeValStr = JS_ToCString(ctx, obj);
+  ImGui::Text("%s", nodeValStr);
+  JS_FreeCString(ctx, nodeValStr);
+
+  if (node_open) {
+    if (JS_GetOwnPropertyNames(ctx, &tab_atom, &tab_atom_count, obj, JS_GPN_STRING_MASK | JS_GPN_SYMBOL_MASK)) {
+      ImGui::TreePop();
+      ImGui::PopID();
+      return;
+    }
+
+    for (int i = 0; i < tab_atom_count; i++) {
+      JSValue val = JS_GetProperty(ctx, obj, tab_atom[i].atom);
+      //JSValue variable_json = js_debugger_get_variable(ctx, state, JS_AtomToString(ctx, tab_atom[i].atom), value);
+      const char *keyStr = JS_AtomToCString(ctx, tab_atom[i].atom);
+
+      if (JS_IsObject(val)) {
+        RenderObjRecursively(ctx, val, keyStr);
+      } else {
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::AlignTextToFramePadding();
+        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+        ImGui::TreeNodeEx(keyStr, flags, "%s", keyStr);
+
+        ImGui::TableSetColumnIndex(1);
+        ImGui::SetNextItemWidth(-FLT_MIN);
+
+        const char *valStr = JS_ToCString(ctx, val);
+        ImGui::Text("%s", valStr);
+
+        JS_FreeCString(ctx, valStr);
+      }
+      JS_FreeValue(ctx, val);
+      JS_FreeCString(ctx, keyStr);
+
+    }
+
+    for(uint32_t i = 0; i < tab_atom_count; i++) {
+      JS_FreeAtom(ctx, tab_atom[i].atom);
+    }
+
+    js_free(ctx, tab_atom);
+
+    ImGui::TreePop();
+  }
+  ImGui::PopID();
+}
+
+static JSValue js_slt_showobj(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+  if (!ImGui::Begin("Object Inspector")) {
+      ImGui::End();
+      return JS_UNDEFINED;
+  }
+
+  ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+  if (ImGui::BeginTable("split", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable)) {
+    const char *title = JS_ToCString(ctx, argv[0]);
+    RenderObjRecursively(ctx, argv[1], title);
+    JS_FreeCString(ctx, title);
+    ImGui::EndTable();
+  }
+  
+  ImGui::PopStyleVar();
+  ImGui::End();
+
+  return JS_UNDEFINED;
+}
+
 static JSValue js_slt_error(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
   int level;
   const char * error;
@@ -169,6 +249,7 @@ static JSValue js_slt_getresolution(JSContext *ctx, JSValueConst this_val, int a
 #pragma clang diagnostic ignored "-Wc99-designator"
 static const JSCFunctionListEntry js_slt_funcs[] = {
   JS_CFUNC_DEF("printWin", 1, js_slt_printwin),
+  JS_CFUNC_DEF("showObj", 2, js_slt_showobj),
   JS_CFUNC_DEF("error", 2, js_slt_error),
   JS_CFUNC_DEF("console", 1, js_slt_console),
   JS_CFUNC_DEF("sndPlay", 4, js_slt_sndplay),

@@ -15,4 +15,4 @@ extern conVar_t *eng_pause;
 extern conVar_t *snd_volume;
 extern conVar_t *debug_fontAtlas;
 extern conVar_t* debug_assets;
-extern conVar_t* debug_wrenInspector;
+extern conVar_t* debug_imguidemo;

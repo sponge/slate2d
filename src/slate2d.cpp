@@ -229,6 +229,10 @@ SLT_API double SLT_StartFrame() {
 		ImGui::End();
 	}
 
+	if (debug_imguidemo->boolean) {
+		ImGui::ShowDemoWindow();
+	}
+
 	rlMatrixMode(RL_PROJECTION);                            // Enable internal projection matrix
 	rlLoadIdentity();                                       // Reset internal projection matrix
 	rlOrtho(0.0, vid_width->integer, vid_height->integer, 0.0, 0.0, 1.0); // Recalculate internal projection matrix

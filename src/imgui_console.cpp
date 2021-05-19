@@ -2,6 +2,8 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
+#include <sstream>
 
 #include "console.h"
 #include "imgui_console.h"
@@ -38,7 +40,14 @@ void ConsoleUI::AddLog(const char* fmt, ...) {
 	vsnprintf(buf, IM_ARRAYSIZE(buf), fmt, args);
 	buf[IM_ARRAYSIZE(buf) - 1] = 0;
 	va_end(args);
-	Items.push_back(Strdup(buf));
+
+  std::stringstream ss(buf);
+  std::string to;
+
+	while (std::getline(ss,to,'\n')) {
+		Items.push_back(Strdup(to.c_str()));
+	}
+	
 	ScrollToBottom = true;
 
 	if (Items.size() > CONSOLE_MAX_LINES) {
@@ -84,12 +93,12 @@ void ConsoleUI::Draw(int width, int height) {
 				Con_SetVarFloat("debug.assets", debug_assets->integer ? 0 : 1);
 			}
 
-			if (ImGui::MenuItem("Wren Inspector", nullptr, debug_wrenInspector->boolean)) {
-				Con_SetVarFloat("debug.wrenInspector", debug_wrenInspector->integer ? 0 : 1);
-			}
-
 			if (ImGui::MenuItem("Font Atlas", nullptr, debug_fontAtlas->boolean)) {
 				Con_SetVarFloat("debug.fontAtlas", debug_fontAtlas->integer ? 0 : 1);
+			}
+
+			if (ImGui::MenuItem("ImGui Demo", nullptr, debug_imguidemo->boolean)) {
+				Con_SetVarFloat("debug.imguiDemo", debug_imguidemo->integer ? 0 : 1);
 			}
 
 			ImGui::EndMenu();
@@ -121,9 +130,11 @@ void ConsoleUI::Draw(int width, int height) {
 			ImGui::TextUnformatted(item);
 		}
 	}
-	if (ScrollToBottom)
-		ImGui::SetScrollHere();
+
+	if (ScrollToBottom || (ImGui::GetScrollY() >= ImGui::GetScrollMaxY()))
+			ImGui::SetScrollHereY(1.0f);
 	ScrollToBottom = false;
+
 	ImGui::PopStyleVar();
 	ImGui::EndChild();
 
@@ -163,12 +174,12 @@ void ConsoleUI::ExecCommand(const char* command_line) {
 	Con_Execute(command_line);
 }
 
-int ConsoleUI::TextEditCallbackStub(ImGuiTextEditCallbackData* data) { // In C++11 you are better off using lambdas for this sort of forwarding callbacks
+int ConsoleUI::TextEditCallbackStub(ImGuiInputTextCallbackData* data) { // In C++11 you are better off using lambdas for this sort of forwarding callbacks
 	ConsoleUI* console = (ConsoleUI*)data->UserData;
 	return console->TextEditCallback(data);
 }
 
-int ConsoleUI::TextEditCallback(ImGuiTextEditCallbackData* data)
+int ConsoleUI::TextEditCallback(ImGuiInputTextCallbackData* data)
 {
 	//AddLog("cursor: %d, selection: %d-%d", data->CursorPos, data->SelectionStart, data->SelectionEnd);
 	switch (data->EventFlag)

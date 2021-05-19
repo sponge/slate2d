@@ -19,7 +19,7 @@ conVar_t *eng_pause;
 conVar_t *snd_volume;
 conVar_t *debug_fontAtlas;
 conVar_t *debug_assets;
-conVar_t *debug_wrenInspector;
+conVar_t *debug_imguidemo;
 
 static conVarTable_t mainCvarTable[] = {
     { &eng_errorMessage, "engine.errorMessage", "", 0 },
@@ -34,7 +34,7 @@ static conVarTable_t mainCvarTable[] = {
 	{ &snd_volume, "snd.volume", "1.0", 0 },
 	{ &debug_fontAtlas, "debug.fontAtlas", "0", 0 },
 	{ &debug_assets, "debug.assets", "0", 0 },
-	{ &debug_wrenInspector, "debug.wrenInspector", "0", 0 },
+	{ &debug_imguidemo, "debug.imguiDemo", "0", 0 },
 	{ NULL }
 };
 

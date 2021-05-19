@@ -70,6 +70,8 @@ static JSValue js_slt_sndplay(JSContext *ctx, JSValueConst this_val, int argc, J
   if (JS_ToFloat64(ctx, &pan, argv[2])) return JS_EXCEPTION;
   if (JS_ToInt32(ctx, &loop, argv[3])) return JS_EXCEPTION;
 
+  unsigned int playHandle = SLT_Snd_Play(asset, volume, pan, loop);
+  return JS_NewUint32(ctx, playHandle);
 }
 
 static JSValue js_slt_sndstop(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
@@ -118,6 +120,9 @@ static JSValue js_slt_buttonpressed(JSContext *ctx, JSValueConst this_val, int a
   if (JS_ToInt32(ctx, &buttonNum, argv[0])) return JS_EXCEPTION;
   if (JS_ToInt32(ctx, &delay, argv[1])) return JS_EXCEPTION;
   if (JS_ToInt32(ctx, &repeat, argv[2])) return JS_EXCEPTION;
+
+  bool pressed = SLT_In_ButtonPressed(buttonNum, delay, repeat);
+  return JS_NewBool(ctx, pressed);
 }
 
 static JSValue js_slt_setwindowtitle(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {

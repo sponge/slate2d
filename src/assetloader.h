@@ -57,10 +57,10 @@ typedef struct {
 	Image* images;
 	Sprite* sprites;
 
-	int staticWidth;
-	int staticHeight;
-	int staticMarginX;
-	int staticMarginY;
+	int spriteWidth;
+	int spriteHeight;
+	int spriteMarginX;
+	int spriteMarginY;
 } SpriteAtlas;
 
 void* Sprite_Load(Asset &asset);

@@ -100,6 +100,6 @@ void Img_Inspect(Asset& asset, bool deselected) {
 	ImGui::SameLine();
 	ImGui::SliderInt("Zoom", &zoom, 1, 8, "%dx");
 	ImGui::BeginChildFrame(ImGui::GetID("inspector value"), ImVec2(0, 0), ImGuiWindowFlags_HorizontalScrollbar);
-	ImGui::Image((ImTextureID)img->hnd, ImVec2(img->w * zoom, img->h * zoom));
+	ImGui::Image((ImTextureID)(uintptr_t)img->hnd, ImVec2(img->w * zoom, img->h * zoom));
 	ImGui::EndChildFrame();
 }

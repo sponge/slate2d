@@ -330,6 +330,6 @@ void BMPFNT_Inspect(Asset& asset, bool deselected) {
 	ImVec2 bottom = ImVec2(w.x + offs.end * zoom, w.y + fnt->h * zoom);
 	ImGui::GetWindowDrawList()->AddRectFilled(top, bottom, color);
 
-	ImGui::Image((ImTextureID)img->hnd, ImVec2(img->w * zoom, img->h * zoom));
+	ImGui::Image((ImTextureID)(uintptr_t)img->hnd, ImVec2(img->w * zoom, img->h * zoom));
 	ImGui::EndChildFrame();
 }

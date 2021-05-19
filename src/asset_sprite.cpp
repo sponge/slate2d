@@ -98,7 +98,7 @@ void* Sprite_Load(Asset &asset) {
 		// create the atlas based off of fixed bounds
 		SpriteAtlas *spr = (SpriteAtlas*)asset.resource;
 
-		if (spr->staticWidth == 0 || spr->staticHeight == 0) {
+		if (spr->spriteWidth == 0 || spr->spriteHeight == 0) {
 			Con_Errorf(ERR_FATAL, "staticWidth and staticHeight for %s must not be 0 (missing Sprite_Set?)", asset.name);
 		}
 
@@ -113,8 +113,8 @@ void* Sprite_Load(Asset &asset) {
 		spr->images = new Image[1];
 		spr->images[0] = *img;
 
-		int rows = (img->h / (spr->staticHeight + spr->staticMarginY));
-		int cols = (img->w / (spr->staticWidth + spr->staticMarginX));
+		int rows = (img->h / (spr->spriteHeight + spr->spriteMarginY));
+		int cols = (img->w / (spr->spriteWidth + spr->spriteMarginX));
 
 		delete img;
 
@@ -126,10 +126,10 @@ void* Sprite_Load(Asset &asset) {
 		for (int i = 0; i < spr->numSprites; i++) {
 			spr->sprites[i] = { 0 };
 			spr->sprites[i].texture = &spr->images[0];
-			spr->sprites[i].x = (int16_t)((i % cols) * spr->staticWidth);
-			spr->sprites[i].y = (int16_t)((i / cols) * spr->staticHeight);
-			spr->sprites[i].w = (int16_t)spr->staticWidth;
-			spr->sprites[i].h = (int16_t)spr->staticHeight;
+			spr->sprites[i].x = (int16_t)((i % cols) * spr->spriteWidth);
+			spr->sprites[i].y = (int16_t)((i / cols) * spr->spriteHeight);
+			spr->sprites[i].w = (int16_t)spr->spriteWidth;
+			spr->sprites[i].h = (int16_t)spr->spriteHeight;
 		}
 
 	}
@@ -147,7 +147,7 @@ void Sprite_Free(Asset &asset) {
 
 	delete[] spr->images;
 
-	delete asset.resource;
+	delete spr;
 }
 
 void Sprite_Reload(Asset& asset) {
@@ -158,10 +158,10 @@ void Sprite_Reload(Asset& asset) {
 	else {
 		SpriteAtlas* spr = (SpriteAtlas*)asset.resource;
 
-		int width = spr->staticWidth;
-		int height = spr->staticHeight;
-		int marginx = spr->staticMarginX;
-		int marginy = spr->staticMarginY;
+		int width = spr->spriteWidth;
+		int height = spr->spriteHeight;
+		int marginx = spr->spriteMarginX;
+		int marginy = spr->spriteMarginY;
 
 		Asset_Unload(asset.id);
 		Sprite_Set(asset.id, width, height, marginx, marginy);
@@ -208,10 +208,10 @@ void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int
 
 	auto spr = new SpriteAtlas();
 
-	spr->staticWidth = width;
-	spr->staticHeight = height;
-	spr->staticMarginX = marginX;
-	spr->staticMarginY = marginY;
+	spr->spriteWidth = width;
+	spr->spriteHeight = height;
+	spr->spriteMarginX = marginX;
+	spr->spriteMarginY = marginY;
 
 	asset->resource = (void*)spr;
 }
@@ -253,6 +253,6 @@ void Sprite_Inspect(Asset& asset, bool deselected) {
 	ImVec2 bottom = ImVec2(w.x + (spr.x + spr.w) * zoom, w.y + (spr.y + spr.h) * zoom);
 	ImGui::GetWindowDrawList()->AddRectFilled(top, bottom, color);
 
-	ImGui::Image((ImTextureID)spr.texture->hnd, ImVec2(spr.texture->w * zoom, spr.texture->h * zoom));
+	ImGui::Image((ImTextureID)(uintptr_t)spr.texture->hnd, ImVec2(spr.texture->w * zoom, spr.texture->h * zoom));
 	ImGui::EndChildFrame();
 }

@@ -53,6 +53,9 @@ void* Sound_Load(Asset &asset) {
 			mod->loadMem(musicbuf, sz, false, true);
 			return (void*)mod;
 		}
+
+		default:
+			return nullptr;
 	}
 
 	return nullptr;

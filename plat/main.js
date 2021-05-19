@@ -35,7 +35,7 @@ class Main {
       name: 'dogspr',
       type: 'sprite',
       path: 'gfx/dog.png',
-      spriteWidth: 16,
+      spriteWidth: 22,
       spriteHeight: 16,
       marginX: 0,
       marginY: 0,
@@ -55,6 +55,10 @@ class Main {
     const y = Math.floor(Math.sin(x / 50) * 100 + 200);
     const sz = Math.cos(t) * 32 + 32
     Draw.rect(x, y, sz, sz, true);
+
+    Draw.setColor(255, 255, 255, 255);
+    Draw.sprite(this.dogSpr, Math.floor(t * 8) % 6, x, y, 2, 0, 1, 1);
+    Draw.setColor(255, 255, 255, 128);
   
     Draw.image(this.dog, 0, 0, 32, 32, 1, 0, 0, 0);
     Draw.tri(10, 20, 400, 400, 400, 100, true);

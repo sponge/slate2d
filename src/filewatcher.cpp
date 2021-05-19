@@ -25,8 +25,9 @@ static int FileWatcher_Thread(void *ptr) {
 
 	while (true) {
 		vec_foreach_ptr(&sourceFiles, file, i) {
-			auto mtime = PHYSFS_getLastModTime(file->name);
-			if (mtime > file->lastModified) {
+			PHYSFS_Stat stat;
+			int success = PHYSFS_stat(file->name, &stat);
+			if (success && stat.modtime > file->lastModified) {
 				fileChanged = true;
 				return 0;
 			}
@@ -38,9 +39,9 @@ static int FileWatcher_Thread(void *ptr) {
 
 void FileWatcher_TrackFile(const char *path) {
 	PHYSFS_Stat stat;
-	int err = PHYSFS_stat(path, &stat);
+	int success = PHYSFS_stat(path, &stat);
 
-	if (err == 0) {
+	if (!success) {
 		Con_Printf("can't stat file %s\n", path);
 		return;
 	}
@@ -62,15 +63,15 @@ void FileWatcher_TrackFile(const char *path) {
 }
 
 void FileWatcher_TrackRecursive(const char *path) {
-	int err;
+	
 	PHYSFS_Stat stat;
 
 	char **files = PHYSFS_enumerateFiles(path);
 	char **i;
 	for (i = files; *i != NULL; i++) {
 		sds fullPath = sdscatfmt(sdsempty(), "%s/%s", path, *i);
-		err = PHYSFS_stat(fullPath, &stat);
-		if (err == 0) {
+		int success = PHYSFS_stat(fullPath, &stat);
+		if (!success) {
 			Con_Printf("can't stat file %s\n", path);
 			return;
 		}
@@ -97,9 +98,9 @@ void Cmd_TrackPath_f() {
 	const char *path = Con_GetArg(1);
 
 	PHYSFS_Stat stat;
-	int err = PHYSFS_stat(path, &stat);
+	int success = PHYSFS_stat(path, &stat);
 
-	if (err == 0) {
+	if (!success) {
 		Con_Printf("can't stat file %s\n", path);
 		return;
 	}
@@ -129,7 +130,9 @@ void FileWatcher_StartThread() {
 	int i;
 	fileWatcherInfo_t *file;
 	vec_foreach_ptr(&sourceFiles, file, i) {
-		file->lastModified = PHYSFS_getLastModTime(file->name);
+		PHYSFS_Stat stat;
+		int success = PHYSFS_stat(file->name, &stat);
+		file->lastModified = success ? stat.modtime : 0;
 	}
 
 	thread = SDL_CreateThread(&FileWatcher_Thread, "filewatcher", nullptr);

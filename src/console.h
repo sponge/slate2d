@@ -13,9 +13,9 @@ extern "C" {
 #include "external/map.h"
 
 // valid flags for conVar_t flags
-#define CONVAR_ROM 1<<0  // value can never be changed and only set by code
-#define CONVAR_STARTUP 1<<1 // value can only be set during startup
-#define CONVAR_USER 1<<2 // value was set by user
+#define CONVAR_ROM (1<<0)  // value can never be changed and only set by code
+#define CONVAR_STARTUP (1<<1) // value can only be set during startup
+#define CONVAR_USER (1<<2) // value was set by user
 
 // valid values for Con_Error
 #define ERR_NONE 0 // not an error, will be ignored by error system

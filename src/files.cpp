@@ -22,7 +22,9 @@ void Cmd_Dir_f() {
 
 bool FS_Exists(const char *file) {
 	if (PHYSFS_exists(file)) {
-		if (!PHYSFS_isDirectory(file)) {
+		PHYSFS_Stat stat;
+		int success = PHYSFS_stat(file, &stat);
+		if (success && stat.filetype != PHYSFS_FILETYPE_DIRECTORY) {
 			return true;
 		}
 	}
@@ -82,14 +84,14 @@ void FS_Init(const char *argv0) {
 	const char *fullBasePath = tempstr("%s/%s", fs_basepath->string, fs_basegame->string);
 	PHYSFS_mount(fullBasePath, "/", 1);
 	baseFiles = PHYSFS_enumerateFiles("/");
-	PHYSFS_removeFromSearchPath(fullBasePath);
+	PHYSFS_unmount(fullBasePath);
 
 	// if fs_game is set, do the same thing for the fs_game dir
 	if (modLoaded) {
 		const char *fullGamePath = tempstr("%s/%s", fs_basepath->string, fs_game->string);
 		PHYSFS_mount(fullGamePath, "/", 1);
 		gameFiles = PHYSFS_enumerateFiles("/");
-		PHYSFS_removeFromSearchPath(fullGamePath);
+		PHYSFS_unmount(fullGamePath);
 
 		// mount the mod dir first, then mount mod PK3s
 		PHYSFS_mount(tempstr("%s/%s", fs_basepath->string, fs_game->string), "/", 1);
@@ -127,11 +129,11 @@ int FS_ReadFile(const char *path, void **buffer) {
 	*buffer = malloc((size_t)sz+1);
 	memset(*buffer, 0, (size_t)sz + 1);
 
-	auto read_sz = PHYSFS_read(f, *buffer, (PHYSFS_uint32)1, (PHYSFS_uint32)sz);
+	auto read_sz = PHYSFS_readBytes(f, *buffer, (PHYSFS_uint32)sz);
 
 	if (read_sz == -1) {
-		auto lastErr = PHYSFS_getLastError();
-		Con_Printf("FS err: %s", lastErr);
+		PHYSFS_ErrorCode code = PHYSFS_getLastErrorCode();
+		Con_Printf("FS err: %s", PHYSFS_getErrorByCode(code));
 	}
 
 	PHYSFS_close(f);

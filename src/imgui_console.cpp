@@ -12,8 +12,6 @@
 
 #define CONSOLE_MAX_LINES 4000
 
-#define IM_ARRAYSIZE(_ARR)  ((int)(sizeof(_ARR)/sizeof(*_ARR)))
-
 ConsoleUI::ConsoleUI() {
 	ClearLog();
 	memset(InputBuf, 0, sizeof(InputBuf));

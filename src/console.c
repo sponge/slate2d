@@ -272,9 +272,9 @@ void Con_Shutdown() {
 
 	while ((key = map_next(&con->vars, &iter))) {
 		conVar_t *var = map_get(&con->vars, key);
-		sdsfree(var->name);
-		sdsfree(var->defaultValue);
-		sdsfree(var->string);
+		sdsfree((sds)var->name);
+		sdsfree((sds)var->defaultValue);
+		sdsfree((sds)var->string);
 	}
 	map_deinit(&con->vars);
 
@@ -290,7 +290,7 @@ void Con_Shutdown() {
 	i = 0;
 	buttonState_t *button;
 	vec_foreach_ptr(&con->buttons, button, i) {
-		sdsfree(button->name);
+		sdsfree((sds)button->name);
 	}
 	vec_deinit(&con->buttons);
 }
@@ -383,14 +383,14 @@ static void Con_RunCommand(sds cmd) {
 	con->cmd = cmd;
 
 	// setup argv/argc. sdssplitargs will not split terms in quotes.
-	con->argv = sdssplitargs(con->cmd, &con->argc);
+	con->argv = (const char **)sdssplitargs(con->cmd, &con->argc);
 
 	if (con->argc == 0) {
 		return;
 	}
 
 	// command handlers are case insensitive
-	sdstolower(con->argv[0]);
+	sdstolower((sds)con->argv[0]);
 
 	conCmd_t *handler = map_get(&con->cmds, con->argv[0]);
 	conVar_t *var = NULL;
@@ -423,9 +423,9 @@ static void Con_RunCommand(sds cmd) {
 	}
 
 	// free all potentially used members
-	sdsfreesplitres(con->argv, con->argc);
-	sdsfree(con->tempArgs);
-	sdsfree(con->cmd);
+	sdsfreesplitres((sds*)con->argv, con->argc);
+	sdsfree((sds)con->tempArgs);
+	sdsfree((sds)con->cmd);
 	con->argv = NULL;
 	con->argc = 0;
 	con->tempArgs = NULL;
@@ -522,8 +522,8 @@ const char *Con_GetArgs(int start) {
 
 	con->tempArgs = sdsempty();
 
-	for (start; start < con->argc; start++) {
-		con->tempArgs = sdscatfmt(con->tempArgs,start + 1 == con->argc ? "%s" : "%s ", con->argv[start]);
+	for (; start < con->argc; start++) {
+		con->tempArgs = sdscatfmt((sds)con->tempArgs,start + 1 == con->argc ? "%s" : "%s ", con->argv[start]);
 	}
 
 	return con->tempArgs;
@@ -531,7 +531,7 @@ const char *Con_GetArgs(int start) {
 
 // returns all the arguments past the original command
 const char *Con_GetRawArgs() {
-	size_t cmdLen = sdslen(con->argv[0]);
+	size_t cmdLen = sdslen((sds)con->argv[0]);
 
 	return &con->cmd[cmdLen + 1];
 }
@@ -580,8 +580,8 @@ conVar_t *Con_GetVarDefault(const char *name, const char *defaultValue, int flag
 	// if the config existed before we got here, properly set the default but respect the current value
 	else if ((var->flags & CONVAR_USER) && !(flags & CONVAR_USER)) {
 		// clear the current string and reuse it
-		sdsclear(var->defaultValue);
-		var->defaultValue = sdscat(var->defaultValue, defaultValue);
+		sdsclear((sds)var->defaultValue);
+		var->defaultValue = sdscat((sds)var->defaultValue, defaultValue);
 		var->flags &= ~CONVAR_USER;
 
 		// if its ROM, overwrite the current value no matter what
@@ -670,8 +670,8 @@ conVar_t *Con_SetVarForce(const char *name, const char *value) {
 		return NULL;
 	}
 
-	sdsclear(var->string);
-	var->string = sdscat(var->string, value);
+	sdsclear((sds)var->string);
+	var->string = sdscat((sds)var->string, value);
 	var->value = strtof(value, NULL);
 	var->integer = atoi(value);
 	var->boolean = !!var->integer;
@@ -695,7 +695,7 @@ conVar_t *Con_ResetVar(const char *name) {
 // stores the passed in commandline so we can scan through it later and pull out convars and finally execute it all
 void Con_SetupCommandLine(int argc, char *argv[]) {
 	con->sargc = argc;
-	con->sargv = argv;
+	con->sargv = (const char **)argv;
 }
 
 // iterates through and passes a command which is a series of arguments prefixed with a +, ex "+echo hello world"
@@ -905,7 +905,7 @@ void Con_AllocateButtons(const char **buttonNames, int buttonCount) {
 		int i;
 		buttonState_t button;
 		vec_foreach(&con->buttons, button, i) {
-			sdsfree(button.name);
+			sdsfree((sds)button.name);
 		}
 	}
 

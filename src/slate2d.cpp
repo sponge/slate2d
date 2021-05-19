@@ -137,10 +137,17 @@ void ConH_Print(const char *line) {
 	printf("%s", line);
 }
 
+// note that my console doens't support logging levels, so bypass
+// the con_print function with this one
+void PrintError(const char *line) {
+	IMConsole()->AddLog(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "%s", line);
+	printf("%s", line);
+}
+
 void ConH_Error(int level, const char *message) {
-	Con_Print("==============================\nERROR\n==============================\n");
-	Con_Print(message);
-	Con_Print(eng_lastErrorStack->string);
+	PrintError("==============================\nERROR\n==============================\n");
+	PrintError(message);
+	PrintError(eng_lastErrorStack->string);
 
 #if defined(_WIN32) && defined(DEBUG)
 	if (level == ERR_FATAL) {

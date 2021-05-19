@@ -6,10 +6,16 @@
 
 // IMGUI CONSOLE
 
+struct ConsoleLine
+{
+    ImVec4 color;
+    const char *text;
+};
+
 struct ConsoleUI
 {
     char                  InputBuf[256];
-    ImVector<char*>       Items;
+    ImVector<ConsoleLine> Items;
     bool                  ScrollToBottom;
     ImVector<char*>       History;
     int                   HistoryPos;    // -1: new line, 0..History.Size-1 browsing history.
@@ -25,10 +31,11 @@ struct ConsoleUI
 
     void ClearLog();
     void AddLog(const char* fmt, ...) IM_FMTARGS(2);
+    void AddLog(ImVec4 color, const char * fmt, ...) IM_FMTARGS(3);
     void Draw(int width, int height);
     void ExecCommand(const char * command_line);
-    static int TextEditCallbackStub(ImGuiTextEditCallbackData * data);
-    int TextEditCallback(ImGuiTextEditCallbackData* data);
+    static int TextEditCallbackStub(ImGuiInputTextCallbackData * data);
+    int TextEditCallback(ImGuiInputTextCallbackData* data);
 };
 
 ConsoleUI* IMConsole();

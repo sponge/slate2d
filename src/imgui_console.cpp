@@ -28,7 +28,7 @@ ConsoleUI::~ConsoleUI() {
 
 void ConsoleUI::ClearLog() {
 	for (int i = 0; i < Items.Size; i++)
-		free(Items[i]);
+		free((void*)Items[i].text);
 	Items.clear();
 	ScrollToBottom = true;
 }
@@ -45,13 +45,37 @@ void ConsoleUI::AddLog(const char* fmt, ...) {
   std::string to;
 
 	while (std::getline(ss,to,'\n')) {
-		Items.push_back(Strdup(to.c_str()));
+		ImVec4 color = strstr(to.c_str(), "WARNING:") == to.c_str() ? ImVec4(1.0, 1.0, 0.0, 1.0) : ImVec4(1.0, 1.0, 1.0, 1.0);
+		Items.push_back({color, Strdup(to.c_str())});
 	}
-	
+
 	ScrollToBottom = true;
 
 	if (Items.size() > CONSOLE_MAX_LINES) {
-		free(Items[0]);
+		free((void*)Items[0].text);
+		Items.erase(Items.begin());
+	}
+}
+
+void ConsoleUI::AddLog(ImVec4 color, const char * fmt, ...) {
+	char buf[1024];
+	va_list args;
+	va_start(args, fmt);
+	vsnprintf(buf, IM_ARRAYSIZE(buf), fmt, args);
+	buf[IM_ARRAYSIZE(buf) - 1] = 0;
+	va_end(args);
+
+  std::stringstream ss(buf);
+  std::string to;
+
+	while (std::getline(ss,to,'\n')) {
+		Items.push_back({color, Strdup(to.c_str())});
+	}
+
+	ScrollToBottom = true;
+
+	if (Items.size() > CONSOLE_MAX_LINES) {
+		free((void*)Items[0].text);
 		Items.erase(Items.begin());
 	}
 }
@@ -126,8 +150,7 @@ void ConsoleUI::Draw(int width, int height) {
 	while (clipper.Step()) {
 		for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
 		{
-			const char* item = Items[i];
-			ImGui::TextUnformatted(item);
+			ImGui::TextColored(Items[i].color, "%s", Items[i].text);
 		}
 	}
 
@@ -158,7 +181,7 @@ void ConsoleUI::Draw(int width, int height) {
 }
 
 void ConsoleUI::ExecCommand(const char* command_line) {
-	AddLog("# %s\n", command_line);
+	AddLog(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "# %s\n", command_line);
 
 	// Insert into history. First find match and delete it so it can be pushed to the back. This isn't trying to be smart or optimal.
 	HistoryPos = -1;

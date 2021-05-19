@@ -4,7 +4,7 @@ configuration: Release
 platform: x64
 install:
 - ps: >-
-    Start-FileDownload 'https://github.com/premake/premake-core/releases/download/v5.0.0-alpha15/premake-5.0.0-alpha15-windows.zip' 'premake.zip'
+    Start-FileDownload 'https://github.com/premake/premake-core/releases/download/v5.0.0-alpha16/premake-5.0.0-alpha16-windows.zip' 'premake.zip'
 
     Start-FileDownload 'https://github.com/electron/rcedit/releases/download/v1.1.1/rcedit-x64.exe'
 

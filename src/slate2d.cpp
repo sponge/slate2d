@@ -119,7 +119,7 @@ void Cmd_Exec_f() {
 	}
 
 	void *buffer;
-	auto sz = FS_ReadFile(name, &buffer);
+	FS_ReadFile(name, &buffer);
 	const char *str = (const char *)buffer;
 
 	Con_Execute(str);
@@ -192,7 +192,6 @@ SLT_API double SLT_StartFrame() {
 	com_frameTime = now;
 
 	SDL_Event ev;
-	ImGuiIO &io = ImGui::GetIO();
 	while (SDL_PollEvent(&ev)) {
 		ImGui_ImplSdl_ProcessEvent(&ev);
 

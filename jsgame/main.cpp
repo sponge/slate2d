@@ -265,7 +265,7 @@ void main_loop() {
 		}
 	}
 
-	bool ranUpdate = false;
+	// bool ranUpdate = false; // FIXME: was this important? i forget
 	double dt = SLT_StartFrame();
 	if (dt < 0) {
 		loop = false;

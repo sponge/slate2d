@@ -149,6 +149,8 @@ static JSValue js_assets_imagesize(JSContext *ctx, JSValueConst this_val, int ar
   return obj;
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc99-designator"
 static const JSCFunctionListEntry js_assets_funcs[] = {
   JS_CFUNC_DEF("load", 1, js_assets_load),
   JS_CFUNC_DEF("find", 1, js_assets_find),
@@ -158,6 +160,7 @@ static const JSCFunctionListEntry js_assets_funcs[] = {
   JS_CFUNC_DEF("breakString", 2, js_assets_breakstring),
   JS_CFUNC_DEF("imageSize", 1, js_assets_imagesize),
 };
+#pragma clang diagnostic pop
 
 static int js_assets_init(JSContext *ctx, JSModuleDef *m)
 {    

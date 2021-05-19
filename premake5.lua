@@ -69,14 +69,6 @@ workspace "Slate2D"
     -- define so engine and emscripten packaging are always in sync on the same base game folder 
     defines { "DEFAULT_GAME=\"" .. _OPTIONS["default-game"] .. "\"", "SLT_COMPILE_DLL" }
 
-    -- rlgl and raymath have some warnings, suppress them here
-    filter { "files:src/glinit.c", "system:windows" }
-      disablewarnings { 4204, 4100, 4267 }
-
-    -- disable warnings for sds
-    filter "files:src/external/sds.c"
-      warnings "Off"
-
     -- compile all .c files in c mode so we don't get name mangling
     filter "files:**.c"
       language "C"

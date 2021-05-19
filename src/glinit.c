@@ -22,10 +22,15 @@
 #include <GL/glew.h>
 #endif
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
+
 #define FONTSTASH_IMPLEMENTATION
 #include "external/fontstash.h"
 #define GLFONTSTASH_IMPLEMENTATION
 #include "external/gl3corefontstash.h"
+
+#pragma clang diagnostic pop
 
 bool initGL(int width, int height) {
 #ifndef __EMSCRIPTEN__

@@ -253,7 +253,6 @@ void ini_iter_init(ini_t *ini, ini_iter_t *iter) {
 }
 
 ini_iter_t *ini_iter_next(ini_iter_t *iter) {
-	char *current_section = "";
 	ini_t *ini = iter->ini;
 
 	if (*iter->curr == '\0') {

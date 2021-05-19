@@ -308,7 +308,6 @@ const char * TTF_BreakString(int w, const char *in) {
 	TTFtextRow rows[2];
 	int nrows = 0, i;
 	int oldAlign = state.align;
-	int halign = state.align & (FONS_ALIGN_LEFT | FONS_ALIGN_CENTER | FONS_ALIGN_RIGHT);
 	int valign = state.align & (FONS_ALIGN_TOP | FONS_ALIGN_MIDDLE | FONS_ALIGN_BOTTOM | FONS_ALIGN_BASELINE);
 	float lineh;
 
@@ -338,7 +337,6 @@ const char * TTF_BreakString(int w, const char *in) {
 void TTF_TextBox(float x, float y, float w, const char *string, int count) {
 	TTFtextRow rows[2];
 	int nrows = 0, i;
-	int oldAlign = state.align;
 	int halign = state.align & (FONS_ALIGN_LEFT | FONS_ALIGN_CENTER | FONS_ALIGN_RIGHT);
 	int valign = state.align & (FONS_ALIGN_TOP | FONS_ALIGN_MIDDLE | FONS_ALIGN_BOTTOM | FONS_ALIGN_BASELINE);
 	float lineh;

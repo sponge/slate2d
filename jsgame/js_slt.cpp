@@ -165,6 +165,8 @@ static JSValue js_slt_getresolution(JSContext *ctx, JSValueConst this_val, int a
   return obj;
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc99-designator"
 static const JSCFunctionListEntry js_slt_funcs[] = {
   JS_CFUNC_DEF("printWin", 1, js_slt_printwin),
   JS_CFUNC_DEF("error", 2, js_slt_error),
@@ -179,6 +181,7 @@ static const JSCFunctionListEntry js_slt_funcs[] = {
   JS_CFUNC_DEF("mouse", 0, js_slt_getmouse),
   JS_CFUNC_DEF("resolution", 0, js_slt_getresolution),
 };
+#pragma clang diagnostic pop
 
 static int js_slt_init(JSContext *ctx, JSModuleDef *m) {    
   JS_SetModuleExportList(ctx, m, js_slt_funcs,

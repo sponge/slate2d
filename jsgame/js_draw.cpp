@@ -247,6 +247,8 @@ static JSValue js_draw_clear(JSContext *ctx, JSValueConst this_val, int argc, JS
     return JS_UNDEFINED;
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc99-designator"
 static const JSCFunctionListEntry js_draw_funcs[] = {
 	JS_CFUNC_DEF("setColor", 4, js_draw_setcolor),
 	JS_CFUNC_DEF("resetTransform", 0, js_draw_resettransform),
@@ -256,7 +258,9 @@ static const JSCFunctionListEntry js_draw_funcs[] = {
 	JS_CFUNC_DEF("setScissor", 4, js_draw_setscissor),
 	JS_CFUNC_DEF("resetScissor", 0, js_draw_resetscissor),
 	JS_CFUNC_DEF("useCanvas", 1, js_draw_usecanvas),
+    JS_CFUNC_DEF("resetCanvas", 0, js_draw_resetcanvas),
 	JS_CFUNC_DEF("useShader", 1, js_draw_useshader),
+    JS_CFUNC_DEF("resetShader", 0, js_draw_resetshader),
 	JS_CFUNC_DEF("rect", 5, js_draw_rect),
 	JS_CFUNC_DEF("setTextStyle", 4, js_draw_settextstyle),
 	JS_CFUNC_DEF("text", 5, js_draw_text),
@@ -269,6 +273,7 @@ static const JSCFunctionListEntry js_draw_funcs[] = {
 	JS_CFUNC_DEF("submit", 0, js_draw_submit),
 	JS_CFUNC_DEF("clear", 4, js_draw_clear),
 };
+#pragma clang diagnostic pop
 
 static int js_draw_init(JSContext *ctx, JSModuleDef *m)
 {    

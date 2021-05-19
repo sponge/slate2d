@@ -273,27 +273,23 @@ void main_loop() {
 		return;
 	}
 
-	if (!instance) {
+	if (instance) {
+		if (!instance->CallUpdate(dt)) {
+				instance->Error("Exception while calling Update()");
+				delete instance;
+				instance = nullptr;
+		}
+
+		if (!instance->CallDraw()) {
+				instance->Error("Exception while calling Draw()");
+				delete instance;
+				instance = nullptr;
+		}
+	} else {
 		DC_Clear(0, 0, 0, 255);
 		DC_Submit();
-		goto finish;
 	}
 
-	if (!instance->CallUpdate(dt)) {
-			instance->Error("Exception while calling Update()");
-			delete instance;
-			instance = nullptr;
-			goto finish;
-	}
-
-	if (!instance->CallDraw()) {
-			instance->Error("Exception while calling Draw()");
-			delete instance;
-			instance = nullptr;
-			goto finish;
-	}
-
-finish:
 	SLT_EndFrame();
 	SLT_UpdateLastFrameTime();
 }

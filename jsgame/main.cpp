@@ -185,6 +185,7 @@ public:
 		const char *tempStr = JS_ToCString(ctx, saveResult);
 		std::string ret = tempStr;
 		JS_FreeCString(ctx, tempStr);
+		JS_FreeValue(ctx, saveResult);
 		return ret;
 	}
 

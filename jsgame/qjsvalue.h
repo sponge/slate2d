@@ -8,7 +8,6 @@ namespace QJS {
   class Value {
   private:
     const char *cStr = nullptr;
-    std::string str;
   public:
     JSContext *ctx;
     JSValueConst val;
@@ -29,12 +28,12 @@ namespace QJS {
 
     const Value operator[](std::string str) const {
       JSValueConst ret = JS_GetPropertyStr(ctx, val, str.c_str());
-      return Value(ctx, ret, noFree);
+      return Value(ctx, ret);
     }
 
     const Value operator[](const char *str) const {
       JSValueConst ret = JS_GetPropertyStr(ctx, val, str);
-      return Value(ctx, ret, noFree);
+      return Value(ctx, ret);
     }
 
     bool isString() const {

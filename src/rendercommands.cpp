@@ -445,6 +445,7 @@ const void *RB_DrawTilemap(const void *data) {
 
 	Asset* asset = Asset_Get(ASSET_SPRITE, cmd->sprId);
 	SpriteAtlas* spr = (SpriteAtlas*)asset->resource;
+	const int *tiles = (const int *)data + sizeof(drawMapCommand_t);
 
 	//if (cmd->id > spr->numSprites) {
 	//	Con_Printf("WARNING: draw sprite %s out of index %i > %i\n", asset->name, cmd->id, spr->numSprites - 1);
@@ -454,7 +455,7 @@ const void *RB_DrawTilemap(const void *data) {
 	for (int i = 0; i < cmd->w * cmd->h; i++) {
 		int x = i % cmd->w;
 		int y = i / cmd->h;
-		Sprite* crunch = &spr->sprites[cmd->tiles[i]];
+		Sprite* crunch = &spr->sprites[tiles[i]];
 		Image* img = crunch->texture;
 		DrawImage(
 			//  offset + current x/y         - start tile offset         
@@ -472,7 +473,7 @@ const void *RB_DrawTilemap(const void *data) {
 		);
 	}
 
-	return (const void*)(cmd + 1);
+	return (const void*)(cmd + 1 + (cmd->w*cmd->h));
 }
 
 void SubmitRenderCommands(renderCommandList_t * list) {

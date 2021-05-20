@@ -124,9 +124,9 @@ typedef struct {
 typedef struct {
 	uint8_t commandId;
 	unsigned int sprId;
-	int *tiles;
-	int w, h;
 	int x, y;
+	int w, h;
+	// tiles array will be here in the command buffer, size is w*h
 } drawMapCommand_t;
 
 typedef enum {

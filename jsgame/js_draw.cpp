@@ -234,6 +234,7 @@ static JSValue js_draw_tri(JSContext *ctx, JSValueConst this_val, int argc, JSVa
        int intVal;
        if (JS_ToInt32(ctx, &intVal, val)) {
          JS_FreeValue(ctx, val);
+         free(tiles);
          return JS_EXCEPTION;
        }
        tiles[i] = intVal;
@@ -241,6 +242,7 @@ static JSValue js_draw_tri(JSContext *ctx, JSValueConst this_val, int argc, JSVa
      }
 
      DC_DrawTilemap(sprId, x, y, w, h, tiles);
+     free(tiles);
 
      return JS_UNDEFINED;
  }

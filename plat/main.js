@@ -71,7 +71,7 @@ class Main {
     Draw.line(0, 0, res.w, res.h);
     Draw.setColor(255, 255, 255, 128);
     Draw.rect(mouse.x, mouse.y, 16, 16);
-    Draw.tileMap(this.tiles.tilesetHandle, 0, 0, this.tiles.width, this.tiles.height, this.tiles.data);
+    Draw.tilemap(this.tiles.tilesetHandle, 0, 0, this.tiles.width, this.tiles.height, this.tiles.data);
     Draw.submit();
     SLT.printWin("test", "key", "val");
     SLT.printWin("test", "x", x);

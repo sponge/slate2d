@@ -793,15 +793,12 @@ SLT_API void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float 
 	cmd->y3 = y3;
 }
 
-// SLT_API void DC_DrawMapLayer(unsigned int mapId, unsigned int layer, float x, float y, unsigned int cellX, unsigned int cellY, unsigned int cellW, unsigned int cellH)
-// {
-// 	GET_COMMAND(drawMapCommand_t, RC_DRAW_MAP_LAYER);
-// 	cmd->mapId = mapId;
-// 	cmd->layer = layer;
-// 	cmd->x = x;
-// 	cmd->y = y;
-// 	cmd->cellX = cellX;
-// 	cmd->cellY = cellY;
-// 	cmd->cellW = cellW;
-// 	cmd->cellH = cellH;
-// }
+SLT_API void DC_DrawMapLayer(unsigned int sprId, int x, int y, int w, int h, int* tiles) {
+ 	GET_COMMAND(drawMapCommand_t, RC_DRAW_MAP_LAYER);
+ 	cmd->sprId = sprId;
+	cmd->x = x;
+	cmd->y = y;
+	cmd->w = w;
+	cmd->h = h;
+	cmd->tiles = tiles;
+}

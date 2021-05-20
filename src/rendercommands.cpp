@@ -442,58 +442,37 @@ const void *RB_DrawTri(const void *data) {
 
 const void *RB_DrawMapLayer(const void *data) {
 	auto cmd = (const drawMapCommand_t *)data;
- 
-	/*
-	tmx_map *map = (tmx_map *)Asset_Get(ASSET_TILEMAP, cmd->mapId)->resource;
 
-	tmx_layer *layer = map->ly_head;
-	unsigned int i = 0;
-	while (layer != nullptr && i++ != cmd->layer) {
-		layer = layer->next;
+	Asset* asset = Asset_Get(ASSET_SPRITE, cmd->sprId);
+	SpriteAtlas* spr = (SpriteAtlas*)asset->resource;
+
+	//if (cmd->id > spr->numSprites) {
+	//	Con_Printf("WARNING: draw sprite %s out of index %i > %i\n", asset->name, cmd->id, spr->numSprites - 1);
+	//	return (const void*)(cmd + 1);
+	//}
+
+	for (int i = 0; i < cmd->w * cmd->h; i++) {
+		int x = i % cmd->w;
+		int y = i / cmd->h;
+		Sprite* crunch = &spr->sprites[cmd->tiles[i]];
+		Image* img = crunch->texture;
+		DrawImage(
+			//  offset + current x/y         - start tile offset         
+			cmd->x + x * crunch->w,
+			cmd->y + y * crunch->h,
+			(float)crunch->w,
+			(float)crunch->h,
+			(float)crunch->x,
+			(float)crunch->y,
+			1.0f,
+			0,
+			img->hnd,
+			img->w,
+			img->h
+		);
 	}
 
-	assert(layer != nullptr);
-
-	if (layer->type == L_LAYER) {
-		unsigned int cellW = cmd->cellW == 0 ? map->width : cmd->cellW;
-		unsigned int cellH = cmd->cellH == 0 ? map->height : cmd->cellH;
-
-		unsigned int endX = map->width < cmd->cellX + cellW ? map->width : cmd->cellX + cellW;
-		unsigned int endY = map->height < cmd->cellY + cellH ? map->height : cmd->cellY + cellH;
-
-		for (unsigned int y = cmd->cellY; y < endY; y++) {
-			for (unsigned int x = cmd->cellX; x < endX; x++) {
-				unsigned int raw = layer->content.gids[(y*map->width) + x];
-				unsigned int gid = raw & TMX_FLIP_BITS_REMOVAL;
-
-				if (gid == 0) {
-					continue;
-				}
-
-				uint8_t flipBits = (raw & TMX_FLIPPED_HORIZONTALLY ? FLIP_H : 0) | (raw & TMX_FLIPPED_VERTICALLY ? FLIP_V : 0) | (raw & TMX_FLIPPED_DIAGONALLY ? FLIP_DIAG : 0);
-
-				tmx_tile *tile = map->tiles[gid];
-				tmx_tileset *ts = tile->tileset;
-				Asset *asset = (Asset*)tile->tileset->image->resource_image;
-
-				Image *image = (Image*)asset->resource;
-
-				DrawImage(
-					//  offset + current x/y         - start tile offset         
-					cmd->x + x * ts->tile_width - (cmd->cellX * ts->tile_width),
-					cmd->y + y * ts->tile_height - (cmd->cellY * ts->tile_height),
-					(float)ts->tile_width,
-					(float)ts->tile_height,
-					(float)tile->ul_x,
-					(float)tile->ul_y,
-					1.0f, flipBits, image->hnd, image->w, image->h
-				);
-			}
-		}
-	}
-	*/
-
-	return (const void *)(cmd + 1);
+	return (const void*)(cmd + 1);
 }
 
 void SubmitRenderCommands(renderCommandList_t * list) {

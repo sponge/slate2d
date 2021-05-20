@@ -2,6 +2,7 @@ import { testmodule, testmodule2, testmodule3, testmodule4 } from "./test/testmo
 import * as Draw from "draw";
 import * as SLT from "slate2d";
 import * as Assets from "assets";
+import { loadTilemap } from "./tiled.js";
 
 class Main {
   constructor() {
@@ -12,6 +13,7 @@ class Main {
     this.test2 = "hello world";
     this.test3 = new Promise(() => {}, () => {});
     console.log("constructed!");
+    this.tiles = undefined;
   }
 
   save() {
@@ -41,8 +43,9 @@ class Main {
       spriteHeight: 16,
       marginX: 0,
       marginY: 0,
-    })
+    });
 
+    this.tiles = loadTilemap('maps/8x8.json');
   };
 
   draw() {
@@ -68,6 +71,7 @@ class Main {
     Draw.line(0, 0, res.w, res.h);
     Draw.setColor(255, 255, 255, 128);
     Draw.rect(mouse.x, mouse.y, 16, 16);
+    Draw.tileMap(this.tiles.tilesetHandle, 0, 0, this.tiles.width, this.tiles.height, this.tiles.data);
     Draw.submit();
     SLT.printWin("test", "key", "val");
     SLT.printWin("test", "x", x);
@@ -120,6 +124,8 @@ function start(initialState) {
     marginX: 0,
     marginY: 0,
   })
+
+  tiles = loadTilemap('maps/8x8.json');
 };
 
 function draw() {
@@ -135,16 +141,20 @@ function draw() {
   const sz = Math.cos(t) * 32 + 32
   Draw.rect(x, y, sz, sz, true);
 
+  Draw.tileMap(tiles.tilesetHandle, 0, 0, tiles.width, tiles.height, tiles.data);
+
   Draw.image(dog, 0, 0, 32, 32, 1, 0, 0, 0);
   Draw.tri(10, 20, 400, 400, 400, 100, true);
   Draw.setColor(128, 0, 0, 255);
   Draw.line(0, 0, res.w, res.h);
   Draw.setColor(255, 255, 255, 128);
   Draw.rect(mouse.x, mouse.y, 16, 16);
+
   Draw.submit();
   SLT.printWin("test", "key", "val");
   SLT.printWin("test", "x", x);
   SLT.printWin("test", "y", y);
+  SLT.printWin("test", "tiles", JSON.stringify(tiles));
 };
 
 function update(dt) {

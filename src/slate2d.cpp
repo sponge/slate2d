@@ -793,8 +793,8 @@ SLT_API void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float 
 	cmd->y3 = y3;
 }
 
-SLT_API void DC_DrawMapLayer(unsigned int sprId, int x, int y, int w, int h, int* tiles) {
- 	GET_COMMAND(drawMapCommand_t, RC_DRAW_MAP_LAYER);
+SLT_API void DC_DrawTilemap(unsigned int sprId, int x, int y, int w, int h, int* tiles) {
+ 	GET_COMMAND(drawMapCommand_t, RC_DRAW_TILEMAP);
  	cmd->sprId = sprId;
 	cmd->x = x;
 	cmd->y = y;

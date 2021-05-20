@@ -122,11 +122,6 @@ unsigned int Snd_Play(AssetHandle assetHandle, float volume, float pan, bool loo
 void Snd_Stop(unsigned int handle);
 void Snd_PauseResume(unsigned int handle, bool pause);
 
-// tilemap assets
-
-void * TileMap_Load(Asset &asset);
-void TileMap_Free(Asset &asset);
-
 // canvas assets
 
 struct Canvas {

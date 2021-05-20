@@ -440,7 +440,7 @@ const void *RB_DrawTri(const void *data) {
 	return (const void *)(cmd + 1);
 }
 
-const void *RB_DrawMapLayer(const void *data) {
+const void *RB_DrawTilemap(const void *data) {
 	auto cmd = (const drawMapCommand_t *)data;
 
 	Asset* asset = Asset_Get(ASSET_SPRITE, cmd->sprId);
@@ -566,8 +566,8 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 			data = RB_DrawTri(data);
 			break;
 
-		case RC_DRAW_MAP_LAYER:
-			data = RB_DrawMapLayer(data);
+		case RC_DRAW_TILEMAP:
+			data = RB_DrawTilemap(data);
 			break;
 
 		case RC_END_OF_LIST:

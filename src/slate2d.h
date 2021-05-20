@@ -39,7 +39,6 @@ typedef enum {
 	ASSET_MOD,
 	ASSET_FONT,
 	ASSET_BITMAPFONT,
-	ASSET_TILEMAP,
 	ASSET_CANVAS,
 	ASSET_SHADER,
 	ASSET_MAX
@@ -317,9 +316,9 @@ SLT_API void DC_DrawCircle(float x, float y, float radius, uint8_t outline);
 // draw a triangle at the specified coordinates. outline or fill can be toggled with 1 or 0.
 SLT_API void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float y3, uint8_t outline);
 
-// draws an individual layer of an ASSET_TMX at the given coordinates. subsets of tilemaps can be drawn by using
-// cellX/cellY/cellW/cellH, 0 will draw the entire layer.
-SLT_API void DC_DrawMapLayer(unsigned int sprId, int w, int h, int x, int y, int *tiles);
+// draws an array of tiles with the given sprite. x and y are the location to draw in w and h are the size of the
+// tiles array, and tiles is an array of tiles of the given size
+SLT_API void DC_DrawTilemap(unsigned int sprId, int x, int y, int w, int h, int *tiles);
 
 // submit all queued up drawing commands, and clear the queued commands. this will parse and call the GL commands for
 // all the drawing commands.

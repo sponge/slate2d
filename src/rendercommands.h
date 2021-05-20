@@ -150,7 +150,7 @@ typedef enum {
 	RC_DRAW_LINE,
 	RC_DRAW_CIRCLE,
 	RC_DRAW_TRI,
-	RC_DRAW_MAP_LAYER,
+	RC_DRAW_TILEMAP,
 } renderCommand_t;
 
 void SubmitRenderCommands(renderCommandList_t *list);

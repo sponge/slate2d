@@ -240,7 +240,7 @@ static JSValue js_draw_tri(JSContext *ctx, JSValueConst this_val, int argc, JSVa
        JS_FreeValue(ctx, val);
      }
 
-     DC_DrawMapLayer(sprId, x, y, w, h, tiles);
+     DC_DrawTilemap(sprId, x, y, w, h, tiles);
 
      return JS_UNDEFINED;
  }
@@ -283,7 +283,7 @@ static const JSCFunctionListEntry js_draw_funcs[] = {
 	JS_CFUNC_DEF("line", 4, js_draw_line),
 	JS_CFUNC_DEF("circle", 4, js_draw_circle),
 	JS_CFUNC_DEF("tri", 7, js_draw_tri),
-	JS_CFUNC_DEF("tileMap", 7, js_draw_tilemap),
+	JS_CFUNC_DEF("tilemap", 7, js_draw_tilemap),
 	JS_CFUNC_DEF("sprite", 8, js_draw_sprite),
 	JS_CFUNC_DEF("submit", 0, js_draw_submit),
 	JS_CFUNC_DEF("clear", 4, js_draw_clear),

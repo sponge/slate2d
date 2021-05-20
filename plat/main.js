@@ -65,13 +65,14 @@ class Main {
     Draw.sprite(this.dogSpr, Math.floor(t * 8) % 6, x, y, 2, 0, 1, 1);
     Draw.setColor(255, 255, 255, 128);
   
+    Draw.tilemap(this.tiles.tilesetHandle, 100, 100, this.tiles.width, this.tiles.height, this.tiles.data);
+
     Draw.image(this.dog, 0, 0, 32, 32, 1, 0, 0, 0);
     Draw.tri(10, 20, 400, 400, 400, 100, true);
     Draw.setColor(128, 0, 0, 255);
     Draw.line(0, 0, res.w, res.h);
     Draw.setColor(255, 255, 255, 128);
     Draw.rect(mouse.x, mouse.y, 16, 16);
-    Draw.tilemap(this.tiles.tilesetHandle, 0, 0, this.tiles.width, this.tiles.height, this.tiles.data);
     Draw.submit();
     SLT.printWin("test", "key", "val");
     SLT.printWin("test", "x", x);

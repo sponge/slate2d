@@ -801,6 +801,7 @@ SLT_API void DC_DrawTilemap(unsigned int sprId, int x, int y, int w, int h, int*
 	cmd->w = w;
 	cmd->h = h;
 
-	void* tilesStart = R_GetCommandBuffer(cmd->w * cmd->h);
-	memcpy(tilesStart, tiles, cmd->w*cmd->h);
+	unsigned int size = cmd->w * cmd->h * sizeof(int);
+	void* tilesStart = R_GetCommandBuffer(size);
+	memcpy(tilesStart, tiles, size);
 }

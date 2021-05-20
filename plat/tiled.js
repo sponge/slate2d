@@ -15,7 +15,7 @@ export function loadTilemap(path) {
     type: 'sprite',
     path: `maps/${tileset.image.replace(/\\/g, '/')}`,
     spriteWidth: tileset.tilewidth,
-    spriteHeight: tileset.tilewidth,
+    spriteHeight: tileset.tileheight,
     marginX: 0,
     marginY: 0,
   });
@@ -24,7 +24,7 @@ export function loadTilemap(path) {
   for (let i = 0; i < tilemap.layers[1].data.length; i++) {
     let d = tilemap.layers[1].data[i];
     d &= ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
-    data[i] = d;
+    data[i] = d - 1;
   }
 
   return {

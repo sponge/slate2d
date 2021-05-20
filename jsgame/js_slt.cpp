@@ -1,5 +1,6 @@
 #include "../src/slate2d.h"
 #include <imgui.h>
+#include <string>
 extern "C" {
 #include <quickjs.h>
 #include <cutils.h>
@@ -48,9 +49,34 @@ void RenderObjRecursively(JSContext *ctx, JSValue obj, const char *nodeName) {
   ImGui::AlignTextToFramePadding();
   bool node_open = ImGui::TreeNode(nodeName, "%s", nodeName);
   ImGui::TableSetColumnIndex(1);
-  const char *nodeValStr = JS_ToCString(ctx, obj);
-  ImGui::Text("%s", nodeValStr);
-  JS_FreeCString(ctx, nodeValStr);
+
+  // some arrays are big so maybe don't print all the values?
+  if (JS_IsArray(ctx, obj)) {
+    JSValueConst length = JS_GetPropertyStr(ctx, obj, "length");
+    uint32_t len;
+    JS_ToUint32(ctx, &len, length);
+    JS_FreeValue(ctx, length);
+
+    std::string out = "";
+    uint32_t loopLen = len > 10 ? 10 : len;
+    for (uint32_t i = 0; i < loopLen; i++) {     
+      JSValueConst arrVal = JS_GetPropertyUint32(ctx, obj, i);
+      JSValueConst strVal = JS_ToString(ctx, arrVal);
+      const char *str = JS_ToCString(ctx, strVal);
+      out += str;
+      if (i + 1 < loopLen) out += ",";
+      JS_FreeValue(ctx, arrVal);
+      JS_FreeValue(ctx, strVal);
+      JS_FreeCString(ctx, str);
+    }
+
+    if (loopLen < len) out += " ...";
+    ImGui::Text("[%i] %s", len, out.c_str());
+  } else {
+    const char *nodeValStr = JS_ToCString(ctx, obj);
+    ImGui::Text("%s", nodeValStr);
+    JS_FreeCString(ctx, nodeValStr);
+  }
 
   if (node_open) {
     if (JS_GetOwnPropertyNames(ctx, &tab_atom, &tab_atom_count, obj, JS_GPN_STRING_MASK | JS_GPN_SYMBOL_MASK)) {
@@ -78,9 +104,10 @@ void RenderObjRecursively(JSContext *ctx, JSValue obj, const char *nodeName) {
 
         const char *valStr = JS_ToCString(ctx, val);
         ImGui::Text("%s", valStr);
-
+        
         JS_FreeCString(ctx, valStr);
       }
+
       JS_FreeValue(ctx, val);
       JS_FreeCString(ctx, keyStr);
 

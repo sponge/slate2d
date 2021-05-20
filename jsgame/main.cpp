@@ -66,6 +66,7 @@ public:
 
 	SLTJSInstance() {
 		rt = JS_NewRuntime();
+		//JS_SetMaxStackSize(rt, 1048576);
 		ctx = JS_NewContext(rt);
 		global = JS_GetGlobalObject(ctx);
 

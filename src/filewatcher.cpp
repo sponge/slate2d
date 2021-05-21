@@ -37,20 +37,20 @@ static int FileWatcher_Thread(void *ptr) {
 	}
 }
 
-void FileWatcher_TrackFile(const char *path) {
+bool FileWatcher_TrackFile(const char *path) {
 	PHYSFS_Stat stat;
 	int success = PHYSFS_stat(path, &stat);
 
 	if (!success) {
 		Con_Printf("can't stat file %s\n", path);
-		return;
+		return false;
 	}
 
 	int i;
 	fileWatcherInfo_t *file;
 	vec_foreach_ptr(&sourceFiles, file, i) {
 		if (strcmp(file->name, path) == 0) {
-			return;
+			return false;
 		}
 	}
 
@@ -59,32 +59,36 @@ void FileWatcher_TrackFile(const char *path) {
 	newFile.lastModified = stat.modtime;
 	vec_push(&sourceFiles, newFile);
 
-	Con_Printf("now tracking file for changes: %s\n", path);
+	return true;
 }
 
-void FileWatcher_TrackRecursive(const char *path) {
+int FileWatcher_TrackRecursive(const char *path) {
 	
 	PHYSFS_Stat stat;
 
 	char **files = PHYSFS_enumerateFiles(path);
 	char **i;
+	int count = 0;
 	for (i = files; *i != NULL; i++) {
 		sds fullPath = sdscatfmt(sdsempty(), "%s/%s", path, *i);
 		int success = PHYSFS_stat(fullPath, &stat);
 		if (!success) {
 			Con_Printf("can't stat file %s\n", path);
-			return;
+			return count;
 		}
 
 		if (stat.filetype == PHYSFS_FILETYPE_DIRECTORY) {
-			FileWatcher_TrackRecursive(fullPath);
+			count += FileWatcher_TrackRecursive(fullPath);
 			sdsfree(fullPath);
 			continue;
 		}
-		FileWatcher_TrackFile(fullPath);
+		if (FileWatcher_TrackFile(fullPath)) {
+			count++;
+		}
 		sdsfree(fullPath);
 	}
 	PHYSFS_freeList(files);
+	return count;
 }
 
 void Cmd_TrackPath_f() {
@@ -106,10 +110,13 @@ void Cmd_TrackPath_f() {
 	}
 
 	if (stat.filetype != PHYSFS_FILETYPE_DIRECTORY) {
-		FileWatcher_TrackFile(path);
+		if (FileWatcher_TrackFile(path)) {
+			Con_Printf("now tracking file for changes: %s\n", path);
+		}
 	}
 	else {
-		FileWatcher_TrackRecursive(path);
+		int count = FileWatcher_TrackRecursive(path);
+		Con_Printf("now tracking %i files for changes: %s\n", count, path);
 	}
 }
 

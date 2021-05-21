@@ -94,8 +94,7 @@ AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *pa
 		return INVALID_ASSET;
 	}
 
-	Con_Printf("asset_create: %s name:%s path:%s\n", assetStrings[assetType], name, path);
-
+	//Con_Printf("asset_create: %s name:%s path:%s\n", assetStrings[assetType], name, path);
 
 	AssetHandle found = Asset_Find(name);
 	if (found != INVALID_ASSET) {

@@ -38,55 +38,49 @@ static JSValue js_slt_printwin(JSContext *ctx, JSValueConst this_val, int argc, 
   return JS_UNDEFINED;
 }
 
-void RenderObjRecursively(JSContext *ctx, JSValue obj, const char *nodeName);
-void RenderValue(JSContext *ctx, JSValue obj, JSValue val, JSAtom atom) {
-  const char *valStr = JS_ToCString(ctx, val);
-  ImGui::Selectable(valStr);
-
-  static char evalStr[1024];
-  ImGui::PushID(val.u.ptr);
-  if (ImGui::BeginPopupContextItem(nullptr, ImGuiPopupFlags_MouseButtonLeft))
-  {
-    ImGui::SetKeyboardFocusHere();
-    if (ImGui::InputText("New value", evalStr, IM_ARRAYSIZE(evalStr), ImGuiInputTextFlags_EnterReturnsTrue)) {
-      JSValue eval = JS_Eval(ctx, evalStr, strlen(evalStr), "<eval>", 0);
-      if (!JS_IsException(eval)) {
-        JSValue dup = JS_DupValue(ctx, eval);
-        JS_SetProperty(ctx, obj, atom, dup);
-      }
-      JS_FreeValue(ctx, eval);
-      ImGui::CloseCurrentPopup();
-    }
-    ImGui::EndPopup();
-  }
-  ImGui::PopID();
-  
-  JS_FreeCString(ctx, valStr);
-}
-
-void RenderObjRecursively(JSContext *ctx, JSValue obj, const char *nodeName) {
-  JSPropertyEnum *tab_atom;
-  uint32_t tab_atom_count;
-
-  ImGui::PushID(obj.u.ptr);
-
+void RenderValue(JSContext *ctx, JSValue obj, JSAtom prop, const char *titleOverride = "" ) {
   ImGui::TableNextRow();
   ImGui::TableSetColumnIndex(0);
   ImGui::AlignTextToFramePadding();
-  bool node_open = ImGui::TreeNode(nodeName, "%s", nodeName);
-  ImGui::TableSetColumnIndex(1);
 
+  JSValue val = prop == 0 ? obj : JS_GetProperty(ctx, obj, prop);
+
+  // title is either the property name or override
+  bool node_open = false;
+  if (prop == 0) {
+    if (JS_IsObject(obj)) {
+      node_open = ImGui::TreeNode(val.u.ptr, "%s", titleOverride);
+    } else {
+      ImGui::Text("%s", titleOverride);
+    }
+  } else {
+    const char *propStr = JS_AtomToCString(ctx, prop);
+    if (JS_IsObject(val)) {
+      node_open = ImGui::TreeNode(val.u.ptr, "%s", propStr);
+    } else {
+      ImGui::Text("%s", propStr);
+    }
+    JS_FreeCString(ctx, propStr);
+  }
+
+  // value is usually .toString unless its an array
+  ImGui::TableSetColumnIndex(1);
+  ImGui::SetNextItemWidth(-FLT_MIN);
+
+  const char *valStr;
   // some arrays are big so maybe don't print all the values?
-  if (JS_IsArray(ctx, obj)) {
-    JSValueConst length = JS_GetPropertyStr(ctx, obj, "length");
+  std::string out = "";
+  if (JS_IsArray(ctx, val)) {
+    JSValueConst length = JS_GetPropertyStr(ctx, val, "length");
     uint32_t len;
     JS_ToUint32(ctx, &len, length);
     JS_FreeValue(ctx, length);
+    
+    out += "[" + std::to_string(len) + "] ";
 
-    std::string out = "";
     uint32_t loopLen = len > 10 ? 10 : len;
     for (uint32_t i = 0; i < loopLen; i++) {     
-      JSValueConst arrVal = JS_GetPropertyUint32(ctx, obj, i);
+      JSValueConst arrVal = JS_GetPropertyUint32(ctx, val, i);
       JSValueConst strVal = JS_ToString(ctx, arrVal);
       const char *str = JS_ToCString(ctx, strVal);
       out += str;
@@ -97,46 +91,55 @@ void RenderObjRecursively(JSContext *ctx, JSValue obj, const char *nodeName) {
     }
 
     if (loopLen < len) out += " ...";
-    ImGui::Text("[%i] %s", len, out.c_str());
+    valStr = out.c_str();
   } else {
-    const char *nodeValStr = JS_ToCString(ctx, obj);
-    ImGui::Text("%s", nodeValStr);
-    JS_FreeCString(ctx, nodeValStr);
+    valStr = JS_ToCString(ctx, val);
   }
 
+  if (prop == 0) {
+    ImGui::Text("%s", valStr);
+  } else {
+    ImGui::PushID(prop);
+    ImGui::Selectable(valStr);
+    ImGui::PopID();
+  }
+
+  if (!JS_IsArray(ctx, val)) {
+    JS_FreeCString(ctx, valStr);
+  }
+
+  // editor
+  static char evalStr[1024];
+  if (prop != 0 && ImGui::BeginPopupContextItem(nullptr, ImGuiPopupFlags_MouseButtonLeft)) {
+    if (ImGui::IsWindowAppearing()) {
+      ImGui::SetKeyboardFocusHere();
+    }
+    
+    if (ImGui::InputText("New value", evalStr, IM_ARRAYSIZE(evalStr), ImGuiInputTextFlags_EnterReturnsTrue)) {
+      JSValue eval = JS_Eval(ctx, evalStr, strlen(evalStr), "<eval>", 0);
+      if (!JS_IsException(eval)) {
+        JSValue dup = JS_DupValue(ctx, eval);
+        JS_SetProperty(ctx, obj, prop, dup);
+      }
+      JS_FreeValue(ctx, eval);
+      ImGui::CloseCurrentPopup();
+    }
+    ImGui::EndPopup();
+  }
+
+  // children
   if (node_open) {
-    if (JS_GetOwnPropertyNames(ctx, &tab_atom, &tab_atom_count, obj, JS_GPN_STRING_MASK | JS_GPN_SYMBOL_MASK)) {
+    JSPropertyEnum *tab_atom;
+    uint32_t tab_atom_count;
+
+    if (JS_GetOwnPropertyNames(ctx, &tab_atom, &tab_atom_count, val, JS_GPN_STRING_MASK | JS_GPN_SYMBOL_MASK)) {
       ImGui::TreePop();
       ImGui::PopID();
       return;
     }
 
     for (int i = 0; i < tab_atom_count; i++) {
-      JSValue val = JS_GetProperty(ctx, obj, tab_atom[i].atom);
-      //JSValue variable_json = js_debugger_get_variable(ctx, state, JS_AtomToString(ctx, tab_atom[i].atom), value);
-      const char *keyStr = JS_AtomToCString(ctx, tab_atom[i].atom);
-
-      if (JS_IsObject(val)) {
-        RenderObjRecursively(ctx, val, keyStr);
-      } else {
-        ImGui::TableNextRow();
-        ImGui::TableSetColumnIndex(0);
-        ImGui::AlignTextToFramePadding();
-        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-        ImGui::TreeNodeEx(keyStr, flags, "%s", keyStr);
-
-        ImGui::TableSetColumnIndex(1);
-        ImGui::SetNextItemWidth(-FLT_MIN);
-
-        RenderValue(ctx, obj, val, tab_atom[i].atom);
-      }
-
-      JS_FreeValue(ctx, val);
-      JS_FreeCString(ctx, keyStr);
-
-    }
-
-    for(uint32_t i = 0; i < tab_atom_count; i++) {
+      RenderValue(ctx, val, tab_atom[i].atom);
       JS_FreeAtom(ctx, tab_atom[i].atom);
     }
 
@@ -144,7 +147,10 @@ void RenderObjRecursively(JSContext *ctx, JSValue obj, const char *nodeName) {
 
     ImGui::TreePop();
   }
-  ImGui::PopID();
+
+  if (prop != 0) {
+    JS_FreeValue(ctx, val);
+  }
 }
 
 static JSValue js_slt_showobj(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
@@ -156,7 +162,7 @@ static JSValue js_slt_showobj(JSContext *ctx, JSValueConst this_val, int argc, J
   ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
   if (ImGui::BeginTable("split", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable)) {
     const char *title = JS_ToCString(ctx, argv[0]);
-    RenderObjRecursively(ctx, argv[1], title);
+    RenderValue(ctx, argv[1], 0, title);
     JS_FreeCString(ctx, title);
     ImGui::EndTable();
   }

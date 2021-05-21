@@ -71,7 +71,8 @@
         "utility": "cpp",
         "vector": "cpp",
         "__memory": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "clocale": "cpp"
     },
     "files.exclude": {
         "bin/": true,

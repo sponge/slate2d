@@ -38,6 +38,32 @@ static JSValue js_slt_printwin(JSContext *ctx, JSValueConst this_val, int argc, 
   return JS_UNDEFINED;
 }
 
+void RenderObjRecursively(JSContext *ctx, JSValue obj, const char *nodeName);
+void RenderValue(JSContext *ctx, JSValue obj, JSValue val, JSAtom atom) {
+  const char *valStr = JS_ToCString(ctx, val);
+  ImGui::Selectable(valStr);
+
+  static char evalStr[1024];
+  ImGui::PushID(val.u.ptr);
+  if (ImGui::BeginPopupContextItem(nullptr, ImGuiPopupFlags_MouseButtonLeft))
+  {
+    ImGui::SetKeyboardFocusHere();
+    if (ImGui::InputText("New value", evalStr, IM_ARRAYSIZE(evalStr), ImGuiInputTextFlags_EnterReturnsTrue)) {
+      JSValue eval = JS_Eval(ctx, evalStr, strlen(evalStr), "<eval>", 0);
+      if (!JS_IsException(eval)) {
+        JSValue dup = JS_DupValue(ctx, eval);
+        JS_SetProperty(ctx, obj, atom, dup);
+      }
+      JS_FreeValue(ctx, eval);
+      ImGui::CloseCurrentPopup();
+    }
+    ImGui::EndPopup();
+  }
+  ImGui::PopID();
+  
+  JS_FreeCString(ctx, valStr);
+}
+
 void RenderObjRecursively(JSContext *ctx, JSValue obj, const char *nodeName) {
   JSPropertyEnum *tab_atom;
   uint32_t tab_atom_count;
@@ -102,10 +128,7 @@ void RenderObjRecursively(JSContext *ctx, JSValue obj, const char *nodeName) {
         ImGui::TableSetColumnIndex(1);
         ImGui::SetNextItemWidth(-FLT_MIN);
 
-        const char *valStr = JS_ToCString(ctx, val);
-        ImGui::Text("%s", valStr);
-        
-        JS_FreeCString(ctx, valStr);
+        RenderValue(ctx, obj, val, tab_atom[i].atom);
       }
 
       JS_FreeValue(ctx, val);

@@ -110,9 +110,11 @@ void RenderValue(JSContext *ctx, JSValue obj, JSAtom prop, const char *titleOver
 
   // editor
   static char evalStr[1024];
-  if (prop != 0 && ImGui::BeginPopupContextItem(nullptr, ImGuiPopupFlags_MouseButtonLeft)) {
+  const char *propStr = JS_AtomToCString(ctx, prop);
+  if (prop != 0 && ImGui::BeginPopupContextItem(propStr, ImGuiPopupFlags_MouseButtonLeft)) {
     if (ImGui::IsWindowAppearing()) {
       ImGui::SetKeyboardFocusHere();
+      evalStr[0] = '\0';
     }
     
     if (ImGui::InputText("New value", evalStr, IM_ARRAYSIZE(evalStr), ImGuiInputTextFlags_EnterReturnsTrue)) {
@@ -126,6 +128,7 @@ void RenderValue(JSContext *ctx, JSValue obj, JSAtom prop, const char *titleOver
     }
     ImGui::EndPopup();
   }
+  JS_FreeCString(ctx, propStr);
 
   // children
   if (node_open) {

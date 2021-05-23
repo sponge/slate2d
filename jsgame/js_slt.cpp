@@ -131,6 +131,7 @@ void RenderValue(JSContext *ctx, JSValue obj, JSAtom prop, const char *titleOver
       JSValue global = JS_GetGlobalObject(ctx);
       JSValue dup = JS_DupValue(ctx, val);
       JS_SetPropertyStr(ctx, global, "temp", dup);
+      JS_FreeValue(ctx, global);
       ImGui::CloseCurrentPopup();
     }
     ImGui::EndPopup();

@@ -557,14 +557,14 @@ SLT_API AssetHandle SLT_Asset_LoadBitmapFont(const char *name, const char *path,
 }
 
 SLT_API AssetHandle SLT_Asset_LoadCanvas(const char *name, int width, int height) {
-	AssetHandle id = Asset_Create(ASSET_BITMAPFONT, name, nullptr);
+	AssetHandle id = Asset_Create(ASSET_CANVAS, name, nullptr);
 	Canvas_Set(id, width, height);
 	Asset_Load(id);
 	return id;
 }
 
 SLT_API AssetHandle SLT_Asset_LoadShader(const char *name, bool isFile, const char *vs, const char *fs) {
-	AssetHandle id = Asset_Create(ASSET_BITMAPFONT, name, nullptr);
+	AssetHandle id = Asset_Create(ASSET_SHADER, name, nullptr);
 	Shader_Set(id, isFile > 0, vs, fs);
 	Asset_Load(id);
 	return id;

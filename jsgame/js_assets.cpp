@@ -6,8 +6,8 @@ extern "C" {
 #include <cutils.h>
 }
 
-#define CHECKSTR(key) assetSettings[key].asCString(); if (!assetSettings[key].asCString()) return JS_ThrowTypeError(ctx, "options." key "is not a string");
-#define CHECKINT32(key) assetSettings[key].asInt32(); if (!assetSettings[key].isNumber()) return JS_ThrowTypeError(ctx, "options." key "is not an int");
+#define CHECKSTR(key) assetSettings[key].asCString(); if (!assetSettings[key].asCString()) return JS_ThrowTypeError(ctx, "Wrong or missing key: options." key " is not a string");
+#define CHECKINT32(key) assetSettings[key].asInt32(); if (!assetSettings[key].isNumber()) return JS_ThrowTypeError(ctx, "Wrong or missing key: options." key " is not an int");
 
 static JSValue js_assets_load(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
   auto assetSettings = QJS::Value(ctx, argv[0], true);

@@ -193,7 +193,11 @@ public:
 	bool Eval(const char *code) const {
 		JSValue result = JS_EvalThis(ctx, global, code, strlen(code), "eval", 0);
 		const char *resultStr = JS_ToCString(ctx, result);
-		SLT_Print(resultStr);
+		if (resultStr) {
+			SLT_Print(resultStr);
+		} else {
+			SLT_Print("<no result>");
+		}
 
 		if (JS_IsException(result)) {
 			JS_FreeValue(ctx, result);
@@ -298,6 +302,14 @@ void main_loop() {
 
 int main(int argc, char* argv[]) {
 	SLT_Init(argc, argv);
+	SLT_Con_SetDefaultCommandHandler([] () {
+		const char *cmd = SLT_Con_GetArgs(0);
+		if (instance) {
+			instance->Eval(cmd);
+			return true;
+		}
+		return false;
+	});
 
 	SLT_Con_AddCommand("js_reload", []() {
 		SLT_Con_SetVar("engine.errorMessage", "");

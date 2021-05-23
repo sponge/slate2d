@@ -126,6 +126,13 @@ void RenderValue(JSContext *ctx, JSValue obj, JSAtom prop, const char *titleOver
       JS_FreeValue(ctx, eval);
       ImGui::CloseCurrentPopup();
     }
+
+    if (ImGui::Selectable("Save ref to globalThis.temp")) {
+      JSValue global = JS_GetGlobalObject(ctx);
+      JSValue dup = JS_DupValue(ctx, val);
+      JS_SetPropertyStr(ctx, global, "temp", dup);
+      ImGui::CloseCurrentPopup();
+    }
     ImGui::EndPopup();
   }
   JS_FreeCString(ctx, propStr);

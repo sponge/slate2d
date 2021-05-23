@@ -516,6 +516,11 @@ const char *Con_GetArgs(int start) {
 		start = 0;
 	}
 
+	// return the unprocessed string if asking for everything
+	if (start == 0) {
+		return con->cmd;
+	}
+
 	if (start > con->argc) {
 		return "";
 	}

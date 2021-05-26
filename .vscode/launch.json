@@ -62,7 +62,7 @@
       "osx": {
         "type": "cppdbg",
         "preLaunchTask": "Build (Release)",
-        "program": "${workspaceRoot}/build/bin/x86_64_Release/jslate2d.app",
+        "program": "${workspaceRoot}/build/bin/x86_64_Release/jslate2d",
         "MIMode": "lldb",
         "externalConsole": false
       }

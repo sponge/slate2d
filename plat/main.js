@@ -87,7 +87,7 @@ class Main {
   
     this.backgrounds.forEach((bg, i) => {
       const speed = (i+1) * 32;
-      const x = (0 - t * speed) % res.w;
+      const x = (0 - t * speed) % bg.w;
       Draw.image(bg.id, x, res.h - bg.h, 0, 0, 1, 0, 0, 0);
       Draw.image(bg.id, x + bg.w, res.h - bg.h, 0, 0, 1, 0, 0, 0);
     });

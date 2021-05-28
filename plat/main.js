@@ -15,10 +15,6 @@ class Main {
   tiles = undefined;
   backgrounds = [];
   clouds = [];
-  
-  constructor() {
-    console.log("constructed!");
-  }
 
   save() {
     return JSON.stringify(this.state);

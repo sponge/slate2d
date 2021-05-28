@@ -43,11 +43,10 @@ has been confirmed to work on *two* different computers!
 ## Libraries used
 
 - [SDL](https://www.libsdl.org) - windowing, OpenGL context, input, DLL support
-- [Wren](https://www.wren.io) - embedded scripting language  
+- [QuickJS](https://bellard.org/quickjs/) - embedded scripting language  
 - [PhysicsFS](https://icculus.org/physfs/) - virtual filesystem, zip loading
 - [dear imgui](https://github.com/ocornut/imgui) - debugging tools  
 - [SoLoud](http://sol.gfxile.net/soloud/) - audio engine  
-- [TMX C Loader](https://github.com/baylej/tmx) - loading [Tiled](https://www.mapeditor.org/) maps
 - [GLEW](http://glew.sourceforge.net/) - GL extension support
 - [rlgl](https://www.raylib.com/) - OpenGL wrapper
 - [crunch](https://github.com/ChevyRay/crunch/) - sprite packing

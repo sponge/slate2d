@@ -1,8 +1,40 @@
-import { testmodule, testmodule2, testmodule3, testmodule4 } from "./test/testmodule.js";
-import * as Draw from "draw";
-import * as SLT from "slate2d";
-import * as Assets from "assets";
-import { loadTilemap } from "./tiled.js";
+import { testmodule, testmodule2, testmodule3, testmodule4 } from './test/testmodule.js';
+import * as Draw from 'draw';
+import * as SLT from 'slate2d';
+import * as Assets from 'assets';
+import { loadTilemap } from './tiled.js';
+
+class Entity {
+  type = 'default';
+  x = 0;
+  y = 0;
+  sprite = 0;
+
+  update(dt) {}
+  draw() {}
+}
+
+class Player extends Entity {
+  t = 0;
+  constructor() {
+    super()
+    this.type = 'player';
+    this.sprite = Assets.find('dogspr');
+  }
+
+  update(dt) {
+    this.t += dt;
+    if (SLT.buttonPressed(0)) this.y -= 1;
+    if (SLT.buttonPressed(1)) this.y += 1;
+    if (SLT.buttonPressed(2)) this.x -= 1;
+    if (SLT.buttonPressed(3)) this.x += 1;
+  }
+
+  draw() {
+    Draw.setColor(255, 255, 255, 255);
+    Draw.sprite(this.sprite, Math.floor(this.t * 12) % 6, this.x, this.y, 1, 0, 1, 1);
+  }
+}
 
 class Main {
   canvas = undefined;
@@ -10,11 +42,14 @@ class Main {
   dogSpr = undefined;
   state = {t: 0};
   test = [1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5];
-  test2 = "hello world";
+  test2 = 'hello world';
   test3 = new Promise(() => {}, () => {});
   tiles = undefined;
   backgrounds = [];
   clouds = [];
+
+  entities = [];
+  player = undefined;
 
   save() {
     return JSON.stringify(this.state);
@@ -68,6 +103,19 @@ class Main {
       return { id, w, h, x: cloudX[i], y: cloudY[i] };
     });
 
+    this.player = new Player();
+    this.entities.push(this.player);
+    this.player.x = 100;
+    this.player.y = 100;
+  };
+
+  update(dt) {
+    this.state.t += dt;
+    testmodule(1);
+    testmodule4(4);
+    SLT.showObj('main class', this);
+
+    this.entities.forEach(ent => ent.update(dt));
   };
 
   draw() {
@@ -110,9 +158,11 @@ class Main {
     Draw.setColor(255, 255, 255, 128);
     Draw.rect(mouse.x, mouse.y, 16, 16);
 
-    SLT.printWin("test", "key", "val");
-    SLT.printWin("test", "x", x);
-    SLT.printWin("test", "y", y);
+    this.entities.forEach(ent => ent.draw());
+
+    SLT.printWin('test', 'key', 'val');
+    SLT.printWin('test', 'x', x);
+    SLT.printWin('test', 'y', y);
 
     // draw the canvas into the game
     const screen = SLT.resolution();
@@ -122,17 +172,6 @@ class Main {
     Draw.image(this.canvas, (screen.w - (res.w * scale)) / 2, (screen.h - (res.h * scale)) / 2, 384, 216, scale, 0, 0, 0);
 
     Draw.submit();
-  };
-  
-  update(dt) {
-    this.state.t += dt;
-    testmodule(1);
-    testmodule4(4);
-    SLT.showObj("main class", this);
-  
-    // if (t > 3) {
-    //   throw new Error("test exception");
-    // }
   };
 }
 
@@ -147,8 +186,8 @@ function save() {
 }
 
 function start(initialState) {
-  console.log("start");
-  console.log("platform is " + SLT.platform);
+  console.log('start');
+  console.log('platform is ' + SLT.platform);
   SLT.registerButtons(['up', 'down', 'left', 'right']);
 
   if (initialState) {
@@ -197,10 +236,10 @@ function draw() {
   Draw.rect(mouse.x, mouse.y, 16, 16);
 
   Draw.submit();
-  SLT.printWin("test", "key", "val");
-  SLT.printWin("test", "x", x);
-  SLT.printWin("test", "y", y);
-  SLT.printWin("test", "tiles", JSON.stringify(tiles));
+  SLT.printWin('test', 'key', 'val');
+  SLT.printWin('test', 'x', x);
+  SLT.printWin('test', 'y', y);
+  SLT.printWin('test', 'tiles', JSON.stringify(tiles));
 };
 
 function update(dt) {
@@ -209,7 +248,7 @@ function update(dt) {
   testmodule4(4);
 
   // if (t > 3) {
-  //   throw new Error("test exception");
+  //   throw new Error('test exception');
   // }
 };
 

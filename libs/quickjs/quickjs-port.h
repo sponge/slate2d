@@ -76,36 +76,6 @@ void *qjs_realloc(void *__ptr, size_t __size);
 void qjs_free(void *__ptr);
 size_t qjs_malloc_usable_size(const void *ptr);
 
-#if defined(EMSCRIPTEN)
-
-static inline uint8_t *qjs_get_stack_pointer(void)
-{
-    return NULL;
-}
-
-static inline size_t qjs_stack_size(const uint8_t* stack_top)
-{
-    return stack_top - stack_top;
-}
-#else
-
-/* Note: OS and CPU dependent */
-static inline uint8_t *qjs_get_stack_pointer(void)
-{
-#if defined(_MSC_VER)
-    return _AddressOfReturnAddress();
-#else
-    return __builtin_frame_address(0);
-#endif
-}
-
-static inline size_t qjs_stack_size(const uint8_t* stack_top)
-{
-    return stack_top - qjs_get_stack_pointer();
-}
-
-#endif
-
 //! @brief Detaches a thread.
 int qjs_thread_create(qjs_thread* thread, qjs_thread_method method, void* data, int detached);
 

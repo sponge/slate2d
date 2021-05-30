@@ -1,8 +1,8 @@
-import { testmodule, testmodule2, testmodule3, testmodule4 } from './test/testmodule.js';
 import * as Draw from 'draw';
 import * as SLT from 'slate2d';
 import * as Assets from 'assets';
 import { loadTilemap } from './tiled.js';
+import Camera from './js/camera.js';
 
 class Entity {
   type = 'default';
@@ -40,16 +40,18 @@ class Main {
   canvas = undefined;
   dog = undefined;
   dogSpr = undefined;
-  state = {t: 0};
-  test = [1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5];
-  test2 = 'hello world';
-  test3 = new Promise(() => {}, () => {});
+  state = {
+    t: 0,
+    entities: []
+  };
   tiles = undefined;
   backgrounds = [];
   clouds = [];
+  camera = undefined;
 
-  entities = [];
-  player = undefined;
+  entMap = {
+    'player': Player
+  };
 
   save() {
     return JSON.stringify(this.state);
@@ -64,10 +66,6 @@ class Main {
     });
 
     SLT.registerButtons(['up', 'down', 'left', 'right']);
-  
-    if (initialState) {
-      this.state = JSON.parse(initialState);
-    }
   
     this.dog = Assets.load({
       name: 'dog',
@@ -103,19 +101,28 @@ class Main {
       return { id, w, h, x: cloudX[i], y: cloudY[i] };
     });
 
-    this.player = new Player();
-    this.entities.push(this.player);
-    this.player.x = 100;
-    this.player.y = 100;
+    if (initialState) {
+      this.state = JSON.parse(initialState);
+      this.state.entities = this.state.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));
+      console.log(this.state.entities);
+    } else {
+      const player = new Player();
+      player.x = 100;
+      player.y = 100;
+      this.state.entities.push(player);
+    }
+
+    this.camera = new Camera(384, 216);
+    this.camera.constrain(0, 0, 384 * 2, this.camera.h);
   };
 
   update(dt) {
     this.state.t += dt;
-    testmodule(1);
-    testmodule4(4);
     SLT.showObj('main class', this);
 
-    this.entities.forEach(ent => ent.update(dt));
+    this.state.entities.forEach(ent => ent.update(dt));
+    const player = this.state.entities[0];
+    this.camera.window(player.x, player.y, 20);
   };
 
   draw() {
@@ -130,8 +137,8 @@ class Main {
     let t = this.state.t;
   
     this.backgrounds.forEach((bg, i) => {
-      const speed = (i+1) * 32;
-      const x = (0 - t * speed) % bg.w;
+      const speed = (i+1) * 1;
+      const x = (0 - this.camera.x * speed) % bg.w;
       Draw.image(bg.id, x, res.h - bg.h, 0, 0, 1, 0, 0, 0);
       Draw.image(bg.id, x + bg.w, res.h - bg.h, 0, 0, 1, 0, 0, 0);
     });
@@ -149,6 +156,7 @@ class Main {
     Draw.sprite(this.dogSpr, Math.floor(t * 12) % 6, x, y, 1, 0, 1, 1);
     Draw.setColor(255, 255, 255, 128);
   
+    this.camera.drawStart();
     //Draw.tilemap(this.tiles.tilesetHandle, 0, 0, this.tiles.width, this.tiles.height, this.tiles.data);
 
     Draw.tri(10, 20, 400, 400, 400, 100, true);
@@ -158,7 +166,9 @@ class Main {
     Draw.setColor(255, 255, 255, 128);
     Draw.rect(mouse.x, mouse.y, 16, 16);
 
-    this.entities.forEach(ent => ent.draw());
+    this.state.entities.forEach(ent => ent.draw());
+
+    this.camera.drawEnd();
 
     SLT.printWin('test', 'key', 'val');
     SLT.printWin('test', 'x', x);
@@ -176,81 +186,3 @@ class Main {
 }
 
 export default Main;
-
-/*
-let dog, dogSpr;
-let state = {t: 0};
-
-function save() {
-  return JSON.stringify(state);
-}
-
-function start(initialState) {
-  console.log('start');
-  console.log('platform is ' + SLT.platform);
-  SLT.registerButtons(['up', 'down', 'left', 'right']);
-
-  if (initialState) {
-    state = JSON.parse(initialState);
-  }
-
-  dog = Assets.load({
-    name: 'dog',
-    type: 'image',
-    path: 'gfx/dog.png'
-  });
-
-  dogSpr = Assets.load({
-    name: 'dogspr',
-    type: 'sprite',
-    path: 'gfx/dog.png',
-    spriteWidth: 16,
-    spriteHeight: 16,
-    marginX: 0,
-    marginY: 0,
-  })
-
-  tiles = loadTilemap('maps/8x8.json');
-};
-
-function draw() {
-  Draw.clear(0, 0, 0, 255);
-
-  const mouse = SLT.mouse();
-  const res = SLT.resolution();
-
-  let t = state.t;
-
-  const x = Math.floor((t * 100) % res.w);
-  const y = Math.floor(Math.sin(x / 50) * 100 + 200);
-  const sz = Math.cos(t) * 32 + 32
-  Draw.rect(x, y, sz, sz, true);
-
-  Draw.tileMap(tiles.tilesetHandle, 0, 0, tiles.width, tiles.height, tiles.data);
-
-  Draw.image(dog, 0, 0, 32, 32, 1, 0, 0, 0);
-  Draw.tri(10, 20, 400, 400, 400, 100, true);
-  Draw.setColor(128, 0, 0, 255);
-  Draw.line(0, 0, res.w, res.h);
-  Draw.setColor(255, 255, 255, 128);
-  Draw.rect(mouse.x, mouse.y, 16, 16);
-
-  Draw.submit();
-  SLT.printWin('test', 'key', 'val');
-  SLT.printWin('test', 'x', x);
-  SLT.printWin('test', 'y', y);
-  SLT.printWin('test', 'tiles', JSON.stringify(tiles));
-};
-
-function update(dt) {
-  state.t += dt;
-  testmodule(1);
-  testmodule4(4);
-
-  // if (t > 3) {
-  //   throw new Error('test exception');
-  // }
-};
-
-export default { draw, update, start, save };
-*/

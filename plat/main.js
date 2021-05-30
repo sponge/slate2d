@@ -48,8 +48,7 @@ class Main {
   tiles = undefined;
   backgrounds = [];
   clouds = [];
-  camera = undefined;
-
+  camera = new Camera(this.res.w, this.res.h);
   entMap = {
     'player': Player
   };
@@ -113,7 +112,6 @@ class Main {
       this.state.entities.push(player);
     }
 
-    this.camera = new Camera(this.res.w, this.res.h);
     this.camera.constrain(0, 0, this.res.w * 2, this.camera.h);
   };
 

@@ -9,7 +9,6 @@ class Camera {
   // size of viewport
   w = 0;
   h = 0;
-
   // camera constraint
   con = undefined;
   

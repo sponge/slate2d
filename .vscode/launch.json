@@ -22,9 +22,11 @@
       "environment": [],
       "externalConsole": true,
       "osx": {
-        "type": "cppdbg",
+        "type": "lldb",
+        "targetArchitecture": "arm64",
         "preLaunchTask": "Build (Debug)",
-        "program": "${workspaceRoot}/build/bin/x86_64_Debug/jslate2d",
+        "cwd": "${workspaceFolder}/build/bin/ARM64_Debug/",
+        "program": "${workspaceRoot}/build/bin/ARM64_Debug/jslate2d",
         "MIMode": "lldb",
         "externalConsole": false
       }
@@ -41,9 +43,9 @@
       "environment": [{"name": "QUICKJS_DEBUG_LISTEN_ADDRESS", "value": "127.0.0.1:6666"}],
       "externalConsole": true,
       "osx": {
-        "type": "cppdbg",
+        "type": "lldb",
         "preLaunchTask": "Build (Debug)",
-        "program": "${workspaceRoot}/build/bin/x86_64_Debug/jslate2d",
+        "program": "${workspaceRoot}/build/bin/ARM64_Debug/jslate2d",
         "MIMode": "lldb",
         "externalConsole": false
       }
@@ -60,9 +62,9 @@
       "environment": [],
       "externalConsole": true,
       "osx": {
-        "type": "cppdbg",
+        "type": "lldb",
         "preLaunchTask": "Build (Release)",
-        "program": "${workspaceRoot}/build/bin/x86_64_Release/jslate2d",
+        "program": "${workspaceRoot}/build/bin/ARM64_Release/jslate2d",
         "MIMode": "lldb",
         "externalConsole": false
       }

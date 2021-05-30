@@ -14,10 +14,9 @@ struct js_transport_data {
 
 
 static void __dump( const char* desc, const char* buffer, int length ) {
-#if 0
 	printf( "%s (%d)\n", desc, (int)length );
 
-	for( ssize_t i=0; i<length; i+=8 ) {
+	for( SSIZE_T i=0; i<length; i+=8 ) {
 
 		size_t 	j,
 				lim = i+8;
@@ -44,12 +43,9 @@ static void __dump( const char* desc, const char* buffer, int length ) {
 
 		printf( "\n" );
 	}
-#endif
 }
 
 static size_t js_transport_read(void *udata, char *buffer, size_t length) {
-    return -1;
-#if 0
     struct js_transport_data* data = (struct js_transport_data *)udata;
     if (data->handle <= 0)
         return -1;
@@ -60,8 +56,8 @@ static size_t js_transport_read(void *udata, char *buffer, size_t length) {
     if (buffer == NULL)
         return -3;
 
-    //ssize_t ret = read(data->handle, (void *)buffer, length);
-	ssize_t ret = recv( data->handle, (void*)buffer, length, 0);
+    //SSIZE_T ret = read(data->handle, (void *)buffer, length);
+	SSIZE_T ret = recv( data->handle, (void*)buffer, length, 0);
 	__dump( "read", buffer, ret );
 
     if (ret == SOCKET_ERROR )
@@ -74,12 +70,9 @@ static size_t js_transport_read(void *udata, char *buffer, size_t length) {
         return -6;
 
     return ret;
-#endif
 }
 
 static size_t js_transport_write(void *udata, const char *buffer, size_t length) {
-    return -1;
-#if 0
     struct js_transport_data* data = (struct js_transport_data *)udata;
     if (data->handle <= 0)
         return -1;
@@ -95,16 +88,13 @@ static size_t js_transport_write(void *udata, const char *buffer, size_t length)
 
     //size_t ret = write(data->handle, (const void *) buffer, length);
 	size_t ret = send( data->handle, (const void *) buffer, length, 0);
-    if (ret <= 0 || ret > (ssize_t) length)
+    if (ret <= 0 || ret > (SSIZE_T) length)
         return -4;
 
     return ret;
-#endif
 }
 
 static size_t js_transport_peek(void *udata) {
-    return -1;
-#if 0
     WSAPOLLFD  fds[1];
     int poll_rc;
 
@@ -126,11 +116,37 @@ static size_t js_transport_peek(void *udata) {
         return 0;
     // has data
     return 1;
-#endif
+}
+
+// todo: fixup asserts to return errors.
+static struct sockaddr_in js_debugger_parse_sockaddr(const char* address) {
+    char* port_string = strstr(address, ":");
+    assert(port_string);
+
+    int port = atoi(port_string + 1);
+    assert(port);
+
+    char host_string[256];
+    strcpy(host_string, address);
+    host_string[port_string - address] = 0;
+
+    struct hostent* host = gethostbyname(host_string);
+    if (!host) {
+        int err = WSAGetLastError();
+        printf("WSAGetLastError: %i\n", err);
+    }
+    assert(host);
+    struct sockaddr_in addr;
+
+    memset(&addr, 0, sizeof(addr));
+    addr.sin_family = AF_INET;
+    memcpy((char*)&addr.sin_addr.s_addr, (char*)host->h_addr, host->h_length);
+    addr.sin_port = htons(port);
+
+    return addr;
 }
 
 static void js_transport_close(JSContext* ctx, void *udata) {
-#if 0
     struct js_transport_data* data = (struct js_transport_data *)udata;
     if (data->handle <= 0)
         return;
@@ -141,11 +157,9 @@ static void js_transport_close(JSContext* ctx, void *udata) {
     free(udata);
 
 	WSACleanup();
-#endif
 }
 
 void js_debugger_connect(JSContext *ctx, const char *address) {
-#if 0
 	WSADATA wsaData;
 	WSAStartup(MAKEWORD(2, 2), &wsaData);
 
@@ -176,15 +190,16 @@ void js_debugger_connect(JSContext *ctx, const char *address) {
     struct js_transport_data *data = (struct js_transport_data *)malloc(sizeof(struct js_transport_data));
     data->handle = client;
     js_debugger_attach(ctx, js_transport_read, js_transport_write, js_transport_peek, js_transport_close, data);
-#endif
 }
 
 void js_debugger_wait_connection(JSContext* ctx, const char* address) {
-#if 0
+	WSADATA wsaData;
+	WSAStartup(MAKEWORD(2, 2), &wsaData);
+
     struct sockaddr_in addr = js_debugger_parse_sockaddr(address);
 
     int server = socket(AF_INET, SOCK_STREAM, 0);
-    assert(server >= 0);
+    assert(server != INVALID_SOCKET);
 
     int reuseAddress = 1;
     assert(setsockopt(server, SOL_SOCKET, SO_REUSEADDR, (const char*)&reuseAddress, sizeof(reuseAddress)) >= 0);
@@ -194,14 +209,13 @@ void js_debugger_wait_connection(JSContext* ctx, const char* address) {
     listen(server, 1);
 
     struct sockaddr_in client_addr;
-    socklen_t client_addr_size = (socklen_t)sizeof(addr);
+    int client_addr_size = sizeof(addr);
     int client = accept(server, (struct sockaddr*)&client_addr, &client_addr_size);
-    close(server);
-    assert(client >= 0);
+    //close(server);
+    assert(client != INVALID_SOCKET);
 
     struct js_transport_data* data = (struct js_transport_data*)malloc(sizeof(struct js_transport_data));
     memset(data, 0, sizeof(js_transport_data));
     data->handle = client;
     js_debugger_attach(ctx, js_transport_read, js_transport_write, js_transport_peek, js_transport_close, data);
-#endif
 }

@@ -60,14 +60,14 @@
         "type": "process",
         "command": "cmd",
         "args": [
-          "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
+          "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/Slate2D.sln"
         ],
         "options": {
           "env": {
             "operation": "Build",
-            "platform": "x86_64",
+            "platform": "x64",
             "configuration": "Release",
-            "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
+            "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
           }
         },
         "problemMatcher": [
@@ -111,14 +111,14 @@
         "command": "cmd",
         "type": "process",
         "args": [
-          "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
+          "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/Slate2D.sln"
         ],
         "options": {
           "env": {
             "operation": "Build",
-            "platform": "x86_64",
+            "platform": "x64",
             "configuration": "Debug",
-            "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
+            "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
           }
         },
         "problemMatcher": [
@@ -145,15 +145,15 @@
         "command": "cmd",
         "type": "process",
         "args": [
-          "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
+          "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/Slate2D.sln"
         ],
         "group": "build",
         "options": {
           "env": {
             "operation": "Clean",
-            "platform": "x86_64",
+            "platform": "x64",
             "configuration": "Release",
-            "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
+            "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
           }
         },
       },
@@ -177,14 +177,14 @@
         "command": "cmd",
         "type": "process",
         "args": [
-          "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/game.sln"
+          "/C %vcvarsall% && msbuild /property:GenerateFullPaths=true /t:%operation% /p:Platform=%platform% /p:Configuration=%configuration% build/Slate2D.sln"
         ],
         "options": {
           "env": {
             "operation": "Clean",
-            "platform": "x86_64",
+            "platform": "x64",
             "configuration": "Debug",
-            "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
+            "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
           }
         },
       }

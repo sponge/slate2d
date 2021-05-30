@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "compounds": [
     {
-      "name": "Debug JS",
+      "name": "Launch & Attach JS",
       "configurations": ["Launch with JS (Debug)", "Attach QuickJS"]
     }
   ],

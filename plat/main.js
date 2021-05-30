@@ -37,6 +37,7 @@ class Player extends Entity {
 }
 
 class Main {
+  res = {w: 384, h: 216}
   canvas = undefined;
   dog = undefined;
   dogSpr = undefined;
@@ -61,8 +62,8 @@ class Main {
     this.canvas = Assets.load({
       name: 'canvas',
       type: 'canvas',
-      width: 384,
-      height: 216
+      width: this.res.w,
+      height: this.res.h
     });
 
     SLT.registerButtons(['up', 'down', 'left', 'right']);
@@ -112,8 +113,8 @@ class Main {
       this.state.entities.push(player);
     }
 
-    this.camera = new Camera(384, 216);
-    this.camera.constrain(0, 0, 384 * 2, this.camera.h);
+    this.camera = new Camera(this.res.w, this.res.h);
+    this.camera.constrain(0, 0, this.res.w * 2, this.camera.h);
   };
 
   update(dt) {
@@ -131,14 +132,13 @@ class Main {
     Draw.useCanvas(this.canvas);
     Draw.clear(41, 173, 255, 255);
   
-    const mouse = SLT.mouse();
-    const res = {w: 384, h: 216};
+    const { res } = this;
   
     let t = this.state.t;
   
     this.backgrounds.forEach((bg, i) => {
-      const speed = (i+1) * 1;
-      const x = (0 - this.camera.x * speed) % bg.w;
+      const speed = (i+1) * 0.25;
+      const x = Math.floor(((0 - this.camera.x) * speed) % bg.w);
       Draw.image(bg.id, x, res.h - bg.h, 0, 0, 1, 0, 0, 0);
       Draw.image(bg.id, x + bg.w, res.h - bg.h, 0, 0, 1, 0, 0, 0);
     });
@@ -151,7 +151,6 @@ class Main {
   
     const x = Math.floor((t * 50) % (res.w + 22) - 22);
     const y = Math.floor(Math.sin(x / 50) * 5 + 167);
-    const sz = Math.cos(t) * 9 + 32
     Draw.setColor(255, 255, 255, 255);
     Draw.sprite(this.dogSpr, Math.floor(t * 12) % 6, x, y, 1, 0, 1, 1);
     Draw.setColor(255, 255, 255, 128);
@@ -163,8 +162,6 @@ class Main {
     Draw.setColor(128, 0, 0, 255);
     Draw.line(0, 0, res.w, res.h);
     Draw.line(0, 0, 200, 200);
-    Draw.setColor(255, 255, 255, 128);
-    Draw.rect(mouse.x, mouse.y, 16, 16);
 
     this.state.entities.forEach(ent => ent.draw());
 
@@ -179,7 +176,7 @@ class Main {
     const scale = Math.floor(screen.h / res.h);
     Draw.resetCanvas();
     Draw.setColor(255, 255, 255, 255);
-    Draw.image(this.canvas, (screen.w - (res.w * scale)) / 2, (screen.h - (res.h * scale)) / 2, 384, 216, scale, 0, 0, 0);
+    Draw.image(this.canvas, (screen.w - (res.w * scale)) / 2, (screen.h - (res.h * scale)) / 2, res.w, res.h, scale, 0, 0, 0);
 
     Draw.submit();
   };

@@ -45,7 +45,7 @@ class Camera {
     }
 
     const delta = x - center + (x > center ? -1 : 1) * windowWidth;
-    this.move(this.x + delta, this.y);
+    this.move(this.x + delta, y);
   }
 
   // centers the camera at a point

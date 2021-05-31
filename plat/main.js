@@ -11,7 +11,7 @@ class Entity {
   y = 0;
   sprite = 0;
 
-  update(dt) {}
+  update(_dt) {}
   draw() {}
 }
 

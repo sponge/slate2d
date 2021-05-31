@@ -1,7 +1,6 @@
 #include "../src/slate2d.h"
 #include <imgui.h>
 #include <string>
-#include "main.h"
 #include "js_libs.h"
 extern "C" {
 #include <quickjs.h>

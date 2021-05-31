@@ -8,10 +8,6 @@ interface Size {
   h: number;
 }
 
-interface AssetDef {
-  type: 'image' | 'sprite' | 'speech' | 'sound' | 'mod' | 'font' | 'bitmapfont' | 'canvas';
-}
-
 interface ImageAsset {
   type: 'image';
   name: string;

@@ -1,3 +1,4 @@
+/// <reference path="./decs.d.ts" />
 import * as Draw from 'draw';
 import * as SLT from 'slate2d';
 import * as Assets from 'assets';

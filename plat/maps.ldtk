@@ -28,7 +28,7 @@
 	"backupOnSave": false,
 	"backupLimit": 10,
 	"levelNamePattern": "Level_%idx",
-	"flags": [],
+	"flags": ["DiscardPreCsvIntGrid"],
 	"defs": { "layers": [
 		{
 			"__type": "IntGrid",
@@ -834,7 +834,7 @@
 			"__cHei": 14,
 			"identifier": "Spritesheet",
 			"uid": 2,
-			"relPath": "grasslands.png",
+			"relPath": "gfx/grasslands.png",
 			"pxWid": 256,
 			"pxHei": 224,
 			"tileGridSize": 16,
@@ -890,7 +890,7 @@
 			"bgPivotX": 0.5,
 			"bgPivotY": 0.5,
 			"__bgPos": null,
-			"externalRelPath": "test/0000-Level_0.ldtkl",
+			"externalRelPath": "maps/0000-Level_0.ldtkl",
 			"fieldInstances": [{ "__identifier": "background", "__value": "grasslands", "__type": "String", "defUid": 58, "realEditorValues": [] }],
 			"layerInstances": null,
 			"__neighbours": []

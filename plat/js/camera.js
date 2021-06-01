@@ -38,16 +38,21 @@ class Camera {
 
   // moves the camera based on a focus point and a window
   // camera won't move if you're within windowWidth px from the center
-  window(x, y, windowWidth) {
-    const center = this.x + this.w / 2;
+  window(x, y, windowWidth, windowHeight) {
+    const centerX = this.x + this.w / 2;
+    const centerY = this.y + this.h / 2;
 
-    if (Math.abs(x - center) <= windowWidth) {
-      this.move(this.x, y);
-      return;
+    let deltaX = 0;
+    if (Math.abs(x - centerX) > windowWidth) {
+      deltaX = x - centerX + (x > centerX ? -1 : 1) * windowWidth;
     }
 
-    const delta = x - center + (x > center ? -1 : 1) * windowWidth;
-    this.move(this.x + delta, y);
+    let deltaY = 0;
+    if (Math.abs(y - centerY) > windowHeight) {
+      deltaY = y - centerY + (y > centerY ? -1 : 1) * windowHeight;
+    }
+
+    this.move(this.x + deltaX, this.y + deltaY);
   }
 
   // centers the camera at a point

@@ -124,7 +124,7 @@ class Main {
 
     this.state.entities.forEach(ent => ent.update(dt));
     const player = this.state.entities[0];
-    this.camera.window(player.x, player.y, 20);
+    this.camera.window(player.x, player.y, 20, 20);
   };
 
   draw() {
@@ -134,9 +134,9 @@ class Main {
     Draw.clear(41, 173, 255, 255);
   
     const { res } = this;
+    const t = this.state.t;
   
-    let t = this.state.t;
-  
+    // parallax bgs
     this.backgrounds.forEach((bg, i) => {
       const speed = (i+1) * 0.25;
       const x = Math.floor(((0 - this.camera.x) * speed) % bg.w);
@@ -144,12 +144,14 @@ class Main {
       Draw.image(bg.id, x + bg.w, res.h - bg.h, 0, 0, 1, 0, 0, 0);
     });
 
+    // clouds which scroll, no parallax
     this.clouds.forEach((bg, i) => {
       const speed = (i+1) * 6;
       const x = res.w + (bg.x - t * speed) % (res.w + bg.w);
       Draw.image(bg.id, x, bg.y, 0, 0, 1, 0, 0, 0);
     });
   
+    // running dog
     const x = Math.floor((t * 50) % (res.w + 22) - 22);
     const y = Math.floor(Math.sin(x / 50) * 5 + 167);
     Draw.setColor(255, 255, 255, 255);
@@ -159,11 +161,13 @@ class Main {
     this.camera.drawStart();
     //Draw.tilemap(this.tiles.tilesetHandle, 0, 0, this.tiles.width, this.tiles.height, this.tiles.data);
 
+    // random triangle and lines
     Draw.tri(10, 20, 400, 400, 400, 100, true);
     Draw.setColor(128, 0, 0, 255);
     Draw.line(0, 0, res.w, res.h);
     Draw.line(0, 0, 200, 200);
 
+    // tilemap and entities
     Draw.setColor(255, 255, 255, 255);
     this.map.draw('BGDecoration');
     this.state.entities.forEach(ent => ent.draw());
@@ -172,7 +176,7 @@ class Main {
 
     this.camera.drawEnd();
 
-    // draw the canvas into the game
+    // draw the canvas into the center of the window
     const screen = SLT.resolution();
     const scale = Math.floor(screen.h / res.h);
     Draw.resetCanvas();

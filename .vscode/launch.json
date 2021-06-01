@@ -45,6 +45,7 @@
       "osx": {
         "type": "lldb",
         "preLaunchTask": "Build (Debug)",
+        "cwd": "${workspaceFolder}/build/bin/ARM64_Debug/",
         "program": "${workspaceRoot}/build/bin/ARM64_Debug/jslate2d",
         "MIMode": "lldb",
         "externalConsole": false
@@ -64,6 +65,7 @@
       "osx": {
         "type": "lldb",
         "preLaunchTask": "Build (Release)",
+        "cwd": "${workspaceFolder}/build/bin/ARM64_Release/",
         "program": "${workspaceRoot}/build/bin/ARM64_Release/jslate2d",
         "MIMode": "lldb",
         "externalConsole": false

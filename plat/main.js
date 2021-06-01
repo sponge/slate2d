@@ -140,8 +140,10 @@ class Main {
     this.backgrounds.forEach((bg, i) => {
       const speed = (i+1) * 0.25;
       const x = Math.floor(((0 - this.camera.x) * speed) % bg.w);
-      Draw.image(bg.id, x, res.h - bg.h, 0, 0, 1, 0, 0, 0);
-      Draw.image(bg.id, x + bg.w, res.h - bg.h, 0, 0, 1, 0, 0, 0);
+      const camY = 1 - (this.camera.y / (this.camera.con.h - res.h));
+      const y = Math.floor(res.h - bg.h + (camY * 20));
+      Draw.image(bg.id, x, y, 0, 0, 1, 0, 0, 0);
+      Draw.image(bg.id, x + bg.w, y, 0, 0, 1, 0, 0, 0);
     });
 
     // clouds which scroll, no parallax

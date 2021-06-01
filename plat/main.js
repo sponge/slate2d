@@ -2,8 +2,8 @@
 import * as Draw from 'draw';
 import * as SLT from 'slate2d';
 import * as Assets from 'assets';
-import { loadTilemap } from './tiled.js';
 import Camera from './js/camera.js';
+import LDTK from './js/ldtk.js';
 
 class Entity {
   type = 'default';
@@ -44,9 +44,10 @@ class Main {
   dogSpr = undefined;
   state = {
     t: 0,
-    entities: []
+    entities: [],
+    mapName: '',
   };
-  tiles = undefined;
+  map = undefined;
   backgrounds = [];
   clouds = [];
   camera = new Camera(this.res.w, this.res.h);
@@ -84,8 +85,6 @@ class Main {
       marginY: 0,
     });
 
-    this.tiles = loadTilemap('maps/8x8.json');
-
     this.backgrounds = [...Array(3).keys()].map(i => {
       const name = `gfx/grassland_bg${i}.png`;
       const id = Assets.load({type: 'image', name, path: name});
@@ -105,15 +104,18 @@ class Main {
     if (initialState) {
       this.state = JSON.parse(initialState);
       this.state.entities = this.state.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));
-      console.log(this.state.entities);
     } else {
       const player = new Player();
       player.x = 100;
       player.y = 100;
       this.state.entities.push(player);
+      this.state.mapName = 'maps/0000-Level_0.ldtkl';
     }
 
-    this.camera.constrain(0, 0, this.res.w * 2, this.camera.h);
+    const src = JSON.parse(SLT.readFile(this.state.mapName));
+    this.map = new LDTK(src);
+
+    this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
   };
 
   update(dt) {
@@ -162,13 +164,13 @@ class Main {
     Draw.line(0, 0, res.w, res.h);
     Draw.line(0, 0, 200, 200);
 
+    Draw.setColor(255, 255, 255, 255);
+    this.map.draw('BGDecoration');
     this.state.entities.forEach(ent => ent.draw());
+    this.map.draw('BGTiles');
+    this.map.draw('Collision');
 
     this.camera.drawEnd();
-
-    SLT.printWin('test', 'key', 'val');
-    SLT.printWin('test', 'x', x);
-    SLT.printWin('test', 'y', y);
 
     // draw the canvas into the game
     const screen = SLT.resolution();

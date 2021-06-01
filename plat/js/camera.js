@@ -42,6 +42,7 @@ class Camera {
     const center = this.x + this.w / 2;
 
     if (Math.abs(x - center) <= windowWidth) {
+      this.move(this.x, y);
       return;
     }
 

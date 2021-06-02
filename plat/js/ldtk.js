@@ -83,8 +83,6 @@ class LDTK {
     
     // index 0 should be the bottom-most layer for drawing purposes
     this.layers.reverse();
-
-    
   }
 
   draw(layerName) {

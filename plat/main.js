@@ -5,14 +5,79 @@ import * as Assets from 'assets';
 import Camera from './js/camera.js';
 import LDTK from './js/ldtk.js';
 
+const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+
 class Entity {
   type = 'default';
-  x = 0;
-  y = 0;
+  pos = [0,0];
+  size = [0,0];
+  vel = [0,0];
+  drawOfs = [0,0];
+
+  remainder = [0,0];
   sprite = 0;
+  frame = 0;
 
   update(_dt) {}
-  draw() {}
+  draw() {
+    Draw.setColor(255, 255, 255, 255);
+    Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, 0, 1, 1);
+  }
+  
+  collideAt(x, y) {
+    // FIXME: need a reference to the world, but don't want to pass it in then state will have a cyclic reference
+    // FIXME: GC?
+    const corners = [
+      [x, y],
+      [x + this.size[0], y],
+      [x, y + this.size[1]],
+      [x + this.size[0], y + this.size[1]]
+    ];
+
+    const layer = globalThis.main.map.layersByName.Collision;
+    for (let corner of corners) {
+      const tx = Math.floor(corner[0] / layer.tileSize);
+      const ty = clamp(Math.floor(corner[1] / layer.tileSize), 0, layer.height);
+      if (tx < 0 || tx >= layer.width || layer.tiles[ty * layer.width + tx] !== 0) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+
+  __move(dim, amt) {
+    this.remainder[dim] += amt;
+    let move = Math.floor(this.remainder[dim]);
+
+    if (move == 0) {
+      return true;
+    }
+
+    this.remainder[dim] -= move;
+    const sign = move > 0 ? 1 : -1;
+
+    while (move != 0) {
+      const check = this.pos[dim] + sign;
+      const collision = dim == 0 ? this.collideAt(check, this.pos[1]) : this.collideAt(this.pos[0], check);
+      if (!collision) {
+        this.pos[dim] += sign;
+        move -= sign;
+      } else {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  moveX(amt) {
+    return this.__move(0, amt);
+  }
+
+  moveY(amt) {
+    return this.__move(1, amt);
+  }
 }
 
 class Player extends Entity {
@@ -25,15 +90,15 @@ class Player extends Entity {
 
   update(dt) {
     this.t += dt;
-    if (SLT.buttonPressed(0)) this.y -= 1;
-    if (SLT.buttonPressed(1)) this.y += 1;
-    if (SLT.buttonPressed(2)) this.x -= 1;
-    if (SLT.buttonPressed(3)) this.x += 1;
-  }
+    if (SLT.buttonPressed(0)) this.vel[1] <= 0 ? this.vel[1] -= 0.05 : this.vel[1] = 0;
+    if (SLT.buttonPressed(1)) this.vel[1] >= 0 ? this.vel[1] += 0.05 : this.vel[1] = 0;
+    if (SLT.buttonPressed(2)) this.vel[0] <= 0 ? this.vel[0] -= 0.05 : this.vel[0] = 0;
+    if (SLT.buttonPressed(3)) this.vel[0] >= 0 ? this.vel[0] += 0.05 : this.vel[0] = 0;
 
-  draw() {
-    Draw.setColor(255, 255, 255, 255);
-    Draw.sprite(this.sprite, Math.floor(this.t * 12) % 6, this.x, this.y, 1, 0, 1, 1);
+    this.moveX(this.vel[0]);
+    this.moveY(this.vel[1]);
+
+    this.frame = Math.floor(this.t * 12) % 6
   }
 }
 
@@ -106,8 +171,9 @@ class Main {
       this.state.entities = this.state.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));
     } else {
       const player = new Player();
-      player.x = 100;
-      player.y = 100;
+      player.pos = [200,100];
+      player.size = [14,14];
+      player.drawOfs = [-3, -1];
       this.state.entities.push(player);
       this.state.mapName = 'maps/0000-Level_0.ldtkl';
     }
@@ -124,7 +190,7 @@ class Main {
 
     this.state.entities.forEach(ent => ent.update(dt));
     const player = this.state.entities[0];
-    this.camera.window(player.x, player.y, 20, 20);
+    this.camera.window(player.pos[0], player.pos[1], 20, 20);
   };
 
   draw() {
@@ -137,11 +203,12 @@ class Main {
     const t = this.state.t;
   
     // parallax bgs
+    const camY = 1 - (this.camera.y / (this.camera.con.h - res.h));
+    const camYoffset = camY * 20
     this.backgrounds.forEach((bg, i) => {
       const speed = (i+1) * 0.25;
       const x = Math.floor(((0 - this.camera.x) * speed) % bg.w);
-      const camY = 1 - (this.camera.y / (this.camera.con.h - res.h));
-      const y = Math.floor(res.h - bg.h + (camY * 20));
+      const y = Math.floor(res.h - bg.h + camYoffset);
       Draw.image(bg.id, x, y, 0, 0, 1, 0, 0, 0);
       Draw.image(bg.id, x + bg.w, y, 0, 0, 1, 0, 0, 0);
     });
@@ -157,7 +224,7 @@ class Main {
     const x = Math.floor((t * 50) % (res.w + 22) - 22);
     const y = Math.floor(Math.sin(x / 50) * 5 + 167);
     Draw.setColor(255, 255, 255, 255);
-    Draw.sprite(this.dogSpr, Math.floor(t * 12) % 6, x, y, 1, 0, 1, 1);
+    Draw.sprite(this.dogSpr, Math.floor(t * 12) % 6, x, y + camYoffset, 1, 0, 1, 1);
     Draw.setColor(255, 255, 255, 128);
   
     this.camera.drawStart();
@@ -172,8 +239,8 @@ class Main {
     // tilemap and entities
     Draw.setColor(255, 255, 255, 255);
     this.map.draw('BGDecoration');
-    this.state.entities.forEach(ent => ent.draw());
     this.map.draw('BGTiles');
+    this.state.entities.forEach(ent => ent.draw());
     this.map.draw('Collision');
 
     this.camera.drawEnd();

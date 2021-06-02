@@ -314,14 +314,10 @@ int main(int argc, char* argv[]) {
 		SLT_Con_SetVar("engine.errorMessage", "");
 		SLT_Con_SetVar("engine.lastErrorStack", "");
 		if (instance) {
-			state = instance->CallSave();
+			state = SLT_Con_GetArgCount() > 1 ? "" : instance->CallSave();
 			delete instance;
 			instance = nullptr;
 		}
-	});
-
-	SLT_Con_AddCommand("js_clearState", []() {
-		state = "";
 	});
 
 	SLT_Con_AddCommand("js_eval", []() {

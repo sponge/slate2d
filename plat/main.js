@@ -27,7 +27,6 @@ class Entity {
   }
   
   collideAt(x, y) {
-    // FIXME: need a reference to the world, but don't want to pass it in then state will have a cyclic reference
     // FIXME: GC?
     const corners = [
       [x, y],
@@ -36,15 +35,36 @@ class Entity {
       [x + this.size[0], y + this.size[1]]
     ];
 
+    const bottomMiddle = [x + this.size[0] / 2, y + this.size[1]]; // y is actually one pixel below box here
+
     // check against tilemap
     // iterate through corners. note this will currently break if entities are > tileSize
+    // FIXME: need a reference to the world, but don't want to pass it in then state will have a cyclic reference
     const layer = globalThis.main.map.layersByName.Collision;
+
+    // check bottom middle point if its in a slope
+    const tx = Math.floor(bottomMiddle[0] / layer.tileSize);
+    const ty = clamp(Math.floor(bottomMiddle[1] / layer.tileSize), 0, layer.height);
+    const tid = layer.tiles[ty * layer.width + tx];
+    if (tid == 2 || tid == 3) {
+      const localX = bottomMiddle[0] % layer.tileSize;
+      const localY = bottomMiddle[1] % layer.tileSize;
+      const minY = tid == 3 ? localX : layer.tileSize - localX;
+
+      return localY >= minY;
+    }
+
     for (let corner of corners) {
       const tx = Math.floor(corner[0] / layer.tileSize);
       const ty = clamp(Math.floor(corner[1] / layer.tileSize), 0, layer.height);
-      if (tx < 0 || tx >= layer.width || layer.tiles[ty * layer.width + tx] !== 0) {
-        // TODO: if sloped tile, check against y = mx + b
-        // set some sort of collision response object on the entity to prevent alloc new objs?
+      const tid = layer.tiles[ty * layer.width + tx];
+      if (tx < 0 || tx >= layer.width || tid !== 0) {
+        // if it's a sloped tile, only bottom middle pixel should collide with it
+        if (tid == 2 || tid == 3) {
+          continue;
+        }
+
+        // TODO: set some sort of collision response object on the entity to prevent alloc new objs?
         return true;
       }
     }
@@ -70,6 +90,15 @@ class Entity {
         this.pos[dim] += sign;
         move -= sign;
       } else {
+        // step up 1 pixel to check for slope
+        if (dim == 0) {
+          if (!this.collideAt(check, this.pos[1] - 1)) {
+            this.pos[0] += sign;
+            this.pos[1] -= 1;
+            move -= sign;
+            continue;        
+          }
+        }
         return false;
       }
     }
@@ -89,22 +118,28 @@ class Entity {
 class Player extends Entity {
   t = 0;
 
+  // entity definition
+  type = 'player';
+  sprite = Assets.find('dogspr');
+  size = [14,14];
+  drawOfs = [-3, -1];
+
+  // entity state
   disableControls = false;
   pMeter = 0;
-  pMeterCapacity = 112;
-  health = 3;
-  shotsActive = 0;
-  isPlayer = true;
-
+  //health = 3;
+  //shotsActive = 0;
+  //isPlayer = true;
   fallingFrames = 0;
   jumpHeld = false;
   jumpHeldFrames = false;
-  invulnTime = 0;
+  //invulnTime = 0;
   facing = 1;
-  shotsActive = 0;
-  nextShotTime = 0;
+  //nextShotTime = 0;
 
+  // physics values
   // values from https://cdn.discordapp.com/attachments/191015116655951872/332350193540268033/smw_physics.png
+  pMeterCapacity = 112;
   friction = 0.03125 * 2;
   accel = 0.046875 * 2;
   skidAccel = 0.15625 * 2;
@@ -134,12 +169,6 @@ class Player extends Entity {
   //shootSound = Asset.create(Asset.Sound, "player_shoot", "sound/shoot.wav")
   //hurtSound = Asset.create(Asset.Sound, "player_hurt", "sound/hurt.wav")
   //dieSound = Asset.create(Asset.Sound, "player_die", "sound/die.wav")
-
-  constructor() {
-    super()
-    this.type = 'player';
-    this.sprite = Assets.find('dogspr');
-  }
 
   die(cause) {
     // super(cause)
@@ -337,8 +366,6 @@ class Main {
     } else {
       const player = new Player();
       player.pos = [200,100];
-      player.size = [14,14];
-      player.drawOfs = [-3, -1];
       this.state.entities.push(player);
       this.state.mapName = 'maps/0000-Level_0.ldtkl';
     }

@@ -304,7 +304,7 @@ class Player extends Entity {
     }
 
     const chky = this.moveY(this.vel[1]);
-    if (chky) {
+    if (!chky) {
       this.vel[1] = 0;
     }
 
@@ -334,6 +334,7 @@ class Main {
   entMap = {
     'player': Player
   };
+  accumulator = 0;
 
   save() {
     return JSON.stringify(this.state);
@@ -398,14 +399,17 @@ class Main {
   };
 
   update(dt) {
-    this.state.t += dt;
+    this.accumulator += dt;
+
+    while (this.accumulator > 1/61) {
+      this.state.t += 1/60;
+      this.accumulator -= 1/60;
+      this.state.entities.forEach(ent => ent.update(dt));
+      const player = this.state.entities[0];
+      this.camera.window(player.pos[0], player.pos[1], 20, 20);
+    }
+
     SLT.showObj('main class', this);
-
-    if (dt == 0) return;
-
-    this.state.entities.forEach(ent => ent.update(dt));
-    const player = this.state.entities[0];
-    this.camera.window(player.pos[0], player.pos[1], 20, 20);
   };
 
   draw() {

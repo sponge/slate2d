@@ -1,4 +1,5 @@
-/// <reference path="./decs.d.ts" />
+// @ts-check
+/// <referaence path="./decs.d.ts" />
 import * as Draw from 'draw';
 import * as SLT from 'slate2d';
 import * as Assets from 'assets';
@@ -13,7 +14,7 @@ class Dir {
   static Up = 0;
   static Right = 1;
   static Down = 2;
-  static Left = 3
+  static Left = 3;
 }
 
 class Entity {
@@ -137,7 +138,7 @@ class Player extends Entity {
   t = 0;
 
   // entity definition
-  type = 'player';
+  type = 'Player';
   sprite = Assets.find('dogspr');
   size = [14,14];
   drawOfs = [-3, -1];
@@ -150,7 +151,7 @@ class Player extends Entity {
   //isPlayer = true;
   fallingFrames = 0;
   jumpHeld = false;
-  jumpHeldFrames = false;
+  jumpHeldFrames = 0;
   //invulnTime = 0;
   facing = 1;
   //nextShotTime = 0;
@@ -163,7 +164,6 @@ class Player extends Entity {
   skidAccel = 0.15625 * 2;
   runSpeed = 1.125 * 2;
   maxSpeed = 1.5 * 2;
-  pMeterCapacity = 112 * 2;
   heldGravity = 0.1875 / 2 * 2;
   gravity = 0.1875 * 2;
   earlyBounceFrames = 8;
@@ -224,7 +224,7 @@ class Player extends Entity {
     const jumpPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Jump);
     const shootPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Shoot);
   
-    const grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
+    let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
     // TODO: spring code here
 
     // set direction for bullets and sprite drawing
@@ -268,6 +268,7 @@ class Player extends Entity {
           if (Math.abs(this.vel[0]) >= speed) {
             this.vel[1] = -height;
             this.jumpHeld = true;
+            grounded = false;
             // this.jumpHnd = SLT.sndPlay(this.jumpSound); // TODO: audio
             break
           }
@@ -298,7 +299,7 @@ class Player extends Entity {
     // move x first, then move y. don't do it at the same time, else buggy behavior
     // if (!groundEnt || groundEnt.has("spring") == false) { // TODO: spring check
     const chkx = this.moveX(this.vel[0]);
-    // triggerTouch(chkx.delta // trigger check
+    // triggerTouch(chkx.delta // TODO: trigger check
     if (!chkx) {
       this.vel[0] = 0;
     }
@@ -332,7 +333,7 @@ class Main {
   clouds = [];
   camera = new Camera(this.res.w, this.res.h);
   entMap = {
-    'player': Player
+    'Player': Player
   };
   accumulator = 0;
 
@@ -386,14 +387,15 @@ class Main {
       this.state = JSON.parse(initialState);
       this.state.entities = this.state.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));
     } else {
-      const player = new Player();
-      player.pos = [200,100];
-      this.state.entities.push(player);
       this.state.mapName = 'maps/0000-Level_0.ldtkl';
     }
 
     const src = JSON.parse(SLT.readFile(this.state.mapName));
     this.map = new LDTK(src);
+
+    if (!initialState) {
+      this.state.entities = this.map.layersByName.Entities.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));
+    }
 
     this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
   };

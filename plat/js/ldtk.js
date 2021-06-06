@@ -1,4 +1,5 @@
-/// <reference path="./decs.d.ts" />
+// @ts-check
+/// <reference path="../decs.d.ts" />
 import * as Draw from 'draw';
 import * as SLT from 'slate2d';
 import * as Assets from 'assets';
@@ -36,47 +37,58 @@ class LDTK {
         offsetY: layer.__pxTotalOffsetY,
         tileset: layer.__tilesetRelPath,
         drawTiles: [],
+        tilesetHnd: undefined,
+        tiles: undefined,
       }
 
-      lobj.tilesetHnd = Assets.load({
-        type: 'sprite',
-        name: lobj.tileset,
-        path: lobj.tileset,
-        spriteWidth: lobj.tileSize,
-        spriteHeight: lobj.tileSize,
-        marginX: 0,
-        marginY: 0
-      });
-
-      if (layer.__type == 'IntGrid') {
-        lobj.tiles = layer.intGridCsv;
-      }
-
-      // ldtk can stack tiles in the same layer
-      // handle this by making a new array when there's a stack
-      const sz = layer.__cWid * layer.__cHei;
-      lobj.drawTiles.push(new Array(sz).fill(-1));
-
-      const tiles = layer.__type == 'Tiles' ? layer.gridTiles : layer.autoLayerTiles;
-      tiles.forEach(t => {
-        const tileidx = (t.px[1] / lobj.tileSize) * lobj.width + t.px[0] / lobj.tileSize
-        // look for an open space on existing layers
-        for (let i = 0; i < lobj.drawTiles.length; i++) {
-          if (lobj.drawTiles[i][tileidx] == -1) {
-            lobj.drawTiles[i][tileidx] = t.t;
-            break;
+      if (layer.__type == 'Entities') {
+        lobj.entities = layer.entityInstances.map(ent => {
+          return {
+            type: ent.__identifier,
+            size: [ent.width, ent.height],
+            pos: [ent.px[0] - ent.width * ent.__pivot[0], ent.px[1] - ent.height * ent.__pivot[1]]
           }
-          // we're out of space, add a new layer
-          if (i + 1 == lobj.drawTiles.length) {
-            lobj.drawTiles.push(new Array(sz).fill(-1));
-            lobj.drawTiles[i+1][tileidx] = t.t;
-            break;
-          }
+        })
+      } else {
+        lobj.tilesetHnd = Assets.load({
+          type: 'sprite',
+          name: lobj.tileset,
+          path: lobj.tileset,
+          spriteWidth: lobj.tileSize,
+          spriteHeight: lobj.tileSize,
+          marginX: 0,
+          marginY: 0
+        });
+
+        if (layer.__type == 'IntGrid') {
+          lobj.tiles = layer.intGridCsv;
         }
-      });
-      // we want 0 to be on the bottom
-      layer.autoLayerTiles.reverse();
 
+        // ldtk can stack tiles in the same layer
+        // handle this by making a new array when there's a stack
+        const sz = layer.__cWid * layer.__cHei;
+        lobj.drawTiles.push(new Array(sz).fill(-1));
+
+        const tiles = layer.__type == 'Tiles' ? layer.gridTiles : layer.autoLayerTiles;
+        tiles.forEach(t => {
+          const tileidx = (t.px[1] / lobj.tileSize) * lobj.width + t.px[0] / lobj.tileSize
+          // look for an open space on existing layers
+          for (let i = 0; i < lobj.drawTiles.length; i++) {
+            if (lobj.drawTiles[i][tileidx] == -1) {
+              lobj.drawTiles[i][tileidx] = t.t;
+              break;
+            }
+            // we're out of space, add a new layer
+            if (i + 1 == lobj.drawTiles.length) {
+              lobj.drawTiles.push(new Array(sz).fill(-1));
+              lobj.drawTiles[i+1][tileidx] = t.t;
+              break;
+            }
+          }
+        });
+        // we want 0 to be on the bottom
+        layer.autoLayerTiles.reverse();
+      }
       this.layers.push(lobj);
       this.layersByName[lobj.name] = lobj;
     })

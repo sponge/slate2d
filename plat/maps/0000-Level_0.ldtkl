@@ -26,6 +26,42 @@
 	"fieldInstances": [{ "__identifier": "background", "__value": "grasslands", "__type": "String", "defUid": 58, "realEditorValues": [] }],
 	"layerInstances": [
 		{
+			"__identifier": "Entities",
+			"__type": "Entities",
+			"__cWid": 50,
+			"__cHei": 16,
+			"__gridSize": 16,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"levelId": 0,
+			"layerDefUid": 74,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [],
+			"autoLayerTiles": [],
+			"seed": 5961318,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": [
+				{
+					"__identifier": "Player",
+					"__grid": [3,12],
+					"__pivot": [0,1],
+					"__tile": null,
+					"width": 14,
+					"height": 14,
+					"defUid": 73,
+					"px": [48,208],
+					"fieldInstances": []
+				}
+			]
+		},
+		{
 			"__identifier": "Collision",
 			"__type": "IntGrid",
 			"__cWid": 50,

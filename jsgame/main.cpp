@@ -13,7 +13,7 @@ JSModuleDef* physfs_module_loader(JSContext* ctx, const char* module_name, void*
 	// use main.js because it will return pak00.pk3 when running out of a pk3 file. this probably breaks cases
 	// where you have js files in multiple pk3s though but i don't care about that right now. maybe we just need
 	// to chop off (file).pk3 if it is in the end of the path?
-	const char *root = SLT_FS_RealDir("/main.js");
+	const char *root = SLT_FS_RealDir("/js/main.js");
 
 	// if module_name resolves to the full path, chop off the prefix to give us the virtual path
 	// relative to where main.js is since physicsfs doesn't support ./ or ../ at all
@@ -91,7 +91,7 @@ public:
 	}
 
 	bool Init() {
-		const char *import = "import main from './main.js'; \
+		const char *import = "import main from './js/main.js'; \
 		typeof main == 'function' ? globalThis.main = new main() : globalThis.main = main";
 
 		JSValue imported = JS_Eval(ctx, import, strlen(import), "<import>", JS_EVAL_TYPE_MODULE);

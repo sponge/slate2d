@@ -1,30 +1,30 @@
-// @ts-check
 /// <reference path="./decs.d.ts" />
 import * as Draw from 'draw';
 import * as SLT from 'slate2d';
 import * as Assets from 'assets';
 
-import Camera from './js/camera.js';
-import LDTK from './js/ldtk.js';
-import Buttons from './js/buttons.js';
-import Player from './js/player.js';
-import { randomRange } from './js/util.js';
+import Camera from './camera.js';
+import LDTK from './ldtk.js';
+import Buttons from './buttons.js';
+import Player from './player.js';
+import { randomRange } from './util.js';
+import Entity from './entity.js';
 
 class Main {
   res = {w: 384, h: 216}
-  canvas = undefined;
-  dog = undefined;
-  dogSpr = undefined;
-  state = {
+  canvas:number = undefined;
+  dog:number = undefined;
+  dogSpr:number = undefined;
+  state:any = {
     t: 0,
     entities: [],
     mapName: '',
   };
-  map = undefined;
-  backgrounds = [];
-  clouds = [];
+  map:any = undefined;
+  backgrounds:any[] = [];
+  clouds:any[] = [];
   camera = new Camera(this.res.w, this.res.h);
-  entMap = {
+  entMap: {[key: string]: any} = {
     'Player': Player
   };
   accumulator = 0;
@@ -33,7 +33,7 @@ class Main {
     return JSON.stringify(this.state);
   }
 
-  start(initialState) {
+  start(initialState:any) {
     this.canvas = Assets.load({
       name: 'canvas',
       type: 'canvas',
@@ -75,7 +75,7 @@ class Main {
 
     if (initialState) {
       this.state = JSON.parse(initialState);
-      this.state.entities = this.state.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));
+      this.state.entities = this.state.entities.map((ent:any) => Object.assign(new this.entMap[ent.type], ent));
     } else {
       this.state.mapName = 'maps/0000-Level_0.ldtkl';
     }
@@ -85,19 +85,19 @@ class Main {
 
     if (!initialState) {
       const entLayer = this.map.layersByName.Entities;
-      this.state.entities = entLayer.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));
+      this.state.entities = entLayer.entities.map((ent:Entity) => Object.assign(new this.entMap[ent.type], ent));
     }
 
     this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
   };
 
-  update(dt) {
+  update(dt:number) {
     this.accumulator += dt;
 
     while (this.accumulator > 1/61) {
       this.state.t += 1/60;
       this.accumulator -= 1/60;
-      this.state.entities.forEach(ent => ent.update(dt));
+      this.state.entities.forEach((ent:Entity) => ent.update(dt));
       const player = this.state.entities[0];
       this.camera.window(player.pos[0], player.pos[1], 20, 20);
     }
@@ -146,7 +146,7 @@ class Main {
     this.map.draw('BGDecoration');
     this.map.draw('BGTiles');
     this.map.draw('BGWorld');
-    this.state.entities.forEach(ent => ent.draw());
+    this.state.entities.forEach((ent:Entity) => ent.draw());
     this.map.draw('Collision');
 
     this.camera.drawEnd();

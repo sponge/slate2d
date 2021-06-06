@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ES2020",
+    "noImplicitAny": true,
+    "outDir": "./js"
+  },
+  "include": ["./ts/**/*.ts"],
+  "exclude": ["**/*.spec.ts"]
+  }

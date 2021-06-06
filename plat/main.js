@@ -8,6 +8,7 @@ import Camera from './js/camera.js';
 import LDTK from './js/ldtk.js';
 import Buttons from './js/buttons.js';
 import Player from './js/player.js';
+import { randomRange } from './js/util.js';
 
 class Main {
   res = {w: 384, h: 216}
@@ -65,13 +66,11 @@ class Main {
       return { id, w, h };
     });
 
-    const cloudX = [50, 100, 150];
-    const cloudY = [15, 45, 30];
     this.clouds = [...Array(3).keys()].map(i => {
       const name = `gfx/grassland_cloud${i}.png`;
       const id = Assets.load({type: 'image', name, path: name});
       const {w, h} = Assets.imageSize(id);
-      return { id, w, h, x: cloudX[i], y: cloudY[i] };
+      return { id, w, h, x: randomRange(50, 150), y: randomRange(5, 90) };
     });
 
     if (initialState) {
@@ -85,7 +84,8 @@ class Main {
     this.map = new LDTK(src);
 
     if (!initialState) {
-      this.state.entities = this.map.layersByName.Entities.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));
+      const entLayer = this.map.layersByName.Entities;
+      this.state.entities = entLayer.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));
     }
 
     this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);

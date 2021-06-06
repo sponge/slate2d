@@ -9,6 +9,13 @@ import Buttons from './js/buttons.js';
 
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
+class Dir {
+  static Up = 0;
+  static Right = 1;
+  static Down = 2;
+  static Left = 3
+}
+
 class Entity {
   type = 'default';
   pos = [0,0];
@@ -25,8 +32,8 @@ class Entity {
     Draw.setColor(255, 255, 255, 255);
     Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, 0, 1, 1);
   }
-  
-  collideAt(x, y) {
+
+  collideAt(x, y, dir) {
     // FIXME: GC?
     const corners = [
       [x, y],
@@ -58,9 +65,19 @@ class Entity {
       const tx = Math.floor(corner[0] / layer.tileSize);
       const ty = clamp(Math.floor(corner[1] / layer.tileSize), 0, layer.height);
       const tid = layer.tiles[ty * layer.width + tx];
+      //if there's a tile in the intgrid...
       if (tx < 0 || tx >= layer.width || tid !== 0) {
-        // if it's a sloped tile, only bottom middle pixel should collide with it
+        // if it's a ground sloped tile, only bottom middle pixel should collide with it
         if (tid == 2 || tid == 3) {
+          continue;
+        }
+
+        // if it's a platform, check if dir is down, and only block if bottom of entity
+        // intersects with the first pixel of the platform block
+        if (tid == 6) {
+          if (dir == Dir.Down && corner[1] == y + this.size[1] && corner[1] % layer.tileSize == 0) {
+            return true;
+          }
           continue;
         }
 
@@ -85,14 +102,15 @@ class Entity {
 
     while (move != 0) {
       const check = this.pos[dim] + sign;
-      const collision = dim == 0 ? this.collideAt(check, this.pos[1]) : this.collideAt(this.pos[0], check);
+      const dir = dim == 0 ? (sign > 0 ? Dir.Right : Dir.Left) : (sign > 0 ? Dir.Down : Dir.Up);
+      const collision = dim == 0 ? this.collideAt(check, this.pos[1], dir) : this.collideAt(this.pos[0], check, dir);
       if (!collision) {
         this.pos[dim] += sign;
         move -= sign;
       } else {
         // step up 1 pixel to check for slope
         if (dim == 0) {
-          if (!this.collideAt(check, this.pos[1] - 1)) {
+          if (!this.collideAt(check, this.pos[1] - 1, Dir.Up)) {
             this.pos[0] += sign;
             this.pos[1] -= 1;
             move -= sign;
@@ -206,7 +224,7 @@ class Player extends Entity {
     const jumpPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Jump);
     const shootPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Shoot);
   
-    const grounded = this.collideAt(this.pos[0], this.pos[1] + 1);
+    const grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
     // TODO: spring code here
 
     // set direction for bullets and sprite drawing
@@ -286,6 +304,9 @@ class Player extends Entity {
     }
 
     const chky = this.moveY(this.vel[1]);
+    if (chky) {
+      this.vel[1] = 0;
+    }
 
     // TODO: all sorts of shit around jumping on top of enemies
   }
@@ -380,6 +401,8 @@ class Main {
     this.state.t += dt;
     SLT.showObj('main class', this);
 
+    if (dt == 0) return;
+
     this.state.entities.forEach(ent => ent.update(dt));
     const player = this.state.entities[0];
     this.camera.window(player.pos[0], player.pos[1], 20, 20);
@@ -425,6 +448,7 @@ class Main {
     Draw.setColor(255, 255, 255, 255);
     this.map.draw('BGDecoration');
     this.map.draw('BGTiles');
+    this.map.draw('BGWorld');
     this.state.entities.forEach(ent => ent.draw());
     this.map.draw('Collision');
 

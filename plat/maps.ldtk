@@ -9,7 +9,7 @@
 		"url": "https://ldtk.io"
 	},
 	"jsonVersion": "0.9.3",
-	"nextUid": 66,
+	"nextUid": 73,
 	"worldLayout": "Free",
 	"worldGridWidth": 256,
 	"worldGridHeight": 256,
@@ -45,12 +45,15 @@
 				{ "value": 1, "identifier": "Solid", "color": "#3D8E2A" },
 				{ "value": 2, "identifier": "SlopeL", "color": "#00FF54" },
 				{ "value": 3, "identifier": "SlopeR", "color": "#166100" },
-				{ "value": 4, "identifier": "Bridge", "color": "#C4B893" },
-				{ "value": 5, "identifier": "Dirtback", "color": "#882E31" }
+				{ "value": 4, "identifier": "SlopeUL", "color": "#711D00" },
+				{ "value": 5, "identifier": "SlopeUR", "color": "#753F02" },
+				{ "value": 6, "identifier": "Platform", "color": "#FFFF00" },
+				{ "value": 7, "identifier": "Bridge", "color": "#FFBD00" },
+				{ "value": 8, "identifier": "Dirtback", "color": "#FF0000" }
 			],
 			"autoTilesetDefUid": 2,
 			"autoRuleGroups": [
-				{ "uid": 37, "name": "slope", "active": true, "collapsed": false, "isOptional": false, "rules": [
+				{ "uid": 37, "name": "slope", "active": true, "collapsed": true, "isOptional": false, "rules": [
 					{
 						"uid": 62,
 						"active": true,
@@ -252,7 +255,7 @@
 						"perlinOctaves": 2
 					}
 				] },
-				{ "uid": 3, "name": "dirt ground", "active": true, "collapsed": false, "isOptional": false, "rules": [
+				{ "uid": 3, "name": "dirt ground", "active": true, "collapsed": true, "isOptional": false, "rules": [
 					{
 						"uid": 8,
 						"active": true,
@@ -650,7 +653,7 @@
 						"perlinOctaves": 2
 					}
 				] },
-				{ "uid": 26, "name": "bridge", "active": true, "collapsed": true, "isOptional": false, "rules": [
+				{ "uid": 26, "name": "bridge", "active": true, "collapsed": false, "isOptional": false, "rules": [
 					{
 						"uid": 30,
 						"active": true,
@@ -658,7 +661,7 @@
 						"tileIds": [109],
 						"chance": 1,
 						"breakOnMatch": true,
-						"pattern": [0,4,0,0,4,0,0,0,0],
+						"pattern": [0,7,0,0,7,0,0,0,0],
 						"flipX": false,
 						"flipY": false,
 						"xModulo": 1,
@@ -680,7 +683,7 @@
 						"tileIds": [107],
 						"chance": 1,
 						"breakOnMatch": true,
-						"pattern": [0,0,0,0,4,0,0,4,0],
+						"pattern": [0,0,0,0,7,0,0,7,0],
 						"flipX": false,
 						"flipY": false,
 						"xModulo": 1,
@@ -702,7 +705,7 @@
 						"tileIds": [105],
 						"chance": 1,
 						"breakOnMatch": true,
-						"pattern": [0,0,0,-4,4,0,0,0,0],
+						"pattern": [0,0,0,-7,7,0,0,0,0],
 						"flipX": false,
 						"flipY": false,
 						"xModulo": 1,
@@ -724,7 +727,7 @@
 						"tileIds": [108],
 						"chance": 1,
 						"breakOnMatch": true,
-						"pattern": [0,0,0,0,4,-4,0,0,0],
+						"pattern": [0,0,0,0,7,-7,0,0,0],
 						"flipX": false,
 						"flipY": false,
 						"xModulo": 1,
@@ -746,7 +749,7 @@
 						"tileIds": [106],
 						"chance": 1,
 						"breakOnMatch": true,
-						"pattern": [4],
+						"pattern": [7],
 						"flipX": false,
 						"flipY": false,
 						"xModulo": 1,
@@ -788,6 +791,48 @@
 				] }
 			],
 			"autoSourceLayerDefUid": null,
+			"tilesetDefUid": null,
+			"tilePivotX": 0,
+			"tilePivotY": 0
+		},
+		{
+			"__type": "AutoLayer",
+			"identifier": "BGWorld",
+			"type": "AutoLayer",
+			"uid": 70,
+			"gridSize": 16,
+			"displayOpacity": 1,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"requiredTags": [],
+			"excludedTags": [],
+			"intGridValues": [{ "value": 1, "identifier": null, "color": "#000000" }],
+			"autoTilesetDefUid": 2,
+			"autoRuleGroups": [{ "uid": 71, "name": "platforms", "active": true, "collapsed": false, "isOptional": false, "rules": [
+				{
+					"uid": 72,
+					"active": true,
+					"size": 1,
+					"tileIds": [45],
+					"chance": 1,
+					"breakOnMatch": true,
+					"pattern": [6],
+					"flipX": false,
+					"flipY": false,
+					"xModulo": 1,
+					"yModulo": 1,
+					"checker": "None",
+					"tileMode": "Single",
+					"pivotX": 0,
+					"pivotY": 0,
+					"outOfBoundsValue": null,
+					"perlinActive": false,
+					"perlinSeed": 7137,
+					"perlinScale": 0.2,
+					"perlinOctaves": 2
+				}
+			] }],
+			"autoSourceLayerDefUid": 1,
 			"tilesetDefUid": null,
 			"tilePivotX": 0,
 			"tilePivotY": 0
@@ -852,7 +897,7 @@
 					"active": true,
 					"size": 3,
 					"tileIds": [112,121,122,138,139],
-					"chance": 0.4,
+					"chance": 0.2,
 					"breakOnMatch": true,
 					"pattern": [0,0,0,0,-1000001,0,0,1,0],
 					"flipX": false,
@@ -874,7 +919,7 @@
 					"active": true,
 					"size": 3,
 					"tileIds": [134,135],
-					"chance": 0.15,
+					"chance": 0.03,
 					"breakOnMatch": true,
 					"pattern": [0,0,0,0,-1000001,0,0,1,0],
 					"flipX": false,
@@ -896,7 +941,7 @@
 					"active": true,
 					"size": 3,
 					"tileIds": [118,119,120],
-					"chance": 0.15,
+					"chance": 0.1,
 					"breakOnMatch": true,
 					"pattern": [0,0,0,0,-1000001,0,0,1,0],
 					"flipX": false,
@@ -918,7 +963,7 @@
 					"active": true,
 					"size": 3,
 					"tileIds": [136,137],
-					"chance": 0.2,
+					"chance": 0.03,
 					"breakOnMatch": true,
 					"pattern": [0,0,0,-1000001,-1000001,-1000001,1,1,1],
 					"flipX": false,
@@ -940,7 +985,7 @@
 					"active": true,
 					"size": 3,
 					"tileIds": [130],
-					"chance": 0.05,
+					"chance": 0.04,
 					"breakOnMatch": true,
 					"pattern": [0,0,0,0,-1000001,0,0,1,0],
 					"flipX": false,

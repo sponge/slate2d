@@ -62,10 +62,6 @@ class Player extends Entity {
   //hurtSound = Asset.create(Asset.Sound, "player_hurt", "sound/hurt.wav")
   //dieSound = Asset.create(Asset.Sound, "player_die", "sound/die.wav")
 
-  constructor() {
-    super()
-  }
-
   // die(cause) {
     // super(cause)
     // _health = 0

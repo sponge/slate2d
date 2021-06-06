@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ES2020",
-    "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
     "outDir": "./js"
   },
   "include": ["./ts/**/*.ts"],

@@ -17,7 +17,7 @@ class Camera {
   w = 0;
   h = 0;
   // camera constraint
-  con:CameraConstraint = undefined;
+  con:CameraConstraint | undefined;
   
   constructor(w:number, h:number) {
     this.w = w;

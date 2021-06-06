@@ -19,26 +19,26 @@ interface GameState {
 interface Background {
   id: number;
   w: number;
-  h: number
-  x?: number;
-  y?: number;
+  h: number;
+  x: number;
+  y: number;
 }
 
 class Main {
   res = {w: 384, h: 216}
-  canvas:number = undefined;
-  dog:number = undefined;
-  dogSpr:number = undefined;
+  canvas:number = -1;
+  dog:number = -1;
+  dogSpr:number = -1;
   state:GameState = {
     t: 0,
     entities: [],
     mapName: '',
   };
-  map:LDTK = undefined;
+  map:LDTK | undefined;
   backgrounds:Background[] = [];
   clouds:Background[] = [];
   camera = new Camera(this.res.w, this.res.h);
-  entMap: {[key: string]: any} = {
+  entMap: {[key: string]: typeof Entity} = {
     'Player': Player
   };
   accumulator = 0;
@@ -47,7 +47,7 @@ class Main {
     return JSON.stringify(this.state);
   }
 
-  start(initialState:any) {
+  start(initialState:string) {
     this.canvas = Assets.load({
       name: 'canvas',
       type: 'canvas',
@@ -77,7 +77,7 @@ class Main {
       const name = `gfx/grassland_bg${i}.png`;
       const id = Assets.load({type: 'image', name, path: name});
       const {w, h} = Assets.imageSize(id);
-      return { id, w, h };
+      return { id, w, h, x: 0, y: this.res.h - h };
     });
 
     this.clouds = [...Array(3).keys()].map(i => {
@@ -129,18 +129,18 @@ class Main {
     const t = this.state.t;
   
     // parallax bgs
-    const camY = 1 - (this.camera.y / (this.camera.con.h - res.h));
+    const camY = 1 - (this.camera.y / (this.map?.heightPx ?? 0 - res.h));
     const camYoffset = camY * 20
     this.backgrounds.forEach((bg, i) => {
       const speed = (i+1) * 0.25;
-      const x = Math.floor(((0 - this.camera.x) * speed) % bg.w);
-      const y = Math.floor(res.h - bg.h + camYoffset);
+      const x = Math.floor(((bg.x - this.camera.x) * speed) % bg.w);
+      const y = Math.floor(bg.y + camYoffset);
       Draw.image(bg.id, x, y, 0, 0, 1, 0, 0, 0);
       Draw.image(bg.id, x + bg.w, y, 0, 0, 1, 0, 0, 0);
     });
 
     // clouds which scroll, no parallax
-    this.clouds.forEach((bg, i) => {
+    this.clouds.forEach((bg:Background, i:number) => {
       const speed = (i+1) * 6;
       const x = res.w + (bg.x - t * speed) % (res.w + bg.w);
       Draw.image(bg.id, x, bg.y, 0, 0, 1, 0, 0, 0);
@@ -157,11 +157,11 @@ class Main {
 
     // tilemap and entities
     Draw.setColor(255, 255, 255, 255);
-    this.map.draw('BGDecoration');
-    this.map.draw('BGTiles');
-    this.map.draw('BGWorld');
+    this.map!.draw('BGDecoration');
+    this.map!.draw('BGTiles');
+    this.map!.draw('BGWorld');
     this.state.entities.forEach((ent:Entity) => ent.draw());
-    this.map.draw('Collision');
+    this.map!.draw('Collision');
 
     this.camera.drawEnd();
 

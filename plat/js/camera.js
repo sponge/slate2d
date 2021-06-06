@@ -10,7 +10,7 @@ class Camera {
     w = 0;
     h = 0;
     // camera constraint
-    con = undefined;
+    con;
     constructor(w, h) {
         this.w = w;
         this.h = h;

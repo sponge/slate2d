@@ -9,15 +9,15 @@ import Player from './player.js';
 import { randomRange } from './util.js';
 class Main {
     res = { w: 384, h: 216 };
-    canvas = undefined;
-    dog = undefined;
-    dogSpr = undefined;
+    canvas = -1;
+    dog = -1;
+    dogSpr = -1;
     state = {
         t: 0,
         entities: [],
         mapName: '',
     };
-    map = undefined;
+    map;
     backgrounds = [];
     clouds = [];
     camera = new Camera(this.res.w, this.res.h);
@@ -54,7 +54,7 @@ class Main {
             const name = `gfx/grassland_bg${i}.png`;
             const id = Assets.load({ type: 'image', name, path: name });
             const { w, h } = Assets.imageSize(id);
-            return { id, w, h };
+            return { id, w, h, x: 0, y: this.res.h - h };
         });
         this.clouds = [...Array(3).keys()].map(i => {
             const name = `gfx/grassland_cloud${i}.png`;
@@ -97,12 +97,12 @@ class Main {
         const { res } = this;
         const t = this.state.t;
         // parallax bgs
-        const camY = 1 - (this.camera.y / (this.camera.con.h - res.h));
+        const camY = 1 - (this.camera.y / (this.map?.heightPx ?? 0 - res.h));
         const camYoffset = camY * 20;
         this.backgrounds.forEach((bg, i) => {
             const speed = (i + 1) * 0.25;
-            const x = Math.floor(((0 - this.camera.x) * speed) % bg.w);
-            const y = Math.floor(res.h - bg.h + camYoffset);
+            const x = Math.floor(((bg.x - this.camera.x) * speed) % bg.w);
+            const y = Math.floor(bg.y + camYoffset);
             Draw.image(bg.id, x, y, 0, 0, 1, 0, 0, 0);
             Draw.image(bg.id, x + bg.w, y, 0, 0, 1, 0, 0, 0);
         });

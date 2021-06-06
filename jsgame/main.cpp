@@ -327,6 +327,14 @@ int main(int argc, char* argv[]) {
 		}
 	});
 
+	SLT_Con_AddCommand("js_debug", []() {
+		if (instance) {
+			const char *js = SLT_Con_GetArgs(1);
+        if (js != NULL)
+            js_debugger_wait_connection(instance->ctx, js);
+		}
+	});
+
 	ImGui::SetCurrentContext((ImGuiContext*)SLT_GetImguiContext());
 
 #ifdef __EMSCRIPTEN__

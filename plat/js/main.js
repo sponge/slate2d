@@ -64,7 +64,7 @@ class Main {
         });
         if (initialState) {
             this.state = JSON.parse(initialState);
-            this.state.entities = this.state.entities.map((ent) => Object.assign(new this.entMap[ent.type], ent));
+            this.state.entities = this.state.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));
         }
         else {
             this.state.mapName = 'maps/0000-Level_0.ldtkl';
@@ -73,7 +73,7 @@ class Main {
         this.map = new LDTK(src);
         if (!initialState) {
             const entLayer = this.map.layersByName.Entities;
-            this.state.entities = entLayer.entities.map((ent) => Object.assign(new this.entMap[ent.type], ent));
+            this.state.entities = entLayer.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));
         }
         this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
     }
@@ -83,7 +83,7 @@ class Main {
         while (this.accumulator > 1 / 61) {
             this.state.t += 1 / 60;
             this.accumulator -= 1 / 60;
-            this.state.entities.forEach((ent) => ent.update(dt));
+            this.state.entities.forEach(ent => ent.update(dt));
             const player = this.state.entities[0];
             this.camera.window(player.pos[0], player.pos[1], 20, 20);
         }

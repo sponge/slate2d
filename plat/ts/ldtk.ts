@@ -2,6 +2,7 @@
 import * as Draw from 'draw';
 import * as SLT from 'slate2d';
 import * as Assets from 'assets';
+import Entity from './entity.js';
 
 interface LDTKLayer {
   name: string;
@@ -10,10 +11,16 @@ interface LDTKLayer {
   tileSize: number;
   offsetX: number;
   offsetY: number;
-  drawTiles:any[];
+  drawTiles:number[][];
   tilesetHnd: number;
-  tiles: any[];
-  entities: any[];
+  tiles: number[];
+  entities: LDTKEntity[];
+}
+
+interface LDTKEntity {
+  type: string;
+  size: [number, number];
+  pos: [number, number];
 }
 
 class LDTK {
@@ -22,8 +29,8 @@ class LDTK {
   background = '';
   bgColor = [0, 0, 0];
   properties = {};
-  layers:any[] = [];
-  layersByName:any = {};
+  layers:LDTKLayer[] = [];
+  layersByName:{[key: string]: LDTKLayer} = {};
 
   constructor(o:any) {
     this.widthPx = o.pxWid;
@@ -48,8 +55,8 @@ class LDTK {
         offsetX: layer.__pxTotalOffsetX,
         offsetY: layer.__pxTotalOffsetY,
         drawTiles: [],
-        tilesetHnd: undefined,
-        tiles: undefined,
+        tilesetHnd: -1,
+        tiles: [],
         entities: []
       }
 

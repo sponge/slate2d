@@ -30,8 +30,8 @@ class LDTK {
                 offsetX: layer.__pxTotalOffsetX,
                 offsetY: layer.__pxTotalOffsetY,
                 drawTiles: [],
-                tilesetHnd: undefined,
-                tiles: undefined,
+                tilesetHnd: -1,
+                tiles: [],
                 entities: []
             };
             if (layer.__type == 'Entities') {

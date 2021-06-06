@@ -2,6 +2,7 @@
 import * as Draw from 'draw';
 import { clamp } from './util.js';
 import Dir from './dir.js';
+import Main from './main.js';
 
 class Entity {
   type = 'default';
@@ -38,7 +39,7 @@ class Entity {
     // check against tilemap
     // iterate through corners. note this will currently break if entities are > tileSize
     // FIXME: need a reference to the world, but don't want to pass it in then state will have a cyclic reference
-    const layer = (globalThis as any).main.map.layersByName.Collision;
+    const layer = ((globalThis as any).main as Main).map!.layersByName.Collision;
 
     // check bottom middle point if its in a slope
     const tx = Math.floor(bottomMiddle[0] / layer.tileSize);

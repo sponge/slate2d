@@ -10,19 +10,33 @@ import Player from './player.js';
 import { randomRange } from './util.js';
 import Entity from './entity.js';
 
+interface GameState {
+  t: number;
+  entities: Entity[];
+  mapName: string;
+}
+
+interface Background {
+  id: number;
+  w: number;
+  h: number
+  x?: number;
+  y?: number;
+}
+
 class Main {
   res = {w: 384, h: 216}
   canvas:number = undefined;
   dog:number = undefined;
   dogSpr:number = undefined;
-  state:any = {
+  state:GameState = {
     t: 0,
     entities: [],
     mapName: '',
   };
-  map:any = undefined;
-  backgrounds:any[] = [];
-  clouds:any[] = [];
+  map:LDTK = undefined;
+  backgrounds:Background[] = [];
+  clouds:Background[] = [];
   camera = new Camera(this.res.w, this.res.h);
   entMap: {[key: string]: any} = {
     'Player': Player
@@ -75,7 +89,7 @@ class Main {
 
     if (initialState) {
       this.state = JSON.parse(initialState);
-      this.state.entities = this.state.entities.map((ent:any) => Object.assign(new this.entMap[ent.type], ent));
+      this.state.entities = this.state.entities.map((ent:Entity) => Object.assign(new this.entMap[ent.type], ent));
     } else {
       this.state.mapName = 'maps/0000-Level_0.ldtkl';
     }

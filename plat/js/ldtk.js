@@ -29,10 +29,10 @@ class LDTK {
                 tileSize: layer.__gridSize,
                 offsetX: layer.__pxTotalOffsetX,
                 offsetY: layer.__pxTotalOffsetY,
-                tileset: layer.__tilesetRelPath,
                 drawTiles: [],
                 tilesetHnd: undefined,
                 tiles: undefined,
+                entities: []
             };
             if (layer.__type == 'Entities') {
                 lobj.entities = layer.entityInstances.map((ent) => {
@@ -46,12 +46,12 @@ class LDTK {
             else {
                 lobj.tilesetHnd = Assets.load({
                     type: 'sprite',
-                    name: lobj.tileset,
-                    path: lobj.tileset,
+                    name: layer.__tilesetRelPath,
+                    path: layer.__tilesetRelPath,
                     spriteWidth: lobj.tileSize,
                     spriteHeight: lobj.tileSize,
                     marginX: 0,
-                    marginY: 0
+                    marginY: 0,
                 });
                 if (layer.__type == 'IntGrid') {
                     lobj.tiles = layer.intGridCsv;

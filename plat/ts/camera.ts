@@ -3,10 +3,10 @@ import * as Draw from 'draw';
 import { clamp } from './util.js';
 
 interface CameraConstraint {
-  x: number,
-  y: number,
-  w: number,
-  h: number,
+  x: number;
+  y: number;
+  w: number;
+  h: number;
 };
 
 class Camera {

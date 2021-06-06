@@ -894,7 +894,7 @@
 					"active": true,
 					"size": 3,
 					"tileIds": [113,114],
-					"chance": 0.29,
+					"chance": 0.02,
 					"breakOnMatch": true,
 					"pattern": [0,0,0,-1000001,-1000001,-1000001,1,1,1],
 					"flipX": false,

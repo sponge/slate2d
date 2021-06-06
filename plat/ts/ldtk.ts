@@ -3,19 +3,32 @@ import * as Draw from 'draw';
 import * as SLT from 'slate2d';
 import * as Assets from 'assets';
 
+interface LDTKLayer {
+  name: string;
+  width: number;
+  height: number;
+  tileSize: number;
+  offsetX: number;
+  offsetY: number;
+  drawTiles:any[];
+  tilesetHnd: number;
+  tiles: any[];
+  entities: any[];
+}
+
 class LDTK {
   widthPx = 0;
   heightPx = 0;
   background = '';
   bgColor = [0, 0, 0];
   properties = {};
-  layers:any = [];
+  layers:any[] = [];
   layersByName:any = {};
 
   constructor(o:any) {
     this.widthPx = o.pxWid;
     this.heightPx = o.pxHei;
-    this.bgColor = o.__bgColor.match(/\w\w/g).map((x:any) => parseInt(x, 16));
+    this.bgColor = o.__bgColor.match(/\w\w/g).map((x:string) => parseInt(x, 16));
 
     // turn into a reasonable k/v object
     this.properties = o.fieldInstances.reduce((acc:any, val:any) => {
@@ -27,17 +40,17 @@ class LDTK {
         
     // parse each layer
     o.layerInstances.forEach((layer:any) => {
-      const lobj:any = {
+      const lobj:LDTKLayer = {
         name: layer.__identifier,
         width: layer.__cWid,
         height: layer.__cHei,
         tileSize: layer.__gridSize,
         offsetX: layer.__pxTotalOffsetX,
         offsetY: layer.__pxTotalOffsetY,
-        tileset: layer.__tilesetRelPath,
         drawTiles: [],
         tilesetHnd: undefined,
         tiles: undefined,
+        entities: []
       }
 
       if (layer.__type == 'Entities') {
@@ -51,12 +64,12 @@ class LDTK {
       } else {
         lobj.tilesetHnd = Assets.load({
           type: 'sprite',
-          name: lobj.tileset,
-          path: lobj.tileset,
+          name: layer.__tilesetRelPath,
+          path: layer.__tilesetRelPath,
           spriteWidth: lobj.tileSize,
           spriteHeight: lobj.tileSize,
           marginX: 0,
-          marginY: 0
+          marginY: 0,
         });
 
         if (layer.__type == 'IntGrid') {

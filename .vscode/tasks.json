@@ -7,7 +7,6 @@
       "label": "Generate Premake Project",
       "group": "build",
       "type": "shell",
-      
       "command": "premake5",
       "options": {
         "cwd": "${workspaceRoot}"
@@ -139,7 +138,7 @@
         ],
         "options": {
           "cwd": "${workspaceRoot}/build"
-        },
+        }
       },
       "windows": {
         "command": "cmd",
@@ -155,8 +154,8 @@
             "configuration": "Release",
             "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
           }
-        },
-      },
+        }
+      }
     },
     {
       "label": "Clean (Debug)",
@@ -171,7 +170,7 @@
         ],
         "options": {
           "cwd": "${workspaceRoot}/build"
-        },
+        }
       },
       "windows": {
         "command": "cmd",
@@ -186,7 +185,25 @@
             "configuration": "Debug",
             "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64"
           }
-        },
+        }
+      }
+    },
+    {
+      "label": "Start TSC",
+      "group": "build",
+      "command": "tsc",
+      "args": [
+        "--watch"
+      ],
+      "options": {
+        "cwd": "${workspaceRoot}/plat"
+      },
+      "problemMatcher": [
+        "$tsc-watch"
+      ],
+      "isBackground": true,
+      "runOptions": {
+        "runOn": "folderOpen"
       }
     }
   ]

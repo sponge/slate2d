@@ -1,8 +1,8 @@
-/// <reference path="./decs.d.ts" />
-class Dir {
-    static Up = 0;
-    static Right = 1;
-    static Down = 2;
-    static Left = 3;
-}
+var Dir;
+(function (Dir) {
+    Dir[Dir["Up"] = 1] = "Up";
+    Dir[Dir["Right"] = 2] = "Right";
+    Dir[Dir["Down"] = 3] = "Down";
+    Dir[Dir["Left"] = 4] = "Left";
+})(Dir || (Dir = {}));
 export default Dir;

@@ -1,9 +1,8 @@
-/// <reference path="./decs.d.ts" />
-class Dir {
-  static Up = 0;
-  static Right = 1;
-  static Down = 2;
-  static Left = 3;
+enum Dir {
+  Up = 1,
+  Right,
+  Down,
+  Left,
 }
 
 export default Dir;

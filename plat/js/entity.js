@@ -2,6 +2,7 @@
 import * as Draw from 'draw';
 import { clamp } from './util.js';
 import Dir from './dir.js';
+import Tiles from './tiles.js';
 class Entity {
     type = 'default';
     pos = [0, 0];
@@ -35,10 +36,10 @@ class Entity {
         const tx = Math.floor(bottomMiddle[0] / layer.tileSize);
         const ty = clamp(Math.floor(bottomMiddle[1] / layer.tileSize), 0, layer.height);
         const tid = layer.tiles[ty * layer.width + tx];
-        if (tid == 2 || tid == 3) {
+        if (tid == Tiles.SlopeL || tid == Tiles.SlopeR) {
             const localX = bottomMiddle[0] % layer.tileSize;
             const localY = bottomMiddle[1] % layer.tileSize;
-            const minY = tid == 3 ? localX : layer.tileSize - localX;
+            const minY = tid == Tiles.SlopeR ? localX : layer.tileSize - localX;
             return localY >= minY;
         }
         for (let corner of corners) {
@@ -46,14 +47,17 @@ class Entity {
             const ty = clamp(Math.floor(corner[1] / layer.tileSize), 0, layer.height);
             const tid = layer.tiles[ty * layer.width + tx];
             //if there's a tile in the intgrid...
-            if (tx < 0 || tx >= layer.width || tid !== 0) {
+            if (tx < 0 || tx >= layer.width || tid !== Tiles.Empty) {
+                if (tid == Tiles.Dirtback) {
+                    continue;
+                }
                 // if it's a ground sloped tile, only bottom middle pixel should collide with it
-                if (tid == 2 || tid == 3) {
+                if (tid == Tiles.SlopeL || tid == Tiles.SlopeR) {
                     continue;
                 }
                 // if it's a platform, check if dir is down, and only block if bottom of entity
                 // intersects with the first pixel of the platform block
-                if (tid == 6) {
+                if (tid == Tiles.Platform) {
                     if (dir == Dir.Down && corner[1] == y + this.size[1] && corner[1] % layer.tileSize == 0) {
                         return true;
                     }

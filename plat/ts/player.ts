@@ -101,6 +101,10 @@ class Player extends Entity {
     let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
     // TODO: spring code here
 
+    if (grounded) {
+      this.remainder[1] = 0;
+    }
+
     // set direction for bullets and sprite drawing
     this.facing = dir != 0 ? dir : this.facing;
 
@@ -122,6 +126,7 @@ class Player extends Entity {
       // null out small values so we dont keep bouncing around 0
       if (Math.abs(this.vel[0]) <= this.friction) {
         this.vel[0] = 0;
+        this.remainder[0] = 0;
       }
     } else {
       // if holding a direction, figure out how fast we should try and go
@@ -176,11 +181,13 @@ class Player extends Entity {
     // triggerTouch(chkx.delta // TODO: trigger check
     if (!chkx) {
       this.vel[0] = 0;
+      this.remainder[0] = 0;
     }
 
     const chky = this.moveY(this.vel[1]);
     if (!chky) {
       this.vel[1] = 0;
+      this.remainder[1] = 0;
     }
 
     // TODO: all sorts of shit around jumping on top of enemies

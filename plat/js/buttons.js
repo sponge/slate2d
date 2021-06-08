@@ -1,4 +1,3 @@
-/// <reference path="./decs.d.ts" />
 import * as SLT from 'slate2d';
 class Buttons {
     static Up = 0;

@@ -1,4 +1,3 @@
-/// <reference path="./decs.d.ts" />
 import * as Draw from 'draw';
 import * as Assets from 'assets';
 class LDTK {

@@ -28,7 +28,7 @@ class Main {
     save() {
         return JSON.stringify(this.state);
     }
-    start(initialState) {
+    constructor(initialState) {
         this.canvas = Assets.load({
             name: 'canvas',
             type: 'canvas',
@@ -97,7 +97,7 @@ class Main {
         const { res } = this;
         const t = this.state.t;
         // parallax bgs
-        const camY = 1 - (this.camera.y / (this.map?.heightPx ?? 0 - res.h));
+        const camY = 1 - (this.camera.y / (this.map.heightPx ?? 0 - res.h));
         const camYoffset = camY * 20;
         this.backgrounds.forEach((bg, i) => {
             const speed = (i + 1) * 0.25;

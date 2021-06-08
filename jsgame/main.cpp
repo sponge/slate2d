@@ -56,12 +56,15 @@ class SLTJSInstance {
 public:
 	JSContext *ctx;
 	JSRuntime *rt;
-	JSValue global;
-	JSValue updateFunc;
-	JSValue drawFunc;
-	JSValue startFunc;
-	JSValue saveFunc;
-	JSValue main;
+	JSValueConst global;
+	JSValueConst module;
+	JSValueConst main;
+	bool moduleIsClass;
+
+	JSValueConst updateFunc;
+	JSValueConst drawFunc;
+	JSValueConst startFunc;
+	JSValueConst saveFunc;
 
 	SLTJSInstance() {
 		rt = JS_NewRuntime();
@@ -84,33 +87,59 @@ public:
 		JS_FreeValue(ctx, updateFunc);
 		JS_FreeValue(ctx, drawFunc);
 		JS_FreeValue(ctx, saveFunc);
-		// note we don't free main since it's a global object managed by the js
+		JS_FreeValue(ctx, main);
+		JS_FreeValue(ctx, module);
 
 		JS_FreeContext(ctx);
 		JS_FreeRuntime(rt);
 	}
 
 	bool Init() {
-		const char *import = "import main from './js/main.js'; \
-		typeof main == 'function' ? globalThis.main = new main() : globalThis.main = main";
+		const char *import = "import main from './js/main.js'; globalThis.mainModule = main;";
 
 		JSValue imported = JS_Eval(ctx, import, strlen(import), "<import>", JS_EVAL_TYPE_MODULE);
 		if (JS_IsException(imported)) {
+			JS_FreeValue(ctx, imported);
 			return false;
 		}
 
-		main = JS_GetPropertyStr(ctx, global, "main");
-		if (!JS_IsObject(main)) {
-			SLT_Error(ERR_GAME, "main.js did not export a module.");
+		module = JS_GetPropertyStr(ctx, global, "mainModule");
+		if (JS_IsFunction(ctx, module)) {
+			moduleIsClass = true;
+		}
+		else if (JS_IsObject(module)) {
+			moduleIsClass = false;
+		}
+		else {
+			SLT_Error(ERR_GAME, "main.js did not export a function or object.");
 			return false;
 		}
 
+		return true;
+	}
+
+	bool CallStart(const char *state) {
+		JSValueConst jsState = state == nullptr || strlen(state) == 0 ? JS_UNDEFINED : JS_NewString(ctx, state);
+
+		if (moduleIsClass) {
+			JS_SetPropertyStr(ctx, global, "initialState", jsState);
+			const char *str = "globalThis.main = new globalThis.mainModule(globalThis.initialState);";
+			JSValue imported = JS_Eval(ctx, str, strlen(str), "<import>", JS_EVAL_TYPE_MODULE);
+			main = JS_GetPropertyStr(ctx, global, "main");
+		}
+		else {
+			main = module;
+			JS_SetPropertyStr(ctx, global, "main", main);
+		}
+
+		if (JS_IsException(main)) {
+			return false;
+		}
+
+		startFunc = JS_GetPropertyStr(ctx, main, "start");
 		updateFunc = JS_GetPropertyStr(ctx, main, "update");
 		drawFunc = JS_GetPropertyStr(ctx, main, "draw");
-		startFunc = JS_GetPropertyStr(ctx, main, "start");
 		saveFunc = JS_GetPropertyStr(ctx, main, "save");
-
-		JS_FreeValue(ctx, main);
 
 		if (!JS_IsFunction(ctx, updateFunc)) {
 			SLT_Error(ERR_GAME, "Module did not export an update function.");
@@ -122,22 +151,20 @@ public:
 			return false;		
 		}
 
-		if (!JS_IsFunction(ctx, startFunc)) {
-			SLT_Error(ERR_GAME, "Module did not export a start function.");
-			return false;		
+		if (!moduleIsClass) {
+			if (!JS_IsFunction(ctx, startFunc)) {
+				SLT_Error(ERR_GAME, "Module did not export a start function.");
+				return false;		
+			}
+
+			JSValue jsResult = JS_Call(ctx, startFunc, main, 1, &jsState);
+			if (JS_IsException(jsResult)) {
+				return false;
+			}
+			
+			JS_FreeValue(ctx, jsResult);
 		}
 
-		return true;
-	}
-
-	bool CallStart(const char *state) const {
-		JSValueConst jsState = state == nullptr || strlen(state) == 0 ? JS_UNDEFINED : JS_NewString(ctx, state);
-		JSValue jsResult = JS_Call(ctx, startFunc, main, 1, &jsState);
-		if (JS_IsException(jsResult)) {
-			return false;
-		}
-
-		JS_FreeValue(ctx, jsResult);
 		return true;
 	}
 

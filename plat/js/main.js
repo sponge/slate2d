@@ -9,17 +9,44 @@ import Player from './player.js';
 import { randomRange } from './util.js';
 class Main {
     res = { w: 384, h: 216 };
-    canvas = -1;
-    dog = -1;
-    dogSpr = -1;
+    canvas = Assets.load({
+        name: 'canvas',
+        type: 'canvas',
+        width: this.res.w,
+        height: this.res.h
+    });
+    dog = Assets.load({
+        name: 'dog',
+        type: 'image',
+        path: 'gfx/dog.png'
+    });
+    dogSpr = Assets.load({
+        name: 'dogspr',
+        type: 'sprite',
+        path: 'gfx/dog.png',
+        spriteWidth: 22,
+        spriteHeight: 16,
+        marginX: 0,
+        marginY: 0,
+    });
     state = {
         t: 0,
         entities: [],
         mapName: '',
     };
     map;
-    backgrounds = [];
-    clouds = [];
+    backgrounds = [...Array(3).keys()].map(i => {
+        const name = `gfx/grassland_bg${i}.png`;
+        const id = Assets.load({ type: 'image', name, path: name });
+        const { w, h } = Assets.imageSize(id);
+        return { id, w, h, x: 0, y: this.res.h - h };
+    });
+    clouds = [...Array(3).keys()].map(i => {
+        const name = `gfx/grassland_cloud${i}.png`;
+        const id = Assets.load({ type: 'image', name, path: name });
+        const { w, h } = Assets.imageSize(id);
+        return { id, w, h, x: randomRange(50, 150), y: randomRange(5, 90) };
+    });
     camera = new Camera(this.res.w, this.res.h);
     entMap = {
         'Player': Player
@@ -29,39 +56,7 @@ class Main {
         return JSON.stringify(this.state);
     }
     constructor(initialState) {
-        this.canvas = Assets.load({
-            name: 'canvas',
-            type: 'canvas',
-            width: this.res.w,
-            height: this.res.h
-        });
         Buttons.register();
-        this.dog = Assets.load({
-            name: 'dog',
-            type: 'image',
-            path: 'gfx/dog.png'
-        });
-        this.dogSpr = Assets.load({
-            name: 'dogspr',
-            type: 'sprite',
-            path: 'gfx/dog.png',
-            spriteWidth: 22,
-            spriteHeight: 16,
-            marginX: 0,
-            marginY: 0,
-        });
-        this.backgrounds = [...Array(3).keys()].map(i => {
-            const name = `gfx/grassland_bg${i}.png`;
-            const id = Assets.load({ type: 'image', name, path: name });
-            const { w, h } = Assets.imageSize(id);
-            return { id, w, h, x: 0, y: this.res.h - h };
-        });
-        this.clouds = [...Array(3).keys()].map(i => {
-            const name = `gfx/grassland_cloud${i}.png`;
-            const id = Assets.load({ type: 'image', name, path: name });
-            const { w, h } = Assets.imageSize(id);
-            return { id, w, h, x: randomRange(50, 150), y: randomRange(5, 90) };
-        });
         if (initialState) {
             this.state = JSON.parse(initialState);
             this.state.entities = this.state.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));

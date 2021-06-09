@@ -15,10 +15,6 @@ class Entity {
   sprite = 0;
   frame = 0;
 
-  constructor() {
-    
-  }
-
   update(_dt:number) : void {}
   draw() {
     Draw.setColor(255, 255, 255, 255);

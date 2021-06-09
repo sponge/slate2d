@@ -11,8 +11,6 @@ class Entity {
     remainder = [0, 0];
     sprite = 0;
     frame = 0;
-    constructor() {
-    }
     update(_dt) { }
     draw() {
         Draw.setColor(255, 255, 255, 255);

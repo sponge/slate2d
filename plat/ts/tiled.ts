@@ -2,10 +2,10 @@ import { readFile } from 'slate2d';
 import * as Assets from "assets";
 
 const FLIPPED_HORIZONTALLY_FLAG = 0x80000000;
-const FLIPPED_VERTICALLY_FLAG   = 0x40000000;
-const FLIPPED_DIAGONALLY_FLAG   = 0x20000000;
+const FLIPPED_VERTICALLY_FLAG = 0x40000000;
+const FLIPPED_DIAGONALLY_FLAG = 0x20000000;
 
-export function loadTilemap(path:string) {
+export function loadTilemap(path: string) {
   const src = readFile(path);
   const tilemap = JSON.parse(src);
   const tileset = tilemap.tilesets[0];

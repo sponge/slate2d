@@ -16,21 +16,21 @@ class Camera {
   w = 0;
   h = 0;
   // camera constraint
-  con:CameraConstraint | undefined;
-  
-  constructor(w:number, h:number) {
+  con: CameraConstraint | undefined;
+
+  constructor(w: number, h: number) {
     this.w = w;
     this.h = h;
   }
 
   // don't let the camera render beyond this box
-  constrain(x:number, y:number, w:number, h:number) {
-    this.con = {x, y, w, h};
+  constrain(x: number, y: number, w: number, h: number) {
+    this.con = { x, y, w, h };
     this.move(this.x, this.y);
   }
 
   // move the camera to this position
-  move (x:number, y:number) {
+  move(x: number, y: number) {
     this.x = x;
     this.y = y;
 
@@ -43,7 +43,7 @@ class Camera {
 
   // moves the camera based on a focus point and a window
   // camera won't move if you're within windowWidth px from the center
-  window(x:number, y:number, windowWidth:number, windowHeight:number) {
+  window(x: number, y: number, windowWidth: number, windowHeight: number) {
     const centerX = this.x + this.w / 2;
     const centerY = this.y + this.h / 2;
 
@@ -61,7 +61,7 @@ class Camera {
   }
 
   // centers the camera at a point
-  center(x:number, y:number) {
+  center(x: number, y: number) {
     this.move(x - this.w / 2, y - this.h / 2);
   }
 

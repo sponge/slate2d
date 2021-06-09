@@ -25,22 +25,22 @@ interface Background {
 }
 
 class Main {
-  res = {w: 384, h: 216};
+  res = { w: 384, h: 216 };
 
-  canvas:number = Assets.load({
+  canvas: number = Assets.load({
     name: 'canvas',
     type: 'canvas',
     width: this.res.w,
     height: this.res.h
   });
 
-  dog:number = Assets.load({
+  dog: number = Assets.load({
     name: 'dog',
     type: 'image',
     path: 'gfx/dog.png'
   });
 
-  dogSpr:number =  Assets.load({
+  dogSpr: number = Assets.load({
     name: 'dogspr',
     type: 'sprite',
     path: 'gfx/dog.png',
@@ -50,30 +50,30 @@ class Main {
     marginY: 0,
   });
 
-  state:GameState = {
+  state: GameState = {
     t: 0,
     entities: [],
     mapName: '',
   };
-  
-  map:LDTK;
 
-  backgrounds:Background[] = [...Array(3).keys()].map(i => {
+  map: LDTK;
+
+  backgrounds: Background[] = [...Array(3).keys()].map(i => {
     const name = `gfx/grassland_bg${i}.png`;
-    const id = Assets.load({type: 'image', name, path: name});
-    const {w, h} = Assets.imageSize(id);
+    const id = Assets.load({ type: 'image', name, path: name });
+    const { w, h } = Assets.imageSize(id);
     return { id, w, h, x: 0, y: this.res.h - h };
   });
 
-  clouds:Background[] = [...Array(3).keys()].map(i => {
+  clouds: Background[] = [...Array(3).keys()].map(i => {
     const name = `gfx/grassland_cloud${i}.png`;
-    const id = Assets.load({type: 'image', name, path: name});
-    const {w, h} = Assets.imageSize(id);
+    const id = Assets.load({ type: 'image', name, path: name });
+    const { w, h } = Assets.imageSize(id);
     return { id, w, h, x: randomRange(50, 150), y: randomRange(5, 90) };
   });
 
   camera = new Camera(this.res.w, this.res.h);
-  entMap: {[key: string]: typeof Entity} = {
+  entMap: { [key: string]: typeof Entity } = {
     'Player': Player
   };
   accumulator = 0;
@@ -82,7 +82,7 @@ class Main {
     return JSON.stringify(this.state);
   }
 
-  constructor(initialState:string) {  
+  constructor(initialState: string) {
     Buttons.register();
 
     if (initialState) {
@@ -103,12 +103,12 @@ class Main {
     this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
   };
 
-  update(dt:number) {
+  update(dt: number) {
     this.accumulator += dt;
 
-    while (this.accumulator > 1/61) {
-      this.state.t += 1/60;
-      this.accumulator -= 1/60;
+    while (this.accumulator > 1 / 61) {
+      this.state.t += 1 / 60;
+      this.accumulator -= 1 / 60;
       this.state.entities.forEach(ent => ent.update(dt));
       const player = this.state.entities[0];
       this.camera.window(player.pos[0], player.pos[1], 20, 20);
@@ -122,15 +122,15 @@ class Main {
 
     Draw.useCanvas(this.canvas);
     Draw.clear(41, 173, 255, 255);
-  
+
     const { res } = this;
     const t = this.state.t;
-  
+
     // parallax bgs
     const camY = 1 - (this.camera.y / (this.map.heightPx ?? 0 - res.h));
     const camYoffset = camY * 20
     this.backgrounds.forEach((bg, i) => {
-      const speed = (i+1) * 0.25;
+      const speed = (i + 1) * 0.25;
       const x = Math.floor(((bg.x - this.camera.x) * speed) % bg.w);
       const y = Math.floor(bg.y + camYoffset);
       Draw.image(bg.id, x, y, 0, 0, 1, 0, 0, 0);
@@ -138,19 +138,19 @@ class Main {
     });
 
     // clouds which scroll, no parallax
-    this.clouds.forEach((bg:Background, i:number) => {
-      const speed = (i+1) * 6;
+    this.clouds.forEach((bg: Background, i: number) => {
+      const speed = (i + 1) * 6;
       const x = res.w + (bg.x - t * speed) % (res.w + bg.w);
       Draw.image(bg.id, x, bg.y, 0, 0, 1, 0, 0, 0);
     });
-  
+
     // running dog
     const x = Math.floor((t * 50) % (res.w + 22) - 22);
     const y = Math.floor(Math.sin(x / 50) * 5 + 167);
     Draw.setColor(255, 255, 255, 255);
     Draw.sprite(this.dogSpr, Math.floor(t * 12) % 6, x, y + camYoffset, 1, 0, 1, 1);
     Draw.setColor(255, 255, 255, 128);
-  
+
     this.camera.drawStart();
 
     // tilemap and entities
@@ -158,7 +158,7 @@ class Main {
     this.map.draw('BGDecoration');
     this.map.draw('BGTiles');
     this.map.draw('BGWorld');
-    this.state.entities.forEach((ent:Entity) => ent.draw());
+    this.state.entities.forEach((ent: Entity) => ent.draw());
     this.map.draw('Collision');
 
     this.camera.drawEnd();

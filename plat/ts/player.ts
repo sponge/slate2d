@@ -13,7 +13,7 @@ class Player extends Entity {
   // entity definition
   type = 'Player';
   sprite = Assets.find('dogspr');
-  size = [14,14];
+  size = [14, 14];
   drawOfs = [-3, -1];
 
   // entity state
@@ -46,13 +46,13 @@ class Player extends Entity {
   enemyJumpHeld = 3.4 * 2;
   enemyJump = 1.9 * 2;
   jumpHeights = [
-    [  3, 2.875 * 2],
+    [3, 2.875 * 2],
     [2.5, 2.78125 * 2],
-    [  2, 2.71875 * 2],
+    [2, 2.71875 * 2],
     [1.5, 2.625 * 2],
-    [  1, 2.5625 * 2],
+    [1, 2.5625 * 2],
     [0.5, 2.46875 * 2],
-    [  0, 2.40625 * 2]
+    [0, 2.40625 * 2]
   ];
 
   //jumpHnd = null;
@@ -62,41 +62,41 @@ class Player extends Entity {
   //dieSound = Asset.create(Asset.Sound, "player_die", "sound/die.wav")
 
   // die(cause) {
-    // super(cause)
-    // _health = 0
-    // Trap.sndStop(_jumpHnd)
-    // Trap.sndPlay(_dieSound)
-    // world.playerDied(this)
+  // super(cause)
+  // _health = 0
+  // Trap.sndStop(_jumpHnd)
+  // Trap.sndPlay(_dieSound)
+  // world.playerDied(this)
   // }
 
   // hurt(other, amount) {
-    // if (world.ticks < _invulnTime) {
-    //   return
-    // }
-
-    // if (world.levelWon) {
-    //   return
-    // }
-
-    // _health = _health - amount
-    // _invulnTime = world.ticks + 120
-
-    // if (_health <= 0) {
-    //   die(other)
-    // } else {
-    //   Trap.sndStop(_jumpHnd)
-    //   Trap.sndPlay(_hurtSound)
-    // }
+  // if (world.ticks < _invulnTime) {
+  //   return
   // }
 
-  update(dt:number) {
+  // if (world.levelWon) {
+  //   return
+  // }
+
+  // _health = _health - amount
+  // _invulnTime = world.ticks + 120
+
+  // if (_health <= 0) {
+  //   die(other)
+  // } else {
+  //   Trap.sndStop(_jumpHnd)
+  //   Trap.sndPlay(_hurtSound)
+  // }
+  // }
+
+  update(dt: number) {
     this.t += dt;
     this.frame = Math.floor(this.t * 12) % 6
 
     const dir = this.disableControls ? 0 : SLT.buttonPressed(Buttons.Left) ? -1 : SLT.buttonPressed(Buttons.Right) ? 1 : 0;
     const jumpPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Jump);
     const shootPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Shoot);
-  
+
     let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
     // TODO: spring code here
 
@@ -129,13 +129,13 @@ class Player extends Entity {
       }
     } else {
       // if holding a direction, figure out how fast we should try and go
-      const speed = Math.sign(dir*this.vel[0]) == -1 ? this.skidAccel : this.accel;
+      const speed = Math.sign(dir * this.vel[0]) == -1 ? this.skidAccel : this.accel;
       this.vel[0] = this.vel[0] + speed * dir;
     }
 
     // apply gravity if not on the ground. different gravity values depending on holding jump
     this.vel[1] = grounded ? 0 : this.vel[1] + (this.jumpHeld ? this.heldGravity : this.gravity);
- 
+
     // if jump is held, and player has let go of it since last jump
     if (jumpPress && !this.jumpHeld) {
       // allow the jump if:
@@ -157,7 +157,7 @@ class Player extends Entity {
     // increment the p-meter if you're on the ground and going fast enough
     if (Math.abs(this.vel[0]) >= this.runSpeed && grounded) {
       this.pMeter += 2;
-    // tick down the p-meter, but don't if you're at 100% and midair
+      // tick down the p-meter, but don't if you're at 100% and midair
     } else {
       if (grounded || this.pMeter != this.pMeterCapacity) {
         this.pMeter -= 1;

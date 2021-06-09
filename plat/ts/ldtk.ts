@@ -10,7 +10,7 @@ interface LDTKLayer {
   tileSize: number;
   offsetX: number;
   offsetY: number;
-  drawTiles:number[][];
+  drawTiles: number[][];
   tilesetHnd: number;
   tiles: number[];
   entities: LDTKEntity[];
@@ -28,25 +28,25 @@ class LDTK {
   background = '';
   bgColor = [0, 0, 0];
   properties = {};
-  layers:LDTKLayer[] = [];
-  layersByName:{[key: string]: LDTKLayer} = {};
+  layers: LDTKLayer[] = [];
+  layersByName: { [key: string]: LDTKLayer } = {};
 
-  constructor(o:any) {
+  constructor(o: any) {
     this.widthPx = o.pxWid;
     this.heightPx = o.pxHei;
-    this.bgColor = o.__bgColor.match(/\w\w/g).map((x:string) => parseInt(x, 16));
+    this.bgColor = o.__bgColor.match(/\w\w/g).map((x: string) => parseInt(x, 16));
 
     // turn into a reasonable k/v object
-    this.properties = o.fieldInstances.reduce((acc:any, val:any) => {
+    this.properties = o.fieldInstances.reduce((acc: any, val: any) => {
       const k = val.__identifier;
       const v = val.__value;
       acc[k] = v;
       return acc;
     }, {});
-        
+
     // parse each layer
-    o.layerInstances.forEach((layer:any) => {
-      const lobj:LDTKLayer = {
+    o.layerInstances.forEach((layer: any) => {
+      const lobj: LDTKLayer = {
         name: layer.__identifier,
         width: layer.__cWid,
         height: layer.__cHei,
@@ -60,7 +60,7 @@ class LDTK {
       }
 
       if (layer.__type == 'Entities') {
-        lobj.entities = layer.entityInstances.map((ent:any) => {
+        lobj.entities = layer.entityInstances.map((ent: any) => {
           return {
             type: ent.__identifier,
             size: [ent.width, ent.height],
@@ -88,7 +88,7 @@ class LDTK {
         lobj.drawTiles.push(new Array(sz).fill(-1));
 
         const tiles = layer.__type == 'Tiles' ? layer.gridTiles : layer.autoLayerTiles;
-        tiles.forEach((t:any) => {
+        tiles.forEach((t: any) => {
           const tileidx = (t.px[1] / lobj.tileSize) * lobj.width + t.px[0] / lobj.tileSize
           // look for an open space on existing layers
           for (let i = 0; i < lobj.drawTiles.length; i++) {
@@ -99,7 +99,7 @@ class LDTK {
             // we're out of space, add a new layer
             if (i + 1 == lobj.drawTiles.length) {
               lobj.drawTiles.push(new Array(sz).fill(-1));
-              lobj.drawTiles[i+1][tileidx] = t.t;
+              lobj.drawTiles[i + 1][tileidx] = t.t;
               break;
             }
           }
@@ -110,12 +110,12 @@ class LDTK {
       this.layers.push(lobj);
       this.layersByName[lobj.name] = lobj;
     })
-    
+
     // index 0 should be the bottom-most layer for drawing purposes
     this.layers.reverse();
   }
 
-  draw(layerName:string) {
+  draw(layerName: string) {
     const l = this.layersByName[layerName];
     for (let tmap of l.drawTiles) {
       Draw.tilemap(l.tilesetHnd, l.offsetX, l.offsetY, l.width, l.height, tmap);

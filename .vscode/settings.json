@@ -79,8 +79,5 @@
         "build/": true
     },
     "editor.tabSize": 2,
-    "wren.additionalModuleDirectories": [
-        "./base/scripts/",
-        "./plat/scripts/"
-    ]
+    "[typescript]": { "editor.formatOnSave": true }
 }

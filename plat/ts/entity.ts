@@ -6,22 +6,22 @@ import Tiles from './tiles.js';
 
 class Entity {
   type = 'default';
-  pos = [0,0];
-  size = [0,0];
-  vel = [0,0];
-  drawOfs = [0,0];
+  pos = [0, 0];
+  size = [0, 0];
+  vel = [0, 0];
+  drawOfs = [0, 0];
 
-  remainder = [0,0];
+  remainder = [0, 0];
   sprite = 0;
   frame = 0;
 
-  update(_dt:number) : void {}
+  update(_dt: number): void { }
   draw() {
     Draw.setColor(255, 255, 255, 255);
     Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, 0, 1, 1);
   }
 
-  collideAt(x:number, y:number, dir:Dir) {
+  collideAt(x: number, y: number, dir: Dir) {
     // FIXME: GC?
     const corners = [
       [x, y],
@@ -77,11 +77,11 @@ class Entity {
         return true;
       }
     }
-    
+
     return false;
   }
 
-  __move(dim:number, amt:number) {
+  __move(dim: number, amt: number) {
     this.remainder[dim] += amt;
     let move = Math.floor(this.remainder[dim]);
 
@@ -106,7 +106,7 @@ class Entity {
             this.pos[0] += sign;
             this.pos[1] -= 1;
             move -= sign;
-            continue;        
+            continue;
           }
         }
         return false;
@@ -116,11 +116,11 @@ class Entity {
     return true;
   }
 
-  moveX(amt:number) {
+  moveX(amt: number) {
     return this.__move(0, amt);
   }
 
-  moveY(amt:number) {
+  moveY(amt: number) {
     return this.__move(1, amt);
   }
 }

@@ -2,11 +2,12 @@
 #include <imgui.h>
 #include <string>
 extern "C" {
-#include <quickjs.h>
 #include <cutils.h>
+#include <quickjs.h>
 }
 
-static JSValue js_slt_printwin(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+static JSValue js_slt_printwin(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
   using namespace ImGui;
   const char *title, *key, *value;
 
@@ -14,23 +15,23 @@ static JSValue js_slt_printwin(JSContext *ctx, JSValueConst this_val, int argc, 
   if ((key = JS_ToCString(ctx, argv[1])) == NULL) return JS_EXCEPTION;
   if ((value = JS_ToCString(ctx, argv[2])) == NULL) return JS_EXCEPTION;
 
-	SetNextWindowSize(ImVec2(250, 500), ImGuiCond_FirstUseEver);
-	Begin(title, nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoFocusOnAppearing);
+  SetNextWindowSize(ImVec2(250, 500), ImGuiCond_FirstUseEver);
+  Begin(title, nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoFocusOnAppearing);
 
-	float width = GetWindowContentRegionWidth();
-	float keyWidth = CalcTextSize(key).x;
-	float valWidth = CalcTextSize(value).x;
+  float width = GetWindowContentRegionWidth();
+  float keyWidth = CalcTextSize(key).x;
+  float valWidth = CalcTextSize(value).x;
 
-	Text("%s", key);
-	if (keyWidth + valWidth + 20 < width) {
+  Text("%s", key);
+  if (keyWidth + valWidth + 20 < width) {
     SameLine();
-	}
-	int x = (int)(width - valWidth);
-	x = x < 5 ? 5 : x;
-	SetCursorPosX((float)x);
-	Text("%s", value);
-	Separator();
-	End();
+  }
+  int x = (int)(width - valWidth);
+  x = x < 5 ? 5 : x;
+  SetCursorPosX((float)x);
+  Text("%s", value);
+  Separator();
+  End();
 
   JS_FreeCString(ctx, title);
   JS_FreeCString(ctx, key);
@@ -38,7 +39,8 @@ static JSValue js_slt_printwin(JSContext *ctx, JSValueConst this_val, int argc, 
   return JS_UNDEFINED;
 }
 
-void RenderValue(JSContext *ctx, JSValue obj, JSAtom prop, const char *titleOverride = "" ) {
+void RenderValue(JSContext *ctx, JSValue obj, JSAtom prop, const char *titleOverride = "")
+{
   ImGui::TableNextRow();
   ImGui::TableSetColumnIndex(0);
   ImGui::AlignTextToFramePadding();
@@ -50,14 +52,17 @@ void RenderValue(JSContext *ctx, JSValue obj, JSAtom prop, const char *titleOver
   if (prop == 0) {
     if (JS_IsObject(obj)) {
       node_open = ImGui::TreeNode(val.u.ptr, "%s", titleOverride);
-    } else {
+    }
+    else {
       ImGui::Text("%s", titleOverride);
     }
-  } else {
+  }
+  else {
     const char *propStr = JS_AtomToCString(ctx, prop);
     if (JS_IsObject(val)) {
       node_open = ImGui::TreeNode(val.u.ptr, "%s", propStr);
-    } else {
+    }
+    else {
       ImGui::Text("%s", propStr);
     }
     JS_FreeCString(ctx, propStr);
@@ -75,11 +80,11 @@ void RenderValue(JSContext *ctx, JSValue obj, JSAtom prop, const char *titleOver
     uint32_t len;
     JS_ToUint32(ctx, &len, length);
     JS_FreeValue(ctx, length);
-    
+
     out += "[" + std::to_string(len) + "] ";
 
     uint32_t loopLen = len > 10 ? 10 : len;
-    for (uint32_t i = 0; i < loopLen; i++) {     
+    for (uint32_t i = 0; i < loopLen; i++) {
       JSValueConst arrVal = JS_GetPropertyUint32(ctx, val, i);
       JSValueConst strVal = JS_ToString(ctx, arrVal);
       const char *str = JS_ToCString(ctx, strVal);
@@ -92,13 +97,15 @@ void RenderValue(JSContext *ctx, JSValue obj, JSAtom prop, const char *titleOver
 
     if (loopLen < len) out += " ...";
     valStr = out.c_str();
-  } else {
+  }
+  else {
     valStr = JS_ToCString(ctx, val);
   }
 
   if (prop == 0) {
     ImGui::Text("%s", valStr);
-  } else {
+  }
+  else {
     ImGui::PushID(prop);
     ImGui::Selectable(valStr);
     ImGui::PopID();
@@ -116,7 +123,7 @@ void RenderValue(JSContext *ctx, JSValue obj, JSAtom prop, const char *titleOver
       ImGui::SetKeyboardFocusHere();
       evalStr[0] = '\0';
     }
-    
+
     if (ImGui::InputText("New value", evalStr, IM_ARRAYSIZE(evalStr), ImGuiInputTextFlags_EnterReturnsTrue)) {
       JSValue eval = JS_Eval(ctx, evalStr, strlen(evalStr), "<eval>", 0);
       if (!JS_IsException(eval)) {
@@ -164,10 +171,11 @@ void RenderValue(JSContext *ctx, JSValue obj, JSAtom prop, const char *titleOver
   }
 }
 
-static JSValue js_slt_showobj(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+static JSValue js_slt_showobj(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
   if (!ImGui::Begin("Object Inspector")) {
-      ImGui::End();
-      return JS_UNDEFINED;
+    ImGui::End();
+    return JS_UNDEFINED;
   }
 
   ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
@@ -177,28 +185,30 @@ static JSValue js_slt_showobj(JSContext *ctx, JSValueConst this_val, int argc, J
     JS_FreeCString(ctx, title);
     ImGui::EndTable();
   }
-  
+
   ImGui::PopStyleVar();
   ImGui::End();
 
   return JS_UNDEFINED;
 }
 
-static JSValue js_slt_error(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+static JSValue js_slt_error(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
   int level;
-  const char * error;
+  const char *error;
 
   if (JS_ToInt32(ctx, &level, argv[0])) return JS_EXCEPTION;
   if ((error = JS_ToCString(ctx, argv[1])) == NULL) return JS_EXCEPTION;
 
-  SLT_Error(level,error);
+  SLT_Error(level, error);
 
   JS_FreeCString(ctx, error);
   return JS_UNDEFINED;
 }
 
-static JSValue js_slt_console(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-  const char * text;
+static JSValue js_slt_console(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
+  const char *text;
 
   if ((text = JS_ToCString(ctx, argv[0])) == NULL) return JS_EXCEPTION;
 
@@ -208,7 +218,8 @@ static JSValue js_slt_console(JSContext *ctx, JSValueConst this_val, int argc, J
   return JS_UNDEFINED;
 }
 
-static JSValue js_slt_sndplay(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+static JSValue js_slt_sndplay(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
   int asset, loop;
   double volume, pan;
 
@@ -221,7 +232,8 @@ static JSValue js_slt_sndplay(JSContext *ctx, JSValueConst this_val, int argc, J
   return JS_NewUint32(ctx, playHandle);
 }
 
-static JSValue js_slt_sndstop(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+static JSValue js_slt_sndstop(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
   int handle;
 
   if (JS_ToInt32(ctx, &handle, argv[0])) return JS_EXCEPTION;
@@ -230,23 +242,25 @@ static JSValue js_slt_sndstop(JSContext *ctx, JSValueConst this_val, int argc, J
   return JS_UNDEFINED;
 }
 
-static JSValue js_slt_sndpauseresume(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+static JSValue js_slt_sndpauseresume(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
   int handle, paused;
 
   if (JS_ToInt32(ctx, &handle, argv[0])) return JS_EXCEPTION;
   if (JS_ToInt32(ctx, &paused, argv[1])) return JS_EXCEPTION;
 
-  SLT_Snd_PauseResume(handle,paused);
+  SLT_Snd_PauseResume(handle, paused);
   return JS_UNDEFINED;
 }
 
-static JSValue js_slt_registerbuttons(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+static JSValue js_slt_registerbuttons(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
   if (!JS_IsArray(ctx, argv[0])) return JS_EXCEPTION;
   int len = 0;
   JSValueConst lenVal = JS_GetPropertyStr(ctx, argv[0], "length");
   JS_ToInt32(ctx, &len, lenVal);
   JS_FreeValue(ctx, lenVal);
-  const char **strings = (const char **)malloc(sizeof(void*) * len);
+  const char **strings = (const char **)malloc(sizeof(void *) * len);
   for (int i = 0; i < len; i++) {
     JSValueConst val = JS_GetPropertyUint32(ctx, argv[0], i);
     strings[i] = JS_ToCString(ctx, val);
@@ -257,11 +271,12 @@ static JSValue js_slt_registerbuttons(JSContext *ctx, JSValueConst this_val, int
   for (int i = 0; i < len; i++) {
     JS_FreeCString(ctx, strings[i]);
   }
-  free((void*)strings);
+  free((void *)strings);
   return JS_UNDEFINED;
 }
 
-static JSValue js_slt_buttonpressed(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+static JSValue js_slt_buttonpressed(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
   int buttonNum, delay, repeat;
 
   if (JS_ToInt32(ctx, &buttonNum, argv[0])) return JS_EXCEPTION;
@@ -272,8 +287,9 @@ static JSValue js_slt_buttonpressed(JSContext *ctx, JSValueConst this_val, int a
   return JS_NewBool(ctx, pressed);
 }
 
-static JSValue js_slt_setwindowtitle(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-  const char * title;
+static JSValue js_slt_setwindowtitle(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
+  const char *title;
 
   if ((title = JS_ToCString(ctx, argv[0])) == NULL) return JS_EXCEPTION;
 
@@ -293,7 +309,8 @@ static const char *platform = "emscripten";
 static const char *platform = "unknown";
 #endif
 
-static JSValue js_slt_getmouse(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+static JSValue js_slt_getmouse(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
   MousePosition pos = SLT_In_MousePosition();
   JSValue obj = JS_NewObject(ctx);
   JS_SetPropertyStr(ctx, obj, "x", JS_NewInt32(ctx, pos.x));
@@ -302,8 +319,9 @@ static JSValue js_slt_getmouse(JSContext *ctx, JSValueConst this_val, int argc, 
   return obj;
 }
 
-static JSValue js_slt_getresolution(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-  int w, h; 
+static JSValue js_slt_getresolution(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
+  int w, h;
   SLT_GetResolution(&w, &h);
   JSValue obj = JS_NewObject(ctx);
   JS_SetPropertyStr(ctx, obj, "w", JS_NewInt32(ctx, w));
@@ -312,7 +330,8 @@ static JSValue js_slt_getresolution(JSContext *ctx, JSValueConst this_val, int a
   return obj;
 }
 
-static JSValue js_slt_readfile(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+static JSValue js_slt_readfile(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
   const char *path = JS_ToCString(ctx, argv[0]);
 
   char *buffer;
@@ -348,17 +367,17 @@ static const JSCFunctionListEntry js_slt_funcs[] = {
 };
 #pragma clang diagnostic pop
 
-static int js_slt_init(JSContext *ctx, JSModuleDef *m) {    
-  JS_SetModuleExportList(ctx, m, js_slt_funcs,
-                          countof(js_slt_funcs));
+static int js_slt_init(JSContext *ctx, JSModuleDef *m)
+{
+  JS_SetModuleExportList(ctx, m, js_slt_funcs, countof(js_slt_funcs));
   return 0;
 }
 
-JSModuleDef *js_init_module_slt(JSContext *ctx, const char *module_name) {
+JSModuleDef *js_init_module_slt(JSContext *ctx, const char *module_name)
+{
   JSModuleDef *m;
   m = JS_NewCModule(ctx, module_name, js_slt_init);
-  if (!m)
-    return NULL;
+  if (!m) return NULL;
   JS_AddModuleExportList(ctx, m, js_slt_funcs, countof(js_slt_funcs));
   return m;
 }

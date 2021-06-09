@@ -8,7 +8,8 @@ extern "C" {
 #include <quickjs.h>
 }
 
-JSModuleDef *physfs_module_loader(JSContext *ctx, const char *module_name, void *opaque) {
+JSModuleDef *physfs_module_loader(JSContext *ctx, const char *module_name, void *opaque)
+{
   // nasty hacky code ahead.
   // use main.js because it will return pak00.pk3 when running out of a pk3 file. this probably breaks cases
   // where you have js files in multiple pk3s though but i don't care about that right now. maybe we just need
@@ -21,7 +22,8 @@ JSModuleDef *physfs_module_loader(JSContext *ctx, const char *module_name, void 
   const char *virtualPath;
   if (base != nullptr) {
     virtualPath = base + strlen(root);
-  } else {
+  }
+  else {
     virtualPath = module_name;
   }
 
@@ -38,11 +40,11 @@ JSModuleDef *physfs_module_loader(JSContext *ctx, const char *module_name, void 
   // give full filesystem paths that the debugger will use.
   const char *realdir = SLT_FS_RealDir(module_name);
   std::string fullpath = realdir == nullptr ? module_name : std::string(realdir) + "/" + std::string(module_name);
-  JSValue func_val = JS_Eval(ctx, (char *)script, sz, fullpath.c_str(), JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY);
+  JSValue func_val =
+    JS_Eval(ctx, (char *)script, sz, fullpath.c_str(), JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY);
   free(script);
 
-  if (JS_IsException(func_val))
-    return NULL;
+  if (JS_IsException(func_val)) return NULL;
   /* XXX: could propagate the exception */
   js_module_set_import_meta(ctx, func_val, true, false);
   /* the module is already referenced, so we must free it */
@@ -66,9 +68,10 @@ public:
   JSValueConst startFunc;
   JSValueConst saveFunc;
 
-  SLTJSInstance() {
+  SLTJSInstance()
+  {
     rt = JS_NewRuntime();
-    //JS_SetMaxStackSize(rt, 1048576);
+    // JS_SetMaxStackSize(rt, 1048576);
     ctx = JS_NewContext(rt);
     global = JS_GetGlobalObject(ctx);
 
@@ -81,7 +84,8 @@ public:
     JS_SetModuleLoaderFunc(rt, nullptr, physfs_module_loader, nullptr);
   }
 
-  ~SLTJSInstance() {
+  ~SLTJSInstance()
+  {
     JS_FreeValue(ctx, global);
     JS_FreeValue(ctx, startFunc);
     JS_FreeValue(ctx, updateFunc);
@@ -94,7 +98,8 @@ public:
     JS_FreeRuntime(rt);
   }
 
-  bool Init() {
+  bool Init()
+  {
     const char *import = "import main from './js/main.js'; globalThis.mainModule = main;";
 
     JSValue imported = JS_Eval(ctx, import, strlen(import), "<import>", JS_EVAL_TYPE_MODULE);
@@ -106,9 +111,11 @@ public:
     module = JS_GetPropertyStr(ctx, global, "mainModule");
     if (JS_IsFunction(ctx, module)) {
       moduleIsClass = true;
-    } else if (JS_IsObject(module)) {
+    }
+    else if (JS_IsObject(module)) {
       moduleIsClass = false;
-    } else {
+    }
+    else {
       SLT_Error(ERR_GAME, "main.js did not export a function or object.");
       return false;
     }
@@ -116,7 +123,8 @@ public:
     return true;
   }
 
-  bool CallStart(const char *state) {
+  bool CallStart(const char *state)
+  {
     JSValueConst jsState = state == nullptr || strlen(state) == 0 ? JS_UNDEFINED : JS_NewString(ctx, state);
 
     if (moduleIsClass) {
@@ -124,7 +132,8 @@ public:
       const char *str = "globalThis.main = new globalThis.mainModule(globalThis.initialState);";
       JSValue imported = JS_Eval(ctx, str, strlen(str), "<import>", JS_EVAL_TYPE_MODULE);
       main = JS_GetPropertyStr(ctx, global, "main");
-    } else {
+    }
+    else {
       main = module;
       JS_SetPropertyStr(ctx, global, "main", main);
     }
@@ -165,7 +174,8 @@ public:
     return true;
   }
 
-  bool CallUpdate(float dt) const {
+  bool CallUpdate(float dt) const
+  {
     JSValue jsResult;
 
     JSValueConst arg = JS_NewFloat64(ctx, dt);
@@ -180,7 +190,8 @@ public:
     return true;
   }
 
-  bool CallDraw() const {
+  bool CallDraw() const
+  {
     JSValue jsResult = JS_Call(ctx, drawFunc, main, 0, nullptr);
     if (JS_IsException(jsResult)) {
       return false;
@@ -190,7 +201,8 @@ public:
     return true;
   }
 
-  std::string CallSave() const {
+  std::string CallSave() const
+  {
     if (!JS_IsFunction(ctx, saveFunc)) {
       return "";
     }
@@ -213,12 +225,14 @@ public:
     return ret;
   }
 
-  bool Eval(const char *code) const {
+  bool Eval(const char *code) const
+  {
     JSValue result = JS_EvalThis(ctx, global, code, strlen(code), "eval", 0);
     const char *resultStr = JS_ToCString(ctx, result);
     if (resultStr) {
       SLT_Print(resultStr);
-    } else {
+    }
+    else {
       SLT_Print("<no result>");
     }
 
@@ -231,7 +245,8 @@ public:
     return true;
   }
 
-  std::string DumpObject(JSValue val) const {
+  std::string DumpObject(JSValue val) const
+  {
     const char *str;
     std::string out = "";
 
@@ -240,14 +255,16 @@ public:
       out += str;
       out += "\n";
       JS_FreeCString(ctx, str);
-    } else {
+    }
+    else {
       out += "[exception]\n";
     }
 
     return out;
   }
 
-  std::string GetException() const {
+  std::string GetException() const
+  {
     std::string out = "";
     JSValue exception_val = JS_GetException(ctx);
     bool is_error = JS_IsError(ctx, exception_val);
@@ -264,7 +281,8 @@ public:
     return out;
   }
 
-  void Error(const char *message) const {
+  void Error(const char *message) const
+  {
     SLT_Con_SetVar("engine.lastErrorStack", GetException().c_str());
     SLT_Error(ERR_GAME, message);
   }
@@ -274,7 +292,8 @@ bool loop = true;
 SLTJSInstance *instance;
 std::string state = "";
 
-void main_loop() {
+void main_loop()
+{
   const conVar_t *errVar = SLT_Con_GetVar("engine.errorMessage");
   if (instance == nullptr && strlen(errVar->string) == 0) {
     SLT_Asset_ClearAll();
@@ -314,7 +333,8 @@ void main_loop() {
       delete instance;
       instance = nullptr;
     }
-  } else {
+  }
+  else {
     DC_Clear(0, 0, 0, 255);
     DC_Submit();
   }
@@ -323,7 +343,8 @@ void main_loop() {
   SLT_UpdateLastFrameTime();
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
   SLT_Init(argc, argv);
   SLT_Con_SetDefaultCommandHandler([]() {
     const char *cmd = SLT_Con_GetArgs(0);
@@ -353,9 +374,8 @@ int main(int argc, char *argv[]) {
 
   SLT_Con_AddCommand("js_debug", []() {
     if (instance) {
-      const char *js = SLT_Con_GetArgs(1);
-      if (js != NULL)
-        js_debugger_wait_connection(instance->ctx, js);
+      const char *address = SLT_Con_GetArgs(1);
+      if (address != NULL) js_debugger_wait_connection(instance->ctx, address);
     }
   });
 

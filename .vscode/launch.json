@@ -20,7 +20,7 @@
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}/build/bin/x86_64_Debug/",
       "environment": [],
-      "externalConsole": true,
+      "console": "integratedTerminal",
       "osx": {
         "type": "lldb",
         "targetArchitecture": "arm64",
@@ -28,7 +28,6 @@
         "cwd": "${workspaceFolder}/build/bin/ARM64_Debug/",
         "program": "${workspaceRoot}/build/bin/ARM64_Debug/jslate2d",
         "MIMode": "lldb",
-        "externalConsole": false
       }
     },
     {
@@ -41,14 +40,15 @@
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}/build/bin/x86_64_Debug/",
       "environment": [{"name": "QUICKJS_DEBUG_LISTEN_ADDRESS", "value": "127.0.0.1:6666"}],
-      "externalConsole": true,
+      "console": "integratedTerminal",
       "osx": {
         "type": "lldb",
+        // note, codelldb uses env not environment and object not array, not arr of name/value
+        "env": {"QUICKJS_DEBUG_LISTEN_ADDRESS": "127.0.0.1:6666"}, 
         "preLaunchTask": "Build (Debug)",
         "cwd": "${workspaceFolder}/build/bin/ARM64_Debug/",
         "program": "${workspaceRoot}/build/bin/ARM64_Debug/jslate2d",
         "MIMode": "lldb",
-        "externalConsole": false
       }
     },
     {
@@ -61,14 +61,13 @@
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}/build/bin/x86_64_Release/",
       "environment": [],
-      "externalConsole": true,
+      "console": "integratedTerminal",
       "osx": {
         "type": "lldb",
         "preLaunchTask": "Build (Release)",
         "cwd": "${workspaceFolder}/build/bin/ARM64_Release/",
         "program": "${workspaceRoot}/build/bin/ARM64_Release/jslate2d",
         "MIMode": "lldb",
-        "externalConsole": false
       }
     },
     {

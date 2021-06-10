@@ -202,7 +202,7 @@ void Sprite_Set(AssetHandle assetHandle, int width, int height, int marginX, int
 	}
 
 	if (asset->loaded == true) {
-		Con_Printf("WARNING: Asset_Set: trying to set already loaded asset %s\n", asset->name);
+		// Con_Printf("WARNING: Asset_Set: trying to set already loaded asset %s\n", asset->name);
 		return;
 	}
 

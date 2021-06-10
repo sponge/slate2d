@@ -7,6 +7,7 @@ import LDTK from './ldtk.js';
 import Buttons from './buttons.js';
 import Player from './player.js';
 import { randomRange } from './util.js';
+import Platform from './platform.js';
 class Main {
     res = { w: 384, h: 216 };
     canvas = Assets.load({
@@ -48,8 +49,9 @@ class Main {
         return { id, w, h, x: randomRange(50, 150), y: randomRange(5, 90) };
     });
     camera = new Camera(this.res.w, this.res.h);
-    entMap = {
-        'Player': Player
+    entSpawnMap = {
+        'Player': Player,
+        'Platform': Platform,
     };
     accumulator = 0;
     save() {
@@ -59,7 +61,7 @@ class Main {
         Buttons.register();
         if (initialState) {
             this.state = JSON.parse(initialState);
-            this.state.entities = this.state.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));
+            this.state.entities = this.state.entities.map(ent => Object.assign(new this.entSpawnMap[ent.type], ent));
         }
         else {
             this.state.mapName = 'maps/0000-Level_0.ldtkl';
@@ -68,7 +70,7 @@ class Main {
         this.map = new LDTK(src);
         if (!initialState) {
             const entLayer = this.map.layersByName.Entities;
-            this.state.entities = entLayer.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));
+            this.state.entities = entLayer.entities.map(ent => Object.assign(new this.entSpawnMap[ent.type], ent));
         }
         this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
     }

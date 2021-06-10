@@ -9,6 +9,7 @@ import Buttons from './buttons.js';
 import Player from './player.js';
 import { randomRange } from './util.js';
 import Entity from './entity.js';
+import Platform from './platform.js';
 
 interface GameState {
   t: number;
@@ -73,8 +74,9 @@ class Main {
   });
 
   camera = new Camera(this.res.w, this.res.h);
-  entMap: { [key: string]: typeof Entity } = {
-    'Player': Player
+  entSpawnMap: { [key: string]: typeof Entity } = {
+    'Player': Player,
+    'Platform': Platform,
   };
   accumulator = 0;
 
@@ -87,7 +89,7 @@ class Main {
 
     if (initialState) {
       this.state = JSON.parse(initialState);
-      this.state.entities = this.state.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));
+      this.state.entities = this.state.entities.map(ent => Object.assign(new this.entSpawnMap[ent.type], ent));
     } else {
       this.state.mapName = 'maps/0000-Level_0.ldtkl';
     }
@@ -97,7 +99,7 @@ class Main {
 
     if (!initialState) {
       const entLayer = this.map.layersByName.Entities;
-      this.state.entities = entLayer.entities.map(ent => Object.assign(new this.entMap[ent.type], ent));
+      this.state.entities = entLayer.entities.map(ent => Object.assign(new this.entSpawnMap[ent.type], ent));
     }
 
     this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);

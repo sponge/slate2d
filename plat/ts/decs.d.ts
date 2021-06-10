@@ -90,13 +90,13 @@ declare module 'draw' {
   export function resetCanvas(): void
   export function useShader(shaderId: number): void
   export function resetShader(): void
-  export function rect(x: number, y: number, w: number, h: number, outline: number): void
+  export function rect(x: number, y: number, w: number, h: number, outline: boolean): void
   export function setTextStyle(fontId: number, size: number, lineHeight: number, align: number): void
   export function text(x: number, y: number, h: number, text: string, len: number): void
   export function image(imgId: number, x: number, y: number, w: number, h: number, scale: number, flipBits: number, ox: number, oy: number): void
   export function sprite(spriteId: number, id: number, x: number, y: number, scale: number, flipBits: number, w: number, h: number): void
   export function line(x1: number, y1: number, x2: number, y2: number): void
-  export function circle(x: number, y: number, radius: number, outline: number): void
+  export function circle(x: number, y: number, radius: number, outline: boolean): void
   export function tri(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, outline: boolean): void
   export function tilemap(sprite: number, x: number, y: number, w: number, h: number, tiles: number[]): void
   export function submit(): void

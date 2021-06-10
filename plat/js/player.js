@@ -10,8 +10,8 @@ class Player extends Entity {
     // entity definition
     type = 'Player';
     sprite = Assets.find('dogspr');
-    size = [14, 14];
-    drawOfs = [-3, -1];
+    //size = [14, 14]; // grabbed from map
+    drawOfs = [-5, -2];
     // entity state
     disableControls = false;
     pMeter = 0;
@@ -168,6 +168,7 @@ class Player extends Entity {
     }
     draw() {
         Draw.setColor(255, 255, 255, 255);
+        // Draw.rect(this.pos[0], this.pos[1], this.size[0], this.size[1], false);
         Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, this.facing > 0 ? 0 : 1, 1, 1);
     }
 }

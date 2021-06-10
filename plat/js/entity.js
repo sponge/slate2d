@@ -1,7 +1,8 @@
 import * as Draw from 'draw';
-import { clamp } from './util.js';
+import { clamp, rectIntersect } from './util.js';
 import Dir from './dir.js';
 import Tiles from './tiles.js';
+import CollisionType from './collisiontype.js';
 class Entity {
     type = 'default';
     pos = [0, 0];
@@ -11,6 +12,7 @@ class Entity {
     remainder = [0, 0];
     sprite = 0;
     frame = 0;
+    collidable = CollisionType.Enabled;
     update(_dt) { }
     draw() {
         Draw.setColor(255, 255, 255, 255);
@@ -20,15 +22,29 @@ class Entity {
         // FIXME: GC?
         const corners = [
             [x, y],
-            [x + this.size[0], y],
-            [x, y + this.size[1]],
-            [x + this.size[0], y + this.size[1]]
+            [x + this.size[0] - 1, y],
+            [x, y + this.size[1] - 1],
+            [x + this.size[0] - 1, y + this.size[1] - 1]
         ];
-        const bottomMiddle = [x + this.size[0] / 2, y + this.size[1]]; // y is actually one pixel below box here
-        // check against tilemap
-        // iterate through corners. note this will currently break if entities are > tileSize
+        const bottomMiddle = [x + this.size[0] / 2, corners[2][1]];
         // FIXME: need a reference to the world, but don't want to pass it in then state will have a cyclic reference
-        const layer = globalThis.main.map.layersByName.Collision;
+        const main = globalThis.main;
+        const layer = main.map.layersByName.Collision;
+        const entities = main.state.entities;
+        // iterate through all entities looking for a collision
+        for (let other of entities) {
+            if (other == this)
+                continue;
+            if (other.collidable == CollisionType.Disabled)
+                continue;
+            const intersects = rectIntersect(x, y, this.size[0], this.size[1], other.pos[0], other.pos[1], other.size[0], other.size[1]);
+            if (other.collidable == CollisionType.Enabled && intersects) {
+                return true;
+            }
+            else if (other.collidable == CollisionType.Platform && dir == Dir.Down && intersects && corners[2][1] == other.pos[1]) {
+                return true;
+            }
+        }
         // check bottom middle point if its in a slope
         const tx = Math.floor(bottomMiddle[0] / layer.tileSize);
         const ty = clamp(Math.floor(bottomMiddle[1] / layer.tileSize), 0, layer.height);
@@ -39,6 +55,8 @@ class Entity {
             const minY = tid == Tiles.SlopeR ? localX : layer.tileSize - localX;
             return localY >= minY;
         }
+        // check against tilemap
+        // iterate through corners. note this will currently break if entities are > tileSize
         for (let corner of corners) {
             const tx = Math.floor(corner[0] / layer.tileSize);
             const ty = clamp(Math.floor(corner[1] / layer.tileSize), 0, layer.height);
@@ -55,7 +73,7 @@ class Entity {
                 // if it's a platform, check if dir is down, and only block if bottom of entity
                 // intersects with the first pixel of the platform block
                 if (tid == Tiles.Platform) {
-                    if (dir == Dir.Down && corner[1] == y + this.size[1] && corner[1] % layer.tileSize == 0) {
+                    if (dir == Dir.Down && corner[1] == corners[2][1] && corner[1] % layer.tileSize == 0) {
                         return true;
                     }
                     continue;

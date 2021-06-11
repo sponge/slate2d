@@ -13,6 +13,9 @@ class Entity {
     sprite = 0;
     frame = 0;
     collidable = CollisionType.Enabled;
+    constructor(args) {
+        Object.assign(this, args);
+    }
     update(_dt) { }
     draw() {
         Draw.setColor(255, 255, 255, 255);
@@ -120,6 +123,38 @@ class Entity {
     }
     moveY(amt) {
         return this.__move(1, amt);
+    }
+    moveSolid(x, y) {
+        this.remainder[0] += x;
+        this.remainder[1] += y;
+        const main = globalThis.main;
+        const entities = main.state.entities;
+        const currCollidable = this.collidable;
+        this.collidable = CollisionType.Disabled;
+        // not ideal but needs to be done before the move
+        const intersects = entities.map(other => rectIntersect(this.pos[0], this.pos[1], this.size[0], this.size[1], other.pos[0], other.pos[1], other.size[0], other.size[1]) ? other : undefined);
+        const riding = entities.map(other => rectIntersect(this.pos[0], this.pos[1], this.size[0], this.size[1], other.pos[0], other.pos[1] + 1, other.size[0], other.size[1]) ? other : undefined);
+        for (let dim = 0; dim < 2; dim++) {
+            const move = Math.floor(this.remainder[dim]);
+            this.remainder[dim] -= move;
+            this.pos[dim] += move;
+            if (move == 0) {
+                continue;
+            }
+            for (let other of entities) {
+                if (other == this)
+                    continue;
+                if (currCollidable == CollisionType.Enabled && intersects.includes(other)) {
+                    if (other.__move(dim, move)) { // was orig (this.Right — actor.Left) or (this.Left — actor.Right) but is this necessary?
+                        // FIXME: squish!
+                    }
+                }
+                else if (!intersects.includes(other) && riding.includes(other)) {
+                    other.__move(dim, move);
+                }
+            }
+        }
+        this.collidable = currCollidable;
     }
 }
 export default Entity;

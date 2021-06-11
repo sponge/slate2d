@@ -89,7 +89,7 @@ class Main {
 
     if (initialState) {
       this.state = JSON.parse(initialState);
-      this.state.entities = this.state.entities.map(ent => Object.assign(new this.entSpawnMap[ent.type], ent));
+      this.state.entities = this.state.entities.map(ent => Object.assign(new this.entSpawnMap[ent.type]({}), ent));
     } else {
       this.state.mapName = 'maps/0000-Level_0.ldtkl';
     }
@@ -99,7 +99,7 @@ class Main {
 
     if (!initialState) {
       const entLayer = this.map.layersByName.Entities;
-      this.state.entities = entLayer.entities.map(ent => Object.assign(new this.entSpawnMap[ent.type], ent));
+      this.state.entities = entLayer.entities.map(ent => new this.entSpawnMap[ent.type](ent));
     }
 
     this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
@@ -108,12 +108,14 @@ class Main {
   update(dt: number) {
     this.accumulator += dt;
 
-    while (this.accumulator > 1 / 61) {
+    while (this.accumulator > 0.0164) {
       this.state.t += 1 / 60;
-      this.accumulator -= 1 / 60;
+      this.accumulator -= 0.0175;
+      this.accumulator = Math.max(0, this.accumulator);
       this.state.entities.forEach(ent => ent.update(dt));
       const player = this.state.entities[0];
       this.camera.window(player.pos[0], player.pos[1], 20, 20);
+      //SLT.printWin('frame', 'frame', true);
     }
 
     SLT.showObj('main class', this);

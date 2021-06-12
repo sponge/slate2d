@@ -105,6 +105,7 @@ public:
     JSValue imported = JS_Eval(ctx, import, strlen(import), "<import>", JS_EVAL_TYPE_MODULE);
     if (JS_IsException(imported)) {
       JS_FreeValue(ctx, imported);
+      Error("Could not eval main.js");
       return false;
     }
 
@@ -116,7 +117,7 @@ public:
       moduleIsClass = false;
     }
     else {
-      SLT_Error(ERR_GAME, "main.js did not export a function or object.");
+      Error("main.js did not export a function or object.");
       return false;
     }
 
@@ -132,6 +133,11 @@ public:
       const char *str = "globalThis.main = new globalThis.mainModule(globalThis.initialState);";
       JSValue imported = JS_Eval(ctx, str, strlen(str), "<import>", JS_EVAL_TYPE_MODULE);
       main = JS_GetPropertyStr(ctx, global, "main");
+
+      if (!JS_IsObject(main)) {
+        Error("Main class constructor did not return an object");
+        return false;
+      }
     }
     else {
       main = module;
@@ -139,6 +145,7 @@ public:
     }
 
     if (JS_IsException(main)) {
+      Error("Caught exception while initializing class.");
       return false;
     }
 
@@ -148,23 +155,24 @@ public:
     saveFunc = JS_GetPropertyStr(ctx, main, "save");
 
     if (!JS_IsFunction(ctx, updateFunc)) {
-      SLT_Error(ERR_GAME, "Module did not export an update function.");
+      Error("Module did not export an update function.");
       return false;
     }
 
     if (!JS_IsFunction(ctx, drawFunc)) {
-      SLT_Error(ERR_GAME, "Module did not export a draw function.");
+      Error("Module did not export a draw function.");
       return false;
     }
 
     if (!moduleIsClass) {
       if (!JS_IsFunction(ctx, startFunc)) {
-        SLT_Error(ERR_GAME, "Module did not export a start function.");
+        Error("Module did not export a start function.");
         return false;
       }
 
       JSValue jsResult = JS_Call(ctx, startFunc, main, 1, &jsState);
       if (JS_IsException(jsResult)) {
+        Error("Caught exception while calling start function.");
         return false;
       }
 
@@ -268,8 +276,8 @@ public:
     std::string out = "";
     JSValue exception_val = JS_GetException(ctx);
     bool is_error = JS_IsError(ctx, exception_val);
-    out += DumpObject(exception_val);
     if (is_error) {
+      out += DumpObject(exception_val);
       JSValue val = JS_GetPropertyStr(ctx, exception_val, "stack");
       if (!JS_IsUndefined(val)) {
         out += DumpObject(val);
@@ -306,7 +314,6 @@ void main_loop()
     }
 
     if (!instance->CallStart(state.c_str())) {
-      instance->Error("Exception while calling Start()");
       delete instance;
       instance = nullptr;
       return;

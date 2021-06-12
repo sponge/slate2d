@@ -4,7 +4,7 @@ import * as SLT from 'slate2d';
 import * as Assets from 'assets';
 
 import Camera from './camera.js';
-import LDTK from './ldtk.js';
+import { LDTK } from './ldtk.js';
 import Buttons from './buttons.js';
 import Player from './player.js';
 import { randomRange } from './util.js';

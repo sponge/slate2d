@@ -16,10 +16,12 @@ class Entity {
   remainder = [0, 0];
   sprite = 0;
   frame = 0;
-  collidable = CollisionType.Enabled;
+  collidable: CollisionType;
 
-  constructor(args: any) {
+  constructor(args: { [key: string]: any }) {
     Object.assign(this, args);
+    const key: keyof typeof CollisionType = args.properties?.CollisionType;
+    this.collidable = CollisionType[key] ?? CollisionType.Enabled;
   }
 
   update(_dt: number) { }
@@ -28,6 +30,8 @@ class Entity {
     Draw.setColor(255, 255, 255, 255);
     Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, 0, 1, 1);
   }
+
+  die() { }
 
   collideAt(x: number, y: number, dir: Dir) {
     // FIXME: GC?

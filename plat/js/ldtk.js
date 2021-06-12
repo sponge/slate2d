@@ -1,5 +1,11 @@
 import * as Draw from 'draw';
 import * as Assets from 'assets';
+function parseProperties(obj) {
+    return obj.reduce((acc, val) => {
+        acc[val.__identifier] = val.__value;
+        return acc;
+    }, {});
+}
 class LDTK {
     widthPx = 0;
     heightPx = 0;
@@ -13,12 +19,7 @@ class LDTK {
         this.heightPx = o.pxHei;
         this.bgColor = o.__bgColor.match(/\w\w/g).map((x) => parseInt(x, 16));
         // turn into a reasonable k/v object
-        this.properties = o.fieldInstances.reduce((acc, val) => {
-            const k = val.__identifier;
-            const v = val.__value;
-            acc[k] = v;
-            return acc;
-        }, {});
+        this.properties = parseProperties(o.fieldInstances);
         // parse each layer
         o.layerInstances.forEach((layer) => {
             const lobj = {
@@ -38,7 +39,8 @@ class LDTK {
                     return {
                         type: ent.__identifier,
                         size: [ent.width, ent.height],
-                        pos: [ent.px[0] - ent.width * ent.__pivot[0], ent.px[1] - ent.height * ent.__pivot[1]]
+                        pos: [ent.px[0] - ent.width * ent.__pivot[0], ent.px[1] - ent.height * ent.__pivot[1]],
+                        properties: parseProperties(ent.fieldInstances),
                     };
                 });
             }
@@ -92,4 +94,4 @@ class LDTK {
         }
     }
 }
-export default LDTK;
+export { LDTK };

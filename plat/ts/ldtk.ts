@@ -20,6 +20,14 @@ interface LDTKEntity {
   type: string;
   size: [number, number];
   pos: [number, number];
+  properties: { [key: string]: any };
+}
+
+function parseProperties(obj: any) {
+  return obj.reduce((acc: any, val: any) => {
+    acc[val.__identifier] = val.__value;
+    return acc;
+  }, {});
 }
 
 class LDTK {
@@ -27,7 +35,7 @@ class LDTK {
   heightPx = 0;
   background = '';
   bgColor = [0, 0, 0];
-  properties = {};
+  properties: { [key: string]: any } = {};
   layers: LDTKLayer[] = [];
   layersByName: { [key: string]: LDTKLayer } = {};
 
@@ -37,12 +45,7 @@ class LDTK {
     this.bgColor = o.__bgColor.match(/\w\w/g).map((x: string) => parseInt(x, 16));
 
     // turn into a reasonable k/v object
-    this.properties = o.fieldInstances.reduce((acc: any, val: any) => {
-      const k = val.__identifier;
-      const v = val.__value;
-      acc[k] = v;
-      return acc;
-    }, {});
+    this.properties = parseProperties(o.fieldInstances);
 
     // parse each layer
     o.layerInstances.forEach((layer: any) => {
@@ -64,7 +67,8 @@ class LDTK {
           return {
             type: ent.__identifier,
             size: [ent.width, ent.height],
-            pos: [ent.px[0] - ent.width * ent.__pivot[0], ent.px[1] - ent.height * ent.__pivot[1]]
+            pos: [ent.px[0] - ent.width * ent.__pivot[0], ent.px[1] - ent.height * ent.__pivot[1]],
+            properties: parseProperties(ent.fieldInstances),
           }
         })
       } else {
@@ -123,4 +127,4 @@ class LDTK {
   }
 }
 
-export default LDTK
+export { LDTK, LDTKEntity }

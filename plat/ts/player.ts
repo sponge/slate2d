@@ -15,6 +15,7 @@ class Player extends Entity {
   sprite = Assets.find('dogspr');
   //size = [14, 14]; // grabbed from map
   drawOfs = [-5, -2];
+  spawnPos: number[];
 
   // entity state
   disableControls = false;
@@ -88,6 +89,15 @@ class Player extends Entity {
   //   Trap.sndPlay(_hurtSound)
   // }
   // }
+
+  constructor(args: { [key: string]: any }) {
+    super(args);
+    this.spawnPos = [...this.pos];
+  }
+
+  die() {
+    this.pos = [...this.spawnPos];
+  }
 
   update(dt: number) {
     this.t += dt;

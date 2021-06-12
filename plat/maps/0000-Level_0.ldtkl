@@ -68,7 +68,152 @@
 					"height": 4,
 					"defUid": 104,
 					"px": [16,160],
-					"fieldInstances": []
+					"fieldInstances": [
+						{
+							"__identifier": "CollisionType",
+							"__value": "Platform",
+							"__type": "LocalEnum.CollisionType",
+							"defUid": 108,
+							"realEditorValues": [{
+								"id": "V_String",
+								"params": ["Platform"]
+							}]
+						},
+						{
+							"__identifier": "Direction",
+							"__value": "Vertical",
+							"__type": "LocalEnum.Direction",
+							"defUid": 110,
+							"realEditorValues": [{
+								"id": "V_String",
+								"params": ["Vertical"]
+							}]
+						},
+						{
+							"__identifier": "Distance",
+							"__value": -100,
+							"__type": "Int",
+							"defUid": 111,
+							"realEditorValues": [{ "id": "V_Int", "params": [-100] }]
+						},
+						{
+							"__identifier": "Speed",
+							"__value": 1,
+							"__type": "Float",
+							"defUid": 112,
+							"realEditorValues": [{ "id": "V_Float", "params": [1] }]
+						},
+						{
+							"__identifier": "Destination",
+							"__value": { "cx": 1, "cy": 5 },
+							"__type": "Point",
+							"defUid": 113,
+							"realEditorValues": [{
+								"id": "V_String",
+								"params": ["1,5"]
+							}]
+						}
+					]
+				},
+				{
+					"__identifier": "Platform",
+					"__grid": [10,3],
+					"__pivot": [0,0],
+					"__tile": null,
+					"width": 16,
+					"height": 48,
+					"defUid": 104,
+					"px": [160,48],
+					"fieldInstances": [
+						{
+							"__identifier": "CollisionType",
+							"__value": "Enabled",
+							"__type": "LocalEnum.CollisionType",
+							"defUid": 108,
+							"realEditorValues": [{
+								"id": "V_String",
+								"params": ["Enabled"]
+							}]
+						},
+						{
+							"__identifier": "Direction",
+							"__value": "Horizontal",
+							"__type": "LocalEnum.Direction",
+							"defUid": 110,
+							"realEditorValues": [{
+								"id": "V_String",
+								"params": ["Horizontal"]
+							}]
+						},
+						{
+							"__identifier": "Distance",
+							"__value": -80,
+							"__type": "Int",
+							"defUid": 111,
+							"realEditorValues": [{ "id": "V_Int", "params": [-80] }]
+						},
+						{ "__identifier": "Speed", "__value": 1, "__type": "Float", "defUid": 112, "realEditorValues": [] },
+						{
+							"__identifier": "Destination",
+							"__value": { "cx": 5, "cy": 3 },
+							"__type": "Point",
+							"defUid": 113,
+							"realEditorValues": [{
+								"id": "V_String",
+								"params": ["5,3"]
+							}]
+						}
+					]
+				},
+				{
+					"__identifier": "Platform",
+					"__grid": [20,13],
+					"__pivot": [0,0],
+					"__tile": null,
+					"width": 16,
+					"height": 16,
+					"defUid": 104,
+					"px": [320,208],
+					"fieldInstances": [
+						{
+							"__identifier": "CollisionType",
+							"__value": "Enabled",
+							"__type": "LocalEnum.CollisionType",
+							"defUid": 108,
+							"realEditorValues": [{
+								"id": "V_String",
+								"params": ["Enabled"]
+							}]
+						},
+						{
+							"__identifier": "Direction",
+							"__value": "Vertical",
+							"__type": "LocalEnum.Direction",
+							"defUid": 110,
+							"realEditorValues": [{
+								"id": "V_String",
+								"params": ["Vertical"]
+							}]
+						},
+						{
+							"__identifier": "Distance",
+							"__value": -50,
+							"__type": "Int",
+							"defUid": 111,
+							"realEditorValues": [{ "id": "V_Int", "params": [-50] }]
+						},
+						{ "__identifier": "Speed", "__value": 1, "__type": "Float", "defUid": 112, "realEditorValues": [] },
+						{
+							"__identifier": "Destination",
+							"__value": { "cx": 20, "cy": 9 },
+							"__type": "Point",
+							"defUid": 113,
+							"realEditorValues": [{
+								"id": "V_String",
+								"params": ["20,9"]
+							}]
+						}
+					]
 				}
 			]
 		},

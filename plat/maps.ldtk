@@ -9,7 +9,7 @@
 		"url": "https://ldtk.io"
 	},
 	"jsonVersion": "0.9.3",
-	"nextUid": 105,
+	"nextUid": 114,
 	"worldLayout": "Free",
 	"worldGridWidth": 256,
 	"worldGridHeight": 256,
@@ -1519,10 +1519,10 @@
 			"identifier": "Platform",
 			"uid": 104,
 			"tags": [],
-			"width": 48,
+			"width": 16,
 			"height": 4,
-			"resizableX": false,
-			"resizableY": false,
+			"resizableX": true,
+			"resizableY": true,
 			"keepAspectRatio": false,
 			"fillOpacity": 1,
 			"lineOpacity": 1,
@@ -1538,7 +1538,108 @@
 			"limitBehavior": "MoveLastOne",
 			"pivotX": 0,
 			"pivotY": 0,
-			"fieldDefs": []
+			"fieldDefs": [
+				{
+					"identifier": "CollisionType",
+					"__type": "LocalEnum.CollisionType",
+					"uid": 108,
+					"type": { "id": "F_Enum", "params": [105] },
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayPos": "Above",
+					"editorAlwaysShow": false,
+					"editorCutLongValues": true,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null
+				},
+				{
+					"identifier": "Direction",
+					"__type": "LocalEnum.Direction",
+					"uid": 110,
+					"type": { "id": "F_Enum", "params": [109] },
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayPos": "Above",
+					"editorAlwaysShow": false,
+					"editorCutLongValues": true,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null
+				},
+				{
+					"identifier": "Distance",
+					"__type": "Int",
+					"uid": 111,
+					"type": "F_Int",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayPos": "Above",
+					"editorAlwaysShow": false,
+					"editorCutLongValues": true,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": { "id": "V_Int", "params": [50] },
+					"textLanguageMode": null
+				},
+				{
+					"identifier": "Speed",
+					"__type": "Float",
+					"uid": 112,
+					"type": "F_Float",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayPos": "Above",
+					"editorAlwaysShow": false,
+					"editorCutLongValues": true,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": { "id": "V_Float", "params": [1] },
+					"textLanguageMode": null
+				},
+				{
+					"identifier": "Destination",
+					"__type": "Point",
+					"uid": 113,
+					"type": "F_Point",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "PointStar",
+					"editorDisplayPos": "Above",
+					"editorAlwaysShow": false,
+					"editorCutLongValues": true,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null
+				}
+			]
 		}
 	], "tilesets": [
 		{
@@ -1561,7 +1662,14 @@
 				"averageColors": "f884f675f675f884f984f884f88475957595f535f53575a57595f835d984f964f864f225f535f864eb63fa64fa64f555f5558b638b63f755f755f835dc73f2aff954f854f854f954ec73f774f774f774cb73fa54ea54cb73e884f775e8840000fa54f635f535f954f984f854f964f854ea54f735f735ea54f845f745f845f625e884f774e884f964f864f864f954f954ea54f725f735ea54f835f835f525f525f745f745f864f754f854f854fa64fa64ba64e834e834ba54f835f835f725f725f535f535f754f635f854f854fa64fa64f335db73cb73db73da736b73f725f725c5b54d824a64411286338da91a641bba1ca310c510c510d500d510d500d520c520c512856b73b011d522edcb1c734c737d827b6347c448c413d5a5d5b5d510d56c837c837b736b7300000000000000000000000000000000c5d5f4d5f5d5a5d5000000000000000000000000000000000000000000000000d395f2a5f2b5d39500000000000000000000000000000000000000000000000013358864a854233500000000000000000000000000000000000000000000000000004d82795400000000000000000000000000000000000000000000000000000000000000000000"
 			}
 		}
-	], "enums": [], "externalEnums": [], "levelFields": [
+	], "enums": [
+		{ "identifier": "CollisionType", "uid": 105, "values": [
+			{ "id": "Disabled", "tileId": null, "color": 0, "__tileSrcRect": null },
+			{ "id": "Enabled", "tileId": null, "color": 6655322, "__tileSrcRect": null },
+			{ "id": "Platform", "tileId": null, "color": 14736237, "__tileSrcRect": null }
+		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null },
+		{ "identifier": "Direction", "uid": 109, "values": [ { "id": "Horizontal", "tileId": null, "color": 0, "__tileSrcRect": null }, { "id": "Vertical", "tileId": null, "color": 0, "__tileSrcRect": null } ], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null }
+	], "externalEnums": [], "levelFields": [
 		{
 			"identifier": "background",
 			"__type": "String",

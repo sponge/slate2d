@@ -1,23 +1,23 @@
 import Entity from "./entity.js";
 import * as Draw from 'draw';
-import CollisionType from "./collisiontype.js";
 class Platform extends Entity {
-    collidable = CollisionType.Platform;
-    dim = 1;
-    dir = -1;
-    bottom;
-    top;
+    dim;
+    speed;
+    start;
+    end;
     constructor(args) {
         super(args);
-        this.bottom = this.pos[this.dim];
-        this.top = this.bottom + (this.dim == 0 ? 1 : -1) * 100;
+        this.dim = args.properties?.Direction == 'Horizontal' ? 0 : 1;
+        this.speed = args.properties?.Speed ?? 1;
+        this.start = this.pos[this.dim];
+        this.end = this.start + (args.properties?.Distance ?? 100);
     }
     update(dt) {
-        if (this.pos[this.dim] > this.bottom)
-            this.dir *= -1;
-        if (this.pos[this.dim] < this.top)
-            this.dir *= -1;
-        this.moveSolid(this.dim == 0 ? this.dir : 0, this.dim == 1 ? this.dir : 0);
+        if (this.pos[this.dim] < this.start)
+            this.speed *= -1;
+        if (this.pos[this.dim] > this.end)
+            this.speed *= -1;
+        this.moveSolid(this.dim == 0 ? this.speed : 0, this.dim == 1 ? this.speed : 0);
     }
     draw() {
         Draw.setColor(255, 255, 0, 255);

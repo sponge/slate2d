@@ -12,6 +12,7 @@ class Player extends Entity {
     sprite = Assets.find('dogspr');
     //size = [14, 14]; // grabbed from map
     drawOfs = [-5, -2];
+    spawnPos;
     // entity state
     disableControls = false;
     pMeter = 0;
@@ -77,6 +78,13 @@ class Player extends Entity {
     //   Trap.sndPlay(_hurtSound)
     // }
     // }
+    constructor(args) {
+        super(args);
+        this.spawnPos = [...this.pos];
+    }
+    die() {
+        this.pos = [...this.spawnPos];
+    }
     update(dt) {
         this.t += dt;
         this.frame = Math.floor(this.t * 12) % 6;

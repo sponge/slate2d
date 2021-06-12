@@ -159,18 +159,22 @@ class Entity {
     const main = ((globalThis as any).main as Main);
     const entities = main.state.entities;
 
+    // disable collision temporarily
     const currCollidable = this.collidable;
     this.collidable = CollisionType.Disabled;
 
-    // not ideal but needs to be done before the move
-    const intersects = entities.map(other => rectIntersect(this.pos[0], this.pos[1], this.size[0], this.size[1], other.pos[0], other.pos[1], other.size[0], other.size[1]) ? other : undefined);
-    const riding = entities.map(other => rectIntersect(this.pos[0], this.pos[1], this.size[0], this.size[1], other.pos[0], other.pos[1] + 1, other.size[0], other.size[1]) ? other : undefined);
+    // not ideal but needs to be done before the move. need to figure out if passing in new arrays causes GC.
+    // riding is true if the other entity isn't intersecting them but one pixel down vertically does
+    const riding = entities.map(other =>
+      !rectIntersect(this.pos[0], this.pos[1], this.size[0], this.size[1], other.pos[0], other.pos[1], other.size[0], other.size[1]) &&
+        rectIntersect(this.pos[0], this.pos[1], this.size[0], this.size[1], other.pos[0], other.pos[1] + 1, other.size[0], other.size[1]) ? other : undefined
+    );
 
     for (let dim = 0; dim < 2; dim++) {
       const move = Math.floor(this.remainder[dim]);
       this.remainder[dim] -= move;
-      this.pos[dim] += move;
 
+      this.pos[dim] += move;
       if (move == 0) {
         continue;
       }
@@ -178,12 +182,16 @@ class Entity {
       for (let other of entities) {
         if (other == this) continue;
 
-        if (currCollidable == CollisionType.Enabled && intersects.includes(other)) {
-          if (other.__move(dim, move)) { // was orig (this.Right — actor.Left) or (this.Left — actor.Right) but is this necessary?
-            // FIXME: squish!
+        // if collision is enabled and the other entity intersects with the post move position, try and push them out of the way
+        const intersects = currCollidable == CollisionType.Enabled && rectIntersect(this.pos[0], this.pos[1], this.size[0], this.size[1], other.pos[0], other.pos[1], other.size[0], other.size[1]);
+        if (intersects) {
+          // find minimum amount of movement to resolve intersection. this.Right - other.Left, or this.Left - actor.Right
+          const amt = Math.sign(move) > 0 ? (this.pos[dim] + this.size[dim]) - other.pos[dim] : this.pos[dim] - (other.pos[dim] + other.size[dim]);
+          if (!other.__move(dim, amt)) { // was orig (this.Right — actor.Left) or (this.Left — actor.Right) but is this necessary?
+            other.die();
           }
         }
-        else if (!intersects.includes(other) && riding.includes(other)) {
+        else if (riding.includes(other)) {
           other.__move(dim, move);
         }
       }

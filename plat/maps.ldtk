@@ -1618,26 +1618,6 @@
 					"acceptFileTypes": null,
 					"defaultOverride": { "id": "V_Float", "params": [1] },
 					"textLanguageMode": null
-				},
-				{
-					"identifier": "Destination",
-					"__type": "Point",
-					"uid": 113,
-					"type": "F_Point",
-					"isArray": false,
-					"canBeNull": false,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "PointStar",
-					"editorDisplayPos": "Above",
-					"editorAlwaysShow": false,
-					"editorCutLongValues": true,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": null,
-					"textLanguageMode": null
 				}
 			]
 		}
@@ -1699,9 +1679,9 @@
 			"identifier": "Level_0",
 			"uid": 0,
 			"worldX": 0,
-			"worldY": 0,
-			"pxWid": 800,
-			"pxHei": 256,
+			"worldY": -64,
+			"pxWid": 1088,
+			"pxHei": 320,
 			"__bgColor": "#696A79",
 			"bgColor": null,
 			"useAutoIdentifier": true,

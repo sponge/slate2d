@@ -131,8 +131,8 @@ class Main {
     const t = this.state.t;
 
     // parallax bgs
-    const camY = 1 - (this.camera.y / (this.map.heightPx ?? 0 - res.h));
-    const camYoffset = camY * 20
+    const camY = 1 - this.camera.y / (this.map.heightPx - res.h);
+    const camYoffset = camY * 50;
     this.backgrounds.forEach((bg, i) => {
       const speed = (i + 1) * 0.25;
       const x = Math.floor(((bg.x - this.camera.x) * speed) % bg.w);

@@ -335,7 +335,7 @@ void main_loop()
       instance = nullptr;
     }
 
-    if (!instance->CallDraw()) {
+    if (instance && !instance->CallDraw()) {
       instance->Error("Exception while calling Draw()");
       delete instance;
       instance = nullptr;

@@ -147,6 +147,7 @@ void PrintError(const char *line) {
 void ConH_Error(int level, const char *message) {
 	PrintError("==============================\nERROR\n==============================\n");
 	PrintError(message);
+	PrintError("\n");
 	PrintError(eng_lastErrorStack->string);
 
 #if defined(_WIN32) && defined(DEBUG)

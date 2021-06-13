@@ -31,6 +31,9 @@ class Entity {
     Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, 0, 1, 1);
   }
 
+  min(dim: number) { return this.pos[dim] }
+  max(dim: number) { return this.pos[dim] + this.size[dim] }
+
   die() { }
 
   collideAt(x: number, y: number, dir: Dir) {
@@ -185,9 +188,9 @@ class Entity {
         // if collision is enabled and the other entity intersects with the post move position, try and push them out of the way
         const intersects = currCollidable == CollisionType.Enabled && rectIntersect(this.pos[0], this.pos[1], this.size[0], this.size[1], other.pos[0], other.pos[1], other.size[0], other.size[1]);
         if (intersects) {
-          // find minimum amount of movement to resolve intersection. this.Right - other.Left, or this.Left - actor.Right
+          // find minimum amount of movement to resolve intersection.
           const amt = Math.sign(move) > 0 ? (this.pos[dim] + this.size[dim]) - other.pos[dim] : this.pos[dim] - (other.pos[dim] + other.size[dim]);
-          if (!other.__move(dim, amt)) { // was orig (this.Right — actor.Left) or (this.Left — actor.Right) but is this necessary?
+          if (!other.__move(dim, amt)) {
             other.die();
           }
         }

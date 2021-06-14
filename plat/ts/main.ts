@@ -10,6 +10,7 @@ import Player from './player.js';
 import { randomRange } from './util.js';
 import Entity from './entity.js';
 import Platform from './platform.js';
+import { drawPrintWin, clearPrintWin } from './printwin.js';
 
 interface GameState {
   t: number;
@@ -109,6 +110,7 @@ class Main {
     this.accumulator += dt;
 
     while (this.accumulator > 0.0164) {
+      clearPrintWin();
       this.state.t += 1 / 60;
       this.accumulator -= 0.0175;
       this.accumulator = Math.max(0, this.accumulator);
@@ -118,6 +120,7 @@ class Main {
       //SLT.printWin('frame', 'frame', true);
     }
 
+    drawPrintWin();
     SLT.showObj('main class', this);
   };
 

@@ -8,6 +8,7 @@ import Buttons from './buttons.js';
 import Player from './player.js';
 import { randomRange } from './util.js';
 import Platform from './platform.js';
+import { drawPrintWin, clearPrintWin } from './printwin.js';
 class Main {
     res = { w: 384, h: 216 };
     canvas = Assets.load({
@@ -78,6 +79,7 @@ class Main {
     update(dt) {
         this.accumulator += dt;
         while (this.accumulator > 0.0164) {
+            clearPrintWin();
             this.state.t += 1 / 60;
             this.accumulator -= 0.0175;
             this.accumulator = Math.max(0, this.accumulator);
@@ -86,6 +88,7 @@ class Main {
             this.camera.window(player.pos[0], player.pos[1], 20, 20);
             //SLT.printWin('frame', 'frame', true);
         }
+        drawPrintWin();
         SLT.showObj('main class', this);
     }
     ;

@@ -184,6 +184,17 @@
 						},
 						{ "__identifier": "Speed", "__value": 1, "__type": "Float", "defUid": 112, "realEditorValues": [] }
 					]
+				},
+				{
+					"__identifier": "Spring",
+					"__grid": [13,17],
+					"__pivot": [0,1],
+					"__tile": null,
+					"width": 16,
+					"height": 14,
+					"defUid": 114,
+					"px": [208,288],
+					"fieldInstances": []
 				}
 			]
 		},

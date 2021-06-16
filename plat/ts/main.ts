@@ -11,6 +11,7 @@ import { randomRange } from './util.js';
 import Entity from './entity.js';
 import Platform from './platform.js';
 import { drawPrintWin, clearPrintWin } from './printwin.js';
+import Spring from './spring.js';
 
 interface GameState {
   t: number;
@@ -78,6 +79,7 @@ class Main {
   entSpawnMap: { [key: string]: typeof Entity } = {
     'Player': Player,
     'Platform': Platform,
+    'Spring': Spring,
   };
   accumulator = 0;
 
@@ -166,6 +168,7 @@ class Main {
     this.map.draw('BGTiles');
     this.map.draw('BGWorld');
     this.state.entities.forEach((ent: Entity) => ent.draw());
+    Draw.setColor(255, 255, 255, 255);
     this.map.draw('Collision');
 
     this.camera.drawEnd();

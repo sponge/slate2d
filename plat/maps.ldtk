@@ -9,7 +9,7 @@
 		"url": "https://ldtk.io"
 	},
 	"jsonVersion": "0.9.3",
-	"nextUid": 114,
+	"nextUid": 115,
 	"worldLayout": "LinearHorizontal",
 	"worldGridWidth": 256,
 	"worldGridHeight": 256,
@@ -1620,6 +1620,31 @@
 					"textLanguageMode": null
 				}
 			]
+		},
+		{
+			"identifier": "Spring",
+			"uid": 114,
+			"tags": [],
+			"width": 16,
+			"height": 14,
+			"resizableX": false,
+			"resizableY": false,
+			"keepAspectRatio": false,
+			"fillOpacity": 1,
+			"lineOpacity": 1,
+			"hollow": false,
+			"color": "#0F773D",
+			"renderMode": "Rectangle",
+			"showName": true,
+			"tilesetId": null,
+			"tileId": null,
+			"tileRenderMode": "FitInside",
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0,
+			"pivotY": 1,
+			"fieldDefs": []
 		}
 	], "tilesets": [
 		{

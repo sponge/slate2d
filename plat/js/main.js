@@ -9,6 +9,7 @@ import Player from './player.js';
 import { randomRange } from './util.js';
 import Platform from './platform.js';
 import { drawPrintWin, clearPrintWin } from './printwin.js';
+import Spring from './spring.js';
 class Main {
     res = { w: 384, h: 216 };
     canvas = Assets.load({
@@ -53,6 +54,7 @@ class Main {
     entSpawnMap = {
         'Player': Player,
         'Platform': Platform,
+        'Spring': Spring,
     };
     accumulator = 0;
     save() {
@@ -127,6 +129,7 @@ class Main {
         this.map.draw('BGTiles');
         this.map.draw('BGWorld');
         this.state.entities.forEach((ent) => ent.draw());
+        Draw.setColor(255, 255, 255, 255);
         this.map.draw('Collision');
         this.camera.drawEnd();
         // draw the canvas into the center of the window

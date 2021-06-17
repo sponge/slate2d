@@ -37,12 +37,6 @@ class Main {
     height: this.res.h
   });
 
-  dog: number = Assets.load({
-    name: 'dog',
-    type: 'image',
-    path: 'gfx/dog.png'
-  });
-
   dogSpr: number = Assets.load({
     name: 'dogspr',
     type: 'sprite',
@@ -89,6 +83,16 @@ class Main {
 
   constructor(initialState: string) {
     Buttons.register();
+
+    Assets.load({
+      type: 'sprite',
+      name: 'spring',
+      path: 'gfx/spring.png',
+      marginX: 0,
+      marginY: 0,
+      spriteWidth: 16,
+      spriteHeight: 16,
+    })
 
     if (initialState) {
       this.state = JSON.parse(initialState);

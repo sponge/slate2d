@@ -18,11 +18,6 @@ class Main {
         width: this.res.w,
         height: this.res.h
     });
-    dog = Assets.load({
-        name: 'dog',
-        type: 'image',
-        path: 'gfx/dog.png'
-    });
     dogSpr = Assets.load({
         name: 'dogspr',
         type: 'sprite',
@@ -62,6 +57,15 @@ class Main {
     }
     constructor(initialState) {
         Buttons.register();
+        Assets.load({
+            type: 'sprite',
+            name: 'spring',
+            path: 'gfx/spring.png',
+            marginX: 0,
+            marginY: 0,
+            spriteWidth: 16,
+            spriteHeight: 16,
+        });
         if (initialState) {
             this.state = JSON.parse(initialState);
             this.state.entities = this.state.entities.map(ent => Object.assign(new this.entSpawnMap[ent.type]({}), ent));

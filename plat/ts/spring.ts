@@ -22,6 +22,11 @@ class Spring extends Entity {
     //Draw.rect(this.pos[0], this.pos[1], this.size[0], this.size[1], false);
     super.draw();
   }
+
+  collide(other: Entity, dir: Dir) {
+    if (dir != Dir.Up) return;
+    other.vel[1] = -9;
+  }
 }
 
 export default Spring;

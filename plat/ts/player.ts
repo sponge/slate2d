@@ -6,6 +6,7 @@ import Buttons from './buttons.js';
 import Entity from './entity.js';
 import { clamp } from './util.js';
 import Dir from './dir.js';
+import { dbgval } from './printwin.js';
 
 const phys = {
   // physics values
@@ -110,8 +111,14 @@ class Player extends Entity {
     const shootPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Shoot);
 
     let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
-    // TODO: spring code here
 
+    // checking again because if we're standing on something it should trigger
+    if (grounded) {
+      this.collideEnt?.collide(this, Dir.Up);
+      grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
+    }
+
+    // if we're still on the ground, blank out the decimal
     if (grounded) {
       this.remainder[1] = 0;
     }
@@ -195,10 +202,11 @@ class Player extends Entity {
       this.remainder[0] = 0;
     }
 
-    const chky = this.moveY(this.vel[1]);
-    if (!chky) {
-      this.vel[1] = 0;
-      this.remainder[1] = 0;
+    const velY = this.vel[1]
+    const chky = this.moveY(velY);
+    // this.moveY may alter our velocity, so double check vel
+    if (!chky && Math.sign(velY) == Math.sign(this.vel[1])) {
+      this.vel[1] = this.remainder[1] = 0;
     }
 
     // TODO: all sorts of shit around jumping on top of enemies

@@ -9,6 +9,14 @@ function dbg(title: string, key: string, value: any) {
   messages.push([title, key, value]);
 }
 
+function dbgval(value: any) {
+  let caller = new Error().stack?.split('\n')[1];
+  const lastSlash = caller?.lastIndexOf('/') ?? 0;
+  const lastParens = caller?.lastIndexOf(')') ?? 0;
+  const loc = caller?.substr(lastSlash + 1, lastParens - lastSlash - 1) ?? 'unknown';
+  messages.push(['Debug', loc, value]);
+}
+
 function drawPrintWin() {
   for (let message of messages) {
     printWin(...message);
@@ -19,4 +27,4 @@ function clearPrintWin() {
   messages = [];
 }
 
-export { dbg, drawPrintWin, clearPrintWin };
+export { dbg, dbgval, drawPrintWin, clearPrintWin };

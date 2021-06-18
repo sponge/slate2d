@@ -6,6 +6,13 @@ let messages = [];
 function dbg(title, key, value) {
     messages.push([title, key, value]);
 }
+function dbgval(value) {
+    let caller = new Error().stack?.split('\n')[1];
+    const lastSlash = caller?.lastIndexOf('/') ?? 0;
+    const lastParens = caller?.lastIndexOf(')') ?? 0;
+    const loc = caller?.substr(lastSlash + 1, lastParens - lastSlash - 1) ?? 'unknown';
+    messages.push(['Debug', loc, value]);
+}
 function drawPrintWin() {
     for (let message of messages) {
         printWin(...message);
@@ -14,4 +21,4 @@ function drawPrintWin() {
 function clearPrintWin() {
     messages = [];
 }
-export { dbg, drawPrintWin, clearPrintWin };
+export { dbg, dbgval, drawPrintWin, clearPrintWin };

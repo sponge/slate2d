@@ -31,6 +31,8 @@ class Entity {
     Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, 0, 1, 1);
   }
 
+  collide(other: Entity, dir: Dir) { }
+
   min(dim: number) { return this.pos[dim] }
   max(dim: number) { return this.pos[dim] + this.size[dim] }
 
@@ -44,6 +46,14 @@ class Entity {
       [x, y + this.size[1] - 1],
       [x + this.size[0] - 1, y + this.size[1] - 1]
     ];
+
+    let opposite: Dir;
+    switch (dir) {
+      case Dir.Down: opposite = Dir.Up; break;
+      case Dir.Up: opposite = Dir.Down; break;
+      case Dir.Left: opposite = Dir.Right; break;
+      case Dir.Right: opposite = Dir.Left; break;
+    }
 
     const bottomMiddle = [x + this.size[0] / 2, corners[2][1]];
 
@@ -59,9 +69,11 @@ class Entity {
 
       const intersects = rectIntersect(x, y, this.size[0], this.size[1], other.pos[0], other.pos[1], other.size[0], other.size[1]);
       if (other.collidable == CollisionType.Enabled && intersects) {
+        other.collide(this, opposite);
         return true;
       }
       else if (other.collidable == CollisionType.Platform && dir == Dir.Down && intersects && corners[2][1] == other.pos[1]) {
+        other.collide(this, opposite);
         return true;
       }
     }

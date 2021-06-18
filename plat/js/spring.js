@@ -1,7 +1,9 @@
 import * as Assets from 'assets';
 import Entity from './entity.js';
+import CollisionType from './collisiontype.js';
 class Spring extends Entity {
     sprite = Assets.find('spring');
+    collidable = CollisionType.Platform;
     constructor(args) {
         super(args);
     }

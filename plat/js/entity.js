@@ -13,6 +13,7 @@ class Entity {
     sprite = 0;
     frame = 0;
     collidable;
+    collideEnt;
     constructor(args) {
         Object.assign(this, args);
         const key = args.properties?.CollisionType;
@@ -23,10 +24,13 @@ class Entity {
         Draw.setColor(255, 255, 255, 255);
         Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, 0, 1, 1);
     }
+    // callback when someone else touches this entity
     collide(other, dir) { }
     min(dim) { return this.pos[dim]; }
     max(dim) { return this.pos[dim] + this.size[dim]; }
     die() { }
+    // returns true/false if there is a collision at the specified coordinates.
+    // this only queries the world, but it will update this.collideEnt
     collideAt(x, y, dir) {
         // FIXME: GC?
         const corners = [
@@ -35,21 +39,6 @@ class Entity {
             [x, y + this.size[1] - 1],
             [x + this.size[0] - 1, y + this.size[1] - 1]
         ];
-        let opposite;
-        switch (dir) {
-            case Dir.Down:
-                opposite = Dir.Up;
-                break;
-            case Dir.Up:
-                opposite = Dir.Down;
-                break;
-            case Dir.Left:
-                opposite = Dir.Right;
-                break;
-            case Dir.Right:
-                opposite = Dir.Left;
-                break;
-        }
         const bottomMiddle = [x + this.size[0] / 2, corners[2][1]];
         // FIXME: need a reference to the world, but don't want to pass it in then state will have a cyclic reference
         const main = globalThis.main;
@@ -63,13 +52,14 @@ class Entity {
                 continue;
             const intersects = rectIntersect(x, y, this.size[0], this.size[1], other.pos[0], other.pos[1], other.size[0], other.size[1]);
             if (other.collidable == CollisionType.Enabled && intersects) {
-                other.collide(this, opposite);
+                this.collideEnt = other;
                 return true;
             }
             else if (other.collidable == CollisionType.Platform && dir == Dir.Down && intersects && corners[2][1] == other.pos[1]) {
-                other.collide(this, opposite);
+                this.collideEnt = other;
                 return true;
             }
+            this.collideEnt = undefined;
         }
         // check bottom middle point if its in a slope
         const tx = Math.floor(bottomMiddle[0] / layer.tileSize);
@@ -118,9 +108,24 @@ class Entity {
         }
         this.remainder[dim] -= move;
         const sign = Math.sign(move);
+        const dir = dim == 0 ? (sign > 0 ? Dir.Right : Dir.Left) : (sign > 0 ? Dir.Down : Dir.Up);
+        let opposite;
+        switch (dir) {
+            case Dir.Down:
+                opposite = Dir.Up;
+                break;
+            case Dir.Up:
+                opposite = Dir.Down;
+                break;
+            case Dir.Left:
+                opposite = Dir.Right;
+                break;
+            case Dir.Right:
+                opposite = Dir.Left;
+                break;
+        }
         while (move != 0) {
             const check = this.pos[dim] + sign;
-            const dir = dim == 0 ? (sign > 0 ? Dir.Right : Dir.Left) : (sign > 0 ? Dir.Down : Dir.Up);
             const collision = dim == 0 ? this.collideAt(check, this.pos[1], dir) : this.collideAt(this.pos[0], check, dir);
             if (!collision) {
                 this.pos[dim] += sign;
@@ -136,6 +141,7 @@ class Entity {
                         continue;
                     }
                 }
+                this.collideEnt?.collide(this, opposite);
                 return false;
             }
         }

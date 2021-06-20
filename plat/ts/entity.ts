@@ -5,6 +5,7 @@ import Dir from './dir.js';
 import Main from './main.js';
 import Tiles from './tiles.js';
 import CollisionType from './collisiontype.js';
+import World from './world.js';
 
 class Entity {
   type = 'default';
@@ -26,7 +27,8 @@ class Entity {
     this.collidable = CollisionType[key] ?? CollisionType.Enabled;
   }
 
-  update(_dt: number) { }
+  preupdate(_ticks: number, _dt: number) { }
+  update(_ticks: number, _dt: number) { }
 
   draw() {
     Draw.setColor(255, 255, 255, 255);
@@ -54,10 +56,8 @@ class Entity {
 
     const bottomMiddle = [x + this.size[0] / 2, corners[2][1]];
 
-    // FIXME: need a reference to the world, but don't want to pass it in then state will have a cyclic reference
-    const main = ((globalThis as any).main as Main);
-    const layer = main.map.layersByName.Collision;
-    const entities = main.state.entities;
+    const layer = World().map.layersByName.Collision;
+    const entities = World().state.entities;
 
     // iterate through all entities looking for a collision
     for (let other of entities) {
@@ -176,12 +176,18 @@ class Entity {
     return this.__move(1, amt);
   }
 
+  getRidingEntities() {
+    return World().state.entities.filter(other =>
+      !rectIntersect(this.pos[0], this.pos[1], this.size[0], this.size[1], other.pos[0], other.pos[1], other.size[0], other.size[1]) &&
+      rectIntersect(this.pos[0], this.pos[1], this.size[0], this.size[1], other.pos[0], other.pos[1] + 1, other.size[0], other.size[1])
+    );
+  }
+
   moveSolid(x: number, y: number) {
     this.remainder[0] += x;
     this.remainder[1] += y;
 
-    const main = ((globalThis as any).main as Main);
-    const entities = main.state.entities;
+    const entities = World().state.entities;
 
     // disable collision temporarily
     const currCollidable = this.collidable;
@@ -189,10 +195,7 @@ class Entity {
 
     // not ideal but needs to be done before the move. need to figure out if passing in new arrays causes GC.
     // riding is true if the other entity isn't intersecting them but one pixel down vertically does
-    const riding = entities.map(other =>
-      !rectIntersect(this.pos[0], this.pos[1], this.size[0], this.size[1], other.pos[0], other.pos[1], other.size[0], other.size[1]) &&
-        rectIntersect(this.pos[0], this.pos[1], this.size[0], this.size[1], other.pos[0], other.pos[1] + 1, other.size[0], other.size[1]) ? other : undefined
-    );
+    const riding = this.getRidingEntities()
 
     for (let dim = 0; dim < 2; dim++) {
       const move = Math.floor(this.remainder[dim]);

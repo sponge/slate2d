@@ -17,7 +17,7 @@ class Platform extends Entity {
   }
 
 
-  update(dt: number) {
+  update(ticks: number, dt: number) {
     if (this.pos[this.dim] < this.start) this.speed *= -1;
     if (this.pos[this.dim] > this.end) this.speed *= -1;
     this.moveSolid(this.dim == 0 ? this.speed : 0, this.dim == 1 ? this.speed : 0);

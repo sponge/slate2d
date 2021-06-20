@@ -12,7 +12,7 @@ class Platform extends Entity {
         this.start = this.pos[this.dim];
         this.end = this.start + (args.properties?.Distance ?? 100);
     }
-    update(dt) {
+    update(ticks, dt) {
         if (this.pos[this.dim] < this.start)
             this.speed *= -1;
         if (this.pos[this.dim] > this.end)

@@ -15,6 +15,7 @@ import Spring from './spring.js';
 
 interface GameState {
   t: number;
+  ticks: number;
   entities: Entity[];
   mapName: string;
 }
@@ -49,6 +50,7 @@ class Main {
 
   state: GameState = {
     t: 0,
+    ticks: 0,
     entities: [],
     mapName: '',
   };
@@ -120,7 +122,11 @@ class Main {
       this.state.t += 1 / 60;
       this.accumulator -= 0.0175;
       this.accumulator = Math.max(0, this.accumulator);
-      this.state.entities.forEach(ent => ent.update(dt));
+      this.state.ticks += 1;
+      this.state.entities.forEach(ent => {
+        ent.preupdate(this.state.ticks, dt);
+        ent.update(this.state.ticks, dt);
+      });
       const player = this.state.entities[0];
       this.camera.window(player.pos[0], player.pos[1], 20, 20);
       //SLT.printWin('frame', 'frame', true);

@@ -33,15 +33,14 @@ const phys = {
     ]
 };
 class Player extends Entity {
-    t = 0;
     // entity definition
     type = 'Player';
     sprite = Assets.find('dogspr');
-    //size = [14, 14]; // grabbed from map
     drawOfs = [-5, -2];
     spawnPos;
     // entity state
     disableControls = false;
+    disableMovement = false;
     pMeter = 0;
     //health = 3;
     //shotsActive = 0;
@@ -87,9 +86,8 @@ class Player extends Entity {
     die() {
         this.pos = [...this.spawnPos];
     }
-    update(dt) {
-        this.t += dt;
-        this.frame = Math.floor(this.t * 12) % 6;
+    update(ticks, dt) {
+        this.frame = ticks / 8 % 6;
         const dir = this.disableControls ? 0 : SLT.buttonPressed(Buttons.Left) ? -1 : SLT.buttonPressed(Buttons.Right) ? 1 : 0;
         const jumpPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Jump);
         const shootPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Shoot);
@@ -168,17 +166,19 @@ class Player extends Entity {
         this.vel[1] = Math.min(this.vel[1], phys.terminalVelocity);
         // move x first, then move y. don't do it at the same time, else buggy behavior
         // if (!groundEnt || groundEnt.has("spring") == false) { // TODO: spring check
-        const chkx = this.moveX(this.vel[0]);
-        // triggerTouch(chkx.delta // TODO: trigger check
-        if (!chkx) {
-            this.vel[0] = 0;
-            this.remainder[0] = 0;
-        }
-        const velY = this.vel[1];
-        const chky = this.moveY(velY);
-        // this.moveY may alter our velocity, so double check vel
-        if (!chky && Math.sign(velY) == Math.sign(this.vel[1])) {
-            this.vel[1] = this.remainder[1] = 0;
+        if (!this.disableMovement) {
+            const chkx = this.moveX(this.vel[0]);
+            // triggerTouch(chkx.delta // TODO: trigger check
+            if (!chkx) {
+                this.vel[0] = 0;
+                this.remainder[0] = 0;
+            }
+            const velY = this.vel[1];
+            const chky = this.moveY(velY);
+            // this.moveY may alter our velocity, so double check vel
+            if (!chky && Math.sign(velY) == Math.sign(this.vel[1])) {
+                this.vel[1] = this.remainder[1] = 0;
+            }
         }
         // TODO: all sorts of shit around jumping on top of enemies
     }

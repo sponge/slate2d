@@ -10,6 +10,7 @@ import { randomRange } from './util.js';
 import Platform from './platform.js';
 import { drawPrintWin, clearPrintWin } from './printwin.js';
 import Spring from './spring.js';
+import Phys from './phys.js';
 class Main {
     res = { w: 384, h: 216 };
     canvas = Assets.load({
@@ -24,6 +25,15 @@ class Main {
         path: 'gfx/dog.png',
         spriteWidth: 22,
         spriteHeight: 16,
+        marginX: 0,
+        marginY: 0,
+    });
+    pMeterSpr = Assets.load({
+        name: 'pmeter',
+        type: 'sprite',
+        path: 'gfx/pmeter.png',
+        spriteWidth: 10,
+        spriteHeight: 14,
         marginX: 0,
         marginY: 0,
     });
@@ -141,6 +151,17 @@ class Main {
         Draw.setColor(255, 255, 255, 255);
         this.map.draw('Collision');
         this.camera.drawEnd();
+        // player hud
+        const player = this.state.entities[0];
+        const pct = Math.floor(player.pMeter / Phys.pMeterCapacity * 6);
+        for (let i = 0; i < 5; i++) {
+            let num = player.pMeter == Phys.pMeterCapacity ? 2 : i < pct ? 1 : 0;
+            Draw.sprite(this.pMeterSpr, num, 14 + i * 14, 8, 1, 0, 1, 1);
+        }
+        // for (i in 0..4) {
+        //   var num = _player.pMeter == _player.pMeterCapacity ? 299 : i < pct ? 283 : 267
+        //   Draw.sprite(_spr, num, 14 + i * 6, 4)
+        // }
         // draw the canvas into the center of the window
         const screen = SLT.resolution();
         const scale = Math.floor(screen.h / res.h);

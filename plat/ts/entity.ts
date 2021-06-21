@@ -2,7 +2,6 @@ import * as SLT from 'slate2d';
 import * as Draw from 'draw';
 import { clamp, rectIntersect } from './util.js';
 import Dir from './dir.js';
-import Main from './main.js';
 import Tiles from './tiles.js';
 import CollisionType from './collisiontype.js';
 import World from './world.js';

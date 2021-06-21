@@ -4,6 +4,7 @@ import Dir from './dir.js';
 import Tiles from './tiles.js';
 import CollisionType from './collisiontype.js';
 import World from './world.js';
+const slopes = [Tiles.SlopeL, Tiles.SlopeR];
 class Entity {
     type = 'default';
     pos = [0, 0];
@@ -15,6 +16,7 @@ class Entity {
     frame = 0;
     collidable;
     collideEnt;
+    collideTile = Tiles.Empty;
     constructor(args) {
         Object.assign(this, args);
         const key = args.properties?.CollisionType;
@@ -65,10 +67,12 @@ class Entity {
         const tx = Math.floor(bottomMiddle[0] / layer.tileSize);
         const ty = clamp(Math.floor(bottomMiddle[1] / layer.tileSize), 0, layer.height);
         const tid = layer.tiles[ty * layer.width + tx];
-        if (tid == Tiles.SlopeL || tid == Tiles.SlopeR) {
+        // check if we're in the solid part of the slope (always 45 degrees)
+        if (slopes.includes(tid)) {
             const localX = bottomMiddle[0] % layer.tileSize;
             const localY = bottomMiddle[1] % layer.tileSize;
             const minY = tid == Tiles.SlopeR ? localX : layer.tileSize - localX;
+            this.collideTile = localY >= minY ? tid : Tiles.Empty;
             return localY >= minY;
         }
         // check against tilemap
@@ -83,21 +87,23 @@ class Entity {
                     continue;
                 }
                 // if it's a ground sloped tile, only bottom middle pixel should collide with it
-                if (tid == Tiles.SlopeL || tid == Tiles.SlopeR) {
+                if (slopes.includes(tid)) {
                     continue;
                 }
                 // if it's a platform, check if dir is down, and only block if bottom of entity
                 // intersects with the first pixel of the platform block
                 if (tid == Tiles.Platform) {
                     if (dir == Dir.Down && corner[1] == corners[2][1] && corner[1] % layer.tileSize == 0) {
+                        this.collideTile = tid;
                         return true;
                     }
                     continue;
                 }
-                // TODO: set some sort of collision response object on the entity to prevent alloc new objs?
+                this.collideTile = tid;
                 return true;
             }
         }
+        this.collideTile = Tiles.Empty;
         return false;
     }
     __move(dim, amt) {

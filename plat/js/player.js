@@ -5,6 +5,7 @@ import Buttons from './buttons.js';
 import Entity from './entity.js';
 import { clamp } from './util.js';
 import Dir from './dir.js';
+import Tiles from './tiles.js';
 const phys = {
     // physics values
     // most values from https://cdn.discordapp.com/attachments/191015116655951872/332350193540268033/smw_physics.png
@@ -51,6 +52,8 @@ class Player extends Entity {
     //invulnTime = 0;
     facing = 1;
     //nextShotTime = 0;
+    lastSlide = Tiles.Empty;
+    currSlide = Tiles.Empty;
     //jumpHnd = null;
     //jumpSound = Asset.create(Asset.Sound, "player_jump", "sound/jump.wav")
     //shootSound = Asset.create(Asset.Sound, "player_shoot", "sound/shoot.wav")
@@ -91,10 +94,11 @@ class Player extends Entity {
         const dir = this.disableControls ? 0 : SLT.buttonPressed(Buttons.Left) ? -1 : SLT.buttonPressed(Buttons.Right) ? 1 : 0;
         const jumpPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Jump);
         const shootPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Shoot);
+        const slidePress = this.disableControls ? false : SLT.buttonPressed(Buttons.Down);
         let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
         // checking again because if we're standing on something it should trigger
-        if (grounded) {
-            this.collideEnt?.collide(this, Dir.Up);
+        if (grounded && this.collideEnt) {
+            this.collideEnt.collide(this, Dir.Up);
             grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
         }
         // if we're still on the ground, blank out the decimal
@@ -110,8 +114,25 @@ class Player extends Entity {
         if (!jumpPress && this.jumpHeld) {
             this.jumpHeld = false;
         }
+        // apply gravity if not on the ground. different gravity values depending on holding jump
+        this.vel[1] = grounded ? 0 : this.vel[1] + (this.jumpHeld ? phys.heldGravity : phys.gravity);
+        // slide on ground if holding down
+        // big fuckin hack: sometimes you end up on the corner of a solid tile. in this case, allow
+        // the slide if the last frame was a slide
+        this.lastSlide = this.currSlide;
+        this.currSlide = Tiles.Empty;
+        const slopes = [Tiles.SlopeL, Tiles.SlopeR];
+        if (!this.jumpHeld && slidePress && (slopes.includes(this.lastSlide) || slopes.includes(this.collideTile))) {
+            const checkTile = slopes.includes(this.collideTile) ? this.collideTile : this.lastSlide;
+            const slideDir = checkTile == Tiles.SlopeL ? -1 : 1;
+            this.vel[0] = slideDir * 4;
+            this.vel[1] = -slideDir * 4;
+            this.remainder[0] = 0;
+            this.remainder[1] = 0;
+            this.currSlide = this.collideTile;
+        }
         // if not pushing anything, slow down if on the ground
-        if (dir == 0) {
+        else if (dir == 0) {
             if (this.vel[0] != 0 && grounded) {
                 this.vel[0] += phys.friction * (this.vel[0] > 0 ? -1 : 1);
             }
@@ -126,8 +147,6 @@ class Player extends Entity {
             const speed = Math.sign(dir * this.vel[0]) == -1 ? phys.skidAccel : phys.accel;
             this.vel[0] = this.vel[0] + speed * dir;
         }
-        // apply gravity if not on the ground. different gravity values depending on holding jump
-        this.vel[1] = grounded ? 0 : this.vel[1] + (this.jumpHeld ? phys.heldGravity : phys.gravity);
         // if jump is held, and player has let go of it since last jump
         if (jumpPress && !this.jumpHeld) {
             // allow the jump if:
@@ -180,7 +199,6 @@ class Player extends Entity {
                 this.vel[1] = this.remainder[1] = 0;
             }
         }
-        // TODO: all sorts of shit around jumping on top of enemies
     }
     draw() {
         Draw.setColor(255, 255, 255, 255);

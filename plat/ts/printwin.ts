@@ -14,7 +14,7 @@ function dbgval(value: any) {
   const lastSlash = caller?.lastIndexOf('/') ?? 0;
   const lastParens = caller?.lastIndexOf(')') ?? 0;
   const loc = caller?.substr(lastSlash + 1, lastParens - lastSlash - 1) ?? 'unknown';
-  messages.push(['Debug', loc, value]);
+  messages.push(['Debug', loc, value.toString()]);
 }
 
 function drawPrintWin() {

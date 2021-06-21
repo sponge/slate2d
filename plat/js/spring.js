@@ -19,8 +19,7 @@ class Spring extends Entity {
         if (World().state.ticks < this.activateTicks)
             return;
         for (let other of this.getRidingEntities()) {
-            other.vel[1] = -9;
-            other.pos[1] -= 10; // so they aren't grounded this frame
+            other.vel[1] += -9;
             if (other instanceof Player) {
                 other.disableControls = false;
                 other.disableMovement = false;

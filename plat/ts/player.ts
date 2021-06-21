@@ -124,7 +124,7 @@ class Player extends Entity {
       const checkTile = slopes.includes(this.collideTile) ? this.collideTile : this.lastSlide;
       const slideDir = checkTile == Tiles.SlopeL ? -1 : 1;
       this.vel[0] = slideDir * 4;
-      this.vel[1] = -slideDir * 4;
+      this.vel[1] = 4;
       this.remainder[0] = 0;
       this.remainder[1] = 0;
       this.currSlide = this.collideTile;

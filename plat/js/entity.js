@@ -17,6 +17,7 @@ class Entity {
     collidable;
     collideEnt;
     collideTile = Tiles.Empty;
+    anyInSlope = false;
     constructor(args) {
         Object.assign(this, args);
         const key = args.properties?.CollisionType;
@@ -67,12 +68,14 @@ class Entity {
         const tx = Math.floor(bottomMiddle[0] / layer.tileSize);
         const ty = clamp(Math.floor(bottomMiddle[1] / layer.tileSize), 0, layer.height);
         const tid = layer.tiles[ty * layer.width + tx];
+        this.anyInSlope = false;
         // check if we're in the solid part of the slope (always 45 degrees)
         if (slopes.includes(tid)) {
             const localX = bottomMiddle[0] % layer.tileSize;
             const localY = bottomMiddle[1] % layer.tileSize;
             const minY = tid == Tiles.SlopeR ? localX : layer.tileSize - localX;
             this.collideTile = localY >= minY ? tid : Tiles.Empty;
+            this.anyInSlope = true;
             return localY >= minY;
         }
         // check against tilemap
@@ -88,6 +91,7 @@ class Entity {
                 }
                 // if it's a ground sloped tile, only bottom middle pixel should collide with it
                 if (slopes.includes(tid)) {
+                    this.anyInSlope = true;
                     continue;
                 }
                 // if it's a platform, check if dir is down, and only block if bottom of entity

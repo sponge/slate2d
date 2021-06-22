@@ -7,6 +7,7 @@ import { clamp } from './util.js';
 import Dir from './dir.js';
 import Tiles from './tiles.js';
 import Phys from './phys.js';
+const slopes = [Tiles.SlopeL, Tiles.SlopeR];
 class Player extends Entity {
     // entity definition
     type = 'Player';
@@ -84,6 +85,7 @@ class Player extends Entity {
             this.collideEnt.collide(this, Dir.Up);
             grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
         }
+        const inSlope = slopes.includes(this.collideTile);
         // if we're still on the ground, blank out the decimal
         if (grounded) {
             this.remainder[1] = 0;
@@ -104,8 +106,7 @@ class Player extends Entity {
         // the slide if the last frame was a slide
         this.lastSlide = this.currSlide;
         this.currSlide = Tiles.Empty;
-        const slopes = [Tiles.SlopeL, Tiles.SlopeR];
-        if (!this.jumpHeld && slidePress && (slopes.includes(this.lastSlide) || slopes.includes(this.collideTile))) {
+        if (!this.jumpHeld && slidePress && (slopes.includes(this.lastSlide) || inSlope)) {
             const checkTile = slopes.includes(this.collideTile) ? this.collideTile : this.lastSlide;
             const slideDir = checkTile == Tiles.SlopeL ? -1 : 1;
             this.vel[0] = slideDir * Phys.slideSpeed;
@@ -158,7 +159,8 @@ class Player extends Entity {
             if (!this.moveX(this.vel[0])) {
                 this.vel[0] = this.remainder[0] = 0;
             }
-            const velY = this.vel[1];
+            // snap to ground if in a slope
+            const velY = grounded && this.anyInSlope ? 10 : this.vel[1];
             // this.moveY may alter our velocity, so double check vel before zeroing it out
             if (!this.moveY(velY) && Math.sign(velY) == Math.sign(this.vel[1])) {
                 this.vel[1] = this.remainder[1] = 0;

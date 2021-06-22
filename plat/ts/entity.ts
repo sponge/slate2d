@@ -22,6 +22,7 @@ class Entity {
 
   collideEnt: Entity | undefined;
   collideTile = Tiles.Empty;
+  anyInSlope = false;
 
   constructor(args: { [key: string]: any }) {
     Object.assign(this, args);
@@ -84,12 +85,15 @@ class Entity {
     const ty = clamp(Math.floor(bottomMiddle[1] / layer.tileSize), 0, layer.height);
     const tid = layer.tiles[ty * layer.width + tx];
 
+    this.anyInSlope = false;
+
     // check if we're in the solid part of the slope (always 45 degrees)
     if (slopes.includes(tid)) {
       const localX = bottomMiddle[0] % layer.tileSize;
       const localY = bottomMiddle[1] % layer.tileSize;
       const minY = tid == Tiles.SlopeR ? localX : layer.tileSize - localX;
       this.collideTile = localY >= minY ? tid : Tiles.Empty;
+      this.anyInSlope = true;
       return localY >= minY;
     }
 
@@ -107,6 +111,7 @@ class Entity {
 
         // if it's a ground sloped tile, only bottom middle pixel should collide with it
         if (slopes.includes(tid)) {
+          this.anyInSlope = true;
           continue;
         }
 

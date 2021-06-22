@@ -15,6 +15,7 @@ const Phys = {
     terminalVelocity: 2 * 2,
     enemyJumpHeld: 3.4 * 2,
     enemyJump: 1.9 * 2,
+    slideSpeed: 4,
     jumpHeights: [
         [3, 2.875 * 2],
         [2.5, 2.78125 * 2],

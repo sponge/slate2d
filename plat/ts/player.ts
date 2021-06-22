@@ -78,6 +78,17 @@ class Player extends Entity {
     this.pos = [...this.spawnPos];
   }
 
+  getJumpHeight(speed: number) {
+    speed = Math.abs(speed);
+    for (const [checkSpeed, height] of Phys.jumpHeights) {
+      if (Math.abs(speed) >= checkSpeed) {
+        return height;
+      }
+    }
+
+    return Phys.jumpHeights[0][1];
+  }
+
   update(ticks: number, dt: number) {
     this.frame = ticks / 8 % 6;
 
@@ -123,25 +134,17 @@ class Player extends Entity {
     if (!this.jumpHeld && slidePress && (slopes.includes(this.lastSlide) || slopes.includes(this.collideTile))) {
       const checkTile = slopes.includes(this.collideTile) ? this.collideTile : this.lastSlide;
       const slideDir = checkTile == Tiles.SlopeL ? -1 : 1;
-      this.vel[0] = slideDir * 4;
-      this.vel[1] = 4;
+      this.vel[0] = slideDir * Phys.slideSpeed;
+      this.vel[1] = Phys.slideSpeed;
       this.remainder[0] = 0;
       this.remainder[1] = 0;
       this.currSlide = this.collideTile;
     }
-    // if not pushing anything, slow down if on the ground
-    else if (dir == 0) {
-      if (this.vel[0] != 0 && grounded) {
-        this.vel[0] += Phys.friction * (this.vel[0] > 0 ? -1 : 1)
-      }
-
-      // null out small values so we dont keep bouncing around 0
-      if (Math.abs(this.vel[0]) <= Phys.friction) {
-        this.vel[0] = 0;
-        this.remainder[0] = 0;
-      }
+    else if (dir == 0 && this.vel[0] != 0 && grounded) {
+      // if not pushing anything, slow down if on the ground
+      this.vel[0] += Phys.friction * -Math.sign(this.vel[0])
     }
-    else {
+    else if (dir != 0) {
       // if holding a direction, figure out how fast we should try and go
       const speed = Math.sign(dir * this.vel[0]) == -1 ? Phys.skidAccel : Phys.accel;
       this.vel[0] = this.vel[0] + speed * dir;
@@ -153,27 +156,23 @@ class Player extends Entity {
       // - they're on the ground, and haven't been holding for too long
       // - they're not on the ground, but have recently been on the ground
       if ((grounded && this.jumpHeldFrames < Phys.earlyJumpFrames) || (!grounded && this.fallingFrames < Phys.lateJumpFrames)) {
-        for (const [speed, height] of Phys.jumpHeights) {
-          if (Math.abs(this.vel[0]) >= speed) {
-            this.vel[1] = -height;
-            this.jumpHeld = true;
-            grounded = false;
-            // this.jumpHnd = SLT.sndPlay(this.jumpSound); // TODO: audio
-            break
-          }
-        }
+        const height = this.getJumpHeight(this.vel[0]);
+        this.vel[1] = -height;
+        this.jumpHeld = true;
+        grounded = false;
+        // this.jumpHnd = SLT.sndPlay(this.jumpSound); // TODO: audio
       }
     }
 
     // increment the p-meter if you're on the ground and going fast enough
     if (Math.abs(this.vel[0]) >= Phys.runSpeed && grounded) {
       this.pMeter += 2;
-      // tick down the p-meter, but don't if you're at 100% and midair
-    } else {
-      if (grounded || this.pMeter != Phys.pMeterCapacity) {
-        this.pMeter -= 1;
-      }
     }
+    else if (grounded || this.pMeter != Phys.pMeterCapacity) {
+      // tick down the p-meter, but don't if you're at 100% and midair
+      this.pMeter -= 1;
+    }
+
     this.pMeter = clamp(this.pMeter, 0, Phys.pMeterCapacity);
 
     // hard cap speed values
@@ -185,20 +184,15 @@ class Player extends Entity {
 
     this.vel[1] = Math.min(this.vel[1], Phys.terminalVelocity);
 
-    // move x first, then move y. don't do it at the same time, else buggy behavior
-    // if (!groundEnt || groundEnt.has("spring") == false) { // TODO: spring check
+    // move x first, then move y
     if (!this.disableMovement) {
-      const chkx = this.moveX(this.vel[0]);
-      // triggerTouch(chkx.delta // TODO: trigger check
-      if (!chkx) {
-        this.vel[0] = 0;
-        this.remainder[0] = 0;
+      if (!this.moveX(this.vel[0])) {
+        this.vel[0] = this.remainder[0] = 0;
       }
 
-      const velY = this.vel[1]
-      const chky = this.moveY(velY);
-      // this.moveY may alter our velocity, so double check vel
-      if (!chky && Math.sign(velY) == Math.sign(this.vel[1])) {
+      const velY = this.vel[1];
+      // this.moveY may alter our velocity, so double check vel before zeroing it out
+      if (!this.moveY(velY) && Math.sign(velY) == Math.sign(this.vel[1])) {
         this.vel[1] = this.remainder[1] = 0;
       }
     }

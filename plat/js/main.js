@@ -140,14 +140,15 @@ class Main {
         const y = Math.floor(Math.sin(x / 50) * 5 + 167);
         Draw.setColor(255, 255, 255, 255);
         Draw.sprite(this.dogSpr, Math.floor(t * 12) % 6, x, y + camYoffset, 1, 0, 1, 1);
-        Draw.setColor(255, 255, 255, 128);
         this.camera.drawStart();
         // tilemap and entities
         Draw.setColor(255, 255, 255, 255);
         this.map.draw('BGDecoration');
         this.map.draw('BGTiles');
         this.map.draw('BGWorld');
-        this.state.entities.forEach((ent) => ent.draw());
+        for (let i = this.state.entities.length - 1; i >= 0; i--) {
+            this.state.entities[i].draw();
+        }
         Draw.setColor(255, 255, 255, 255);
         this.map.draw('Collision');
         this.camera.drawEnd();

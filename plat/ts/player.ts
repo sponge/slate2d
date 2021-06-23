@@ -193,6 +193,7 @@ class Player extends Entity {
       }
 
       // snap to ground if in a slope
+      this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
       const velY = grounded && this.anyInSlope ? 10 : this.vel[1];
       // this.moveY may alter our velocity, so double check vel before zeroing it out
       if (!this.moveY(velY) && Math.sign(velY) == Math.sign(this.vel[1])) {

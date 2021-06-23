@@ -31,12 +31,12 @@ class Spring extends Entity {
         other.disableControls = false;
         other.disableMovement = false;
 
-        other.vel[1] += SLT.buttonPressed(Buttons.Jump) ? -9 : -6;
+        other.vel[1] += SLT.buttonPressed(Buttons.Jump) ? -Phys.springJumpHeld : -Phys.springJump;
         other.jumpHeldFrames = 999; // hack to allow holding down work here to work
         other.fallingFrames = 999;
       }
       else {
-        other.vel[1] += -9;
+        other.vel[1] += -Phys.springJump;
       }
     }
 

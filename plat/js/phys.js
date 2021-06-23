@@ -16,6 +16,8 @@ const Phys = {
     enemyJumpHeld: 5.5,
     enemyJump: 3,
     slideSpeed: 4,
+    springJumpHeld: 8.5,
+    springJump: 5.5,
     jumpHeights: [
         [3, 5.75],
         [2.5, 5.5625],

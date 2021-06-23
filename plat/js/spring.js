@@ -5,6 +5,7 @@ import Dir from './dir.js';
 import CollisionType from './collisiontype.js';
 import Player from './player.js';
 import World from './world.js';
+import Phys from './phys.js';
 import Buttons from './buttons.js';
 class Spring extends Entity {
     sprite = Assets.find('spring');
@@ -24,12 +25,12 @@ class Spring extends Entity {
             if (other instanceof Player) {
                 other.disableControls = false;
                 other.disableMovement = false;
-                other.vel[1] += SLT.buttonPressed(Buttons.Jump) ? -9 : -6;
+                other.vel[1] += SLT.buttonPressed(Buttons.Jump) ? -Phys.springJumpHeld : -Phys.springJump;
                 other.jumpHeldFrames = 999; // hack to allow holding down work here to work
                 other.fallingFrames = 999;
             }
             else {
-                other.vel[1] += -9;
+                other.vel[1] += -Phys.springJump;
             }
         }
         this.activated = false;

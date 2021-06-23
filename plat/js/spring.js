@@ -1,9 +1,11 @@
+import * as SLT from 'slate2d';
 import * as Assets from 'assets';
 import Entity from './entity.js';
 import Dir from './dir.js';
 import CollisionType from './collisiontype.js';
 import Player from './player.js';
 import World from './world.js';
+import Buttons from './buttons.js';
 class Spring extends Entity {
     sprite = Assets.find('spring');
     collidable = CollisionType.Platform;
@@ -19,21 +21,28 @@ class Spring extends Entity {
         if (World().state.ticks < this.activateTicks)
             return;
         for (let other of this.getRidingEntities()) {
-            other.vel[1] += -9;
             if (other instanceof Player) {
                 other.disableControls = false;
                 other.disableMovement = false;
+                other.vel[1] += SLT.buttonPressed(Buttons.Jump) ? -9 : -6;
+                other.jumpHeldFrames = 999; // hack to allow holding down work here to work
+                other.fallingFrames = 999;
+            }
+            else {
+                other.vel[1] += -9;
             }
         }
         this.activated = false;
     }
     update(ticks, dt) {
-        this.frame = this.activated ? (ticks - (this.activateTicks - this.delay)) / 3 : 0;
+        const oldFrames = this.frame;
+        this.frame = Math.floor(this.activated ? (ticks - (this.activateTicks - this.delay)) / 3 : 0);
         this.frame = this.frame >= 3 ? 1 : this.frame;
+        this.moveSolid(0, (this.frame - oldFrames) * 4);
     }
     draw() {
-        //Draw.setColor(255, 255, 0, 255);
-        //Draw.rect(this.pos[0], this.pos[1], this.size[0], this.size[1], false);
+        // Draw.setColor(255, 255, 0, 255);
+        // Draw.rect(this.pos[0], this.pos[1], this.size[0], this.size[1], false);
         super.draw();
     }
     collide(other, dir) {

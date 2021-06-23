@@ -27,8 +27,6 @@ class Player extends Entity {
     //invulnTime = 0;
     facing = 1;
     //nextShotTime = 0;
-    lastSlide = Tiles.Empty;
-    currSlide = Tiles.Empty;
     //jumpHnd = null;
     //jumpSound = Asset.create(Asset.Sound, "player_jump", "sound/jump.wav")
     //shootSound = Asset.create(Asset.Sound, "player_shoot", "sound/shoot.wav")
@@ -85,7 +83,6 @@ class Player extends Entity {
             this.collideEnt.collide(this, Dir.Up);
             grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
         }
-        const inSlope = slopes.includes(this.collideTile);
         // if we're still on the ground, blank out the decimal
         if (grounded) {
             this.remainder[1] = 0;
@@ -102,20 +99,13 @@ class Player extends Entity {
         // apply gravity if not on the ground. different gravity values depending on holding jump
         this.vel[1] = grounded ? 0 : this.vel[1] + (this.jumpHeld ? Phys.heldGravity : Phys.gravity);
         // slide on ground if holding down
-        // big fuckin hack: sometimes you end up on the corner of a solid tile. in this case, allow
-        // the slide if the last frame was a slide
-        this.lastSlide = this.currSlide;
-        this.currSlide = Tiles.Empty;
-        if (!this.jumpHeld && slidePress && (slopes.includes(this.lastSlide) || inSlope)) {
-            const checkTile = slopes.includes(this.collideTile) ? this.collideTile : this.lastSlide;
-            const slideDir = checkTile == Tiles.SlopeL ? -1 : 1;
-            this.vel[0] = slideDir * Phys.slideSpeed;
-            this.vel[1] = Phys.slideSpeed;
-            this.remainder[0] = 0;
-            this.remainder[1] = 0;
-            this.currSlide = this.collideTile;
+        // y vel handled by slope snapping near end of move
+        if (!this.jumpHeld && slidePress && slopes.includes(this.collideTile)) {
+            const slideDir = this.collideTile == Tiles.SlopeL ? -1 : 1;
+            this.vel[0] += slideDir * Phys.accel * 2;
+            this.remainder[0] = this.remainder[1] = 0;
         }
-        else if (dir == 0 && this.vel[0] != 0 && grounded) {
+        else if (slidePress || (dir == 0 && this.vel[0] != 0 && grounded)) {
             // if not pushing anything, slow down if on the ground
             this.vel[0] += Phys.friction * -Math.sign(this.vel[0]);
         }

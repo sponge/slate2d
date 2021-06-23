@@ -79,5 +79,9 @@
         "build/": true
     },
     "editor.tabSize": 2,
-    "[typescript]": { "editor.formatOnSave": true }
+    "[typescript]": {
+        "editor.formatOnSave": true
+    },
+    "lldb.showDisassembly": "never",
+    "lldb.dereferencePointers": true
 }

@@ -18,43 +18,10 @@ class Player extends Entity {
     disableControls = false;
     disableMovement = false;
     pMeter = 0;
-    //health = 3;
-    //shotsActive = 0;
-    //isPlayer = true;
     fallingFrames = 0;
     jumpHeld = false;
     jumpHeldFrames = 0;
-    //invulnTime = 0;
     facing = 1;
-    //nextShotTime = 0;
-    //jumpHnd = null;
-    //jumpSound = Asset.create(Asset.Sound, "player_jump", "sound/jump.wav")
-    //shootSound = Asset.create(Asset.Sound, "player_shoot", "sound/shoot.wav")
-    //hurtSound = Asset.create(Asset.Sound, "player_hurt", "sound/hurt.wav")
-    //dieSound = Asset.create(Asset.Sound, "player_die", "sound/die.wav")
-    // die(cause) {
-    // super(cause)
-    // _health = 0
-    // Trap.sndStop(_jumpHnd)
-    // Trap.sndPlay(_dieSound)
-    // world.playerDied(this)
-    // }
-    // hurt(other, amount) {
-    // if (world.ticks < _invulnTime) {
-    //   return
-    // }
-    // if (world.levelWon) {
-    //   return
-    // }
-    // _health = _health - amount
-    // _invulnTime = world.ticks + 120
-    // if (_health <= 0) {
-    //   die(other)
-    // } else {
-    //   Trap.sndStop(_jumpHnd)
-    //   Trap.sndPlay(_hurtSound)
-    // }
-    // }
     constructor(args) {
         super(args);
         this.spawnPos = [...this.pos];
@@ -102,8 +69,8 @@ class Player extends Entity {
         // y vel handled by slope snapping near end of move
         if (!this.jumpHeld && slidePress && slopes.includes(this.collideTile)) {
             const slideDir = this.collideTile == Tiles.SlopeL ? -1 : 1;
-            this.vel[0] += slideDir * Phys.accel * 2;
-            this.remainder[0] = this.remainder[1] = 0;
+            this.vel[0] += slideDir * Phys.slideAccel;
+            this.remainder = [0, 0];
         }
         else if (slidePress || (dir == 0 && this.vel[0] != 0 && grounded)) {
             // if not pushing anything, slow down if on the ground
@@ -112,7 +79,7 @@ class Player extends Entity {
         else if (dir != 0) {
             // if holding a direction, figure out how fast we should try and go
             const speed = Math.sign(dir * this.vel[0]) == -1 ? Phys.skidAccel : Phys.accel;
-            this.vel[0] = this.vel[0] + speed * dir;
+            this.vel[0] += speed * dir;
         }
         // if jump is held, and player has let go of it since last jump
         if (jumpPress && !this.jumpHeld) {

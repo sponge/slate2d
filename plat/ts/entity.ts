@@ -49,7 +49,6 @@ class Entity {
   // returns true/false if there is a collision at the specified coordinates.
   // this only queries the world, but it will update this.collideEnt
   collideAt(x: number, y: number, dir: Dir) {
-    // FIXME: GC?
     const corners = [
       [x, y],
       [x + this.size[0] - 1, y],

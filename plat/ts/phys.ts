@@ -5,6 +5,7 @@ const Phys = {
   friction: 0.0625,
   accel: 0.09375,
   skidAccel: 0.3125,
+  slideAccel: 0.09375 * 3,
   runSpeed: 2.25,
   maxSpeed: 3,
   heldGravity: 0.1875,
@@ -15,8 +16,7 @@ const Phys = {
   terminalVelocity: 4,
   enemyJumpHeld: 5.5,
   enemyJump: 3,
-  slideSpeed: 4,
-  springJumpHeld: 8.5,
+  springJumpHeld: 6.5,
   springJump: 5.5,
   jumpHeights: [
     [3, 5.75],

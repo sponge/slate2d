@@ -32,8 +32,7 @@ class Spring extends Entity {
         other.disableMovement = false;
 
         other.vel[1] += SLT.buttonPressed(Buttons.Jump) ? -Phys.springJumpHeld : -Phys.springJump;
-        other.jumpHeldFrames = 999; // hack to allow holding down work here to work
-        other.fallingFrames = 999;
+        other.jumpHeld = true;
       }
       else {
         other.vel[1] += -Phys.springJump;
@@ -48,13 +47,15 @@ class Spring extends Entity {
     this.frame = Math.floor(this.activated ? (ticks - (this.activateTicks - this.delay)) / 3 : 0);
     this.frame = this.frame >= 3 ? 1 : this.frame;
 
-    this.moveSolid(0, (this.frame - oldFrames) * 4);
+    const amt = (this.frame - oldFrames) * 4;
+    this.moveSolid(0, amt);
+    this.size[1] -= amt;
   }
 
   draw() {
-    // Draw.setColor(255, 255, 0, 255);
-    // Draw.rect(this.pos[0], this.pos[1], this.size[0], this.size[1], false);
     super.draw();
+    // Draw.setColor(255, 255, 0, 200);
+    // Draw.rect(this.pos[0], this.pos[1], this.size[0], this.size[1], false);
   }
 
   collide(other: Entity, dir: Dir) {

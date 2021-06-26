@@ -40,6 +40,7 @@ class Entity {
 
   // callback when someone else touches this entity
   collide(other: Entity, dir: Dir) { }
+  trigger(other: Entity) { }
 
   min(dim: number) { return this.pos[dim] }
   max(dim: number) { return this.pos[dim] + this.size[dim] }

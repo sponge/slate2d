@@ -13,9 +13,6 @@ class Spring extends Entity {
     activated = false;
     activateTicks = 0;
     delay = 12;
-    constructor(args) {
-        super(args);
-    }
     preupdate(ticks, dt) {
         if (!this.activated)
             return;

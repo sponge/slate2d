@@ -18,10 +18,6 @@ class Spring extends Entity {
   activateTicks = 0;
   delay = 12
 
-  constructor(args: { [key: string]: any }) {
-    super(args);
-  }
-
   preupdate(ticks: number, dt: number) {
     if (!this.activated) return;
     if (World().state.ticks < this.activateTicks) return;

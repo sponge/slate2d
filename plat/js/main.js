@@ -11,6 +11,7 @@ import Platform from './platform.js';
 import { drawPrintWin, clearPrintWin } from './printwin.js';
 import Spring from './spring.js';
 import Phys from './phys.js';
+import Button from './button.js';
 class Main {
     res = { w: 384, h: 216 };
     canvas = Assets.load({
@@ -61,6 +62,7 @@ class Main {
         'Player': Player,
         'Platform': Platform,
         'Spring': Spring,
+        'Button': Button,
     };
     accumulator = 0;
     save() {

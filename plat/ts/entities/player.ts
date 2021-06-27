@@ -2,13 +2,13 @@ import * as Draw from 'draw';
 import * as SLT from 'slate2d';
 import * as Assets from 'assets';
 
-import Buttons from './buttons.js';
-import Entity from './entity.js';
-import { clamp } from './util.js';
-import Dir from './dir.js';
-import { clearPrintWin, dbg, dbgval } from './printwin.js';
-import Tiles from './tiles.js';
-import Phys from './phys.js';
+import Buttons from '../buttons.js';
+import Entity from '../entity.js';
+import { clamp } from '../util.js';
+import Dir from '../dir.js';
+import { clearPrintWin, dbg, dbgval } from '../printwin.js';
+import Tiles from '../tiles.js';
+import Phys from '../phys.js';
 
 const slopes = [Tiles.SlopeL, Tiles.SlopeR];
 

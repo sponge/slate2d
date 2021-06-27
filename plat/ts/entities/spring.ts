@@ -2,14 +2,14 @@ import * as SLT from 'slate2d';
 import * as Draw from 'draw';
 import * as Assets from 'assets';
 
-import Entity from './entity.js';
-import Dir from './dir.js';
-import CollisionType from './collisiontype.js';
+import Entity from '../entity.js';
+import Dir from '../dir.js';
+import CollisionType from '../collisiontype.js';
 import Player from './player.js';
-import World from './world.js';
-import Phys from './phys.js';
-import { dbgval } from './printwin.js';
-import Buttons from './buttons.js';
+import World from '../world.js';
+import Phys from '../phys.js';
+import { dbgval } from '../printwin.js';
+import Buttons from '../buttons.js';
 
 class Spring extends Entity {
   sprite = Assets.find('spring');

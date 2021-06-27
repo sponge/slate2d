@@ -1710,7 +1710,7 @@
 			"fieldDefs": []
 		},
 		{
-			"identifier": "Button",
+			"identifier": "Switch",
 			"uid": 115,
 			"tags": [],
 			"width": 14,

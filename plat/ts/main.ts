@@ -6,14 +6,14 @@ import * as Assets from 'assets';
 import Camera from './camera.js';
 import { LDTK } from './ldtk.js';
 import Buttons from './buttons.js';
-import Player from './player.js';
+import Player from './entities/player.js';
 import { randomRange } from './util.js';
 import Entity from './entity.js';
-import Platform from './platform.js';
+import Platform from './entities/platform.js';
 import { drawPrintWin, clearPrintWin, dbgval } from './printwin.js';
-import Spring from './spring.js';
+import Spring from './entities/spring.js';
 import Phys from './phys.js';
-import Button from './button.js';
+import Switch from './entities/switch.js';
 
 interface GameState {
   t: number;
@@ -88,7 +88,7 @@ class Main {
     'Player': Player,
     'Platform': Platform,
     'Spring': Spring,
-    'Button': Button,
+    'Switch': Switch,
   };
   accumulator = 0;
 

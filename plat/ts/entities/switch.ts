@@ -2,10 +2,10 @@ import * as SLT from 'slate2d';
 import * as Draw from 'draw';
 import * as Assets from 'assets';
 
-import Entity from './entity.js';
-import Dir from './dir.js';
-import CollisionType from './collisiontype.js';
-import World from './world.js';
+import Entity from '../entity.js';
+import Dir from '../dir.js';
+import CollisionType from '../collisiontype.js';
+import World from '../world.js';
 
 
 class Switch extends Entity {

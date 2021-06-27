@@ -206,7 +206,7 @@
 					"fieldInstances": []
 				},
 				{
-					"__identifier": "Button",
+					"__identifier": "Switch",
 					"__grid": [45,16],
 					"__pivot": [0.5,1],
 					"__tile": null,

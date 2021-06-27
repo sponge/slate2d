@@ -1,6 +1,6 @@
-import Entity from "./entity.js";
+import Entity from "../entity.js";
 import * as Draw from 'draw';
-import CollisionType from "./collisiontype.js";
+import CollisionType from "../collisiontype.js";
 
 class Platform extends Entity {
   enabled: boolean;

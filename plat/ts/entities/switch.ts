@@ -18,9 +18,6 @@ class Switch extends Entity {
     this.target = args.properties?.Target ?? '';
   }
 
-  update(ticks: number, dt: number) {
-  }
-
   draw() {
     if (!this.enabled) return;
     // super.draw();

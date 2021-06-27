@@ -11,12 +11,12 @@ const slopes = [Tiles.SlopeL, Tiles.SlopeR]
 class Entity {
   type = 'default';
   name = '';
-  pos = [0, 0];
-  size = [0, 0];
-  vel = [0, 0];
-  drawOfs = [0, 0];
+  pos: [number, number] = [0, 0];
+  size: [number, number] = [0, 0];
+  vel: [number, number] = [0, 0];
+  drawOfs: [number, number] = [0, 0];
 
-  remainder = [0, 0];
+  remainder: [number, number] = [0, 0];
   sprite = 0;
   frame = 0;
   collidable: CollisionType;

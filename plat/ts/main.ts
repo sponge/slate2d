@@ -32,6 +32,24 @@ interface Background {
 
 class Main {
   res = { w: 384, h: 216 };
+  map: LDTK;
+  camera = new Camera(this.res.w, this.res.h);
+  accumulator = 0;
+  player: Player;
+
+  state: GameState = {
+    t: 0,
+    ticks: 0,
+    entities: [],
+    mapName: '',
+  };
+
+  entSpawnMap: { [key: string]: typeof Entity } = {
+    'Player': Player,
+    'Platform': Platform,
+    'Spring': Spring,
+    'Switch': Switch,
+  };
 
   canvas: number = Assets.load({
     name: 'canvas',
@@ -60,15 +78,6 @@ class Main {
     marginY: 0,
   })
 
-  state: GameState = {
-    t: 0,
-    ticks: 0,
-    entities: [],
-    mapName: '',
-  };
-
-  map: LDTK;
-
   backgrounds: Background[] = [...Array(3).keys()].map(i => {
     const name = `gfx/grassland_bg${i}.png`;
     const id = Assets.load({ type: 'image', name, path: name });
@@ -82,15 +91,6 @@ class Main {
     const { w, h } = Assets.imageSize(id);
     return { id, w, h, x: randomRange(50, 150), y: randomRange(5, 90) };
   });
-
-  camera = new Camera(this.res.w, this.res.h);
-  entSpawnMap: { [key: string]: typeof Entity } = {
-    'Player': Player,
-    'Platform': Platform,
-    'Spring': Spring,
-    'Switch': Switch,
-  };
-  accumulator = 0;
 
   save() {
     return JSON.stringify(this.state);
@@ -109,6 +109,16 @@ class Main {
       spriteHeight: 16,
     })
 
+    Assets.load({
+      type: 'sprite',
+      name: 'coin',
+      path: 'gfx/coin.png',
+      marginX: 0,
+      marginY: 0,
+      spriteWidth: 14,
+      spriteHeight: 14,
+    })
+
     if (initialState) {
       this.state = JSON.parse(initialState);
       this.state.entities = this.state.entities.map(ent => Object.assign(new this.entSpawnMap[ent.type]({}), ent));
@@ -124,9 +134,10 @@ class Main {
       this.state.entities = entLayer.entities.map(ent => new this.entSpawnMap[ent.type](ent));
     }
 
+    this.player = this.state.entities.find(ent => ent.type == 'Player') as Player;
+
     this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
-    const player = this.state.entities[0];
-    this.camera.window(player.pos[0], player.pos[1], 20, 20);
+    this.camera.window(this.player.pos[0], this.player.pos[1], 20, 20);
   };
 
   update(dt: number) {
@@ -142,8 +153,7 @@ class Main {
         ent.preupdate(this.state.ticks, dt);
         ent.update(this.state.ticks, dt);
       });
-      const player = this.state.entities[0];
-      this.camera.window(player.pos[0], player.pos[1], 20, 20);
+      this.camera.window(this.player.pos[0], this.player.pos[1], 20, 20);
       //SLT.printWin('frame', 'frame', true);
     }
 
@@ -200,16 +210,11 @@ class Main {
     this.camera.drawEnd();
 
     // player hud
-    const player: Player = this.state.entities[0] as Player;
-    const pct = Math.floor(player.pMeter / Phys.pMeterCapacity * 6);
+    const pct = Math.floor(this.player.pMeter / Phys.pMeterCapacity * 6);
     for (let i = 0; i < 5; i++) {
-      let num = player.pMeter == Phys.pMeterCapacity ? 2 : i < pct ? 1 : 0;
+      let num = this.player.pMeter == Phys.pMeterCapacity ? 2 : i < pct ? 1 : 0;
       Draw.sprite(this.pMeterSpr, num, 14 + i * 14, 8, 1, 0, 1, 1);
     }
-    // for (i in 0..4) {
-    //   var num = _player.pMeter == _player.pMeterCapacity ? 299 : i < pct ? 283 : 267
-    //   Draw.sprite(_spr, num, 14 + i * 6, 4)
-    // }
 
     // draw the canvas into the center of the window
     const screen = SLT.resolution();

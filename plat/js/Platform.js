@@ -6,21 +6,30 @@ class Platform extends Entity {
     speed;
     start;
     end;
+    oneShot;
     constructor(args) {
         super(args);
         this.enabled = args.properties?.Enabled ?? true;
+        this.name = args.properties?.Name ?? '';
         this.dim = args.properties?.Direction == 'Horizontal' ? 0 : 1;
         this.speed = args.properties?.Speed ?? 1;
-        this.start = this.pos[this.dim];
-        this.end = this.start + (args.properties?.Distance ?? 100);
+        this.oneShot = args.properties?.OneShot ?? false;
+        const a = this.pos[this.dim];
+        const b = a + (args.properties?.Distance ?? 100);
+        this.speed *= a > b ? -1 : 1;
+        this.start = Math.min(a, b);
+        this.end = Math.max(a, b);
     }
     update(ticks, dt) {
         if (!this.enabled)
             return;
-        if (this.pos[this.dim] < this.start)
+        if (this.pos[this.dim] < this.start || this.pos[this.dim] > this.end) {
             this.speed *= -1;
-        if (this.pos[this.dim] > this.end)
-            this.speed *= -1;
+            if (this.oneShot) {
+                this.enabled = false;
+                return;
+            }
+        }
         this.moveSolid(this.dim == 0 ? this.speed : 0, this.dim == 1 ? this.speed : 0);
     }
     draw() {

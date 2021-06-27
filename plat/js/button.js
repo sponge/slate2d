@@ -2,11 +2,14 @@ import * as Draw from 'draw';
 import Entity from './entity.js';
 import Dir from './dir.js';
 import CollisionType from './collisiontype.js';
+import World from './world.js';
 class Switch extends Entity {
     collidable = CollisionType.Platform;
     enabled = true;
+    target;
     constructor(args) {
         super(args);
+        this.target = args.properties?.Target ?? '';
     }
     update(ticks, dt) {
     }
@@ -20,6 +23,11 @@ class Switch extends Entity {
     collide(other, dir) {
         if (dir != Dir.Up)
             return;
+        World().state.entities.forEach(ent => {
+            if (ent.name == this.target) {
+                ent.trigger(this);
+            }
+        });
         this.enabled = false;
         this.collidable = CollisionType.Disabled;
     }

@@ -10,6 +10,7 @@ const slopes = [Tiles.SlopeL, Tiles.SlopeR]
 
 class Entity {
   type = 'default';
+  name = '';
   pos = [0, 0];
   size = [0, 0];
   vel = [0, 0];

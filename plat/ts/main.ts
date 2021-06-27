@@ -125,6 +125,8 @@ class Main {
     }
 
     this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
+    const player = this.state.entities[0];
+    this.camera.window(player.pos[0], player.pos[1], 20, 20);
   };
 
   update(dt: number) {

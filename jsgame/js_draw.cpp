@@ -148,6 +148,7 @@ static JSValue js_draw_text(JSContext *ctx, JSValueConst this_val, int argc, JSV
   if (JS_ToInt32(ctx, &len, argv[4])) return JS_EXCEPTION;
 
   DC_DrawText(x, y, h, text, len);
+  JS_FreeCString(ctx, text);
   return JS_UNDEFINED;
 }
 

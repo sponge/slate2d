@@ -1,6 +1,6 @@
 import * as SLT from 'slate2d';
 import * as Draw from 'draw';
-import { clamp, rectIntersect } from './util.js';
+import { clamp, entIntersect, rectIntersect } from './util.js';
 import Dir from './dir.js';
 import Tiles from './tiles.js';
 import CollisionType from './collisiontype.js';
@@ -51,7 +51,7 @@ class Entity {
   // returns true/false if there is a collision at the specified coordinates.
   // this only queries the world, but it will update this.collideEnt
   collideAt(x: number, y: number, dir: Dir) {
-    const corners = [
+    const corners: [number, number][] = [
       [x, y],
       [x + this.size[0] - 1, y],
       [x, y + this.size[1] - 1],
@@ -68,7 +68,7 @@ class Entity {
       if (other == this) continue;
       if (other.collidable == CollisionType.Disabled) continue;
 
-      const intersects = rectIntersect(x, y, this.size[0], this.size[1], other.pos[0], other.pos[1], other.size[0], other.size[1]);
+      const intersects = rectIntersect(corners[0], this.size, other.pos, other.size);
       if (other.collidable == CollisionType.Enabled && intersects) {
         this.collideEnt = other;
         return true;
@@ -190,8 +190,8 @@ class Entity {
 
   getRidingEntities() {
     return World().state.entities.filter(other =>
-      !rectIntersect(this.pos[0], this.pos[1], this.size[0], this.size[1], other.pos[0], other.pos[1], other.size[0], other.size[1]) &&
-      rectIntersect(this.pos[0], this.pos[1], this.size[0], this.size[1], other.pos[0], other.pos[1] + 1, other.size[0], other.size[1])
+      !entIntersect(this, other) &&
+      rectIntersect(this.pos, this.size, [other.pos[0], other.pos[1] + 1], other.size)
     );
   }
 
@@ -222,7 +222,7 @@ class Entity {
         if (other == this) continue;
 
         // if collision is enabled and the other entity intersects with the post move position, try and push them out of the way
-        const intersects = currCollidable == CollisionType.Enabled && rectIntersect(this.pos[0], this.pos[1], this.size[0], this.size[1], other.pos[0], other.pos[1], other.size[0], other.size[1]);
+        const intersects = currCollidable == CollisionType.Enabled && entIntersect(this, other);
         if (intersects) {
           // find minimum amount of movement to resolve intersection.
           const amt = Math.sign(move) > 0 ? (this.pos[dim] + this.size[dim]) - other.pos[dim] : this.pos[dim] - (other.pos[dim] + other.size[dim]);

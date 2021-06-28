@@ -10,7 +10,6 @@ import World from '../world.js';
 
 class Switch extends Entity {
   collidable = CollisionType.Platform;
-  enabled = true;
   target: string;
 
   constructor(args: { [key: string]: any }) {
@@ -19,7 +18,6 @@ class Switch extends Entity {
   }
 
   draw() {
-    if (!this.enabled) return;
     // super.draw();
     Draw.setColor(255, 0, 0, 255);
     Draw.rect(this.pos[0], this.pos[1], this.size[0], this.size[1], false);
@@ -34,8 +32,7 @@ class Switch extends Entity {
       }
     });
 
-    this.enabled = false;
-    this.collidable = CollisionType.Disabled;
+    this.destroyed = true;
   }
 }
 

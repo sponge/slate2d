@@ -11,6 +11,7 @@ const slopes = [Tiles.SlopeL, Tiles.SlopeR]
 class Entity {
   type = 'default';
   name = '';
+  destroyed = false;
   pos: [number, number] = [0, 0];
   size: [number, number] = [0, 0];
   vel: [number, number] = [0, 0];
@@ -140,6 +141,7 @@ class Entity {
     let move = Math.floor(this.remainder[dim]);
 
     if (move == 0) {
+      for (let other of this.findTriggers()) other.collide(this, Dir.None);
       return true;
     }
 
@@ -155,6 +157,7 @@ class Entity {
       case Dir.Right: opposite = Dir.Left; break;
     }
 
+    let fullMove = true;
     while (move != 0) {
       const check = this.pos[dim] + sign;
       const collision = dim == 0 ? this.collideAt(check, this.pos[1], dir) : this.collideAt(this.pos[0], check, dir);
@@ -173,11 +176,14 @@ class Entity {
         }
 
         this.collideEnt?.collide(this, opposite);
-        return false;
+        fullMove = false;
+        break;
       }
     }
 
-    return true;
+    for (let other of this.findTriggers()) other.collide(this, opposite);
+
+    return fullMove;
   }
 
   moveX(amt: number) {
@@ -237,6 +243,14 @@ class Entity {
     }
 
     this.collidable = currCollidable;
+  }
+
+  *findTriggers() {
+    for (let other of World().state.entities) {
+      if (!other.destroyed && other.collidable == CollisionType.Trigger && entIntersect(this, other)) {
+        yield other;
+      }
+    }
   }
 }
 

@@ -1,7 +1,7 @@
 import Entity from "../entity.js";
 import * as Draw from 'draw';
 class Platform extends Entity {
-    enabled;
+    moving;
     dim;
     speed;
     start;
@@ -9,7 +9,7 @@ class Platform extends Entity {
     oneShot;
     constructor(args) {
         super(args);
-        this.enabled = args.properties?.Enabled ?? true;
+        this.moving = args.properties?.Moving ?? true;
         this.name = args.properties?.Name ?? '';
         this.dim = args.properties?.Direction == 'Horizontal' ? 0 : 1;
         this.speed = args.properties?.Speed ?? 1;
@@ -21,12 +21,12 @@ class Platform extends Entity {
         this.end = Math.max(a, b);
     }
     update(ticks, dt) {
-        if (!this.enabled)
+        if (!this.moving)
             return;
         if (this.pos[this.dim] < this.start || this.pos[this.dim] > this.end) {
             this.speed *= -1;
             if (this.oneShot) {
-                this.enabled = false;
+                this.moving = false;
                 return;
             }
         }
@@ -37,7 +37,7 @@ class Platform extends Entity {
         Draw.rect(this.pos[0], this.pos[1], this.size[0], this.size[1], false);
     }
     trigger(other) {
-        this.enabled = !this.enabled;
+        this.moving = !this.moving;
     }
 }
 export default Platform;

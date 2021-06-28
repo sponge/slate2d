@@ -104,7 +104,7 @@
 							"realEditorValues": [{ "id": "V_Float", "params": [1] }]
 						},
 						{ "__identifier": "Name", "__value": null, "__type": "String", "defUid": 118, "realEditorValues": [] },
-						{ "__identifier": "Enabled", "__value": true, "__type": "Bool", "defUid": 119, "realEditorValues": [] },
+						{ "__identifier": "Moving", "__value": true, "__type": "Bool", "defUid": 119, "realEditorValues": [] },
 						{ "__identifier": "OneShot", "__value": false, "__type": "Bool", "defUid": 120, "realEditorValues": [] }
 					]
 				},
@@ -147,7 +147,7 @@
 						},
 						{ "__identifier": "Speed", "__value": 1, "__type": "Float", "defUid": 112, "realEditorValues": [] },
 						{ "__identifier": "Name", "__value": null, "__type": "String", "defUid": 118, "realEditorValues": [] },
-						{ "__identifier": "Enabled", "__value": true, "__type": "Bool", "defUid": 119, "realEditorValues": [] },
+						{ "__identifier": "Moving", "__value": true, "__type": "Bool", "defUid": 119, "realEditorValues": [] },
 						{ "__identifier": "OneShot", "__value": false, "__type": "Bool", "defUid": 120, "realEditorValues": [] }
 					]
 				},
@@ -190,7 +190,7 @@
 						},
 						{ "__identifier": "Speed", "__value": 1, "__type": "Float", "defUid": 112, "realEditorValues": [] },
 						{ "__identifier": "Name", "__value": null, "__type": "String", "defUid": 118, "realEditorValues": [] },
-						{ "__identifier": "Enabled", "__value": true, "__type": "Bool", "defUid": 119, "realEditorValues": [] },
+						{ "__identifier": "Moving", "__value": true, "__type": "Bool", "defUid": 119, "realEditorValues": [] },
 						{ "__identifier": "OneShot", "__value": false, "__type": "Bool", "defUid": 120, "realEditorValues": [] }
 					]
 				},
@@ -274,7 +274,7 @@
 							}]
 						},
 						{
-							"__identifier": "Enabled",
+							"__identifier": "Moving",
 							"__value": false,
 							"__type": "Bool",
 							"defUid": 119,
@@ -294,6 +294,39 @@
 							}]
 						}
 					]
+				},
+				{
+					"__identifier": "Coin",
+					"__grid": [8,17],
+					"__pivot": [0.5,0.5],
+					"__tile": null,
+					"width": 12,
+					"height": 16,
+					"defUid": 121,
+					"px": [136,280],
+					"fieldInstances": []
+				},
+				{
+					"__identifier": "Coin",
+					"__grid": [9,17],
+					"__pivot": [0.5,0.5],
+					"__tile": null,
+					"width": 12,
+					"height": 16,
+					"defUid": 121,
+					"px": [152,280],
+					"fieldInstances": []
+				},
+				{
+					"__identifier": "Coin",
+					"__grid": [7,17],
+					"__pivot": [0.5,0.5],
+					"__tile": null,
+					"width": 12,
+					"height": 16,
+					"defUid": 121,
+					"px": [120,280],
+					"fieldInstances": []
 				}
 			]
 		},

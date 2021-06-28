@@ -14,12 +14,15 @@ import { drawPrintWin, clearPrintWin, dbgval } from './printwin.js';
 import Spring from './entities/spring.js';
 import Phys from './phys.js';
 import Switch from './entities/switch.js';
+import Coin from './entities/coin.js';
 
 interface GameState {
   t: number;
   ticks: number;
   entities: Entity[];
   mapName: string;
+  currCoins: number;
+  maxCoins: number;
 }
 
 interface Background {
@@ -45,6 +48,8 @@ class Main {
     ticks: 0,
     entities: [],
     mapName: '',
+    currCoins: 0,
+    maxCoins: 0
   };
 
   entSpawnMap: { [key: string]: typeof Entity } = {
@@ -52,6 +57,7 @@ class Main {
     'Platform': Platform,
     'Spring': Spring,
     'Switch': Switch,
+    'Coin': Coin,
   };
 
   canvas: number = Assets.load({
@@ -79,6 +85,27 @@ class Main {
     spriteHeight: 14,
     marginX: 0,
     marginY: 0,
+  });
+
+  coinSpr = Assets.load({
+    type: 'sprite',
+    name: 'coin',
+    path: 'gfx/coin.png',
+    marginX: 0,
+    marginY: 0,
+    spriteWidth: 14,
+    spriteHeight: 14,
+  });
+
+  blueFont: number = Assets.load({
+    name: 'blueFont',
+    type: 'bitmapfont',
+    path: 'gfx/panicbomber_blue.png',
+    glyphs: ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~',
+    glyphWidth: 8,
+    charSpacing: 0,
+    spaceWidth: 8,
+    lineHeight: 8,
   })
 
   backgrounds: Background[] = [...Array(3).keys()].map(i => {
@@ -112,16 +139,6 @@ class Main {
       spriteHeight: 16,
     })
 
-    Assets.load({
-      type: 'sprite',
-      name: 'coin',
-      path: 'gfx/coin.png',
-      marginX: 0,
-      marginY: 0,
-      spriteWidth: 14,
-      spriteHeight: 14,
-    })
-
     if (initialState) {
       this.state = JSON.parse(initialState);
       this.state.entities = this.state.entities.map(ent => Object.assign(new this.entSpawnMap[ent.type]({}), ent));
@@ -137,7 +154,8 @@ class Main {
       this.state.entities = entLayer.entities.map(ent => new this.entSpawnMap[ent.type](ent));
     }
 
-    this.player = this.state.entities.find(ent => ent.type == 'Player') as Player;
+    this.player = this.state.entities.find(ent => ent instanceof Player) as Player;
+    this.state.maxCoins = this.state.entities.filter(ent => ent instanceof Coin).length;
 
     this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
     this.camera.window(this.player.pos[0], this.player.pos[1], 20, 20);
@@ -152,11 +170,17 @@ class Main {
       this.accumulator -= 0.0175;
       this.accumulator = Math.max(0, this.accumulator);
       this.state.ticks += 1;
-      this.state.entities.forEach(ent => {
-        ent.preupdate(this.state.ticks, dt);
-        ent.update(this.state.ticks, dt);
-      });
+      this.state.entities.forEach(ent => ent.destroyed || ent.preupdate(this.state.ticks, dt));
+      this.state.entities.forEach(ent => ent.destroyed || ent.update(this.state.ticks, dt));
       this.camera.window(this.player.pos[0], this.player.pos[1], 20, 20);
+
+      // kill all entities that are disabled
+      for (let i = this.state.entities.length - 1; i >= 0; i--) {
+        if (this.state.entities[i].destroyed) {
+          this.state.entities.splice(i, 1);
+        }
+      }
+
       //SLT.printWin('frame', 'frame', true);
     }
 
@@ -193,7 +217,7 @@ class Main {
 
     // running dog
     const x = Math.floor((t * 50) % (res.w + 22) - 22);
-    const y = Math.floor(Math.sin(x / 50) * 5 + 167);
+    const y = Math.floor(Math.sin(x / 50) * 5 + (this.res.h * 0.8));
     Draw.setColor(255, 255, 255, 255);
     Draw.sprite(this.dogSpr, Math.floor(t * 12) % 6, x, y + camYoffset, 1, 0, 1, 1);
 
@@ -213,6 +237,13 @@ class Main {
     this.camera.drawEnd();
 
     // player hud
+
+    // coin display 
+    Draw.setTextStyle(this.blueFont, 1, 1, 1);
+    Draw.sprite(this.coinSpr, 0, 100, 8, 1, 0, 1, 1);
+    Draw.text(118, 11, 300, `${this.state.currCoins}/${this.state.maxCoins}`, 0);
+
+    // p-meter
     const pct = Math.floor(this.player.pMeter / Phys.pMeterCapacity * 6);
     for (let i = 0; i < 5; i++) {
       let num = this.player.pMeter == Phys.pMeterCapacity ? 2 : i < pct ? 1 : 0;

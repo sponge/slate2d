@@ -3,7 +3,7 @@ import * as Draw from 'draw';
 import CollisionType from "../collisiontype.js";
 
 class Platform extends Entity {
-  enabled: boolean;
+  moving: boolean;
   dim: number;
   speed: number;
   start: number;
@@ -12,7 +12,7 @@ class Platform extends Entity {
 
   constructor(args: any) {
     super(args);
-    this.enabled = args.properties?.Enabled ?? true;
+    this.moving = args.properties?.Moving ?? true;
     this.name = args.properties?.Name ?? '';
     this.dim = args.properties?.Direction == 'Horizontal' ? 0 : 1;
     this.speed = args.properties?.Speed ?? 1;
@@ -26,12 +26,12 @@ class Platform extends Entity {
   }
 
   update(ticks: number, dt: number) {
-    if (!this.enabled) return;
+    if (!this.moving) return;
 
     if (this.pos[this.dim] < this.start || this.pos[this.dim] > this.end) {
       this.speed *= -1;
       if (this.oneShot) {
-        this.enabled = false;
+        this.moving = false;
         return;
       }
     }
@@ -45,7 +45,7 @@ class Platform extends Entity {
   }
 
   trigger(other: Entity) {
-    this.enabled = !this.enabled;
+    this.moving = !this.moving;
   }
 }
 

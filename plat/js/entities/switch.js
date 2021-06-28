@@ -5,15 +5,12 @@ import CollisionType from '../collisiontype.js';
 import World from '../world.js';
 class Switch extends Entity {
     collidable = CollisionType.Platform;
-    enabled = true;
     target;
     constructor(args) {
         super(args);
         this.target = args.properties?.Target ?? '';
     }
     draw() {
-        if (!this.enabled)
-            return;
         // super.draw();
         Draw.setColor(255, 0, 0, 255);
         Draw.rect(this.pos[0], this.pos[1], this.size[0], this.size[1], false);
@@ -26,8 +23,7 @@ class Switch extends Entity {
                 ent.trigger(this);
             }
         });
-        this.enabled = false;
-        this.collidable = CollisionType.Disabled;
+        this.destroyed = true;
     }
 }
 export default Switch;

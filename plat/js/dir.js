@@ -1,5 +1,6 @@
 var Dir;
 (function (Dir) {
+    Dir[Dir["None"] = 0] = "None";
     Dir[Dir["Up"] = 1] = "Up";
     Dir[Dir["Right"] = 2] = "Right";
     Dir[Dir["Down"] = 3] = "Down";

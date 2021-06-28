@@ -9,7 +9,7 @@ function randomRange(min: number, max: number) {
 }
 
 const entIntersect = (a: Entity, b: Entity) =>
-  a.pos[0] < b.pos[0] + b.size[0] && a.pos[0] + a.size[0] > b.pos[0] && a.pos[1] < b.pos[1] + b.size[1] && a.pos[1] + a.size[1] > b.pos[1];
+  rectIntersect(a.pos, a.size, b.pos, b.size);
 
 const rectIntersect = (apos: [number, number], asize: [number, number], bpos: [number, number], bsize: [number, number]) =>
   apos[0] < bpos[0] + bsize[0] && apos[0] + asize[0] > bpos[0] && apos[1] < bpos[1] + bsize[1] && apos[1] + asize[1] > bpos[1];

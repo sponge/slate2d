@@ -12,8 +12,10 @@ import { drawPrintWin, clearPrintWin } from './printwin.js';
 import Spring from './entities/spring.js';
 import Phys from './phys.js';
 import Switch from './entities/switch.js';
+const scaleFactor = Math.floor(SLT.resolution().w / 384);
+const res = SLT.resolution();
 class Main {
-    res = { w: 384, h: 216 };
+    res = { w: res.w / scaleFactor, h: res.h / scaleFactor };
     map;
     camera = new Camera(this.res.w, this.res.h);
     accumulator = 0;

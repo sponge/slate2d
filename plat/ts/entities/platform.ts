@@ -28,15 +28,15 @@ class Platform extends Entity {
   update(ticks: number, dt: number) {
     if (!this.moving) return;
 
-    if (this.pos[this.dim] < this.start || this.pos[this.dim] > this.end) {
+    this.moveSolid(this.dim == 0 ? this.speed : 0, this.dim == 1 ? this.speed : 0);
+
+    if (this.pos[this.dim] <= this.start || this.pos[this.dim] >= this.end) {
       this.speed *= -1;
       if (this.oneShot) {
         this.moving = false;
         return;
       }
     }
-
-    this.moveSolid(this.dim == 0 ? this.speed : 0, this.dim == 1 ? this.speed : 0);
   }
 
   draw() {

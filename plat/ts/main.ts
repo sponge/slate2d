@@ -155,7 +155,7 @@ class Main {
     }
 
     this.player = this.state.entities.find(ent => ent instanceof Player) as Player;
-    this.state.maxCoins = this.state.entities.filter(ent => ent instanceof Coin).length;
+    this.state.maxCoins = this.state.currCoins + this.state.entities.filter(ent => ent instanceof Coin).length;
 
     this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
     this.camera.window(this.player.pos[0], this.player.pos[1], 20, 20);

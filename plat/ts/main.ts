@@ -15,6 +15,7 @@ import Spring from './entities/spring.js';
 import Phys from './phys.js';
 import Switch from './entities/switch.js';
 import Coin from './entities/coin.js';
+import Bird from './entities/bird.js';
 
 interface GameState {
   t: number;
@@ -58,6 +59,7 @@ class Main {
     'Spring': Spring,
     'Switch': Switch,
     'Coin': Coin,
+    'Bird': Bird,
   };
 
   canvas: number = Assets.load({
@@ -137,7 +139,17 @@ class Main {
       marginY: 0,
       spriteWidth: 16,
       spriteHeight: 16,
-    })
+    });
+
+    Assets.load({
+      type: 'sprite',
+      name: 'bird',
+      path: 'gfx/bird.png',
+      marginX: 0,
+      marginY: 0,
+      spriteWidth: 16,
+      spriteHeight: 16,
+    });
 
     if (initialState) {
       this.state = JSON.parse(initialState);

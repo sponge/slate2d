@@ -23,9 +23,14 @@ interface LDTKEntity {
   properties: { [key: string]: any };
 }
 
-function parseProperties(obj: any) {
+function parseProperties(obj: any, layer?: any) {
   return obj.reduce((acc: any, val: any) => {
-    acc[val.__identifier] = val.__value;
+    if (val.__type == 'Point') {
+      acc[val.__identifier] = [val.__value.cx, val.__value.cy];
+    }
+    else {
+      acc[val.__identifier] = val.__value;
+    }
     return acc;
   }, {});
 }
@@ -68,7 +73,7 @@ class LDTK {
             type: ent.__identifier,
             size: [ent.width, ent.height],
             pos: [ent.px[0] - ent.width * ent.__pivot[0], ent.px[1] - ent.height * ent.__pivot[1]],
-            properties: parseProperties(ent.fieldInstances),
+            properties: parseProperties(ent.fieldInstances, layer),
           }
         })
       } else {

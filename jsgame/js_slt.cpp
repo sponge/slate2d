@@ -51,7 +51,7 @@ void RenderValue(JSContext *ctx, JSValue obj, JSAtom prop, const char *titleOver
   bool node_open = false;
   if (prop == 0) {
     if (JS_IsObject(obj)) {
-      node_open = ImGui::TreeNode(val.u.ptr, "%s", titleOverride);
+      node_open = ImGui::TreeNode(JS_VALUE_GET_PTR(val), "%s", titleOverride);
     }
     else {
       ImGui::Text("%s", titleOverride);
@@ -60,7 +60,7 @@ void RenderValue(JSContext *ctx, JSValue obj, JSAtom prop, const char *titleOver
   else {
     const char *propStr = JS_AtomToCString(ctx, prop);
     if (JS_IsObject(val)) {
-      node_open = ImGui::TreeNode(val.u.ptr, "%s", propStr);
+      node_open = ImGui::TreeNode(JS_VALUE_GET_PTR(val), "%s", propStr);
     }
     else {
       ImGui::Text("%s", propStr);

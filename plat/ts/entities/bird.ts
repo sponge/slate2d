@@ -30,6 +30,10 @@ class Bird extends Entity {
   update(ticks: number, dt: number) {
     this.frame = Math.floor(ticks / 8 % 4);
     this.frame = this.frame == 3 ? 1 : this.frame;
+
+    const dir = [Math.sign(this.delta[0]), Math.sign(this.delta[1])];
+    this.moveX(dir[0]);
+    this.moveY(dir[1]);
   }
 
   draw() {

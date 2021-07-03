@@ -17,7 +17,6 @@ class Bird extends Entity {
         // that maps cleanly to the entity position
         const dest = args.properties?.Destination ?? this.pos;
         const tilePos = [Math.floor(this.pos[0] / 16), Math.floor(this.pos[1] / 16)];
-        console.log(tilePos);
         this.delta[0] = (dest[0] - tilePos[0]) * 16;
         this.delta[1] = (dest[1] - tilePos[1]) * 16;
         const absDelta = [Math.abs(this.delta[0]), Math.abs(this.delta[1])];

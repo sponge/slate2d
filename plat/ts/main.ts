@@ -237,9 +237,9 @@ class Main {
 
     // tilemap and entities
     Draw.setColor(255, 255, 255, 255);
-    this.map.draw('BGDecoration');
     this.map.draw('BGTiles');
     this.map.draw('BGWorld');
+    this.map.draw('BGDecoration');
     for (let i = this.state.entities.length - 1; i >= 0; i--) {
       this.state.entities[i].draw();
     }

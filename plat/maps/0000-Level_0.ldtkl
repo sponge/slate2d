@@ -339,12 +339,32 @@
 					"px": [264,88],
 					"fieldInstances": [{
 						"__identifier": "Destination",
-						"__value": { "cx": 11, "cy": 5 },
+						"__value": { "cx": 11, "cy": 3 },
 						"__type": "Point",
 						"defUid": 123,
 						"realEditorValues": [{
 							"id": "V_String",
-							"params": ["11,5"]
+							"params": ["11,3"]
+						}]
+					}]
+				},
+				{
+					"__identifier": "Bird",
+					"__grid": [4,5],
+					"__pivot": [0.5,0.5],
+					"__tile": null,
+					"width": 14,
+					"height": 12,
+					"defUid": 122,
+					"px": [72,88],
+					"fieldInstances": [{
+						"__identifier": "Destination",
+						"__value": { "cx": 4, "cy": 8 },
+						"__type": "Point",
+						"defUid": 123,
+						"realEditorValues": [{
+							"id": "V_String",
+							"params": ["4,8"]
 						}]
 					}]
 				}

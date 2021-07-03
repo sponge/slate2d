@@ -39,7 +39,6 @@ class Player extends Entity {
         return Phys.jumpHeights[0][1];
     }
     update(ticks, dt) {
-        this.frame = ticks / 8 % 6;
         const dir = this.disableControls ? 0 : SLT.buttonPressed(Buttons.Left) ? -1 : SLT.buttonPressed(Buttons.Right) ? 1 : 0;
         const jumpPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Jump);
         const shootPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Shoot);
@@ -75,6 +74,9 @@ class Player extends Entity {
         else if (slidePress || (dir == 0 && this.vel[0] != 0 && grounded)) {
             // if not pushing anything, slow down if on the ground
             this.vel[0] += Phys.friction * -Math.sign(this.vel[0]);
+            if (Math.abs(this.vel[0]) < Phys.friction) {
+                this.vel[0] = 0;
+            }
         }
         else if (dir != 0) {
             // if holding a direction, figure out how fast we should try and go
@@ -124,6 +126,9 @@ class Player extends Entity {
                 this.vel[1] = this.remainder[1] = 0;
             }
         }
+        // set animation
+        const animSpeed = this.pMeter == Phys.pMeterCapacity ? 4 : 8;
+        this.frame = this.vel[0] == 0 ? 0 : ticks / animSpeed % 6;
     }
     draw() {
         Draw.setColor(255, 255, 255, 255);

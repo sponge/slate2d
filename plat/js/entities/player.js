@@ -29,6 +29,9 @@ class Player extends Entity {
     die() {
         this.pos = [...this.spawnPos];
     }
+    getPMeterRatio() {
+        return this.pMeter / Phys.pMeterCapacity;
+    }
     getJumpHeight(speed) {
         speed = Math.abs(speed);
         for (const [checkSpeed, height] of Phys.jumpHeights) {

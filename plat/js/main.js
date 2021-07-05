@@ -7,13 +7,8 @@ import { LDTK } from './ldtk.js';
 import Buttons from './buttons.js';
 import Player from './entities/player.js';
 import { randomRange } from './util.js';
-import Platform from './entities/platform.js';
 import { drawPrintWin, clearPrintWin } from './printwin.js';
-import Spring from './entities/spring.js';
-import Phys from './phys.js';
-import Switch from './entities/switch.js';
-import Coin from './entities/coin.js';
-import Bird from './entities/bird.js';
+import EntityMappings from './entmap.js';
 const scaleFactor = Math.floor(SLT.resolution().w / 384);
 const res = SLT.resolution();
 class Main {
@@ -29,14 +24,6 @@ class Main {
         mapName: '',
         currCoins: 0,
         maxCoins: 0
-    };
-    entSpawnMap = {
-        'Player': Player,
-        'Platform': Platform,
-        'Spring': Spring,
-        'Switch': Switch,
-        'Coin': Coin,
-        'Bird': Bird,
     };
     canvas = Assets.load({
         name: 'canvas',
@@ -118,7 +105,7 @@ class Main {
         });
         if (initialState) {
             this.state = JSON.parse(initialState);
-            this.state.entities = this.state.entities.map(ent => Object.assign(new this.entSpawnMap[ent.type]({}), ent));
+            this.state.entities = this.state.entities.map(ent => Object.assign(new EntityMappings[ent.type]({}), ent));
         }
         else {
             this.state.mapName = 'maps/0000-Level_0.ldtkl';
@@ -127,10 +114,10 @@ class Main {
         this.map = new LDTK(src);
         if (!initialState) {
             const entLayer = this.map.layersByName.Entities;
-            this.state.entities = entLayer.entities.map(ent => new this.entSpawnMap[ent.type](ent));
+            this.state.entities = entLayer.entities.map(ent => new EntityMappings[ent.type](ent));
         }
         this.player = this.state.entities.find(ent => ent instanceof Player);
-        this.state.maxCoins = this.state.currCoins + this.state.entities.filter(ent => ent instanceof Coin).length;
+        this.state.maxCoins = this.state.currCoins + this.state.entities.filter(ent => ent.type == 'Coin').length;
         this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
         this.camera.window(this.player.pos[0], this.player.pos[1], 20, 20);
     }
@@ -203,9 +190,9 @@ class Main {
         Draw.sprite(this.coinSpr, 0, 100, 8, 1, 0, 1, 1);
         Draw.text(118, 11, 300, `${this.state.currCoins}/${this.state.maxCoins}`, 0);
         // p-meter
-        const pct = Math.floor(this.player.pMeter / Phys.pMeterCapacity * 6);
+        const pct = this.player.getPMeterRatio();
         for (let i = 0; i < 5; i++) {
-            let num = this.player.pMeter == Phys.pMeterCapacity ? 2 : i < pct ? 1 : 0;
+            let num = pct == 1.0 ? 2 : i < Math.floor(pct * 6) ? 1 : 0;
             Draw.sprite(this.pMeterSpr, num, 14 + i * 14, 8, 1, 0, 1, 1);
         }
         // draw the canvas into the center of the window

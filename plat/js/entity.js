@@ -16,6 +16,7 @@ class Entity {
     remainder = [0, 0];
     sprite = 0;
     frame = 0;
+    flipBits = 0;
     collidable;
     collideEnt;
     collideTile = Tiles.Empty;
@@ -29,7 +30,7 @@ class Entity {
     update(_ticks, _dt) { }
     draw() {
         Draw.setColor(255, 255, 255, 255);
-        Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, 0, 1, 1);
+        Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, this.flipBits, 1, 1);
     }
     // callback when someone else touches this entity
     collide(other, dir) { }

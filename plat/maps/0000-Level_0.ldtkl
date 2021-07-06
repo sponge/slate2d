@@ -367,6 +367,17 @@
 							"params": ["4,8"]
 						}]
 					}]
+				},
+				{
+					"__identifier": "Slime",
+					"__grid": [18,17],
+					"__pivot": [0.5,1],
+					"__tile": null,
+					"width": 14,
+					"height": 10,
+					"defUid": 128,
+					"px": [296,288],
+					"fieldInstances": []
 				}
 			]
 		},

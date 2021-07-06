@@ -57,7 +57,6 @@ class Bird extends Entity {
   }
 
   draw() {
-    SLT.showObj('bird', this);
     super.draw();
   }
 

@@ -1,4 +1,3 @@
-import * as SLT from 'slate2d';
 import * as Assets from 'assets';
 import Entity from '../entity.js';
 import CollisionType from '../collisiontype.js';
@@ -40,7 +39,6 @@ class Bird extends Entity {
         }
     }
     draw() {
-        SLT.showObj('bird', this);
         super.draw();
     }
     collide(other, dir) {

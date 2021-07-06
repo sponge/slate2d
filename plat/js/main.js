@@ -103,6 +103,15 @@ class Main {
             spriteWidth: 16,
             spriteHeight: 16,
         });
+        Assets.load({
+            type: 'sprite',
+            name: 'slime',
+            path: 'gfx/slime.png',
+            marginX: 0,
+            marginY: 0,
+            spriteWidth: 16,
+            spriteHeight: 16,
+        });
         if (initialState) {
             this.state = JSON.parse(initialState);
             this.state.entities = this.state.entities.map(ent => Object.assign(new EntityMappings[ent.type]({}), ent));

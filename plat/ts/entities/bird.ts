@@ -13,7 +13,6 @@ class Bird extends Entity {
   collidable = CollisionType.Trigger;
   drawOfs: [number, number] = [-1, -2];
   sprite = Assets.find('bird');
-  enabled = true;
   delta: [number, number] = [0, 0];
   dir: [number, number] = [0, 0];
   moveAmt: [number, number] = [0, 0];

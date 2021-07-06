@@ -11,7 +11,6 @@ import Player from './player.js';
 class Coin extends Entity {
   collidable = CollisionType.Trigger;
   sprite = Assets.find('coin');
-  enabled = true;
 
   constructor(args: { [key: string]: any }) {
     super(args);

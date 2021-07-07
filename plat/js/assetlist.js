@@ -63,7 +63,16 @@ const AssetList = [
         marginY: 0,
         spriteWidth: 16,
         spriteHeight: 16,
-    }
+    },
+    {
+        type: 'sprite',
+        name: 'bub',
+        path: 'gfx/bub.png',
+        marginX: 0,
+        marginY: 0,
+        spriteWidth: 16,
+        spriteHeight: 16,
+    },
 ];
 function loadAllAssets() {
     for (const asset of AssetList) {

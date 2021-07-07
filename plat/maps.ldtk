@@ -9,7 +9,7 @@
 		"url": "https://ldtk.io"
 	},
 	"jsonVersion": "0.9.3",
-	"nextUid": 129,
+	"nextUid": 130,
 	"worldLayout": "LinearHorizontal",
 	"worldGridWidth": 256,
 	"worldGridHeight": 256,
@@ -1894,6 +1894,31 @@
 			"pivotX": 0.5,
 			"pivotY": 1,
 			"fieldDefs": []
+		},
+		{
+			"identifier": "Bub",
+			"uid": 129,
+			"tags": [],
+			"width": 12,
+			"height": 11,
+			"resizableX": false,
+			"resizableY": false,
+			"keepAspectRatio": false,
+			"fillOpacity": 1,
+			"lineOpacity": 1,
+			"hollow": false,
+			"color": "#0A349F",
+			"renderMode": "Rectangle",
+			"showName": true,
+			"tilesetId": null,
+			"tileId": null,
+			"tileRenderMode": "FitInside",
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0.5,
+			"pivotY": 1,
+			"fieldDefs": []
 		}
 	], "tilesets": [
 		{
@@ -1954,7 +1979,7 @@
 			"uid": 0,
 			"worldX": 0,
 			"worldY": 0,
-			"pxWid": 1088,
+			"pxWid": 1392,
 			"pxHei": 320,
 			"__bgColor": "#696A79",
 			"bgColor": null,

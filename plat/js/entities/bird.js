@@ -37,9 +37,6 @@ class Bird extends Entity {
             this.moveAmt = [0, 0];
         }
     }
-    draw() {
-        super.draw();
-    }
     collide(other, dir) {
         if (other instanceof Player == false) {
             return;

@@ -39,11 +39,6 @@ class Spring extends Entity {
         this.moveSolid(0, amt);
         this.size[1] -= amt;
     }
-    draw() {
-        super.draw();
-        // Draw.setColor(255, 255, 0, 200);
-        // Draw.rect(this.pos[0], this.pos[1], this.size[0], this.size[1], false);
-    }
     collide(other, dir) {
         if (dir != Dir.Up)
             return;

@@ -1,4 +1,3 @@
-import * as Draw from 'draw';
 import * as SLT from 'slate2d';
 import * as Assets from 'assets';
 import Buttons from '../buttons.js';
@@ -132,11 +131,7 @@ class Player extends Entity {
         // set animation
         const animSpeed = this.pMeter == Phys.pMeterCapacity ? 4 : 8;
         this.frame = this.vel[0] == 0 ? 0 : ticks / animSpeed % 6;
-    }
-    draw() {
-        Draw.setColor(255, 255, 255, 255);
-        // Draw.rect(this.pos[0], this.pos[1], this.size[0], this.size[1], false);
-        Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, this.facing > 0 ? 0 : 1, 1, 1);
+        this.flipBits = this.facing < 0 ? 1 : 0;
     }
 }
 export default Player;

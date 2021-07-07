@@ -41,6 +41,11 @@ class Entity {
     Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, this.flipBits, 1, 1);
   }
 
+  drawBbox(r: number, g: number, b: number, a: number) {
+    Draw.setColor(r, g, b, a);
+    Draw.rect(this.pos[0], this.pos[1], this.size[0], this.size[1], false);
+  }
+
   // callback when someone else touches this entity
   collide(other: Entity, dir: Dir) { }
   trigger(other: Entity) { }

@@ -17,8 +17,8 @@ enum Frames {
 }
 
 class Slime extends Entity {
-  collidable = CollisionType.Trigger;
-  drawOfs: [number, number] = [-1, -2];
+  collidable = CollisionType.Enabled;
+  drawOfs: [number, number] = [-1, -4];
   sprite = Assets.find('slime');
   nextJump = 120;
   jumping = false;
@@ -33,7 +33,7 @@ class Slime extends Entity {
   update(ticks: number, dt: number) {
     let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
 
-    this.vel[1] = grounded ? 0 : this.vel[1] + (Phys.gravity / 3);
+    this.vel[1] = grounded ? 0 : this.vel[1] + Phys.enemyGravity;
     if (grounded) {
       if (this.jumping) {
         this.nextJump = ticks + 120;
@@ -75,10 +75,6 @@ class Slime extends Entity {
     else if (grounded) {
       this.frame = ticks % 40 > 30 ? Frames.Blink : Frames.Idle;
     }
-  }
-
-  draw() {
-    super.draw();
   }
 
   collide(other: Entity, dir: Dir) {

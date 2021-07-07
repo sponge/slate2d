@@ -10,6 +10,7 @@ const Phys = {
     maxSpeed: 3,
     heldGravity: 0.1875,
     gravity: 0.375,
+    enemyGravity: 0.375 / 3,
     earlyBounceFrames: 8,
     earlyJumpFrames: 6,
     lateJumpFrames: 6,

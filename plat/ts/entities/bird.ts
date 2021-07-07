@@ -55,10 +55,6 @@ class Bird extends Entity {
     }
   }
 
-  draw() {
-    super.draw();
-  }
-
   collide(other: Entity, dir: Dir) {
     if (other instanceof Player == false) {
       return;

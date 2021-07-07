@@ -26,6 +26,9 @@ class Entity {
         const key = args.properties?.CollisionType;
         this.collidable = CollisionType[key] ?? CollisionType.Enabled;
     }
+    toString() {
+        return `[Entity ${this.type}]`;
+    }
     preupdate(_ticks, _dt) { }
     update(_ticks, _dt) { }
     draw() {
@@ -38,10 +41,20 @@ class Entity {
     }
     // callback when someone else touches this entity
     collide(other, dir) { }
+    // callback when an entity is triggered
     trigger(other) { }
     min(dim) { return this.pos[dim]; }
     max(dim) { return this.pos[dim] + this.size[dim]; }
     die() { }
+    getOppositeDir(dir) {
+        switch (dir) {
+            case Dir.Down: return Dir.Up;
+            case Dir.Up: return Dir.Down;
+            case Dir.Left: return Dir.Right;
+            case Dir.Right: return Dir.Left;
+        }
+        return Dir.None;
+    }
     // returns true/false if there is a collision at the specified coordinates.
     // this only queries the world, but it will update this.collideEnt
     collideAt(x, y, dir) {
@@ -61,10 +74,11 @@ class Entity {
             if (other.collidable == CollisionType.Disabled)
                 continue;
             const intersects = rectIntersect(corners[0], this.size, other.pos, other.size);
-            if (other.collidable == CollisionType.Enabled && intersects) {
+            if (this.collidable == CollisionType.Enabled && other.collidable == CollisionType.Enabled && intersects) {
                 this.collideEnt = other;
                 return true;
             }
+            // FIXME: duplicate for this is platform vs other is platform?
             else if (other.collidable == CollisionType.Platform && dir == Dir.Down && intersects && corners[2][1] == other.pos[1]) {
                 this.collideEnt = other;
                 return true;
@@ -128,21 +142,7 @@ class Entity {
         this.remainder[dim] -= move;
         const sign = Math.sign(move);
         const dir = dim == 0 ? (sign > 0 ? Dir.Right : Dir.Left) : (sign > 0 ? Dir.Down : Dir.Up);
-        let opposite;
-        switch (dir) {
-            case Dir.Down:
-                opposite = Dir.Up;
-                break;
-            case Dir.Up:
-                opposite = Dir.Down;
-                break;
-            case Dir.Left:
-                opposite = Dir.Right;
-                break;
-            case Dir.Right:
-                opposite = Dir.Left;
-                break;
-        }
+        let opposite = this.getOppositeDir(dir);
         let fullMove = true;
         while (move != 0) {
             const check = this.pos[dim] + sign;

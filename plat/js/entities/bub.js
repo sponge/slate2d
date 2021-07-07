@@ -19,13 +19,14 @@ var Frames;
     Frames[Frames["Squish"] = 10] = "Squish";
 })(Frames || (Frames = {}));
 class Bub extends Entity {
-    collidable = CollisionType.Enabled;
+    collidable = CollisionType.Platform;
     drawOfs = [-2, -5];
     sprite = Assets.find('bub');
     constructor(args) {
         super(args);
         this.flipBits = 1;
-        this.vel[0] = -0.25;
+        this.vel[0] = args.properties?.GoRight ?? true ? 0.25 : -0.25;
+        this.flipBits = this.vel[0] > 0 ? 1 : 0;
     }
     update(ticks, dt) {
         let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);

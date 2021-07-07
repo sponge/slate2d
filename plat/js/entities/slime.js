@@ -14,16 +14,17 @@ var Frames;
     Frames[Frames["Fall"] = 5] = "Fall";
 })(Frames || (Frames = {}));
 class Slime extends Entity {
-    collidable = CollisionType.Enabled;
+    collidable = CollisionType.Platform;
     drawOfs = [-1, -4];
     sprite = Assets.find('slime');
     nextJump = 120;
     jumping = false;
     landTime = -999;
-    dir = -1;
+    dir;
     constructor(args) {
         super(args);
         this.flipBits = 1;
+        this.dir = args.properties?.GoRight ?? true ? 1 : -1;
     }
     update(ticks, dt) {
         let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);

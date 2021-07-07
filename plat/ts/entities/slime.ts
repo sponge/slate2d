@@ -17,17 +17,18 @@ enum Frames {
 }
 
 class Slime extends Entity {
-  collidable = CollisionType.Enabled;
+  collidable = CollisionType.Platform;
   drawOfs: [number, number] = [-1, -4];
   sprite = Assets.find('slime');
   nextJump = 120;
   jumping = false;
   landTime = -999;
-  dir = -1;
+  dir: number;
 
   constructor(args: { [key: string]: any }) {
     super(args);
     this.flipBits = 1;
+    this.dir = args.properties?.GoRight ?? true ? 1 : -1;
   }
 
   update(ticks: number, dt: number) {

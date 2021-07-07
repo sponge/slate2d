@@ -344,7 +344,7 @@
 					"height": 10,
 					"defUid": 128,
 					"px": [600,288],
-					"fieldInstances": []
+					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 130, "realEditorValues": [] }]
 				},
 				{
 					"__identifier": "Slime",
@@ -355,7 +355,7 @@
 					"height": 10,
 					"defUid": 128,
 					"px": [344,192],
-					"fieldInstances": []
+					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 130, "realEditorValues": [] }]
 				},
 				{
 					"__identifier": "Bub",
@@ -366,7 +366,7 @@
 					"height": 11,
 					"defUid": 129,
 					"px": [184,256],
-					"fieldInstances": []
+					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 131, "realEditorValues": [] }]
 				},
 				{
 					"__identifier": "Bub",
@@ -377,7 +377,7 @@
 					"height": 11,
 					"defUid": 129,
 					"px": [216,256],
-					"fieldInstances": []
+					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 131, "realEditorValues": [] }]
 				},
 				{
 					"__identifier": "Bub",
@@ -388,7 +388,7 @@
 					"height": 11,
 					"defUid": 129,
 					"px": [392,272],
-					"fieldInstances": []
+					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 131, "realEditorValues": [] }]
 				},
 				{
 					"__identifier": "Bub",
@@ -399,7 +399,7 @@
 					"height": 11,
 					"defUid": 129,
 					"px": [280,144],
-					"fieldInstances": []
+					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 131, "realEditorValues": [] }]
 				},
 				{
 					"__identifier": "Coin",
@@ -433,6 +433,26 @@
 					"defUid": 121,
 					"px": [456,280],
 					"fieldInstances": []
+				},
+				{
+					"__identifier": "Bub",
+					"__grid": [21,16],
+					"__pivot": [0.5,1],
+					"__tile": null,
+					"width": 12,
+					"height": 11,
+					"defUid": 129,
+					"px": [344,272],
+					"fieldInstances": [{
+						"__identifier": "GoRight",
+						"__value": true,
+						"__type": "Bool",
+						"defUid": 131,
+						"realEditorValues": [{
+							"id": "V_Bool",
+							"params": [ true ]
+						}]
+					}]
 				}
 			]
 		},

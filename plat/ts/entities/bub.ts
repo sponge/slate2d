@@ -22,14 +22,15 @@ enum Frames {
 }
 
 class Bub extends Entity {
-  collidable = CollisionType.Enabled;
+  collidable = CollisionType.Platform;
   drawOfs: [number, number] = [-2, -5];
   sprite = Assets.find('bub');
 
   constructor(args: { [key: string]: any }) {
     super(args);
     this.flipBits = 1;
-    this.vel[0] = -0.25;
+    this.vel[0] = args.properties?.GoRight ?? true ? 0.25 : -0.25;
+    this.flipBits = this.vel[0] > 0 ? 1 : 0;
   }
 
   update(ticks: number, dt: number) {

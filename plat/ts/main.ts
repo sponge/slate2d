@@ -11,6 +11,7 @@ import { randomRange } from './util.js';
 import Entity from './entity.js';
 import { drawPrintWin, clearPrintWin, dbgval } from './printwin.js';
 import EntityMappings from './entmap.js';
+import loadAllAssets from './assetlist.js';
 
 interface GameState {
   t: number;
@@ -55,46 +56,10 @@ class Main {
     height: this.res.h
   });
 
-  dogSpr: number = Assets.load({
-    name: 'dogspr',
-    type: 'sprite',
-    path: 'gfx/dog.png',
-    spriteWidth: 22,
-    spriteHeight: 16,
-    marginX: 0,
-    marginY: 0,
-  });
-
-  pMeterSpr: number = Assets.load({
-    name: 'pmeter',
-    type: 'sprite',
-    path: 'gfx/pmeter.png',
-    spriteWidth: 10,
-    spriteHeight: 14,
-    marginX: 0,
-    marginY: 0,
-  });
-
-  coinSpr = Assets.load({
-    type: 'sprite',
-    name: 'coin',
-    path: 'gfx/coin.png',
-    marginX: 0,
-    marginY: 0,
-    spriteWidth: 14,
-    spriteHeight: 14,
-  });
-
-  blueFont: number = Assets.load({
-    name: 'blueFont',
-    type: 'bitmapfont',
-    path: 'gfx/panicbomber_blue.png',
-    glyphs: ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~',
-    glyphWidth: 8,
-    charSpacing: 0,
-    spaceWidth: 8,
-    lineHeight: 8,
-  })
+  dogSpr: number;
+  pMeterSpr: number;
+  coinSpr: number;
+  blueFont: number;
 
   backgrounds: Background[] = [...Array(3).keys()].map(i => {
     const name = `gfx/grassland_bg${i}.png`;
@@ -117,35 +82,11 @@ class Main {
   constructor(initialState: string) {
     Buttons.register();
 
-    Assets.load({
-      type: 'sprite',
-      name: 'spring',
-      path: 'gfx/spring.png',
-      marginX: 0,
-      marginY: 0,
-      spriteWidth: 16,
-      spriteHeight: 16,
-    });
-
-    Assets.load({
-      type: 'sprite',
-      name: 'bird',
-      path: 'gfx/bird.png',
-      marginX: 0,
-      marginY: 0,
-      spriteWidth: 16,
-      spriteHeight: 16,
-    });
-
-    Assets.load({
-      type: 'sprite',
-      name: 'slime',
-      path: 'gfx/slime.png',
-      marginX: 0,
-      marginY: 0,
-      spriteWidth: 16,
-      spriteHeight: 16,
-    });
+    loadAllAssets();
+    this.dogSpr = Assets.find('dogspr');
+    this.pMeterSpr = Assets.find('pmeter');
+    this.coinSpr = Assets.find('coin');
+    this.blueFont = Assets.find('blueFont');
 
     if (initialState) {
       this.state = JSON.parse(initialState);

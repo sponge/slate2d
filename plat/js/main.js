@@ -9,6 +9,7 @@ import Player from './entities/player.js';
 import { randomRange } from './util.js';
 import { drawPrintWin, clearPrintWin } from './printwin.js';
 import EntityMappings from './entmap.js';
+import loadAllAssets from './assetlist.js';
 const scaleFactor = Math.floor(SLT.resolution().w / 384);
 const res = SLT.resolution();
 class Main {
@@ -31,43 +32,10 @@ class Main {
         width: this.res.w,
         height: this.res.h
     });
-    dogSpr = Assets.load({
-        name: 'dogspr',
-        type: 'sprite',
-        path: 'gfx/dog.png',
-        spriteWidth: 22,
-        spriteHeight: 16,
-        marginX: 0,
-        marginY: 0,
-    });
-    pMeterSpr = Assets.load({
-        name: 'pmeter',
-        type: 'sprite',
-        path: 'gfx/pmeter.png',
-        spriteWidth: 10,
-        spriteHeight: 14,
-        marginX: 0,
-        marginY: 0,
-    });
-    coinSpr = Assets.load({
-        type: 'sprite',
-        name: 'coin',
-        path: 'gfx/coin.png',
-        marginX: 0,
-        marginY: 0,
-        spriteWidth: 14,
-        spriteHeight: 14,
-    });
-    blueFont = Assets.load({
-        name: 'blueFont',
-        type: 'bitmapfont',
-        path: 'gfx/panicbomber_blue.png',
-        glyphs: ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~',
-        glyphWidth: 8,
-        charSpacing: 0,
-        spaceWidth: 8,
-        lineHeight: 8,
-    });
+    dogSpr;
+    pMeterSpr;
+    coinSpr;
+    blueFont;
     backgrounds = [...Array(3).keys()].map(i => {
         const name = `gfx/grassland_bg${i}.png`;
         const id = Assets.load({ type: 'image', name, path: name });
@@ -85,33 +53,11 @@ class Main {
     }
     constructor(initialState) {
         Buttons.register();
-        Assets.load({
-            type: 'sprite',
-            name: 'spring',
-            path: 'gfx/spring.png',
-            marginX: 0,
-            marginY: 0,
-            spriteWidth: 16,
-            spriteHeight: 16,
-        });
-        Assets.load({
-            type: 'sprite',
-            name: 'bird',
-            path: 'gfx/bird.png',
-            marginX: 0,
-            marginY: 0,
-            spriteWidth: 16,
-            spriteHeight: 16,
-        });
-        Assets.load({
-            type: 'sprite',
-            name: 'slime',
-            path: 'gfx/slime.png',
-            marginX: 0,
-            marginY: 0,
-            spriteWidth: 16,
-            spriteHeight: 16,
-        });
+        loadAllAssets();
+        this.dogSpr = Assets.find('dogspr');
+        this.pMeterSpr = Assets.find('pmeter');
+        this.coinSpr = Assets.find('coin');
+        this.blueFont = Assets.find('blueFont');
         if (initialState) {
             this.state = JSON.parse(initialState);
             this.state.entities = this.state.entities.map(ent => Object.assign(new EntityMappings[ent.type]({}), ent));

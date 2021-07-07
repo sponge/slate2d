@@ -39,12 +39,16 @@ class Entity {
         Draw.setColor(r, g, b, a);
         Draw.rect(this.pos[0], this.pos[1], this.size[0], this.size[1], false);
     }
+    // callback to determine what type of collision based on the entity
+    canCollide(other, dir) { return this.collidable; }
     // callback when someone else touches this entity
     collide(other, dir) { }
     // callback when an entity is triggered
     trigger(other) { }
+    center(dim) { return this.pos[dim] + this.size[dim] / 2; }
     min(dim) { return this.pos[dim]; }
     max(dim) { return this.pos[dim] + this.size[dim]; }
+    hurt(amt) { }
     die() { }
     getOppositeDir(dir) {
         switch (dir) {
@@ -67,19 +71,20 @@ class Entity {
         const bottomMiddle = [x + this.size[0] / 2, corners[2][1]];
         const layer = World().map.layersByName.Collision;
         const entities = World().state.entities;
+        const opposite = this.getOppositeDir(dir);
         // iterate through all entities looking for a collision
         for (let other of entities) {
             if (other == this)
                 continue;
-            if (other.collidable == CollisionType.Disabled)
+            if (other.canCollide(this, opposite) == CollisionType.Disabled)
                 continue;
             const intersects = rectIntersect(corners[0], this.size, other.pos, other.size);
-            if (this.collidable == CollisionType.Enabled && other.collidable == CollisionType.Enabled && intersects) {
+            if (this.canCollide(other, dir) == CollisionType.Enabled && other.canCollide(this, opposite) == CollisionType.Enabled && intersects) {
                 this.collideEnt = other;
                 return true;
             }
             // FIXME: duplicate for this is platform vs other is platform?
-            else if (other.collidable == CollisionType.Platform && dir == Dir.Down && intersects && corners[2][1] == other.pos[1]) {
+            else if (other.canCollide(this, opposite) == CollisionType.Platform && dir == Dir.Down && intersects && corners[2][1] == other.pos[1]) {
                 this.collideEnt = other;
                 return true;
             }
@@ -161,7 +166,10 @@ class Entity {
                         continue;
                     }
                 }
-                this.collideEnt?.collide(this, opposite);
+                if (this.collideEnt) {
+                    this.collideEnt.collide(this, opposite);
+                    //this.collide(this.collideEnt, dir);
+                }
                 fullMove = false;
                 break;
             }
@@ -218,7 +226,7 @@ class Entity {
     }
     *findTriggers() {
         for (let other of World().state.entities) {
-            if (!other.destroyed && other.collidable == CollisionType.Trigger && entIntersect(this, other)) {
+            if (!other.destroyed && other.canCollide(this, Dir.None) == CollisionType.Trigger && entIntersect(this, other)) {
                 yield other;
             }
         }

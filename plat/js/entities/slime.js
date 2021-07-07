@@ -14,7 +14,6 @@ var Frames;
     Frames[Frames["Fall"] = 5] = "Fall";
 })(Frames || (Frames = {}));
 class Slime extends Entity {
-    collidable = CollisionType.Platform;
     drawOfs = [-1, -4];
     sprite = Assets.find('slime');
     nextJump = 120;
@@ -25,6 +24,12 @@ class Slime extends Entity {
         super(args);
         this.flipBits = 1;
         this.dir = args.properties?.GoRight ?? true ? 1 : -1;
+    }
+    canCollide(other, dir) {
+        if (other.type == 'Player')
+            return CollisionType.Platform;
+        else
+            return CollisionType.Enabled;
     }
     update(ticks, dt) {
         let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
@@ -67,10 +72,14 @@ class Slime extends Entity {
         }
     }
     collide(other, dir) {
-        if (other instanceof Player == false) {
+        if (other instanceof Player) {
+            other.stompEnemy();
+            this.destroyed = true;
+        }
+        else {
+            this.vel[0] *= -1;
             return;
         }
-        this.destroyed = true;
     }
 }
 export default Slime;

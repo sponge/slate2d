@@ -1,3 +1,4 @@
+import * as Draw from 'draw';
 import * as SLT from 'slate2d';
 import * as Assets from 'assets';
 import Buttons from '../buttons.js';
@@ -6,6 +7,7 @@ import { clamp } from '../util.js';
 import Dir from '../dir.js';
 import Tiles from '../tiles.js';
 import Phys from '../phys.js';
+import World from '../world.js';
 const slopes = [Tiles.SlopeL, Tiles.SlopeR];
 class Player extends Entity {
     // entity definition
@@ -21,9 +23,17 @@ class Player extends Entity {
     jumpHeld = false;
     jumpHeldFrames = 0;
     facing = 1;
+    stunned = false;
+    stunTime = 0;
     constructor(args) {
         super(args);
         this.spawnPos = [...this.pos];
+    }
+    hurt(amt) {
+        if (this.stunned)
+            return;
+        this.stunned = true;
+        this.stunTime = World().state.ticks + 120;
     }
     die() {
         this.pos = [...this.spawnPos];
@@ -40,12 +50,21 @@ class Player extends Entity {
         }
         return Phys.jumpHeights[0][1];
     }
+    stompEnemy() {
+        this.vel[1] = SLT.buttonPressed(Buttons.Jump) ? -Phys.enemyJumpHeld : -Phys.enemyJump;
+        this.jumpHeld = true;
+    }
     update(ticks, dt) {
         const dir = this.disableControls ? 0 : SLT.buttonPressed(Buttons.Left) ? -1 : SLT.buttonPressed(Buttons.Right) ? 1 : 0;
         const jumpPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Jump);
         const shootPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Shoot);
         const slidePress = this.disableControls ? false : SLT.buttonPressed(Buttons.Down);
         let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
+        // remove stun effect if it's time
+        if (this.stunned && ticks > this.stunTime) {
+            this.stunned = false;
+            this.stunTime = 0;
+        }
         // checking again because if we're standing on something it should trigger
         if (grounded && this.collideEnt) {
             this.collideEnt.collide(this, Dir.Up);
@@ -132,6 +151,10 @@ class Player extends Entity {
         const animSpeed = this.pMeter == Phys.pMeterCapacity ? 4 : 8;
         this.frame = this.vel[0] == 0 ? 0 : ticks / animSpeed % 6;
         this.flipBits = this.facing < 0 ? 1 : 0;
+    }
+    draw() {
+        Draw.setColor(255, 255, 255, this.stunned ? 128 : 255);
+        Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, this.flipBits, 1, 1);
     }
 }
 export default Player;

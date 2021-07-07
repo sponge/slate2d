@@ -17,7 +17,6 @@ enum Frames {
 }
 
 class Slime extends Entity {
-  collidable = CollisionType.Platform;
   drawOfs: [number, number] = [-1, -4];
   sprite = Assets.find('slime');
   nextJump = 120;
@@ -29,6 +28,11 @@ class Slime extends Entity {
     super(args);
     this.flipBits = 1;
     this.dir = args.properties?.GoRight ?? true ? 1 : -1;
+  }
+
+  canCollide(other: Entity, dir: Dir) {
+    if (other.type == 'Player') return CollisionType.Platform;
+    else return CollisionType.Enabled;
   }
 
   update(ticks: number, dt: number) {
@@ -79,11 +83,14 @@ class Slime extends Entity {
   }
 
   collide(other: Entity, dir: Dir) {
-    if (other instanceof Player == false) {
+    if (other instanceof Player) {
+      other.stompEnemy();
+      this.destroyed = true;
+    }
+    else {
+      this.vel[0] *= -1
       return;
     }
-
-    this.destroyed = true;
   }
 }
 

@@ -19,7 +19,6 @@ var Frames;
     Frames[Frames["Squish"] = 10] = "Squish";
 })(Frames || (Frames = {}));
 class Bub extends Entity {
-    collidable = CollisionType.Platform;
     drawOfs = [-2, -5];
     sprite = Assets.find('bub');
     constructor(args) {
@@ -27,6 +26,12 @@ class Bub extends Entity {
         this.flipBits = 1;
         this.vel[0] = args.properties?.GoRight ?? true ? 0.25 : -0.25;
         this.flipBits = this.vel[0] > 0 ? 1 : 0;
+    }
+    canCollide(other, dir) {
+        if (other.type == 'Player')
+            return CollisionType.Platform;
+        else
+            return CollisionType.Enabled;
     }
     update(ticks, dt) {
         let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
@@ -46,10 +51,14 @@ class Bub extends Entity {
         }
     }
     collide(other, dir) {
-        if (other instanceof Player == false) {
+        if (other instanceof Player) {
+            other.stompEnemy();
+            this.destroyed = true;
+        }
+        else {
+            this.vel[0] *= -1;
             return;
         }
-        this.destroyed = true;
     }
 }
 export default Bub;

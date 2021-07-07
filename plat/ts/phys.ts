@@ -15,8 +15,8 @@ const Phys = {
   earlyJumpFrames: 6,
   lateJumpFrames: 6,
   terminalVelocity: 4,
-  enemyJumpHeld: 5.5,
-  enemyJump: 3,
+  enemyJumpHeld: 6.5,
+  enemyJump: 5.5,
   springJumpHeld: 6.5,
   springJump: 5.5,
   jumpHeights: [

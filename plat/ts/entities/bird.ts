@@ -43,7 +43,8 @@ class Bird extends Entity {
     this.frame = Math.floor(ticks / 8 % 4);
     this.frame = this.frame == 3 ? 1 : this.frame;
 
-    this.moveSolid(this.dir[0], this.dir[1]);
+    this.moveX(this.dir[0]);
+    this.moveY(this.dir[1]);
     this.moveAmt[0] += this.dir[0];
     this.moveAmt[1] += this.dir[1]
 
@@ -56,11 +57,15 @@ class Bird extends Entity {
   }
 
   collide(other: Entity, dir: Dir) {
-    if (other instanceof Player == false) {
-      return;
+    if (other instanceof Player) {
+      if (!other.stunned && dir == Dir.Up && other.max(1) <= this.center(1)) {
+        other.stompEnemy();
+        this.destroyed = true;
+      }
+      else {
+        other.hurt(1);
+      }
     }
-
-    this.destroyed = true;
   }
 }
 

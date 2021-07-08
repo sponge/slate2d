@@ -10,7 +10,6 @@ import Player from './player.js';
 import { dbg, dbgval } from '../printwin.js';
 
 class Bird extends Entity {
-  collidable = CollisionType.Trigger;
   drawOfs: [number, number] = [-1, -2];
   sprite = Assets.find('bird');
   delta: [number, number] = [0, 0];
@@ -39,6 +38,11 @@ class Bird extends Entity {
     this.dir = [dx, dy];
   }
 
+  canCollide(other: Entity, dir: Dir) {
+    if (other instanceof Player && !other.stunned && dir == Dir.Up) return CollisionType.Enabled;
+    else return CollisionType.Trigger;
+  }
+
   update(ticks: number, dt: number) {
     this.frame = Math.floor(ticks / 8 % 4);
     this.frame = this.frame == 3 ? 1 : this.frame;
@@ -60,7 +64,7 @@ class Bird extends Entity {
     if (other instanceof Player) {
       if (!other.stunned && dir == Dir.Up && other.max(1) <= this.center(1)) {
         other.stompEnemy();
-        this.destroyed = true;
+        this.die();
       }
       else {
         other.hurt(1);

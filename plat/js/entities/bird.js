@@ -4,7 +4,6 @@ import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
 import Player from './player.js';
 class Bird extends Entity {
-    collidable = CollisionType.Trigger;
     drawOfs = [-1, -2];
     sprite = Assets.find('bird');
     delta = [0, 0];
@@ -25,6 +24,12 @@ class Bird extends Entity {
         dy *= Math.sign(this.delta[1]) * 0.5;
         this.dir = [dx, dy];
     }
+    canCollide(other, dir) {
+        if (other instanceof Player && !other.stunned && dir == Dir.Up)
+            return CollisionType.Enabled;
+        else
+            return CollisionType.Trigger;
+    }
     update(ticks, dt) {
         this.frame = Math.floor(ticks / 8 % 4);
         this.frame = this.frame == 3 ? 1 : this.frame;
@@ -43,7 +48,7 @@ class Bird extends Entity {
         if (other instanceof Player) {
             if (!other.stunned && dir == Dir.Up && other.max(1) <= this.center(1)) {
                 other.stompEnemy();
-                this.destroyed = true;
+                this.die();
             }
             else {
                 other.hurt(1);

@@ -33,7 +33,8 @@ class Bub extends Entity {
   }
 
   canCollide(other: Entity, dir: Dir) {
-    if (other.type == 'Player') return CollisionType.Platform;
+    if (other instanceof Player && !other.stunned && dir == Dir.Up) return CollisionType.Enabled;
+    else if (other instanceof Player) return CollisionType.Trigger;
     else return CollisionType.Enabled;
   }
 
@@ -62,12 +63,16 @@ class Bub extends Entity {
 
   collide(other: Entity, dir: Dir) {
     if (other instanceof Player) {
-      other.stompEnemy();
-      this.destroyed = true;
+      if (!other.stunned && dir == Dir.Up && other.max(1) <= this.center(1)) {
+        other.stompEnemy();
+        this.die();
+      }
+      else {
+        other.hurt(1);
+      }
     }
     else {
-      this.vel[0] *= -1
-      return;
+      this.vel[0] *= -1;
     }
   }
 }

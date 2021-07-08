@@ -62,7 +62,7 @@ class Entity {
   max(dim: number) { return this.pos[dim] + this.size[dim] }
 
   hurt(amt: number) { }
-  die() { }
+  die() { this.destroyed = true; }
 
   getOppositeDir(dir: Dir) {
     switch (dir) {
@@ -92,22 +92,24 @@ class Entity {
     const opposite = this.getOppositeDir(dir);
 
     // iterate through all entities looking for a collision
+    this.collideEnt = undefined;
     for (let other of entities) {
       if (other == this) continue;
-      if (other.canCollide(this, opposite) == CollisionType.Disabled) continue;
 
       const intersects = rectIntersect(corners[0], this.size, other.pos, other.size);
-      if (this.canCollide(other, dir) == CollisionType.Enabled && other.canCollide(this, opposite) == CollisionType.Enabled && intersects) {
-        this.collideEnt = other;
-        return true;
-      }
-      // FIXME: duplicate for this is platform vs other is platform?
-      else if (other.canCollide(this, opposite) == CollisionType.Platform && dir == Dir.Down && intersects && corners[2][1] == other.pos[1]) {
-        this.collideEnt = other;
-        return true;
-      }
 
-      this.collideEnt = undefined;
+      if (intersects) {
+        if (other.canCollide(this, opposite) == CollisionType.Disabled) continue;
+
+        if (this.canCollide(other, dir) == CollisionType.Enabled && other.canCollide(this, opposite) == CollisionType.Enabled) {
+          this.collideEnt = other;
+          return true;
+        }
+        else if (other.canCollide(this, opposite) == CollisionType.Platform && dir == Dir.Down && corners[2][1] == other.pos[1]) {
+          this.collideEnt = other;
+          return true;
+        }
+      }
     }
 
     // check bottom middle point if its in a slope

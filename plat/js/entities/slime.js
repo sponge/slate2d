@@ -26,8 +26,10 @@ class Slime extends Entity {
         this.dir = args.properties?.GoRight ?? true ? 1 : -1;
     }
     canCollide(other, dir) {
-        if (other.type == 'Player')
-            return CollisionType.Platform;
+        if (other instanceof Player && !other.stunned && dir == Dir.Up)
+            return CollisionType.Enabled;
+        else if (other instanceof Player)
+            return CollisionType.Trigger;
         else
             return CollisionType.Enabled;
     }
@@ -73,11 +75,17 @@ class Slime extends Entity {
     }
     collide(other, dir) {
         if (other instanceof Player) {
-            other.stompEnemy();
-            this.destroyed = true;
+            if (!other.stunned && dir == Dir.Up && other.max(1) <= this.center(1)) {
+                other.stompEnemy();
+                this.die();
+            }
+            else {
+                other.hurt(1);
+            }
         }
         else {
-            this.vel[0] *= -1;
+            this.dir *= -1;
+            this.vel[0] *= -0.5;
             return;
         }
     }

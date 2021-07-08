@@ -10,6 +10,7 @@ import { randomRange } from './util.js';
 import { drawPrintWin, clearPrintWin } from './printwin.js';
 import EntityMappings from './entmap.js';
 import loadAllAssets from './assetlist.js';
+import SpinParticle from './entities/spinparticle.js';
 const scaleFactor = Math.floor(SLT.resolution().w / 384);
 const res = SLT.resolution();
 class Main {
@@ -159,5 +160,15 @@ class Main {
         Draw.submit();
     }
     ;
+    spawnDeathParticle(ent, frame) {
+        const deathEnt = new SpinParticle({});
+        deathEnt.pos = ent.pos;
+        deathEnt.sprite = ent.sprite;
+        deathEnt.frame = frame;
+        deathEnt.size = ent.size;
+        deathEnt.drawOfs = ent.drawOfs;
+        deathEnt.start = this.state.ticks;
+        this.state.entities.push(deathEnt);
+    }
 }
 export default Main;

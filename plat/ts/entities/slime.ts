@@ -6,6 +6,7 @@ import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
 import Player from './player.js';
 import Phys from '../phys.js';
+import World from '../world.js';
 
 enum Frames {
   Idle = 0,
@@ -28,6 +29,11 @@ class Slime extends Entity {
     super(args);
     this.flipBits = 1;
     this.dir = args.properties?.GoRight ?? true ? 1 : -1;
+  }
+
+  die() {
+    super.die();
+    World().spawnDeathParticle(this, Frames.Pain);
   }
 
   canCollide(other: Entity, dir: Dir) {

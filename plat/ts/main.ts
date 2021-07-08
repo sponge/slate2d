@@ -12,6 +12,7 @@ import Entity from './entity.js';
 import { drawPrintWin, clearPrintWin, dbgval } from './printwin.js';
 import EntityMappings from './entmap.js';
 import loadAllAssets from './assetlist.js';
+import SpinParticle from './entities/spinparticle.js';
 
 interface GameState {
   t: number;
@@ -208,6 +209,17 @@ class Main {
 
     Draw.submit();
   };
+
+  spawnDeathParticle(ent: Entity, frame: number) {
+    const deathEnt = new SpinParticle({});
+    deathEnt.pos = ent.pos;
+    deathEnt.sprite = ent.sprite;
+    deathEnt.frame = frame;
+    deathEnt.size = ent.size;
+    deathEnt.drawOfs = ent.drawOfs;
+    deathEnt.start = this.state.ticks;
+    this.state.entities.push(deathEnt);
+  }
 }
 
 export default Main;

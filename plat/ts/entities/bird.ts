@@ -38,6 +38,11 @@ class Bird extends Entity {
     this.dir = [dx, dy];
   }
 
+  die() {
+    super.die();
+    World().spawnDeathParticle(this, 3);
+  }
+
   canCollide(other: Entity, dir: Dir) {
     if (other instanceof Player && !other.stunned && dir == Dir.Up) return CollisionType.Enabled;
     else return CollisionType.Trigger;

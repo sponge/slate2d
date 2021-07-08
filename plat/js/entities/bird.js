@@ -2,6 +2,7 @@ import * as Assets from 'assets';
 import Entity from '../entity.js';
 import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
+import World from '../world.js';
 import Player from './player.js';
 class Bird extends Entity {
     drawOfs = [-1, -2];
@@ -23,6 +24,10 @@ class Bird extends Entity {
         dx *= Math.sign(this.delta[0]) * 0.5;
         dy *= Math.sign(this.delta[1]) * 0.5;
         this.dir = [dx, dy];
+    }
+    die() {
+        super.die();
+        World().spawnDeathParticle(this, 3);
     }
     canCollide(other, dir) {
         if (other instanceof Player && !other.stunned && dir == Dir.Up)

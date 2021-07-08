@@ -6,6 +6,7 @@ import Coin from './entities/coin.js';
 import Bird from './entities/bird.js';
 import Slime from './entities/slime.js';
 import Bub from './entities/bub.js';
+import SpinParticle from './entities/spinparticle.js';
 const EntityMappings = {
     'Player': Player,
     'Platform': Platform,
@@ -15,5 +16,6 @@ const EntityMappings = {
     'Bird': Bird,
     'Slime': Slime,
     'Bub': Bub,
+    'SpinParticle': SpinParticle,
 };
 export default EntityMappings;

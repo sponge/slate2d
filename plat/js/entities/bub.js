@@ -4,6 +4,7 @@ import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
 import Player from './player.js';
 import Phys from '../phys.js';
+import World from '../world.js';
 var Frames;
 (function (Frames) {
     Frames[Frames["Idle"] = 0] = "Idle";
@@ -26,6 +27,10 @@ class Bub extends Entity {
         this.flipBits = 1;
         this.vel[0] = args.properties?.GoRight ?? true ? 0.25 : -0.25;
         this.flipBits = this.vel[0] > 0 ? 1 : 0;
+    }
+    die() {
+        super.die();
+        World().spawnDeathParticle(this, Frames.Pain);
     }
     canCollide(other, dir) {
         if (other instanceof Player && !other.stunned && dir == Dir.Up)

@@ -60,6 +60,12 @@ class Player extends Entity {
         const shootPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Shoot);
         const slidePress = this.disableControls ? false : SLT.buttonPressed(Buttons.Down);
         let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
+        // reenable controls if not on spring, usually due to squishing an enemy
+        if (this.disableControls && this.collideEnt?.type != 'Spring') {
+            console.log('reenabling');
+            this.disableControls = false;
+            this.disableMovement = false;
+        }
         // remove stun effect if it's time
         if (this.stunned && ticks > this.stunTime) {
             this.stunned = false;

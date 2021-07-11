@@ -2,7 +2,7 @@ import * as Assets from 'assets';
 import Entity from '../entity.js';
 import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
-import Player from './player.js';
+import { Player } from './player.js';
 import World from '../world.js';
 var Frames;
 (function (Frames) {
@@ -47,4 +47,4 @@ class Ghost extends Entity {
         }
     }
 }
-export default Ghost;
+export { Ghost };

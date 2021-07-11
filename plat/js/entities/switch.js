@@ -25,4 +25,4 @@ class Switch extends Entity {
         this.destroyed = true;
     }
 }
-export default Switch;
+export { Switch };

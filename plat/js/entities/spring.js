@@ -3,7 +3,7 @@ import * as Assets from 'assets';
 import Entity from '../entity.js';
 import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
-import Player from './player.js';
+import { Player } from './player.js';
 import World from '../world.js';
 import Phys from '../phys.js';
 import Buttons from '../buttons.js';
@@ -52,4 +52,4 @@ class Spring extends Entity {
         }
     }
 }
-export default Spring;
+export { Spring };

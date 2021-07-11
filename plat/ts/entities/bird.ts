@@ -6,7 +6,7 @@ import Entity from '../entity.js';
 import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
 import World from '../world.js';
-import Player from './player.js';
+import { Player } from './player.js';
 import { dbg, dbgval } from '../printwin.js';
 
 class Bird extends Entity {
@@ -78,4 +78,4 @@ class Bird extends Entity {
   }
 }
 
-export default Bird;
+export { Bird };

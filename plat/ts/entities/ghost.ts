@@ -4,10 +4,9 @@ import * as Assets from 'assets';
 import Entity from '../entity.js';
 import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
-import Player from './player.js';
+import { Player } from './player.js';
 import Phys from '../phys.js';
 import World from '../world.js';
-import EntityMappings from '../entmap.js';
 
 enum Frames {
   Float1,
@@ -57,4 +56,4 @@ class Ghost extends Entity {
   }
 }
 
-export default Ghost;
+export { Ghost };

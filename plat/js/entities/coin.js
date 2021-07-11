@@ -2,7 +2,7 @@ import * as Assets from 'assets';
 import Entity from '../entity.js';
 import CollisionType from '../collisiontype.js';
 import World from '../world.js';
-import Player from './player.js';
+import { Player } from './player.js';
 class Coin extends Entity {
     collidable = CollisionType.Trigger;
     sprite = Assets.find('coin');
@@ -20,4 +20,4 @@ class Coin extends Entity {
         World().state.currCoins++;
     }
 }
-export default Coin;
+export { Coin };

@@ -4,7 +4,7 @@ import * as Assets from 'assets';
 import Entity from '../entity.js';
 import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
-import Player from './player.js';
+import { Player } from './player.js';
 import Phys from '../phys.js';
 import World from '../world.js';
 
@@ -107,4 +107,4 @@ class Slime extends Entity {
   }
 }
 
-export default Slime;
+export { Slime };

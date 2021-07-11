@@ -49,4 +49,4 @@ class Platform extends Entity {
   }
 }
 
-export default Platform;
+export { Platform };

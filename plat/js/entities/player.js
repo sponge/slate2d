@@ -162,4 +162,4 @@ class Player extends Entity {
         Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, this.flipBits, 1, 1);
     }
 }
-export default Player;
+export { Player };

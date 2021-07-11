@@ -35,4 +35,4 @@ class SpinParticle extends Entity {
 
 }
 
-export default SpinParticle;
+export { SpinParticle };

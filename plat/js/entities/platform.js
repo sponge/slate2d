@@ -40,4 +40,4 @@ class Platform extends Entity {
         this.moving = !this.moving;
     }
 }
-export default Platform;
+export { Platform };

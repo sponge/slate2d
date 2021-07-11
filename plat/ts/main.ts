@@ -6,13 +6,15 @@ import * as Assets from 'assets';
 import Camera from './camera.js';
 import { LDTK } from './ldtk.js';
 import Buttons from './buttons.js';
-import Player from './entities/player.js';
+import { Player } from './entities/player.js';
 import { randomRange } from './util.js';
 import Entity from './entity.js';
 import { drawPrintWin, clearPrintWin, dbgval } from './printwin.js';
-import EntityMappings from './entmap.js';
+import * as EntMap from './entmap.js';
 import loadAllAssets from './assetlist.js';
-import SpinParticle from './entities/spinparticle.js';
+import { SpinParticle } from './entities/spinparticle.js';
+
+const EntityMappings = EntMap as { [key: string]: any };
 
 interface GameState {
   t: number;

@@ -35,4 +35,4 @@ class Switch extends Entity {
   }
 }
 
-export default Switch;
+export { Switch };

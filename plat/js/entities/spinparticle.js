@@ -28,4 +28,4 @@ class SpinParticle extends Entity {
         Draw.translate(-this.center(0), -this.center(1));
     }
 }
-export default SpinParticle;
+export { SpinParticle };

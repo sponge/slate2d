@@ -6,7 +6,7 @@ import Entity from '../entity.js';
 import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
 import World from '../world.js';
-import Player from './player.js';
+import { Player } from './player.js';
 
 class Coin extends Entity {
   collidable = CollisionType.Trigger;
@@ -30,4 +30,4 @@ class Coin extends Entity {
   }
 }
 
-export default Coin;
+export { Coin };

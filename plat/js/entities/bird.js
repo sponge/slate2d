@@ -3,7 +3,7 @@ import Entity from '../entity.js';
 import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
 import World from '../world.js';
-import Player from './player.js';
+import { Player } from './player.js';
 class Bird extends Entity {
     drawOfs = [-1, -2];
     sprite = Assets.find('bird');
@@ -61,4 +61,4 @@ class Bird extends Entity {
         }
     }
 }
-export default Bird;
+export { Bird };

@@ -193,4 +193,4 @@ class Player extends Entity {
   }
 }
 
-export default Player;
+export { Player };

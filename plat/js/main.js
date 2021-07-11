@@ -5,12 +5,13 @@ import * as Assets from 'assets';
 import Camera from './camera.js';
 import { LDTK } from './ldtk.js';
 import Buttons from './buttons.js';
-import Player from './entities/player.js';
+import { Player } from './entities/player.js';
 import { randomRange } from './util.js';
 import { drawPrintWin, clearPrintWin } from './printwin.js';
-import EntityMappings from './entmap.js';
+import * as EntMap from './entmap.js';
 import loadAllAssets from './assetlist.js';
-import SpinParticle from './entities/spinparticle.js';
+import { SpinParticle } from './entities/spinparticle.js';
+const EntityMappings = EntMap;
 const scaleFactor = Math.floor(SLT.resolution().w / 384);
 const res = SLT.resolution();
 class Main {

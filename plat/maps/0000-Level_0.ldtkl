@@ -453,6 +453,17 @@
 							"params": [ true ]
 						}]
 					}]
+				},
+				{
+					"__identifier": "Ghost",
+					"__grid": [9,11],
+					"__pivot": [0,0],
+					"__tile": null,
+					"width": 14,
+					"height": 15,
+					"defUid": 132,
+					"px": [144,176],
+					"fieldInstances": []
 				}
 			]
 		},

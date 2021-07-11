@@ -7,29 +7,23 @@ import CollisionType from '../collisiontype.js';
 import Player from './player.js';
 import Phys from '../phys.js';
 import World from '../world.js';
+import EntityMappings from '../entmap.js';
 
 enum Frames {
-  Idle = 0,
-  Blink,
+  Float1,
+  Float2,
+  Float3,
+  Float4,
   Pain,
-  Run1,
-  Run2,
-  Run3,
-  Run4,
-  Run5,
-  Run6,
-  Run7,
-  Squish
 }
 
-class Bub extends Entity {
-  drawOfs: [number, number] = [-2, -5];
-  sprite = Assets.find('bub');
+class Ghost extends Entity {
+  drawOfs: [number, number] = [-2, -1];
+  sprite = Assets.find('ghost');
 
   constructor(args: { [key: string]: any }) {
     super(args);
-    this.vel[0] = args.properties?.GoRight ?? true ? 0.25 : -0.25;
-    this.flipBits = this.vel[0] > 0 ? 1 : 0;
+    this.flipBits = 1;
   }
 
   die() {
@@ -39,31 +33,12 @@ class Bub extends Entity {
 
   canCollide(other: Entity, dir: Dir) {
     if (other instanceof Player && !other.stunned && dir == Dir.Up) return CollisionType.Enabled;
-    else if (other instanceof Player) return CollisionType.Trigger;
-    else return CollisionType.Enabled;
+    else return CollisionType.Trigger;
   }
 
   update(ticks: number, dt: number) {
-    let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
 
-    this.vel[1] = grounded ? 0 : this.vel[1] + Phys.enemyGravity;
-
-    if (!this.moveX(this.vel[0])) {
-      this.vel[0] *= -1;
-    }
-
-    if (!this.moveY(this.vel[1])) {
-      this.vel[1] = 0;
-    }
-
-    this.flipBits = this.vel[0] > 0 ? 1 : 0;
-
-    if (this.vel[1] != 0) {
-      this.frame = Frames.Pain;
-    }
-    else if (grounded) {
-      this.frame = (ticks / 8) % (Frames.Run7 - Frames.Run1) + Frames.Run1;
-    }
+    this.frame = Math.floor(ticks / 8 % 4);
   }
 
   collide(other: Entity, dir: Dir) {
@@ -82,4 +57,4 @@ class Bub extends Entity {
   }
 }
 
-export default Bub;
+export default Ghost;

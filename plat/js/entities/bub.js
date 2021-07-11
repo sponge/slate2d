@@ -24,7 +24,6 @@ class Bub extends Entity {
     sprite = Assets.find('bub');
     constructor(args) {
         super(args);
-        this.flipBits = 1;
         this.vel[0] = args.properties?.GoRight ?? true ? 0.25 : -0.25;
         this.flipBits = this.vel[0] > 0 ? 1 : 0;
     }

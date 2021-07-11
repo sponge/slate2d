@@ -76,7 +76,6 @@ class Player extends Entity {
 
     // reenable controls if not on spring, usually due to squishing an enemy
     if (this.disableControls && this.collideEnt?.type != 'Spring') {
-      console.log('reenabling');
       this.disableControls = false;
       this.disableMovement = false;
     }

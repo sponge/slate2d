@@ -168,6 +168,7 @@ class Main {
         deathEnt.size = ent.size;
         deathEnt.drawOfs = ent.drawOfs;
         deathEnt.start = this.state.ticks;
+        deathEnt.vel[0] *= this.player.center(0) > ent.center(0) ? -1 : 1;
         this.state.entities.push(deathEnt);
     }
 }

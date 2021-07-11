@@ -7,6 +7,7 @@ class SpinParticle extends Entity {
     type = 'SpinParticle';
     collidable = CollisionType.Disabled;
     start = 0;
+    worldCollide = false;
     constructor(args) {
         super(args);
         this.vel = [1, -3];

@@ -135,11 +135,11 @@ class Main {
         this.map.draw('BGTiles');
         this.map.draw('BGWorld');
         this.map.draw('BGDecoration');
+        this.map.draw('Collision');
         for (let i = this.state.entities.length - 1; i >= 0; i--) {
             this.state.entities[i].draw();
         }
         Draw.setColor(255, 255, 255, 255);
-        this.map.draw('Collision');
         this.camera.drawEnd();
         // player hud
         // coin display 

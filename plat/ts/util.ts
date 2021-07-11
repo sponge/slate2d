@@ -1,4 +1,5 @@
-import Entity from "./entity";
+import Dir from "./dir.js";
+import Entity from "./entity.js";
 
 const clamp = (num: number, min: number, max: number) => Math.min(Math.max(num, min), max);
 
@@ -19,4 +20,15 @@ const pointInRect = (px: number, py: number, x: number, y: number, w: number, h:
 
 const lerp = (a: number, b: number, t: number) => (1 - t) * a + t * b;
 
-export { clamp, randomRange, entIntersect, rectIntersect, pointInRect, lerp };
+function getOppositeDir(dir: Dir) {
+  switch (dir) {
+    case Dir.Down: return Dir.Up;
+    case Dir.Up: return Dir.Down;
+    case Dir.Left: return Dir.Right;
+    case Dir.Right: return Dir.Left;
+  }
+
+  return Dir.None;
+}
+
+export { clamp, randomRange, entIntersect, rectIntersect, pointInRect, lerp, getOppositeDir };

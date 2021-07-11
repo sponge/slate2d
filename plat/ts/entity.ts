@@ -1,6 +1,6 @@
 import * as SLT from 'slate2d';
 import * as Draw from 'draw';
-import { clamp, entIntersect, rectIntersect } from './util.js';
+import { clamp, entIntersect, getOppositeDir, rectIntersect } from './util.js';
 import Dir from './dir.js';
 import Tiles from './tiles.js';
 import CollisionType from './collisiontype.js';
@@ -21,7 +21,10 @@ class Entity {
   sprite = 0;
   frame = 0;
   flipBits = 0;
+  // default reaction if canCollide is not overridden
   collidable: CollisionType;
+  // whether this entity collides with the world, or moveSolid entities
+  worldCollide = true;
 
   collideEnt: Entity | undefined;
   collideTile = Tiles.Empty;
@@ -64,17 +67,6 @@ class Entity {
   hurt(amt: number) { }
   die() { this.destroyed = true; }
 
-  getOppositeDir(dir: Dir) {
-    switch (dir) {
-      case Dir.Down: return Dir.Up;
-      case Dir.Up: return Dir.Down;
-      case Dir.Left: return Dir.Right;
-      case Dir.Right: return Dir.Left;
-    }
-
-    return Dir.None;
-  }
-
   // returns true/false if there is a collision at the specified coordinates.
   // this only queries the world, but it will update this.collideEnt
   collideAt(x: number, y: number, dir: Dir) {
@@ -89,7 +81,7 @@ class Entity {
 
     const layer = World().map.layersByName.Collision;
     const entities = World().state.entities;
-    const opposite = this.getOppositeDir(dir);
+    const opposite = getOppositeDir(dir);
 
     // iterate through all entities looking for a collision
     this.collideEnt = undefined;
@@ -119,46 +111,48 @@ class Entity {
 
     this.anyInSlope = false;
 
-    // check if we're in the solid part of the slope (always 45 degrees)
-    if (slopes.includes(tid)) {
-      const localX = bottomMiddle[0] % layer.tileSize;
-      const localY = bottomMiddle[1] % layer.tileSize;
-      const minY = tid == Tiles.SlopeR ? localX : layer.tileSize - localX;
-      this.collideTile = localY >= minY ? tid : Tiles.Empty;
-      this.anyInSlope = true;
-      return localY >= minY;
-    }
+    if (this.worldCollide) {
+      // check if we're in the solid part of the slope (always 45 degrees)
+      if (slopes.includes(tid)) {
+        const localX = bottomMiddle[0] % layer.tileSize;
+        const localY = bottomMiddle[1] % layer.tileSize;
+        const minY = tid == Tiles.SlopeR ? localX : layer.tileSize - localX;
+        this.collideTile = localY >= minY ? tid : Tiles.Empty;
+        this.anyInSlope = true;
+        return localY >= minY;
+      }
 
-    // check against tilemap
-    // iterate through corners. note this will currently break if entities are > tileSize
-    for (let corner of corners) {
-      const tx = Math.floor(corner[0] / layer.tileSize);
-      const ty = clamp(Math.floor(corner[1] / layer.tileSize), 0, layer.height);
-      const tid = layer.tiles[ty * layer.width + tx];
-      //if there's a tile in the intgrid...
-      if (tx < 0 || tx >= layer.width || tid !== Tiles.Empty) {
-        if (tid == Tiles.Dirtback) {
-          continue;
-        }
-
-        // if it's a ground sloped tile, only bottom middle pixel should collide with it
-        if (slopes.includes(tid)) {
-          this.anyInSlope = true;
-          continue;
-        }
-
-        // if it's a platform, check if dir is down, and only block if bottom of entity
-        // intersects with the first pixel of the platform block
-        if (tid == Tiles.Platform) {
-          if (dir == Dir.Down && corner[1] == corners[2][1] && corner[1] % layer.tileSize == 0) {
-            this.collideTile = tid;
-            return true;
+      // check against tilemap
+      // iterate through corners. note this will currently break if entities are > tileSize
+      for (let corner of corners) {
+        const tx = Math.floor(corner[0] / layer.tileSize);
+        const ty = clamp(Math.floor(corner[1] / layer.tileSize), 0, layer.height);
+        const tid = layer.tiles[ty * layer.width + tx];
+        //if there's a tile in the intgrid...
+        if (tx < 0 || tx >= layer.width || tid !== Tiles.Empty) {
+          if (tid == Tiles.Dirtback) {
+            continue;
           }
-          continue;
-        }
 
-        this.collideTile = tid;
-        return true;
+          // if it's a ground sloped tile, only bottom middle pixel should collide with it
+          if (slopes.includes(tid)) {
+            this.anyInSlope = true;
+            continue;
+          }
+
+          // if it's a platform, check if dir is down, and only block if bottom of entity
+          // intersects with the first pixel of the platform block
+          if (tid == Tiles.Platform) {
+            if (dir == Dir.Down && corner[1] == corners[2][1] && corner[1] % layer.tileSize == 0) {
+              this.collideTile = tid;
+              return true;
+            }
+            continue;
+          }
+
+          this.collideTile = tid;
+          return true;
+        }
       }
     }
 
@@ -179,7 +173,7 @@ class Entity {
     const sign = Math.sign(move);
 
     const dir = dim == 0 ? (sign > 0 ? Dir.Right : Dir.Left) : (sign > 0 ? Dir.Down : Dir.Up);
-    let opposite = this.getOppositeDir(dir);
+    let opposite = getOppositeDir(dir);
 
     let fullMove = true;
     while (move != 0) {
@@ -223,6 +217,7 @@ class Entity {
 
   getRidingEntities() {
     return World().state.entities.filter(other =>
+      other.worldCollide &&
       !entIntersect(this, other) &&
       rectIntersect(this.pos, this.size, [other.pos[0], other.pos[1] + 1], other.size)
     );
@@ -255,7 +250,7 @@ class Entity {
         if (other == this) continue;
 
         // if collision is enabled and the other entity intersects with the post move position, try and push them out of the way
-        const intersects = currCollidable == CollisionType.Enabled && entIntersect(this, other);
+        const intersects = currCollidable == CollisionType.Enabled && other.worldCollide && entIntersect(this, other);
         if (intersects) {
           // find minimum amount of movement to resolve intersection.
           const amt = Math.sign(move) > 0 ? (this.pos[dim] + this.size[dim]) - other.pos[dim] : this.pos[dim] - (other.pos[dim] + other.size[dim]);

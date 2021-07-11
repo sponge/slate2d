@@ -36,6 +36,7 @@ class Bird extends Entity {
     dy *= Math.sign(this.delta[1]) * 0.5;
 
     this.dir = [dx, dy];
+    this.worldCollide = false;
   }
 
   die() {

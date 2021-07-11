@@ -19,21 +19,21 @@ you off the ground.
 ## Instructions
 
 Slate2D uses [Premake5](https://premake.github.io/) to generate project files. The engine should generally run on Windows, Mac, Linux,
-and WASM/Emscripten, but only Windows and Mac are often checked. Run a premake command such as `premake5 vs2017` to generate the project,
+and WASM/Emscripten, but only Windows and Mac are often checked. Run a premake command such as `premake5 vs2019` to generate the project,
 or `premake5 --help` to see extra options specific to the project. An attempt has been made to make it build clean out of the box. This
 has been confirmed to work on *two* different computers!
 
 ## Other features
 - Asset loader to let you work with asset handles instead of files
-  - PNG images
-  - Spritesheets: Minimize draw calls by loading a sprite atlas
+  - PNG images: Including alpha channels
+  - Spritesheets: Minimize draw calls by drawing subimages
   - Fonts: TTF and sprite-based, drawn out of an atlas
   - Audio: OGG and tracker formats
-  - Tilemaps: Load and draw TMX maps
+  - Tilemaps: Draw a grid of tiles based on an integer array
   - Shaders: Customize drawing of shapes and sprites
   - Canvas: Draw onto an off-screen texture
   - Text to Speech: The most important
-- Built in object inspector for Wren objects
+- Built in object inspector for scripting objects
 - Watch for changed files, and run a command on modification
 - Optional automatic sprite atlas packer
 - No documentation

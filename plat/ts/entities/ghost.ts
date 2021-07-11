@@ -7,6 +7,7 @@ import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
 import Phys from '../phys.js';
 import World from '../world.js';
+import { clamp } from '../util.js';
 
 enum Frames {
   Idle,
@@ -74,12 +75,14 @@ class Ghost extends Entity {
       case States.Float:
         if (this.nextState == States.None) {
           this.nextState = States.Idle;
-          this.nextStateTime = ticks + 110;
+          this.nextStateTime = ticks + 180;
         }
 
         const player = World().player;
-        this.vel[0] = Math.sign(player.center(0) - this.center(0)) * 0.5;
-        this.vel[1] = Math.sign(player.center(1) - this.center(1)) * 0.5;
+        this.vel[0] += Math.sign(player.center(0) - this.center(0)) * 0.03;
+        this.vel[1] += Math.sign(player.center(1) - this.center(1)) * 0.03;
+        this.vel[0] = clamp(this.vel[0], -0.6, 0.6);
+        this.vel[1] = clamp(this.vel[1], -0.6, 0.6);
 
         this.frame = Math.floor(ticks / 8 % 4) + Frames.Float1;
         if (this.vel[0] != 0) {

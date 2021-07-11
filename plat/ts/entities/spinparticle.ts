@@ -31,7 +31,6 @@ class SpinParticle extends Entity {
     Draw.sprite(this.sprite, this.frame, -this.size[0] / 2 + this.drawOfs[0], -this.size[1] / 2 + this.drawOfs[1], 1, this.flipBits, 1, 1);
     Draw.rotate(-rotate);
     Draw.translate(-this.center(0), -this.center(1));
-
   }
 
 }

@@ -11,6 +11,7 @@ import { drawPrintWin, clearPrintWin } from './printwin.js';
 import * as EntMap from './entmap.js';
 import loadAllAssets from './assetlist.js';
 import { SpinParticle } from './entities/spinparticle.js';
+import { PuffParticle } from './entities/puffparticle.js';
 const EntityMappings = EntMap;
 const scaleFactor = Math.floor(SLT.resolution().w / 384);
 const res = SLT.resolution();
@@ -171,6 +172,10 @@ class Main {
         deathEnt.start = this.state.ticks;
         deathEnt.vel[0] *= Math.sign(ent.center(0) - this.player.center(0));
         this.state.entities.push(deathEnt);
+        const puffEnt = new PuffParticle({});
+        puffEnt.pos = [...ent.pos];
+        puffEnt.start = this.state.ticks;
+        this.state.entities.push(puffEnt);
     }
 }
 export default Main;

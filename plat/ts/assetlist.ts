@@ -83,6 +83,15 @@ const AssetList: Asset[] = [
     spriteWidth: 18,
     spriteHeight: 16,
   },
+  {
+    type: 'sprite',
+    name: 'puff',
+    path: 'gfx/puff.png',
+    marginX: 0,
+    marginY: 0,
+    spriteWidth: 16,
+    spriteHeight: 16,
+  },
 ];
 
 function loadAllAssets() {

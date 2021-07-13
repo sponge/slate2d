@@ -50,6 +50,7 @@ class Spring extends Entity {
 
   collide(other: Entity, dir: Dir) {
     if (dir != Dir.Up) return;
+    if (!other.worldCollide) return;
 
     if (!this.activated) {
       this.activated = true;

@@ -42,6 +42,8 @@ class Spring extends Entity {
     collide(other, dir) {
         if (dir != Dir.Up)
             return;
+        if (!other.worldCollide)
+            return;
         if (!this.activated) {
             this.activated = true;
             this.activateTicks = World().state.ticks + this.delay;

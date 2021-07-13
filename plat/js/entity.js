@@ -51,6 +51,7 @@ class Entity {
     center(dim) { return this.pos[dim] + this.size[dim] / 2; }
     min(dim) { return this.pos[dim]; }
     max(dim) { return this.pos[dim] + this.size[dim]; }
+    canHurt(other) { return other.type == 'Player'; }
     hurt(amt) { }
     die() { this.destroyed = true; }
     // returns true/false if there is a collision at the specified coordinates.

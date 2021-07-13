@@ -64,6 +64,7 @@ class Entity {
   min(dim: number) { return this.pos[dim] }
   max(dim: number) { return this.pos[dim] + this.size[dim] }
 
+  canHurt(other: Entity) { return other.type == 'Player' }
   hurt(amt: number) { }
   die() { this.destroyed = true; }
 

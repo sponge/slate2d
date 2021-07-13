@@ -15,7 +15,7 @@ var Frames;
     Frames[Frames["Fall"] = 5] = "Fall";
 })(Frames || (Frames = {}));
 class Slime extends Entity {
-    drawOfs = [-1, -4];
+    drawOfs = [-1, -6];
     sprite = Assets.find('slime');
     nextJump = 120;
     jumping = false;
@@ -31,7 +31,7 @@ class Slime extends Entity {
         World().spawnDeathParticle(this, Frames.Pain);
     }
     canCollide(other, dir) {
-        if (other instanceof Player && !other.stunned && dir == Dir.Up)
+        if (other instanceof Player && other.canHurt(this) && dir == Dir.Up)
             return CollisionType.Enabled;
         else if (other instanceof Player)
             return CollisionType.Trigger;
@@ -80,7 +80,7 @@ class Slime extends Entity {
     }
     collide(other, dir) {
         if (other instanceof Player) {
-            if (!other.stunned && dir == Dir.Up && other.max(1) <= this.center(1)) {
+            if (other.canHurt(this) && dir == Dir.Up && other.max(1) <= this.center(1)) {
                 other.stompEnemy();
                 this.die();
             }

@@ -43,12 +43,12 @@ class Ghost extends Entity {
   }
 
   canCollide(other: Entity, dir: Dir) {
-    if (other instanceof Player && !other.stunned && dir == Dir.Up) return CollisionType.Enabled;
+    if (other instanceof Player && other.canHurt(this) && dir == Dir.Up) return CollisionType.Enabled;
     else return CollisionType.Trigger;
   }
 
   update(ticks: number, dt: number) {
-    if (ticks >= this.nextStateTime) {
+    if (this.nextStateTime > 0 && ticks >= this.nextStateTime) {
       this.state = this.nextState;
       this.nextState = States.None;
     }
@@ -97,7 +97,7 @@ class Ghost extends Entity {
 
   collide(other: Entity, dir: Dir) {
     if (other instanceof Player) {
-      if (!other.stunned && dir == Dir.Up && other.max(1) <= this.center(1)) {
+      if (other.canHurt(this) && dir == Dir.Up && other.max(1) <= this.center(1)) {
         other.stompEnemy();
         this.die();
       }

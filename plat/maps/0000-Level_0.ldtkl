@@ -434,24 +434,24 @@
 				},
 				{
 					"__identifier": "Ghost",
-					"__grid": [9,11],
+					"__grid": [16,13],
 					"__pivot": [0,0],
 					"__tile": null,
 					"width": 14,
 					"height": 14,
 					"defUid": 132,
-					"px": [144,176],
+					"px": [256,208],
 					"fieldInstances": []
 				},
 				{
 					"__identifier": "Hermit",
-					"__grid": [11,15],
+					"__grid": [8,15],
 					"__pivot": [0,1],
 					"__tile": null,
-					"width": 16,
-					"height": 13,
+					"width": 15,
+					"height": 12,
 					"defUid": 133,
-					"px": [176,256],
+					"px": [128,256],
 					"fieldInstances": []
 				}
 			]

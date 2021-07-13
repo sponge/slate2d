@@ -36,13 +36,13 @@ class Ghost extends Entity {
         World().spawnDeathParticle(this, Frames.Pain);
     }
     canCollide(other, dir) {
-        if (other instanceof Player && !other.stunned && dir == Dir.Up)
+        if (other instanceof Player && other.canHurt(this) && dir == Dir.Up)
             return CollisionType.Enabled;
         else
             return CollisionType.Trigger;
     }
     update(ticks, dt) {
-        if (ticks >= this.nextStateTime) {
+        if (this.nextStateTime > 0 && ticks >= this.nextStateTime) {
             this.state = this.nextState;
             this.nextState = States.None;
         }
@@ -82,7 +82,7 @@ class Ghost extends Entity {
     }
     collide(other, dir) {
         if (other instanceof Player) {
-            if (!other.stunned && dir == Dir.Up && other.max(1) <= this.center(1)) {
+            if (other.canHurt(this) && dir == Dir.Up && other.max(1) <= this.center(1)) {
                 other.stompEnemy();
                 this.die();
             }

@@ -18,7 +18,7 @@ enum Frames {
 }
 
 class Slime extends Entity {
-  drawOfs: [number, number] = [-1, -4];
+  drawOfs: [number, number] = [-1, -6];
   sprite = Assets.find('slime');
   nextJump = 120;
   jumping = false;
@@ -37,7 +37,7 @@ class Slime extends Entity {
   }
 
   canCollide(other: Entity, dir: Dir) {
-    if (other instanceof Player && !other.stunned && dir == Dir.Up) return CollisionType.Enabled;
+    if (other instanceof Player && other.canHurt(this) && dir == Dir.Up) return CollisionType.Enabled;
     else if (other instanceof Player) return CollisionType.Trigger;
     else return CollisionType.Enabled;
   }
@@ -91,7 +91,7 @@ class Slime extends Entity {
 
   collide(other: Entity, dir: Dir) {
     if (other instanceof Player) {
-      if (!other.stunned && dir == Dir.Up && other.max(1) <= this.center(1)) {
+      if (other.canHurt(this) && dir == Dir.Up && other.max(1) <= this.center(1)) {
         other.stompEnemy();
         this.die();
       }

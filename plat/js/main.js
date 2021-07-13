@@ -7,7 +7,7 @@ import { LDTK } from './ldtk.js';
 import Buttons from './buttons.js';
 import { Player } from './entities/player.js';
 import { randomRange } from './util.js';
-import { drawPrintWin, clearPrintWin } from './printwin.js';
+import { drawPrintWin, clearPrintWin, setRetain } from './printwin.js';
 import * as EntMap from './entmap.js';
 import loadAllAssets from './assetlist.js';
 import { SpinParticle } from './entities/spinparticle.js';
@@ -84,6 +84,7 @@ class Main {
         this.accumulator += dt;
         while (this.accumulator > 0.0164) {
             clearPrintWin();
+            setRetain(true);
             this.state.t += 1 / 60;
             this.accumulator -= 0.0175;
             this.accumulator = Math.max(0, this.accumulator);
@@ -98,6 +99,7 @@ class Main {
                 }
             }
             //SLT.printWin('frame', 'frame', true);
+            setRetain(false);
         }
         drawPrintWin();
         SLT.showObj('main class', this);

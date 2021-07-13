@@ -38,7 +38,7 @@ const scaleFactor = Math.floor(SLT.resolution().w / 384);
 const res = SLT.resolution();
 
 class Main {
-  res = { w: res.w / scaleFactor, h: res.h / scaleFactor };
+  res = { w: Math.floor(res.w / scaleFactor), h: Math.floor(res.h / scaleFactor) };
   map: LDTK;
   camera = new Camera(this.res.w, this.res.h);
   accumulator = 0;
@@ -157,8 +157,11 @@ class Main {
       const speed = (i + 1) * 0.25;
       const x = Math.floor(((bg.x - this.camera.x) * speed) % bg.w);
       const y = Math.floor(bg.y + camYoffset);
-      Draw.image(bg.id, x, y, 0, 0, 1, 0, 0, 0);
-      Draw.image(bg.id, x + bg.w, y, 0, 0, 1, 0, 0, 0);
+      let bgx = x;
+      while (bgx < res.w) {
+        Draw.image(bg.id, bgx, y, 0, 0, 1, 0, 0, 0);
+        bgx += bg.w;
+      }
     });
 
     // clouds which scroll, no parallax

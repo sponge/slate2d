@@ -20,6 +20,8 @@ class Platform extends Entity {
         this.start = Math.min(a, b);
         this.end = Math.max(a, b);
     }
+    hurt(amt) { }
+    die() { }
     update(ticks, dt) {
         if (!this.moving)
             return;

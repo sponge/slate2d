@@ -25,6 +25,9 @@ class Platform extends Entity {
     this.end = Math.max(a, b);
   }
 
+  hurt(amt: number) { }
+  die() { }
+
   update(ticks: number, dt: number) {
     if (!this.moving) return;
 

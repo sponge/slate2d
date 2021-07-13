@@ -52,7 +52,7 @@ class Entity {
     min(dim) { return this.pos[dim]; }
     max(dim) { return this.pos[dim] + this.size[dim]; }
     canHurt(other) { return other.type == 'Player'; }
-    hurt(amt) { }
+    hurt(amt) { this.die(); }
     die() { this.destroyed = true; }
     // returns true/false if there is a collision at the specified coordinates.
     // this only queries the world, but it will update this.collideEnt
@@ -225,9 +225,15 @@ class Entity {
     }
     *findTriggers() {
         for (let other of World().state.entities) {
-            if (!other.destroyed && other.canCollide(this, Dir.None) == CollisionType.Trigger && entIntersect(this, other)) {
-                yield other;
-            }
+            if (this == other)
+                continue;
+            if (other.destroyed)
+                continue;
+            if (other.canCollide(this, Dir.None) != CollisionType.Trigger)
+                continue;
+            if (!entIntersect(this, other))
+                continue;
+            yield other;
         }
     }
 }

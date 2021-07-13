@@ -91,6 +91,15 @@ const AssetList = [
         spriteWidth: 16,
         spriteHeight: 16,
     },
+    {
+        type: 'sprite',
+        name: 'hermit',
+        path: 'gfx/hermit.png',
+        marginX: 0,
+        marginY: 0,
+        spriteWidth: 19,
+        spriteHeight: 13,
+    },
 ];
 function loadAllAssets() {
     for (const asset of AssetList) {

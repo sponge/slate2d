@@ -359,28 +359,6 @@
 				},
 				{
 					"__identifier": "Bub",
-					"__grid": [11,15],
-					"__pivot": [0.5,1],
-					"__tile": null,
-					"width": 12,
-					"height": 11,
-					"defUid": 129,
-					"px": [184,256],
-					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 131, "realEditorValues": [] }]
-				},
-				{
-					"__identifier": "Bub",
-					"__grid": [13,15],
-					"__pivot": [0.5,1],
-					"__tile": null,
-					"width": 12,
-					"height": 11,
-					"defUid": 129,
-					"px": [216,256],
-					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 131, "realEditorValues": [] }]
-				},
-				{
-					"__identifier": "Bub",
 					"__grid": [24,16],
 					"__pivot": [0.5,1],
 					"__tile": null,
@@ -463,6 +441,17 @@
 					"height": 14,
 					"defUid": 132,
 					"px": [144,176],
+					"fieldInstances": []
+				},
+				{
+					"__identifier": "Hermit",
+					"__grid": [11,15],
+					"__pivot": [0,1],
+					"__tile": null,
+					"width": 16,
+					"height": 13,
+					"defUid": 133,
+					"px": [176,256],
 					"fieldInstances": []
 				}
 			]

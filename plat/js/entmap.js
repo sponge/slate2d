@@ -9,3 +9,4 @@ export * from './entities/bub.js';
 export * from './entities/spinparticle.js';
 export * from './entities/ghost.js';
 export * from './entities/puffparticle.js';
+export * from './entities/hermit.js';

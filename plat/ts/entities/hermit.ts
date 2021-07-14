@@ -72,7 +72,7 @@ class Hermit extends Entity {
     this.moveX(this.vel[0]);
     this.moveY(this.vel[1]);
 
-    if (this.vel[0]! + 0) this.flipBits = this.vel[0] < 0 ? 1 : 0;
+    if (this.vel[0] != 0) this.flipBits = this.vel[0] < 0 ? 1 : 0;
   }
 
   collide(other: Entity, dir: Dir) {

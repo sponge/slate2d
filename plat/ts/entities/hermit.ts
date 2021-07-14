@@ -69,15 +69,7 @@ class Hermit extends Entity {
         break;
     }
 
-    if (!this.moveX(this.vel[0])) {
-      if (this.collideEnt) {
-        this.collide(this.collideEnt, this.vel[0] > 0 ? Dir.Right : Dir.Left);
-      }
-      else {
-        this.vel[0] *= -1;
-      }
-    }
-
+    this.moveX(this.vel[0]);
     this.moveY(this.vel[1]);
 
     if (this.vel[0]! + 0) this.flipBits = this.vel[0] < 0 ? 1 : 0;
@@ -100,7 +92,12 @@ class Hermit extends Entity {
         this.vel[0] = Math.sign(this.center(0) - other.center(0)) * this.spinSpeed;
       }
       else {
-        other.hurt(1);
+        if (other.type == 'World' && (dir == Dir.Left || dir == Dir.Right)) {
+          this.vel[0] *= -1;
+        }
+        else {
+          other.hurt(1);
+        }
       }
     }
   }

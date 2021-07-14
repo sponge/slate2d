@@ -48,13 +48,8 @@ class Bub extends Entity {
 
     this.vel[1] = grounded ? 0 : this.vel[1] + Phys.enemyGravity;
 
-    if (!this.moveX(this.vel[0])) {
-      this.vel[0] *= -1;
-    }
-
-    if (!this.moveY(this.vel[1])) {
-      this.vel[1] = 0;
-    }
+    this.moveX(this.vel[0]);
+    this.moveY(this.vel[1]);
 
     this.flipBits = this.vel[0] > 0 ? 1 : 0;
 
@@ -77,7 +72,8 @@ class Bub extends Entity {
       }
     }
     else {
-      this.vel[0] *= -1;
+      if (dir == Dir.Left || dir == Dir.Right) this.vel[0] *= -1;
+      if (dir == Dir.Up || dir == Dir.Down) this.vel[1] = 0;
     }
   }
 }

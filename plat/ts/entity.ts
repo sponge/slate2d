@@ -196,7 +196,6 @@ class Entity {
 
         if (this.collideEnt) {
           this.collideEnt.collide(this, opposite);
-          //this.collide(this.collideEnt, dir);
         }
         fullMove = false;
         break;
@@ -204,6 +203,10 @@ class Entity {
     }
 
     for (let other of this.findTriggers()) other.collide(this, opposite);
+
+    // kinda lame hack, call collide with a world entity so we don't need
+    // duplicate code between world response and ent response
+    if (!fullMove) this.collide(this.collideEnt ?? worldEnt, dir);
 
     return fullMove;
   }
@@ -278,5 +281,16 @@ class Entity {
     }
   }
 }
+
+class WorldEnt extends Entity {
+  type = "World";
+  collidable = CollisionType.Disabled;
+
+  hurt(damage: number) { }
+  die() { }
+  draw() { }
+}
+const worldEnt = new WorldEnt({});
+
 
 export default Entity;

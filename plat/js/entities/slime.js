@@ -57,13 +57,8 @@ class Slime extends Entity {
             this.vel[1] = -3;
             this.jumping = true;
         }
-        if (!this.moveX(this.vel[0])) {
-            this.dir *= -1;
-            this.vel[0] *= -0.5;
-        }
-        if (!this.moveY(this.vel[1])) {
-            this.vel[1] = 0;
-        }
+        this.moveX(this.vel[0]);
+        this.moveY(this.vel[1]);
         this.flipBits = this.dir < 0 ? 1 : 0;
         if (this.vel[1] < 0) {
             this.frame = Frames.Jump;
@@ -88,10 +83,9 @@ class Slime extends Entity {
                 other.hurt(1);
             }
         }
-        else {
+        else if (dir == Dir.Left || dir == Dir.Right) {
             this.dir *= -1;
             this.vel[0] *= -0.5;
-            return;
         }
     }
 }

@@ -11,7 +11,7 @@ class Switch extends Entity {
         this.target = args.properties?.Target ?? '';
     }
     draw() {
-        Draw.setColor(255, 0, 0, 255);
+        Draw.setColor(172, 50, 50, 255);
         Draw.rect(this.pos[0], this.pos[1], this.size[0], this.size[1], false);
     }
     collide(other, dir) {

@@ -13,7 +13,7 @@ class Player extends Entity {
     // entity definition
     type = 'Player';
     sprite = Assets.find('dogspr');
-    drawOfs = [-5, -2];
+    drawOfs = [-5, -4];
     spawnPos;
     // entity state
     disableControls = false;

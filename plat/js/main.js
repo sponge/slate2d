@@ -108,7 +108,7 @@ class Main {
     draw() {
         Draw.clear(0, 0, 0, 255);
         Draw.useCanvas(this.canvas);
-        Draw.clear(41, 173, 255, 255);
+        Draw.clear(99, 155, 255, 255);
         const { res } = this;
         const t = this.state.t;
         // parallax bgs
@@ -124,17 +124,21 @@ class Main {
                 bgx += bg.w;
             }
         });
+        // running dog
+        const x = Math.floor((t * 50) % (res.w + 22) - 22);
+        const y = Math.floor(Math.sin(x / 50) * 5 + (this.res.h * 0.8));
+        Draw.setColor(255, 255, 255, 255);
+        Draw.sprite(this.dogSpr, Math.floor(t * 12) % 6, x, y + camYoffset, 1, 0, 1, 1);
+        // dim the background slightly
+        Draw.setColor(99, 155, 255, 60);
+        Draw.rect(0, 0, res.w, res.h, false);
+        Draw.setColor(255, 255, 255, 255);
         // clouds which scroll, no parallax
         this.clouds.forEach((bg, i) => {
             const speed = (i + 1) * 6;
             const x = res.w + (bg.x - t * speed) % (res.w + bg.w);
             Draw.image(bg.id, x, bg.y, 0, 0, 1, 0, 0, 0);
         });
-        // running dog
-        const x = Math.floor((t * 50) % (res.w + 22) - 22);
-        const y = Math.floor(Math.sin(x / 50) * 5 + (this.res.h * 0.8));
-        Draw.setColor(255, 255, 255, 255);
-        Draw.sprite(this.dogSpr, Math.floor(t * 12) % 6, x, y + camYoffset, 1, 0, 1, 1);
         this.camera.drawStart();
         // tilemap and entities
         Draw.setColor(255, 255, 255, 255);

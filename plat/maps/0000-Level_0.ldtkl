@@ -1067,7 +1067,7 @@
 				{ "px": [1248,256], "src": [112,0], "f": 0, "t": 7, "d": [62,1470] }
 			],
 			"seed": 3393934,
-			"overrideTilesetUid": null,
+			"overrideTilesetUid": 2,
 			"gridTiles": [],
 			"entityInstances": []
 		},
@@ -1409,7 +1409,7 @@
 				{ "px": [464,240], "src": [192,32], "f": 0, "t": 44, "d": [76,1334] }
 			],
 			"seed": 6923419,
-			"overrideTilesetUid": null,
+			"overrideTilesetUid": 2,
 			"gridTiles": [],
 			"entityInstances": []
 		},

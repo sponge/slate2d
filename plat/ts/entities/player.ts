@@ -17,7 +17,7 @@ class Player extends Entity {
   // entity definition
   type = 'Player';
   sprite = Assets.find('dogspr');
-  drawOfs: [number, number] = [-5, -2];
+  drawOfs: [number, number] = [-5, -4];
   spawnPos: [number, number];
 
   // entity state

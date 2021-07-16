@@ -203,6 +203,8 @@ static void SZIP_closeArchive(void *opaque)
     SZIPinfo *info = (SZIPinfo *) opaque;
     if (info)
     {
+        if (info->io)
+            info->io->destroy(info->io);
         SzArEx_Free(&info->db, &SZIP_SzAlloc);
         __PHYSFS_DirTreeDeinit(&info->tree);
         allocator.Free(info);
@@ -283,13 +285,16 @@ static PHYSFS_Io *SZIP_openRead(void *opaque, const char *path)
                         &blockIndex, &outBuffer, &outBufferSize, &offset,
                         &outSizeProcessed, alloc, alloc);
     GOTO_IF(rc != SZ_OK, szipErrorCode(rc), SZIP_openRead_failed);
+    GOTO_IF(outBuffer == NULL, PHYSFS_ERR_OUT_OF_MEMORY, SZIP_openRead_failed);
 
     io->destroy(io);
     io = NULL;
 
-    buf = allocator.Malloc(outSizeProcessed);
-    GOTO_IF(rc != SZ_OK, PHYSFS_ERR_OUT_OF_MEMORY, SZIP_openRead_failed);
-    memcpy(buf, outBuffer + offset, outSizeProcessed);
+    buf = allocator.Malloc(outSizeProcessed ? outSizeProcessed : 1);
+    GOTO_IF(buf == NULL, PHYSFS_ERR_OUT_OF_MEMORY, SZIP_openRead_failed);
+
+    if (outSizeProcessed > 0)
+        memcpy(buf, outBuffer + offset, outSizeProcessed);
 
     alloc->Free(alloc, outBuffer);
     outBuffer = NULL;

@@ -1,3 +1,4 @@
+#pragma once
 /**********************************************************************************************
 *
 *   rlgl - raylib OpenGL abstraction layer
@@ -1500,7 +1501,7 @@ void rlglInit(int width, int height)
     glGetIntegerv(GL_NUM_EXTENSIONS, &numExt);
 
 #if defined(_MSC_VER)
-    const char **extList = malloc(sizeof(const char *)*numExt);
+    const char **extList = (const char**) malloc(sizeof(const char *)*numExt);
 #else
     const char *extList[numExt];
 #endif
@@ -3565,7 +3566,7 @@ static unsigned int CompileShader(const char *shaderStr, int type)
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 
 #if defined(_MSC_VER)
-        char *log = malloc(maxLength);
+        char *log = (char *)malloc(maxLength);
 #else
         char log[maxLength];
 #endif
@@ -3621,7 +3622,7 @@ static unsigned int LoadShaderProgram(unsigned int vShaderId, unsigned int fShad
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
 #if defined(_MSC_VER)
-        char *log = malloc(maxLength);
+        char *log = (char *)malloc(maxLength);
 #else
         char log[maxLength];
 #endif

@@ -1,6 +1,5 @@
 #pragma once
 #include "assetloader.h"
-#include "external/fontstash.h"
 
 #define	MAX_RENDER_COMMANDS	0x50000
 
@@ -164,4 +163,5 @@ struct RenderState {
 typedef struct RenderState RenderState;
 
 extern RenderState state;
+typedef struct FONScontext FONScontext;
 extern FONScontext *ctx;

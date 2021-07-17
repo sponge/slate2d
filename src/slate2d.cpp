@@ -9,22 +9,38 @@
 #include <emscripten.h>
 #endif
 
+#define RLGL_IMPLEMENTATION
+#ifdef __EMSCRIPTEN__
+#define GRAPHICS_API_OPENGL_ES2
+#else
+#define GRAPHICS_API_OPENGL_33
+#endif
+#include <rlgl.h>
+
 #ifdef __EMSCRIPTEN__
 #include "GLES2/gl2.h"
 #include "GLES2/gl2ext.h"
-#define NO_SDL_GLEXT
+#elif MACOS
+#include <OpenGL/gl3.h>
 #else
 #define GLEW_STATIC
 #include <GL/glew.h>
 #endif
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
+
+#define RAYMATH_IMPLEMENTATION
+#include <raymath.h>
+#define FONTSTASH_IMPLEMENTATION
+#include "external/fontstash.h"
+#define GLFONTSTASH_IMPLEMENTATION
+#include "external/gl3corefontstash.h"
+
+#pragma clang diagnostic pop
+
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
-
-extern "C" {
-#include "rlgl.h"
-	extern bool initGL(int width, int height);
-}
 
 #include <imgui.h>
 #include "imgui_impl_sdl.h"
@@ -50,7 +66,6 @@ extern "C" {
 #include "external/sds.h"
 }
 
-#include "external/fontstash.h"
 #include "main.h"
 #include "rendercommands.h"
 
@@ -362,9 +377,24 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 
 	context = SDL_GL_CreateContext(window);
 
-	if (!initGL(vid_width->integer, vid_height->integer)) {
+#if !defined(__EMSCRIPTEN__) && !defined(MACOS)
+	if (glewInit() != GLEW_OK) {
 		Con_Error(ERR_FATAL, "Could not init GL.");
 	}
+#endif
+
+    rlglInit(vid_width->integer, vid_height->integer);
+
+    // Initialize viewport and internal projection/modelview matrices
+    rlViewport(0, 0, vid_width->integer, vid_height->integer);
+    rlMatrixMode(RL_PROJECTION);              // Switch to PROJECTION matrix
+    rlLoadIdentity();                         // Reset current matrix (PROJECTION)
+    rlOrtho(0, vid_width->integer, vid_height->integer, 0, 0.0f, 1.0f); // Orthographic projection with top-left corner at (0,0)
+    rlMatrixMode(RL_MODELVIEW);               // Switch back to MODELVIEW matrix
+    rlLoadIdentity();                         // Reset current matrix (MODELVIEW)
+
+    rlClearColor(0, 0, 0, 255); // Define clear color
+
 
 	SDL_GL_SetSwapInterval(vid_swapinterval->integer);
 

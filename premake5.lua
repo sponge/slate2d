@@ -69,10 +69,6 @@ workspace "Slate2D"
     -- define so engine and emscripten packaging are always in sync on the same base game folder 
     defines { "DEFAULT_GAME=\"" .. _OPTIONS["default-game"] .. "\"", "SLT_COMPILE_DLL" }
 
-    -- compile all .c files in c mode so we don't get name mangling
-    filter "files:**.c"
-      language "C"
-
     -- link SDL bins in the source tree on windows
     filter "system:windows"
       links { "SDL2", "opengl32" }

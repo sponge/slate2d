@@ -141,7 +141,7 @@ struct ShaderAsset {
 	char *vs, *fs;
 	bool isFile;
 	int locResolution, locTime, locTimeDelta, locMouse;
-	Shader *shader;
+	unsigned int id;
 };
 
 void * Shader_Load(Asset & asset);

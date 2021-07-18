@@ -117,7 +117,7 @@ static void glfons__renderDraw(void* userPtr, const float* verts, const float* t
 	if (gl->tex == 0) return;
 
 	// FIXME: probably can check for buffer space instead
-	rlglDraw();
+	rlDrawRenderBatchActive();
 
 	rlBegin(RL_TRIANGLES);
 	rlEnableTexture(gl->tex);

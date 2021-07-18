@@ -283,7 +283,7 @@ SLT_API void SLT_EndFrame() {
 	if (debug_fontAtlas->integer) {
 		rlLoadIdentity();
 		if (ctx != nullptr) fonsDrawDebug(ctx, 0, 32);
-		rlglDraw();
+		rlDrawRenderBatchActive();
 	}
 
 	SDL_GL_SwapWindow(window);

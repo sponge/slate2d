@@ -123,36 +123,34 @@ const void *RB_UseShader(const void *data) {
 
 	assert(shasset != nullptr);
 
-	Shader shader = *shasset->shader;
+	rlEnableShader(shasset->id);
 
 	if (shasset->locResolution != -1) {
 		if (activeCanvas != nullptr) {
 			const float iResolution[3] = { (float) activeCanvas->w, (float) activeCanvas->h, 1.0f };
-			SetShaderValue(shader, shasset->locResolution, iResolution, 3);
+			rlSetUniform(shasset->locResolution, iResolution, SHADER_UNIFORM_VEC3, 1);
 		}
 		else {
 			const float iResolution[3] = { vid_width->value, vid_height->value, 1.0f };
-			SetShaderValue(shader, shasset->locResolution, iResolution, 3);
+			rlSetUniform(shasset->locResolution, iResolution, SHADER_UNIFORM_VEC3, 1);
 		}
 	}
 
 	if (shasset->locTime != -1) {
 		const float iTime = com_frameTime / (float)1E6;
-		SetShaderValue(shader, shasset->locTime, &iTime, 1);
+        rlSetUniform(shasset->locTime, &iTime, SHADER_UNIFORM_FLOAT, 1);
 	}
 
 	if (shasset->locTimeDelta != -1) {
 		const float iTimeDelta = frame_musec / (float)1E6;
-		SetShaderValue(shader, shasset->locTimeDelta, &iTimeDelta, 1);
+        rlSetUniform(shasset->locTimeDelta, &iTimeDelta, SHADER_UNIFORM_FLOAT, 1);
 	}
 
 	if (shasset->locMouse != -1) {
 		auto mousePos = In_MousePosition();
 		const float iMouse[2] = { (float) mousePos.x, (float) mousePos.y };
-		SetShaderValue(shader, shasset->locMouse, iMouse, 2);
+		rlSetUniform(shasset->locMouse, iMouse, SHADER_UNIFORM_VEC2, 1);
 	}
-
-	BeginShaderMode(shader);
 
 	return (const void *)(cmd + 1);
 }
@@ -160,7 +158,7 @@ const void *RB_UseShader(const void *data) {
 const void *RB_ResetShader(const void *data) {
 	auto cmd = (const resetShaderCommand_t*)data;
 
-	EndShaderMode();
+	rlDisableShader();
 
 	return (const void *)(cmd + 1);
 }
@@ -185,7 +183,7 @@ const void *RB_DrawRect(const void *data) {
 	auto cmd = (const drawRectCommand_t *)data;
 
 	rlBegin(RL_QUADS);
-	rlEnableTexture(GetTextureDefault().id);
+	rlEnableTexture(rlGetTextureDefault().id);
 	rlColor4ub(state.color[0], state.color[1], state.color[2], state.color[3]);
 
 	if (cmd->outline) {
@@ -364,11 +362,11 @@ const void *RB_DrawLine(const void *data) {
 const void *RB_DrawCircle(const void *data) {
 	auto cmd = (const drawCircleCommand_t *)data;
 
-	rlEnableTexture(GetTextureDefault().id);
+	rlEnableTexture(rlGetTextureDefault().id);
 
 	if (cmd->outline) {
-		if (rlCheckBufferLimit(2 * 36)) {
-			rlglDraw();
+		if (rlCheckRenderBatchLimit(2 * 36)) {
+			rlDrawRenderBatchActive();
 		}
 
 		rlBegin(RL_LINES);
@@ -383,8 +381,8 @@ const void *RB_DrawCircle(const void *data) {
 		rlEnd();
 	}
 	else {
-		if (rlCheckBufferLimit(4 * (36 / 2))) {
-			rlglDraw();
+		if (rlCheckRenderBatchLimit(4 * (36 / 2))) {
+			rlDrawRenderBatchActive();
 		}
 
 		rlBegin(RL_QUADS);
@@ -409,7 +407,7 @@ const void *RB_DrawCircle(const void *data) {
 const void *RB_DrawTri(const void *data) {
 	auto cmd = (const drawTriCommand_t *)data;
 
-	rlEnableTexture(GetTextureDefault().id);
+	rlEnableTexture(rlGetTextureDefault().id);
 
 	if (cmd->outline) {
 		rlBegin(RL_LINES);
@@ -491,47 +489,47 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 			break;
 
 		case RC_RESET_TRANSFORM:
-			rlglDraw();
+			rlDrawRenderBatchActive();
 			data = RB_ResetTransform(data);
 			break;
 
 		case RC_SCALE:
-			rlglDraw();
+			rlDrawRenderBatchActive();
 			data = RB_Scale(data);
 			break;
 
 		case RC_ROTATE:
-			rlglDraw();
+			rlDrawRenderBatchActive();
 			data = RB_Rotate(data);
 			break;
 
 		case RC_TRANSLATE:
-			rlglDraw();
+			rlDrawRenderBatchActive();
 			data = RB_Translate(data);
 			break;
 
 		case RC_SET_SCISSOR:
-			rlglDraw();
+			rlDrawRenderBatchActive();
 			data = RB_SetScissor(data);
 			break;
 
 		case RC_USE_CANVAS:
-			rlglDraw();
+			rlDrawRenderBatchActive();
 			data = RB_UseCanvas(data);
 			break;
 
 		case RC_RESET_CANVAS:
-			rlglDraw();
+			rlDrawRenderBatchActive();
 			data = RB_ResetCanvas(data);
 			break;
 
 		case RC_USE_SHADER:
-			rlglDraw();
+			rlDrawRenderBatchActive();
 			data = RB_UseShader(data);
 			break;
 
 		case RC_RESET_SHADER:
-			rlglDraw();
+			rlDrawRenderBatchActive();
 			data = RB_ResetShader(data);
 			break;
 
@@ -572,7 +570,7 @@ void SubmitRenderCommands(renderCommandList_t * list) {
 			break;
 
 		case RC_END_OF_LIST:
-			rlglDraw();
+			rlDrawRenderBatchActive();
 			return;
 
 		default:

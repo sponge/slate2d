@@ -14,9 +14,6 @@ void * Shader_Load(Asset & asset) {
 
 	auto *shasset = (ShaderAsset*)asset.resource;
 
-	// loadshader doesn't return a pointer so do a little weirdness here
-	Shader *shader = new Shader();
-
 	if (shasset->isFile) {
 		char *vs;
 		FS_ReadFile(shasset->vs, (void**)&vs);
@@ -24,21 +21,19 @@ void * Shader_Load(Asset & asset) {
 		char *fs;
 		FS_ReadFile(shasset->fs, (void**)&fs);
 
-		*shader = LoadShaderCode(vs, fs);
+		shasset->id = rlLoadShaderCode(vs, fs);
 
-		shasset->locResolution = GetShaderLocation(*shader, "iResolution");
-		shasset->locTime = GetShaderLocation(*shader, "iTime");
-		shasset->locTimeDelta = GetShaderLocation(*shader, "iTimeDelta");
-		shasset->locMouse = GetShaderLocation(*shader, "iMouse");
+		shasset->locResolution = rlGetLocationUniform(shasset->id, "iResolution");
+		shasset->locTime = rlGetLocationUniform(shasset->id, "iTime");
+		shasset->locTimeDelta = rlGetLocationUniform(shasset->id, "iTimeDelta");
+		shasset->locMouse = rlGetLocationUniform(shasset->id, "iMouse");
 
 		free(vs);
 		free(fs);
 	}
 	else {
-		*shader = LoadShaderCode(shasset->vs, shasset->fs);
+		shasset->id = rlLoadShaderCode(shasset->vs, shasset->fs);
 	}
-
-	shasset->shader = shader;
 
 	return (void*)shasset;
 }
@@ -71,11 +66,10 @@ void Shader_Free(Asset & asset) {
 	free((void*)res->fs);
 	free((void*)res->vs);
 
-	if (GetShaderDefault().id == res->shader->id) {
+	if (rlGetShaderDefault().id == res->id) {
 		Con_Print("not freeing default shader\n");
 	} else {
-		UnloadShader(*res->shader);
-		delete res->shader;
+		rlUnloadShaderProgram(res->id);
 	}
 
 	delete res;

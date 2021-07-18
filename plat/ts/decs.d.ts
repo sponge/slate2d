@@ -70,7 +70,7 @@ interface CanvasAsset {
 interface ShaderAsset {
   type: 'shader';
   name: string;
-  isFIle: boolean;
+  isFile: boolean;
   vs: string;
   fs: string;
 }

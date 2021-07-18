@@ -28,10 +28,10 @@ Image* Img_LoadPath(const char *path, int flags) {
 	}
 
 	unsigned int format = 0;
-	if (imgBpp == 1) format = UNCOMPRESSED_GRAYSCALE;
-	else if (imgBpp == 2) format = UNCOMPRESSED_GRAY_ALPHA;
-	else if (imgBpp == 3) format = UNCOMPRESSED_R8G8B8;
-	else if (imgBpp == 4) format = UNCOMPRESSED_R8G8B8A8;
+	if (imgBpp == 1) format = PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
+	else if (imgBpp == 2) format = PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA;
+	else if (imgBpp == 3) format = PIXELFORMAT_UNCOMPRESSED_R8G8B8;
+	else if (imgBpp == 4) format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
 
 	unsigned int tex = rlLoadTexture(loaded, img->w, img->h, format, 1);
 
@@ -43,11 +43,11 @@ Image* Img_LoadPath(const char *path, int flags) {
 	}
 
 	if (flags) {
-		rlTextureParameters(tex, RL_TEXTURE_MAG_FILTER, RL_FILTER_LINEAR);
-		rlTextureParameters(tex, RL_TEXTURE_MIN_FILTER, RL_FILTER_LINEAR);
+		rlTextureParameters(tex, RL_TEXTURE_MAG_FILTER, TEXTURE_FILTER_BILINEAR);
+		rlTextureParameters(tex, RL_TEXTURE_MIN_FILTER, TEXTURE_FILTER_BILINEAR);
 	} else {
-		rlTextureParameters(tex, RL_TEXTURE_MAG_FILTER, RL_FILTER_NEAREST);
-		rlTextureParameters(tex, RL_TEXTURE_MIN_FILTER, RL_FILTER_NEAREST);		
+		rlTextureParameters(tex, RL_TEXTURE_MAG_FILTER, TEXTURE_FILTER_POINT);
+		rlTextureParameters(tex, RL_TEXTURE_MIN_FILTER, TEXTURE_FILTER_POINT);		
 	}
 
 	img->hnd = tex;

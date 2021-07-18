@@ -1146,12 +1146,12 @@ int fonsAddFontMem(FONScontext* stash, const char* name, unsigned char* data, in
 
 int fonsAddFontMemWithEngine(FONScontext* stash, const char* name, unsigned char* data, int dataSize, int freeData, FONSfontEngine* engine)
 {
-	int i, ascent, descent, fh, lineGap;
+	int i, ascent, descent, fh, lineGap, idx;
 	FONSfont* font = NULL;
 
 	if (!engine) goto error;
 
-	int idx = fons__allocFont(stash);
+	idx = fons__allocFont(stash);
 	if (idx == FONS_INVALID)
 		return FONS_INVALID;
 

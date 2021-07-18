@@ -12,7 +12,7 @@ void * Canvas_Load(Asset & asset) {
 
 	auto *canvas = (Canvas*)asset.resource;
 
-	canvas->texture = rlLoadRenderTexture(canvas->w, canvas->h);
+	canvas->texture = rlLoadRenderTexture(canvas->w, canvas->h, UNCOMPRESSED_R8G8B8A8, 8, false);
 
 	if (asset.flags) {
 		rlTextureParameters(canvas->texture.texture.id, RL_TEXTURE_MAG_FILTER, RL_FILTER_LINEAR);

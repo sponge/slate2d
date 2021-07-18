@@ -1,3 +1,5 @@
+#pragma once
+#define RLGL_STANDALONE
 /**********************************************************************************************
 *
 *   rlgl - raylib OpenGL abstraction layer
@@ -623,11 +625,13 @@ RLAPI int GetPixelDataSize(int width, int height, int format);// Get pixel data 
         #include <OpenGL/gl3.h>         // OpenGL 3 library for OSX
         #include <OpenGL/gl3ext.h>      // OpenGL 3 extensions library for OSX
     #else
-        #define GLAD_IMPLEMENTATION
         #if defined(RLGL_STANDALONE)
-            #include "glad.h"           // GLAD extensions loading library, includes OpenGL headers
-        #else
-            #include "external/glad.h"  // GLAD extensions loading library, includes OpenGL headers
+            #ifdef MACOS
+                #include <OpenGL/gl3.h>
+            #else
+			    #define GLEW_STATIC
+                #include <GL/glew.h>		// GLAD extensions loading library, includes OpenGL headers
+            #endif
         #endif
     #endif
 #endif
@@ -1529,7 +1533,7 @@ void rlglInit(int width, int height)
     glGetIntegerv(GL_NUM_EXTENSIONS, &numExt);
 
     // Allocate numExt strings pointers
-    const char **extList = RL_MALLOC(sizeof(const char *)*numExt);
+    const char **extList = (const char **)RL_MALLOC(sizeof(const char *)*numExt);
 
     // Get extensions strings
     for (int i = 0; i < numExt; i++) extList[i] = (const char *)glGetStringi(GL_EXTENSIONS, i);
@@ -1802,17 +1806,17 @@ void rlLoadExtensions(void *loader)
 {
 #if defined(GRAPHICS_API_OPENGL_33)
     // NOTE: glad is generated and contains only required OpenGL 3.3 Core extensions (and lower versions)
-    #if !defined(__APPLE__)
-        if (!gladLoadGLLoader((GLADloadproc)loader)) TraceLog(LOG_WARNING, "GLAD: Cannot load OpenGL extensions");
-        else TraceLog(LOG_INFO, "GLAD: OpenGL extensions loaded successfully");
+    //#if !defined(__APPLE__)
+    //    if (!gladLoadGLLoader((GLADloadproc)loader)) TraceLog(LOG_WARNING, "GLAD: Cannot load OpenGL extensions");
+    //    else TraceLog(LOG_INFO, "GLAD: OpenGL extensions loaded successfully");
 
-        #if defined(GRAPHICS_API_OPENGL_21)
-        if (GLAD_GL_VERSION_2_1) TraceLog(LOG_INFO, "OpenGL 2.1 profile supported");
-        #elif defined(GRAPHICS_API_OPENGL_33)
-        if (GLAD_GL_VERSION_3_3) TraceLog(LOG_INFO, "OpenGL 3.3 Core profile supported");
-        else TraceLog(LOG_ERROR, "OpenGL 3.3 Core profile not supported");
-        #endif
-    #endif
+    //    #if defined(GRAPHICS_API_OPENGL_21)
+    //    if (GLAD_GL_VERSION_2_1) TraceLog(LOG_INFO, "OpenGL 2.1 profile supported");
+    //    #elif defined(GRAPHICS_API_OPENGL_33)
+    //    if (GLAD_GL_VERSION_3_3) TraceLog(LOG_INFO, "OpenGL 3.3 Core profile supported");
+    //    else TraceLog(LOG_ERROR, "OpenGL 3.3 Core profile not supported");
+    //    #endif
+    //#endif
 
     // With GLAD, we can check if an extension is supported using the GLAD_GL_xxx booleans
     //if (GLAD_GL_ARB_vertex_array_object) // Use GL_ARB_vertex_array_object
@@ -3821,7 +3825,7 @@ static unsigned int CompileShader(const char *shaderStr, int type)
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 
 #if defined(_MSC_VER)
-        char *log = RL_MALLOC(maxLength);
+        char *log = (char*)RL_MALLOC(maxLength);
 #else
         char log[maxLength];
 #endif
@@ -3877,7 +3881,7 @@ static unsigned int LoadShaderProgram(unsigned int vShaderId, unsigned int fShad
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
 #if defined(_MSC_VER)
-        char *log = RL_MALLOC(maxLength);
+        char *log = (char *)RL_MALLOC(maxLength);
 #else
         char log[maxLength];
 #endif

@@ -67,10 +67,11 @@ const void *RB_SetScissor(const void *data) {
 	auto cmd = (const setScissorCommand_t *)data;
 
 	if (cmd->w <= 0 || cmd->h <= 0) {
-		EndScissorMode();
+		rlDisableScissorTest();
 	}
 	else {
-		BeginScissorMode(cmd->x, cmd->y, cmd->w, cmd->h);
+		rlEnableScissorTest();
+		rlScissor(cmd->x, cmd->y, cmd->w, cmd->h);
 	}
 
 	return (const void *)(cmd + 1);

@@ -61,10 +61,10 @@ workspace "Slate2D"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
     -- only used in emscripten build
     removefiles "src/imgui_impl_sdl_es2.cpp"
-    sysincludedirs { "src/external", "libs/sdl", "libs/imgui", "libs/physfs", "libs/glew", "libs/soloud/include", "libs/crunch" }
+    sysincludedirs { "src/external", "libs/sdl", "libs/imgui", "libs/physfs", "libs/soloud/include", "libs/crunch" }
     -- physfs uses the exe path by default, but the game data files are in the top folder
     targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
-    links { "imgui", "physfs", "glew", "soloud", "crunch" }
+    links { "imgui", "physfs", "soloud", "crunch" }
     cppdialect "C++14"
     -- define so engine and emscripten packaging are always in sync on the same base game folder 
     defines { "DEFAULT_GAME=\"" .. _OPTIONS["default-game"] .. "\"", "SLT_COMPILE_DLL" }
@@ -172,15 +172,6 @@ workspace "Slate2D"
 
       filter "system:macosx"
         undefines "DEBUG" -- fixes a weird issue on mac
-
-    project "glew"
-      language "C++"
-      kind "StaticLib"
-      defines "GLEW_STATIC"
-      includedirs "libs/glew"
-      sysincludedirs "libs/glew"
-      files { "libs/glew/**.c", "libs/glew/**.h" }
-      warnings "Off"
 
     project "soloud"
       language "C++"

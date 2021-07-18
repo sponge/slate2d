@@ -23,8 +23,7 @@
 #elif MACOS
 #include <OpenGL/gl3.h>
 #else
-#define GLEW_STATIC
-#include <GL/glew.h>
+#include "external/glad.h"
 #endif
 
 #pragma clang diagnostic push
@@ -378,9 +377,9 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 	context = SDL_GL_CreateContext(window);
 
 #if !defined(__EMSCRIPTEN__) && !defined(MACOS)
-	if (glewInit() != GLEW_OK) {
+	if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
 		Con_Error(ERR_FATAL, "Could not init GL.");
-	}
+	}     
 #endif
 
     rlglInit(vid_width->integer, vid_height->integer);

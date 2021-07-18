@@ -47,13 +47,10 @@
 //#include <SDL/SDL_syswm.h>
 
 #ifdef _WIN32
-#define GLEW_STATIC
-#include <GL/glew.h>
+#include "external/glad.h"
 #include <SDL/SDL_syswm.h>
 #elif MACOS
 #include <OpenGL/gl3.h>
-#else
-#include <GL/glew.h>
 #endif
 
 // SDL data
@@ -126,7 +123,7 @@ void ImGui_ImplSdl_RenderDrawData(ImDrawData* draw_data)
     glUseProgram(g_ShaderHandle);
     glUniform1i(g_AttribLocationTex, 0);
     glUniformMatrix4fv(g_AttribLocationProjMtx, 1, GL_FALSE, &ortho_projection[0][0]);
-    glBindSampler(0, 0); // Rely on combined texture/sampler state.
+    //glBindSampler(0, 0); // Rely on combined texture/sampler state.
 
     // Recreate the VAO every time 
     // (This is to easily allow multiple GL contexts. VAO are not shared among GL contexts, and we don't track creation/deletion of windows so we don't have an obvious key to use to cache them.)
@@ -174,7 +171,7 @@ void ImGui_ImplSdl_RenderDrawData(ImDrawData* draw_data)
     // Restore modified GL state
     glUseProgram(last_program);
     glBindTexture(GL_TEXTURE_2D, last_texture);
-    glBindSampler(0, last_sampler);
+    //glBindSampler(0, last_sampler);
     glActiveTexture(last_active_texture);
     glBindVertexArray(last_vertex_array);
     glBindBuffer(GL_ARRAY_BUFFER, last_array_buffer);

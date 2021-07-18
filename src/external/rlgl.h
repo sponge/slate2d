@@ -673,8 +673,15 @@ RLAPI int GetPixelDataSize(int width, int height, int format); // Get pixel data
 #include <OpenGL/gl3.h>    // OpenGL 3 library for OSX
 #include <OpenGL/gl3ext.h> // OpenGL 3 extensions library for OSX
 #else
-#define GLEW_STATIC
-#include <GL/glew.h> // GLAD extensions loading library, includes OpenGL headers
+#define GLAD_REALLOC RL_REALLOC
+#define GLAD_FREE RL_FREE
+
+#define GLAD_IMPLEMENTATION
+#if defined(RLGL_STANDALONE)
+#include "glad.h" // GLAD extensions loading library, includes OpenGL headers
+#else
+#include "external/glad.h" // GLAD extensions loading library, includes OpenGL headers
+#endif
 #endif
 #endif
 
@@ -1981,7 +1988,7 @@ bool rlCheckBufferLimit(int vCount)
 void rlSetDebugMarker(const char *text)
 {
 #if defined(GRAPHICS_API_OPENGL_33)
-  if (RLGL.ExtSupported.debugMarker) glInsertEventMarkerEXT(0, text);
+  //if (RLGL.ExtSupported.debugMarker) glInsertEventMarkerEXT(0, text);
 #endif
 }
 
@@ -2001,22 +2008,22 @@ void rlLoadExtensions(void *loader)
 {
 #if defined(GRAPHICS_API_OPENGL_33)
 // NOTE: glad is generated and contains only required OpenGL 3.3 Core extensions (and lower versions)
-//#if !defined(__APPLE__)
-//  if (!gladLoadGLLoader((GLADloadproc)loader))
-//    TRACELOG(LOG_WARNING, "GLAD: Cannot load OpenGL extensions");
-//  else
-//    TRACELOG(LOG_INFO, "GLAD: OpenGL extensions loaded successfully");
-//
-//#if defined(GRAPHICS_API_OPENGL_21)
-//  if (GLAD_GL_VERSION_2_1) TRACELOG(LOG_INFO, "GL: OpenGL 2.1 profile supported");
-//#endif
-//#if defined(GRAPHICS_API_OPENGL_33)
-//  if (GLAD_GL_VERSION_3_3)
-//    TRACELOG(LOG_INFO, "GL: OpenGL 3.3 Core profile supported");
-//  else
-//    TRACELOG(LOG_ERROR, "GL: OpenGL 3.3 Core profile not supported");
-//#endif
-//#endif
+#if !defined(__APPLE__)
+  if (!gladLoadGLLoader((GLADloadproc)loader))
+    TRACELOG(LOG_WARNING, "GLAD: Cannot load OpenGL extensions");
+  else
+    TRACELOG(LOG_INFO, "GLAD: OpenGL extensions loaded successfully");
+
+#if defined(GRAPHICS_API_OPENGL_21)
+  if (GLAD_GL_VERSION_2_1) TRACELOG(LOG_INFO, "GL: OpenGL 2.1 profile supported");
+#endif
+#if defined(GRAPHICS_API_OPENGL_33)
+  if (GLAD_GL_VERSION_3_3)
+    TRACELOG(LOG_INFO, "GL: OpenGL 3.3 Core profile supported");
+  else
+    TRACELOG(LOG_ERROR, "GL: OpenGL 3.3 Core profile not supported");
+#endif
+#endif
 
     // With GLAD, we can check if an extension is supported using the GLAD_GL_xxx booleans
     // if (GLAD_GL_ARB_vertex_array_object) // Use GL_ARB_vertex_array_object

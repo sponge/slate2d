@@ -196,9 +196,7 @@ const void *RB_DrawRect(const void *data) {
 		DrawRectangle(cmd->x, cmd->y, cmd->w, cmd->h);
 	}
 
-	rlDisableTexture();
 	rlEnd();
-
 
 	return (const void *)(cmd + 1);
 }
@@ -289,7 +287,6 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float sca
 	rlEnd();
 
 	rlPopMatrix();
-	rlDisableTexture();
 }
 
 const void *RB_DrawImage(const void *data) {
@@ -400,8 +397,6 @@ const void *RB_DrawCircle(const void *data) {
 
 	}
 
-	rlDisableTexture();
-
 	return (const void *)(cmd + 1);
 }
 
@@ -434,8 +429,6 @@ const void *RB_DrawTri(const void *data) {
 		rlVertex2f(cmd->x3, cmd->y3);
 		rlEnd();
 	}
-
-	rlDisableTexture();
 
 	return (const void *)(cmd + 1);
 }

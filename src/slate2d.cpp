@@ -382,6 +382,7 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 	}     
 #endif
 
+	rlLoadExtensions(&SDL_GL_GetProcAddress);
     rlglInit(vid_width->integer, vid_height->integer);
 
     // Initialize viewport and internal projection/modelview matrices

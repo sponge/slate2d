@@ -63,7 +63,7 @@ void* Img_Load(Asset &asset) {
 void Img_Free(Asset &asset) {
 	Image* img = (Image*)asset.resource;
 
-	rlDeleteTextures(img->hnd);
+	rlUnloadTexture(img->hnd);
 	delete img;
 }
 

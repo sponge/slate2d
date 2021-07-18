@@ -84,7 +84,7 @@ const void *RB_UseCanvas(const void *data) {
 
 	assert(canvas != nullptr);
 
-	rlEnableRenderTexture(canvas->texture.id);
+	rlEnableFramebuffer(canvas->id);
 
 	// Initialize viewport and internal projection/modelview matrices
 	rlViewport(0, 0, canvas->w, canvas->h);
@@ -102,7 +102,7 @@ const void *RB_UseCanvas(const void *data) {
 const void *RB_ResetCanvas(const void *data) {
 	auto cmd = (const resetCanvasCommand_t*)data;
 
-	rlDisableRenderTexture();
+	rlDisableFramebuffer();
 	// Initialize viewport and internal projection/modelview matrices
 	rlViewport(0, 0, vid_width->integer, vid_height->integer);
 	rlMatrixMode(RL_PROJECTION);                        // Switch to PROJECTION matrix
@@ -307,7 +307,7 @@ const void *RB_DrawImage(const void *data) {
 		float h = cmd->h == 0 ? canvas->h : cmd->h;
 		uint8_t flipBits = cmd->flipBits;
 		flipBits ^= FLIP_V;
-		DrawImage(cmd->x, cmd->y, w, h, cmd->ox, cmd->oy, cmd->scale, flipBits, canvas->texture.texture.id, canvas->w, canvas->h);
+		DrawImage(cmd->x, cmd->y, w, h, cmd->ox, cmd->oy, cmd->scale, flipBits, canvas->texId, canvas->w, canvas->h);
 	}
 	else {
 		Image *image = Get_Img(cmd->imgId);

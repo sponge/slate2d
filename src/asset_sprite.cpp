@@ -142,7 +142,7 @@ void Sprite_Free(Asset &asset) {
 	delete[] spr->sprites;
 
 	for (int i = 0; i < spr->numImages; i++) {
-		rlDeleteTextures(spr->images[i].hnd);
+		rlUnloadTexture(spr->images[i].hnd);
 	}
 
 	delete[] spr->images;

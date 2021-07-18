@@ -12,15 +12,21 @@ void * Canvas_Load(Asset & asset) {
 
 	auto *canvas = (Canvas*)asset.resource;
 
-	canvas->texture = rlLoadRenderTexture(canvas->w, canvas->h, UNCOMPRESSED_R8G8B8A8, 8, false);
+	canvas->id = rlLoadFramebuffer(canvas->w, canvas->h);
+	rlEnableFramebuffer(canvas->id);
+
+	canvas->texId = rlLoadTexture(NULL, canvas->w, canvas->h, UNCOMPRESSED_R8G8B8A8, 1);
+	rlFramebufferAttach(canvas->id, canvas->texId, RL_ATTACHMENT_COLOR_TEXTURE);
 
 	if (asset.flags) {
-		rlTextureParameters(canvas->texture.texture.id, RL_TEXTURE_MAG_FILTER, RL_FILTER_LINEAR);
-		rlTextureParameters(canvas->texture.texture.id, RL_TEXTURE_MIN_FILTER, RL_FILTER_LINEAR);
+		rlTextureParameters(canvas->id, RL_TEXTURE_MAG_FILTER, RL_FILTER_LINEAR);
+		rlTextureParameters(canvas->id, RL_TEXTURE_MIN_FILTER, RL_FILTER_LINEAR);
 	} else {
-		rlTextureParameters(canvas->texture.texture.id, RL_TEXTURE_MAG_FILTER, RL_FILTER_NEAREST);
-		rlTextureParameters(canvas->texture.texture.id, RL_TEXTURE_MIN_FILTER, RL_FILTER_NEAREST);		
+		rlTextureParameters(canvas->id, RL_TEXTURE_MAG_FILTER, RL_FILTER_NEAREST);
+		rlTextureParameters(canvas->id, RL_TEXTURE_MIN_FILTER, RL_FILTER_NEAREST);		
 	}
+
+	rlDisableFramebuffer();
 
 	return (void*)canvas;
 }
@@ -51,7 +57,8 @@ void Canvas_Set(AssetHandle id, int width, int height) {
 
 void Canvas_Free(Asset & asset) {
 	Canvas* canvas = reinterpret_cast<Canvas*>(asset.resource);
-	rlDeleteRenderTextures(canvas->texture);
+	rlUnloadFramebuffer(canvas->id);
+	rlUnloadTexture(canvas->texId);
 	delete(canvas);
 }
 
@@ -72,6 +79,6 @@ void Canvas_Inspect(Asset& asset, bool deselected)
 	ImGui::Text("Size: %ix%i", canvas->w, canvas->h);
 	ImGui::SliderInt("Zoom", &zoom, 1, 8, "%dx");
 	ImGui::BeginChildFrame(ImGui::GetID("inspector value"), ImVec2(0, 0), ImGuiWindowFlags_HorizontalScrollbar);
-	ImGui::Image((ImTextureID)(uintptr_t)canvas->texture.texture.id, ImVec2(canvas->w * zoom, canvas->h * zoom), ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::Image((ImTextureID)(uintptr_t)canvas->id, ImVec2(canvas->w * zoom, canvas->h * zoom), ImVec2(0, 1), ImVec2(1, 0));
 	ImGui::EndChildFrame();
 }

@@ -264,7 +264,7 @@ void BMPFNT_Inspect(Asset& asset, bool deselected) {
 	// we need to load the entire image into the gpu since fontstash handles this normally
 	// if we're deselecting, free that texture free
 	if (deselected && img != nullptr) {
-		rlDeleteTextures(img->hnd);
+		rlUnloadTexture(img->hnd);
 		delete img;
 		img = nullptr;
 		currentGlyph = 0;
@@ -285,7 +285,7 @@ void BMPFNT_Inspect(Asset& asset, bool deselected) {
 
 	// unload the old display texture if reloading
 	if (ImGui::Button("Reload")) {
-		rlDeleteTextures(img->hnd);
+          rlUnloadTexture(img->hnd);
 		delete img;
 		img = nullptr;
 		BMPFNT_Reload(asset);

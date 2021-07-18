@@ -126,7 +126,7 @@ void Snd_PauseResume(unsigned int handle, bool pause);
 
 struct Canvas {
 	int w, h, flags;
-	RenderTexture2D texture;
+	unsigned int id, texId;
 };
 
 void * Canvas_Load(Asset &asset);

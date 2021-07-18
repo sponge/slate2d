@@ -298,7 +298,7 @@ public:
 
 bool loop = true;
 SLTJSInstance *instance;
-std::string state = "";
+std::string saveState = "";
 
 void main_loop()
 {
@@ -313,7 +313,7 @@ void main_loop()
       return;
     }
 
-    if (!instance->CallStart(state.c_str())) {
+    if (!instance->CallStart(saveState.c_str())) {
       delete instance;
       instance = nullptr;
       return;
@@ -366,7 +366,7 @@ int main(int argc, char *argv[])
     SLT_Con_SetVar("engine.errorMessage", "");
     SLT_Con_SetVar("engine.lastErrorStack", "");
     if (instance) {
-      state = SLT_Con_GetArgCount() > 1 ? "" : instance->CallSave();
+      saveState = SLT_Con_GetArgCount() > 1 ? "" : instance->CallSave();
       delete instance;
       instance = nullptr;
     }

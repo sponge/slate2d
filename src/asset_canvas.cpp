@@ -16,7 +16,7 @@ void * Canvas_Load(Asset & asset) {
 	rlEnableFramebuffer(canvas->id);
 
 	canvas->texId = rlLoadTexture(NULL, canvas->w, canvas->h, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8, 1);
-	rlFramebufferAttach(canvas->id, canvas->texId, RL_ATTACHMENT_COLOR_CHANNEL0, RL_ATTACHMENT_TEXTURE2D);
+	rlFramebufferAttach(canvas->id, canvas->texId, RL_ATTACHMENT_COLOR_CHANNEL0, RL_ATTACHMENT_TEXTURE2D, 0);
 
 	if (asset.flags) {
 		rlTextureParameters(canvas->id, RL_TEXTURE_MAG_FILTER, TEXTURE_FILTER_BILINEAR);

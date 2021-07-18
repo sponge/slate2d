@@ -183,7 +183,7 @@ const void *RB_DrawRect(const void *data) {
 	auto cmd = (const drawRectCommand_t *)data;
 
 	rlBegin(RL_QUADS);
-	rlEnableTexture(rlGetTextureDefault().id);
+    rlSetTexture(rlGetTextureDefault().id);
 	rlColor4ub(state.color[0], state.color[1], state.color[2], state.color[3]);
 
 	if (cmd->outline) {
@@ -249,7 +249,7 @@ void DrawImage(float x, float y, float w, float h, float ox, float oy, float sca
 	bool flipY = flipBits & FLIP_V;
 	bool flipDiag = flipBits & FLIP_DIAG;
 
-	rlEnableTexture(handle);
+	rlSetTexture(handle);
 	rlPushMatrix();
 
 	rlTranslatef(x, y, 0);
@@ -350,6 +350,7 @@ const void *RB_DrawSprite(const void *data) {
 const void *RB_DrawLine(const void *data) {
 	auto cmd = (const drawLineCommand_t *)data;
 
+	rlSetTexture(rlGetTextureDefault().id);
 	rlBegin(RL_LINES);
 	rlColor4ub(state.color[0], state.color[1], state.color[2], state.color[3]);
 	rlVertex2f(cmd->x1, cmd->y1);
@@ -362,7 +363,7 @@ const void *RB_DrawLine(const void *data) {
 const void *RB_DrawCircle(const void *data) {
 	auto cmd = (const drawCircleCommand_t *)data;
 
-	rlEnableTexture(rlGetTextureDefault().id);
+	rlSetTexture(rlGetTextureDefault().id);
 
 	if (cmd->outline) {
 		if (rlCheckRenderBatchLimit(2 * 36)) {
@@ -407,7 +408,7 @@ const void *RB_DrawCircle(const void *data) {
 const void *RB_DrawTri(const void *data) {
 	auto cmd = (const drawTriCommand_t *)data;
 
-	rlEnableTexture(rlGetTextureDefault().id);
+	rlSetTexture(rlGetTextureDefault().id);
 
 	if (cmd->outline) {
 		rlBegin(RL_LINES);
@@ -442,7 +443,6 @@ const void *RB_DrawTri(const void *data) {
 const void *RB_DrawTilemap(const void *data) {
 	auto cmd = (const drawMapCommand_t *)data;
 	const int *tiles = (const int *)(cmd + 1);
-	unsigned int tileSz = cmd->w * cmd->h * sizeof(int);
 
 	Asset* asset = Asset_Get(ASSET_SPRITE, cmd->sprId);
 	SpriteAtlas* spr = (SpriteAtlas*)asset->resource;

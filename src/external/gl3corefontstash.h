@@ -120,7 +120,7 @@ static void glfons__renderDraw(void* userPtr, const float* verts, const float* t
 	rlDrawRenderBatchActive();
 
 	rlBegin(RL_TRIANGLES);
-	rlEnableTexture(gl->tex);
+	rlSetTexture(gl->tex);
 
 	for (int i = 0; i < nverts; i++) {
 		unsigned char r = colors[i] >> 0 & 255;

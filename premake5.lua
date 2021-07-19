@@ -129,8 +129,6 @@ workspace "Slate2D"
     targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
     debugargs { "+set", "fs.basepath", path.getabsolute(".")}
     links { "imgui", "SDL2main", "libslate2d", "quickjs" }
-    -- allows builds on x64 windows but crashes on launch
-    -- defines { "JS_NAN_BOXING" }
 
     filter { "platforms:x86", "system:windows" }
       libdirs "libs/sdl/lib/Win32"
@@ -167,7 +165,7 @@ workspace "Slate2D"
       language "C"
       kind "StaticLib"
       defines { "PHYSFS_SUPPORTS_ZIP", "PHYSFS_SUPPORTS_7Z", "PHYSFS_DECL=" }
-      files { "libs/physfs/**.c", "libs/physfs/**.h", "libs/physfs/**.m" }
+      files { "libs/physfs/**.c", "libs/physfs/**.cpp", "libs/physfs/**.h", "libs/physfs/**.m" }
       warnings "Off"
 
       filter "system:macosx"

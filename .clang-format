@@ -1,5 +1,8 @@
 BreakBeforeBraces: Stroustrup
 AllowShortIfStatementsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: false
 ColumnLimit: 120
 BinPackArguments: false
 ContinuationIndentWidth: 2
+TabWidth: 2
+UseTab: Never

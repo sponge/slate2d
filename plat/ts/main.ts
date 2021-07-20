@@ -230,6 +230,11 @@ class Main {
   }
 
   spawnDeathParticle(ent: Entity, frame: number) {
+    const puffEnt = new PuffParticle({});
+    puffEnt.pos = [...ent.pos];
+    puffEnt.start = this.state.ticks;
+    this.state.entities.push(puffEnt);
+
     const deathEnt = new SpinParticle({});
     deathEnt.pos = ent.pos;
     deathEnt.sprite = ent.sprite;
@@ -240,10 +245,7 @@ class Main {
     deathEnt.vel[0] *= Math.sign(ent.center(0) - this.player.center(0));
     this.state.entities.push(deathEnt);
 
-    const puffEnt = new PuffParticle({});
-    puffEnt.pos = [...ent.pos];
-    puffEnt.start = this.state.ticks;
-    this.state.entities.push(puffEnt);
+    return deathEnt;
   }
 }
 

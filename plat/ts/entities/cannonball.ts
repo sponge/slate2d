@@ -26,16 +26,19 @@ class Cannonball extends Entity {
   type = 'Cannonball';
   sprite = Assets.find('launcher');
   frame = 1;
+  size: [number, number] = [14, 14];
+  drawOfs: [number, number] = [-2, -2];
 
   constructor(args: { [key: string]: any }) {
     super(args);
     this.vel[0] = args.properties?.GoRight ?? true ? 0.25 : -0.25;
-    this.flipBits = this.vel[0] > 0 ? 1 : 0;
   }
 
   die() {
     super.die();
-    World().spawnDeathParticle(this, 1);
+    const deathEnt = World().spawnDeathParticle(this, 1);
+    deathEnt.vel = [0, 0];
+    deathEnt.rotate = false;
   }
 
   canCollide(other: Entity, dir: Dir) {
@@ -50,7 +53,6 @@ class Cannonball extends Entity {
   }
 
   collide(other: Entity, dir: Dir) {
-    console.log('collide!');
     if (other instanceof Player) {
       if (other.canHurt(this) && dir == Dir.Up && other.max(1) <= this.center(1)) {
         other.stompEnemy();

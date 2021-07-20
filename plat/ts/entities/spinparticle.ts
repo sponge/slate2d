@@ -10,6 +10,7 @@ class SpinParticle extends Entity {
   collidable = CollisionType.Disabled;
   start = 0;
   worldCollide = false;
+  rotate = true;
 
   constructor(args: { [key: string]: any }) {
     super(args);
@@ -27,9 +28,9 @@ class SpinParticle extends Entity {
   draw() {
     const rotate = 8 * (World().state.ticks - this.start);
     Draw.translate(this.center(0), this.center(1));
-    Draw.rotate(rotate);
+    if (this.rotate) Draw.rotate(rotate);
     Draw.sprite(this.sprite, this.frame, -this.size[0] / 2 + this.drawOfs[0], -this.size[1] / 2 + this.drawOfs[1], 1, this.flipBits, 1, 1);
-    Draw.rotate(-rotate);
+    if (this.rotate) Draw.rotate(-rotate);
     Draw.translate(-this.center(0), -this.center(1));
   }
 

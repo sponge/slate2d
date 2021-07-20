@@ -101,6 +101,15 @@ const AssetList: Asset[] = [
     spriteWidth: 19,
     spriteHeight: 13,
   },
+  {
+    type: 'sprite',
+    name: 'launcher',
+    path: 'gfx/launcher.png',
+    marginX: 0,
+    marginY: 0,
+    spriteWidth: 16,
+    spriteHeight: 16,
+  },
 ];
 
 function loadAllAssets() {

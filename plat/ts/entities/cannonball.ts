@@ -1,0 +1,66 @@
+import * as SLT from 'slate2d';
+import * as Assets from 'assets';
+
+import Entity from '../entity.js';
+import Dir from '../dir.js';
+import CollisionType from '../collisiontype.js';
+import { Player } from './player.js';
+import Phys from '../phys.js';
+import World from '../world.js';
+
+enum Frames {
+  Idle = 0,
+  Blink,
+  Pain,
+  Run1,
+  Run2,
+  Run3,
+  Run4,
+  Run5,
+  Run6,
+  Run7,
+  Squish
+}
+
+class Cannonball extends Entity {
+  type = 'Cannonball';
+  sprite = Assets.find('launcher');
+  frame = 1;
+
+  constructor(args: { [key: string]: any }) {
+    super(args);
+    this.vel[0] = args.properties?.GoRight ?? true ? 0.25 : -0.25;
+    this.flipBits = this.vel[0] > 0 ? 1 : 0;
+  }
+
+  die() {
+    super.die();
+    World().spawnDeathParticle(this, 1);
+  }
+
+  canCollide(other: Entity, dir: Dir) {
+    if (other instanceof Player && other.canHurt(this) && dir == Dir.Up) return CollisionType.Enabled;
+    else if (other instanceof Player) return CollisionType.Trigger;
+    else return CollisionType.Enabled;
+  }
+
+  update(ticks: number, dt: number) {
+    this.moveX(this.vel[0]);
+    this.moveY(this.vel[1]);
+  }
+
+  collide(other: Entity, dir: Dir) {
+    console.log('collide!');
+    if (other instanceof Player) {
+      if (other.canHurt(this) && dir == Dir.Up && other.max(1) <= this.center(1)) {
+        other.stompEnemy();
+      }
+      else {
+        other.hurt(1);
+      }
+    }
+    this.die();
+  }
+}
+
+export { Cannonball };

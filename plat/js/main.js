@@ -171,6 +171,11 @@ class Main {
         Draw.submit();
     }
     ;
+    spawnEntity(type) {
+        const ent = new EntityMappings[type]({});
+        this.state.entities.push(ent);
+        return ent;
+    }
     spawnDeathParticle(ent, frame) {
         const deathEnt = new SpinParticle({});
         deathEnt.pos = ent.pos;

@@ -453,6 +453,17 @@
 					"defUid": 133,
 					"px": [128,256],
 					"fieldInstances": []
+				},
+				{
+					"__identifier": "Launcher",
+					"__grid": [12,12],
+					"__pivot": [0,0],
+					"__tile": null,
+					"width": 16,
+					"height": 16,
+					"defUid": 135,
+					"px": [192,192],
+					"fieldInstances": []
 				}
 			]
 		},
@@ -1243,7 +1254,7 @@
 				{ "px": [48,240], "src": [32,112], "f": 0, "t": 114, "d": [47,1308] }
 			],
 			"seed": 5423636,
-			"overrideTilesetUid": null,
+			"overrideTilesetUid": 2,
 			"gridTiles": [],
 			"entityInstances": []
 		},
@@ -1433,7 +1444,7 @@
 			"intGridCsv": [],
 			"autoLayerTiles": [],
 			"seed": 5490018,
-			"overrideTilesetUid": null,
+			"overrideTilesetUid": 2,
 			"gridTiles": [
 				{ "px": [384,64], "src": [192,128], "f": 0, "t": 140, "d": [372] },
 				{ "px": [400,64], "src": [208,128], "f": 0, "t": 141, "d": [373] },

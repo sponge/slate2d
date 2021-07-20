@@ -223,6 +223,12 @@ class Main {
     Draw.submit();
   };
 
+  spawnEntity(type: string) {
+    const ent = new EntityMappings[type]({});
+    this.state.entities.push(ent);
+    return ent;
+  }
+
   spawnDeathParticle(ent: Entity, frame: number) {
     const deathEnt = new SpinParticle({});
     deathEnt.pos = ent.pos;

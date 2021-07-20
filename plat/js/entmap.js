@@ -10,3 +10,5 @@ export * from './entities/spinparticle.js';
 export * from './entities/ghost.js';
 export * from './entities/puffparticle.js';
 export * from './entities/hermit.js';
+export * from './entities/launcher.js';
+export * from './entities/cannonball.js';

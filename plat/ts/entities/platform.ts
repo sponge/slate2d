@@ -3,6 +3,7 @@ import * as Draw from 'draw';
 import CollisionType from "../collisiontype.js";
 
 class Platform extends Entity {
+  type = 'Platform';
   moving: boolean;
   dim: number;
   speed: number;

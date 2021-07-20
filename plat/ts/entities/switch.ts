@@ -9,6 +9,7 @@ import World from '../world.js';
 
 
 class Switch extends Entity {
+  type = 'Switch';
   collidable = CollisionType.Platform;
   target: string;
 

@@ -25,6 +25,7 @@ enum States {
 }
 
 class Ghost extends Entity {
+  type = 'Ghost';
   drawOfs: [number, number] = [-2, -1];
   sprite = Assets.find('ghost');
   state = States.Idle;

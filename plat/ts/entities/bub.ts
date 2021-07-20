@@ -23,6 +23,7 @@ enum Frames {
 }
 
 class Bub extends Entity {
+  type = 'Bub';
   drawOfs: [number, number] = [-2, -5];
   sprite = Assets.find('bub');
 

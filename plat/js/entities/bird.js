@@ -5,6 +5,7 @@ import CollisionType from '../collisiontype.js';
 import World from '../world.js';
 import { Player } from './player.js';
 class Bird extends Entity {
+    type = 'Bird';
     drawOfs = [-1, -2];
     sprite = Assets.find('bird');
     delta = [0, 0];

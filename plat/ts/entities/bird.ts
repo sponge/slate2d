@@ -10,6 +10,7 @@ import { Player } from './player.js';
 import { dbg, dbgval } from '../printwin.js';
 
 class Bird extends Entity {
+  type = 'Bird';
   drawOfs: [number, number] = [-1, -2];
   sprite = Assets.find('bird');
   delta: [number, number] = [0, 0];

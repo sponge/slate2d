@@ -18,6 +18,7 @@ var States;
     States[States["Shell"] = 2] = "Shell";
 })(States || (States = {}));
 class Hermit extends Entity {
+    type = 'Hermit';
     drawOfs = [-4, -1];
     sprite = Assets.find('hermit');
     state = States.Walk;

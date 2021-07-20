@@ -21,6 +21,7 @@ var States;
     States[States["Float"] = 2] = "Float";
 })(States || (States = {}));
 class Ghost extends Entity {
+    type = 'Ghost';
     drawOfs = [-2, -1];
     sprite = Assets.find('ghost');
     state = States.Idle;

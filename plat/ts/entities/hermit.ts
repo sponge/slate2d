@@ -20,6 +20,7 @@ enum States {
 }
 
 class Hermit extends Entity {
+  type = 'Hermit';
   drawOfs: [number, number] = [-4, -1];
   sprite = Assets.find('hermit');
   state = States.Walk;

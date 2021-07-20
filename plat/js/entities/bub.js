@@ -20,6 +20,7 @@ var Frames;
     Frames[Frames["Squish"] = 10] = "Squish";
 })(Frames || (Frames = {}));
 class Bub extends Entity {
+    type = 'Bub';
     drawOfs = [-2, -5];
     sprite = Assets.find('bub');
     constructor(args) {

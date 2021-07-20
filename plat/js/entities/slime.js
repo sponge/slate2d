@@ -15,6 +15,7 @@ var Frames;
     Frames[Frames["Fall"] = 5] = "Fall";
 })(Frames || (Frames = {}));
 class Slime extends Entity {
+    type = 'Slime';
     drawOfs = [-1, -6];
     sprite = Assets.find('slime');
     nextJump = 120;

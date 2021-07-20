@@ -18,6 +18,7 @@ enum Frames {
 }
 
 class Slime extends Entity {
+  type = 'Slime';
   drawOfs: [number, number] = [-1, -6];
   sprite = Assets.find('slime');
   nextJump = 120;

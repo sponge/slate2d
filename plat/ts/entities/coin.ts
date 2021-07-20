@@ -9,6 +9,7 @@ import World from '../world.js';
 import { Player } from './player.js';
 
 class Coin extends Entity {
+  type = 'Coin';
   collidable = CollisionType.Trigger;
   sprite = Assets.find('coin');
 

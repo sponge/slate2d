@@ -12,6 +12,7 @@ import { dbgval } from '../printwin.js';
 import Buttons from '../buttons.js';
 
 class Spring extends Entity {
+  type = 'Spring';
   sprite = Assets.find('spring');
   collidable = CollisionType.Platform;
   activated = false;

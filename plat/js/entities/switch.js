@@ -4,6 +4,7 @@ import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
 import World from '../world.js';
 class Switch extends Entity {
+    type = 'Switch';
     collidable = CollisionType.Platform;
     target;
     constructor(args) {

@@ -92,6 +92,7 @@ class Main {
     this.coinSpr = Assets.find('coin');
     this.blueFont = Assets.find('blueFont');
 
+    // load the saved state, otherwise set the default map
     if (initialState) {
       this.state = JSON.parse(initialState);
       this.state.entities = this.state.entities.map(ent => Object.assign(new EntityMappings[ent.type]({}), ent));
@@ -99,17 +100,21 @@ class Main {
       this.state.mapName = 'maps/0000-Level_0.ldtkl';
     }
 
+    // parse the map
     const src = JSON.parse(SLT.readFile(this.state.mapName));
     this.map = new LDTK(src);
 
+    // if a new game, load the entities from the map
     if (!initialState) {
       const entLayer = this.map.layersByName.Entities;
       this.state.entities = entLayer.entities.map(ent => new EntityMappings[ent.type](ent));
     }
 
+    // setup player
     this.player = this.state.entities.find(ent => ent instanceof Player) as Player;
     this.state.maxCoins = this.state.currCoins + this.state.entities.filter(ent => ent.type == 'Coin').length;
 
+    // setup camera
     this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
     this.camera.window(this.player.pos[0], this.player.pos[1], 20, 20);
   };
@@ -117,15 +122,22 @@ class Main {
   update(dt: number) {
     this.accumulator += dt;
 
+    // if we're running at ~58ish fps, pretend its a full frame
     while (this.accumulator > 0.0164) {
+      // reset accumulated prints
       clearPrintWin();
       setRetain(true);
+
+      // always step at the same speed and subtract a little extra in case we're at ~62ish fps
       this.state.t += 1 / 60;
-      this.accumulator -= 0.0175;
-      this.accumulator = Math.max(0, this.accumulator);
+      this.accumulator = Math.max(0, this.accumulator - 0.0175);
       this.state.ticks += 1;
+
+      //run preupdate on all entities before updating
       this.state.entities.forEach(ent => ent.destroyed || ent.preupdate(this.state.ticks, dt));
       this.state.entities.forEach(ent => ent.destroyed || ent.update(this.state.ticks, dt));
+
+      // update camera to player
       this.camera.window(this.player.pos[0], this.player.pos[1], 20, 20);
 
       // kill all entities that are disabled
@@ -144,9 +156,11 @@ class Main {
   };
 
   draw() {
+    // clear screen
     Draw.clear(0, 0, 0, 255);
-
     Draw.useCanvas(this.canvas);
+
+    // draw map background, needs to change based on environment
     Draw.clear(99, 155, 255, 255);
 
     const { res } = this;
@@ -184,6 +198,7 @@ class Main {
       Draw.image(bg.id, x, bg.y, 0, 0, 1, 0, 0, 0);
     });
 
+    // start drawing from camera viewpoint
     this.camera.drawStart();
 
     // tilemap and entities
@@ -223,12 +238,14 @@ class Main {
     Draw.submit();
   };
 
+  // spawn an entity into the map as active
   spawnEntity(type: string) {
     const ent = new EntityMappings[type]({});
     this.state.entities.push(ent);
     return ent;
   }
 
+  // spawn a placeholder enemy that flings out of the scren
   spawnDeathParticle(ent: Entity, frame: number) {
     const puffEnt = new PuffParticle({});
     puffEnt.pos = [...ent.pos];

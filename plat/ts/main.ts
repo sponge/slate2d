@@ -161,7 +161,7 @@ class Main {
     Draw.useCanvas(this.canvas);
 
     // draw map background, needs to change based on environment
-    Draw.clear(99, 155, 255, 255);
+    Draw.clear(this.map.bgColor[0], this.map.bgColor[1], this.map.bgColor[2], 255);
 
     const { res } = this;
     const t = this.state.t;
@@ -245,7 +245,7 @@ class Main {
     return ent;
   }
 
-  // spawn a placeholder enemy that flings out of the scren
+  // spawn a placeholder enemy that flings out of the screen
   spawnDeathParticle(ent: Entity, frame: number) {
     const puffEnt = new PuffParticle({});
     puffEnt.pos = [...ent.pos];

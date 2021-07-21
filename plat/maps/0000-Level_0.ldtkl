@@ -14,8 +14,8 @@
 	"worldY": 0,
 	"pxWid": 1392,
 	"pxHei": 320,
-	"__bgColor": "#696A79",
-	"bgColor": null,
+	"__bgColor": "#639BFF",
+	"bgColor": "#639BFF",
 	"useAutoIdentifier": true,
 	"bgRelPath": null,
 	"bgPos": null,
@@ -48,17 +48,6 @@
 			"overrideTilesetUid": null,
 			"gridTiles": [],
 			"entityInstances": [
-				{
-					"__identifier": "Player",
-					"__grid": [4,15],
-					"__pivot": [0,1],
-					"__tile": null,
-					"width": 14,
-					"height": 14,
-					"defUid": 73,
-					"px": [64,256],
-					"fieldInstances": []
-				},
 				{
 					"__identifier": "Platform",
 					"__grid": [20,14],
@@ -193,17 +182,6 @@
 						{ "__identifier": "Moving", "__value": true, "__type": "Bool", "defUid": 119, "realEditorValues": [] },
 						{ "__identifier": "OneShot", "__value": false, "__type": "Bool", "defUid": 120, "realEditorValues": [] }
 					]
-				},
-				{
-					"__identifier": "Spring",
-					"__grid": [32,17],
-					"__pivot": [0,1],
-					"__tile": null,
-					"width": 16,
-					"height": 16,
-					"defUid": 114,
-					"px": [512,288],
-					"fieldInstances": []
 				},
 				{
 					"__identifier": "Switch",
@@ -434,13 +412,46 @@
 				},
 				{
 					"__identifier": "Ghost",
-					"__grid": [16,13],
-					"__pivot": [0,0],
+					"__grid": [15,13],
+					"__pivot": [0.5,0.5],
 					"__tile": null,
 					"width": 14,
 					"height": 14,
 					"defUid": 132,
-					"px": [256,208],
+					"px": [248,216],
+					"fieldInstances": []
+				},
+				{
+					"__identifier": "Spring",
+					"__grid": [32,17],
+					"__pivot": [0.5,1],
+					"__tile": null,
+					"width": 16,
+					"height": 16,
+					"defUid": 114,
+					"px": [520,288],
+					"fieldInstances": []
+				},
+				{
+					"__identifier": "Launcher",
+					"__grid": [12,11],
+					"__pivot": [0.5,0.5],
+					"__tile": null,
+					"width": 16,
+					"height": 16,
+					"defUid": 135,
+					"px": [200,184],
+					"fieldInstances": []
+				},
+				{
+					"__identifier": "Player",
+					"__grid": [3,15],
+					"__pivot": [0.5,1],
+					"__tile": null,
+					"width": 12,
+					"height": 14,
+					"defUid": 73,
+					"px": [56,256],
 					"fieldInstances": []
 				},
 				{
@@ -452,17 +463,6 @@
 					"height": 12,
 					"defUid": 133,
 					"px": [128,256],
-					"fieldInstances": []
-				},
-				{
-					"__identifier": "Launcher",
-					"__grid": [12,12],
-					"__pivot": [0,0],
-					"__tile": null,
-					"width": 16,
-					"height": 16,
-					"defUid": 135,
-					"px": [192,192],
 					"fieldInstances": []
 				}
 			]
@@ -1078,7 +1078,7 @@
 				{ "px": [1248,256], "src": [112,0], "f": 0, "t": 7, "d": [62,1470] }
 			],
 			"seed": 3393934,
-			"overrideTilesetUid": 2,
+			"overrideTilesetUid": null,
 			"gridTiles": [],
 			"entityInstances": []
 		},
@@ -1444,7 +1444,7 @@
 			"intGridCsv": [],
 			"autoLayerTiles": [],
 			"seed": 5490018,
-			"overrideTilesetUid": 2,
+			"overrideTilesetUid": null,
 			"gridTiles": [
 				{ "px": [384,64], "src": [192,128], "f": 0, "t": 140, "d": [372] },
 				{ "px": [400,64], "src": [208,128], "f": 0, "t": 141, "d": [373] },

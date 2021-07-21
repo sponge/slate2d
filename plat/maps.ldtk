@@ -1555,7 +1555,7 @@
 			"maxCount": 1,
 			"limitScope": "PerLevel",
 			"limitBehavior": "PreventAdding",
-			"pivotX": 0,
+			"pivotX": 0.5,
 			"pivotY": 1,
 			"fieldDefs": []
 		},
@@ -1749,7 +1749,7 @@
 			"maxCount": 0,
 			"limitScope": "PerLevel",
 			"limitBehavior": "MoveLastOne",
-			"pivotX": 0,
+			"pivotX": 0.5,
 			"pivotY": 1,
 			"fieldDefs": []
 		},
@@ -1983,8 +1983,8 @@
 			"maxCount": 0,
 			"limitScope": "PerLevel",
 			"limitBehavior": "MoveLastOne",
-			"pivotX": 0,
-			"pivotY": 0,
+			"pivotX": 0.5,
+			"pivotY": 0.5,
 			"fieldDefs": []
 		},
 		{
@@ -2033,8 +2033,8 @@
 			"maxCount": 0,
 			"limitScope": "PerLevel",
 			"limitBehavior": "MoveLastOne",
-			"pivotX": 0,
-			"pivotY": 0,
+			"pivotX": 0.5,
+			"pivotY": 0.5,
 			"fieldDefs": []
 		}
 	], "tilesets": [
@@ -2118,8 +2118,8 @@
 			"worldY": 0,
 			"pxWid": 1392,
 			"pxHei": 320,
-			"__bgColor": "#696A79",
-			"bgColor": null,
+			"__bgColor": "#639BFF",
+			"bgColor": "#639BFF",
 			"useAutoIdentifier": true,
 			"bgRelPath": null,
 			"bgPos": null,

@@ -87,11 +87,10 @@ class Hermit extends Entity {
                 this.vel[0] = Math.sign(this.center(0) - other.center(0)) * this.spinSpeed;
             }
             else {
-                if (other.type == 'World' && (dir == Dir.Left || dir == Dir.Right)) {
+                other.hurt(1);
+                // if we can't destroy it, bounce back
+                if (!other.destroyed && (dir == Dir.Left || dir == Dir.Right)) {
                     this.vel[0] *= -1;
-                }
-                else {
-                    other.hurt(1);
                 }
             }
         }

@@ -20,7 +20,7 @@ class Switch extends Entity {
             return;
         World().state.entities.forEach(ent => {
             if (ent.name == this.target) {
-                ent.trigger(this);
+                ent.activate(this);
             }
         });
         this.destroyed = true;

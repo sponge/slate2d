@@ -48,7 +48,7 @@ class Platform extends Entity {
     Draw.rect(this.pos[0], this.pos[1], this.size[0], this.size[1], false);
   }
 
-  trigger(other: Entity) {
+  activate(other: Entity) {
     this.moving = !this.moving;
   }
 }

@@ -46,8 +46,8 @@ class Entity {
     canCollide(other, dir) { return this.collidable; }
     // callback when someone else touches this entity
     collide(other, dir) { }
-    // callback when an entity is triggered
-    trigger(other) { }
+    // callback when an entity is activated
+    activate(other) { }
     center(dim) { return this.pos[dim] + this.size[dim] / 2; }
     min(dim) { return this.pos[dim]; }
     max(dim) { return this.pos[dim] + this.size[dim]; }

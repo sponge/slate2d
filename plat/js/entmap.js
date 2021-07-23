@@ -12,3 +12,5 @@ export * from './entities/puffparticle.js';
 export * from './entities/hermit.js';
 export * from './entities/launcher.js';
 export * from './entities/cannonball.js';
+export * from './entities/flamethrower.js';
+export * from './entities/flame.js';

@@ -464,6 +464,37 @@
 					"defUid": 133,
 					"px": [128,256],
 					"fieldInstances": []
+				},
+				{
+					"__identifier": "Flamethrower",
+					"__grid": [10,16],
+					"__pivot": [0,0],
+					"__tile": null,
+					"width": 16,
+					"height": 16,
+					"defUid": 136,
+					"px": [160,256],
+					"fieldInstances": [{ "__identifier": "StartOn", "__value": false, "__type": "Bool", "defUid": 137, "realEditorValues": [] }]
+				},
+				{
+					"__identifier": "Flamethrower",
+					"__grid": [12,16],
+					"__pivot": [0,0],
+					"__tile": null,
+					"width": 16,
+					"height": 16,
+					"defUid": 136,
+					"px": [192,256],
+					"fieldInstances": [{
+						"__identifier": "StartOn",
+						"__value": true,
+						"__type": "Bool",
+						"defUid": 137,
+						"realEditorValues": [{
+							"id": "V_Bool",
+							"params": [ true ]
+						}]
+					}]
 				}
 			]
 		},

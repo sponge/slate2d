@@ -189,12 +189,17 @@ class Main {
         this.state.entities.push(ent);
         return ent;
     }
-    // spawn a placeholder enemy that flings out of the screen
-    spawnDeathParticle(ent, frame) {
+    // spawns a lil puff of smoke
+    spawnPuffParticle(x, y) {
         const puffEnt = new PuffParticle({});
-        puffEnt.pos = [...ent.pos];
+        puffEnt.pos[0] = x;
+        puffEnt.pos[1] = y;
         puffEnt.start = this.state.ticks;
         this.state.entities.push(puffEnt);
+    }
+    // spawn a placeholder enemy that flings out of the screen
+    spawnDeathParticle(ent, frame) {
+        this.spawnPuffParticle(ent.pos[0], ent.pos[1]);
         const deathEnt = new SpinParticle({});
         deathEnt.pos = ent.pos;
         deathEnt.sprite = ent.sprite;

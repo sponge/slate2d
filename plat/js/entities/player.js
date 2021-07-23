@@ -95,8 +95,12 @@ class Player extends Entity {
         this.vel[1] = grounded ? 0 : this.vel[1] + (this.jumpHeld ? Phys.heldGravity : Phys.gravity);
         // slide on ground if holding down
         // y vel handled by slope snapping near end of move
-        if (!this.jumpHeld && slidePress && slopes.includes(this.collideTile)) {
-            const slideDir = this.collideTile == Tiles.SlopeL ? -1 : 1;
+        // this tileAt is used because otherwise collideTile is one pixel below
+        // your feet, which may be the tile underneath the slope
+        const tid = this.tileAt(this.bottomMiddle(0), this.bottomMiddle(1));
+        const canSlide = slopes.includes(tid);
+        if (!this.jumpHeld && slidePress && canSlide) {
+            const slideDir = tid == Tiles.SlopeL ? -1 : 1;
             this.vel[0] += slideDir * Phys.slideAccel;
             this.remainder = [0, 0];
         }

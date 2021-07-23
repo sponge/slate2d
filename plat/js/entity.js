@@ -51,9 +51,17 @@ class Entity {
     center(dim) { return this.pos[dim] + this.size[dim] / 2; }
     min(dim) { return this.pos[dim]; }
     max(dim) { return this.pos[dim] + this.size[dim]; }
+    bottomMiddle(dim) { return dim == 0 ? this.pos[0] + this.size[0] / 2 : this.pos[1] + this.size[1] - 1; }
     canHurt(other) { return other.type == 'Player'; }
     hurt(amt) { this.die(); }
     die() { this.destroyed = true; }
+    // returns the tile id at the given coordinates
+    tileAt(x, y) {
+        const layer = World().map.layersByName.Collision;
+        const tx = Math.floor(x / layer.tileSize);
+        const ty = clamp(Math.floor(y / layer.tileSize), 0, layer.height);
+        return layer.tiles[ty * layer.width + tx];
+    }
     // returns true/false if there is a collision at the specified coordinates.
     // this only queries the world, but it will update this.collideEnt
     collideAt(x, y, dir) {

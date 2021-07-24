@@ -539,6 +539,10 @@ SLT_API MousePosition SLT_In_MousePosition() {
 	return In_MousePosition();
 }
 
+SLT_API AnalogAxes SLT_In_ControllerAnalog(int controllerNum) {
+	return In_ControllerAnalog(controllerNum);
+}
+
 SLT_API void SLT_SubmitRenderCommands(renderCommandList_t* list) {
 	SubmitRenderCommands(list);
 }

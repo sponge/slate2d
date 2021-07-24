@@ -7,6 +7,7 @@
 #include "main.h"
 #include <cmath>
 #include <cstdint>
+#include "cvar_main.h"
 
 extern "C" const char * keys[MAX_KEYS];
 
@@ -126,6 +127,24 @@ MousePosition In_MousePosition() {
 	MousePosition mousePos;
 	SDL_GetMouseState(&mousePos.x, &mousePos.y);
 	return mousePos;
+}
+
+AnalogAxes In_ControllerAnalog(int controllerNum) {
+	AnalogAxes axes;
+	SDL_GameController *controller = SDL_GameControllerFromInstanceID(controllerNum);
+	axes.leftX = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX) / 32768.0f;
+	axes.leftY = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) / 32768.0f;
+	axes.rightX = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_RIGHTX) / 32768.0f;
+	axes.rightY = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_RIGHTY) / 32768.0f;
+	axes.triggerLeft = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_TRIGGERLEFT) / 32768.0f;
+	axes.triggerRight = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_TRIGGERRIGHT) / 32768.0f;
+
+	axes.leftX = fabs(axes.leftX) < in_deadzone->value ? 0.0f : axes.leftX;
+	axes.leftY = fabs(axes.leftY) < in_deadzone->value ? 0.0f : axes.leftY;
+	axes.rightX = fabs(axes.rightX) < in_deadzone->value ? 0.0f : axes.rightX;
+	axes.rightY = fabs(axes.rightY) < in_deadzone->value ? 0.0f : axes.rightY;
+
+	return axes;
 }
 
 int In_GetKeyNum(const char *str) {

@@ -115,6 +115,7 @@ declare module 'slate2d' {
   export function buttonPressed(buttonNum: number, delay?: number, repeat?: number): boolean
   export function setWindowTitle(title: string): void
   export function mouse(): Coordinates
+  export function controllerAnalog(controller: number): [number, number, number, number, number, number]
   export function resolution(): Size
   export function readFile(path: string): string
 }

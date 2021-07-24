@@ -53,6 +53,12 @@ typedef struct {
 	int x, y;
 } MousePosition;
 
+typedef struct {
+	float leftX, leftY;
+	float rightX, rightY;
+	float triggerLeft, triggerRight;
+} AnalogAxes;
+
 #ifdef SLT_STATIC
 	#define SLT_API 
 #elif _MSC_VER 
@@ -177,7 +183,12 @@ SLT_API const buttonState_t* SLT_In_GetButton(int buttonNum);
 // passed since the last activation. buttonNum should correspond to the index of the key used in
 // SLT_In_AllocateButtons, or the default button list, see SLT_In_AllocateButtons.
 SLT_API uint8_t SLT_In_ButtonPressed(int buttonNum, unsigned int delay, int repeat);
+
+// returns the x and y mouse position, relative to the window.
 SLT_API MousePosition SLT_In_MousePosition();
+
+// returns a struct containing both analog sticks, and the triggers for the given controller.
+SLT_API AnalogAxes SLT_In_ControllerAnalog(int controllerNum);
 
 
 // creates or returns an existing asset handle to an image. linearFilter specifics if image should be drawn with

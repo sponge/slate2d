@@ -128,6 +128,15 @@ const AssetList: Asset[] = [
     spriteWidth: 16,
     spriteHeight: 16,
   },
+  {
+    type: 'sprite',
+    name: 'crumblingblock',
+    path: 'gfx/crumblingblock.png',
+    marginX: 0,
+    marginY: 0,
+    spriteWidth: 16,
+    spriteHeight: 16,
+  },
 ];
 
 function loadAllAssets() {

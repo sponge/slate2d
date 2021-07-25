@@ -16,4 +16,5 @@ extern conVar_t *snd_volume;
 extern conVar_t *debug_fontAtlas;
 extern conVar_t *debug_assets;
 extern conVar_t *debug_imguidemo;
+extern conVar_t *debug_frameAdvanceStep;
 extern conVar_t *in_deadzone;

@@ -260,7 +260,9 @@ SLT_API double SLT_StartFrame() {
 	rlMatrixMode(RL_MODELVIEW);                             // Enable internal modelview matrix
 	rlLoadIdentity();                                       // Reset internal modelview matrix
 
-	return !eng_pause->integer || frameAdvance ? frame_musec / 1E6 : 0;
+	IMConsole()->Draw(vid_width->integer, vid_height->integer);
+
+	return frameAdvance ? debug_frameAdvanceStep->value : !eng_pause->integer ? frame_musec / 1E6 : 0;
 }
 
 SLT_API void SLT_EndFrame() {
@@ -274,7 +276,6 @@ SLT_API void SLT_EndFrame() {
 		frameAdvance = false;
 	}
 
-	IMConsole()->Draw(vid_width->integer, vid_height->integer);
 	Asset_DrawInspector();
 
 	ImGui::Render();
@@ -646,8 +647,8 @@ SLT_API void SLT_Snd_PauseResume(unsigned int handle, uint8_t pause) {
 }
 
 SLT_API void SLT_GetResolution(int* width, int* height) {
-	*width = vid_width->integer;
-	*height = vid_height->integer;
+	if (width != nullptr) *width = vid_width->integer;
+	if (height != nullptr) *height = vid_height->integer;
 }
 
 SLT_API const void* SLT_GetImguiContext() {

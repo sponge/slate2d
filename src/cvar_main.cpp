@@ -20,6 +20,7 @@ conVar_t *snd_volume;
 conVar_t *debug_fontAtlas;
 conVar_t *debug_assets;
 conVar_t *debug_imguidemo;
+conVar_t *debug_frameAdvanceStep;
 conVar_t *in_deadzone;
 
 static conVarTable_t mainCvarTable[] = {{&eng_errorMessage, "engine.errorMessage", "", 0},
@@ -35,6 +36,7 @@ static conVarTable_t mainCvarTable[] = {{&eng_errorMessage, "engine.errorMessage
                                         {&debug_fontAtlas, "debug.fontAtlas", "0", 0},
                                         {&debug_assets, "debug.assets", "0", 0},
                                         {&debug_imguidemo, "debug.imguiDemo", "0", 0},
+                                        {&debug_frameAdvanceStep, "debug.frameAdvanceStep", "0.0167", 0},
 																				{&in_deadzone, "in.deadzone", "0.15", 0},
                                         {NULL}};
 

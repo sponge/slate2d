@@ -79,6 +79,6 @@ void Canvas_Inspect(Asset& asset, bool deselected)
 	ImGui::Text("Size: %ix%i", canvas->w, canvas->h);
 	ImGui::SliderInt("Zoom", &zoom, 1, 8, "%dx");
 	ImGui::BeginChildFrame(ImGui::GetID("inspector value"), ImVec2(0, 0), ImGuiWindowFlags_HorizontalScrollbar);
-	ImGui::Image((ImTextureID)(uintptr_t)canvas->id, ImVec2(canvas->w * zoom, canvas->h * zoom), ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::Image((ImTextureID)(uintptr_t)canvas->texId, ImVec2(canvas->w * zoom, canvas->h * zoom), ImVec2(0, 1), ImVec2(1, 0));
 	ImGui::EndChildFrame();
 }

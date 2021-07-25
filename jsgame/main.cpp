@@ -1,5 +1,6 @@
 #include "../src/slate2d.h"
 #include "js_libs.h"
+#include "timing.h"
 #include <imgui.h>
 #include <string>
 extern "C" {
@@ -329,17 +330,42 @@ void main_loop()
   }
 
   if (instance) {
+    Timing_Start("total");
+
+    Timing_Start("update");
     if (!instance->CallUpdate(dt)) {
       instance->Error("Exception while calling Update()");
       delete instance;
       instance = nullptr;
     }
+    double updTime = Timing_End("update");
 
+    Timing_Start("draw");
     if (instance && !instance->CallDraw()) {
       instance->Error("Exception while calling Draw()");
       delete instance;
       instance = nullptr;
     }
+    double drawTime = Timing_End("draw");
+
+    Timing_Start("submit");
+    DC_Submit();
+    double submitTime = Timing_End("submit");
+    
+    double totalTime = Timing_End("total");
+		
+    int width;
+    SLT_GetResolution(&width, nullptr);
+    ImGui::SetNextWindowPos(ImVec2(width - 200, 50));
+    ImGui::SetNextWindowSize(ImVec2(200, 0));
+    ImGui::Begin("##fps2", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoInputs);
+    ImGui::Text("upd: %0.2fms (5s: %0.2fms)", updTime, Timer_Max("update"));
+    ImGui::Text("drw: %0.2fms (5s: %0.2fms)", drawTime, Timer_Max("draw"));
+    ImGui::Text("sub: %0.2fms (5s: %0.2fms)", submitTime, Timer_Max("submit"));
+    ImGui::Text("ttl: %0.2fms (5s: %0.2fms)", totalTime, Timer_Max("total"));
+
+    ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+    ImGui::End();
   }
   else {
     DC_Clear(0, 0, 0, 255);

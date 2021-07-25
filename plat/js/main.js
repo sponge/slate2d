@@ -180,7 +180,6 @@ class Main {
         Draw.resetCanvas();
         Draw.setColor(255, 255, 255, 255);
         Draw.image(this.canvas, (screen.w - (res.w * scale)) / 2, (screen.h - (res.h * scale)) / 2, res.w, res.h, scale, 0, 0, 0);
-        Draw.submit();
     }
     ;
     // spawn an entity into the map as active

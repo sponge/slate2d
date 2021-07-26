@@ -8,13 +8,13 @@ class Balloon extends Entity {
     sprite = Assets.find('balloon');
     collidable = CollisionType.Platform;
     update(ticks, dt) {
-        this.frame = ticks % 32 < 16 ? 0 : 1;
+        this.frame = ticks % 26 < 13 ? 0 : 1;
         const cycle = ticks % 120;
         if (cycle == 0 || cycle == 30) {
-            this.moveY(-1);
+            this.moveSolid(0, 1);
         }
         else if (cycle == 60 || cycle == 90) {
-            this.moveY(1);
+            this.moveSolid(0, -1);
         }
     }
     collide(other, dir) {

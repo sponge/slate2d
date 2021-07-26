@@ -528,6 +528,28 @@
 					"defUid": 138,
 					"px": [64,208],
 					"fieldInstances": []
+				},
+				{
+					"__identifier": "Balloon",
+					"__grid": [2,10],
+					"__pivot": [0.5,0],
+					"__tile": null,
+					"width": 14,
+					"height": 28,
+					"defUid": 139,
+					"px": [40,160],
+					"fieldInstances": []
+				},
+				{
+					"__identifier": "Balloon",
+					"__grid": [1,7],
+					"__pivot": [0.5,0],
+					"__tile": null,
+					"width": 14,
+					"height": 28,
+					"defUid": 139,
+					"px": [24,112],
+					"fieldInstances": []
 				}
 			]
 		},

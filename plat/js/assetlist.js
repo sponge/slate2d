@@ -136,6 +136,15 @@ const AssetList = [
         spriteWidth: 16,
         spriteHeight: 16,
     },
+    {
+        type: 'sprite',
+        name: 'balloon',
+        path: 'gfx/balloon.png',
+        marginX: 0,
+        marginY: 0,
+        spriteWidth: 14,
+        spriteHeight: 28,
+    },
 ];
 function loadAllAssets() {
     for (const asset of AssetList) {

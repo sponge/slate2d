@@ -25,6 +25,7 @@ class LDTK {
         this.bgColor = o.__bgColor.match(/\w\w/g).map((x) => parseInt(x, 16));
         // turn into a reasonable k/v object
         this.properties = parseProperties(o.fieldInstances);
+        this.background = this.properties.background;
         // parse each layer
         o.layerInstances.forEach((layer) => {
             const lobj = {

@@ -9,7 +9,7 @@
 		"url": "https://ldtk.io"
 	},
 	"jsonVersion": "0.9.3",
-	"nextUid": 140,
+	"nextUid": 141,
 	"worldLayout": "LinearHorizontal",
 	"worldGridWidth": 256,
 	"worldGridHeight": 256,
@@ -2201,7 +2201,7 @@
 			"acceptFileTypes": null,
 			"defaultOverride": {
 				"id": "V_String",
-				"params": ["grasslands"]
+				"params": ["grassland"]
 			},
 			"textLanguageMode": null
 		}
@@ -2223,7 +2223,16 @@
 			"bgPivotY": 0.5,
 			"__bgPos": null,
 			"externalRelPath": "maps/0000-Level_0.ldtkl",
-			"fieldInstances": [{ "__identifier": "background", "__value": "grasslands", "__type": "String", "defUid": 58, "realEditorValues": [] }],
+			"fieldInstances": [{
+				"__identifier": "background",
+				"__value": "snowland",
+				"__type": "String",
+				"defUid": 58,
+				"realEditorValues": [{
+					"id": "V_String",
+					"params": ["snowland"]
+				}]
+			}],
 			"layerInstances": null,
 			"__neighbours": []
 		}

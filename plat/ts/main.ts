@@ -18,20 +18,21 @@ import { PuffParticle } from './entities/puffparticle.js';
 const EntityMappings = EntMap as { [key: string]: any };
 
 interface GameState {
-  t: number;
-  ticks: number;
-  entities: Entity[];
-  mapName: string;
-  currCoins: number;
-  maxCoins: number;
+  t: number
+  ticks: number
+  entities: Entity[]
+  mapName: string
+  currCoins: number
+  maxCoins: number
 }
 
 interface Background {
-  id: number;
-  w: number;
-  h: number;
-  x: number;
-  y: number;
+  id: number
+  w: number
+  h: number
+  x: number
+  y: number
+  random: boolean
 }
 
 const scaleFactor = Math.floor(SLT.resolution().w / 384);
@@ -64,20 +65,8 @@ class Main {
   pMeterSpr: number;
   coinSpr: number;
   blueFont: number;
-
-  backgrounds: Background[] = [...Array(3).keys()].map(i => {
-    const name = `gfx/grassland_bg${i}.png`;
-    const id = Assets.load({ type: 'image', name, path: name });
-    const { w, h } = Assets.imageSize(id);
-    return { id, w, h, x: 0, y: this.res.h - h };
-  });
-
-  clouds: Background[] = [...Array(3).keys()].map(i => {
-    const name = `gfx/grassland_cloud${i}.png`;
-    const id = Assets.load({ type: 'image', name, path: name });
-    const { w, h } = Assets.imageSize(id);
-    return { id, w, h, x: randomRange(50, 150), y: randomRange(5, 90) };
-  });
+  backgrounds: Background[] = [];
+  clouds: Background[] = [];
 
   save() {
     return JSON.stringify(this.state);
@@ -109,6 +98,26 @@ class Main {
       const entLayer = this.map.layersByName.Entities;
       this.state.entities = entLayer.entities.map(ent => new EntityMappings[ent.type](ent));
     }
+
+    const bgProps: Record<string, { key: string, numBgs: number, numClouds: number, random: boolean }> = {
+      'grassland': { key: 'grassland', numBgs: 3, numClouds: 3, random: true },
+      'snowland': { key: 'snowland', numBgs: 4, numClouds: 1, random: false },
+    }
+    const bgProp = bgProps[this.map.background] ?? bgProps['snowland'];
+
+    this.backgrounds = [...Array(bgProp.numBgs).keys()].map(i => {
+      const name = `gfx/${bgProp.key}_bg${i}.png`;
+      const id = Assets.load({ type: 'image', name, path: name });
+      const { w, h } = Assets.imageSize(id);
+      return { id, w, h, x: 0, y: this.res.h - h, random: bgProp.random };
+    });
+
+    this.clouds = [...Array(bgProp.numClouds).keys()].map(i => {
+      const name = `gfx/${bgProp.key}_cloud${i}.png`;
+      const id = Assets.load({ type: 'image', name, path: name });
+      const { w, h } = Assets.imageSize(id);
+      return { id, w, h, x: bgProp.random ? randomRange(50, 150) : 0, y: bgProp.random ? randomRange(5, 90) : this.res.h - h, random: bgProp.random };
+    });
 
     // setup player
     this.player = this.state.entities.find(ent => ent instanceof Player) as Player;
@@ -166,6 +175,24 @@ class Main {
     const { res } = this;
     const t = this.state.t;
 
+    // clouds which scroll, no parallax
+    this.clouds.forEach((bg: Background, i: number) => {
+      const speed = (i + 1) * 6;
+      let x = res.w + (bg.x - t * speed) % (res.w + bg.w);
+      if (bg.random) {
+        Draw.image(bg.id, x, bg.y, 0, 0, 1, 0, 0, 0);
+      }
+      else {
+        while (x > 0) {
+          x -= bg.w;
+        }
+        while (x < res.w) {
+          Draw.image(bg.id, x, bg.y, 0, 0, 1, 0, 0, 0);
+          x += bg.w;
+        }
+      }
+    });
+
     // parallax bgs
     const camY = 1 - this.camera.y / (this.map.heightPx - res.h);
     const camYoffset = camY * 50;
@@ -190,13 +217,6 @@ class Main {
     Draw.setColor(99, 155, 255, 60);
     Draw.rect(0, 0, res.w, res.h, false);
     Draw.setColor(255, 255, 255, 255);
-
-    // clouds which scroll, no parallax
-    this.clouds.forEach((bg: Background, i: number) => {
-      const speed = (i + 1) * 6;
-      const x = res.w + (bg.x - t * speed) % (res.w + bg.w);
-      Draw.image(bg.id, x, bg.y, 0, 0, 1, 0, 0, 0);
-    });
 
     // start drawing from camera viewpoint
     this.camera.drawStart();

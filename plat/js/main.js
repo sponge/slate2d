@@ -39,18 +39,8 @@ class Main {
     pMeterSpr;
     coinSpr;
     blueFont;
-    backgrounds = [...Array(3).keys()].map(i => {
-        const name = `gfx/grassland_bg${i}.png`;
-        const id = Assets.load({ type: 'image', name, path: name });
-        const { w, h } = Assets.imageSize(id);
-        return { id, w, h, x: 0, y: this.res.h - h };
-    });
-    clouds = [...Array(3).keys()].map(i => {
-        const name = `gfx/grassland_cloud${i}.png`;
-        const id = Assets.load({ type: 'image', name, path: name });
-        const { w, h } = Assets.imageSize(id);
-        return { id, w, h, x: randomRange(50, 150), y: randomRange(5, 90) };
-    });
+    backgrounds = [];
+    clouds = [];
     save() {
         return JSON.stringify(this.state);
     }
@@ -77,6 +67,23 @@ class Main {
             const entLayer = this.map.layersByName.Entities;
             this.state.entities = entLayer.entities.map(ent => new EntityMappings[ent.type](ent));
         }
+        const bgProps = {
+            'grassland': { key: 'grassland', numBgs: 3, numClouds: 3, random: true },
+            'snowland': { key: 'snowland', numBgs: 4, numClouds: 1, random: false },
+        };
+        const bgProp = bgProps[this.map.background] ?? bgProps['snowland'];
+        this.backgrounds = [...Array(bgProp.numBgs).keys()].map(i => {
+            const name = `gfx/${bgProp.key}_bg${i}.png`;
+            const id = Assets.load({ type: 'image', name, path: name });
+            const { w, h } = Assets.imageSize(id);
+            return { id, w, h, x: 0, y: this.res.h - h, random: bgProp.random };
+        });
+        this.clouds = [...Array(bgProp.numClouds).keys()].map(i => {
+            const name = `gfx/${bgProp.key}_cloud${i}.png`;
+            const id = Assets.load({ type: 'image', name, path: name });
+            const { w, h } = Assets.imageSize(id);
+            return { id, w, h, x: bgProp.random ? randomRange(50, 150) : 0, y: bgProp.random ? randomRange(5, 90) : this.res.h - h, random: bgProp.random };
+        });
         // setup player
         this.player = this.state.entities.find(ent => ent instanceof Player);
         this.state.maxCoins = this.state.currCoins + this.state.entities.filter(ent => ent.type == 'Coin').length;
@@ -122,6 +129,23 @@ class Main {
         Draw.clear(this.map.bgColor[0], this.map.bgColor[1], this.map.bgColor[2], 255);
         const { res } = this;
         const t = this.state.t;
+        // clouds which scroll, no parallax
+        this.clouds.forEach((bg, i) => {
+            const speed = (i + 1) * 6;
+            let x = res.w + (bg.x - t * speed) % (res.w + bg.w);
+            if (bg.random) {
+                Draw.image(bg.id, x, bg.y, 0, 0, 1, 0, 0, 0);
+            }
+            else {
+                while (x > 0) {
+                    x -= bg.w;
+                }
+                while (x < res.w) {
+                    Draw.image(bg.id, x, bg.y, 0, 0, 1, 0, 0, 0);
+                    x += bg.w;
+                }
+            }
+        });
         // parallax bgs
         const camY = 1 - this.camera.y / (this.map.heightPx - res.h);
         const camYoffset = camY * 50;
@@ -144,12 +168,6 @@ class Main {
         Draw.setColor(99, 155, 255, 60);
         Draw.rect(0, 0, res.w, res.h, false);
         Draw.setColor(255, 255, 255, 255);
-        // clouds which scroll, no parallax
-        this.clouds.forEach((bg, i) => {
-            const speed = (i + 1) * 6;
-            const x = res.w + (bg.x - t * speed) % (res.w + bg.w);
-            Draw.image(bg.id, x, bg.y, 0, 0, 1, 0, 0, 0);
-        });
         // start drawing from camera viewpoint
         this.camera.drawStart();
         // tilemap and entities

@@ -23,7 +23,16 @@
 	"bgPivotY": 0.5,
 	"__bgPos": null,
 	"externalRelPath": null,
-	"fieldInstances": [{ "__identifier": "background", "__value": "grasslands", "__type": "String", "defUid": 58, "realEditorValues": [] }],
+	"fieldInstances": [{
+		"__identifier": "background",
+		"__value": "snowland",
+		"__type": "String",
+		"defUid": 58,
+		"realEditorValues": [{
+			"id": "V_String",
+			"params": ["snowland"]
+		}]
+	}],
 	"layerInstances": [
 		{
 			"__identifier": "Entities",
@@ -1164,7 +1173,7 @@
 				{ "px": [1248,256], "src": [112,0], "f": 0, "t": 7, "d": [62,1470] }
 			],
 			"seed": 3393934,
-			"overrideTilesetUid": null,
+			"overrideTilesetUid": 2,
 			"gridTiles": [],
 			"entityInstances": []
 		},

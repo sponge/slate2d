@@ -25,12 +25,12 @@
 	"externalRelPath": null,
 	"fieldInstances": [{
 		"__identifier": "background",
-		"__value": "snowland",
+		"__value": "grassland",
 		"__type": "String",
 		"defUid": 58,
 		"realEditorValues": [{
 			"id": "V_String",
-			"params": ["snowland"]
+			"params": ["grassland"]
 		}]
 	}],
 	"layerInstances": [

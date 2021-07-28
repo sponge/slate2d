@@ -82,7 +82,7 @@ class Main {
             const name = `gfx/${bgProp.key}_cloud${i}.png`;
             const id = Assets.load({ type: 'image', name, path: name });
             const { w, h } = Assets.imageSize(id);
-            return { id, w, h, x: bgProp.random ? randomRange(50, 150) : 0, y: bgProp.random ? randomRange(5, 90) : this.res.h - h, random: bgProp.random };
+            return { id, w, h, x: bgProp.random ? randomRange(-300, 0) : 0, y: bgProp.random ? randomRange(5, 120) : this.res.h - h, random: bgProp.random };
         });
         // setup player
         this.player = this.state.entities.find(ent => ent instanceof Player);

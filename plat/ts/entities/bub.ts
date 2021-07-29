@@ -38,11 +38,7 @@ class Bub extends Entity {
     World().spawnDeathParticle(this, Frames.Pain);
   }
 
-  canCollide(other: Entity, dir: Dir) {
-    if (other instanceof Player && other.canHurt(this) && dir == Dir.Up) return CollisionType.Enabled;
-    else if (other instanceof Player) return CollisionType.Trigger;
-    else return CollisionType.Enabled;
-  }
+  canCollide = this.standardCanEnemyCollide;
 
   update(ticks: number, dt: number) {
     let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);

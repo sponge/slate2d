@@ -41,11 +41,7 @@ class Cannonball extends Entity {
     deathEnt.rotate = false;
   }
 
-  canCollide(other: Entity, dir: Dir) {
-    if (other instanceof Player && other.canHurt(this) && dir == Dir.Up) return CollisionType.Enabled;
-    else if (other instanceof Player) return CollisionType.Trigger;
-    else return CollisionType.Enabled;
-  }
+  canCollide = this.standardCanEnemyCollide;
 
   update(ticks: number, dt: number) {
     this.moveX(this.vel[0]);

@@ -5,6 +5,7 @@ import Dir from './dir.js';
 import Tiles from './tiles.js';
 import CollisionType from './collisiontype.js';
 import World from './world.js';
+import { Player } from './entities/player.js';
 
 const slopes = [Tiles.SlopeL, Tiles.SlopeR];
 
@@ -289,6 +290,12 @@ class Entity {
       if (!entIntersect(this, other)) continue;
       yield other;
     }
+  }
+
+  standardCanEnemyCollide(other: Entity, dir: Dir) {
+    if (other instanceof Player && other.canHurt(this) && dir == Dir.Up) return CollisionType.Enabled;
+    else if (other instanceof Player) return CollisionType.Trigger;
+    else return CollisionType.Enabled;
   }
 }
 

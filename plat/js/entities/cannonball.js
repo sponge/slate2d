@@ -1,7 +1,6 @@
 import * as Assets from 'assets';
 import Entity from '../entity.js';
 import Dir from '../dir.js';
-import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
 import World from '../world.js';
 var Frames;
@@ -34,14 +33,7 @@ class Cannonball extends Entity {
         deathEnt.vel = [0, 0];
         deathEnt.rotate = false;
     }
-    canCollide(other, dir) {
-        if (other instanceof Player && other.canHurt(this) && dir == Dir.Up)
-            return CollisionType.Enabled;
-        else if (other instanceof Player)
-            return CollisionType.Trigger;
-        else
-            return CollisionType.Enabled;
-    }
+    canCollide = this.standardCanEnemyCollide;
     update(ticks, dt) {
         this.moveX(this.vel[0]);
         this.moveY(this.vel[1]);

@@ -8,7 +8,6 @@ import World from '../world.js';
 
 class Balloon extends Entity {
   sprite = Assets.find('balloon');
-  collidable = CollisionType.Platform;
 
   update(ticks: number, dt: number) {
     this.frame = ticks % 26 < 13 ? 0 : 1;
@@ -21,8 +20,10 @@ class Balloon extends Entity {
     }
   }
 
+  canCollide = this.standardCanEnemyCollide;
+
   collide(other: Entity, dir: Dir) {
-    if (other instanceof Player && dir == Dir.Up) {
+    if (other instanceof Player && dir == Dir.Up && other.canHurt(this)) {
       this.die();
       other.stompEnemy();
       World().spawnPuffParticle(this.pos[0], this.pos[1]);

@@ -1,7 +1,6 @@
 import * as Assets from 'assets';
 import Entity from '../entity.js';
 import Dir from '../dir.js';
-import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
 import Phys from '../phys.js';
 import World from '../world.js';
@@ -32,14 +31,7 @@ class Bub extends Entity {
         super.die();
         World().spawnDeathParticle(this, Frames.Pain);
     }
-    canCollide(other, dir) {
-        if (other instanceof Player && other.canHurt(this) && dir == Dir.Up)
-            return CollisionType.Enabled;
-        else if (other instanceof Player)
-            return CollisionType.Trigger;
-        else
-            return CollisionType.Enabled;
-    }
+    canCollide = this.standardCanEnemyCollide;
     update(ticks, dt) {
         let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
         this.vel[1] = grounded ? 0 : this.vel[1] + Phys.enemyGravity;

@@ -146,6 +146,15 @@ const AssetList: Asset[] = [
     spriteWidth: 14,
     spriteHeight: 28,
   },
+  {
+    type: 'sprite',
+    name: 'owl',
+    path: 'gfx/owl.png',
+    marginX: 0,
+    marginY: 0,
+    spriteWidth: 21,
+    spriteHeight: 19,
+  },
 ];
 
 function loadAllAssets() {

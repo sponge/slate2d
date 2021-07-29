@@ -16,3 +16,4 @@ export * from './entities/flamethrower.js';
 export * from './entities/flame.js';
 export * from './entities/crumblingblock.js';
 export * from './entities/balloon.js';
+export * from './entities/owl.js';

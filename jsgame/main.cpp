@@ -366,7 +366,7 @@ void main_loop()
       ImGui::Text("upd: %0.2fms (5s: %0.2fms)", updTime, Timer_Max("update"));
       ImGui::Text("drw: %0.2fms (5s: %0.2fms)", drawTime, Timer_Max("draw"));
       ImGui::Text("sub: %0.2fms (5s: %0.2fms)", submitTime, Timer_Max("submit"));
-      ImGui::Text("ttl: %0.2fms (5s: %0.2fms)", totalTime, Timer_Max("total"));
+      ImGui::Text("sum: %0.2fms (5s: %0.2fms)", totalTime, Timer_Max("total"));
 
       ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Always);
       ImGui::End();

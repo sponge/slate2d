@@ -335,13 +335,13 @@
 				},
 				{
 					"__identifier": "Slime",
-					"__grid": [21,11],
+					"__grid": [20,11],
 					"__pivot": [0.5,1],
 					"__tile": null,
 					"width": 14,
 					"height": 10,
 					"defUid": 128,
-					"px": [344,192],
+					"px": [328,192],
 					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 130, "realEditorValues": [] }]
 				},
 				{

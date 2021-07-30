@@ -1,6 +1,7 @@
 import * as Assets from 'assets';
 import Entity from '../entity.js';
 import Dir from '../dir.js';
+import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
 import World from '../world.js';
 class Balloon extends Entity {
@@ -9,13 +10,18 @@ class Balloon extends Entity {
         this.frame = ticks % 26 < 13 ? 0 : 1;
         const cycle = ticks % 120;
         if (cycle == 0 || cycle == 30) {
-            this.moveSolid(0, 1);
+            this.moveY(1);
         }
         else if (cycle == 60 || cycle == 90) {
-            this.moveSolid(0, -1);
+            this.moveY(-1);
         }
     }
-    canCollide = this.standardCanEnemyCollide;
+    canCollide(other, dir) {
+        if (other instanceof Player && other.canHurt(this))
+            return CollisionType.Platform;
+        else
+            return CollisionType.Disabled;
+    }
     collide(other, dir) {
         if (other instanceof Player && dir == Dir.Up && other.canHurt(this)) {
             this.die();

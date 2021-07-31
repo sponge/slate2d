@@ -1812,7 +1812,7 @@
 			"lineOpacity": 1,
 			"hollow": false,
 			"color": "#F6E61D",
-			"renderMode": "Rectangle",
+			"renderMode": "Ellipse",
 			"showName": true,
 			"tilesetId": null,
 			"tileId": null,

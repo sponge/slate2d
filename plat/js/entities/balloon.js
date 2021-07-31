@@ -5,6 +5,7 @@ import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
 import World from '../world.js';
 class Balloon extends Entity {
+    type = 'Balloon';
     sprite = Assets.find('balloon');
     update(ticks, dt) {
         this.frame = ticks % 26 < 13 ? 0 : 1;

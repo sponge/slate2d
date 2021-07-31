@@ -7,6 +7,7 @@ import { Player } from './player.js';
 import World from '../world.js';
 
 class CrumblingBlock extends Entity {
+  type = 'CrumblingBlock';
   sprite = Assets.find('crumblingblock');
   collidable = CollisionType.Enabled;
   broken = false;

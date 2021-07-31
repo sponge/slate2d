@@ -21,6 +21,7 @@ var States;
     States[States["Fall"] = 4] = "Fall";
 })(States || (States = {}));
 class Owl extends Entity {
+    type = 'Owl';
     sprite = Assets.find('owl');
     drawOfs = [-3, -1];
     flapAnim = [Frames.FlapMid, Frames.FlapUp, Frames.FlapMid, Frames.FlapDown];

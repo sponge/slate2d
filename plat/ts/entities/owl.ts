@@ -23,6 +23,7 @@ enum States {
 }
 
 class Owl extends Entity {
+  type = 'Owl';
   sprite = Assets.find('owl');
   drawOfs: [number, number] = [-3, -1];
   flapAnim = [Frames.FlapMid, Frames.FlapUp, Frames.FlapMid, Frames.FlapDown];
@@ -89,7 +90,6 @@ class Owl extends Entity {
         }
 
         this.frame = this.fallAnim[Math.floor(ticks / 16) % this.fallAnim.length];
-
         break;
     }
   }

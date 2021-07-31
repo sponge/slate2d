@@ -7,6 +7,7 @@ import { Player } from './player.js';
 import World from '../world.js';
 
 class Balloon extends Entity {
+  type = 'Balloon'
   sprite = Assets.find('balloon');
 
   update(ticks: number, dt: number) {

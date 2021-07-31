@@ -97,7 +97,7 @@ class Owl extends Entity {
   canCollide = this.standardCanEnemyCollide;
 
   collide(other: Entity, dir: Dir) {
-    if (other instanceof Player && dir == Dir.Up && other.max(1) <= this.center(1)) {
+    if (other instanceof Player && dir == Dir.Up && other.max(1) <= this.min(1)) {
       this.die();
       other.stompEnemy();
     }

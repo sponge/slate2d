@@ -63,7 +63,7 @@ class Bub extends Entity {
 
   collide(other: Entity, dir: Dir) {
     if (other instanceof Player) {
-      if (!this.spikey && other.canHurt(this) && dir == Dir.Up && other.max(1) <= this.center(1)) {
+      if (!this.spikey && other.canHurt(this) && dir == Dir.Up && other.max(1) <= this.min(1)) {
         other.stompEnemy();
         this.die();
       }

@@ -78,7 +78,7 @@ class Hermit extends Entity {
 
   collide(other: Entity, dir: Dir) {
     // FIXME: this is bad and fraught with bugs
-    if (other.canHurt(this) && dir == Dir.Up && other.max(1) <= this.center(1)) {
+    if (other.canHurt(this) && dir == Dir.Up && other.max(1) <= this.min(1)) {
       if (other instanceof Player) other.stompEnemy();
       if (this.state == States.Shell) {
         this.vel[0] = this.vel[0] == 0 ? this.spinSpeed : 0;

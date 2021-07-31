@@ -50,7 +50,7 @@ class Cannonball extends Entity {
 
   collide(other: Entity, dir: Dir) {
     if (other instanceof Player) {
-      if (other.canHurt(this) && dir == Dir.Up && other.max(1) <= this.center(1)) {
+      if (other.canHurt(this) && dir == Dir.Up && other.max(1) <= this.min(1)) {
         other.stompEnemy();
       }
       else {

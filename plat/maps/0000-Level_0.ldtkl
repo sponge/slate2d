@@ -570,6 +570,28 @@
 					"defUid": 141,
 					"px": [216,160],
 					"fieldInstances": []
+				},
+				{
+					"__identifier": "SpikeyBub",
+					"__grid": [8,15],
+					"__pivot": [0.5,1],
+					"__tile": null,
+					"width": 12,
+					"height": 11,
+					"defUid": 142,
+					"px": [136,256],
+					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 144, "realEditorValues": [] }]
+				},
+				{
+					"__identifier": "CharginBub",
+					"__grid": [14,15],
+					"__pivot": [0.5,1],
+					"__tile": null,
+					"width": 12,
+					"height": 11,
+					"defUid": 145,
+					"px": [232,256],
+					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 144, "realEditorValues": [] }]
 				}
 			]
 		},

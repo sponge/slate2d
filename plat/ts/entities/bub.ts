@@ -72,7 +72,8 @@ class Bub extends Entity {
       }
     }
     else {
-      if (dir == Dir.Left || dir == Dir.Right) this.vel[0] *= -1;
+      if (this.vel[0] < 0 && dir == Dir.Left) this.vel[0] *= -1;
+      else if (this.vel[0] > 0 && dir == Dir.Right) this.vel[0] *= -1;
       if (dir == Dir.Up || dir == Dir.Down) this.vel[1] = 0;
     }
   }

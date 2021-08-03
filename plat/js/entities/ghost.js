@@ -82,16 +82,7 @@ class Ghost extends Entity {
         this.moveY(this.vel[1]);
     }
     collide(other, dir) {
-        if (other instanceof Player) {
-            if (dir == Dir.Up && other.max(1) <= this.min(1)) {
-                other.stompEnemy();
-                this.die();
-            }
-            else {
-                other.hurt(1);
-            }
-        }
-        else {
+        if (!this.handlePlayerStomp(other, dir)) {
             this.vel[0] *= -1;
         }
     }

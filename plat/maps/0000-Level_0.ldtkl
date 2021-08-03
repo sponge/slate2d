@@ -454,13 +454,13 @@
 				},
 				{
 					"__identifier": "Player",
-					"__grid": [3,15],
+					"__grid": [1,15],
 					"__pivot": [0.5,1],
 					"__tile": null,
 					"width": 12,
 					"height": 14,
 					"defUid": 73,
-					"px": [56,256],
+					"px": [24,256],
 					"fieldInstances": []
 				},
 				{
@@ -595,13 +595,13 @@
 				},
 				{
 					"__identifier": "Blobby",
-					"__grid": [9,15],
+					"__grid": [5,15],
 					"__pivot": [0.5,1],
 					"__tile": null,
 					"width": 14,
 					"height": 14,
 					"defUid": 146,
-					"px": [152,256],
+					"px": [88,256],
 					"fieldInstances": []
 				}
 			]

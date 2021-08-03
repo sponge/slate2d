@@ -1,7 +1,6 @@
 import * as Assets from 'assets';
 import Entity from '../entity.js';
 import Dir from '../dir.js';
-import { Player } from './player.js';
 import Phys from '../phys.js';
 import World from '../world.js';
 var Frames;
@@ -67,14 +66,8 @@ class Slime extends Entity {
         }
     }
     collide(other, dir) {
-        if (other instanceof Player) {
-            if (dir == Dir.Up && other.max(1) <= this.min(1)) {
-                other.stompEnemy();
-                this.die();
-            }
-            else {
-                other.hurt(1);
-            }
+        if (this.handlePlayerStomp(other, dir)) {
+            return;
         }
         else if (dir == Dir.Left || dir == Dir.Right) {
             this.dir *= -1;

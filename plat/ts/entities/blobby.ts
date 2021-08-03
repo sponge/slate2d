@@ -117,13 +117,7 @@ class Blobby extends Entity {
         break;
 
       default:
-        if (other instanceof Player && dir == Dir.Up && other.max(1) <= this.min(1)) {
-          this.die();
-          other.stompEnemy();
-        }
-        else if (other instanceof Player) {
-          other.hurt(1);
-        }
+        this.handlePlayerStomp(other, dir);
         break;
     }
   }

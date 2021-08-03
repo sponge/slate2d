@@ -297,6 +297,20 @@ class Entity {
     else if (other instanceof Player) return CollisionType.Trigger;
     else return CollisionType.Enabled;
   }
+
+  handlePlayerStomp(other: Entity, dir: Dir) {
+    if (other instanceof Player && dir == Dir.Up && other.max(1) <= this.min(1)) {
+      this.die();
+      other.stompEnemy();
+      return true;
+    }
+    else if (other instanceof Player) {
+      other.hurt(1);
+      return true;
+    }
+
+    return false;
+  }
 }
 
 class WorldEnt extends Entity {

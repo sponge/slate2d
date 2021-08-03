@@ -1,7 +1,5 @@
 import * as Assets from 'assets';
 import Entity from '../entity.js';
-import Dir from '../dir.js';
-import { Player } from './player.js';
 import World from '../world.js';
 var Frames;
 (function (Frames) {
@@ -39,14 +37,7 @@ class Cannonball extends Entity {
         this.moveY(this.vel[1]);
     }
     collide(other, dir) {
-        if (other instanceof Player) {
-            if (dir == Dir.Up && other.max(1) <= this.min(1)) {
-                other.stompEnemy();
-            }
-            else {
-                other.hurt(1);
-            }
-        }
+        this.handlePlayerStomp(other, dir);
         this.die();
     }
 }

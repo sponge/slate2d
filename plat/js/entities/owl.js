@@ -1,7 +1,5 @@
 import * as Assets from 'assets';
 import Entity from '../entity.js';
-import Dir from '../dir.js';
-import { Player } from './player.js';
 import World from '../world.js';
 var Frames;
 (function (Frames) {
@@ -80,13 +78,7 @@ class Owl extends Entity {
     }
     canCollide = this.standardCanEnemyCollide;
     collide(other, dir) {
-        if (other instanceof Player && dir == Dir.Up && other.max(1) <= this.min(1)) {
-            this.die();
-            other.stompEnemy();
-        }
-        else if (other instanceof Player) {
-            other.hurt(1);
-        }
+        this.handlePlayerStomp(other, dir);
     }
 }
 export { Owl };

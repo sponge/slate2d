@@ -47,9 +47,7 @@ class Flame extends Entity {
       return;
     }
 
-    if (other.canHurt(this)) {
-      other.hurt(1);
-    }
+    other.hurt(1);
   }
 }
 

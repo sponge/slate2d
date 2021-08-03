@@ -24,7 +24,7 @@ class Balloon extends Entity {
             return CollisionType.Disabled;
     }
     collide(other, dir) {
-        if (other instanceof Player && dir == Dir.Up && other.canHurt(this)) {
+        if (other instanceof Player && dir == Dir.Up) {
             this.die();
             other.stompEnemy();
             World().spawnPuffParticle(this.pos[0], this.pos[1]);

@@ -34,9 +34,7 @@ class Flame extends Entity {
         if (this.frame != 5 && this.frame != 6) {
             return;
         }
-        if (other.canHurt(this)) {
-            other.hurt(1);
-        }
+        other.hurt(1);
     }
 }
 export { Flame };

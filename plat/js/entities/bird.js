@@ -53,7 +53,7 @@ class Bird extends Entity {
     }
     collide(other, dir) {
         if (other instanceof Player) {
-            if (other.canHurt(this) && dir == Dir.Up && other.max(1) <= this.min(1)) {
+            if (dir == Dir.Up && other.max(1) <= this.min(1)) {
                 other.stompEnemy();
                 this.die();
             }

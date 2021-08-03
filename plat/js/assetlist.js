@@ -172,6 +172,15 @@ const AssetList = [
         spriteWidth: 21,
         spriteHeight: 19,
     },
+    {
+        type: 'sprite',
+        name: 'blobby',
+        path: 'gfx/blobby.png',
+        marginX: 0,
+        marginY: 0,
+        spriteWidth: 16,
+        spriteHeight: 16,
+    },
 ];
 function loadAllAssets() {
     for (const asset of AssetList) {

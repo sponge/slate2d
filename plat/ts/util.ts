@@ -20,6 +20,8 @@ const pointInRect = (px: number, py: number, x: number, y: number, w: number, h:
 
 const lerp = (a: number, b: number, t: number) => (1 - t) * a + t * b;
 
+const invLerp = (a: number, b: number, v: number) => (v - a) / (b - a);
+
 function getOppositeDir(dir: Dir) {
   switch (dir) {
     case Dir.Down: return Dir.Up;
@@ -31,4 +33,4 @@ function getOppositeDir(dir: Dir) {
   return Dir.None;
 }
 
-export { clamp, randomRange, entIntersect, rectIntersect, pointInRect, lerp, getOppositeDir };
+export { clamp, randomRange, entIntersect, rectIntersect, pointInRect, lerp, invLerp, getOppositeDir };

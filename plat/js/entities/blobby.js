@@ -1,5 +1,5 @@
 import * as Assets from 'assets';
-import Entity from '../entity.js';
+import FSMEntity from '../fsmentity.js';
 import Dir from '../dir.js';
 import { Player } from './player.js';
 import World from '../world.js';
@@ -23,72 +23,58 @@ var States;
     States[States["Rise"] = 3] = "Rise";
     States[States["Move"] = 4] = "Move";
 })(States || (States = {}));
-class Blobby extends Entity {
+class Blobby extends FSMEntity {
     type = 'Blobby';
     sprite = Assets.find('blobby');
     drawOfs = [-1, -2];
     sinkAnim = [Frames.Sink1, Frames.Sink2];
     riseAnim = [Frames.Sink2, Frames.Sink1];
-    state = States.Idle;
-    nextState = States.None;
-    nextStateTime = 0;
-    startStateTime = 0;
     lastVelX = -1.5;
     die() {
         super.die();
         World().spawnDeathParticle(this, Frames.Pain);
     }
+    #states = {
+        default: {},
+        [States.None]: {
+            enter: () => this.state = States.Idle,
+        },
+        [States.Idle]: {
+            enter: (ticks) => this.transitionAtTime(States.Sink, ticks + 40),
+            update: (ticks) => this.frame = ticks % 40 <= 20 ? Frames.Idle1 : Frames.Idle2,
+        },
+        [States.Sink]: {
+            enter: (ticks) => this.transitionAtTime(States.Move, ticks + 20),
+            update: (ticks) => this.frame = this.sinkAnim[Math.floor(invLerp(this.startStateTime, this.nextStateTime, ticks) * this.sinkAnim.length)],
+        },
+        [States.Rise]: {
+            enter: (ticks) => this.transitionAtTime(States.Idle, ticks + 20),
+            update: (ticks) => this.frame = this.riseAnim[Math.floor(invLerp(this.startStateTime, this.nextStateTime, ticks) * this.riseAnim.length)],
+        },
+        [States.Move]: {
+            enter: (ticks) => {
+                this.transitionAtTime(States.Rise, ticks + 60);
+                this.vel[0] = this.lastVelX;
+                this.frame = Frames.Sunk;
+            },
+            exit: () => {
+                this.lastVelX = this.vel[0];
+                this.vel[0] = 0;
+            },
+        },
+    };
     update(ticks, dt) {
-        if (this.nextStateTime > 0 && ticks >= this.nextStateTime) {
-            this.state = this.nextState;
-            this.nextState = States.None;
-        }
         let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
         this.vel[1] = grounded ? 0 : this.vel[1] + Phys.enemyGravity;
-        switch (this.state) {
-            case States.None:
-                this.state = States.Idle;
-                this.nextStateTime = ticks + 40;
-                this.startStateTime = ticks;
-                break;
-            case States.Idle:
-                if (this.nextState == States.None) {
-                    this.nextState = States.Sink;
-                    this.nextStateTime = ticks + 40;
-                    this.startStateTime = ticks;
-                }
-                this.vel[0] = 0;
-                this.frame = ticks % 40 <= 20 ? Frames.Idle1 : Frames.Idle2;
-                break;
-            case States.Sink:
-                if (this.nextState == States.None) {
-                    this.nextState = States.Move;
-                    this.nextStateTime = ticks + 20;
-                    this.startStateTime = ticks;
-                }
-                this.vel[0] = 0;
-                this.frame = this.sinkAnim[Math.floor(invLerp(this.startStateTime, this.nextStateTime, ticks) * this.sinkAnim.length)];
-                break;
-            case States.Rise:
-                if (this.nextState == States.None) {
-                    this.nextState = States.Idle;
-                    this.nextStateTime = ticks + 20;
-                    this.startStateTime = ticks;
-                }
-                this.vel[0] = 0;
-                this.frame = this.riseAnim[Math.floor(invLerp(this.startStateTime, this.nextStateTime, ticks) * this.riseAnim.length)];
-                break;
-            case States.Move:
-                if (this.nextState == States.None) {
-                    this.nextState = States.Rise;
-                    this.nextStateTime = ticks + 60;
-                    this.startStateTime = ticks;
-                    this.vel[0] = this.lastVelX;
-                }
-                this.lastVelX = this.vel[0];
-                this.frame = Frames.Sunk;
-                break;
+        super.update(ticks, dt);
+        if (this.lastState != 0) {
+            (this.#states[this.lastState]?.exit ?? this.#states.default?.exit)?.(ticks);
+            this.lastState = 0;
         }
+        if (this.nextState == 0) {
+            (this.#states[this.state]?.enter ?? this.#states.default?.enter)?.(ticks);
+        }
+        (this.#states[this.state]?.update ?? this.#states.default?.update)?.(ticks);
         this.moveX(this.vel[0]);
         this.moveY(this.vel[1]);
     }

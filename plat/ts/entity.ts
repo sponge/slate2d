@@ -298,15 +298,16 @@ class Entity {
     else return CollisionType.Enabled;
   }
 
-  handlePlayerStomp(other: Entity, dir: Dir) {
+  // FIXME: other.hurt shouldn't be in here maybe? also the die param is kinda smelly)
+  handlePlayerStomp(other: Entity, dir: Dir, die = true) {
     if (other instanceof Player && dir == Dir.Up && other.max(1) <= this.min(1)) {
-      this.die();
+      if (die) this.die();
       other.stompEnemy();
       return true;
     }
     else if (other instanceof Player) {
       other.hurt(1);
-      return true;
+      return false;
     }
 
     return false;

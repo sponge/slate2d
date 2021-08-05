@@ -29,8 +29,9 @@ class FSMEntity extends Entity {
         (states[this.state]?.collide ?? states.default?.collide)?.(other, dir);
     }
     fsmTransitionTo(state) {
-        this.state = this.nextState;
+        this.state = state;
         this.nextState = 0;
+        this.nextStateTime = 0;
     }
     fsmTransitionAtTime(state, wait) {
         this.nextState = state;

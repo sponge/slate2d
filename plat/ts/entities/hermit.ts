@@ -6,6 +6,8 @@ import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
 import Phys from '../phys.js';
 import World from '../world.js';
+import FSMEntity from '../fsmentity.js';
+import { dbgval } from '../printwin.js';
 
 enum Frames {
   Walk1,
@@ -17,9 +19,10 @@ enum States {
   None,
   Walk,
   Shell,
+  ShellSpin,
 }
 
-class Hermit extends Entity {
+class Hermit extends FSMEntity {
   type = 'Hermit';
   drawOfs: [number, number] = [-4, -1];
   sprite = Assets.find('hermit');
@@ -39,36 +42,75 @@ class Hermit extends Entity {
     World().spawnDeathParticle(this, Frames.Shell);
   }
 
-  canCollide(other: Entity, dir: Dir) {
-    if (other instanceof Player && other.canHurt(this) && dir == Dir.Up) return CollisionType.Enabled;
-    else if (other instanceof Player && other.stunned) return CollisionType.Disabled;
-    else if (this.state == States.Shell) return CollisionType.Enabled;
-    else return CollisionType.Trigger;
-  }
+  #states: any = {
+    default: {
+      enter: () => this.state = States.Walk,
+    },
 
-  update(ticks: number, dt: number) {
-    if (this.nextStateTime > 0 && ticks >= this.nextStateTime) {
-      this.state = this.nextState;
-      this.nextState = States.None;
+    [States.Walk]: {
+      enter: () => this.fsmTransitionAtTime(States.Shell, 0),
+      update: (ticks: number) => {
+        this.frame = (ticks / 8) % 2;
+        if (Math.abs(this.vel[0]) != this.walkSpeed) this.vel[0] = -this.walkSpeed;
+      },
+      canCollide: this.standardCanEnemyCollide,
+      collide: (other: Entity, dir: Dir) => {
+        if (this.handlePlayerStomp(other, dir, false)) {
+          this.fsmTransitionTo(States.Shell);
+        }
+
+        if (other instanceof Player == false) {
+          if (this.vel[0] < 0 && dir == Dir.Left) this.vel[0] *= -1;
+          else if (this.vel[0] > 0 && dir == Dir.Right) this.vel[0] *= -1;
+          if (dir == Dir.Up || dir == Dir.Down) this.vel[1] = 0;
+        }
+      }
+    },
+
+    [States.Shell]: {
+      enter: () => {
+        this.fsmTransitionAtTime(States.Walk, 300);
+        this.frame = Frames.Shell;
+        this.vel[0] = 0;
+      },
+      canCollide: (other: Entity, dir: Dir) => CollisionType.Enabled,
+      collide: (other: Entity, dir: Dir) => {
+        // FIXME: this is still not good, see handleEnemyStomp
+        if (other instanceof Player && other.max(1) <= this.min(1)) other.stompEnemy();
+        this.vel[0] = this.vel[0] == 0 ? this.spinSpeed : 0;
+        this.vel[0] *= this.center(0) - other.center(0) > 0 ? 1 : -1;
+        this.fsmTransitionTo(States.ShellSpin);
+      }
+    },
+
+    [States.ShellSpin]: {
+      enter: () => {
+        this.fsmTransitionAtTime(States.Shell, 0);
+        this.frame = Frames.Shell;
+      },
+      canCollide: this.standardCanEnemyCollide,
+      collide: (other: Entity, dir: Dir) => {
+        if (other instanceof Player && other.max(1) <= this.min(1)) {
+          other.stompEnemy();
+          this.fsmTransitionTo(States.Shell);
+          return;
+        }
+
+        other.hurt(1);
+        // if we can't destroy it, bounce back
+        if (!other.destroyed && other instanceof Player == false && (dir == Dir.Left || dir == Dir.Right)) {
+          this.vel[0] *= -1;
+        }
+      }
     }
 
+  };
+
+  update(ticks: number, dt: number) {
     let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
     this.vel[1] = grounded ? 0 : this.vel[1] + Phys.enemyGravity;
 
-    switch (this.state) {
-      case States.None:
-        this.state = States.Walk;
-        break;
-
-      case States.Walk:
-        this.frame = (ticks / 8) % 2;
-        if (Math.abs(this.vel[0]) != this.walkSpeed) this.vel[0] = -this.walkSpeed;
-        break;
-
-      case States.Shell:
-        this.frame = Frames.Shell;
-        break;
-    }
+    super.fsmUpdate(this.#states, ticks);
 
     this.moveX(this.vel[0]);
     this.moveY(this.vel[1]);
@@ -76,31 +118,12 @@ class Hermit extends Entity {
     if (this.vel[0] != 0) this.flipBits = this.vel[0] < 0 ? 1 : 0;
   }
 
+  canCollide(other: Entity, dir: Dir) {
+    return super.fsmCanCollide(this.#states, other, dir);
+  }
+
   collide(other: Entity, dir: Dir) {
-    // FIXME: this is bad and fraught with bugs
-    if (other.canHurt(this) && dir == Dir.Up && other.max(1) <= this.min(1)) {
-      if (other instanceof Player) other.stompEnemy();
-      if (this.state == States.Shell) {
-        this.vel[0] = this.vel[0] == 0 ? this.spinSpeed : 0;
-        this.vel[0] *= this.center(0) - other.center(0) > 0 ? 1 : -1;
-      }
-      else {
-        this.state = States.Shell;
-        this.vel[0] = 0;
-      }
-    }
-    else {
-      if (this.state == States.Shell && dir != Dir.Down && this.vel[0] == 0) {
-        this.vel[0] = Math.sign(this.center(0) - other.center(0)) * this.spinSpeed;
-      }
-      else {
-        other.hurt(1);
-        // if we can't destroy it, bounce back
-        if (!other.destroyed && (dir == Dir.Left || dir == Dir.Right)) {
-          this.vel[0] *= -1;
-        }
-      }
-    }
+    super.fsmCollide(this.#states, other, dir);
   }
 }
 

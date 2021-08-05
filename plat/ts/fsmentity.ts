@@ -39,8 +39,9 @@ class FSMEntity extends Entity {
   }
 
   fsmTransitionTo(state: number) {
-    this.state = this.nextState;
+    this.state = state;
     this.nextState = 0;
+    this.nextStateTime = 0;
   }
 
   fsmTransitionAtTime(state: number, wait: number) {

@@ -4,6 +4,7 @@ import Entity from '../entity.js';
 import Dir from '../dir.js';
 import { Player } from './player.js';
 import World from '../world.js';
+import FSMEntity from '../fsmentity.js';
 
 enum Frames {
   Idle1 = 0,
@@ -22,7 +23,7 @@ enum States {
   Fall
 }
 
-class Owl extends Entity {
+class Owl extends FSMEntity {
   type = 'Owl';
   sprite = Assets.find('owl');
   drawOfs: [number, number] = [-3, -1];
@@ -38,60 +39,43 @@ class Owl extends Entity {
     World().spawnDeathParticle(this, Frames.Pain);
   }
 
-  update(ticks: number, dt: number) {
-    if (this.nextStateTime > 0 && ticks >= this.nextStateTime) {
-      this.state = this.nextState;
-      this.nextState = States.None;
-    }
+  #states: any = {
+    default: {
+      enter: () => this.state = States.Idle,
+    },
 
-    switch (this.state) {
-      case States.None:
-        this.state = States.Idle;
-        this.nextStateTime = ticks + 90;
-        break;
+    [States.Idle]: {
+      enter: (ticks: number) => this.fsmTransitionAtTime(States.Rise, 120),
+      update: (ticks: number) => this.frame = ticks % 40 < 30 ? Frames.Idle1 : Frames.Idle2,
+    },
 
-      case States.Idle:
-        if (this.nextState == States.None) {
-          this.nextState = States.Rise;
-          this.nextStateTime = ticks + 120;
-        }
-
-        this.frame = ticks % 40 < 30 ? Frames.Idle1 : Frames.Idle2;
-        break;
-
-      case States.Rise:
-        if (this.nextState == States.None) {
-          this.nextState = States.Float;
-          this.nextStateTime = ticks + 60;
-        }
-
+    [States.Rise]: {
+      enter: () => this.fsmTransitionAtTime(States.Float, 60),
+      update: (ticks: number) => {
         this.frame = this.flapAnim[Math.floor(ticks / 4) % this.flapAnim.length];
         this.moveY(-1);
-        break;
+      }
+    },
 
-      case States.Float:
-        if (this.nextState == States.None) {
-          this.nextState = States.Fall;
-          this.nextStateTime = ticks + 90;
-        }
+    [States.Float]: {
+      enter: () => this.fsmTransitionAtTime(States.Fall, 90),
+      update: (ticks: number) => this.frame = this.flapAnim[Math.floor(ticks / 8) % this.flapAnim.length],
+    },
 
-        this.frame = this.flapAnim[Math.floor(ticks / 8) % this.flapAnim.length];
-        break;
-
-      case States.Fall:
-        if (this.nextState == States.None) {
-          this.nextState = States.Idle;
-          this.nextStateTime = 0;
-        }
-
+    [States.Fall]: {
+      enter: () => this.fsmTransitionAtTime(States.Idle, 0), // FIXME: manual state change, but nextState still needs to be set
+      update: (ticks: number) => {
         if (!this.moveY(0.5)) {
-          this.state = this.nextState;
-          this.nextState = States.None;
+          this.fsmTransitionTo(this.nextState);
         }
 
         this.frame = this.fallAnim[Math.floor(ticks / 16) % this.fallAnim.length];
-        break;
+      }
     }
+  }
+
+  update(ticks: number, dt: number) {
+    this.fsmUpdate(this.#states, ticks);
   }
 
   canCollide = this.standardCanEnemyCollide;

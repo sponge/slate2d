@@ -1,10 +1,10 @@
 import * as Assets from 'assets';
-import Entity from '../entity.js';
 import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
 import World from '../world.js';
 import { clamp } from '../util.js';
+import FSMEntity from '../fsmentity.js';
 var Frames;
 (function (Frames) {
     Frames[Frames["Idle"] = 0] = "Idle";
@@ -20,7 +20,7 @@ var States;
     States[States["Idle"] = 1] = "Idle";
     States[States["Float"] = 2] = "Float";
 })(States || (States = {}));
-class Ghost extends Entity {
+class Ghost extends FSMEntity {
     type = 'Ghost';
     drawOfs = [-2, -1];
     sprite = Assets.find('ghost');
@@ -36,37 +36,22 @@ class Ghost extends Entity {
         super.die();
         World().spawnDeathParticle(this, Frames.Pain);
     }
-    canCollide(other, dir) {
-        if (other instanceof Player && other.canHurt(this) && dir == Dir.Up)
-            return CollisionType.Enabled;
-        else
-            return CollisionType.Trigger;
-    }
-    update(ticks, dt) {
-        if (this.nextStateTime > 0 && ticks >= this.nextStateTime) {
-            this.state = this.nextState;
-            this.nextState = States.None;
-        }
-        switch (this.state) {
-            case States.None:
-                this.state = States.Idle;
-                this.nextStateTime = ticks + 90;
-                break;
-            case States.Idle:
-                if (this.nextState == States.None) {
-                    this.nextState = States.Float;
-                    this.nextStateTime = ticks + 90;
-                }
+    #states = {
+        default: {
+            enter: () => this.state = States.Idle,
+        },
+        [States.Idle]: {
+            enter: () => {
+                this.fsmTransitionAtTime(States.Float, 90);
                 this.vel[0] = 0;
                 this.vel[1] = 0;
                 this.frame = Frames.Idle;
-                this.flipBits = this.center(0) < World().player.center(0) ? 1 : 0;
-                break;
-            case States.Float:
-                if (this.nextState == States.None) {
-                    this.nextState = States.Idle;
-                    this.nextStateTime = ticks + 180;
-                }
+            },
+            update: (ticks) => this.flipBits = this.center(0) < World().player.center(0) ? 1 : 0,
+        },
+        [States.Float]: {
+            enter: () => this.fsmTransitionAtTime(States.Idle, 180),
+            update: (ticks) => {
                 const player = World().player;
                 this.vel[0] += Math.sign(player.center(0) - this.center(0)) * 0.03;
                 this.vel[1] += Math.sign(player.center(1) - this.center(1)) * 0.03;
@@ -76,15 +61,22 @@ class Ghost extends Entity {
                 if (this.vel[0] != 0) {
                     this.flipBits = this.vel[0] < 0 ? 1 : 0;
                 }
-                break;
+            }
         }
+    };
+    update(ticks, dt) {
+        this.fsmUpdate(this.#states, ticks);
         this.moveX(this.vel[0]);
         this.moveY(this.vel[1]);
     }
+    canCollide(other, dir) {
+        if (other instanceof Player && other.canHurt(this) && dir == Dir.Up)
+            return CollisionType.Enabled;
+        else
+            return CollisionType.Trigger;
+    }
     collide(other, dir) {
-        if (!this.handlePlayerStomp(other, dir)) {
-            this.vel[0] *= -1;
-        }
+        this.handlePlayerStomp(other, dir);
     }
 }
 export { Ghost };

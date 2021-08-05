@@ -1,4 +1,7 @@
+import CollisionType from "./collisiontype.js";
+import Dir from "./dir.js";
 import Entity from "./entity.js";
+import World from "./world.js";
 
 class FSMEntity extends Entity {
   state = 0;
@@ -7,18 +10,42 @@ class FSMEntity extends Entity {
   nextStateTime = 0;
   startStateTime = 0;
 
-  update(ticks: number, dt: number) {
+  fsmUpdate(states: any, ticks: number) {
     if (this.nextStateTime > 0 && ticks >= this.nextStateTime) {
       this.lastState = this.state;
       this.state = this.nextState;
       this.nextState = 0;
       this.startStateTime = ticks;
     }
+
+    if (this.lastState != 0) {
+      (states[this.lastState]?.exit ?? states.default?.exit)?.();
+      this.lastState = 0;
+    }
+
+    if (this.nextState == 0) {
+      (states[this.state]?.enter ?? states.default?.enter)?.();
+    }
+
+    (states[this.state]?.update ?? states.default?.update)?.(ticks);
   }
 
-  transitionAtTime(state: number, time: number) {
+  fsmCanCollide(states: any, other: Entity, dir: Dir): CollisionType {
+    return (states[this.state]?.canCollide ?? states.default?.canCollide)?.(other, dir);
+  }
+
+  fsmCollide(states: any, other: Entity, dir: Dir) {
+    (states[this.state]?.collide ?? states.default?.collide)?.(other, dir);
+  }
+
+  fsmTransitionTo(state: number) {
+    this.state = this.nextState;
+    this.nextState = 0;
+  }
+
+  fsmTransitionAtTime(state: number, wait: number) {
     this.nextState = state;
-    this.nextStateTime = time;
+    this.nextStateTime = wait <= 0 ? 0 : wait + World().state.ticks;
   }
 }
 

@@ -35,25 +35,26 @@ class Blobby extends FSMEntity {
         World().spawnDeathParticle(this, Frames.Pain);
     }
     #states = {
-        default: {},
-        [States.None]: {
+        default: {
             enter: () => this.state = States.Idle,
+            canCollide: (other, dir) => this.standardCanEnemyCollide(other, dir),
+            collide: (other, dir) => this.handlePlayerStomp(other, dir),
         },
         [States.Idle]: {
-            enter: (ticks) => this.transitionAtTime(States.Sink, ticks + 40),
+            enter: () => this.fsmTransitionAtTime(States.Sink, 40),
             update: (ticks) => this.frame = ticks % 40 <= 20 ? Frames.Idle1 : Frames.Idle2,
         },
         [States.Sink]: {
-            enter: (ticks) => this.transitionAtTime(States.Move, ticks + 20),
+            enter: () => this.fsmTransitionAtTime(States.Move, 20),
             update: (ticks) => this.frame = this.sinkAnim[Math.floor(invLerp(this.startStateTime, this.nextStateTime, ticks) * this.sinkAnim.length)],
         },
         [States.Rise]: {
-            enter: (ticks) => this.transitionAtTime(States.Idle, ticks + 20),
+            enter: () => this.fsmTransitionAtTime(States.Idle, 20),
             update: (ticks) => this.frame = this.riseAnim[Math.floor(invLerp(this.startStateTime, this.nextStateTime, ticks) * this.riseAnim.length)],
         },
         [States.Move]: {
-            enter: (ticks) => {
-                this.transitionAtTime(States.Rise, ticks + 60);
+            enter: () => {
+                this.fsmTransitionAtTime(States.Rise, 60);
                 this.vel[0] = this.lastVelX;
                 this.frame = Frames.Sunk;
             },
@@ -61,53 +62,38 @@ class Blobby extends FSMEntity {
                 this.lastVelX = this.vel[0];
                 this.vel[0] = 0;
             },
+            canCollide: (other, dir) => {
+                if (other instanceof Player)
+                    return CollisionType.Trigger;
+                else
+                    return CollisionType.Enabled;
+            },
+            collide: (other, dir) => {
+                if (other instanceof Player) {
+                    other.hurt(1);
+                    return;
+                }
+                if (this.vel[0] < 0 && dir == Dir.Left)
+                    this.vel[0] *= -1;
+                else if (this.vel[0] > 0 && dir == Dir.Right)
+                    this.vel[0] *= -1;
+                if (dir == Dir.Up || dir == Dir.Down)
+                    this.vel[1] = 0;
+            },
         },
     };
     update(ticks, dt) {
         let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
         this.vel[1] = grounded ? 0 : this.vel[1] + Phys.enemyGravity;
-        super.update(ticks, dt);
-        if (this.lastState != 0) {
-            (this.#states[this.lastState]?.exit ?? this.#states.default?.exit)?.(ticks);
-            this.lastState = 0;
-        }
-        if (this.nextState == 0) {
-            (this.#states[this.state]?.enter ?? this.#states.default?.enter)?.(ticks);
-        }
-        (this.#states[this.state]?.update ?? this.#states.default?.update)?.(ticks);
+        this.fsmUpdate(this.#states, ticks);
         this.moveX(this.vel[0]);
         this.moveY(this.vel[1]);
     }
     canCollide(other, dir) {
-        switch (this.state) {
-            case States.Move:
-                if (other instanceof Player)
-                    return CollisionType.Trigger;
-                else
-                    return CollisionType.Enabled;
-            default:
-                return this.standardCanEnemyCollide(other, dir);
-        }
+        return this.fsmCanCollide(this.#states, other, dir);
     }
     collide(other, dir) {
-        switch (this.state) {
-            case States.Move:
-                if (other instanceof Player) {
-                    other.hurt(1);
-                }
-                else {
-                    if (this.vel[0] < 0 && dir == Dir.Left)
-                        this.vel[0] *= -1;
-                    else if (this.vel[0] > 0 && dir == Dir.Right)
-                        this.vel[0] *= -1;
-                    if (dir == Dir.Up || dir == Dir.Down)
-                        this.vel[1] = 0;
-                }
-                break;
-            default:
-                this.handlePlayerStomp(other, dir);
-                break;
-        }
+        this.fsmCollide(this.#states, other, dir);
     }
 }
 export { Blobby };

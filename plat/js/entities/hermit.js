@@ -66,14 +66,23 @@ class Hermit extends FSMEntity {
                 this.frame = Frames.Shell;
                 this.vel[0] = 0;
             },
-            canCollide: (other, dir) => CollisionType.Enabled,
+            canCollide: (other, dir) => {
+                if (other instanceof Player) {
+                    return other.canHurt(this) ? CollisionType.Enabled : CollisionType.Trigger;
+                }
+                else {
+                    return CollisionType.Enabled;
+                }
+            },
             collide: (other, dir) => {
                 // FIXME: this is still not good, see handleEnemyStomp
                 if (other instanceof Player && other.max(1) <= this.min(1))
                     other.stompEnemy();
-                this.vel[0] = this.vel[0] == 0 ? this.spinSpeed : 0;
-                this.vel[0] *= this.center(0) - other.center(0) > 0 ? 1 : -1;
-                this.fsmTransitionTo(States.ShellSpin);
+                if (other.canHurt(this) || other instanceof Player == false) {
+                    this.vel[0] = this.vel[0] == 0 ? this.spinSpeed : 0;
+                    this.vel[0] *= this.center(0) - other.center(0) > 0 ? 1 : -1;
+                    this.fsmTransitionTo(States.ShellSpin);
+                }
             }
         },
         [States.ShellSpin]: {

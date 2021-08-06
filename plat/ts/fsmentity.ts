@@ -5,17 +5,16 @@ import World from "./world.js";
 
 class FSMEntity extends Entity {
   state = 0;
+  enteringState = true;
   lastState = 0;
+  startStateTime = 0;
+  // for timed state transitions
   nextState = 0;
   nextStateTime = 0;
-  startStateTime = 0;
 
   fsmUpdate(states: any, ticks: number) {
     if (this.nextStateTime > 0 && ticks >= this.nextStateTime) {
-      this.lastState = this.state;
-      this.state = this.nextState;
-      this.nextState = 0;
-      this.startStateTime = ticks;
+      this.fsmTransitionTo(this.nextState);
     }
 
     if (this.lastState != 0) {
@@ -23,7 +22,10 @@ class FSMEntity extends Entity {
       this.lastState = 0;
     }
 
-    if (this.nextState == 0) {
+    if (this.enteringState) {
+      // set false first because enter could immediately transfer to another state
+      this.enteringState = false;
+      this.startStateTime = ticks;
       (states[this.state]?.enter ?? states.default?.enter)?.();
     }
 
@@ -39,9 +41,17 @@ class FSMEntity extends Entity {
   }
 
   fsmTransitionTo(state: number) {
+    this.lastState = this.state;
     this.state = state;
     this.nextState = 0;
     this.nextStateTime = 0;
+    this.enteringState = true;
+  }
+
+  fsmDefaultTransitionTo(state: number) {
+    if (this.state == 0) {
+      this.fsmTransitionTo(state);
+    }
   }
 
   fsmTransitionAtTime(state: number, wait: number) {

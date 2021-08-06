@@ -44,11 +44,10 @@ class Hermit extends FSMEntity {
 
   #states: any = {
     default: {
-      enter: () => this.state = States.Walk,
+      enter: () => this.fsmDefaultTransitionTo(States.Walk),
     },
 
     [States.Walk]: {
-      enter: () => this.fsmTransitionAtTime(States.Shell, 0),
       update: (ticks: number) => {
         this.frame = (ticks / 8) % 2;
         if (Math.abs(this.vel[0]) != this.walkSpeed) this.vel[0] = -this.walkSpeed;

@@ -33,7 +33,7 @@ class Owl extends FSMEntity {
     }
     #states = {
         default: {
-            enter: () => this.state = States.Idle,
+            enter: () => this.fsmDefaultTransitionTo(States.Idle),
         },
         [States.Idle]: {
             enter: (ticks) => this.fsmTransitionAtTime(States.Rise, 120),
@@ -51,10 +51,9 @@ class Owl extends FSMEntity {
             update: (ticks) => this.frame = this.flapAnim[Math.floor(ticks / 8) % this.flapAnim.length],
         },
         [States.Fall]: {
-            enter: () => this.fsmTransitionAtTime(States.Idle, 0),
             update: (ticks) => {
                 if (!this.moveY(0.5)) {
-                    this.fsmTransitionTo(this.nextState);
+                    this.fsmTransitionTo(States.Idle);
                 }
                 this.frame = this.fallAnim[Math.floor(ticks / 16) % this.fallAnim.length];
             }

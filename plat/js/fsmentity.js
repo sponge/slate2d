@@ -2,22 +2,24 @@ import Entity from "./entity.js";
 import World from "./world.js";
 class FSMEntity extends Entity {
     state = 0;
+    enteringState = true;
     lastState = 0;
+    startStateTime = 0;
+    // for timed state transitions
     nextState = 0;
     nextStateTime = 0;
-    startStateTime = 0;
     fsmUpdate(states, ticks) {
         if (this.nextStateTime > 0 && ticks >= this.nextStateTime) {
-            this.lastState = this.state;
-            this.state = this.nextState;
-            this.nextState = 0;
-            this.startStateTime = ticks;
+            this.fsmTransitionTo(this.nextState);
         }
         if (this.lastState != 0) {
             (states[this.lastState]?.exit ?? states.default?.exit)?.();
             this.lastState = 0;
         }
-        if (this.nextState == 0) {
+        if (this.enteringState) {
+            // set false first because enter could immediately transfer to another state
+            this.enteringState = false;
+            this.startStateTime = ticks;
             (states[this.state]?.enter ?? states.default?.enter)?.();
         }
         (states[this.state]?.update ?? states.default?.update)?.(ticks);
@@ -29,9 +31,16 @@ class FSMEntity extends Entity {
         (states[this.state]?.collide ?? states.default?.collide)?.(other, dir);
     }
     fsmTransitionTo(state) {
+        this.lastState = this.state;
         this.state = state;
         this.nextState = 0;
         this.nextStateTime = 0;
+        this.enteringState = true;
+    }
+    fsmDefaultTransitionTo(state) {
+        if (this.state == 0) {
+            this.fsmTransitionTo(state);
+        }
     }
     fsmTransitionAtTime(state, wait) {
         this.nextState = state;

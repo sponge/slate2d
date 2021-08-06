@@ -41,7 +41,7 @@ class Owl extends FSMEntity {
 
   #states: any = {
     default: {
-      enter: () => this.state = States.Idle,
+      enter: () => this.fsmDefaultTransitionTo(States.Idle),
     },
 
     [States.Idle]: {
@@ -63,10 +63,9 @@ class Owl extends FSMEntity {
     },
 
     [States.Fall]: {
-      enter: () => this.fsmTransitionAtTime(States.Idle, 0), // FIXME: manual state change, but nextState still needs to be set
       update: (ticks: number) => {
         if (!this.moveY(0.5)) {
-          this.fsmTransitionTo(this.nextState);
+          this.fsmTransitionTo(States.Idle);
         }
 
         this.frame = this.fallAnim[Math.floor(ticks / 16) % this.fallAnim.length];

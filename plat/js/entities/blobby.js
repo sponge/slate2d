@@ -36,7 +36,7 @@ class Blobby extends FSMEntity {
     }
     #states = {
         default: {
-            enter: () => this.state = States.Idle,
+            enter: () => this.fsmDefaultTransitionTo(States.Idle),
             canCollide: (other, dir) => this.standardCanEnemyCollide(other, dir),
             collide: (other, dir) => this.handlePlayerStomp(other, dir),
         },

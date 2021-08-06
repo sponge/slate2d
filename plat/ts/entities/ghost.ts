@@ -46,7 +46,7 @@ class Ghost extends FSMEntity {
 
   #states: any = {
     default: {
-      enter: () => this.state = States.Idle,
+      enter: () => this.fsmDefaultTransitionTo(States.Idle),
     },
 
     [States.Idle]: {

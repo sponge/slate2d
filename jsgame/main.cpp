@@ -76,8 +76,6 @@ public:
     ctx = JS_NewContext(rt);
     global = JS_GetGlobalObject(ctx);
 
-    // get console functions from here for now
-    js_std_add_helpers(ctx, 0, nullptr);
     js_init_module_draw(ctx, "draw");
     js_init_module_slt(ctx, "slate2d");
     js_init_module_assets(ctx, "assets");
@@ -244,6 +242,7 @@ public:
     else {
       SLT_Print("<no result>");
     }
+    JS_FreeCString(ctx, resultStr);
 
     if (JS_IsException(result)) {
       JS_FreeValue(ctx, result);

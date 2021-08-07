@@ -393,11 +393,39 @@ static int js_slt_init(JSContext *ctx, JSModuleDef *m)
   return 0;
 }
 
+static JSValue js_slt_console_log(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
+  int i;
+  const char *str;
+  size_t len;
+
+  std::string out = "";
+  for (i = 0; i < argc; i++) {
+    if (i != 0) out += " ";
+    str = JS_ToCStringLen(ctx, &len, argv[i]);
+    if (!str) return JS_EXCEPTION;
+    out += str;
+    JS_FreeCString(ctx, str);
+  }
+  out += "\n";
+  SLT_Print(out.c_str());
+
+  return JS_UNDEFINED;
+}
+
 JSModuleDef *js_init_module_slt(JSContext *ctx, const char *module_name)
 {
   JSModuleDef *m;
   m = JS_NewCModule(ctx, module_name, js_slt_init);
   if (!m) return NULL;
   JS_AddModuleExportList(ctx, m, js_slt_funcs, countof(js_slt_funcs));
+
+  JSValue global_obj, console, args;
+  global_obj = JS_GetGlobalObject(ctx);
+  console = JS_NewObject(ctx);
+  JS_SetPropertyStr(ctx, console, "log", JS_NewCFunction(ctx, js_slt_console_log, "log", 1));
+  JS_SetPropertyStr(ctx, global_obj, "console", console);
+  JS_FreeValue(ctx, global_obj);
+
   return m;
 }

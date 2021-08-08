@@ -115,7 +115,7 @@ class Entity {
             for (let corner of corners) {
                 const tx = Math.floor(corner[0] / layer.tileSize);
                 const ty = clamp(Math.floor(corner[1] / layer.tileSize), 0, layer.height);
-                const tid = layer.tiles[ty * layer.width + tx];
+                const tid = ty >= layer.height ? 0 : layer.tiles[ty * layer.width + tx];
                 //if there's a tile in the intgrid...
                 if (tx < 0 || tx >= layer.width || tid !== Tiles.Empty) {
                     if (tid == Tiles.Dirtback) {
@@ -186,6 +186,9 @@ class Entity {
         // duplicate code between world response and ent response
         if (!fullMove)
             this.collide(this.collideEnt ?? worldEnt, dir);
+        if (this.pos[1] > World().map.heightPx + 16) {
+            this.die();
+        }
         return fullMove;
     }
     moveX(amt) {

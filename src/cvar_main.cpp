@@ -22,6 +22,7 @@ conVar_t *debug_assets;
 conVar_t *debug_imguidemo;
 conVar_t *debug_frameAdvanceStep;
 conVar_t *in_deadzone;
+conVar_t *con_active;
 
 static conVarTable_t mainCvarTable[] = {{&eng_errorMessage, "engine.errorMessage", "", 0},
                                         {&eng_lastErrorStack, "engine.lastErrorStack", "", 0},
@@ -38,6 +39,8 @@ static conVarTable_t mainCvarTable[] = {{&eng_errorMessage, "engine.errorMessage
                                         {&debug_imguidemo, "debug.imguiDemo", "0", 0},
                                         {&debug_frameAdvanceStep, "debug.frameAdvanceStep", "0.0167", 0},
 																				{&in_deadzone, "in.deadzone", "0.15", 0},
+																				{&con_active, "con_active", "0", CONVAR_ROM},
+
                                         {NULL}};
 
 void RegisterMainCvars(void)

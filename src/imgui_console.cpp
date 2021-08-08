@@ -79,7 +79,7 @@ void ConsoleUI::AddLog(ImVec4 color, const char * fmt, ...) {
 }
 
 void ConsoleUI::Draw(int width, int height) {
-
+	Con_SetVarFloat("con.active", consoleActive);
 	if (vid_showfps->integer || eng_pause->integer) {
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10, 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);

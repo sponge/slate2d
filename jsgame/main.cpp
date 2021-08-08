@@ -328,6 +328,57 @@ void main_loop()
     return;
   }
 
+  static bool show_memory_usage;
+  if (SLT_Con_GetVar("con.active")->boolean) {
+    if (ImGui::BeginMainMenuBar()) {
+      if (ImGui::BeginMenu("JavaScript")) {
+        ImGui::MenuItem("Memory Usage", nullptr, &show_memory_usage);
+        if (ImGui::MenuItem("Save & Reload")) {
+          SLT_SendConsoleCommand("js_reload");
+        }
+
+        if (ImGui::MenuItem("Full Reload")) {
+          SLT_SendConsoleCommand("js_reload nosave");
+        }
+
+        ImGui::EndMenu();
+      }
+      ImGui::EndMainMenuBar();
+    }
+  }
+
+  if (show_memory_usage && instance) {
+    if (ImGui::Begin("Memory Usage", &show_memory_usage, ImGuiWindowFlags_AlwaysAutoResize)) {
+      using namespace ImGui;
+      JSRuntime *rt = JS_GetRuntime(instance->ctx);
+      JSMemoryUsage usage;
+      JS_ComputeMemoryUsage(rt, &usage);
+      Text("memory used count: %lld", usage.memory_used_count);
+      Text("memory used size: %lld", usage.memory_used_size);
+      Separator();
+      Text("malloc count: %lld", usage.malloc_count);
+      Text("malloc size: %lld", usage.malloc_size);
+      Text("malloc limit: %lld", usage.malloc_limit);
+      Separator();
+      Text("arrays: %lld", usage.array_count);
+      Text("fast arrays: %lld (%lld elements)", usage.fast_array_count, usage.fast_array_elements);
+      Separator();
+      Text("c functions: %lld", usage.c_func_count);
+      Text("functions: %lld", usage.js_func_count);
+      Text("function code size: %lld bytes", usage.js_func_code_size);
+      Separator();
+      Text("atoms: %lld (%lld bytes)", usage.atom_count, usage.atom_size);
+      Text("binary objects: %lld (%lld bytes)", usage.binary_object_count, usage.binary_object_size);
+      Text("objects: %lld (%lld bytes)", usage.obj_count, usage.obj_size);
+      Text("properties: %lld (%lld bytes)", usage.prop_count, usage.prop_size);
+      Text("shapes: %lld (%lld bytes)", usage.shape_count, usage.shape_size);
+      Text("strings: %lld (%lld bytes)", usage.str_count, usage.str_size);
+
+
+      ImGui::End();
+    }
+  }
+
   if (instance) {
     Timing_Start("total");
 

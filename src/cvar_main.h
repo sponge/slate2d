@@ -18,3 +18,4 @@ extern conVar_t *debug_assets;
 extern conVar_t *debug_imguidemo;
 extern conVar_t *debug_frameAdvanceStep;
 extern conVar_t *in_deadzone;
+extern conVar_t *con_active;

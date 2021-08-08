@@ -373,10 +373,8 @@ void main_loop()
       Text("properties: %lld (%lld bytes)", usage.prop_count, usage.prop_size);
       Text("shapes: %lld (%lld bytes)", usage.shape_count, usage.shape_size);
       Text("strings: %lld (%lld bytes)", usage.str_count, usage.str_size);
-
-
-      ImGui::End();
     }
+    ImGui::End();
   }
 
   if (instance) {

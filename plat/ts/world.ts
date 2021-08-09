@@ -1,7 +1,8 @@
-import Main from "./main";
+import Game from "./game.js";
+import Main from "./main.js";
 
 function World() {
-  return ((globalThis as any).main as Main);
+  return Main.scene as Game;
 }
 
 export default World;

@@ -10,6 +10,7 @@ import { clearPrintWin, dbg, dbgval } from '../printwin.js';
 import Tiles from '../tiles.js';
 import Phys from '../phys.js';
 import World from '../world.js';
+import Main from '../main.js';
 
 const slopes = [Tiles.SlopeL, Tiles.SlopeR];
 
@@ -75,9 +76,9 @@ class Player extends Entity {
   }
 
   update(ticks: number, dt: number) {
-    if (this.dead && ticks > this.dead) {
-      this.pos = [...this.spawnPos];
-      this.dead = 0;
+    if (this.dead) {
+      if (ticks > this.dead) Main.restartLevel();
+      return;
     }
 
     const dir = this.disableControls ? 0 : SLT.buttonPressed(Buttons.Left) ? -1 : SLT.buttonPressed(Buttons.Right) ? 1 : 0;

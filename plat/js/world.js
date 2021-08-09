@@ -1,4 +1,5 @@
+import Main from "./main.js";
 function World() {
-    return globalThis.main;
+    return Main.scene;
 }
 export default World;

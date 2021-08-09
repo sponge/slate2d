@@ -1,4 +1,3 @@
-/// <reference path="./decs.d.ts" />
 import * as Draw from 'draw';
 import * as SLT from 'slate2d';
 import * as Assets from 'assets';
@@ -38,7 +37,7 @@ interface Background {
 const scaleFactor = Math.floor(SLT.resolution().w / 384);
 const res = SLT.resolution();
 
-class Main {
+class Game {
   res = { w: Math.floor(res.w / scaleFactor), h: Math.floor(res.h / scaleFactor) };
   map: LDTK;
   camera = new Camera(this.res.w, this.res.h);
@@ -290,4 +289,4 @@ class Main {
   }
 }
 
-export default Main;
+export default Game;

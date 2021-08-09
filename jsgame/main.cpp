@@ -465,6 +465,12 @@ int main(int argc, char *argv[])
     }
   });
 
+  SLT_Con_AddCommand("js_rungc", []() {
+    if (instance) {
+      JS_RunGC(instance->rt);
+    }
+  });
+
   ImGui::SetCurrentContext((ImGuiContext *)SLT_GetImguiContext());
 
 #ifdef __EMSCRIPTEN__

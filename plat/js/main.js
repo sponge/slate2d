@@ -218,7 +218,7 @@ class Main {
     spawnDeathParticle(ent, frame) {
         this.spawnPuffParticle(ent.pos[0], ent.pos[1]);
         const deathEnt = new SpinParticle({});
-        deathEnt.pos = ent.pos;
+        deathEnt.pos = [...ent.pos];
         deathEnt.sprite = ent.sprite;
         deathEnt.frame = frame;
         deathEnt.size = ent.size;

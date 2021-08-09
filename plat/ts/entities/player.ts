@@ -21,6 +21,7 @@ class Player extends Entity {
   spawnPos: [number, number];
 
   // entity state
+  dead = 0;
   disableControls = false;
   disableMovement = false;
   pMeter = 0;
@@ -47,7 +48,10 @@ class Player extends Entity {
   }
 
   die() {
-    this.pos = [...this.spawnPos];
+    if (this.dead) return;
+    this.dead = World().state.ticks + 120;
+    const part = World().spawnDeathParticle(this, 0);
+    part.vel[1] = -5;
   }
 
   getPMeterRatio() {
@@ -71,6 +75,11 @@ class Player extends Entity {
   }
 
   update(ticks: number, dt: number) {
+    if (this.dead && ticks > this.dead) {
+      this.pos = [...this.spawnPos];
+      this.dead = 0;
+    }
+
     const dir = this.disableControls ? 0 : SLT.buttonPressed(Buttons.Left) ? -1 : SLT.buttonPressed(Buttons.Right) ? 1 : 0;
     const jumpPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Jump);
     const shootPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Shoot);
@@ -196,6 +205,7 @@ class Player extends Entity {
   }
 
   draw() {
+    if (this.dead) return;
     Draw.setColor(255, 255, 255, this.stunned ? 128 : 255);
     Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, this.flipBits, 1, 1);
   }

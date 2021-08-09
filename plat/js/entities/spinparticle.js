@@ -18,8 +18,7 @@ class SpinParticle extends Entity {
             this.die();
         this.pos[0] += this.vel[0];
         this.pos[1] += this.vel[1];
-        this.vel[1] += 0.2;
-        Math.min(this.vel[1], Phys.terminalVelocity);
+        this.vel[1] = Math.min(this.vel[1] + 0.2, Phys.terminalVelocity);
     }
     draw() {
         const rotate = 8 * (World().state.ticks - this.start);

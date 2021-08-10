@@ -9,7 +9,7 @@
 		"url": "https://ldtk.io"
 	},
 	"jsonVersion": "0.9.3",
-	"nextUid": 147,
+	"nextUid": 148,
 	"worldLayout": "LinearHorizontal",
 	"worldGridWidth": 256,
 	"worldGridHeight": 256,
@@ -2376,7 +2376,36 @@
 				}]
 			}],
 			"layerInstances": null,
-			"__neighbours": []
+			"__neighbours": [{ "levelUid": 147, "dir": "e" }]
+		},
+		{
+			"identifier": "Level_1",
+			"uid": 147,
+			"worldX": 1552,
+			"worldY": 0,
+			"pxWid": 256,
+			"pxHei": 240,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": true,
+			"bgRelPath": null,
+			"bgPos": null,
+			"bgPivotX": 0.5,
+			"bgPivotY": 0.5,
+			"__bgPos": null,
+			"externalRelPath": "maps/0001-Level_1.ldtkl",
+			"fieldInstances": [{
+				"__identifier": "background",
+				"__value": "snowland",
+				"__type": "String",
+				"defUid": 58,
+				"realEditorValues": [{
+					"id": "V_String",
+					"params": ["snowland"]
+				}]
+			}],
+			"layerInstances": null,
+			"__neighbours": [{ "levelUid": 0, "dir": "w" }]
 		}
 	]
 }

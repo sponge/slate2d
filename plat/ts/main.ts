@@ -22,9 +22,14 @@ class Main {
     }
 
     const map = (Main.scene as Game).state.mapName;
-    this.scene = new Game(''); // FIXME: can't specify map name here
+    this.scene = new Game('', map);
     SLT.console("js_rungc");
+  }
 
+  static switchLevel(num: number) {
+    const mapName = `maps/${String(num).padStart(4, '0')}-Level_${num}.ldtkl`;
+    this.scene = new Game('', mapName);
+    SLT.console("js_rungc");
   }
 
   save() {
@@ -34,13 +39,11 @@ class Main {
   constructor(initialState: string) {
     if (initialState) {
       Main.sceneName = initialState.split(',', 1)[0];
-      console.log(Main.sceneName);
       const state = initialState.substr(initialState.indexOf(',') + 1);
       Main.scene = new Main.sceneTypes[Main.sceneName](state);
     }
     else {
-      Main.sceneName = 'game';
-      Main.scene = new Game('');
+      Main.switchLevel(0);
     }
   }
 

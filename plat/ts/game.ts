@@ -71,7 +71,7 @@ class Game {
     return JSON.stringify(this.state);
   }
 
-  constructor(initialState: string) {
+  constructor(initialState: string, mapName?: string) {
     Buttons.register();
 
     loadAllAssets();
@@ -85,7 +85,7 @@ class Game {
       this.state = JSON.parse(initialState);
       this.state.entities = this.state.entities.map(ent => Object.assign(new EntityMappings[ent.type]({}), ent));
     } else {
-      this.state.mapName = 'maps/0000-Level_0.ldtkl';
+      this.state.mapName = mapName ?? 'maps/0000-Level_0.ldtkl';
     }
 
     // parse the map

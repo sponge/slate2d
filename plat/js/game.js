@@ -43,7 +43,7 @@ class Game {
     save() {
         return JSON.stringify(this.state);
     }
-    constructor(initialState) {
+    constructor(initialState, mapName) {
         Buttons.register();
         loadAllAssets();
         this.dogSpr = Assets.find('dogspr');
@@ -56,7 +56,7 @@ class Game {
             this.state.entities = this.state.entities.map(ent => Object.assign(new EntityMappings[ent.type]({}), ent));
         }
         else {
-            this.state.mapName = 'maps/0000-Level_0.ldtkl';
+            this.state.mapName = mapName ?? 'maps/0000-Level_0.ldtkl';
         }
         // parse the map
         const src = JSON.parse(SLT.readFile(this.state.mapName));

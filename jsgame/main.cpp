@@ -333,13 +333,9 @@ void main_loop()
     if (ImGui::BeginMainMenuBar()) {
       if (ImGui::BeginMenu("JavaScript")) {
         ImGui::MenuItem("Memory Usage", nullptr, &show_memory_usage);
-        if (ImGui::MenuItem("Save & Reload")) {
-          SLT_SendConsoleCommand("js_reload");
-        }
-
-        if (ImGui::MenuItem("Full Reload")) {
-          SLT_SendConsoleCommand("js_reload nosave");
-        }
+        if (ImGui::MenuItem("Run GC")) SLT_SendConsoleCommand("js_rungc");
+        if (ImGui::MenuItem("Save & Reload")) SLT_SendConsoleCommand("js_reload");
+        if (ImGui::MenuItem("Full Reload")) SLT_SendConsoleCommand("js_reload nosave");
 
         ImGui::EndMenu();
       }

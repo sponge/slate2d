@@ -27,6 +27,8 @@ class Player extends Entity {
     facing = 1;
     stunned = false;
     stunTime = 0;
+    maxHealth = 3;
+    health = 3;
     constructor(args) {
         super(args);
         this.spawnPos = [...this.pos];
@@ -37,8 +39,15 @@ class Player extends Entity {
     hurt(amt) {
         if (this.stunned)
             return;
-        this.stunned = true;
-        this.stunTime = World().state.ticks + 120;
+        this.health -= amt;
+        if (this.health <= 0) {
+            this.pMeter = 0;
+            this.die();
+        }
+        else {
+            this.stunned = true;
+            this.stunTime = World().state.ticks + 120;
+        }
     }
     die() {
         if (this.dead)

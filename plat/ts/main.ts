@@ -22,13 +22,15 @@ class Main {
     }
 
     const map = (Main.scene as Game).state.mapName;
-    this.scene = new Game('', map);
+    Main.scene = new Game('', map);
+    Main.sceneName = 'game';
     SLT.console("js_rungc");
   }
 
   static switchLevel(num: number) {
     const mapName = `maps/${String(num).padStart(4, '0')}-Level_${num}.ldtkl`;
-    this.scene = new Game('', mapName);
+    Main.scene = new Game('', mapName);
+    Main.sceneName = 'game'
     SLT.console("js_rungc");
   }
 

@@ -440,8 +440,15 @@ int main(int argc, char *argv[])
   SLT_Con_AddCommand("js_reload", []() {
     SLT_Con_SetVar("engine.errorMessage", "");
     SLT_Con_SetVar("engine.lastErrorStack", "");
+
+    if (SLT_Con_GetArgCount() > 1) {
+      saveState = "";
+    }
+    else if (instance) {
+      saveState = instance->CallSave();
+    }
+
     if (instance) {
-      saveState = SLT_Con_GetArgCount() > 1 ? "" : instance->CallSave();
       delete instance;
       instance = nullptr;
     }

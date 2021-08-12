@@ -92,12 +92,11 @@ class Entity {
     const bottomMiddle = [x + this.size[0] / 2, corners[2][1]];
 
     const layer = World().map.layersByName.Collision;
-    const entities = World().state.entities;
     const opposite = getOppositeDir(dir);
 
     // iterate through all entities looking for a collision
     this.collideEnt = undefined;
-    for (let other of entities) {
+    for (let other of World().state.entities) {
       if (other == this) continue;
 
       const intersects = rectIntersect(corners[0], this.size, other.pos, other.size);

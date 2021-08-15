@@ -191,6 +191,15 @@ const AssetList: Asset[] = [
     spriteWidth: 16,
     spriteHeight: 16,
   },
+  {
+    type: 'sprite',
+    name: 'levelend',
+    path: 'gfx/bone.png',
+    marginX: 0,
+    marginY: 0,
+    spriteWidth: 32,
+    spriteHeight: 32,
+  },
 ];
 
 function loadAllAssets() {

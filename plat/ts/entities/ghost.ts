@@ -1,11 +1,9 @@
-import * as SLT from 'slate2d';
 import * as Assets from 'assets';
 
 import Entity from '../entity.js';
 import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
-import Phys from '../phys.js';
 import World from '../world.js';
 import { clamp } from '../util.js';
 import FSMEntity from '../fsmentity.js';

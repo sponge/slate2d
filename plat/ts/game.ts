@@ -21,6 +21,7 @@ interface GameState {
   ticks: number
   entities: Entity[]
   mapName: string
+  nextMap: string
   currCoins: number
   maxCoins: number
 }
@@ -49,8 +50,9 @@ class Game {
     ticks: 0,
     entities: [],
     mapName: '',
+    nextMap: '',
     currCoins: 0,
-    maxCoins: 0
+    maxCoins: 0,
   };
 
   canvas: number = Assets.load({
@@ -89,6 +91,9 @@ class Game {
     } else {
       this.state.mapName = mapName ?? 'maps/0000-Level_0.ldtkl';
     }
+
+    const next = parseInt(this.state.mapName.match(/\d\d\d\d/)?.[0] ?? '0000', 10) + 1;
+    this.state.nextMap = `maps/${String(next).padStart(4, '0')}-Level_${next}.ldtkl`;
 
     // parse the map
     const src = JSON.parse(SLT.readFile(this.state.mapName));

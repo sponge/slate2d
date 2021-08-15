@@ -18,3 +18,4 @@ export * from './entities/crumblingblock.js';
 export * from './entities/balloon.js';
 export * from './entities/owl.js';
 export * from './entities/blobby.js';
+export * from './entities/levelend.js';

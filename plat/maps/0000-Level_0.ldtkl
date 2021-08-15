@@ -603,6 +603,17 @@
 					"defUid": 146,
 					"px": [88,256],
 					"fieldInstances": []
+				},
+				{
+					"__identifier": "LevelEnd",
+					"__grid": [85,7],
+					"__pivot": [0.5,0.5],
+					"__tile": null,
+					"width": 28,
+					"height": 28,
+					"defUid": 148,
+					"px": [1368,120],
+					"fieldInstances": []
 				}
 			]
 		},

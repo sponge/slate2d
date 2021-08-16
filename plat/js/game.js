@@ -25,7 +25,7 @@ class Game {
         ticks: 0,
         entities: [],
         mapName: '',
-        nextMap: '',
+        nextMap: 0,
         currCoins: 0,
         maxCoins: 0,
     };
@@ -61,8 +61,7 @@ class Game {
         else {
             this.state.mapName = mapName ?? 'maps/0000-Level_0.ldtkl';
         }
-        const next = parseInt(this.state.mapName.match(/\d\d\d\d/)?.[0] ?? '0000', 10) + 1;
-        this.state.nextMap = `maps/${String(next).padStart(4, '0')}-Level_${next}.ldtkl`;
+        this.state.nextMap = parseInt(this.state.mapName.match(/\d\d\d\d/)?.[0] ?? '0000', 10) + 1;
         // parse the map
         const src = JSON.parse(SLT.readFile(this.state.mapName));
         this.map = new LDTK(src);

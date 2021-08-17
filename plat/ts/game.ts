@@ -13,6 +13,7 @@ import * as EntMap from './entmap.js';
 import loadAllAssets from './assetlist.js';
 import { SpinParticle } from './entities/spinparticle.js';
 import { PuffParticle } from './entities/puffparticle.js';
+import Main from './main.js';
 
 const EntityMappings = EntMap as { [key: string]: any };
 
@@ -24,6 +25,8 @@ interface GameState {
   nextMap: number
   currCoins: number
   maxCoins: number
+  levelComplete: boolean
+  levelCompleteTicks: number
 }
 
 interface Background {
@@ -53,6 +56,8 @@ class Game {
     nextMap: 0,
     currCoins: 0,
     maxCoins: 0,
+    levelComplete: false,
+    levelCompleteTicks: 0,
   };
 
   canvas: number = Assets.load({
@@ -146,6 +151,11 @@ class Game {
       this.state.t += 1 / 60;
       this.accumulator = Math.max(0, this.accumulator - 0.0175);
       this.state.ticks += 1;
+
+      if (this.state.levelComplete && this.state.ticks > this.state.levelCompleteTicks) {
+        Main.switchLevel(this.state.nextMap);
+        return;
+      }
 
       //run preupdate on all entities before updating
       this.state.entities.forEach(ent => ent.destroyed || ent.preupdate(this.state.ticks, dt));
@@ -297,6 +307,11 @@ class Game {
     this.state.entities.push(deathEnt);
 
     return deathEnt;
+  }
+
+  completeLevel() {
+    this.state.levelComplete = true;
+    this.state.levelCompleteTicks = this.state.ticks + 120;
   }
 }
 

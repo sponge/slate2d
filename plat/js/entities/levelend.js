@@ -3,7 +3,6 @@ import Entity from '../entity.js';
 import CollisionType from '../collisiontype.js';
 import World from '../world.js';
 import { Player } from './player.js';
-import Main from '../main.js';
 class LevelEnd extends Entity {
     type = 'LevelEnd';
     drawOfs = [-2, -2];
@@ -19,9 +18,8 @@ class LevelEnd extends Entity {
         if (other instanceof Player == false) {
             return;
         }
-        // FIXME: implement me
         this.destroyed = true;
-        Main.switchLevel(World().state.nextMap);
+        World().completeLevel();
     }
     draw() {
         this.drawOfs[1] = this.frame < 4 ? -3 : -4;

@@ -90,18 +90,21 @@ class Player extends Entity {
       return;
     }
 
+    let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
+
+    if (World().state.levelComplete) {
+      this.disableControls = true;
+    }
+    // reenable controls if not on spring, usually due to squishing an enemy
+    else if (this.disableControls && this.collideEnt?.type != 'Spring') {
+      this.disableControls = false;
+      this.disableMovement = false;
+    }
+
     const dir = this.disableControls ? 0 : SLT.buttonPressed(Buttons.Left) ? -1 : SLT.buttonPressed(Buttons.Right) ? 1 : 0;
     const jumpPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Jump);
     const shootPress = this.disableControls ? false : SLT.buttonPressed(Buttons.Shoot);
     const slidePress = this.disableControls ? false : SLT.buttonPressed(Buttons.Down);
-
-    let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);
-
-    // reenable controls if not on spring, usually due to squishing an enemy
-    if (this.disableControls && this.collideEnt?.type != 'Spring') {
-      this.disableControls = false;
-      this.disableMovement = false;
-    }
 
     // remove stun effect if it's time
     if (this.stunned && ticks > this.stunTime) {

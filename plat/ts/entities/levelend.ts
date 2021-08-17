@@ -8,6 +8,7 @@ import CollisionType from '../collisiontype.js';
 import World from '../world.js';
 import { Player } from './player.js';
 import Main from '../main.js';
+import Game from '../game.js';
 
 class LevelEnd extends Entity {
   type = 'LevelEnd';
@@ -28,9 +29,8 @@ class LevelEnd extends Entity {
       return;
     }
 
-    // FIXME: implement me
     this.destroyed = true;
-    Main.switchLevel(World().state.nextMap);
+    World().completeLevel();
   }
 
   draw() {

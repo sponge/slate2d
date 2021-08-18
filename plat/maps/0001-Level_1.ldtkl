@@ -79,8 +79,8 @@
 			"__opacity": 1,
 			"__pxTotalOffsetX": 0,
 			"__pxTotalOffsetY": 0,
-			"__tilesetDefUid": 2,
-			"__tilesetRelPath": "gfx/grasslands.png",
+			"__tilesetDefUid": 134,
+			"__tilesetRelPath": "gfx/snowlands.png",
 			"levelId": 147,
 			"layerDefUid": 1,
 			"pxOffsetX": 0,
@@ -146,7 +146,7 @@
 				{ "px": [224,64], "src": [0,0], "f": 0, "t": 0, "d": [102,78] }
 			],
 			"seed": 6677493,
-			"overrideTilesetUid": null,
+			"overrideTilesetUid": 134,
 			"gridTiles": [],
 			"entityInstances": []
 		},

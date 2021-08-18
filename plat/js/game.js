@@ -157,23 +157,28 @@ class Game {
             }
         });
         // parallax bgs
-        const camY = 1 - this.camera.y / (this.map.heightPx - res.h);
+        const camY = 1 - this.camera.y / (this.map.heightPx - res.h) || 0;
         const camYoffset = camY * 50;
         this.backgrounds.forEach((bg, i) => {
             const speed = (i + 1) * 0.25;
             const x = Math.floor(((bg.x - this.camera.x) * speed) % bg.w);
             const y = Math.floor(bg.y + camYoffset);
             let bgx = x;
+            while (bgx > 0) {
+                bgx -= bg.w;
+            }
             while (bgx < res.w) {
                 Draw.image(bg.id, bgx, y, 0, 0, 1, 0, 0, 0);
                 bgx += bg.w;
             }
         });
         // running dog
-        const x = Math.floor((t * 50) % (res.w + 22) - 22);
-        const y = Math.floor(Math.sin(x / 50) * 5 + (this.res.h * 0.8));
-        Draw.setColor(255, 255, 255, 255);
-        Draw.sprite(this.dogSpr, Math.floor(t * 12) % 6, x, y + camYoffset, 1, 0, 1, 1);
+        if (this.map.background == 'grassland') {
+            const x = Math.floor((t * 50) % (res.w + 22) - 22);
+            const y = Math.floor(Math.sin(x / 50) * 5 + (this.res.h * 0.8));
+            Draw.setColor(255, 255, 255, 255);
+            Draw.sprite(this.dogSpr, Math.floor(t * 12) % 6, x, y + camYoffset, 1, 0, 1, 1);
+        }
         // dim the background slightly
         Draw.setColor(99, 155, 255, 60);
         Draw.rect(0, 0, res.w, res.h, false);

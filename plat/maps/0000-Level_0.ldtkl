@@ -1285,7 +1285,7 @@
 			"pxOffsetX": 0,
 			"pxOffsetY": 0,
 			"visible": true,
-			"optionalRules": [],
+			"optionalRules": [39],
 			"intGridCsv": [],
 			"autoLayerTiles": [
 				{ "px": [656,128], "src": [144,112], "f": 0, "t": 121, "d": [127,801] },

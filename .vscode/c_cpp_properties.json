@@ -4,7 +4,6 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceRoot}/src/external",
-                "${workspaceRoot}/libs/glew",
                 "${workspaceRoot}/libs/imgui",
                 "${workspaceRoot}/libs/physfs",
                 "${workspaceRoot}/libs/sdl",

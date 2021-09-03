@@ -614,6 +614,17 @@
 					"defUid": 148,
 					"px": [1368,120],
 					"fieldInstances": []
+				},
+				{
+					"__identifier": "Daikon",
+					"__grid": [8,15],
+					"__pivot": [0.5,1],
+					"__tile": null,
+					"width": 12,
+					"height": 15,
+					"defUid": 149,
+					"px": [136,256],
+					"fieldInstances": []
 				}
 			]
 		},

@@ -192,6 +192,15 @@ const AssetList = [
     },
     {
         type: 'sprite',
+        name: 'daikon',
+        path: 'gfx/daikon.png',
+        marginX: 0,
+        marginY: 0,
+        spriteWidth: 16,
+        spriteHeight: 19,
+    },
+    {
+        type: 'sprite',
         name: 'levelend',
         path: 'gfx/bone.png',
         marginX: 0,

@@ -18,7 +18,7 @@ class Balloon extends Entity {
         }
     }
     canCollide(other, dir) {
-        if (other instanceof Player && other.canHurt(this))
+        if (other instanceof Player)
             return CollisionType.Platform;
         else
             return CollisionType.Disabled;

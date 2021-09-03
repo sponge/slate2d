@@ -33,9 +33,6 @@ class Player extends Entity {
         super(args);
         this.spawnPos = [...this.pos];
     }
-    canHurt(other) {
-        return !this.stunned;
-    }
     hurt(amt) {
         if (this.stunned)
             return;

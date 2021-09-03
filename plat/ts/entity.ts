@@ -66,7 +66,6 @@ class Entity {
   max(dim: number) { return this.pos[dim] + this.size[dim] }
   bottomMiddle(dim: number) { return dim == 0 ? this.pos[0] + this.size[0] / 2 : this.pos[1] + this.size[1] - 1; }
 
-  canHurt(other: Entity) { return other.type == 'Player' }
   hurt(amt: number) { this.die() }
   die() { this.destroyed = true; }
 
@@ -296,7 +295,7 @@ class Entity {
   }
 
   standardCanEnemyCollide(other: Entity, dir: Dir) {
-    if (other instanceof Player && other.canHurt(this) && dir == Dir.Up) return CollisionType.Enabled;
+    if (other instanceof Player && dir == Dir.Up) return CollisionType.Platform;
     else if (other instanceof Player) return CollisionType.Trigger;
     else return CollisionType.Enabled;
   }

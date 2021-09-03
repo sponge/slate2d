@@ -70,8 +70,8 @@ class Ghost extends FSMEntity {
         this.moveY(this.vel[1]);
     }
     canCollide(other, dir) {
-        if (other instanceof Player && other.canHurt(this) && dir == Dir.Up)
-            return CollisionType.Enabled;
+        if (other instanceof Player && dir == Dir.Up)
+            return CollisionType.Platform;
         else
             return CollisionType.Trigger;
     }

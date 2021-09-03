@@ -53,7 +53,6 @@ class Entity {
     min(dim) { return this.pos[dim]; }
     max(dim) { return this.pos[dim] + this.size[dim]; }
     bottomMiddle(dim) { return dim == 0 ? this.pos[0] + this.size[0] / 2 : this.pos[1] + this.size[1] - 1; }
-    canHurt(other) { return other.type == 'Player'; }
     hurt(amt) { this.die(); }
     die() { this.destroyed = true; }
     // returns the tile id at the given coordinates
@@ -251,8 +250,8 @@ class Entity {
         }
     }
     standardCanEnemyCollide(other, dir) {
-        if (other instanceof Player && other.canHurt(this) && dir == Dir.Up)
-            return CollisionType.Enabled;
+        if (other instanceof Player && dir == Dir.Up)
+            return CollisionType.Platform;
         else if (other instanceof Player)
             return CollisionType.Trigger;
         else

@@ -46,7 +46,7 @@ class Bird extends Entity {
   }
 
   canCollide(other: Entity, dir: Dir) {
-    if (other instanceof Player && other.canHurt(this) && dir == Dir.Up) return CollisionType.Enabled;
+    if (other instanceof Player && dir == Dir.Up) return CollisionType.Platform;
     else return CollisionType.Trigger;
   }
 

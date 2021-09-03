@@ -47,7 +47,6 @@ has been confirmed to work on *two* different computers!
 - [PhysicsFS](https://icculus.org/physfs/) - virtual filesystem, zip loading
 - [dear imgui](https://github.com/ocornut/imgui) - debugging tools  
 - [SoLoud](http://sol.gfxile.net/soloud/) - audio engine  
-- [GLEW](http://glew.sourceforge.net/) - GL extension support
 - [rlgl](https://www.raylib.com/) - OpenGL wrapper
 - [crunch](https://github.com/ChevyRay/crunch/) - sprite packing
 

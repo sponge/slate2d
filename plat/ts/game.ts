@@ -305,8 +305,8 @@ class Game {
     deathEnt.pos = [...ent.pos];
     deathEnt.sprite = ent.sprite;
     deathEnt.frame = frame;
-    deathEnt.size = ent.size;
-    deathEnt.drawOfs = ent.drawOfs;
+    deathEnt.size = [...ent.size];
+    deathEnt.drawOfs = [...ent.drawOfs];
     deathEnt.start = this.state.ticks;
     deathEnt.vel[0] *= Math.sign(ent.center(0) - this.player.center(0));
     this.state.entities.push(deathEnt);

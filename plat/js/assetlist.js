@@ -201,6 +201,15 @@ const AssetList = [
     },
     {
         type: 'sprite',
+        name: 'totem',
+        path: 'gfx/totem.png',
+        marginX: 0,
+        marginY: 0,
+        spriteWidth: 16,
+        spriteHeight: 22,
+    },
+    {
+        type: 'sprite',
         name: 'levelend',
         path: 'gfx/bone.png',
         marginX: 0,

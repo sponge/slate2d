@@ -617,12 +617,23 @@
 				},
 				{
 					"__identifier": "Daikon",
-					"__grid": [8,15],
+					"__grid": [10,15],
 					"__pivot": [0.5,1],
 					"__tile": null,
 					"width": 12,
 					"height": 15,
 					"defUid": 149,
+					"px": [168,256],
+					"fieldInstances": []
+				},
+				{
+					"__identifier": "Totem",
+					"__grid": [8,15],
+					"__pivot": [0.5,1],
+					"__tile": null,
+					"width": 12,
+					"height": 21,
+					"defUid": 150,
 					"px": [136,256],
 					"fieldInstances": []
 				}

@@ -37,7 +37,6 @@ workspace "Slate2D"
   filter "system:windows"
     platforms { "x86", "x64" }
     systemversion "latest"
-    flags "MultiProcessorCompile"
 
   filter "system:macosx"
     defines { "MACOS", "GL_SILENCE_DEPRECATION" }

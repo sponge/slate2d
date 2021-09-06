@@ -130,7 +130,7 @@ public:
     if (moduleIsClass) {
       JS_SetPropertyStr(ctx, global, "initialState", jsState);
       const char *str = "globalThis.main = new globalThis.mainModule(globalThis.initialState);";
-      JSValue imported = JS_Eval(ctx, str, strlen(str), "<import>", JS_EVAL_TYPE_MODULE);
+      JS_Eval(ctx, str, strlen(str), "<import>", JS_EVAL_TYPE_MODULE);
       main = JS_GetPropertyStr(ctx, global, "main");
 
       if (!JS_IsObject(main)) {

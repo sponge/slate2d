@@ -420,7 +420,7 @@ JSModuleDef *js_init_module_slt(JSContext *ctx, const char *module_name)
   if (!m) return NULL;
   JS_AddModuleExportList(ctx, m, js_slt_funcs, countof(js_slt_funcs));
 
-  JSValue global_obj, console, args;
+  JSValue global_obj, console;
   global_obj = JS_GetGlobalObject(ctx);
   console = JS_NewObject(ctx);
   JS_SetPropertyStr(ctx, console, "log", JS_NewCFunction(ctx, js_slt_console_log, "log", 1));

@@ -335,7 +335,7 @@ void main_loop()
         ImGui::MenuItem("Memory Usage", nullptr, &show_memory_usage);
         if (ImGui::MenuItem("Run GC")) SLT_SendConsoleCommand("js_rungc");
         if (ImGui::MenuItem("Save & Reload")) SLT_SendConsoleCommand("js_reload");
-        if (ImGui::MenuItem("Full Reload")) SLT_SendConsoleCommand("js_reload nosave");
+        if (ImGui::MenuItem("Restart")) SLT_SendConsoleCommand("js_restart");
 
         ImGui::EndMenu();
       }
@@ -437,17 +437,20 @@ int main(int argc, char *argv[])
     return false;
   });
 
+  SLT_Con_AddCommand("js_restart", []() {
+    SLT_Con_SetVar("engine.errorMessage", "");
+    SLT_Con_SetVar("engine.lastErrorStack", "");
+    saveState = "";
+    if (instance) {
+      delete instance;
+      instance = nullptr;
+    }
+  });
+
   SLT_Con_AddCommand("js_reload", []() {
     SLT_Con_SetVar("engine.errorMessage", "");
     SLT_Con_SetVar("engine.lastErrorStack", "");
-
-    if (SLT_Con_GetArgCount() > 1) {
-      saveState = "";
-    }
-    else if (instance) {
-      saveState = instance->CallSave();
-    }
-
+    saveState = instance->CallSave();
     if (instance) {
       delete instance;
       instance = nullptr;

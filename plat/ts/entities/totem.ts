@@ -2,11 +2,7 @@ import * as Assets from 'assets';
 
 import Entity from '../entity.js';
 import Dir from '../dir.js';
-import { Player } from './player.js';
 import { World } from '../game.js';
-import FSMEntity from '../fsmentity.js';
-import Phys from '../phys.js';
-import CollisionType from '../collisiontype.js';
 
 enum Frames {
   Idle = 0,
@@ -18,7 +14,7 @@ enum Frames {
   Chunk,
 }
 
-class Totem extends FSMEntity {
+class Totem extends Entity {
   type = 'Totem';
   sprite = Assets.find('totem');
   vel: [number, number] = [-0.25, 0];
@@ -62,11 +58,6 @@ class Totem extends FSMEntity {
     else {
       this.vel[0] *= -1;
     }
-  }
-
-  draw() {
-    super.draw();
-    //this.drawBbox(255, 255, 255, 128);
   }
 }
 

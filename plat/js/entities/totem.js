@@ -1,6 +1,6 @@
 import * as Assets from 'assets';
+import Entity from '../entity.js';
 import { World } from '../game.js';
-import FSMEntity from '../fsmentity.js';
 var Frames;
 (function (Frames) {
     Frames[Frames["Idle"] = 0] = "Idle";
@@ -11,7 +11,7 @@ var Frames;
     Frames[Frames["Pain"] = 5] = "Pain";
     Frames[Frames["Chunk"] = 6] = "Chunk";
 })(Frames || (Frames = {}));
-class Totem extends FSMEntity {
+class Totem extends Entity {
     type = 'Totem';
     sprite = Assets.find('totem');
     vel = [-0.25, 0];
@@ -49,10 +49,6 @@ class Totem extends FSMEntity {
         else {
             this.vel[0] *= -1;
         }
-    }
-    draw() {
-        super.draw();
-        //this.drawBbox(255, 255, 255, 128);
     }
 }
 export { Totem };

@@ -9,7 +9,7 @@ import Dir from '../dir.js';
 import { clearPrintWin, dbg, dbgval } from '../printwin.js';
 import Tiles from '../tiles.js';
 import Phys from '../phys.js';
-import World from '../world.js';
+import { World } from '../game.js';
 import Main from '../main.js';
 
 const slopes = [Tiles.SlopeL, Tiles.SlopeR];

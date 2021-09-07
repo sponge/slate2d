@@ -2,7 +2,7 @@ import * as Draw from 'draw';
 import Entity from '../entity.js';
 import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
-import World from '../world.js';
+import { World } from '../game.js';
 class Switch extends Entity {
     type = 'Switch';
     collidable = CollisionType.Platform;

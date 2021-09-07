@@ -3,7 +3,7 @@ import * as Assets from 'assets';
 import Entity from '../entity.js';
 import Dir from '../dir.js';
 import { Player } from './player.js';
-import World from '../world.js';
+import { World } from '../game.js';
 import FSMEntity from '../fsmentity.js';
 
 enum Frames {

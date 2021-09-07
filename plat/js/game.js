@@ -252,4 +252,7 @@ class Game {
         this.state.levelCompleteTicks = this.state.ticks + 120;
     }
 }
-export default Game;
+function World() {
+    return Main.scene;
+}
+export { Game, World };

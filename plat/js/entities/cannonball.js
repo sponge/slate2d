@@ -1,6 +1,6 @@
 import * as Assets from 'assets';
 import Entity from '../entity.js';
-import World from '../world.js';
+import { World } from '../game.js';
 var Frames;
 (function (Frames) {
     Frames[Frames["Idle"] = 0] = "Idle";

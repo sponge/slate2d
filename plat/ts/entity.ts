@@ -4,7 +4,7 @@ import { clamp, entIntersect, getOppositeDir, rectIntersect } from './util.js';
 import Dir from './dir.js';
 import Tiles from './tiles.js';
 import CollisionType from './collisiontype.js';
-import World from './world.js';
+import { World } from './game.js';
 import { Player } from './entities/player.js';
 
 const slopes = [Tiles.SlopeL, Tiles.SlopeR];

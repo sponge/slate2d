@@ -1,7 +1,7 @@
 import CollisionType from "./collisiontype.js";
 import Dir from "./dir.js";
 import Entity from "./entity.js";
-import World from "./world.js";
+import { World } from './game.js';
 
 class FSMEntity extends Entity {
   state = 0;

@@ -1,6 +1,6 @@
 /// <reference path="./decs.d.ts" />
 import * as SLT from 'slate2d';
-import Game from "./game.js";
+import { Game } from "./game.js";
 
 interface IScene {
   save(): string,

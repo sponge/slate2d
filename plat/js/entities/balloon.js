@@ -3,7 +3,7 @@ import Entity from '../entity.js';
 import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
-import World from '../world.js';
+import { World } from '../game.js';
 class Balloon extends Entity {
     type = 'Balloon';
     sprite = Assets.find('balloon');

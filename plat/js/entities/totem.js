@@ -1,5 +1,5 @@
 import * as Assets from 'assets';
-import World from '../world.js';
+import { World } from '../game.js';
 import FSMEntity from '../fsmentity.js';
 var Frames;
 (function (Frames) {

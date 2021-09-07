@@ -320,4 +320,8 @@ class Game {
   }
 }
 
-export default Game;
+function World() {
+  return Main.scene as Game;
+}
+
+export { Game, World };

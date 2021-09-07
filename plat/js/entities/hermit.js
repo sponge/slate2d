@@ -3,7 +3,7 @@ import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
 import Phys from '../phys.js';
-import World from '../world.js';
+import { World } from '../game.js';
 import FSMEntity from '../fsmentity.js';
 var Frames;
 (function (Frames) {

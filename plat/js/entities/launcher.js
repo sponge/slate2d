@@ -1,7 +1,7 @@
 import * as Assets from 'assets';
 import Entity from '../entity.js';
 import CollisionType from '../collisiontype.js';
-import World from '../world.js';
+import { World } from '../game.js';
 class Launcher extends Entity {
     sprite = Assets.find('launcher');
     collidable = CollisionType.Enabled;

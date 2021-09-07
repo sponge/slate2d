@@ -3,7 +3,7 @@ import * as Draw from 'draw';
 import CollisionType from '../collisiontype.js';
 import Entity from '../entity.js';
 import Phys from '../phys.js';
-import World from '../world.js';
+import { World } from '../game.js';
 
 class SpinParticle extends Entity {
   type = 'SpinParticle';

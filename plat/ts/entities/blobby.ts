@@ -4,7 +4,7 @@ import Entity from '../entity.js';
 import FSMEntity from '../fsmentity.js';
 import Dir from '../dir.js';
 import { Player } from './player.js';
-import World from '../world.js';
+import { World } from '../game.js';
 import { dbgval } from '../printwin.js';
 import { invLerp } from '../util.js';
 import CollisionType from '../collisiontype.js';

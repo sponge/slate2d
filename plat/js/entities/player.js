@@ -7,7 +7,7 @@ import { clamp } from '../util.js';
 import Dir from '../dir.js';
 import Tiles from '../tiles.js';
 import Phys from '../phys.js';
-import World from '../world.js';
+import { World } from '../game.js';
 import Main from '../main.js';
 const slopes = [Tiles.SlopeL, Tiles.SlopeR];
 class Player extends Entity {

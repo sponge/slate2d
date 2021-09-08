@@ -9,7 +9,7 @@
 		"url": "https://ldtk.io"
 	},
 	"jsonVersion": "0.9.3",
-	"nextUid": 153,
+	"nextUid": 154,
 	"worldLayout": "LinearHorizontal",
 	"worldGridWidth": 256,
 	"worldGridHeight": 256,
@@ -2349,6 +2349,31 @@
 			"pivotX": 0.5,
 			"pivotY": 1,
 			"fieldDefs": []
+		},
+		{
+			"identifier": "Health",
+			"uid": 153,
+			"tags": [],
+			"width": 16,
+			"height": 10,
+			"resizableX": false,
+			"resizableY": false,
+			"keepAspectRatio": false,
+			"fillOpacity": 1,
+			"lineOpacity": 1,
+			"hollow": false,
+			"color": "#502323",
+			"renderMode": "Rectangle",
+			"showName": true,
+			"tilesetId": null,
+			"tileId": null,
+			"tileRenderMode": "FitInside",
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0.5,
+			"pivotY": 0.5,
+			"fieldDefs": []
 		}
 	], "tilesets": [
 		{
@@ -2429,7 +2454,7 @@
 			"uid": 0,
 			"worldX": 0,
 			"worldY": 0,
-			"pxWid": 1520,
+			"pxWid": 1776,
 			"pxHei": 320,
 			"__bgColor": "#639BFF",
 			"bgColor": "#639BFF",
@@ -2456,7 +2481,7 @@
 		{
 			"identifier": "Level_1",
 			"uid": 147,
-			"worldX": 1552,
+			"worldX": 1808,
 			"worldY": 0,
 			"pxWid": 256,
 			"pxHei": 240,

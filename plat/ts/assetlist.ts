@@ -20,9 +20,9 @@ const AssetList: Asset[] = [
     marginY: 0,
   },
   {
-    name: 'heart',
+    name: 'health',
     type: 'sprite',
-    path: 'gfx/heart.png',
+    path: 'gfx/health.png',
     spriteWidth: 16,
     spriteHeight: 16,
     marginX: 0,

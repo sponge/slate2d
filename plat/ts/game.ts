@@ -68,7 +68,7 @@ class Game {
   });
 
   dogSpr: number;
-  heartSpr: number;
+  healthSpr: number;
   pMeterSpr: number;
   coinSpr: number;
   blueFont: number;
@@ -84,7 +84,7 @@ class Game {
 
     loadAllAssets();
     this.dogSpr = Assets.find('dogspr');
-    this.heartSpr = Assets.find('heart');
+    this.healthSpr = Assets.find('health');
     this.pMeterSpr = Assets.find('pmeter');
     this.coinSpr = Assets.find('coin');
     this.blueFont = Assets.find('blueFont');
@@ -261,9 +261,9 @@ class Game {
     Draw.sprite(this.coinSpr, 0, 165, 8, 1, 0, 1, 1);
     Draw.text(185, 11, 300, `${this.state.currCoins}/${this.state.maxCoins}`, 0);
 
-    // hearts
+    // health
     for (let i = 0; i < this.player.maxHealth; i++) {
-      Draw.sprite(this.heartSpr, i + 1 <= this.player.health ? 0 : 1, 14 + i * 20, 7, 1, 0, 1, 1);
+      Draw.sprite(this.healthSpr, i + 1 <= this.player.health ? 0 : 1, 14 + i * 20, 7, 1, 0, 1, 1);
     }
 
     // p-meter

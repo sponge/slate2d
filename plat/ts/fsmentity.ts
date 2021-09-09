@@ -3,6 +3,16 @@ import Dir from "./dir.js";
 import Entity from "./entity.js";
 import { World } from './game.js';
 
+type FSMStates = {
+  [key in number | 'default']: {
+    enter?: () => void;
+    exit?: () => void;
+    update?: (ticks: number) => void;
+    canCollide?: (other: Entity, dir: Dir) => CollisionType;
+    collide?: (other: Entity, dir: Dir) => void,
+  }
+};
+
 class FSMEntity extends Entity {
   state = 0;
   enteringState = true;
@@ -12,7 +22,7 @@ class FSMEntity extends Entity {
   nextState = 0;
   nextStateTime = 0;
 
-  fsmUpdate(states: any, ticks: number) {
+  fsmUpdate(states: FSMStates, ticks: number) {
     if (this.nextStateTime > 0 && ticks >= this.nextStateTime) {
       this.fsmTransitionTo(this.nextState);
     }
@@ -32,11 +42,11 @@ class FSMEntity extends Entity {
     (states[this.state]?.update ?? states.default?.update)?.(ticks);
   }
 
-  fsmCanCollide(states: any, other: Entity, dir: Dir): CollisionType {
-    return (states[this.state]?.canCollide ?? states.default?.canCollide)?.(other, dir);
+  fsmCanCollide(states: FSMStates, other: Entity, dir: Dir): CollisionType {
+    return (states[this.state]?.canCollide ?? states.default?.canCollide)?.(other, dir) ?? CollisionType.Enabled;
   }
 
-  fsmCollide(states: any, other: Entity, dir: Dir) {
+  fsmCollide(states: FSMStates, other: Entity, dir: Dir) {
     (states[this.state]?.collide ?? states.default?.collide)?.(other, dir);
   }
 
@@ -60,4 +70,4 @@ class FSMEntity extends Entity {
   }
 }
 
-export default FSMEntity;
+export { FSMEntity, FSMStates };

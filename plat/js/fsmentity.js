@@ -1,3 +1,4 @@
+import CollisionType from "./collisiontype.js";
 import Entity from "./entity.js";
 import { World } from './game.js';
 class FSMEntity extends Entity {
@@ -25,7 +26,7 @@ class FSMEntity extends Entity {
         (states[this.state]?.update ?? states.default?.update)?.(ticks);
     }
     fsmCanCollide(states, other, dir) {
-        return (states[this.state]?.canCollide ?? states.default?.canCollide)?.(other, dir);
+        return (states[this.state]?.canCollide ?? states.default?.canCollide)?.(other, dir) ?? CollisionType.Enabled;
     }
     fsmCollide(states, other, dir) {
         (states[this.state]?.collide ?? states.default?.collide)?.(other, dir);
@@ -47,4 +48,4 @@ class FSMEntity extends Entity {
         this.nextStateTime = wait <= 0 ? 0 : wait + World().state.ticks;
     }
 }
-export default FSMEntity;
+export { FSMEntity };

@@ -1,5 +1,5 @@
 import * as Assets from 'assets';
-import FSMEntity from '../fsmentity.js';
+import { FSMEntity } from '../fsmentity.js';
 import Dir from '../dir.js';
 import { Player } from './player.js';
 import { World } from '../game.js';

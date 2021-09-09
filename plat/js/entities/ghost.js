@@ -4,7 +4,7 @@ import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
 import { World } from '../game.js';
 import { clamp } from '../util.js';
-import FSMEntity from '../fsmentity.js';
+import { FSMEntity } from '../fsmentity.js';
 var Frames;
 (function (Frames) {
     Frames[Frames["Idle"] = 0] = "Idle";

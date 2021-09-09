@@ -1,7 +1,7 @@
 import * as Assets from 'assets';
 
 import Entity from '../entity.js';
-import FSMEntity from '../fsmentity.js';
+import { FSMEntity, FSMStates } from '../fsmentity.js';
 import Dir from '../dir.js';
 import { Player } from './player.js';
 import { World } from '../game.js';
@@ -40,7 +40,7 @@ class Blobby extends FSMEntity {
     World().spawnDeathParticle(this, Frames.Pain);
   }
 
-  #states: any = {
+  #states: FSMStates = {
     default: {
       enter: () => this.fsmDefaultTransitionTo(States.Idle),
       canCollide: (other: Entity, dir: Dir) => this.standardCanEnemyCollide(other, dir),

@@ -6,7 +6,7 @@ import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
 import { World } from '../game.js';
 import { clamp } from '../util.js';
-import FSMEntity from '../fsmentity.js';
+import { FSMEntity, FSMStates } from '../fsmentity.js';
 
 enum Frames {
   Idle,
@@ -42,7 +42,7 @@ class Ghost extends FSMEntity {
     World().spawnDeathParticle(this, Frames.Pain);
   }
 
-  #states: any = {
+  #states: FSMStates = {
     default: {
       enter: () => this.fsmDefaultTransitionTo(States.Idle),
     },

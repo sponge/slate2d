@@ -2,7 +2,7 @@ import * as Assets from 'assets';
 import Dir from '../dir.js';
 import { Player } from './player.js';
 import { World } from '../game.js';
-import FSMEntity from '../fsmentity.js';
+import { FSMEntity } from '../fsmentity.js';
 import Phys from '../phys.js';
 import CollisionType from '../collisiontype.js';
 var Frames;
@@ -35,7 +35,7 @@ class Daikon extends FSMEntity {
             enter: () => this.fsmDefaultTransitionTo(States.Wait),
         },
         [States.Wait]: {
-            enter: (ticks) => this.frame = Frames.Idle,
+            enter: () => this.frame = Frames.Idle,
             update: (ticks) => {
                 if (Math.abs(World().player.center(0) - this.center(0)) < 40) {
                     this.fsmTransitionTo(States.Pop);
@@ -64,7 +64,7 @@ class Daikon extends FSMEntity {
             }
         },
         [States.Recharge]: {
-            enter: (ticks) => {
+            enter: () => {
                 this.fsmTransitionAtTime(States.Wait, 120);
                 this.frame = Frames.Idle;
             },

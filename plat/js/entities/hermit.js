@@ -4,7 +4,7 @@ import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
 import Phys from '../phys.js';
 import { World } from '../game.js';
-import FSMEntity from '../fsmentity.js';
+import { FSMEntity } from '../fsmentity.js';
 var Frames;
 (function (Frames) {
     Frames[Frames["Walk1"] = 0] = "Walk1";

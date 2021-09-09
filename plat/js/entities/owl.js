@@ -1,6 +1,6 @@
 import * as Assets from 'assets';
 import { World } from '../game.js';
-import FSMEntity from '../fsmentity.js';
+import { FSMEntity } from '../fsmentity.js';
 var Frames;
 (function (Frames) {
     Frames[Frames["Idle1"] = 0] = "Idle1";
@@ -36,7 +36,7 @@ class Owl extends FSMEntity {
             enter: () => this.fsmDefaultTransitionTo(States.Idle),
         },
         [States.Idle]: {
-            enter: (ticks) => this.fsmTransitionAtTime(States.Rise, 120),
+            enter: () => this.fsmTransitionAtTime(States.Rise, 120),
             update: (ticks) => this.frame = ticks % 40 < 30 ? Frames.Idle1 : Frames.Idle2,
         },
         [States.Rise]: {

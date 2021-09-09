@@ -4,7 +4,7 @@ import Entity from '../entity.js';
 import Dir from '../dir.js';
 import { Player } from './player.js';
 import { World } from '../game.js';
-import FSMEntity from '../fsmentity.js';
+import { FSMEntity, FSMStates } from '../fsmentity.js';
 
 enum Frames {
   Idle1 = 0,
@@ -39,13 +39,13 @@ class Owl extends FSMEntity {
     World().spawnDeathParticle(this, Frames.Pain);
   }
 
-  #states: any = {
+  #states: FSMStates = {
     default: {
       enter: () => this.fsmDefaultTransitionTo(States.Idle),
     },
 
     [States.Idle]: {
-      enter: (ticks: number) => this.fsmTransitionAtTime(States.Rise, 120),
+      enter: () => this.fsmTransitionAtTime(States.Rise, 120),
       update: (ticks: number) => this.frame = ticks % 40 < 30 ? Frames.Idle1 : Frames.Idle2,
     },
 

@@ -6,7 +6,7 @@ import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
 import Phys from '../phys.js';
 import { World } from '../game.js';
-import FSMEntity from '../fsmentity.js';
+import { FSMEntity, FSMStates } from '../fsmentity.js';
 import { dbgval } from '../printwin.js';
 
 enum Frames {
@@ -42,7 +42,7 @@ class Hermit extends FSMEntity {
     World().spawnDeathParticle(this, Frames.Shell);
   }
 
-  #states: any = {
+  #states: FSMStates = {
     default: {
       enter: () => this.fsmDefaultTransitionTo(States.Walk),
     },

@@ -26,10 +26,10 @@ class Sign extends FSMEntity {
   sprite = Assets.find('sign');
   runWhilePaused = true;
 
-  signX = 100;
-  signY = 120;
+  signX = 0;
+  signY = 130;
   signW = 200;
-  signH = 100;
+  signH = 90;
   signTime = 20;
   signText = '';
 
@@ -53,11 +53,13 @@ class Sign extends FSMEntity {
         World().paused = true;
       },
       draw: () => {
-        Draw.setColor(0, 0, 0, 255);
         const t = (World().state.ticks - this.startStateTime) / this.signTime;
         const w = lerp(0, this.signW, t);
         const h = lerp(0, this.signH, t);
-        Draw.rect(this.signX, this.signY, w, h, false);
+        const x = this.signX + (this.signW - w) / 2;
+        const y = this.signY + (this.signH - h) / 2;
+        Draw.setColor(0, 0, 0, 255);
+        Draw.rect(x, y, w, h, false);
       },
     },
 
@@ -79,11 +81,13 @@ class Sign extends FSMEntity {
     [States.Shrink]: {
       enter: () => this.fsmTransitionAtTime(States.Idle, this.signTime),
       draw: () => {
-        Draw.setColor(0, 0, 0, 255);
         const t = clamp((World().state.ticks - this.startStateTime) / this.signTime, 0, 1);
         const w = lerp(this.signW, 0, t);
         const h = lerp(this.signH, 0, t);
-        Draw.rect(this.signX, this.signY, w, h, false);
+        const x = this.signX + (this.signW - w) / 2;
+        const y = this.signY + (this.signH - h) / 2;
+        Draw.setColor(0, 0, 0, 255);
+        Draw.rect(x, y, w, h, false);
       },
     },
   }
@@ -94,6 +98,7 @@ class Sign extends FSMEntity {
   }
 
   update(ticks: number, dt: number) {
+    this.signX = World().res.w / 2 - this.signW / 2;
     this.fsmUpdate(this.#states, ticks);
   }
 

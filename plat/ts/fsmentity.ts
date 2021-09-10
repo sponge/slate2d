@@ -8,6 +8,7 @@ type FSMStates = {
     enter?: () => void;
     exit?: () => void;
     update?: (ticks: number) => void;
+    draw?: () => void;
     canCollide?: (other: Entity, dir: Dir) => CollisionType;
     collide?: (other: Entity, dir: Dir) => void,
   }
@@ -40,6 +41,16 @@ class FSMEntity extends Entity {
     }
 
     (states[this.state]?.update ?? states.default?.update)?.(ticks);
+
+    // if state changes here, update time now so if draw is called the time will be right
+    // FIXME: maybe need to be calling exit/enter here too?
+    if (this.enteringState) {
+      this.startStateTime = ticks;
+    }
+  }
+
+  fsmDraw(states: FSMStates) {
+    (states[this.state]?.draw ?? states.default?.draw)?.();
   }
 
   fsmCanCollide(states: FSMStates, other: Entity, dir: Dir): CollisionType {

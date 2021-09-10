@@ -454,13 +454,13 @@
 				},
 				{
 					"__identifier": "Player",
-					"__grid": [7,15],
+					"__grid": [2,15],
 					"__pivot": [0.5,1],
 					"__tile": null,
 					"width": 12,
 					"height": 14,
 					"defUid": 73,
-					"px": [120,256],
+					"px": [40,256],
 					"fieldInstances": []
 				},
 				{
@@ -628,24 +628,24 @@
 				},
 				{
 					"__identifier": "Totem",
-					"__grid": [15,15],
+					"__grid": [16,15],
 					"__pivot": [0.5,1],
 					"__tile": null,
 					"width": 12,
 					"height": 21,
 					"defUid": 150,
-					"px": [248,256],
+					"px": [264,256],
 					"fieldInstances": []
 				},
 				{
 					"__identifier": "Health",
-					"__grid": [11,15],
+					"__grid": [12,15],
 					"__pivot": [0.5,0.5],
 					"__tile": null,
 					"width": 16,
 					"height": 10,
 					"defUid": 153,
-					"px": [184,248],
+					"px": [200,248],
 					"fieldInstances": []
 				},
 				{
@@ -658,6 +658,26 @@
 					"defUid": 153,
 					"px": [984,104],
 					"fieldInstances": []
+				},
+				{
+					"__identifier": "Sign",
+					"__grid": [4,15],
+					"__pivot": [0,1],
+					"__tile": null,
+					"width": 15,
+					"height": 14,
+					"defUid": 154,
+					"px": [72,256],
+					"fieldInstances": [{
+						"__identifier": "Text",
+						"__value": "Welcome to\nStony Brooks Dog Park\n(West Entrance)",
+						"__type": "String",
+						"defUid": 155,
+						"realEditorValues": [{
+							"id": "V_String",
+							"params": ["Welcome to\nStony Brooks Dog Park\n(West Entrance)"]
+						}]
+					}]
 				}
 			]
 		},

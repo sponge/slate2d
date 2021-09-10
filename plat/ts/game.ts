@@ -46,6 +46,7 @@ class Game {
   map: LDTK;
   camera = new Camera(this.res.w, this.res.h);
   accumulator = 0;
+  paused = false;
   player: Player;
 
   state: GameState = {
@@ -158,8 +159,17 @@ class Game {
       }
 
       //run preupdate on all entities before updating
-      this.state.entities.forEach(ent => ent.destroyed || ent.preupdate(this.state.ticks, dt));
-      this.state.entities.forEach(ent => ent.destroyed || ent.update(this.state.ticks, dt));
+      for (const ent of this.state.entities) {
+        if (ent.destroyed) continue;
+        if (this.paused && !ent.runWhilePaused) continue;
+        ent.preupdate(this.state.ticks, dt);
+      }
+
+      for (const ent of this.state.entities) {
+        if (ent.destroyed) continue;
+        if (this.paused && !ent.runWhilePaused) continue;
+        ent.update(this.state.ticks, dt);
+      }
 
       // update camera to player
       this.camera.window(this.player.pos[0], this.player.pos[1], 20, 20);

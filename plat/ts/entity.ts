@@ -26,6 +26,7 @@ class Entity {
   collidable: CollisionType;
   // whether this entity collides with the world, or moveSolid entities
   worldCollide = true;
+  runWhilePaused = false;
 
   collideEnt: Entity | undefined;
   collideTile = Tiles.Empty;

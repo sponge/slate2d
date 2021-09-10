@@ -24,6 +24,14 @@ class FSMEntity extends Entity {
             (states[this.state]?.enter ?? states.default?.enter)?.();
         }
         (states[this.state]?.update ?? states.default?.update)?.(ticks);
+        // if state changes here, update time now so if draw is called the time will be right
+        // FIXME: maybe need to be calling exit/enter here too?
+        if (this.enteringState) {
+            this.startStateTime = ticks;
+        }
+    }
+    fsmDraw(states) {
+        (states[this.state]?.draw ?? states.default?.draw)?.();
     }
     fsmCanCollide(states, other, dir) {
         return (states[this.state]?.canCollide ?? states.default?.canCollide)?.(other, dir) ?? CollisionType.Enabled;

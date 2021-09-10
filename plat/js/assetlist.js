@@ -28,6 +28,15 @@ const AssetList = [
         marginY: 0,
     },
     {
+        name: 'sign',
+        type: 'sprite',
+        path: 'gfx/sign.png',
+        spriteWidth: 15,
+        spriteHeight: 14,
+        marginX: 0,
+        marginY: 0,
+    },
+    {
         type: 'sprite',
         name: 'coin',
         path: 'gfx/coin.png',

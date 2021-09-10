@@ -49,13 +49,13 @@ class Player extends Entity {
     }
     else {
       this.stunned = true;
-      this.stunTime = World().state.ticks + 120;
+      this.stunTime = this.ticks + 120;
     }
   }
 
   die() {
     if (this.dead) return;
-    this.dead = World().state.ticks + 120;
+    this.dead = this.ticks + 120;
     const part = World().spawnDeathParticle(this, 0);
     part.vel[1] = -5;
   }

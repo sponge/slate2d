@@ -5,12 +5,12 @@ import { World } from './game.js';
 
 type FSMStates = {
   [key in number | 'default']: {
-    enter?: () => void;
-    exit?: () => void;
-    update?: (ticks: number) => void;
-    draw?: () => void;
-    canCollide?: (other: Entity, dir: Dir) => CollisionType;
-    collide?: (other: Entity, dir: Dir) => void,
+    enter?: () => void
+    exit?: () => void
+    update?: (ticks: number) => void
+    draw?: () => void
+    canCollide?: (other: Entity, dir: Dir) => CollisionType
+    collide?: (other: Entity, dir: Dir) => void
   }
 };
 
@@ -77,7 +77,7 @@ class FSMEntity extends Entity {
 
   fsmTransitionAtTime(state: number, wait: number) {
     this.nextState = state;
-    this.nextStateTime = wait <= 0 ? 0 : wait + World().state.ticks;
+    this.nextStateTime = wait <= 0 ? 0 : wait + this.ticks;
   }
 }
 

@@ -20,6 +20,8 @@ const EntityMappings = EntMap as { [key: string]: any };
 interface GameState {
   t: number
   ticks: number
+  paused: boolean
+  wallTicks: number
   entities: Entity[]
   mapName: string
   nextMap: number
@@ -46,12 +48,13 @@ class Game {
   map: LDTK;
   camera = new Camera(this.res.w, this.res.h);
   accumulator = 0;
-  paused = false;
   player: Player;
 
   state: GameState = {
     t: 0,
     ticks: 0,
+    paused: false,
+    wallTicks: 0,
     entities: [],
     mapName: '',
     nextMap: 0,
@@ -149,9 +152,13 @@ class Game {
       setRetain(true);
 
       // always step at the same speed and subtract a little extra in case we're at ~62ish fps
-      this.state.t += 1 / 60;
       this.accumulator = Math.max(0, this.accumulator - 0.0175);
-      this.state.ticks += 1;
+      if (!this.state.paused) {
+        this.state.t += 1 / 60;
+        this.state.ticks += 1;
+      }
+
+      this.state.wallTicks += 1;
 
       if (this.state.levelComplete && this.state.ticks > this.state.levelCompleteTicks) {
         Main.switchLevel(this.state.nextMap);
@@ -161,14 +168,14 @@ class Game {
       //run preupdate on all entities before updating
       for (const ent of this.state.entities) {
         if (ent.destroyed) continue;
-        if (this.paused && !ent.runWhilePaused) continue;
-        ent.preupdate(this.state.ticks, dt);
+        if (this.state.paused && !ent.runWhilePaused) continue;
+        ent.preupdate(ent.runWhilePaused ? this.state.wallTicks : this.state.ticks, dt);
       }
 
       for (const ent of this.state.entities) {
         if (ent.destroyed) continue;
-        if (this.paused && !ent.runWhilePaused) continue;
-        ent.update(this.state.ticks, dt);
+        if (this.state.paused && !ent.runWhilePaused) continue;
+        ent.update(ent.runWhilePaused ? this.state.wallTicks : this.state.ticks, dt);
       }
 
       // update camera to player

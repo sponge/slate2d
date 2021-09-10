@@ -1,6 +1,5 @@
 import CollisionType from "./collisiontype.js";
 import Entity from "./entity.js";
-import { World } from './game.js';
 class FSMEntity extends Entity {
     state = 0;
     enteringState = true;
@@ -53,7 +52,7 @@ class FSMEntity extends Entity {
     }
     fsmTransitionAtTime(state, wait) {
         this.nextState = state;
-        this.nextStateTime = wait <= 0 ? 0 : wait + World().state.ticks;
+        this.nextStateTime = wait <= 0 ? 0 : wait + this.ticks;
     }
 }
 export { FSMEntity };

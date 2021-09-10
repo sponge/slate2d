@@ -315,6 +315,10 @@ class Entity {
 
     return false;
   }
+
+  get ticks() {
+    return this.runWhilePaused ? World().state.wallTicks : World().state.ticks;
+  }
 }
 
 class WorldEnt extends Entity {

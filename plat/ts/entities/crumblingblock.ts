@@ -32,7 +32,7 @@ class CrumblingBlock extends Entity {
   collide(other: Entity, dir: Dir) {
     if (other instanceof Player && dir == Dir.Up && !this.broken) {
       this.broken = true;
-      this.breakTime = World().state.ticks + this.crumbleTime;
+      this.breakTime = this.ticks + this.crumbleTime;
     }
   }
 }

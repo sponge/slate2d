@@ -21,7 +21,7 @@ class Spring extends Entity {
 
   preupdate(ticks: number, dt: number) {
     if (!this.activated) return;
-    if (World().state.ticks < this.activateTicks) return;
+    if (this.ticks < this.activateTicks) return;
 
     for (let other of this.getRidingEntities()) {
       if (other instanceof Player) {
@@ -55,7 +55,7 @@ class Spring extends Entity {
 
     if (!this.activated) {
       this.activated = true;
-      this.activateTicks = World().state.ticks + this.delay;
+      this.activateTicks = this.ticks + this.delay;
     }
 
     if (other instanceof Player) {

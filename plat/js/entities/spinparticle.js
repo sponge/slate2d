@@ -2,7 +2,6 @@ import * as Draw from 'draw';
 import CollisionType from '../collisiontype.js';
 import Entity from '../entity.js';
 import Phys from '../phys.js';
-import { World } from '../game.js';
 class SpinParticle extends Entity {
     type = 'SpinParticle';
     collidable = CollisionType.Disabled;
@@ -21,7 +20,7 @@ class SpinParticle extends Entity {
         this.vel[1] = Math.min(this.vel[1] + 0.2, Phys.terminalVelocity);
     }
     draw() {
-        const rotate = 8 * (World().state.ticks - this.start);
+        const rotate = 8 * (this.ticks - this.start);
         Draw.translate(this.center(0), this.center(1));
         if (this.rotate)
             Draw.rotate(rotate);

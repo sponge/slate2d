@@ -39,7 +39,7 @@ class Sign extends FSMEntity {
     },
 
     [States.Idle]: {
-      enter: () => World().paused = false,
+      enter: () => World().state.paused = false,
       collide: (other: Entity, dir: Dir) => {
         if (other instanceof Player == false) return;
         if (!SLT.buttonPressed(Buttons.Up)) return;
@@ -50,10 +50,10 @@ class Sign extends FSMEntity {
     [States.Expand]: {
       enter: () => {
         this.fsmTransitionAtTime(States.Read, this.signTime);
-        World().paused = true;
+        World().state.paused = true;
       },
       draw: () => {
-        const t = (World().state.ticks - this.startStateTime) / this.signTime;
+        const t = (this.ticks - this.startStateTime) / this.signTime;
         const w = lerp(0, this.signW, t);
         const h = lerp(0, this.signH, t);
         const x = this.signX + (this.signW - w) / 2;
@@ -81,7 +81,7 @@ class Sign extends FSMEntity {
     [States.Shrink]: {
       enter: () => this.fsmTransitionAtTime(States.Idle, this.signTime),
       draw: () => {
-        const t = clamp((World().state.ticks - this.startStateTime) / this.signTime, 0, 1);
+        const t = clamp((this.ticks - this.startStateTime) / this.signTime, 0, 1);
         const w = lerp(this.signW, 0, t);
         const h = lerp(this.signH, 0, t);
         const x = this.signX + (this.signW - w) / 2;

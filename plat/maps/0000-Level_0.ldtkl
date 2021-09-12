@@ -670,12 +670,12 @@
 					"px": [72,256],
 					"fieldInstances": [{
 						"__identifier": "Text",
-						"__value": "Welcome to\nStony Brooks Dog Park\n(West Entrance)",
+						"__value": "Welcome to\nStony Oakwood Groves\nDog Park\n(West Entrance)",
 						"__type": "String",
 						"defUid": 155,
 						"realEditorValues": [{
 							"id": "V_String",
-							"params": ["Welcome to\nStony Brooks Dog Park\n(West Entrance)"]
+							"params": ["Welcome to\nStony Oakwood Groves\nDog Park\n(West Entrance)"]
 						}]
 					}]
 				}

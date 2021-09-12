@@ -137,17 +137,17 @@ static JSValue js_draw_settextstyle(JSContext *ctx, JSValueConst this_val, int a
 
 static JSValue js_draw_text(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
 {
-  double x, y, h;
+  double x, y, w;
   const char *text;
   int len;
 
   if (JS_ToFloat64(ctx, &x, argv[0])) return JS_EXCEPTION;
   if (JS_ToFloat64(ctx, &y, argv[1])) return JS_EXCEPTION;
-  if (JS_ToFloat64(ctx, &h, argv[2])) return JS_EXCEPTION;
+  if (JS_ToFloat64(ctx, &w, argv[2])) return JS_EXCEPTION;
   if ((text = JS_ToCString(ctx, argv[3])) == NULL) return JS_EXCEPTION;
   if (JS_ToInt32(ctx, &len, argv[4])) return JS_EXCEPTION;
 
-  DC_DrawText(x, y, h, text, len);
+  DC_DrawText(x, y, w, text, len);
   JS_FreeCString(ctx, text);
   return JS_UNDEFINED;
 }

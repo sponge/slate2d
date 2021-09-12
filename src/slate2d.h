@@ -54,6 +54,10 @@ typedef struct {
 } MousePosition;
 
 typedef struct {
+	int w, h;
+} Dimensions;
+
+typedef struct {
 	float leftX, leftY;
 	float rightX, rightY;
 	float triggerLeft, triggerRight;
@@ -237,7 +241,7 @@ SLT_API void SLT_Asset_ClearAll();
 SLT_API void SLT_Asset_LoadINI(const char* path);
 
 // returns the width of a string, rendered with an TTF or bitmap font asset handle, at the given scale.
-SLT_API int SLT_Asset_TextWidth(AssetHandle assetHandle, const char* string, float scale);
+SLT_API Dimensions SLT_Asset_TextSize(float w, const char *string, int count);
 
 // uses the current text settings to break the string "in" into lines of text no longer than width pixels wide.
 // returns a pointer to the split up string that is only valid until the next call to SLT_Asset_BreakString.
@@ -259,7 +263,7 @@ SLT_API void SLT_Snd_PauseResume(unsigned int handle, uint8_t pause);
 
 
 // stores the resolution of the window into width and height
-SLT_API void SLT_GetResolution(int *width, int *height);
+SLT_API Dimensions SLT_GetResolution();
 
 
 // returns a pointer to the dear imgui instance in order to create complex UIs using dear imgui.

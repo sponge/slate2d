@@ -622,8 +622,8 @@ SLT_API void SLT_Asset_BMPFNT_Set(AssetHandle assetHandle, const char* glyphs, i
 	BMPFNT_Set(assetHandle, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight);
 }
 
-SLT_API int SLT_Asset_TextWidth(AssetHandle assetHandle, const char* string, float scale) {
-	return Asset_TextWidth(assetHandle, string, scale);
+SLT_API Dimensions SLT_Asset_TextSize(float w, const char *string, int count) {
+	return Asset_TextSize(w, string, count);
 }
 
 SLT_API const char* SLT_Asset_BreakString(int width, const char* in) {
@@ -646,9 +646,8 @@ SLT_API void SLT_Snd_PauseResume(unsigned int handle, uint8_t pause) {
 	Snd_PauseResume(handle, pause > 0);
 }
 
-SLT_API void SLT_GetResolution(int* width, int* height) {
-	if (width != nullptr) *width = vid_width->integer;
-	if (height != nullptr) *height = vid_height->integer;
+SLT_API Dimensions SLT_GetResolution() {
+	return {vid_width->integer, vid_height->integer};
 }
 
 SLT_API const void* SLT_GetImguiContext() {

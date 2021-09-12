@@ -336,7 +336,7 @@ const char * TTF_BreakString(int w, const char *in) {
 
 void TTF_TextBox(float x, float y, float w, const char *string, int count) {
 	TTFtextRow rows[2];
-	int nrows = 0, i;
+	int nrows = 0;
 	int halign = state.align & (FONS_ALIGN_LEFT | FONS_ALIGN_CENTER | FONS_ALIGN_RIGHT);
 	int valign = state.align & (FONS_ALIGN_TOP | FONS_ALIGN_MIDDLE | FONS_ALIGN_BOTTOM | FONS_ALIGN_BASELINE);
 	float lineh;
@@ -351,7 +351,7 @@ void TTF_TextBox(float x, float y, float w, const char *string, int count) {
 	const char *end = TTF_CountChars(string, count);
 
 	while ((nrows = TTF_BreakLines(string, end, w, rows, 2)) > 0) {
-		for (i = 0; i < nrows; i++) {
+		for (int i = 0; i < nrows; i++) {
 			TTFtextRow* row = &rows[i];
 			if (halign & FONS_ALIGN_LEFT)
 				fonsDrawText(ctx, x, y, row->start, row->end);
@@ -367,26 +367,25 @@ void TTF_TextBox(float x, float y, float w, const char *string, int count) {
 	fonsPopState(ctx);
 }
 
-int Asset_TextWidth(AssetHandle assetHandle, const char *string, float scale) {
-	Asset *asset = Asset_Get(ASSET_ANY, assetHandle);
+Dimensions Asset_TextSize(float w, const char *string, int count) {
+	TTFtextRow rows[2];
+	int nrows = 0;
+	float lineh;
+	Dimensions size = {0, 0};
 
-	assert(asset != nullptr);
+	fonsVertMetrics(ctx, nullptr, nullptr, &lineh);
+	lineh *= state.lineHeight;
 
-	if (asset->type != ASSET_BITMAPFONT && asset->type != ASSET_FONT) {
-		Con_Errorf(ERR_GAME, "asset %s not font or bmpfont", asset->name);
-		return -1;
+	const char *end = TTF_CountChars(string, count);
+
+	while ((nrows = TTF_BreakLines(string, end, w, rows, 2)) > 0) {
+		for (int i = 0; i < nrows; i++) {
+			TTFtextRow* row = &rows[i];
+			size.w = (int)fmax(size.w, row->maxx - row->minx);
+			size.h += lineh;
+		}
+		string = rows[nrows - 1].next;
 	}
 
-	int hnd;
-	if (asset->type == ASSET_BITMAPFONT) {
-		BitmapFont_t *fnt = (BitmapFont_t*)asset->resource;
-		hnd = fnt->hnd;	
-	} else {
-		TTFFont_t *fnt = (TTFFont_t*)asset->resource;
-		hnd = fnt->hnd;
-	}
-
-	fonsSetFont(ctx, hnd);
-	fonsSetSize(ctx, scale);
-	return (int) fonsTextBounds(ctx, 0, 0, string, nullptr, nullptr);
+	return size;
 }

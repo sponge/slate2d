@@ -92,7 +92,7 @@ declare module 'draw' {
   export function resetShader(): void
   export function rect(x: number, y: number, w: number, h: number, outline: boolean): void
   export function setTextStyle(fontId: number, size: number, lineHeight: number, align: number): void
-  export function text(x: number, y: number, h: number, text: string, len: number): void
+  export function text(x: number, y: number, w: number, text: string, len: number): void
   export function image(imgId: number, x: number, y: number, w: number, h: number, scale: number, flipBits: number, ox: number, oy: number): void
   export function sprite(spriteId: number, id: number, x: number, y: number, scale: number, flipBits: number, w: number, h: number): void
   export function line(x1: number, y1: number, x2: number, y2: number): void
@@ -125,7 +125,7 @@ declare module 'assets' {
   export function load(settings: Asset): number
   export function clearAll(): void
   export function loadINI(path: string): void
-  export function textWidth(assetHandle: number, str: string, scale: number): number
+  export function textSize(w: number, str: string, count: number): Size
   export function breakString(width: number, inStr: string): string
   export function imageSize(assetHandle: number): Size
 }

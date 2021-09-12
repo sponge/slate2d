@@ -82,7 +82,7 @@ void TTF_Free(Asset &asset);
 
 void TTF_TextBox(float x, float y, float w, const char *text, int count);
 const char * TTF_BreakString(int w, const char *in);
-int Asset_TextWidth(AssetHandle assetHandle, const char *string, float scale);
+Dimensions Asset_TextSize(float w, const char *string, int count);
 
 // bitmap font assets
 

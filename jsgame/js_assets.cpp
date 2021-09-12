@@ -119,20 +119,23 @@ static JSValue js_assets_loadini(JSContext *ctx, JSValueConst this_val, int argc
   return JS_UNDEFINED;
 }
 
-static JSValue js_assets_textwidth(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+static JSValue js_assets_textsize(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
 {
-  int assetHandle;
+  double w;
+  int count;
   const char *str;
-  double scale;
 
-  if (JS_ToInt32(ctx, &assetHandle, argv[0])) return JS_EXCEPTION;
+  if (JS_ToFloat64(ctx, &w, argv[0])) return JS_EXCEPTION;
   if ((str = JS_ToCString(ctx, argv[1])) == NULL) return JS_EXCEPTION;
-  if (JS_ToFloat64(ctx, &scale, argv[2])) return JS_EXCEPTION;
+  if (JS_ToInt32(ctx, &count, argv[2])) return JS_EXCEPTION;
 
-  int w = SLT_Asset_TextWidth(assetHandle, str, scale);
+  Dimensions sz = SLT_Asset_TextSize(w, str, count);
 
   JS_FreeCString(ctx, str);
-  return JS_NewInt32(ctx, w);
+  JSValue obj = JS_NewObject(ctx);
+  JS_SetPropertyStr(ctx, obj, "w", JS_NewInt32(ctx, sz.w));
+  JS_SetPropertyStr(ctx, obj, "h", JS_NewInt32(ctx, sz.h));
+  return obj;
 }
 
 static JSValue js_assets_breakstring(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
@@ -170,7 +173,7 @@ static const JSCFunctionListEntry js_assets_funcs[] = {
   JS_CFUNC_DEF("find", 1, js_assets_find),
   JS_CFUNC_DEF("clearAll", 0, js_assets_clearall),
   JS_CFUNC_DEF("loadINI", 1, js_assets_loadini),
-  JS_CFUNC_DEF("textWidth", 3, js_assets_textwidth),
+  JS_CFUNC_DEF("textSize", 3, js_assets_textsize),
   JS_CFUNC_DEF("breakString", 2, js_assets_breakstring),
   JS_CFUNC_DEF("imageSize", 1, js_assets_imagesize),
 };

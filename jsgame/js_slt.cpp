@@ -340,11 +340,10 @@ static JSValue js_slt_getcontrolleranalog(JSContext *ctx, JSValueConst this_val,
 
 static JSValue js_slt_getresolution(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
 {
-  int w, h;
-  SLT_GetResolution(&w, &h);
+  Dimensions res = SLT_GetResolution();
   JSValue obj = JS_NewObject(ctx);
-  JS_SetPropertyStr(ctx, obj, "w", JS_NewInt32(ctx, w));
-  JS_SetPropertyStr(ctx, obj, "h", JS_NewInt32(ctx, h));
+  JS_SetPropertyStr(ctx, obj, "w", JS_NewInt32(ctx, res.w));
+  JS_SetPropertyStr(ctx, obj, "h", JS_NewInt32(ctx, res.h));
 
   return obj;
 }

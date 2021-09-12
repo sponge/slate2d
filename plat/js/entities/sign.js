@@ -22,8 +22,8 @@ class Sign extends FSMEntity {
     runWhilePaused = true;
     signX = 0;
     signY = 130;
-    signW = 200;
-    signH = 90;
+    signW = 0;
+    signH = 0;
     signTime = 20;
     signText = '';
     #states = {
@@ -43,6 +43,10 @@ class Sign extends FSMEntity {
         [States.Expand]: {
             enter: () => {
                 this.fsmTransitionAtTime(States.Read, this.signTime);
+                const size = Assets.textSize(0, this.signText, 0);
+                this.signW = size.w + 20;
+                this.signH = size.h + 20;
+                this.signX = World().res.w / 2 - this.signW / 2;
                 World().state.paused = true;
             },
             draw: () => {
@@ -87,7 +91,6 @@ class Sign extends FSMEntity {
         this.signText = args.properties?.Text ?? '';
     }
     update(ticks, dt) {
-        this.signX = World().res.w / 2 - this.signW / 2;
         this.fsmUpdate(this.#states, ticks);
     }
     draw() {

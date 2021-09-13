@@ -84,10 +84,19 @@ class Entity {
             if (intersects) {
                 if (other.canCollide(this, opposite) == CollisionType.Disabled)
                     continue;
+                if (this.canCollide(other, dir) == CollisionType.Disabled)
+                    continue;
+                // both sides need to be solid
                 if (this.canCollide(other, dir) == CollisionType.Enabled && other.canCollide(this, opposite) == CollisionType.Enabled) {
                     this.collideEnt = other;
                     return true;
                 }
+                // need to check both sides of platform collision otherwise you might fall through
+                else if (this.canCollide(other, dir) == CollisionType.Platform && dir == Dir.Up && other.max(1) >= y) {
+                    this.collideEnt = other;
+                    return true;
+                }
+                // original platform check
                 else if (other.canCollide(this, opposite) == CollisionType.Platform && dir == Dir.Down && corners[2][1] == other.pos[1]) {
                     this.collideEnt = other;
                     return true;

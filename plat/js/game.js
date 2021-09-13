@@ -42,7 +42,6 @@ class Game {
     });
     dogSpr;
     healthSpr;
-    pMeterSpr;
     coinSpr;
     blueFont;
     backgrounds = [];
@@ -55,7 +54,6 @@ class Game {
         loadAllAssets();
         this.dogSpr = Assets.find('dogspr');
         this.healthSpr = Assets.find('health');
-        this.pMeterSpr = Assets.find('pmeter');
         this.coinSpr = Assets.find('coin');
         this.blueFont = Assets.find('blueFont');
         // load the saved state, otherwise set the default map
@@ -216,17 +214,11 @@ class Game {
         // player hud
         // coin display 
         Draw.setTextStyle(this.blueFont, 1, 1, 1);
-        Draw.sprite(this.coinSpr, 0, 165, 8, 1, 0, 1, 1);
-        Draw.text(185, 11, 300, `${this.state.currCoins}/${this.state.maxCoins}`, 0);
+        Draw.sprite(this.coinSpr, 0, 85, 8, 1, 0, 1, 1);
+        Draw.text(105, 11, 300, `${this.state.currCoins}/${this.state.maxCoins}`, 0);
         // health
         for (let i = 0; i < this.player.maxHealth; i++) {
             Draw.sprite(this.healthSpr, i + 1 <= this.player.health ? 0 : 1, 14 + i * 20, 7, 1, 0, 1, 1);
-        }
-        // p-meter
-        const pct = this.player.getPMeterRatio();
-        for (let i = 0; i < 5; i++) {
-            let num = pct == 1.0 ? 2 : i < Math.floor(pct * 6) ? 1 : 0;
-            Draw.sprite(this.pMeterSpr, num, 85 + i * 14, 8, 1, 0, 1, 1);
         }
         // draw the canvas into the center of the window
         const screen = SLT.resolution();

@@ -670,12 +670,12 @@
 					"px": [72,256],
 					"fieldInstances": [{
 						"__identifier": "Text",
-						"__value": "^3Welcome to\nStony Oakwood Groves\nDog Park\n(West Entrance)",
+						"__value": "^3Welcome to\nStony Oakwood Groves\nAt Pleasant Peak\nDog Park\n^2(West Entrance)",
 						"__type": "String",
 						"defUid": 155,
 						"realEditorValues": [{
 							"id": "V_String",
-							"params": ["^3Welcome to\nStony Oakwood Groves\nDog Park\n(West Entrance)"]
+							"params": ["^3Welcome to\nStony Oakwood Groves\nAt Pleasant Peak\nDog Park\n^2(West Entrance)"]
 						}]
 					}]
 				}

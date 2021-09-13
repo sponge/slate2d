@@ -11,15 +11,6 @@ const AssetList: Asset[] = [
     marginY: 0,
   },
   {
-    name: 'pmeter',
-    type: 'sprite',
-    path: 'gfx/pmeter.png',
-    spriteWidth: 10,
-    spriteHeight: 14,
-    marginX: 0,
-    marginY: 0,
-  },
-  {
     name: 'health',
     type: 'sprite',
     path: 'gfx/health.png',

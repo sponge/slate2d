@@ -477,6 +477,21 @@ int main(int argc, char *argv[])
     }
   });
 
+  static std::string manualSave;
+  SLT_Con_AddCommand("js_save", []() {
+    if (instance) {
+      manualSave = instance->CallSave();
+    }
+  });
+
+  SLT_Con_AddCommand("js_load", []() {
+    saveState = manualSave;
+    if (instance) {
+      delete instance;
+      instance = nullptr;
+    }
+  });
+
   ImGui::SetCurrentContext((ImGuiContext *)SLT_GetImguiContext());
 
 #ifdef __EMSCRIPTEN__

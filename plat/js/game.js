@@ -215,7 +215,11 @@ class Game {
         // coin display 
         Draw.setTextStyle(this.blueFont, 1, 1, 1);
         Draw.sprite(this.coinSpr, 0, 85, 8, 1, 0, 1, 1);
+        if (this.state.currCoins == this.state.maxCoins) {
+            Draw.setColor(255, 200, 0, 255);
+        }
         Draw.text(105, 11, 300, `${this.state.currCoins}/${this.state.maxCoins}`, 0);
+        Draw.setColor(255, 255, 255, 255);
         // health
         for (let i = 0; i < this.player.maxHealth; i++) {
             Draw.sprite(this.healthSpr, i + 1 <= this.player.health ? 0 : 1, 14 + i * 20, 7, 1, 0, 1, 1);

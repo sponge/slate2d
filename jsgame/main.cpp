@@ -477,19 +477,26 @@ int main(int argc, char *argv[])
     }
   });
 
-  static std::string manualSave;
   SLT_Con_AddCommand("js_save", []() {
-    if (instance) {
-      manualSave = instance->CallSave();
+    if (!instance) {
+      return;
     }
+    
+    auto manualSave = instance->CallSave();
+    SLT_FS_WriteFile(SLT_Con_GetArgs(1), manualSave.c_str(), manualSave.size());
   });
 
   SLT_Con_AddCommand("js_load", []() {
-    saveState = manualSave;
-    if (instance) {
-      delete instance;
-      instance = nullptr;
+    if (!instance) {
+      return;
     }
+
+    char *buf;
+    auto sz = SLT_FS_ReadFile(SLT_Con_GetArgs(1), (void **)&buf);
+    saveState = std::string(buf);
+    delete buf;
+    delete instance;
+    instance = nullptr;
   });
 
   ImGui::SetCurrentContext((ImGuiContext *)SLT_GetImguiContext());

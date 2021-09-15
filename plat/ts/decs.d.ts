@@ -118,6 +118,7 @@ declare module 'slate2d' {
   export function controllerAnalog(controller: number): [number, number, number, number, number, number]
   export function resolution(): Size
   export function readFile(path: string): string
+  export function writeFile(path: string, contents: string): number
 }
 
 declare module 'assets' {

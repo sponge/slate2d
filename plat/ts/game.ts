@@ -79,7 +79,7 @@ class Game {
   clouds: Background[] = [];
 
   save() {
-    return JSON.stringify(this.state);
+    return JSON.stringify(this.state, null, 2);
   }
 
   constructor(initialState: string, mapName?: string) {

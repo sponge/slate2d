@@ -82,9 +82,12 @@ void FS_Init(const char *argv0) {
 
 	// get the file listing for the basegame dir, then immediately unmount
 	const char *fullBasePath = tempstr("%s/%s", fs_basepath->string, fs_basegame->string);
-	PHYSFS_mount(fullBasePath, "/", 1);
+	PHYSFS_mount(fullBasePath, "/",1);
 	baseFiles = PHYSFS_enumerateFiles("/");
 	PHYSFS_unmount(fullBasePath);
+
+	// open that directory for writing
+	PHYSFS_setWriteDir(fullBasePath);
 
 	// if fs_game is set, do the same thing for the fs_game dir
 	if (modLoaded) {
@@ -92,6 +95,9 @@ void FS_Init(const char *argv0) {
 		PHYSFS_mount(fullGamePath, "/", 1);
 		gameFiles = PHYSFS_enumerateFiles("/");
 		PHYSFS_unmount(fullGamePath);
+
+		// move the save dir there for writing
+		PHYSFS_setWriteDir(fullGamePath);
 
 		// mount the mod dir first, then mount mod PK3s
 		PHYSFS_mount(tempstr("%s/%s", fs_basepath->string, fs_game->string), "/", 1);
@@ -111,6 +117,25 @@ void FS_Init(const char *argv0) {
 
 	// add command handler for dir to view virtual filesystem
 	Con_AddCommand("dir", Cmd_Dir_f);
+}
+
+int FS_WriteFile(const char *filename, const void *data, int len) {
+	auto f = PHYSFS_openWrite(filename);
+
+	if (f == nullptr) {
+		Con_Printf("Error while opening file: %s", PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
+		return -1;
+	}
+
+	auto bytesWritten = PHYSFS_writeBytes(f, data, len);
+	if (bytesWritten != len) {
+		Con_Printf("Error while writing file: %s", PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
+		PHYSFS_close(f);
+		return -1;
+	}
+
+	PHYSFS_close(f);
+	return 0;
 }
 
 int FS_ReadFile(const char *path, void **buffer) {

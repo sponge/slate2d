@@ -47,7 +47,7 @@ class Game {
     backgrounds = [];
     clouds = [];
     save() {
-        return JSON.stringify(this.state);
+        return JSON.stringify(this.state, null, 2);
     }
     constructor(initialState, mapName) {
         Buttons.register();

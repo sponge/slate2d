@@ -504,6 +504,10 @@ SLT_API void SLT_Con_AddCommand(const char *name, conCmd_t cmd) {
 	Con_AddCommand(name, cmd);
 }
 
+SLT_API int SLT_FS_WriteFile(const char *filename, const void *data, int len) {
+	return FS_WriteFile(filename, data, len);
+}
+
 SLT_API int SLT_FS_ReadFile(const char* path, void** buffer) {
 	return FS_ReadFile(path, buffer);
 }

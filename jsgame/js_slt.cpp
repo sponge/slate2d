@@ -365,6 +365,18 @@ static JSValue js_slt_readfile(JSContext *ctx, JSValueConst this_val, int argc, 
   return str;
 }
 
+static JSValue js_slt_writefile(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
+  const char *path = JS_ToCString(ctx, argv[0]);
+  const char *contents = JS_ToCString(ctx, argv[1]);
+
+  int ret = SLT_FS_WriteFile(path, contents, strlen(contents));
+  JS_FreeCString(ctx, path);
+  JS_FreeCString(ctx, contents);
+
+  return JS_NewInt32(ctx, ret);
+}
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wc99-designator"
 static const JSCFunctionListEntry js_slt_funcs[] = {
@@ -383,6 +395,8 @@ static const JSCFunctionListEntry js_slt_funcs[] = {
   JS_CFUNC_DEF("controllerAnalog", 1, js_slt_getcontrolleranalog),
   JS_CFUNC_DEF("resolution", 0, js_slt_getresolution),
   JS_CFUNC_DEF("readFile", 1, js_slt_readfile),
+  JS_CFUNC_DEF("writeFile", 2, js_slt_writefile),
+
 };
 #pragma clang diagnostic pop
 

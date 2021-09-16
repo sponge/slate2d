@@ -1,4 +1,5 @@
 import * as Assets from 'assets';
+import { WorldEnt } from '../entity.js';
 import Dir from '../dir.js';
 import { Player } from './player.js';
 import { World } from '../game.js';
@@ -50,9 +51,7 @@ class Daikon extends FSMEntity {
             },
             update: (ticks) => {
                 this.vel[1] += Phys.enemyGravity;
-                if (!this.moveY(this.vel[1])) {
-                    this.fsmTransitionTo(States.Recharge);
-                }
+                this.moveY(this.vel[1]);
             },
             canCollide: (other, dir) => {
                 if (other instanceof Player && dir == Dir.Up)
@@ -79,6 +78,9 @@ class Daikon extends FSMEntity {
     }
     collide(other, dir) {
         this.handlePlayerStomp(other, dir);
+        if (other instanceof WorldEnt) {
+            this.fsmTransitionTo(States.Recharge);
+        }
     }
 }
 export { Daikon };

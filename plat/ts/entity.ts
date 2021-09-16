@@ -341,3 +341,4 @@ const worldEnt = new WorldEnt({});
 
 
 export default Entity;
+export { WorldEnt };

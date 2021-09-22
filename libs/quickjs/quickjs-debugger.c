@@ -103,7 +103,6 @@ static JSValue js_get_scopes(JSContext *ctx, int frame) {
     JS_SetPropertyStr(ctx, local, "expensive", JS_FALSE);
     JS_SetPropertyUint32(ctx, scopes, scope_count++, local);
 
-
     JSValue closure = JS_NewObject(ctx);
     JS_SetPropertyStr(ctx, closure, "name", JS_NewString(ctx, "Closure"));
     JS_SetPropertyStr(ctx, closure, "reference", JS_NewInt32(ctx, (frame << 2) + 2));
@@ -148,7 +147,7 @@ static void js_debugger_get_variable_type(JSContext *ctx,
 
         JSObject *p = JS_VALUE_GET_OBJ(var_val);
         // todo: xor the the two dwords to get a better hash?
-        uint32_t pl = (uint32_t)p;
+        uint32_t pl = (uint32_t)(uint64_t)p;
         JSValue found = JS_GetPropertyUint32(ctx, state->variable_pointers, pl);
         if (JS_IsUndefined(found)) {
             reference = state->variable_reference_count++;
@@ -308,9 +307,11 @@ static void js_process_request(JSDebuggerInfo *info, struct DebuggerSuspendedSta
 
         JSValue variable = JS_GetPropertyUint32(ctx, state->variable_references, reference);
 
+        int skip_proto = 0;
         // if the variable reference was not found,
         // then it must be a frame locals, frame closures, or the global
         if (JS_IsUndefined(variable)) {
+            skip_proto = 1;
             int frame = reference >> 2;
             int scope = reference % 4;
 
@@ -362,11 +363,25 @@ static void js_process_request(JSDebuggerInfo *info, struct DebuggerSuspendedSta
         if (!JS_GetOwnPropertyNames(ctx, &tab_atom, &tab_atom_count, variable,
             JS_GPN_STRING_MASK | JS_GPN_SYMBOL_MASK)) {
 
+            int offset = 0;
+
+            if (!skip_proto) {
+                const JSValue proto = JS_GetPrototype(ctx, variable);
+                if (!JS_IsException(proto)) {
+                    JSValue variable_json = js_debugger_get_variable(ctx, state, JS_NewString(ctx, "__proto__"), proto);
+                    JS_FreeValue(ctx, proto);
+                    JS_SetPropertyUint32(ctx, properties, offset++, variable_json);
+                }
+                else {
+                    JS_FreeValue(ctx, proto);
+                }
+            }
+
             for(int i = 0; i < tab_atom_count; i++) {
                 JSValue value = JS_GetProperty(ctx, variable, tab_atom[i].atom);
                 JSValue variable_json = js_debugger_get_variable(ctx, state, JS_AtomToString(ctx, tab_atom[i].atom), value);
                 JS_FreeValue(ctx, value);
-                JS_SetPropertyUint32(ctx, properties, i, variable_json);
+                JS_SetPropertyUint32(ctx, properties, i + offset, variable_json);
             }
 
             js_free_prop_enum(ctx, tab_atom, tab_atom_count);
@@ -441,6 +456,7 @@ static int js_process_debugger_messages(JSDebuggerInfo *info, const uint8_t *cur
             if (info->message_buffer) {
                 js_free(ctx, info->message_buffer);
                 info->message_buffer = NULL;
+                info->message_buffer_length = 0;
             }
 
             // extra for null termination (debugger inspect, etc)

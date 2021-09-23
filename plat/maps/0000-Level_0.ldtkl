@@ -678,6 +678,17 @@
 							"params": ["^3Welcome to\nStony Oakwood Groves\nAt Pleasant Peak\nDog Park\n^2(West Entrance)"]
 						}]
 					}]
+				},
+				{
+					"__identifier": "Checkpoint",
+					"__grid": [8,15],
+					"__pivot": [0,1],
+					"__tile": null,
+					"width": 9,
+					"height": 32,
+					"defUid": 156,
+					"px": [128,256],
+					"fieldInstances": []
 				}
 			]
 		},

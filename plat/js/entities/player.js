@@ -8,7 +8,6 @@ import Dir from '../dir.js';
 import Tiles from '../tiles.js';
 import Phys from '../phys.js';
 import { World } from '../game.js';
-import Main from '../main.js';
 const slopes = [Tiles.SlopeL, Tiles.SlopeR];
 class Player extends Entity {
     // entity definition
@@ -72,7 +71,7 @@ class Player extends Entity {
     update(ticks, dt) {
         if (this.dead) {
             if (ticks > this.dead)
-                Main.restartLevel();
+                World().failLevel();
             return;
         }
         let grounded = this.vel[1] >= 0 && this.collideAt(this.pos[0], this.pos[1] + 1, Dir.Down);

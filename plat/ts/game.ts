@@ -29,6 +29,8 @@ interface GameState {
   maxCoins: number
   levelComplete: boolean
   levelCompleteTicks: number
+  checkpointActive: boolean
+  checkpointPos: [number, number]
 }
 
 interface Background {
@@ -62,6 +64,8 @@ class Game {
     maxCoins: 0,
     levelComplete: false,
     levelCompleteTicks: 0,
+    checkpointActive: false,
+    checkpointPos: [0, 0],
   };
 
   canvas: number = Assets.load({
@@ -82,7 +86,7 @@ class Game {
     return JSON.stringify(this.state, null, 2);
   }
 
-  constructor(initialState: string, mapName?: string) {
+  constructor(initialState: string, mapName?: string, startPos?: [number, number]) {
     Buttons.register();
 
     loadAllAssets();
@@ -133,6 +137,15 @@ class Game {
 
     // setup player
     this.player = this.state.entities.find(ent => ent instanceof Player) as Player;
+    if (startPos) {
+      this.player.pos = [...startPos];
+      this.player.pos[1] -= this.player.size[1];
+    }
+
+    // hack to draw the player at the end since i don't yet support draw order
+    this.state.entities.splice(this.state.entities.indexOf(this.player), 1);
+    this.state.entities.push(this.player);
+
     this.state.maxCoins = this.state.currCoins + this.state.entities.filter(ent => ent.type == 'Coin').length;
 
     // setup camera
@@ -262,8 +275,8 @@ class Game {
     this.map.draw('BGWorld');
     this.map.draw('BGDecoration');
     this.map.draw('Collision');
-    for (let i = this.state.entities.length - 1; i >= 0; i--) {
-      this.state.entities[i].draw();
+    for (const ent of this.state.entities) {
+      ent.draw();
     }
     Draw.setColor(255, 255, 255, 255);
 
@@ -329,6 +342,10 @@ class Game {
   completeLevel() {
     this.state.levelComplete = true;
     this.state.levelCompleteTicks = this.state.ticks + 120;
+  }
+
+  failLevel() {
+    Main.switchLevel(this.state.nextMap - 1, this.state.checkpointActive ? this.state.checkpointPos : undefined);
   }
 }
 

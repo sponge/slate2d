@@ -82,7 +82,7 @@ class Player extends Entity {
 
   update(ticks: number, dt: number) {
     if (this.dead) {
-      if (ticks > this.dead) Main.restartLevel();
+      if (ticks > this.dead) World().failLevel();
       return;
     }
 

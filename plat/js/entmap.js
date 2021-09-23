@@ -5,6 +5,7 @@ export * from './entities/switch.js';
 export * from './entities/coin.js';
 export * from './entities/health.js';
 export * from './entities/sign.js';
+export * from './entities/checkpoint.js';
 export * from './entities/bird.js';
 export * from './entities/slime.js';
 export * from './entities/bub.js';

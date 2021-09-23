@@ -29,6 +29,15 @@ const AssetList: Asset[] = [
     marginY: 0,
   },
   {
+    name: 'checkpoint',
+    type: 'sprite',
+    path: 'gfx/checkpoint.png',
+    spriteWidth: 32,
+    spriteHeight: 32,
+    marginX: 0,
+    marginY: 0,
+  },
+  {
     type: 'sprite',
     name: 'coin',
     path: 'gfx/coin.png',

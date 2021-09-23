@@ -7,18 +7,9 @@ class Main {
     static sceneTypes = {
         'game': Game,
     };
-    static restartLevel() {
-        if (Main.scene instanceof Game == false) {
-            return;
-        }
-        const map = Main.scene.state.mapName;
-        Main.scene = new Game('', map);
-        Main.sceneName = 'game';
-        SLT.console("js_rungc");
-    }
-    static switchLevel(num) {
+    static switchLevel(num, startPos) {
         const mapName = `maps/${String(num).padStart(4, '0')}-Level_${num}.ldtkl`;
-        Main.scene = new Game('', mapName);
+        Main.scene = new Game('', mapName, startPos);
         Main.sceneName = 'game';
         SLT.console("js_rungc");
     }

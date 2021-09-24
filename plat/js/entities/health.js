@@ -1,5 +1,5 @@
 import * as Assets from 'assets';
-import Entity from '../entity.js';
+import Entity, { Layer } from '../entity.js';
 import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
 import { clamp } from '../util.js';
@@ -8,6 +8,7 @@ class Health extends Entity {
     collidable = CollisionType.Trigger;
     sprite = Assets.find('health');
     drawOfs = [0, -3];
+    layer = Layer.Background;
     constructor(args) {
         super(args);
     }

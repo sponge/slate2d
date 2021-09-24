@@ -1,6 +1,6 @@
 import * as Assets from 'assets';
 
-import Entity from '../entity.js';
+import Entity, { Layer } from '../entity.js';
 import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
@@ -10,6 +10,8 @@ class CrumblingBlock extends Entity {
   type = 'CrumblingBlock';
   sprite = Assets.find('crumblingblock');
   collidable = CollisionType.Enabled;
+  layer = Layer.Background;
+
   broken = false;
   breakTime = 0;
   crumbleTime = 40;

@@ -2,7 +2,7 @@ import * as SLT from 'slate2d';
 import * as Draw from 'draw';
 import * as Assets from 'assets';
 
-import Entity from '../entity.js';
+import Entity, { Layer } from '../entity.js';
 import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
 import { World } from '../game.js';
@@ -34,6 +34,8 @@ class Checkpoint extends FSMEntity {
   drawOfs: [number, number] = [-1, 0];
   collidable = CollisionType.Trigger;
   sprite = Assets.find('checkpoint');
+  layer = Layer.Background;
+
   activated = false;
 
   idleAnim = [Frames.Idle1, Frames.Idle2, Frames.Idle3];

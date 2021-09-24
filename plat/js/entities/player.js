@@ -2,7 +2,7 @@ import * as Draw from 'draw';
 import * as SLT from 'slate2d';
 import * as Assets from 'assets';
 import Buttons from '../buttons.js';
-import Entity from '../entity.js';
+import Entity, { Layer } from '../entity.js';
 import { clamp } from '../util.js';
 import Dir from '../dir.js';
 import Tiles from '../tiles.js';
@@ -15,6 +15,7 @@ class Player extends Entity {
     sprite = Assets.find('dogspr');
     drawOfs = [-5, -4];
     spawnPos;
+    layer = Layer.Foreground;
     // entity state
     dead = 0;
     disableControls = false;
@@ -188,6 +189,7 @@ class Player extends Entity {
             return;
         Draw.setColor(255, 255, 255, this.stunned ? 128 : 255);
         Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, this.flipBits, 1, 1);
+        Draw.setColor(255, 255, 255, 255);
     }
 }
 export { Player };

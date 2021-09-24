@@ -1,4 +1,5 @@
 import * as Assets from 'assets';
+import { Layer } from '../entity.js';
 import CollisionType from '../collisiontype.js';
 import { World } from '../game.js';
 import { Player } from './player.js';
@@ -28,6 +29,7 @@ class Checkpoint extends FSMEntity {
     drawOfs = [-1, 0];
     collidable = CollisionType.Trigger;
     sprite = Assets.find('checkpoint');
+    layer = Layer.Background;
     activated = false;
     idleAnim = [Frames.Idle1, Frames.Idle2, Frames.Idle3];
     bounceAnim = [Frames.Activate1, Frames.Activate2, Frames.Activate3];

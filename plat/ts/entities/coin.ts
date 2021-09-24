@@ -2,7 +2,7 @@ import * as SLT from 'slate2d';
 import * as Draw from 'draw';
 import * as Assets from 'assets';
 
-import Entity from '../entity.js';
+import Entity, { Layer } from '../entity.js';
 import Dir from '../dir.js';
 import CollisionType from '../collisiontype.js';
 import { World } from '../game.js';
@@ -12,6 +12,7 @@ class Coin extends Entity {
   type = 'Coin';
   collidable = CollisionType.Trigger;
   sprite = Assets.find('coin');
+  layer = Layer.Background;
 
   constructor(args: { [key: string]: any }) {
     super(args);

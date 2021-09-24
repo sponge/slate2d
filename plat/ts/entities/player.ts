@@ -3,7 +3,7 @@ import * as SLT from 'slate2d';
 import * as Assets from 'assets';
 
 import Buttons from '../buttons.js';
-import Entity from '../entity.js';
+import Entity, { Layer } from '../entity.js';
 import { clamp } from '../util.js';
 import Dir from '../dir.js';
 import { clearPrintWin, dbg, dbgval } from '../printwin.js';
@@ -20,6 +20,7 @@ class Player extends Entity {
   sprite = Assets.find('dogspr');
   drawOfs: [number, number] = [-5, -4];
   spawnPos: [number, number];
+  layer = Layer.Foreground;
 
   // entity state
   dead = 0;
@@ -217,6 +218,7 @@ class Player extends Entity {
     if (this.dead) return;
     Draw.setColor(255, 255, 255, this.stunned ? 128 : 255);
     Draw.sprite(this.sprite, this.frame, this.pos[0] + this.drawOfs[0], this.pos[1] + this.drawOfs[1], 1, this.flipBits, 1, 1);
+    Draw.setColor(255, 255, 255, 255);
   }
 }
 

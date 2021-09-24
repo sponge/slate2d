@@ -7,7 +7,7 @@ import { LDTK } from './ldtk.js';
 import Buttons from './buttons.js';
 import { Player } from './entities/player.js';
 import { randomRange } from './util.js';
-import Entity from './entity.js';
+import Entity, { Layer } from './entity.js';
 import { drawPrintWin, clearPrintWin, setRetain, dbgval } from './printwin.js';
 import * as EntMap from './entmap.js';
 import loadAllAssets from './assetlist.js';
@@ -271,13 +271,14 @@ class Game {
 
     // tilemap and entities
     Draw.setColor(255, 255, 255, 255);
+    for (const ent of this.state.entities) if (ent.layer == Layer.Back) ent.draw();
     this.map.draw('BGTiles');
     this.map.draw('BGWorld');
     this.map.draw('BGDecoration');
+    for (const ent of this.state.entities) if (ent.layer == Layer.Background) ent.draw();
     this.map.draw('Collision');
-    for (const ent of this.state.entities) {
-      ent.draw();
-    }
+    for (const ent of this.state.entities) if (ent.layer == Layer.Normal) ent.draw();
+    for (const ent of this.state.entities) if (ent.layer == Layer.Foreground) ent.draw();
     Draw.setColor(255, 255, 255, 255);
 
     this.camera.drawEnd();

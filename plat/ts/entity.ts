@@ -9,6 +9,13 @@ import { Player } from './entities/player.js';
 
 const slopes = [Tiles.SlopeL, Tiles.SlopeR];
 
+enum Layer {
+  Back,
+  Background,
+  Normal,
+  Foreground
+};
+
 class Entity {
   type = 'default';
   name = '';
@@ -17,6 +24,7 @@ class Entity {
   size: [number, number] = [0, 0];
   vel: [number, number] = [0, 0];
   drawOfs: [number, number] = [0, 0];
+  layer: Layer = Layer.Normal;
 
   remainder: [number, number] = [0, 0];
   sprite = 0;
@@ -341,4 +349,4 @@ const worldEnt = new WorldEnt({});
 
 
 export default Entity;
-export { WorldEnt };
+export { WorldEnt, Layer };

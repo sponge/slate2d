@@ -1,6 +1,7 @@
 import * as SLT from 'slate2d';
 import * as Draw from 'draw';
 import * as Assets from 'assets';
+import { Layer } from '../entity.js';
 import { FSMEntity } from '../fsmentity.js';
 import CollisionType from '../collisiontype.js';
 import { Player } from './player.js';
@@ -20,6 +21,7 @@ class Sign extends FSMEntity {
     collidable = CollisionType.Trigger;
     sprite = Assets.find('sign');
     runWhilePaused = true;
+    layer = Layer.Background;
     signX = 0;
     signY = 130;
     signW = 0;

@@ -1,7 +1,8 @@
-import Entity from "../entity.js";
+import Entity, { Layer } from "../entity.js";
 import * as Draw from 'draw';
 class Platform extends Entity {
     type = 'Platform';
+    layer = Layer.Background;
     moving;
     dim;
     speed;

@@ -1,9 +1,11 @@
-import Entity from "../entity.js";
+import Entity, { Layer } from "../entity.js";
 import * as Draw from 'draw';
 import CollisionType from "../collisiontype.js";
 
 class Platform extends Entity {
   type = 'Platform';
+  layer = Layer.Background;
+
   moving: boolean;
   dim: number;
   speed: number;

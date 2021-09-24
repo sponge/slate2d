@@ -1,5 +1,5 @@
 import * as Assets from 'assets';
-import Entity from '../entity.js';
+import Entity, { Layer } from '../entity.js';
 import CollisionType from '../collisiontype.js';
 import { World } from '../game.js';
 import { Player } from './player.js';
@@ -8,6 +8,7 @@ class LevelEnd extends Entity {
     drawOfs = [-2, -2];
     collidable = CollisionType.Trigger;
     sprite = Assets.find('levelend');
+    layer = Layer.Background;
     constructor(args) {
         super(args);
     }

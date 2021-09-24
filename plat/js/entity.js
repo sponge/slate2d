@@ -6,6 +6,14 @@ import CollisionType from './collisiontype.js';
 import { World } from './game.js';
 import { Player } from './entities/player.js';
 const slopes = [Tiles.SlopeL, Tiles.SlopeR];
+var Layer;
+(function (Layer) {
+    Layer[Layer["Back"] = 0] = "Back";
+    Layer[Layer["Background"] = 1] = "Background";
+    Layer[Layer["Normal"] = 2] = "Normal";
+    Layer[Layer["Foreground"] = 3] = "Foreground";
+})(Layer || (Layer = {}));
+;
 class Entity {
     type = 'default';
     name = '';
@@ -14,6 +22,7 @@ class Entity {
     size = [0, 0];
     vel = [0, 0];
     drawOfs = [0, 0];
+    layer = Layer.Normal;
     remainder = [0, 0];
     sprite = 0;
     frame = 0;
@@ -294,4 +303,4 @@ class WorldEnt extends Entity {
 }
 const worldEnt = new WorldEnt({});
 export default Entity;
-export { WorldEnt };
+export { WorldEnt, Layer };

@@ -210,7 +210,7 @@ public:
 
   std::string CallSave() const
   {
-    if (!JS_IsFunction(ctx, saveFunc)) {
+    if (ctx == nullptr || !JS_IsFunction(ctx, saveFunc)) {
       return "";
     }
 
@@ -450,8 +450,9 @@ int main(int argc, char *argv[])
   SLT_Con_AddCommand("js_reload", []() {
     SLT_Con_SetVar("engine.errorMessage", "");
     SLT_Con_SetVar("engine.lastErrorStack", "");
-    saveState = instance->CallSave();
+    saveState = ""; 
     if (instance) {
+      instance->CallSave();
       delete instance;
       instance = nullptr;
     }

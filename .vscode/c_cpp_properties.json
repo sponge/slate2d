@@ -32,15 +32,10 @@
             "includePath": [
                 "/usr/include",
                 "${workspaceRoot}/src/external",
-                "${workspaceRoot}/libs/glew",
                 "${workspaceRoot}/libs/imgui",
-                "${workspaceRoot}/libs/lua",
-                "${workspaceRoot}/libs/luasocket",
-                "${workspaceRoot}/libs/nanovg",
                 "${workspaceRoot}/libs/physfs",
                 "${workspaceRoot}/libs/sdl",
                 "${workspaceRoot}/libs/soloud",
-                "${workspaceRoot}/libs/tmx",
                 "${workspaceFolder}/libs/crunch",
                 "${workspaceFolder}/src"
             ],
@@ -60,18 +55,15 @@
         {
             "name": "Win32",
             "includePath": [
-                "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.11.25503/include",
+                "c:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30037/include",
                 "C:/Program Files (x86)/Windows Kits/10/Include/10.0.15063.0/ucrt",
-                "c:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.10.25017/include",
                 "c:/Program Files (x86)/Windows Kits/10/Include/10.0.15063.0/um",
                 "c:/Program Files (x86)/Windows Kits/10/Include/10.0.15063.0/shared",
                 "${workspaceRoot}/src/external",
-                "${workspaceRoot}/libs/glew",
                 "${workspaceRoot}/libs/imgui",
                 "${workspaceRoot}/libs/physfs",
                 "${workspaceRoot}/libs/sdl",
                 "${workspaceRoot}/libs/soloud/include",
-                "${workspaceRoot}/libs/tmx",
                 "${workspaceFolder}/libs/crunch",
                 "${workspaceFolder}/src"
             ],

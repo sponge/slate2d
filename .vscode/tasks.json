@@ -191,7 +191,12 @@
     {
       "label": "Start TSC",
       "group": "build",
-      "command": "tsc",
+      "osx": {
+        "command": "tsc",
+      },
+      "windows": {
+        "command": "tsc.cmd",
+      },
       "args": [
         "--watch"
       ],

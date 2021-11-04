@@ -16,6 +16,7 @@
 #define GRAPHICS_API_OPENGL_33
 #endif
 #include <rlgl.h>
+#undef RLGL_IMPLEMENTATION
 
 #ifdef __EMSCRIPTEN__
 #include "GLES2/gl2.h"
@@ -29,8 +30,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-function"
 
-#define RAYMATH_IMPLEMENTATION
-#include <raymath.h>
 #define FONTSTASH_IMPLEMENTATION
 #include "external/fontstash.h"
 #define GLFONTSTASH_IMPLEMENTATION

@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <fontstash.h>
+#include <math.h>
 #include "assetloader.h"
 #include "files.h"
 #include "console.h"

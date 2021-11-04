@@ -15,15 +15,15 @@ void * Canvas_Load(Asset & asset) {
 	canvas->id = rlLoadFramebuffer(canvas->w, canvas->h);
 	rlEnableFramebuffer(canvas->id);
 
-	canvas->texId = rlLoadTexture(NULL, canvas->w, canvas->h, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8, 1);
+	canvas->texId = rlLoadTexture(NULL, canvas->w, canvas->h, RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8, 1);
 	rlFramebufferAttach(canvas->id, canvas->texId, RL_ATTACHMENT_COLOR_CHANNEL0, RL_ATTACHMENT_TEXTURE2D, 0);
 
 	if (asset.flags) {
-		rlTextureParameters(canvas->id, RL_TEXTURE_MAG_FILTER, TEXTURE_FILTER_BILINEAR);
-		rlTextureParameters(canvas->id, RL_TEXTURE_MIN_FILTER, TEXTURE_FILTER_BILINEAR);
+		rlTextureParameters(canvas->id, RL_TEXTURE_MAG_FILTER, RL_TEXTURE_FILTER_BILINEAR);
+		rlTextureParameters(canvas->id, RL_TEXTURE_MIN_FILTER, RL_TEXTURE_FILTER_BILINEAR);
 	} else {
-		rlTextureParameters(canvas->id, RL_TEXTURE_MAG_FILTER, TEXTURE_FILTER_POINT);
-		rlTextureParameters(canvas->id, RL_TEXTURE_MIN_FILTER, TEXTURE_FILTER_POINT);		
+		rlTextureParameters(canvas->id, RL_TEXTURE_MAG_FILTER, RL_TEXTURE_FILTER_POINT);
+		rlTextureParameters(canvas->id, RL_TEXTURE_MIN_FILTER, RL_TEXTURE_FILTER_POINT);		
 	}
 
 	rlDisableFramebuffer();

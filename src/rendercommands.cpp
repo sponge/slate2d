@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <math.h>
 #include "rendercommands.h"
 #include "assetloader.h"
 #include "rlgl.h"
@@ -6,6 +7,13 @@
 #include "input.h"
 #include "external/fontstash.h"
 #include "console.h"
+
+#ifndef PI
+    #define PI 3.14159265358979323846f
+#endif
+#ifndef DEG2RAD
+    #define DEG2RAD (PI/180.0f)
+#endif
 
 extern conVar_t* vid_width, * vid_height;
 Canvas * activeCanvas = nullptr;
@@ -128,28 +136,28 @@ const void *RB_UseShader(const void *data) {
 	if (shasset->locResolution != -1) {
 		if (activeCanvas != nullptr) {
 			const float iResolution[3] = { (float) activeCanvas->w, (float) activeCanvas->h, 1.0f };
-			rlSetUniform(shasset->locResolution, iResolution, SHADER_UNIFORM_VEC3, 1);
+			rlSetUniform(shasset->locResolution, iResolution, RL_SHADER_UNIFORM_VEC3, 1);
 		}
 		else {
 			const float iResolution[3] = { vid_width->value, vid_height->value, 1.0f };
-			rlSetUniform(shasset->locResolution, iResolution, SHADER_UNIFORM_VEC3, 1);
+			rlSetUniform(shasset->locResolution, iResolution, RL_SHADER_UNIFORM_VEC3, 1);
 		}
 	}
 
 	if (shasset->locTime != -1) {
 		const float iTime = com_frameTime / (float)1E6;
-        rlSetUniform(shasset->locTime, &iTime, SHADER_UNIFORM_FLOAT, 1);
+        rlSetUniform(shasset->locTime, &iTime, RL_SHADER_UNIFORM_FLOAT, 1);
 	}
 
 	if (shasset->locTimeDelta != -1) {
 		const float iTimeDelta = frame_musec / (float)1E6;
-        rlSetUniform(shasset->locTimeDelta, &iTimeDelta, SHADER_UNIFORM_FLOAT, 1);
+        rlSetUniform(shasset->locTimeDelta, &iTimeDelta, RL_SHADER_UNIFORM_FLOAT, 1);
 	}
 
 	if (shasset->locMouse != -1) {
 		auto mousePos = In_MousePosition();
 		const float iMouse[2] = { (float) mousePos.x, (float) mousePos.y };
-		rlSetUniform(shasset->locMouse, iMouse, SHADER_UNIFORM_VEC2, 1);
+		rlSetUniform(shasset->locMouse, iMouse, RL_SHADER_UNIFORM_VEC2, 1);
 	}
 
 	return (const void *)(cmd + 1);
@@ -183,7 +191,7 @@ const void *RB_DrawRect(const void *data) {
 	auto cmd = (const drawRectCommand_t *)data;
 
 	rlBegin(RL_QUADS);
-    rlSetTexture(rlGetTextureDefault().id);
+    rlSetTexture(rlGetTextureIdDefault());
 	rlColor4ub(state.color[0], state.color[1], state.color[2], state.color[3]);
 
 	if (cmd->outline) {
@@ -347,7 +355,7 @@ const void *RB_DrawSprite(const void *data) {
 const void *RB_DrawLine(const void *data) {
 	auto cmd = (const drawLineCommand_t *)data;
 
-	rlSetTexture(rlGetTextureDefault().id);
+	rlSetTexture(rlGetTextureIdDefault());
 	rlBegin(RL_LINES);
 	rlColor4ub(state.color[0], state.color[1], state.color[2], state.color[3]);
 	rlVertex2f(cmd->x1, cmd->y1);
@@ -360,7 +368,7 @@ const void *RB_DrawLine(const void *data) {
 const void *RB_DrawCircle(const void *data) {
 	auto cmd = (const drawCircleCommand_t *)data;
 
-	rlSetTexture(rlGetTextureDefault().id);
+	rlSetTexture(rlGetTextureIdDefault());
 
 	if (cmd->outline) {
 		if (rlCheckRenderBatchLimit(2 * 36)) {
@@ -403,7 +411,7 @@ const void *RB_DrawCircle(const void *data) {
 const void *RB_DrawTri(const void *data) {
 	auto cmd = (const drawTriCommand_t *)data;
 
-	rlSetTexture(rlGetTextureDefault().id);
+	rlSetTexture(rlGetTextureIdDefault());
 
 	if (cmd->outline) {
 		rlBegin(RL_LINES);

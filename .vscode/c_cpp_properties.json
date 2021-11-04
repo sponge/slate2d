@@ -19,7 +19,7 @@
                     "${workspaceRoot}"
                 ]
             },
-            "intelliSenseMode": "clang-x64",
+            "intelliSenseMode": "clang-arm64",
             "macFrameworkPath": [
                 "/System/Library/Frameworks",
                 "/Library/Frameworks"

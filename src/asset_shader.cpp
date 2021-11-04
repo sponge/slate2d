@@ -66,7 +66,7 @@ void Shader_Free(Asset & asset) {
 	free((void*)res->fs);
 	free((void*)res->vs);
 
-	if (rlGetShaderDefault().id == res->id) {
+	if (rlGetShaderIdDefault() == res->id) {
 		Con_Print("not freeing default shader\n");
 	} else {
 		rlUnloadShaderProgram(res->id);

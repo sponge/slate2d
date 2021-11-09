@@ -16,6 +16,8 @@ install:
 build:
   project: build/slate2d.sln
   verbosity: minimal
+after_build:
+- ps: xcopy .\base .\build\bin\x86_64_Release\base\ /e
 artifacts:
 - path: build\bin\x86_64_Release
   name: Slate2D - x64 DLL + JS Runtime

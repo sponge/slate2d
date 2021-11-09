@@ -17,5 +17,5 @@ build:
   project: build/slate2d.sln
   verbosity: minimal
 artifacts:
-- path: build\bin\x86_64_Release\slate2d.dll
-  name: Slate2D - x64 DLL
+- path: build\bin\x86_64_Release
+  name: Slate2D - x64 DLL + JS Runtime

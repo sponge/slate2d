@@ -9,15 +9,6 @@
 #include <emscripten.h>
 #endif
 
-#define RLGL_IMPLEMENTATION
-#ifdef __EMSCRIPTEN__
-#define GRAPHICS_API_OPENGL_ES2
-#else
-#define GRAPHICS_API_OPENGL_33
-#endif
-#include <rlgl.h>
-#undef RLGL_IMPLEMENTATION
-
 #ifdef __EMSCRIPTEN__
 #include "GLES2/gl2.h"
 #include "GLES2/gl2ext.h"
@@ -26,6 +17,15 @@
 #else
 #include "external/glad.h"
 #endif
+
+#define RLGL_IMPLEMENTATION
+#ifdef __EMSCRIPTEN__
+#define GRAPHICS_API_OPENGL_ES2
+#else
+#define GRAPHICS_API_OPENGL_33
+#endif
+#include <rlgl.h>
+#undef RLGL_IMPLEMENTATION
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-function"
@@ -377,7 +377,7 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 	context = SDL_GL_CreateContext(window);
 
 #if !defined(__EMSCRIPTEN__) && !defined(MACOS)
-	if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
+	if (!gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress)) {
 		Con_Error(ERR_FATAL, "Could not init GL.");
 	}     
 #endif

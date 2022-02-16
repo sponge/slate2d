@@ -100,10 +100,10 @@ class Game {
       this.state = JSON.parse(initialState);
       this.state.entities = this.state.entities.map(ent => Object.assign(new EntityMappings[ent.type]({}), ent));
     } else {
-      this.state.mapName = mapName ?? 'maps/0000-Level_0.ldtkl';
+      this.state.mapName = mapName ?? 'maps/map1.ldtkl';
     }
 
-    this.state.nextMap = parseInt(this.state.mapName.match(/\d\d\d\d/)?.[0] ?? '0000', 10) + 1;
+    this.state.nextMap = parseInt(this.state.mapName.match(/map(\d.?)/)?.[0] ?? '1', 10) + 1;
 
     // parse the map
     const src = JSON.parse(SLT.readFile(this.state.mapName));

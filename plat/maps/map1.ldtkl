@@ -5,34 +5,31 @@
 		"doc": "https://ldtk.io/json",
 		"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
 		"appAuthor": "Sebastien 'deepnight' Benard",
-		"appVersion": "0.9.3",
+		"appVersion": "0.10.0-beta1",
 		"url": "https://ldtk.io"
 	},
-	"identifier": "Level_0",
+	"identifier": "map1",
+	"iid": "8183d520-8dc0-11ec-b9b6-8bcbf40af7b0",
 	"uid": 0,
-	"worldX": 0,
-	"worldY": 0,
+	"worldX": -1,
+	"worldY": -1,
+	"worldDepth": 0,
 	"pxWid": 1776,
 	"pxHei": 320,
 	"__bgColor": "#639BFF",
 	"bgColor": "#639BFF",
-	"useAutoIdentifier": true,
+	"useAutoIdentifier": false,
 	"bgRelPath": null,
 	"bgPos": null,
 	"bgPivotX": 0.5,
 	"bgPivotY": 0.5,
+	"__smartColor": "#A9C8FF",
 	"__bgPos": null,
 	"externalRelPath": null,
-	"fieldInstances": [{
-		"__identifier": "background",
-		"__value": "grassland",
-		"__type": "String",
-		"defUid": 58,
-		"realEditorValues": [{
-			"id": "V_String",
-			"params": ["grassland"]
-		}]
-	}],
+	"fieldInstances": [{ "__identifier": "background", "__value": "grassland", "__type": "String", "__tile": null, "defUid": 58, "realEditorValues": [{
+		"id": "V_String",
+		"params": ["grassland"]
+	}] }],
 	"layerInstances": [
 		{
 			"__identifier": "Entities",
@@ -45,6 +42,7 @@
 			"__pxTotalOffsetY": 0,
 			"__tilesetDefUid": null,
 			"__tilesetRelPath": null,
+			"iid": "8183fc34-8dc0-11ec-b9b6-e1e3ee88bc5d",
 			"levelId": 0,
 			"layerDefUid": 74,
 			"pxOffsetX": 0,
@@ -61,316 +59,226 @@
 					"__identifier": "Platform",
 					"__grid": [44,14],
 					"__pivot": [0,0],
+					"__tags": [],
 					"__tile": null,
+					"iid": "8183fc35-8dc0-11ec-b9b6-73e391b8d6a4",
 					"width": 48,
 					"height": 4,
 					"defUid": 104,
 					"px": [704,224],
 					"fieldInstances": [
-						{
-							"__identifier": "CollisionType",
-							"__value": "Platform",
-							"__type": "LocalEnum.CollisionType",
-							"defUid": 108,
-							"realEditorValues": [{
-								"id": "V_String",
-								"params": ["Platform"]
-							}]
-						},
-						{
-							"__identifier": "Direction",
-							"__value": "Vertical",
-							"__type": "LocalEnum.Direction",
-							"defUid": 110,
-							"realEditorValues": [{
-								"id": "V_String",
-								"params": ["Vertical"]
-							}]
-						},
-						{
-							"__identifier": "Distance",
-							"__value": -100,
-							"__type": "Int",
-							"defUid": 111,
-							"realEditorValues": [{ "id": "V_Int", "params": [-100] }]
-						},
-						{
-							"__identifier": "Speed",
-							"__value": 1,
-							"__type": "Float",
-							"defUid": 112,
-							"realEditorValues": [{ "id": "V_Float", "params": [1] }]
-						},
-						{ "__identifier": "Name", "__value": null, "__type": "String", "defUid": 118, "realEditorValues": [] },
-						{ "__identifier": "Moving", "__value": true, "__type": "Bool", "defUid": 119, "realEditorValues": [] },
-						{ "__identifier": "OneShot", "__value": false, "__type": "Bool", "defUid": 120, "realEditorValues": [] }
+						{ "__identifier": "Name", "__value": null, "__type": "String", "__tile": null, "defUid": 118, "realEditorValues": [] },
+						{ "__identifier": "Moving", "__value": true, "__type": "Bool", "__tile": null, "defUid": 119, "realEditorValues": [] },
+						{ "__identifier": "CollisionType", "__value": "Platform", "__type": "LocalEnum.CollisionType", "__tile": null, "defUid": 108, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Platform"]
+						}] },
+						{ "__identifier": "Direction", "__value": "Vertical", "__type": "LocalEnum.Direction", "__tile": null, "defUid": 110, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Vertical"]
+						}] },
+						{ "__identifier": "Distance", "__value": -100, "__type": "Int", "__tile": null, "defUid": 111, "realEditorValues": [{ "id": "V_Int", "params": [-100] }] },
+						{ "__identifier": "Speed", "__value": 1, "__type": "Float", "__tile": null, "defUid": 112, "realEditorValues": [{ "id": "V_Float", "params": [1] }] },
+						{ "__identifier": "OneShot", "__value": false, "__type": "Bool", "__tile": null, "defUid": 120, "realEditorValues": [] }
 					]
 				},
 				{
 					"__identifier": "Platform",
 					"__grid": [53,7],
 					"__pivot": [0,0],
+					"__tags": [],
 					"__tile": null,
+					"iid": "8183fc36-8dc0-11ec-b9b6-73fb1b641e12",
 					"width": 16,
 					"height": 48,
 					"defUid": 104,
 					"px": [848,112],
 					"fieldInstances": [
-						{
-							"__identifier": "CollisionType",
-							"__value": "Enabled",
-							"__type": "LocalEnum.CollisionType",
-							"defUid": 108,
-							"realEditorValues": [{
-								"id": "V_String",
-								"params": ["Enabled"]
-							}]
-						},
-						{
-							"__identifier": "Direction",
-							"__value": "Horizontal",
-							"__type": "LocalEnum.Direction",
-							"defUid": 110,
-							"realEditorValues": [{
-								"id": "V_String",
-								"params": ["Horizontal"]
-							}]
-						},
-						{
-							"__identifier": "Distance",
-							"__value": -80,
-							"__type": "Int",
-							"defUid": 111,
-							"realEditorValues": [{ "id": "V_Int", "params": [-80] }]
-						},
-						{ "__identifier": "Speed", "__value": 1, "__type": "Float", "defUid": 112, "realEditorValues": [] },
-						{ "__identifier": "Name", "__value": null, "__type": "String", "defUid": 118, "realEditorValues": [] },
-						{ "__identifier": "Moving", "__value": true, "__type": "Bool", "defUid": 119, "realEditorValues": [] },
-						{ "__identifier": "OneShot", "__value": false, "__type": "Bool", "defUid": 120, "realEditorValues": [] }
+						{ "__identifier": "Name", "__value": null, "__type": "String", "__tile": null, "defUid": 118, "realEditorValues": [] },
+						{ "__identifier": "Moving", "__value": true, "__type": "Bool", "__tile": null, "defUid": 119, "realEditorValues": [] },
+						{ "__identifier": "CollisionType", "__value": "Enabled", "__type": "LocalEnum.CollisionType", "__tile": null, "defUid": 108, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Enabled"]
+						}] },
+						{ "__identifier": "Direction", "__value": "Horizontal", "__type": "LocalEnum.Direction", "__tile": null, "defUid": 110, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Horizontal"]
+						}] },
+						{ "__identifier": "Distance", "__value": -80, "__type": "Int", "__tile": null, "defUid": 111, "realEditorValues": [{ "id": "V_Int", "params": [-80] }] },
+						{ "__identifier": "Speed", "__value": 1, "__type": "Float", "__tile": null, "defUid": 112, "realEditorValues": [] },
+						{ "__identifier": "OneShot", "__value": false, "__type": "Bool", "__tile": null, "defUid": 120, "realEditorValues": [] }
 					]
 				},
 				{
 					"__identifier": "Platform",
 					"__grid": [63,17],
 					"__pivot": [0,0],
+					"__tags": [],
 					"__tile": null,
+					"iid": "81842340-8dc0-11ec-b9b6-b343ded30206",
 					"width": 16,
 					"height": 16,
 					"defUid": 104,
 					"px": [1008,272],
 					"fieldInstances": [
-						{
-							"__identifier": "CollisionType",
-							"__value": "Enabled",
-							"__type": "LocalEnum.CollisionType",
-							"defUid": 108,
-							"realEditorValues": [{
-								"id": "V_String",
-								"params": ["Enabled"]
-							}]
-						},
-						{
-							"__identifier": "Direction",
-							"__value": "Vertical",
-							"__type": "LocalEnum.Direction",
-							"defUid": 110,
-							"realEditorValues": [{
-								"id": "V_String",
-								"params": ["Vertical"]
-							}]
-						},
-						{
-							"__identifier": "Distance",
-							"__value": -50,
-							"__type": "Int",
-							"defUid": 111,
-							"realEditorValues": [{ "id": "V_Int", "params": [-50] }]
-						},
-						{ "__identifier": "Speed", "__value": 1, "__type": "Float", "defUid": 112, "realEditorValues": [] },
-						{ "__identifier": "Name", "__value": null, "__type": "String", "defUid": 118, "realEditorValues": [] },
-						{ "__identifier": "Moving", "__value": true, "__type": "Bool", "defUid": 119, "realEditorValues": [] },
-						{ "__identifier": "OneShot", "__value": false, "__type": "Bool", "defUid": 120, "realEditorValues": [] }
+						{ "__identifier": "Name", "__value": null, "__type": "String", "__tile": null, "defUid": 118, "realEditorValues": [] },
+						{ "__identifier": "Moving", "__value": true, "__type": "Bool", "__tile": null, "defUid": 119, "realEditorValues": [] },
+						{ "__identifier": "CollisionType", "__value": "Enabled", "__type": "LocalEnum.CollisionType", "__tile": null, "defUid": 108, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Enabled"]
+						}] },
+						{ "__identifier": "Direction", "__value": "Vertical", "__type": "LocalEnum.Direction", "__tile": null, "defUid": 110, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Vertical"]
+						}] },
+						{ "__identifier": "Distance", "__value": -50, "__type": "Int", "__tile": null, "defUid": 111, "realEditorValues": [{ "id": "V_Int", "params": [-50] }] },
+						{ "__identifier": "Speed", "__value": 1, "__type": "Float", "__tile": null, "defUid": 112, "realEditorValues": [] },
+						{ "__identifier": "OneShot", "__value": false, "__type": "Bool", "__tile": null, "defUid": 120, "realEditorValues": [] }
 					]
 				},
 				{
 					"__identifier": "Switch",
 					"__grid": [88,16],
 					"__pivot": [0.5,1],
+					"__tags": [],
 					"__tile": null,
+					"iid": "81842341-8dc0-11ec-b9b6-4b13b1bb213a",
 					"width": 14,
 					"height": 4,
 					"defUid": 115,
 					"px": [1416,272],
-					"fieldInstances": [{
-						"__identifier": "Target",
-						"__value": "Door",
-						"__type": "String",
-						"defUid": 117,
-						"realEditorValues": [{
-							"id": "V_String",
-							"params": ["Door"]
-						}]
-					}]
+					"fieldInstances": [{ "__identifier": "Target", "__value": "Door", "__type": "String", "__tile": null, "defUid": 117, "realEditorValues": [{
+						"id": "V_String",
+						"params": ["Door"]
+					}] }]
 				},
 				{
 					"__identifier": "Platform",
 					"__grid": [92,15],
 					"__pivot": [0,0],
+					"__tags": [],
 					"__tile": null,
+					"iid": "81842342-8dc0-11ec-b9b6-e1bfca3c7d0f",
 					"width": 16,
 					"height": 32,
 					"defUid": 104,
 					"px": [1472,240],
 					"fieldInstances": [
-						{
-							"__identifier": "CollisionType",
-							"__value": "Enabled",
-							"__type": "LocalEnum.CollisionType",
-							"defUid": 108,
-							"realEditorValues": [{
-								"id": "V_String",
-								"params": ["Enabled"]
-							}]
-						},
-						{
-							"__identifier": "Direction",
-							"__value": "Vertical",
-							"__type": "LocalEnum.Direction",
-							"defUid": 110,
-							"realEditorValues": [{
-								"id": "V_String",
-								"params": ["Vertical"]
-							}]
-						},
-						{
-							"__identifier": "Distance",
-							"__value": -32,
-							"__type": "Int",
-							"defUid": 111,
-							"realEditorValues": [{ "id": "V_Int", "params": [-32] }]
-						},
-						{ "__identifier": "Speed", "__value": 1, "__type": "Float", "defUid": 112, "realEditorValues": [] },
-						{
-							"__identifier": "Name",
-							"__value": "Door",
-							"__type": "String",
-							"defUid": 118,
-							"realEditorValues": [{
-								"id": "V_String",
-								"params": ["Door"]
-							}]
-						},
-						{
-							"__identifier": "Moving",
-							"__value": false,
-							"__type": "Bool",
-							"defUid": 119,
-							"realEditorValues": [{
-								"id": "V_Bool",
-								"params": [ false ]
-							}]
-						},
-						{
-							"__identifier": "OneShot",
-							"__value": true,
-							"__type": "Bool",
-							"defUid": 120,
-							"realEditorValues": [{
-								"id": "V_Bool",
-								"params": [ true ]
-							}]
-						}
+						{ "__identifier": "Name", "__value": "Door", "__type": "String", "__tile": null, "defUid": 118, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Door"]
+						}] },
+						{ "__identifier": "Moving", "__value": false, "__type": "Bool", "__tile": null, "defUid": 119, "realEditorValues": [{
+							"id": "V_Bool",
+							"params": [ false ]
+						}] },
+						{ "__identifier": "CollisionType", "__value": "Enabled", "__type": "LocalEnum.CollisionType", "__tile": null, "defUid": 108, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Enabled"]
+						}] },
+						{ "__identifier": "Direction", "__value": "Vertical", "__type": "LocalEnum.Direction", "__tile": null, "defUid": 110, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Vertical"]
+						}] },
+						{ "__identifier": "Distance", "__value": -32, "__type": "Int", "__tile": null, "defUid": 111, "realEditorValues": [{ "id": "V_Int", "params": [-32] }] },
+						{ "__identifier": "Speed", "__value": 1, "__type": "Float", "__tile": null, "defUid": 112, "realEditorValues": [] },
+						{ "__identifier": "OneShot", "__value": true, "__type": "Bool", "__tile": null, "defUid": 120, "realEditorValues": [{
+							"id": "V_Bool",
+							"params": [ true ]
+						}] }
 					]
 				},
 				{
 					"__identifier": "Bird",
 					"__grid": [59,5],
 					"__pivot": [0.5,0.5],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81842343-8dc0-11ec-b9b6-cfe1356b3a6a",
 					"width": 14,
 					"height": 12,
 					"defUid": 122,
 					"px": [952,88],
-					"fieldInstances": [{
-						"__identifier": "Destination",
-						"__value": { "cx": 54, "cy": 3 },
-						"__type": "Point",
-						"defUid": 123,
-						"realEditorValues": [{
-							"id": "V_String",
-							"params": ["54,3"]
-						}]
-					}]
+					"fieldInstances": [{ "__identifier": "Destination", "__value": { "cx": 54, "cy": 3 }, "__type": "Point", "__tile": null, "defUid": 123, "realEditorValues": [{
+						"id": "V_String",
+						"params": ["54,3"]
+					}] }]
 				},
 				{
 					"__identifier": "Bird",
 					"__grid": [47,5],
 					"__pivot": [0.5,0.5],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81842344-8dc0-11ec-b9b6-2b8e5de24d64",
 					"width": 14,
 					"height": 12,
 					"defUid": 122,
 					"px": [760,88],
-					"fieldInstances": [{
-						"__identifier": "Destination",
-						"__value": { "cx": 47, "cy": 8 },
-						"__type": "Point",
-						"defUid": 123,
-						"realEditorValues": [{
-							"id": "V_String",
-							"params": ["47,8"]
-						}]
-					}]
+					"fieldInstances": [{ "__identifier": "Destination", "__value": { "cx": 47, "cy": 8 }, "__type": "Point", "__tile": null, "defUid": 123, "realEditorValues": [{
+						"id": "V_String",
+						"params": ["47,8"]
+					}] }]
 				},
 				{
 					"__identifier": "Slime",
 					"__grid": [61,17],
 					"__pivot": [0.5,1],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81842345-8dc0-11ec-b9b6-537d3ddfbc39",
 					"width": 14,
 					"height": 10,
 					"defUid": 128,
 					"px": [984,288],
-					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 130, "realEditorValues": [] }]
+					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "__tile": null, "defUid": 130, "realEditorValues": [] }]
 				},
 				{
 					"__identifier": "Slime",
 					"__grid": [44,11],
 					"__pivot": [0.5,1],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81842346-8dc0-11ec-b9b6-9f8c00c46717",
 					"width": 14,
 					"height": 10,
 					"defUid": 128,
 					"px": [712,192],
-					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 130, "realEditorValues": [] }]
+					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "__tile": null, "defUid": 130, "realEditorValues": [] }]
 				},
 				{
 					"__identifier": "Bub",
 					"__grid": [48,16],
 					"__pivot": [0.5,1],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81842347-8dc0-11ec-b9b6-b15b881dc021",
 					"width": 12,
 					"height": 11,
 					"defUid": 129,
 					"px": [776,272],
-					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 131, "realEditorValues": [] }]
+					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "__tile": null, "defUid": 131, "realEditorValues": [] }]
 				},
 				{
 					"__identifier": "Bub",
 					"__grid": [41,8],
 					"__pivot": [0.5,1],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81842348-8dc0-11ec-b9b6-3f220acc351c",
 					"width": 12,
 					"height": 11,
 					"defUid": 129,
 					"px": [664,144],
-					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 131, "realEditorValues": [] }]
+					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "__tile": null, "defUid": 131, "realEditorValues": [] }]
 				},
 				{
 					"__identifier": "Coin",
 					"__grid": [50,17],
 					"__pivot": [0.5,0.5],
+					"__tags": [],
 					"__tile": null,
+					"iid": "81842349-8dc0-11ec-b9b6-25a3c17d876b",
 					"width": 14,
 					"height": 14,
 					"defUid": 121,
@@ -381,7 +289,9 @@
 					"__identifier": "Coin",
 					"__grid": [51,17],
 					"__pivot": [0.5,0.5],
+					"__tags": [],
 					"__tile": null,
+					"iid": "8184234a-8dc0-11ec-b9b6-ab60abef587d",
 					"width": 14,
 					"height": 14,
 					"defUid": 121,
@@ -392,7 +302,9 @@
 					"__identifier": "Coin",
 					"__grid": [52,17],
 					"__pivot": [0.5,0.5],
+					"__tags": [],
 					"__tile": null,
+					"iid": "81844a50-8dc0-11ec-b9b6-aba3f3ab4c33",
 					"width": 14,
 					"height": 14,
 					"defUid": 121,
@@ -403,27 +315,25 @@
 					"__identifier": "Bub",
 					"__grid": [45,16],
 					"__pivot": [0.5,1],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81844a51-8dc0-11ec-b9b6-e98d10c0bc79",
 					"width": 12,
 					"height": 11,
 					"defUid": 129,
 					"px": [728,272],
-					"fieldInstances": [{
-						"__identifier": "GoRight",
-						"__value": true,
-						"__type": "Bool",
-						"defUid": 131,
-						"realEditorValues": [{
-							"id": "V_Bool",
-							"params": [ true ]
-						}]
-					}]
+					"fieldInstances": [{ "__identifier": "GoRight", "__value": true, "__type": "Bool", "__tile": null, "defUid": 131, "realEditorValues": [{
+						"id": "V_Bool",
+						"params": [ true ]
+					}] }]
 				},
 				{
 					"__identifier": "Ghost",
 					"__grid": [23,11],
 					"__pivot": [0.5,0.5],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81844a52-8dc0-11ec-b9b6-81dc7c808ac4",
 					"width": 14,
 					"height": 14,
 					"defUid": 132,
@@ -434,7 +344,9 @@
 					"__identifier": "Spring",
 					"__grid": [56,17],
 					"__pivot": [0.5,1],
+					"__tags": [],
 					"__tile": null,
+					"iid": "81844a53-8dc0-11ec-b9b6-9b0835f14112",
 					"width": 16,
 					"height": 16,
 					"defUid": 114,
@@ -445,7 +357,9 @@
 					"__identifier": "Launcher",
 					"__grid": [36,11],
 					"__pivot": [0.5,0.5],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81844a54-8dc0-11ec-b9b6-79160e60d168",
 					"width": 16,
 					"height": 16,
 					"defUid": 135,
@@ -456,7 +370,9 @@
 					"__identifier": "Player",
 					"__grid": [2,15],
 					"__pivot": [0.5,1],
+					"__tags": [],
 					"__tile": null,
+					"iid": "81844a55-8dc0-11ec-b9b6-91d26afd2166",
 					"width": 12,
 					"height": 14,
 					"defUid": 73,
@@ -467,7 +383,9 @@
 					"__identifier": "Hermit",
 					"__grid": [40,15],
 					"__pivot": [0,1],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81844a56-8dc0-11ec-b9b6-d3eec3154af8",
 					"width": 15,
 					"height": 12,
 					"defUid": 133,
@@ -478,38 +396,38 @@
 					"__identifier": "Flamethrower",
 					"__grid": [34,16],
 					"__pivot": [0,0],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81844a57-8dc0-11ec-b9b6-2519a60bf428",
 					"width": 16,
 					"height": 16,
 					"defUid": 136,
 					"px": [544,256],
-					"fieldInstances": [{ "__identifier": "StartOn", "__value": false, "__type": "Bool", "defUid": 137, "realEditorValues": [] }]
+					"fieldInstances": [{ "__identifier": "StartOn", "__value": false, "__type": "Bool", "__tile": null, "defUid": 137, "realEditorValues": [] }]
 				},
 				{
 					"__identifier": "Flamethrower",
 					"__grid": [36,16],
 					"__pivot": [0,0],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81844a58-8dc0-11ec-b9b6-c56d2588366b",
 					"width": 16,
 					"height": 16,
 					"defUid": 136,
 					"px": [576,256],
-					"fieldInstances": [{
-						"__identifier": "StartOn",
-						"__value": true,
-						"__type": "Bool",
-						"defUid": 137,
-						"realEditorValues": [{
-							"id": "V_Bool",
-							"params": [ true ]
-						}]
-					}]
+					"fieldInstances": [{ "__identifier": "StartOn", "__value": true, "__type": "Bool", "__tile": null, "defUid": 137, "realEditorValues": [{
+						"id": "V_Bool",
+						"params": [ true ]
+					}] }]
 				},
 				{
 					"__identifier": "CrumblingBlock",
 					"__grid": [30,13],
 					"__pivot": [0,0],
+					"__tags": [],
 					"__tile": null,
+					"iid": "81844a59-8dc0-11ec-b9b6-6507caade92e",
 					"width": 16,
 					"height": 16,
 					"defUid": 138,
@@ -520,7 +438,9 @@
 					"__identifier": "CrumblingBlock",
 					"__grid": [29,13],
 					"__pivot": [0,0],
+					"__tags": [],
 					"__tile": null,
+					"iid": "81847160-8dc0-11ec-b9b6-3b067f2eed90",
 					"width": 16,
 					"height": 16,
 					"defUid": 138,
@@ -531,7 +451,9 @@
 					"__identifier": "CrumblingBlock",
 					"__grid": [28,13],
 					"__pivot": [0,0],
+					"__tags": [],
 					"__tile": null,
+					"iid": "81847161-8dc0-11ec-b9b6-6d374dc3b0f9",
 					"width": 16,
 					"height": 16,
 					"defUid": 138,
@@ -542,7 +464,9 @@
 					"__identifier": "Balloon",
 					"__grid": [26,10],
 					"__pivot": [0.5,0],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81847162-8dc0-11ec-b9b6-559481b94a49",
 					"width": 14,
 					"height": 16,
 					"defUid": 139,
@@ -553,7 +477,9 @@
 					"__identifier": "Balloon",
 					"__grid": [25,7],
 					"__pivot": [0.5,0],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81847163-8dc0-11ec-b9b6-fd09af7895f4",
 					"width": 14,
 					"height": 16,
 					"defUid": 139,
@@ -564,7 +490,9 @@
 					"__identifier": "Owl",
 					"__grid": [37,9],
 					"__pivot": [0.5,1],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81847164-8dc0-11ec-b9b6-536761d4517e",
 					"width": 14,
 					"height": 18,
 					"defUid": 141,
@@ -575,29 +503,35 @@
 					"__identifier": "SpikeyBub",
 					"__grid": [32,15],
 					"__pivot": [0.5,1],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81847165-8dc0-11ec-b9b6-9d4a85de9ebb",
 					"width": 12,
 					"height": 11,
 					"defUid": 142,
 					"px": [520,256],
-					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 144, "realEditorValues": [] }]
+					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "__tile": null, "defUid": 144, "realEditorValues": [] }]
 				},
 				{
 					"__identifier": "CharginBub",
 					"__grid": [38,15],
 					"__pivot": [0.5,1],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81847166-8dc0-11ec-b9b6-8be9440d03ce",
 					"width": 12,
 					"height": 11,
 					"defUid": 145,
 					"px": [616,256],
-					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "defUid": 144, "realEditorValues": [] }]
+					"fieldInstances": [{ "__identifier": "GoRight", "__value": false, "__type": "Bool", "__tile": null, "defUid": 144, "realEditorValues": [] }]
 				},
 				{
 					"__identifier": "Blobby",
 					"__grid": [21,15],
 					"__pivot": [0.5,1],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81847167-8dc0-11ec-b9b6-bb38b43374f2",
 					"width": 14,
 					"height": 14,
 					"defUid": 146,
@@ -608,7 +542,9 @@
 					"__identifier": "LevelEnd",
 					"__grid": [101,7],
 					"__pivot": [0.5,0.5],
+					"__tags": [],
 					"__tile": null,
+					"iid": "81847168-8dc0-11ec-b9b6-410481a5743b",
 					"width": 28,
 					"height": 28,
 					"defUid": 148,
@@ -619,7 +555,9 @@
 					"__identifier": "Daikon",
 					"__grid": [26,15],
 					"__pivot": [0.5,1],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "81847169-8dc0-11ec-b9b6-1ba4db896aa6",
 					"width": 12,
 					"height": 15,
 					"defUid": 149,
@@ -630,7 +568,9 @@
 					"__identifier": "Totem",
 					"__grid": [16,15],
 					"__pivot": [0.5,1],
+					"__tags": ["enemy"],
 					"__tile": null,
+					"iid": "8184716a-8dc0-11ec-b9b6-c168f5f760c0",
 					"width": 12,
 					"height": 21,
 					"defUid": 150,
@@ -641,7 +581,9 @@
 					"__identifier": "Health",
 					"__grid": [12,15],
 					"__pivot": [0.5,0.5],
+					"__tags": [],
 					"__tile": null,
+					"iid": "8184716b-8dc0-11ec-b9b6-9fc694669b65",
 					"width": 16,
 					"height": 10,
 					"defUid": 153,
@@ -652,7 +594,9 @@
 					"__identifier": "Health",
 					"__grid": [61,6],
 					"__pivot": [0.5,0.5],
+					"__tags": [],
 					"__tile": null,
+					"iid": "8184716c-8dc0-11ec-b9b6-e37f680bc2dd",
 					"width": 16,
 					"height": 10,
 					"defUid": 153,
@@ -663,27 +607,25 @@
 					"__identifier": "Sign",
 					"__grid": [4,15],
 					"__pivot": [0,1],
+					"__tags": [],
 					"__tile": null,
+					"iid": "8184716d-8dc0-11ec-b9b6-47c4e4640af3",
 					"width": 15,
 					"height": 14,
 					"defUid": 154,
 					"px": [72,256],
-					"fieldInstances": [{
-						"__identifier": "Text",
-						"__value": "^3Welcome to\nStony Oakwood Groves\nAt Pleasant Peak\nDog Park\n^2(West Entrance)",
-						"__type": "String",
-						"defUid": 155,
-						"realEditorValues": [{
-							"id": "V_String",
-							"params": ["^3Welcome to\nStony Oakwood Groves\nAt Pleasant Peak\nDog Park\n^2(West Entrance)"]
-						}]
-					}]
+					"fieldInstances": [{ "__identifier": "Text", "__value": "^3Welcome to\nStony Oakwood Groves\nAt Pleasant Peak\nDog Park\n^2(West Entrance)", "__type": "String", "__tile": null, "defUid": 155, "realEditorValues": [{
+						"id": "V_String",
+						"params": ["^3Welcome to\nStony Oakwood Groves\nAt Pleasant Peak\nDog Park\n^2(West Entrance)"]
+					}] }]
 				},
 				{
 					"__identifier": "Checkpoint",
 					"__grid": [8,15],
 					"__pivot": [0,1],
+					"__tags": [],
 					"__tile": null,
+					"iid": "8184716e-8dc0-11ec-b9b6-056d584e7487",
 					"width": 9,
 					"height": 32,
 					"defUid": 156,
@@ -703,6 +645,7 @@
 			"__pxTotalOffsetY": 0,
 			"__tilesetDefUid": 2,
 			"__tilesetRelPath": "gfx/grasslands.png",
+			"iid": "81849870-8dc0-11ec-b9b6-19d78f4d723b",
 			"levelId": 0,
 			"layerDefUid": 1,
 			"pxOffsetX": 0,
@@ -1429,6 +1372,7 @@
 			"__pxTotalOffsetY": 0,
 			"__tilesetDefUid": 2,
 			"__tilesetRelPath": "gfx/grasslands.png",
+			"iid": "81850da0-8dc0-11ec-b9b6-afeacaa4941a",
 			"levelId": 0,
 			"layerDefUid": 38,
 			"pxOffsetX": 0,
@@ -1628,6 +1572,7 @@
 			"__pxTotalOffsetY": 0,
 			"__tilesetDefUid": 2,
 			"__tilesetRelPath": "gfx/grasslands.png",
+			"iid": "81850da1-8dc0-11ec-b9b6-e5c7fb713241",
 			"levelId": 0,
 			"layerDefUid": 70,
 			"pxOffsetX": 0,
@@ -1794,6 +1739,7 @@
 			"__pxTotalOffsetY": 0,
 			"__tilesetDefUid": 2,
 			"__tilesetRelPath": "gfx/grasslands.png",
+			"iid": "818534b0-8dc0-11ec-b9b6-d91a4681004f",
 			"levelId": 0,
 			"layerDefUid": 51,
 			"pxOffsetX": 0,
@@ -1827,5 +1773,5 @@
 			"entityInstances": []
 		}
 	],
-	"__neighbours": [{ "levelUid": 147, "dir": "e" }]
+	"__neighbours": []
 }

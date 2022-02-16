@@ -17,7 +17,7 @@ class Main {
   };
 
   static switchLevel(num: number, startPos?: [number, number]) {
-    const mapName = `maps/${String(num).padStart(4, '0')}-Level_${num}.ldtkl`;
+    const mapName = `maps/Map${num}.ldtkl`;
     Main.scene = new Game('', mapName, startPos);
     Main.sceneName = 'game';
     SLT.console("js_rungc");
@@ -34,7 +34,7 @@ class Main {
       Main.scene = new Main.sceneTypes[Main.sceneName](state);
     }
     else {
-      Main.switchLevel(0);
+      Main.switchLevel(1);
     }
   }
 

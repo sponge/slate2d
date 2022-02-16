@@ -31,3 +31,4 @@ class SpinParticle extends Entity {
     }
 }
 export { SpinParticle };
+//# sourceMappingURL=spinparticle.js.map

@@ -56,3 +56,4 @@ class Bird extends Entity {
     }
 }
 export { Bird };
+//# sourceMappingURL=bird.js.map

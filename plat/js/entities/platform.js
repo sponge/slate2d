@@ -45,3 +45,4 @@ class Platform extends Entity {
     }
 }
 export { Platform };
+//# sourceMappingURL=platform.js.map

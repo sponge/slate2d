@@ -97,3 +97,4 @@ class Blobby extends FSMEntity {
     }
 }
 export { Blobby };
+//# sourceMappingURL=blobby.js.map

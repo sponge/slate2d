@@ -24,3 +24,4 @@ class Flamethrower extends Entity {
     die() { }
 }
 export { Flamethrower };
+//# sourceMappingURL=flamethrower.js.map

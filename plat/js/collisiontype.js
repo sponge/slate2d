@@ -6,3 +6,4 @@ var CollisionType;
     CollisionType[CollisionType["Trigger"] = 3] = "Trigger";
 })(CollisionType || (CollisionType = {}));
 export default CollisionType;
+//# sourceMappingURL=collisiontype.js.map

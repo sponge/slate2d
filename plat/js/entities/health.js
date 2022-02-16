@@ -32,3 +32,4 @@ class Health extends Entity {
     }
 }
 export { Health };
+//# sourceMappingURL=health.js.map

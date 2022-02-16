@@ -101,3 +101,4 @@ class LDTK {
     }
 }
 export { LDTK };
+//# sourceMappingURL=ldtk.js.map

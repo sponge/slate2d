@@ -20,3 +20,4 @@ function getOppositeDir(dir) {
     return Dir.None;
 }
 export { clamp, randomRange, entIntersect, rectIntersect, pointInRect, lerp, invLerp, getOppositeDir };
+//# sourceMappingURL=util.js.map

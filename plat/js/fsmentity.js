@@ -56,3 +56,4 @@ class FSMEntity extends Entity {
     }
 }
 export { FSMEntity };
+//# sourceMappingURL=fsmentity.js.map

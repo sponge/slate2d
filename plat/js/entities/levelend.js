@@ -28,3 +28,4 @@ class LevelEnd extends Entity {
     }
 }
 export { LevelEnd };
+//# sourceMappingURL=levelend.js.map

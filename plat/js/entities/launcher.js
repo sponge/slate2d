@@ -20,3 +20,4 @@ class Launcher extends Entity {
     }
 }
 export { Launcher };
+//# sourceMappingURL=launcher.js.map

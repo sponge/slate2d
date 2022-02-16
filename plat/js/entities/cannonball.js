@@ -42,3 +42,4 @@ class Cannonball extends Entity {
     }
 }
 export { Cannonball };
+//# sourceMappingURL=cannonball.js.map

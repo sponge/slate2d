@@ -113,3 +113,4 @@ class Hermit extends FSMEntity {
     }
 }
 export { Hermit };
+//# sourceMappingURL=hermit.js.map

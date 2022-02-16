@@ -30,3 +30,4 @@ const Phys = {
     ]
 };
 export default Phys;
+//# sourceMappingURL=phys.js.map

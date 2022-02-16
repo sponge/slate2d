@@ -80,3 +80,4 @@ class Ghost extends FSMEntity {
     }
 }
 export { Ghost };
+//# sourceMappingURL=ghost.js.map

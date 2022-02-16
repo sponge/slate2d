@@ -25,3 +25,4 @@ class ObjectPool {
     }
 }
 export default ObjectPool;
+//# sourceMappingURL=objectpool.js.map

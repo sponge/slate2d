@@ -4,8 +4,9 @@
     "module": "ES2020",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "outDir": "./js"
+    "outDir": "./js",
+    "sourceMap": true
   },
-  "include": ["./ts/**/*.ts"],
+  "include": ["./js/**/*.ts"],
   "exclude": ["**/*.spec.ts"]
   }

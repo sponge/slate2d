@@ -70,3 +70,4 @@ class Checkpoint extends FSMEntity {
     }
 }
 export { Checkpoint };
+//# sourceMappingURL=checkpoint.js.map

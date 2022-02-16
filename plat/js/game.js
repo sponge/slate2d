@@ -291,3 +291,4 @@ function World() {
     return Main.scene;
 }
 export { Game, World };
+//# sourceMappingURL=game.js.map

@@ -104,3 +104,4 @@ class Sign extends FSMEntity {
     }
 }
 export { Sign };
+//# sourceMappingURL=sign.js.map

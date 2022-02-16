@@ -52,3 +52,4 @@ class Totem extends Entity {
     }
 }
 export { Totem };
+//# sourceMappingURL=totem.js.map

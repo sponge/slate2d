@@ -33,3 +33,4 @@ class CrumblingBlock extends Entity {
     }
 }
 export { CrumblingBlock };
+//# sourceMappingURL=crumblingblock.js.map

@@ -29,3 +29,4 @@ export function loadTilemap(path) {
         height: tilemap.height,
     };
 }
+//# sourceMappingURL=tiled.js.map

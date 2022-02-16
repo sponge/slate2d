@@ -304,3 +304,4 @@ class WorldEnt extends Entity {
 const worldEnt = new WorldEnt({});
 export default Entity;
 export { WorldEnt, Layer };
+//# sourceMappingURL=entity.js.map

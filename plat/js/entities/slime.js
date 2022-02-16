@@ -76,3 +76,4 @@ class Slime extends Entity {
     }
 }
 export { Slime };
+//# sourceMappingURL=slime.js.map

@@ -27,3 +27,4 @@ class Switch extends Entity {
     }
 }
 export { Switch };
+//# sourceMappingURL=switch.js.map

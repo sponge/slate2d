@@ -23,3 +23,4 @@ class Coin extends Entity {
     }
 }
 export { Coin };
+//# sourceMappingURL=coin.js.map

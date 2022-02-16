@@ -83,3 +83,4 @@ class CharginBub extends Bub {
     sprite = Assets.find('charginbub');
 }
 export { Bub, SpikeyBub, CharginBub };
+//# sourceMappingURL=bub.js.map

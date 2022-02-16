@@ -55,3 +55,4 @@ class Spring extends Entity {
     }
 }
 export { Spring };
+//# sourceMappingURL=spring.js.map

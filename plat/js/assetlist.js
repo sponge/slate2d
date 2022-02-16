@@ -233,3 +233,4 @@ function loadAllAssets() {
     }
 }
 export default loadAllAssets;
+//# sourceMappingURL=assetlist.js.map

@@ -34,3 +34,4 @@ class Main {
     }
 }
 export default Main;
+//# sourceMappingURL=main.js.map

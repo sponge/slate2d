@@ -59,3 +59,4 @@ class Camera {
     }
 }
 export default Camera;
+//# sourceMappingURL=camera.js.map

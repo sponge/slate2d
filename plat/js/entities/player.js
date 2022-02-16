@@ -193,3 +193,4 @@ class Player extends Entity {
     }
 }
 export { Player };
+//# sourceMappingURL=player.js.map

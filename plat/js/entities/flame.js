@@ -38,3 +38,4 @@ class Flame extends Entity {
     }
 }
 export { Flame };
+//# sourceMappingURL=flame.js.map

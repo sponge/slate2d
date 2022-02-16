@@ -17,3 +17,4 @@ class PuffParticle extends Entity {
     }
 }
 export { PuffParticle };
+//# sourceMappingURL=puffparticle.js.map

@@ -1,5 +1,5 @@
 version: '{build}'
-image: Visual Studio 2019
+image: Visual Studio 2022
 configuration: Release
 platform: x64
 install:
@@ -10,7 +10,7 @@ install:
 
     7z x premake.zip
 
-    .\premake5.exe vs2019
+    .\premake5.exe vs2012
 
     vcpkg integrate remove
 build:

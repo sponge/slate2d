@@ -32,7 +32,6 @@ workspace "Slate2D"
   targetdir "build/out/%{cfg.architecture}_%{cfg.buildcfg}"
   objdir "build/out/obj"
   startproject "jsgame"
-  toolset "clang"
 
   filter "system:windows"
     platforms { "x86", "x64" }
@@ -60,7 +59,7 @@ workspace "Slate2D"
     files { "src/**.c", "src/**.cpp", "src/**.h", "src/**.hh" }
     -- only used in emscripten build
     removefiles "src/imgui_impl_sdl_es2.cpp"
-    sysincludedirs { "src/external", "libs/sdl", "libs/imgui", "libs/physfs", "libs/soloud/include", "libs/crunch" }
+    externalincludedirs { "src/external", "libs/sdl", "libs/imgui", "libs/physfs", "libs/soloud/include", "libs/crunch" }
     -- physfs uses the exe path by default, but the game data files are in the top folder
     targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
     links { "imgui", "physfs", "soloud", "crunch" }
@@ -124,7 +123,7 @@ workspace "Slate2D"
     cppdialect "C++latest"
     targetname "jslate2d"
     files { "jsgame/**.cpp", "jsgame/**.h" }
-    sysincludedirs { "libs/quickjs", "libs/imgui" }
+    externalincludedirs { "libs/quickjs", "libs/imgui" }
     targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
     debugargs { "+set", "fs.basepath", path.getabsolute(".")}
     links { "imgui", "SDL2main", "libslate2d", "quickjs" }
@@ -175,7 +174,7 @@ workspace "Slate2D"
       kind "StaticLib"
       targetname "soloud_static"
       warnings "Off"
-      sysincludedirs "libs/sdl"
+      externalincludedirs "libs/sdl"
       defines { "MODPLUG_STATIC", "WITH_OPENMPT", "WITH_SDL2_STATIC" }
       files {
         "libs/soloud/src/audiosource/**.c*",
@@ -194,7 +193,7 @@ workspace "Slate2D"
       cppdialect "C++14"
       kind "StaticLib"
       includedirs { "libs/crunch", "src/" }
-      sysincludedirs { "libs/physfs", "libs/imgui", "libs/sdl" }
+      externalincludedirs { "libs/physfs", "libs/imgui", "libs/sdl" }
       files { "libs/crunch/**.cpp", "libs/crunch/**.h", "libs/crunch/**.hpp" }
       warnings "Off"
 

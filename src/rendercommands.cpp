@@ -371,10 +371,6 @@ const void *RB_DrawCircle(const void *data) {
 	rlSetTexture(rlGetTextureIdDefault());
 
 	if (cmd->outline) {
-		if (rlCheckRenderBatchLimit(2 * 36)) {
-			rlDrawRenderBatchActive();
-		}
-
 		rlBegin(RL_LINES);
 		rlColor4ub(state.color[0], state.color[1], state.color[2], state.color[3]);
 
@@ -387,10 +383,6 @@ const void *RB_DrawCircle(const void *data) {
 		rlEnd();
 	}
 	else {
-		if (rlCheckRenderBatchLimit(4 * (36 / 2))) {
-			rlDrawRenderBatchActive();
-		}
-
 		rlBegin(RL_QUADS);
 		for (int i = 0; i < 360; i += 20)
 		{

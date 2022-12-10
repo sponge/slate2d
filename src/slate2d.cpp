@@ -12,8 +12,6 @@
 #ifdef __EMSCRIPTEN__
 #include "GLES2/gl2.h"
 #include "GLES2/gl2ext.h"
-#elif MACOS
-#include <OpenGL/gl3.h>
 #else
 #include "external/glad.h"
 #endif

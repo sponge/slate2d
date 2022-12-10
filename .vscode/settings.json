@@ -82,6 +82,5 @@
     "[typescript]": {
         "editor.formatOnSave": true
     },
-    "lldb.showDisassembly": "never",
-    "lldb.dereferencePointers": true
+    "task.allowAutomaticTasks": "on"
 }

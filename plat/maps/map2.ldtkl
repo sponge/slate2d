@@ -5,7 +5,7 @@
 		"doc": "https://ldtk.io/json",
 		"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
 		"appAuthor": "Sebastien 'deepnight' Benard",
-		"appVersion": "0.10.0-beta1",
+		"appVersion": "1.1.3",
 		"url": "https://ldtk.io"
 	},
 	"identifier": "map2",
@@ -61,6 +61,7 @@
 					"__pivot": [0.5,1],
 					"__tags": [],
 					"__tile": null,
+					"__smartColor": "#94D9B3",
 					"iid": "81892c51-8dc0-11ec-b9b6-6732b1b5fa5b",
 					"width": 12,
 					"height": 14,

@@ -67,13 +67,8 @@ class Player extends Entity {
 
   getJumpHeight(speed: number) {
     speed = Math.abs(speed);
-    for (const [checkSpeed, height] of Phys.jumpHeights) {
-      if (Math.abs(speed) >= checkSpeed) {
-        return height;
-      }
-    }
-
-    return Phys.jumpHeights[0][1];
+    const jh = Phys.jumpHeights.find(j => Math.abs(speed) >= j[1]);
+    return jh ? jh[1] : Phys.jumpHeights[0][1];
   }
 
   stompEnemy() {

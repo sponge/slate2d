@@ -52,7 +52,7 @@ class Sign extends FSMEntity {
                 World().state.paused = true;
             },
             draw: () => {
-                const t = (this.ticks - this.startStateTime) / this.signTime;
+                const t = clamp((this.ticks - this.startStateTime) / this.signTime, 0, 1);
                 const w = lerp(0, this.signW, t);
                 const h = lerp(0, this.signH, t);
                 const x = this.signX + (this.signW - w) / 2;

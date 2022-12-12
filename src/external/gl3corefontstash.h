@@ -36,142 +36,142 @@ FONS_DEF unsigned int glfonsRGBA(unsigned char r, unsigned char g, unsigned char
 #ifdef GLFONTSTASH_IMPLEMENTATION
 
 struct GLFONScontext {
-	GLuint tex;
-	int width, height;
+  GLuint tex;
+  int width, height;
 };
 typedef struct GLFONScontext GLFONScontext;
 
 static int glfons__renderCreate(void* userPtr, int width, int height)
 {
-	GLFONScontext* gl = (GLFONScontext*)userPtr;
+  GLFONScontext* gl = (GLFONScontext*)userPtr;
 
-	// Create may be called multiple times, delete existing texture.
-	if (gl->tex != 0) {
-		glDeleteTextures(1, &gl->tex);
-		gl->tex = 0;
-	}
+  // Create may be called multiple times, delete existing texture.
+  if (gl->tex != 0) {
+    glDeleteTextures(1, &gl->tex);
+    gl->tex = 0;
+  }
 
-	gl->tex = rlLoadTexture(nullptr, width, height, RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8, 1);
-	if (!gl->tex) return 0;
+  gl->tex = rlLoadTexture(nullptr, width, height, RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8, 1);
+  if (!gl->tex) return 0;
 
-	gl->width = width;
-	gl->height = height;
+  gl->width = width;
+  gl->height = height;
 
-	return 1;
+  return 1;
 }
 
 static int glfons__renderResize(void* userPtr, int width, int height)
 {
-	// Reuse create to resize too.
-	return glfons__renderCreate(userPtr, width, height);
+  // Reuse create to resize too.
+  return glfons__renderCreate(userPtr, width, height);
 }
 
 static void glfons__renderUpdate(void* userPtr, int* rect, const FONScolor* data)
 {
-	GLFONScontext* gl = (GLFONScontext*)userPtr;
-	int w = rect[2] - rect[0];
-	int h = rect[3] - rect[1];
+  GLFONScontext* gl = (GLFONScontext*)userPtr;
+  int w = rect[2] - rect[0];
+  int h = rect[3] - rect[1];
 
-	if (gl->tex == 0) return;
+  if (gl->tex == 0) return;
 
-	// Push old values
-	GLint alignment, rowLength, skipPixels, skipRows;
-	glGetIntegerv(GL_UNPACK_ALIGNMENT, &alignment);
-	glGetIntegerv(GL_UNPACK_ROW_LENGTH, &rowLength);
-	glGetIntegerv(GL_UNPACK_SKIP_PIXELS, &skipPixels);
-	glGetIntegerv(GL_UNPACK_SKIP_ROWS, &skipRows);
+  // Push old values
+  GLint alignment, rowLength, skipPixels, skipRows;
+  glGetIntegerv(GL_UNPACK_ALIGNMENT, &alignment);
+  glGetIntegerv(GL_UNPACK_ROW_LENGTH, &rowLength);
+  glGetIntegerv(GL_UNPACK_SKIP_PIXELS, &skipPixels);
+  glGetIntegerv(GL_UNPACK_SKIP_ROWS, &skipRows);
 
-	glBindTexture(GL_TEXTURE_2D, gl->tex);
+  glBindTexture(GL_TEXTURE_2D, gl->tex);
 
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, gl->width);
-	glPixelStorei(GL_UNPACK_SKIP_PIXELS, rect[0]);
-	glPixelStorei(GL_UNPACK_SKIP_ROWS, rect[1]);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  glPixelStorei(GL_UNPACK_ROW_LENGTH, gl->width);
+  glPixelStorei(GL_UNPACK_SKIP_PIXELS, rect[0]);
+  glPixelStorei(GL_UNPACK_SKIP_ROWS, rect[1]);
 
-	#if FONS_OPTIONS_RGBA_COLORS
-		glTexSubImage2D(GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, GL_RGBA, GL_UNSIGNED_BYTE, data);
-	#else
-		glTexSubImage2D(GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, GL_RED, GL_UNSIGNED_BYTE, data);
-	#endif
+  #if FONS_OPTIONS_RGBA_COLORS
+    glTexSubImage2D(GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, GL_RGBA, GL_UNSIGNED_BYTE, data);
+  #else
+    glTexSubImage2D(GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, GL_RED, GL_UNSIGNED_BYTE, data);
+  #endif
 
-	// Pop old values
-	glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, rowLength);
-	glPixelStorei(GL_UNPACK_SKIP_PIXELS, skipPixels);
-	glPixelStorei(GL_UNPACK_SKIP_ROWS, skipRows);
+  // Pop old values
+  glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
+  glPixelStorei(GL_UNPACK_ROW_LENGTH, rowLength);
+  glPixelStorei(GL_UNPACK_SKIP_PIXELS, skipPixels);
+  glPixelStorei(GL_UNPACK_SKIP_ROWS, skipRows);
 }
 
 static void glfons__renderDraw(void* userPtr, const float* verts, const float* tcoords, const unsigned int* colors, int nverts)
 {
-	GLFONScontext* gl = (GLFONScontext*)userPtr;
-	if (gl->tex == 0) return;
+  GLFONScontext* gl = (GLFONScontext*)userPtr;
+  if (gl->tex == 0) return;
 
-	// FIXME: probably can check for buffer space instead
-	rlDrawRenderBatchActive();
+  // FIXME: probably can check for buffer space instead
+  rlDrawRenderBatchActive();
 
-	rlBegin(RL_TRIANGLES);
-	rlSetTexture(gl->tex);
+  rlBegin(RL_TRIANGLES);
+  rlSetTexture(gl->tex);
 
-	for (int i = 0; i < nverts; i++) {
-		unsigned char r = colors[i] >> 0 & 255;
-		unsigned char g = colors[i] >> 8 & 255;
-		unsigned char b = colors[i] >> 16 & 255;
-		unsigned char a = colors[i] >> 24 & 255;
-		rlColor4ub(r, g, b, a);
-		rlTexCoord2f(tcoords[i * 2 + 0], tcoords[i * 2 + 1]);
-		rlVertex2f(verts[i * 2 + 0], verts[i * 2 + 1]);
-	}
-	
-	rlDisableTexture();
-	rlEnd();
+  for (int i = 0; i < nverts; i++) {
+    unsigned char r = colors[i] >> 0 & 255;
+    unsigned char g = colors[i] >> 8 & 255;
+    unsigned char b = colors[i] >> 16 & 255;
+    unsigned char a = colors[i] >> 24 & 255;
+    rlColor4ub(r, g, b, a);
+    rlTexCoord2f(tcoords[i * 2 + 0], tcoords[i * 2 + 1]);
+    rlVertex2f(verts[i * 2 + 0], verts[i * 2 + 1]);
+  }
+  
+  rlDisableTexture();
+  rlEnd();
 }
 
 static void glfons__renderDelete(void* userPtr)
 {
-	GLFONScontext* gl = (GLFONScontext*)userPtr;
-	if (gl->tex != 0) {
-		glDeleteTextures(1, &gl->tex);
-		gl->tex = 0;
-	}
+  GLFONScontext* gl = (GLFONScontext*)userPtr;
+  if (gl->tex != 0) {
+    glDeleteTextures(1, &gl->tex);
+    gl->tex = 0;
+  }
 
-	free(gl);
+  free(gl);
 }
 
 FONS_DEF FONScontext* glfonsCreate(int width, int height, int flags)
 {
-	FONSparams params;
-	GLFONScontext* gl;
+  FONSparams params;
+  GLFONScontext* gl;
 
-	gl = (GLFONScontext*)malloc(sizeof(GLFONScontext));
-	if (gl == NULL) goto error;
-	memset(gl, 0, sizeof(GLFONScontext));
+  gl = (GLFONScontext*)malloc(sizeof(GLFONScontext));
+  if (gl == NULL) goto error;
+  memset(gl, 0, sizeof(GLFONScontext));
 
-	memset(&params, 0, sizeof(params));
-	params.width = width;
-	params.height = height;
-	params.flags = (unsigned char)flags;
-	params.renderCreate = glfons__renderCreate;
-	params.renderResize = glfons__renderResize;
-	params.renderUpdate = glfons__renderUpdate;
-	params.renderDraw = glfons__renderDraw; 
-	params.renderDelete = glfons__renderDelete;
-	params.userPtr = gl;
+  memset(&params, 0, sizeof(params));
+  params.width = width;
+  params.height = height;
+  params.flags = (unsigned char)flags;
+  params.renderCreate = glfons__renderCreate;
+  params.renderResize = glfons__renderResize;
+  params.renderUpdate = glfons__renderUpdate;
+  params.renderDraw = glfons__renderDraw; 
+  params.renderDelete = glfons__renderDelete;
+  params.userPtr = gl;
 
-	return fonsCreateInternal(&params);
+  return fonsCreateInternal(&params);
 
 error:
-	if (gl != NULL) free(gl);
-	return NULL;
+  if (gl != NULL) free(gl);
+  return NULL;
 }
 
 FONS_DEF void glfonsDelete(FONScontext* ctx)
 {
-	fonsDeleteInternal(ctx);
+  fonsDeleteInternal(ctx);
 }
 
 FONS_DEF unsigned int glfonsRGBA(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
-	return (r) | (g << 8) | (b << 16) | (a << 24);
+  return (r) | (g << 8) | (b << 16) | (a << 24);
 }
 
 #endif // GLFONTSTASH_IMPLEMENTATION

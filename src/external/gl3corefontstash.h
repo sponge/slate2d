@@ -51,21 +51,11 @@ static int glfons__renderCreate(void* userPtr, int width, int height)
 		gl->tex = 0;
 	}
 
-	glGenTextures(1, &gl->tex);
+	gl->tex = rlLoadTexture(nullptr, width, height, RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8, 1);
 	if (!gl->tex) return 0;
 
 	gl->width = width;
 	gl->height = height;
-	glBindTexture(GL_TEXTURE_2D, gl->tex);
-	#if FONS_OPTIONS_RGBA_COLORS
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, gl->width, gl->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	#else
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, gl->width, gl->height, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
-    static GLint swizzleRgbaParams[4] = {GL_ONE, GL_ONE, GL_ONE, GL_RED};
-    glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleRgbaParams);
-	#endif
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	return 1;
 }
@@ -101,7 +91,7 @@ static void glfons__renderUpdate(void* userPtr, int* rect, const FONScolor* data
 	#if FONS_OPTIONS_RGBA_COLORS
 		glTexSubImage2D(GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	#else
-	glTexSubImage2D(GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, GL_RED, GL_UNSIGNED_BYTE, data);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, GL_RED, GL_UNSIGNED_BYTE, data);
 	#endif
 
 	// Pop old values

@@ -19,6 +19,7 @@
                     "${workspaceRoot}"
                 ]
             },
+            "compilerPath": "/usr/bin/clang",
             "intelliSenseMode": "clang-arm64",
             "macFrameworkPath": [
                 "/System/Library/Frameworks",

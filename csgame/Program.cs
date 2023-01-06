@@ -11,7 +11,9 @@ while (true)
         break;
     }
 
-    DC.Clear(60, 30, 30, 255);
+    Game.Update(dt);
+
+    Game.Draw();
 
     DC.Submit();
 

@@ -40,6 +40,7 @@
 
 #include <imgui.h>
 #include "imgui_impl_sdl.h"
+#include "imgui_impl_opengl3.h"
 
 #include "files.h"
 #include "input.h"
@@ -205,7 +206,7 @@ SLT_API double SLT_StartFrame() {
 
 	SDL_Event ev;
 	while (SDL_PollEvent(&ev)) {
-		ImGui_ImplSdl_ProcessEvent(&ev);
+		ImGui_ImplSDL2_ProcessEvent(&ev);
 
 		switch (ev.type) {
 		case SDL_QUIT:
@@ -232,7 +233,9 @@ SLT_API double SLT_StartFrame() {
 
 	FileWatcher_Tick();
 	
-	ImGui_ImplSdl_NewFrame(window);
+    ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+	ImGui::NewFrame();
 
 	if (eng_errorMessage->string[0] != '\0') {
 		ImGui::SetNextWindowPos(ImVec2(vid_width->integer / 2, vid_height->integer / 2), 0, ImVec2(0.5, 0.5));
@@ -276,7 +279,7 @@ SLT_API void SLT_EndFrame() {
 	Asset_DrawInspector();
 
 	ImGui::Render();
-	ImGui_ImplSdl_RenderDrawData(ImGui::GetDrawData());
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	if (debug_fontAtlas->integer) {
 		rlLoadIdentity();
@@ -412,8 +415,33 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 
 	SDL_GL_MakeCurrent(window, context);
 
+    // Decide GL+GLSL versions
+#if defined(IMGUI_IMPL_OPENGL_ES2)
+	// GL ES 2.0 + GLSL 100
+	const char *glsl_version = "#version 100";
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#elif defined(__APPLE__)
+	// GL 3.2 Core + GLSL 150
+	const char *glsl_version = "#version 150";
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+#else
+	// GL 3.0 + GLSL 130
+	const char *glsl_version = "#version 130";
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#endif
+
 	ImGui::CreateContext();
-	ImGui_ImplSdl_Init(window);
+	ImGui_ImplSDL2_InitForOpenGL(window, context);
+	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	ImGui::StyleColorsDark();
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
@@ -438,7 +466,7 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 SLT_API void SLT_Shutdown() {
 	Con_Shutdown();
 	Asset_ClearAll();
-	ImGui_ImplSdl_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 	SDL_GL_DeleteContext(context);
 }

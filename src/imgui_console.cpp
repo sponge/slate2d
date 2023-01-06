@@ -82,7 +82,7 @@ void ConsoleUI::Draw(int width, int height) {
 	Con_SetVarFloat("con.active", consoleActive);
 	if (vid_showfps->integer || eng_pause->integer) {
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10, 2));
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 		ImGui::SetNextWindowPos(ImVec2((float)width - 80, 0.0f));
 		ImGui::SetNextWindowSize(ImVec2(80, 0));
 		ImGui::Begin("##fps", 0, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoFocusOnAppearing);

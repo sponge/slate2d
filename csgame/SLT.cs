@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Slate2D
 {
-    internal partial class SLT
+    public partial class SLT
     {
         private const string LibName = "slate2d.dll";
 
@@ -14,5 +14,28 @@ namespace Slate2D
             string[] sltargs = args.Prepend(Environment.ProcessPath ?? ".").ToArray();
             _Init(sltargs.Length, sltargs);
         }
+
+        [LibraryImport(LibName, EntryPoint = "SLT_Shutdown")]
+        public static partial void Shutdown();
+
+        [LibraryImport(LibName, EntryPoint = "SLT_StartFrame")]
+        public static partial double StartFrame();
+
+        [LibraryImport(LibName, EntryPoint = "SLT_EndFrame")]
+        public static partial void EndFrame();
+
+        [LibraryImport(LibName, EntryPoint = "SLT_UpdateLastFrameTime")]
+        public static partial void UpdateLastFrameTime();
+    }
+
+    public partial class DC
+    {
+        private const string LibName = "slate2d.dll";
+
+        [LibraryImport(LibName, EntryPoint = "DC_Submit")]
+        public static partial void Submit();
+
+        [LibraryImport(LibName, EntryPoint = "DC_Clear")]
+        public static partial void Clear(byte r, byte g, byte b, byte a);
     }
 }

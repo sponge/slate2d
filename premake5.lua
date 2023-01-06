@@ -14,7 +14,6 @@ premake.override(premake.vstudio.dotnetbase, "projectProperties", function(base,
     premake.w('  <PropertyGroup>')
     premake.w('    <ImplicitUsings>enable</ImplicitUsings>')
     premake.w('    <Nullable>enable</Nullable>')
-    premake.w('    <RootNamespace>Slate2D</RootNamespace>')
     premake.w('    <PublishTrimmed>true</PublishTrimmed>')
     premake.w('    <PublishRelease>true</PublishRelease>')
     premake.w('    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>')

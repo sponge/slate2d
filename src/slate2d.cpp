@@ -416,7 +416,7 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 	ImGui_ImplSdl_Init(window);
 
 	ImGui::StyleColorsDark();
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 
 	ImGuiIO& io = ImGui::GetIO();
 

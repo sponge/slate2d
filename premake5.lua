@@ -1,8 +1,33 @@
 require('vstudio')
 
-premake.override(premake.vstudio.vc2010, "languageStandard", function(base, prj)
-  if prj.filename == "quickjs" or prj.filename == "jsgame" then
-    premake.w('<LanguageStandard_C>stdc11</LanguageStandard_C>')
+premake.override(premake.vstudio.vc2010.elements, "globals", function(base, prg)
+    local calls = base(prj)
+    table.insertafter(calls, premake.vstudio.vc2010.globals, function(prj)
+      -- can't build c++ due to a really annoying nuget issue even though nuget shouldn't be enabled
+      premake.w('<ResolveNuGetPackages>false</ResolveNuGetPackages>')
+    end)
+    return calls
+end)
+
+premake.override(premake.vstudio.dotnetbase, "projectProperties", function(base, prj)
+  if prj.filename == 'csgame' then
+    premake.w('  <PropertyGroup>')
+    premake.w('    <ImplicitUsings>enable</ImplicitUsings>')
+    premake.w('    <Nullable>enable</Nullable>')
+    premake.w('    <RootNamespace>Slate2D</RootNamespace>')
+    premake.w('    <PublishTrimmed>true</PublishTrimmed>')
+    premake.w('    <PublishRelease>true</PublishRelease>')
+    premake.w('    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>')
+    premake.w('    <Platforms>x86;x64</Platforms>')
+    -- premake.w('    <PublishAot>true</PublishAot>')
+    premake.w('  </PropertyGroup>')
+
+    premake.w('  <ItemGroup>')
+    premake.w('    <ContentWithTargetPath Include="../build/bin/x86_64_$(Configuration)/*.dll">')
+    premake.w('    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>')
+    premake.w('    <TargetPath>%%(Filename)%%(Extension)</TargetPath>')
+    premake.w('    </ContentWithTargetPath>')
+    premake.w('  </ItemGroup>')
   end
   base(prj)
 end)
@@ -22,6 +47,12 @@ newoption {
 newoption {
   trigger = "static",
   description = "compiles slate2d as a static library",
+  default = false
+}
+
+newoption {
+  trigger = "dotnet",
+  description = "generate slate2d-cs project",
   default = false
 }
 
@@ -117,37 +148,49 @@ workspace "Slate2D"
       kind "StaticLib"
       defines "SLT_STATIC"
 
-  project "jsgame"
-    kind "ConsoleApp"
-    language "C++"
-    cppdialect "C++latest"
-    targetname "jslate2d"
-    files { "jsgame/**.cpp", "jsgame/**.h" }
-    externalincludedirs { "libs/quickjs", "libs/imgui" }
-    targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
-    debugargs { "+set", "fs.basepath", path.getabsolute(".")}
-    links { "imgui", "SDL2main", "libslate2d", "quickjs" }
+  if not _OPTIONS['dotnet'] then
+    project "jsgame"
+      kind "ConsoleApp"
+      language "C++"
+      cppdialect "C++latest"
+      cdialect "C11"
+      targetname "jslate2d"
+      files { "jsgame/**.cpp", "jsgame/**.h" }
+      externalincludedirs { "libs/quickjs", "libs/imgui" }
+      targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
+      debugargs { "+set", "fs.basepath", path.getabsolute(".")}
+      links { "imgui", "SDL2main", "libslate2d", "quickjs" }
 
-    filter { "platforms:x86", "system:windows" }
-      libdirs "libs/sdl/lib/Win32"
+      filter { "platforms:x86", "system:windows" }
+        libdirs "libs/sdl/lib/Win32"
 
-    filter { "platforms:x64", "system:windows" }
-      libdirs "libs/sdl/lib/x64"
+      filter { "platforms:x64", "system:windows" }
+        libdirs "libs/sdl/lib/x64"
 
-    filter "system:windows"
-      defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE" }
-      links { "ws2_32" }
+      filter "system:windows"
+        defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE" }
+        links { "ws2_32" }
 
-    -- use SDL2 from homebrew
-    filter { "system:macosx", "platforms:arm64" }
-      linkoptions {"-stdlib=libc++", "-L /opt/homebrew/lib" }
+      -- use SDL2 from homebrew
+      filter { "system:macosx", "platforms:arm64" }
+        linkoptions {"-stdlib=libc++", "-L /opt/homebrew/lib" }
 
-    filter { "system:macosx", "platforms:x64" }
-      linkoptions {"-stdlib=libc++", "-L /usr/local/lib" }
-      
-    filter "options:static"
-      defines "SLT_STATIC"
-     
+      filter { "system:macosx", "platforms:x64" }
+        linkoptions {"-stdlib=libc++", "-L /usr/local/lib" }
+        
+      filter "options:static"
+        defines "SLT_STATIC"
+  end
+
+  if _OPTIONS['dotnet'] then
+    project "csgame"
+      language "c#"
+      kind "WindowedApp"
+      framework "net7.0"
+      links "libslate2d"
+      files { "csgame/**.cs" }
+  end
+
   group "libraries"
 
     project "imgui"
@@ -181,7 +224,7 @@ workspace "Slate2D"
         "libs/soloud/src/filter/**.c*",
         "libs/soloud/src/core/**.c*",
         "libs/soloud/src/backend/sdl2_static/**.c*"
-	    }
+      }
       includedirs {
         "libs/soloud/src/**",
         "libs/soloud/include",
@@ -199,6 +242,7 @@ workspace "Slate2D"
 
     project "quickjs"
       kind "StaticLib"
+      cdialect "C11"
       files { "libs/quickjs/**.c", "libs/quickjs/**.h" }
       defines { "CONFIG_VERSION=\"2020-11-08\"" }
       warnings "Off"

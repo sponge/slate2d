@@ -37,5 +37,8 @@ namespace Slate2D
 
         [LibraryImport(LibName, EntryPoint = "DC_Clear")]
         public static partial void Clear(byte r, byte g, byte b, byte a);
+
+        [LibraryImport(LibName, EntryPoint = "DC_DrawRect")]
+        public static partial void DrawRect(float x, float y, float w, float h, [MarshalAs(UnmanagedType.U1)] bool outline);
     }
 }

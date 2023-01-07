@@ -1,4 +1,5 @@
 using Slate2D;
+using ImGuiNET;
 
 SLT.Init(args);
 
@@ -10,6 +11,10 @@ while (true)
         SLT.EndFrame();
         break;
     }
+
+    ImGui.Begin("hello");
+    ImGui.Button("button");
+    ImGui.End();
 
     Game.Update(dt);
 

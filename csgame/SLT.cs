@@ -5,7 +5,7 @@ namespace Slate2D
 {
     public partial class SLT
     {
-        private const string LibName = "slate2d.dll";
+        private const string LibName = "slate2d";
 
         [LibraryImport(LibName, EntryPoint = "SLT_Init", StringMarshalling = StringMarshalling.Utf8)]
         private static partial void _Init(int argc, [MarshalAs(UnmanagedType.LPArray)] string[] argv);
@@ -30,7 +30,7 @@ namespace Slate2D
 
     public partial class DC
     {
-        private const string LibName = "slate2d.dll";
+        private const string LibName = "slate2d";
 
         [LibraryImport(LibName, EntryPoint = "DC_Submit")]
         public static partial void Submit();

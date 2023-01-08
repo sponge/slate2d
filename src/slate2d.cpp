@@ -37,6 +37,7 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
+#include <SDL/SDL_log.h>
 
 #include <imgui.h>
 #include "imgui_impl_sdl.h"
@@ -146,7 +147,7 @@ void Cmd_Clear_f() {
 
 void ConH_Print(const char *line) {
 	IMConsole()->AddLog("%s", line);
-	printf("%s", line);
+	SDL_Log("%s", line);
 }
 
 // note that my console doens't support logging levels, so bypass

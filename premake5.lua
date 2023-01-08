@@ -194,6 +194,7 @@ workspace "Slate2D"
 
     project "imgui"
       language "C++"
+      cppdialect "C++11"
       kind "StaticLib"
       files { "libs/imgui/**.cpp", "libs/imgui/**.h" }
       warnings "Off"

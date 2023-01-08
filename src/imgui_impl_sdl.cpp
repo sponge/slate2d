@@ -68,7 +68,9 @@
 
 // SDL
 #include "../libs/sdl/SDL/SDL.h"
+#ifdef _MSC_VER
 #include "../libs/sdl/SDL/SDL_syswm.h"
+#endif
 #if defined(__APPLE__)
 #include <TargetConditionals.h>
 #endif

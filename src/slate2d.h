@@ -23,7 +23,7 @@ const char * __cdecl tempstr(const char *format, ...);
 
 // ASSETS
 
-typedef int AssetHandle;
+typedef uint32_t AssetHandle;
 
 // returned if a given asset is not found
 #define INVALID_ASSET -1

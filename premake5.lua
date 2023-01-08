@@ -188,6 +188,7 @@ workspace "Slate2D"
       framework "net7.0"
       links "libslate2d"
       files { "csgame/**.cs" }
+      disablewarnings { "CS8625", "CS8600", "CS8604" } -- disable some warnings in imgui.net
   end
 
   group "libraries"

@@ -50,7 +50,7 @@ newoption {
 }
 
 newoption {
-  trigger = "dotnet",
+  trigger = "csgame",
   description = "generate slate2d-cs project",
   default = false
 }
@@ -147,7 +147,7 @@ workspace "Slate2D"
       kind "StaticLib"
       defines "SLT_STATIC"
 
-  if not _OPTIONS['dotnet'] then
+  if not _OPTIONS['csgame'] then
     project "jsgame"
       kind "ConsoleApp"
       language "C++"
@@ -181,7 +181,7 @@ workspace "Slate2D"
         defines "SLT_STATIC"
   end
 
-  if _OPTIONS['dotnet'] then
+  if _OPTIONS['csgame'] then
     project "csgame"
       language "c#"
       kind "WindowedApp"

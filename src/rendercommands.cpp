@@ -313,7 +313,7 @@ const void *RB_DrawImage(const void *data) {
 		DrawImage(cmd->x, cmd->y, w, h, cmd->ox, cmd->oy, cmd->scale, flipBits, canvas->texId, canvas->w, canvas->h);
 	}
 	else {
-		Image *image = Get_Img(cmd->imgId);
+		const Image *image = Get_Img(cmd->imgId);
 		float w = cmd->w == 0 ? image->w : cmd->w;
 		float h = cmd->h == 0 ? image->h : cmd->h;
 		DrawImage(cmd->x, cmd->y, w, h, cmd->ox, cmd->oy, cmd->scale, cmd->flipBits, image->hnd, image->w, image->h);

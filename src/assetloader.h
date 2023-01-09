@@ -33,7 +33,7 @@ Image* Img_LoadPath(const char *path, int flags = 0);
 void Img_Free(Asset &asset);
 void Img_Reload(Asset &asset);
 void Img_ParseINI(Asset &asset, ini_t *ini);
-Image* Get_Img(AssetHandle id);
+const Image* Get_Img(AssetHandle id);
 void Img_Inspect(Asset& asset, bool deselected);
 
 // sprite assets

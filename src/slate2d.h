@@ -253,6 +253,9 @@ SLT_API const char* SLT_Asset_BreakString(int width, const char* in);
 // returns image metrics for a given asset handle. 
 SLT_API const Image* SLT_Get_Img(AssetHandle id);
 
+// returns image size for a given asset handle.
+SLT_API Dimensions SLT_Get_ImgSize(AssetHandle id);
+
 // plays an ASSET_SPEECH, ASSET_SOUND, or ASSET_MOD at the given settings. returns a handle that can be used to
 // call SLT_Snd_Stop or SLT_Snd_PauseResume with.
 SLT_API unsigned int SLT_Snd_Play(AssetHandle asset, float volume, float pan, uint8_t loop);

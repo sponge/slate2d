@@ -80,10 +80,16 @@ void Img_ParseINI(Asset &asset, ini_t *ini) {
 	}
 }
 
-Image* Get_Img(AssetHandle id) {
+const Image* Get_Img(AssetHandle id) {
 	Asset* asset = Asset_Get(ASSET_IMAGE, id);
 	assert(asset != nullptr && asset->resource != nullptr);
-	return (Image*) asset->resource;
+	return (const Image*) asset->resource;
+}
+
+Dimensions SLT_Get_ImgSize(AssetHandle id) {
+  const Image *img = Get_Img(id);
+
+  return {img->w, img->h};
 }
 
 void Img_Inspect(Asset& asset, bool deselected) {

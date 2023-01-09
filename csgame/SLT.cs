@@ -1,43 +1,43 @@
 global using AssetHandle = System.UInt32;
+global using SoundPlayHandle = System.UInt32;
+using System;
 using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Slate2D
 {
-    public record Asset
+    public record AssetConfig
     {
-        public record Image(string name, string path, bool linearFilter = false) : Asset();
-        public record Sprite(string name, string path, int spriteWidth, int spriteHeight, int marginX, int marginY) : Asset();
-        public record Speech(string name, string text) : Asset();
-        public record Sound(string name, string path) : Asset();
-        public record Mod(string name, string path) : Asset();
-        public record Font(string name, string path) : Asset();
-        public record BitmapFont(string name, string path, string glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight) : Asset();
-        public record Canvas(string name, int width, int height) : Asset();
-        public record Shader(string name, bool isFile, string vs, string fs) : Asset();
+        public record Image(string name, string path, bool linearFilter = false) : AssetConfig();
+        public record Sprite(string name, string path, int spriteWidth, int spriteHeight, int marginX, int marginY) : AssetConfig();
+        public record Speech(string name, string text) : AssetConfig();
+        public record Sound(string name, string path) : AssetConfig();
+        public record Mod(string name, string path) : AssetConfig();
+        public record Font(string name, string path) : AssetConfig();
+        public record BitmapFont(string name, string path, string glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight) : AssetConfig();
+        public record Canvas(string name, int width, int height) : AssetConfig();
+        public record Shader(string name, bool isFile, string vs, string fs) : AssetConfig();
 
-        private Asset() { }
+        AssetConfig() { }
     }
 
     public struct Position
     {
-        public int x;
-        public int y;
+        public int x, y;
     }
 
     public struct Dimensions
     {
-        public int w;
-        public int h;
+        public int w, h;
     }
 
     public partial class SLT
     {
-        private const string LibName = "slate2d";
+        const string LibName = "slate2d";
 
         [LibraryImport(LibName, EntryPoint = "SLT_Init", StringMarshalling = StringMarshalling.Utf8)]
-        private static partial void _Init(int argc, [MarshalAs(UnmanagedType.LPArray)] string[] argv);
+        static partial void _Init(int argc, [MarshalAs(UnmanagedType.LPArray)] string[] argv);
 
         public static void Init(string[] args)
         {
@@ -57,80 +57,185 @@ namespace Slate2D
         [LibraryImport(LibName, EntryPoint = "SLT_UpdateLastFrameTime")]
         public static partial void UpdateLastFrameTime();
 
+        [LibraryImport(LibName, EntryPoint = "SLT_SetWindowTitle", StringMarshalling = StringMarshalling.Utf8)]
+        public static partial void SetWindowTitle(string title);
+
         [LibraryImport(LibName, EntryPoint = "SLT_GetResolution")]
         public static partial Dimensions GetResolution();
+
+    }
+
+    public partial class SLTCon
+    {
+        const string LibName = "slate2d";
+
+        [LibraryImport(LibName, EntryPoint = "SLT_Print", StringMarshalling = StringMarshalling.Utf8)]
+        static partial void _Print(string fmt, string arg1);
+
+        public static void Print(string str)
+        {
+            _Print("%s", str);
+        }
+
+        // SLT_API void SLT_SendConsoleCommand(const char* text);
+
+        // SLT_API void SLT_Con_SetErrorHandler(void(*errHandler)(int level, const char *msg));
+
+        // SLT_API void SLT_Con_SetDefaultCommandHandler(bool(*cmdHandler)());
+
+        // SLT_API void SLT_Error(int level, const char* error, ...);
+
+        // SLT_API const conVar_t* SLT_Con_GetVarDefault(const char* var_name, const char* var_value, int flags);
+
+        // SLT_API const conVar_t* SLT_Con_GetVar(const char* name);
+
+        // SLT_API const conVar_t* SLT_Con_SetVar(const char* var_name, const char* value);
+
+        // SLT_API int SLT_Con_GetArgCount(void);
+
+        // SLT_API const char* SLT_Con_GetArg(int arg);
+
+        // SLT_API const char* SLT_Con_GetArgs(int start);
+
+        // SLT_API void SLT_Con_AddCommand(const char* name, conCmd_t cmd);
+    }
+
+    public partial class FS
+    {
+        // SLT_API int SLT_FS_ReadFile(const char* path, void** buffer);
+
+        // SLT_API int SLT_FS_WriteFile(const char* filename, const void* data, int len);
+
+        // SLT_API const char* SLT_FS_RealDir(const char* path);
+
+        // SLT_API uint8_t SLT_FS_Exists(const char* file);
+
+        // SLT_API char** SLT_FS_List(const char* path);
+
+        // SLT_API void SLT_FS_FreeList(void* listVar);
+    }
+
+    public struct AnalogAxes
+    {
+        public float leftX, leftY;
+        public float rightX, rightY;
+        public float triggerLeft, triggerRight;
+    }
+
+    public enum Buttons
+    {
+        Up,
+        Down,
+        Left,
+        Right,
+        A,
+        B,
+        X,
+        Y,
+        L,
+        R,
+        Start,
+        Select
+    }
+
+    public partial class Input
+    {
+        const string LibName = "slate2d";
+
+        // static partial void SLT_In_AllocateButtons(const char** buttonNames, int buttonCount);
+
+        // static partial const buttonState_t* SLT_In_GetButton(int buttonNum);
+
+        [LibraryImport(LibName, EntryPoint = "SLT_In_ButtonPressed")]
+        [return: MarshalAs(UnmanagedType.I1)]
+        public static partial bool ButtonPressed(int buttonNum, uint delay = 0, int repeat = 0);
+
+        [LibraryImport(LibName, EntryPoint = "SLT_In_MousePosition")]
+        public static partial Position MousePosition();
+
+        [LibraryImport(LibName, EntryPoint = "SLT_In_ControllerAnalog")]
+        public static partial AnalogAxes ControllerAnalog(int controllerNum);
     }
 
     public partial class Assets
     {
-        private const string LibName = "slate2d.dll";
+        const string LibName = "slate2d";
 
-        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadImage")]
-        private static partial AssetHandle _LoadImage([MarshalAs(UnmanagedType.LPWStr)] string name, [MarshalAs(UnmanagedType.LPWStr)] string path, [MarshalAs(UnmanagedType.U1)] bool linearFilter);
+        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadImage", StringMarshalling = StringMarshalling.Utf8)]
+        private static partial AssetHandle _LoadImage(string name, string path, [MarshalAs(UnmanagedType.U1)] bool linearFilter);
 
-        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadSprite")]
-        private static partial AssetHandle _LoadSprite([MarshalAs(UnmanagedType.LPWStr)] string name, [MarshalAs(UnmanagedType.LPWStr)] string path, int spriteWidth, int spriteHeight, int marginX, int marginY);
+        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadSprite", StringMarshalling = StringMarshalling.Utf8)]
+        private static partial AssetHandle _LoadSprite(string name, string path, int spriteWidth, int spriteHeight, int marginX, int marginY);
 
-        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadSpeech")]
-        private static partial AssetHandle _LoadSpeech([MarshalAs(UnmanagedType.LPWStr)] string name, [MarshalAs(UnmanagedType.LPWStr)] string text);
+        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadSpeech", StringMarshalling = StringMarshalling.Utf8)]
+        private static partial AssetHandle _LoadSpeech(string name, string text);
 
-        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadSound")]
-        private static partial AssetHandle _LoadSound([MarshalAs(UnmanagedType.LPWStr)] string name, [MarshalAs(UnmanagedType.LPWStr)] string path);
+        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadSound", StringMarshalling = StringMarshalling.Utf8)]
+        private static partial AssetHandle _LoadSound(string name, string path);
 
-        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadMod")]
-        private static partial AssetHandle _LoadMod([MarshalAs(UnmanagedType.LPWStr)] string name, [MarshalAs(UnmanagedType.LPWStr)] string path);
+        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadMod", StringMarshalling = StringMarshalling.Utf8)]
+        private static partial AssetHandle _LoadMod(string name, string path);
 
-        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadFont")]
-        private static partial AssetHandle _LoadFont([MarshalAs(UnmanagedType.LPWStr)] string name, [MarshalAs(UnmanagedType.LPWStr)] string path);
+        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadFont", StringMarshalling = StringMarshalling.Utf8)]
+        private static partial AssetHandle _LoadFont(string name, string path);
 
-        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadBitmapFont")]
-        private static partial AssetHandle _LoadBitmapFont([MarshalAs(UnmanagedType.LPWStr)] string name, [MarshalAs(UnmanagedType.LPWStr)] string path, [MarshalAs(UnmanagedType.LPWStr)] string glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight);
+        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadBitmapFont", StringMarshalling = StringMarshalling.Utf8)]
+        private static partial AssetHandle _LoadBitmapFont(string name, string path, string glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight);
 
-        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadCanvas")]
-        private static partial AssetHandle _LoadCanvas([MarshalAs(UnmanagedType.LPWStr)] string name, int width, int height);
+        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadCanvas", StringMarshalling = StringMarshalling.Utf8)]
+        private static partial AssetHandle _LoadCanvas(string name, int width, int height);
 
-        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadShader")]
-        private static partial AssetHandle _LoadShader([MarshalAs(UnmanagedType.LPWStr)] string name, [MarshalAs(UnmanagedType.U1)] bool isFile, [MarshalAs(UnmanagedType.LPWStr)] string vs, [MarshalAs(UnmanagedType.LPWStr)] string fs);
+        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadShader", StringMarshalling = StringMarshalling.Utf8)]
+        private static partial AssetHandle _LoadShader(string name, [MarshalAs(UnmanagedType.U1)] bool isFile, string vs, string fs);
 
-        public static AssetHandle Load(Asset asset)
+        public static AssetHandle Load(AssetConfig asset)
         {
             return asset switch
             {
-                Asset.Image i => _LoadImage(i.name, i.path, i.linearFilter),
-                Asset.Sprite s => _LoadSprite(s.name, s.path, s.spriteWidth, s.spriteHeight, s.marginX, s.marginY),
-                Asset.Speech s => _LoadSpeech(s.name, s.text),
-                Asset.Sound s => _LoadSound(s.name, s.path),
-                Asset.Mod m => _LoadMod(m.name, m.path),
-                Asset.Font f => _LoadFont(f.name, f.path),
-                Asset.BitmapFont f => _LoadBitmapFont(f.name, f.path, f.glyphs, f.glyphWidth, f.charSpacing, f.spaceWidth, f.lineHeight),
-                Asset.Canvas c => _LoadCanvas(c.name, c.width, c.height),
-                Asset.Shader s => _LoadShader(s.name, s.isFile, s.vs, s.fs),
+                AssetConfig.Image i => _LoadImage(i.name, i.path, i.linearFilter),
+                AssetConfig.Sprite s => _LoadSprite(s.name, s.path, s.spriteWidth, s.spriteHeight, s.marginX, s.marginY),
+                AssetConfig.Speech s => _LoadSpeech(s.name, s.text),
+                AssetConfig.Sound s => _LoadSound(s.name, s.path),
+                AssetConfig.Mod m => _LoadMod(m.name, m.path),
+                AssetConfig.Font f => _LoadFont(f.name, f.path),
+                AssetConfig.BitmapFont f => _LoadBitmapFont(f.name, f.path, f.glyphs, f.glyphWidth, f.charSpacing, f.spaceWidth, f.lineHeight),
+                AssetConfig.Canvas c => _LoadCanvas(c.name, c.width, c.height),
+                AssetConfig.Shader s => _LoadShader(s.name, s.isFile, s.vs, s.fs),
                 _ => throw new NotImplementedException(),
             };
         }
 
-        [LibraryImport(LibName, EntryPoint = "SLT_Asset_Find")]
-        public static partial AssetHandle Find([MarshalAs(UnmanagedType.LPWStr)] string name);
+        [LibraryImport(LibName, EntryPoint = "SLT_Asset_Find", StringMarshalling = StringMarshalling.Utf8)]
+        public static partial AssetHandle Find(string name);
 
         [LibraryImport(LibName, EntryPoint = "SLT_Asset_ClearAll")]
         public static partial void ClearAll();
 
-        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadINI")]
-        public static partial void LoadINI([MarshalAs(UnmanagedType.LPWStr)] string path);
+        [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadINI", StringMarshalling = StringMarshalling.Utf8)]
+        public static partial void LoadINI(string path);
 
-        [LibraryImport(LibName, EntryPoint = "SLT_Asset_TextSize")]
-        public static partial Dimensions TextSize(float w, [MarshalAs(UnmanagedType.LPWStr)] string str, int count);
+        [LibraryImport(LibName, EntryPoint = "SLT_Asset_TextSize", StringMarshalling = StringMarshalling.Utf8)]
+        public static partial Dimensions TextSize(float w, string str, int count);
 
-        //[LibraryImport(LibName, EntryPoint = "SLT_Asset_BreakString")]
-        //public static partial [MarshalAs(UnmanagedType.LPWStr)] string SLT_Asset_BreakString(int width, [MarshalAs(UnmanagedType.LPWStr)] string str);
+        [LibraryImport(LibName, EntryPoint = "SLT_Asset_BreakString", StringMarshalling = StringMarshalling.Utf8)]
+        public static partial string BreakString(int width, string str);
 
-        //[LibraryImport(LibName, EntryPoint = "SLT_Get_Img")]
-        //public static partial const Image* SLT_Get_Img(AssetHandle id);
+        [LibraryImport(LibName, EntryPoint = "SLT_Get_ImgSize")]
+        public static partial Dimensions ImageSize(AssetHandle id);
+
+        [LibraryImport(LibName, EntryPoint = "SLT_Snd_Play")]
+        public static partial SoundPlayHandle SndPlay(AssetHandle asset, float volume, float pan, [MarshalAs(UnmanagedType.U1)] bool loop);
+
+        [LibraryImport(LibName, EntryPoint = "SLT_Snd_Stop")]
+        public static partial void SndStop(SoundPlayHandle handle);
+
+        [LibraryImport(LibName, EntryPoint = "SLT_Snd_PauseResume")]
+        public static partial void SndPauseResume(uint handle, [MarshalAs(UnmanagedType.U1)] bool pause);
     }
 
     public partial class DC
     {
-        private const string LibName = "slate2d";
+        const string LibName = "slate2d";
 
         [LibraryImport(LibName, EntryPoint = "DC_SetColor")]
         public static partial void SetColor(byte r, byte g, byte b, byte a);
@@ -171,8 +276,8 @@ namespace Slate2D
         [LibraryImport(LibName, EntryPoint = "DC_SetTextStyle")]
         public static partial void SetTextStyle(AssetHandle fontId, float size, float lineHeight, int align);
 
-        [LibraryImport(LibName, EntryPoint = "DC_DrawText")]
-        public static partial void Text(float x, float y, float h, [MarshalAs(UnmanagedType.LPWStr)] string text, int len);
+        [LibraryImport(LibName, EntryPoint = "DC_DrawText", StringMarshalling = StringMarshalling.Utf8)]
+        public static partial void Text(float x, float y, float h, string text, int len);
 
         [LibraryImport(LibName, EntryPoint = "DC_DrawImage")]
         public static partial void Image(uint imgId, float x, float y, float w, float h, float scale, byte flipBits, float ox, float oy);
@@ -190,7 +295,7 @@ namespace Slate2D
         public static partial void Tri(float x1, float y1, float x2, float y2, float x3, float y3, [MarshalAs(UnmanagedType.U1)] bool outline);
 
         //[LibraryImport(LibName, EntryPoint = "DC_DrawTilemap")]
-        //public static partial void DrawTilemap(uint sprId, int x, int y, int w, int h, int* tiles);
+        //public static partial void DrawTilemap(AssetHandle sprId, int x, int y, int w, int h, int* tiles);
 
         [LibraryImport(LibName, EntryPoint = "DC_Submit")]
         public static partial void Submit();

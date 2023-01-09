@@ -3,6 +3,11 @@ using ImGuiNET;
 
 SLT.Init(args);
 
+SLTCon.Print("hello");
+SLTCon.Print("world");
+
+SLT.SetWindowTitle("it's a window title!");
+
 while (true)
 {
     var dt = SLT.StartFrame();

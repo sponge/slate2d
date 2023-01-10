@@ -61,7 +61,11 @@ workspace "Slate2D"
   symbols "On"
   targetdir "build/out/%{cfg.architecture}_%{cfg.buildcfg}"
   objdir "build/out/obj"
-  startproject "jsgame"
+  if _OPTIONS['csgame'] then
+    startproject "csgame"
+  else
+    startproject "jsgame"
+  end
 
   filter "system:windows"
     platforms { "x86", "x64" }

@@ -7,21 +7,6 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Slate2D
 {
-    public record AssetConfig
-    {
-        public record Image(string name, string path, bool linearFilter = false) : AssetConfig();
-        public record Sprite(string name, string path, int spriteWidth, int spriteHeight, int marginX, int marginY) : AssetConfig();
-        public record Speech(string name, string text) : AssetConfig();
-        public record Sound(string name, string path) : AssetConfig();
-        public record Mod(string name, string path) : AssetConfig();
-        public record Font(string name, string path) : AssetConfig();
-        public record BitmapFont(string name, string path, string glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight) : AssetConfig();
-        public record Canvas(string name, int width, int height) : AssetConfig();
-        public record Shader(string name, bool isFile, string vs, string fs) : AssetConfig();
-
-        AssetConfig() { }
-    }
-
     public struct Position
     {
         public int x, y;
@@ -77,13 +62,15 @@ namespace Slate2D
             _Print("%s", str);
         }
 
-        // SLT_API void SLT_SendConsoleCommand(const char* text);
+        [LibraryImport(LibName, EntryPoint = "SLT_SendConsoleCommand", StringMarshalling = StringMarshalling.Utf8)]
+        public static partial void SendConsoleCommand(string text);
 
         // SLT_API void SLT_Con_SetErrorHandler(void(*errHandler)(int level, const char *msg));
 
         // SLT_API void SLT_Con_SetDefaultCommandHandler(bool(*cmdHandler)());
 
-        // SLT_API void SLT_Error(int level, const char* error, ...);
+        [LibraryImport(LibName, EntryPoint = "SLT_Error", StringMarshalling = StringMarshalling.Utf8)]
+        public static partial void Error(int level, string error);
 
         // SLT_API const conVar_t* SLT_Con_GetVarDefault(const char* var_name, const char* var_value, int flags);
 
@@ -91,24 +78,32 @@ namespace Slate2D
 
         // SLT_API const conVar_t* SLT_Con_SetVar(const char* var_name, const char* value);
 
-        // SLT_API int SLT_Con_GetArgCount(void);
+        [LibraryImport(LibName, EntryPoint = "SLT_Con_GetArgCount")]
+        public static partial int GetArgCount();
 
-        // SLT_API const char* SLT_Con_GetArg(int arg);
+        [LibraryImport(LibName, EntryPoint = "SLT_Con_GetArg", StringMarshalling = StringMarshalling.Utf8)]
+        public static partial string GetArg(int arg);
 
-        // SLT_API const char* SLT_Con_GetArgs(int start);
+        [LibraryImport(LibName, EntryPoint = "SLT_Con_GetArgs", StringMarshalling = StringMarshalling.Utf8)]
+        public static partial string GetArgs(int start);
 
         // SLT_API void SLT_Con_AddCommand(const char* name, conCmd_t cmd);
     }
 
     public partial class FS
     {
+        const string LibName = "slate2d";
+
         // SLT_API int SLT_FS_ReadFile(const char* path, void** buffer);
 
         // SLT_API int SLT_FS_WriteFile(const char* filename, const void* data, int len);
 
-        // SLT_API const char* SLT_FS_RealDir(const char* path);
+        [LibraryImport(LibName, EntryPoint = "SLT_FS_RealDir", StringMarshalling = StringMarshalling.Utf8)]
+        public static partial string RealDir(string path);
 
-        // SLT_API uint8_t SLT_FS_Exists(const char* file);
+        [LibraryImport(LibName, EntryPoint = "SLT_FS_Exists", StringMarshalling = StringMarshalling.Utf8)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        public static partial bool Exists(string file);
 
         // SLT_API char** SLT_FS_List(const char* path);
 
@@ -160,6 +155,21 @@ namespace Slate2D
     public partial class Assets
     {
         const string LibName = "slate2d";
+
+        public record AssetConfig
+        {
+            public record Image(string name, string path, bool linearFilter = false) : AssetConfig();
+            public record Sprite(string name, string path, int spriteWidth, int spriteHeight, int marginX, int marginY) : AssetConfig();
+            public record Speech(string name, string text) : AssetConfig();
+            public record Sound(string name, string path) : AssetConfig();
+            public record Mod(string name, string path) : AssetConfig();
+            public record Font(string name, string path) : AssetConfig();
+            public record BitmapFont(string name, string path, string glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight) : AssetConfig();
+            public record Canvas(string name, int width, int height) : AssetConfig();
+            public record Shader(string name, bool isFile, string vs, string fs) : AssetConfig();
+
+            AssetConfig() { }
+        }
 
         [LibraryImport(LibName, EntryPoint = "SLT_Asset_LoadImage", StringMarshalling = StringMarshalling.Utf8)]
         private static partial AssetHandle _LoadImage(string name, string path, [MarshalAs(UnmanagedType.U1)] bool linearFilter);
@@ -294,8 +304,8 @@ namespace Slate2D
         [LibraryImport(LibName, EntryPoint = "DC_DrawTri")]
         public static partial void Tri(float x1, float y1, float x2, float y2, float x3, float y3, [MarshalAs(UnmanagedType.U1)] bool outline);
 
-        //[LibraryImport(LibName, EntryPoint = "DC_DrawTilemap")]
-        //public static partial void DrawTilemap(AssetHandle sprId, int x, int y, int w, int h, int* tiles);
+        [LibraryImport(LibName, EntryPoint = "DC_DrawTilemap")]
+        public static partial void Tilemap(AssetHandle sprId, int x, int y, int w, int h, int[] tiles);
 
         [LibraryImport(LibName, EntryPoint = "DC_Submit")]
         public static partial void Submit();

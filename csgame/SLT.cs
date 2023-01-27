@@ -1,9 +1,6 @@
 global using AssetHandle = System.UInt32;
 global using SoundPlayHandle = System.UInt32;
-using System;
-using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Slate2D
 {

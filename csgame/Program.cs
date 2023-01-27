@@ -1,12 +1,8 @@
 using Slate2D;
-using ImGuiNET;
 
 SLT.Init(args);
 
-SLTCon.Print("hello");
-SLTCon.Print("world");
-
-SLT.SetWindowTitle("it's a window title!");
+Main.Startup();
 
 while (true)
 {
@@ -17,15 +13,9 @@ while (true)
         break;
     }
 
-    ImGui.Begin("hello");
-    ImGui.Button("button");
-    ImGui.End();
+    Main.Update(dt);
 
-    Game.Update(dt);
-
-    Game.Draw();
-
-    DC.Submit();
+    Main.Draw();
 
     SLT.EndFrame();
     SLT.UpdateLastFrameTime();

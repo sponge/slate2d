@@ -134,7 +134,14 @@ namespace Slate2D
     {
         const string LibName = "slate2d";
 
-        // static partial void SLT_In_AllocateButtons(const char** buttonNames, int buttonCount);
+
+        [LibraryImport(LibName, EntryPoint = "SLT_In_AllocateButtons", StringMarshalling = StringMarshalling.Utf8)]
+        static partial void _AllocateButtons([MarshalAs(UnmanagedType.LPArray)] string[] buttonNames, int buttonCount);
+
+        public static void AllocateButtons(string[] buttonNames)
+        {
+            _AllocateButtons(buttonNames, buttonNames.Length);
+        }
 
         // static partial const buttonState_t* SLT_In_GetButton(int buttonNum);
 

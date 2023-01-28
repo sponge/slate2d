@@ -30,6 +30,7 @@ public static class Main
 
     public static void Startup()
     {
+        Util.RegisterButtons();
         SwitchLevel(1);
     }
 

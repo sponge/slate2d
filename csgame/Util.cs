@@ -118,8 +118,7 @@ public static class Util
 
 	public static void RegisterButtons()
 	{
-		throw new NotImplementedException();
-		// FIXME
-		//SLT.registerButtons(['up', 'down', 'left', 'right', 'jump', 'shoot']);
+		string[] buttons = { "up", "down", "left", "right", "jump", "shoot" };
+        Input.AllocateButtons(buttons);
 	}
 }

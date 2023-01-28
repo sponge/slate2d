@@ -78,7 +78,7 @@ public class Camera
     // centers the camera at a point
     void Center(int mx, int my)
     {
-        this.Move(mx - w / 2, my - h / 2);
+        Move(mx - w / 2, my - h / 2);
     }
 
     // set transform to draw from this camera's POV

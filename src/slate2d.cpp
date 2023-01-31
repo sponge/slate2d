@@ -538,6 +538,11 @@ SLT_API int SLT_FS_ReadFile(const char* path, void** buffer) {
 	return FS_ReadFile(path, buffer);
 }
 
+SLT_API void* SLT_FS_ReadFile2(const char *path, long long int *outLen)
+{
+  return FS_ReadFile2(path, outLen);
+}
+
 SLT_API const char* SLT_FS_RealDir(const char *path) {
 	return PHYSFS_getRealDir(path);
 }

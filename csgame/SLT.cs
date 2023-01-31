@@ -91,7 +91,35 @@ namespace Slate2D
     {
         const string LibName = "slate2d";
 
-        // SLT_API int SLT_FS_ReadFile(const char* path, void** buffer);
+        [LibraryImport(LibName, EntryPoint = "SLT_FS_ReadFile2", StringMarshalling = StringMarshalling.Utf8)]
+        private static partial IntPtr _ReadFile(string path, out int len);
+
+        public static byte[] ReadFile(string path)
+        {
+            int len;
+            var buf = _ReadFile(path, out len);
+
+            if (len == -1)
+            {
+                return new byte[0];
+            }
+
+            byte[] bytes = new byte[len];
+            Marshal.Copy(buf, bytes, 0, len);
+            return bytes;
+        }
+
+        public static string ReadTextFile(string path)
+        {
+            var bytes = FS.ReadFile(path);
+            if (bytes.Length == 0)
+            {
+                return "";
+            }
+                
+            return System.Text.Encoding.UTF8.GetString(bytes);
+        }
+
 
         // SLT_API int SLT_FS_WriteFile(const char* filename, const void* data, int len);
 
@@ -134,7 +162,6 @@ namespace Slate2D
     {
         const string LibName = "slate2d";
 
-
         [LibraryImport(LibName, EntryPoint = "SLT_In_AllocateButtons", StringMarshalling = StringMarshalling.Utf8)]
         static partial void _AllocateButtons([MarshalAs(UnmanagedType.LPArray)] string[] buttonNames, int buttonCount);
 
@@ -162,15 +189,15 @@ namespace Slate2D
 
         public record AssetConfig
         {
-            public record Image(string name, string path, bool linearFilter = false) : AssetConfig();
-            public record Sprite(string name, string path, int spriteWidth, int spriteHeight, int marginX, int marginY) : AssetConfig();
-            public record Speech(string name, string text) : AssetConfig();
-            public record Sound(string name, string path) : AssetConfig();
-            public record Mod(string name, string path) : AssetConfig();
-            public record Font(string name, string path) : AssetConfig();
-            public record BitmapFont(string name, string path, string glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight) : AssetConfig();
-            public record Canvas(string name, int width, int height) : AssetConfig();
-            public record Shader(string name, bool isFile, string vs, string fs) : AssetConfig();
+            public record Image(string Name, string Path, bool LinearFilter = false) : AssetConfig();
+            public record Sprite(string Name, string Path, int SpriteWidth, int SpriteHeight, int MarginX, int MarginY) : AssetConfig();
+            public record Speech(string Name, string Text) : AssetConfig();
+            public record Sound(string Name, string Path) : AssetConfig();
+            public record Mod(string Name, string Path) : AssetConfig();
+            public record Font(string Name, string Path) : AssetConfig();
+            public record BitmapFont(string Name, string Path, string Glyphs, int GlyphWidth, int CharSpacing, int SpaceWidth, int LineHeight) : AssetConfig();
+            public record Canvas(string Name, int Width, int Height) : AssetConfig();
+            public record Shader(string Name, bool IsFile, string VS, string FS) : AssetConfig();
 
             AssetConfig() { }
         }
@@ -206,15 +233,15 @@ namespace Slate2D
         {
             return asset switch
             {
-                AssetConfig.Image i => _LoadImage(i.name, i.path, i.linearFilter),
-                AssetConfig.Sprite s => _LoadSprite(s.name, s.path, s.spriteWidth, s.spriteHeight, s.marginX, s.marginY),
-                AssetConfig.Speech s => _LoadSpeech(s.name, s.text),
-                AssetConfig.Sound s => _LoadSound(s.name, s.path),
-                AssetConfig.Mod m => _LoadMod(m.name, m.path),
-                AssetConfig.Font f => _LoadFont(f.name, f.path),
-                AssetConfig.BitmapFont f => _LoadBitmapFont(f.name, f.path, f.glyphs, f.glyphWidth, f.charSpacing, f.spaceWidth, f.lineHeight),
-                AssetConfig.Canvas c => _LoadCanvas(c.name, c.width, c.height),
-                AssetConfig.Shader s => _LoadShader(s.name, s.isFile, s.vs, s.fs),
+                AssetConfig.Image i => _LoadImage(i.Name, i.Path, i.LinearFilter),
+                AssetConfig.Sprite s => _LoadSprite(s.Name, s.Path, s.SpriteWidth, s.SpriteHeight, s.MarginX, s.MarginY),
+                AssetConfig.Speech s => _LoadSpeech(s.Name, s.Text),
+                AssetConfig.Sound s => _LoadSound(s.Name, s.Path),
+                AssetConfig.Mod m => _LoadMod(m.Name, m.Path),
+                AssetConfig.Font f => _LoadFont(f.Name, f.Path),
+                AssetConfig.BitmapFont f => _LoadBitmapFont(f.Name, f.Path, f.Glyphs, f.GlyphWidth, f.CharSpacing, f.SpaceWidth, f.LineHeight),
+                AssetConfig.Canvas c => _LoadCanvas(c.Name, c.Width, c.Height),
+                AssetConfig.Shader s => _LoadShader(s.Name, s.IsFile, s.VS, s.FS),
                 _ => throw new NotImplementedException(),
             };
         }

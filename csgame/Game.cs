@@ -1,11 +1,15 @@
 ﻿using ImGuiNET;
 using Slate2D;
 using System;
+using System.Collections;
 
 public class Game : IScene
 {
     public Game(string mapName)
     {
+        string mapStr = FS.ReadTextFile(mapName);
+        var ldtk = new LDTK(mapStr);
+        // FIXME: freefile?
     }
 
     public void Update(double dt)

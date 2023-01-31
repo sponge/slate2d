@@ -166,6 +166,33 @@ int FS_ReadFile(const char *path, void **buffer) {
 	return (int)read_sz;
 }
 
+void *FS_ReadFile2(const char *path, long long int *outLen) {
+	auto f = PHYSFS_openRead(path);
+
+	if (f == nullptr) {
+		return nullptr;
+	}
+
+	long long int sz = PHYSFS_fileLength(f);
+
+	void *buffer = malloc((size_t)sz + 1);
+	memset(buffer, 0, (size_t)sz + 1);
+
+	auto read_sz = PHYSFS_readBytes(f, buffer, (PHYSFS_uint32)sz);
+	if (outLen != nullptr) {
+		*outLen = read_sz;
+	}
+
+	if (read_sz == -1) {
+		PHYSFS_ErrorCode code = PHYSFS_getLastErrorCode();
+		Con_Printf("FS err: %s", PHYSFS_getErrorByCode(code));
+	}
+
+	PHYSFS_close(f);
+
+	return buffer;
+}
+
 const char *FS_FileExtension(const char *filename) {
     const char *dot = strrchr(filename, '.');
 	

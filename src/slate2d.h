@@ -155,6 +155,7 @@ SLT_API void SLT_Con_AddCommand(const char* name, conCmd_t cmd);
 // reads a file at path from the virtual filesystem, and writes the contents to the provided buffer. returns the
 // length of the file, or -1 if the file does not exist.
 SLT_API int SLT_FS_ReadFile(const char* path, void** buffer);
+SLT_API void* SLT_FS_ReadFile2(const char *path, long long int *outLen);
 
 // writes a file at path from the virtual filesystem. returns 0 on success, -1 on failure.
 SLT_API int SLT_FS_WriteFile(const char *filename, const void *data, int len);

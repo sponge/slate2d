@@ -3,11 +3,9 @@ using Slate2D;
 
 // skipped
 // assetlist
-// entity
 // entmap - use decorators instead!
 // fsmentity
 // game - nontrivial
-// ldtk
 // main - little bits
 // objectpool
 // printwin

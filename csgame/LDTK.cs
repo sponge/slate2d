@@ -153,10 +153,12 @@ public class LDTK
                 // ldtk can stack tiles in the same layer
                 // handle this by making a new array when there's a stack
                 int sz = layer["__cWid"].GetValue<int>() * layer["__cHei"].GetValue<int>();
-                var drawTiles = new List<int[]>();
-                drawTiles.Add(Enumerable.Repeat(-1, sz).ToArray());
+                var drawTiles = new List<int[]>
+                {
+                    Enumerable.Repeat(-1, sz).ToArray()
+                };
 
-                var tiles = layer["__type"].GetValue<string>() == "Tiles" ? layer["gridTiles"].AsArray() : layer["autoLayerTiles"].AsArray();
+                JsonArray tiles = layer["__type"].GetValue<string>() == "Tiles" ? layer["gridTiles"].AsArray() : layer["autoLayerTiles"].AsArray();
 
                 foreach (var t in tiles)
                 {

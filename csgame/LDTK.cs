@@ -1,7 +1,6 @@
 using Slate2D;
 using System.Globalization;
 using System.Text.Json.Nodes;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public record LDTKProperty
 {
@@ -37,7 +36,7 @@ public class LDTK
     public string Background;
     public (int r, int g, int b) BGColor = (0, 0, 0);
     public Dictionary<string, LDTKProperty> Properties = new Dictionary<string, LDTKProperty>();
-    public LDTKLayer[] Layers = new LDTKLayer[16];
+    public List<LDTKLayer> Layers = new List<LDTKLayer>();
     public Dictionary<string, LDTKLayer> LayersByName = new Dictionary<string, LDTKLayer>();
 
     private Dictionary<string, LDTKProperty> ParseProperties(JsonNode properties)
@@ -139,55 +138,67 @@ public class LDTK
                     MarginX: 0,
                     MarginY: 0
                 ));
-            /*
-                    if (layer.__type == 'IntGrid') {
-                      lobj.tiles = layer.intGridCsv;
+
+                if (layer["__type"].GetValue<string>() == "IntGrid")
+                {
+                    var arr = layer["intGridCsv"].AsArray();
+                    lobj.Tiles = new int[arr.Count];
+                    int i = 0;
+                    foreach (var tile in arr)
+                    {
+                        lobj.Tiles[i++] = tile.GetValue<int>();
                     }
+                }
 
-                    // ldtk can stack tiles in the same layer
-                    // handle this by making a new array when there's a stack
-                    const sz = layer.__cWid * layer.__cHei;
-                    lobj.drawTiles.push(new Array(sz).fill(-1));
+                // ldtk can stack tiles in the same layer
+                // handle this by making a new array when there's a stack
+                int sz = layer["__cWid"].GetValue<int>() * layer["__cHei"].GetValue<int>();
+                var drawTiles = new List<int[]>();
+                drawTiles.Add(Enumerable.Repeat(-1, sz).ToArray());
 
-                    const tiles = layer.__type == 'Tiles' ? layer.gridTiles : layer.autoLayerTiles;
-                    tiles.forEach((t: any) => {
-                      const tileidx = (t.px[1] / lobj.tileSize) * lobj.width + t.px[0] / lobj.tileSize
-                      // look for an open space on existing layers
-                      for (let i = 0; i < lobj.drawTiles.length; i++) {
-                        if (lobj.drawTiles[i][tileidx] == -1) {
-                          lobj.drawTiles[i][tileidx] = t.t;
-                          break;
+                var tiles = layer["__type"].GetValue<string>() == "Tiles" ? layer["gridTiles"].AsArray() : layer["autoLayerTiles"].AsArray();
+
+                foreach (var t in tiles)
+                {
+                    var px = t["px"].AsArray();
+                    var tileidx = (px[1].GetValue<int>() / lobj.TileSize) * lobj.Size.w + px[0].GetValue<int>() / lobj.TileSize;
+                    // look for an open space on existing layers
+                    for (int i = 0; i < drawTiles.Count; i++)
+                    {
+                        if (drawTiles[i][tileidx] == -1)
+                        {
+                            drawTiles[i][tileidx] = t["t"].GetValue<int>();
+                            break;
                         }
+
                         // we're out of space, add a new layer
-                        if (i + 1 == lobj.drawTiles.length) {
-                          lobj.drawTiles.push(new Array(sz).fill(-1));
-                          lobj.drawTiles[i + 1][tileidx] = t.t;
-                          break;
+                        if (i + 1 == drawTiles.Count)
+                        {
+                            drawTiles.Add(Enumerable.Repeat(-1, sz).ToArray());
+                            drawTiles[i][tileidx] = t["t"].GetValue<int>();
+                            break;
                         }
-                      }
-                    });
-                    // we want 0 to be on the bottom
-                    layer.autoLayerTiles.reverse();
-                  }
-                  this.layers.push(lobj);
-                  this.layersByName[lobj.name] = lobj;
-                })
+                    }
+                }
 
-                // index 0 should be the bottom-most layer for drawing purposes
-                this.layers.reverse();
-            */
+                lobj.DrawTiles = drawTiles.ToArray();
+
+            }
+
+            Layers.Add(lobj);
+            LayersByName[lobj.Name] = lobj;
+        }
+
+        Layers.Reverse();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+    }
+
+    public void Draw(string layerName)
+    {
+        var l = LayersByName[layerName];
+        foreach (var tmap in l.DrawTiles)
+        {
+            DC.Tilemap(l.TilesetHnd, l.Offset.x, l.Offset.y, l.Size.w, l.Size.h, tmap);
         }
     }
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-}
-
-public void Draw(string layerName)
-{
-    /*
-        const l = this.layersByName[layerName];
-        for (let tmap of l.drawTiles) {
-          Draw.tilemap(l.tilesetHnd, l.offsetX, l.offsetY, l.width, l.height, tmap);
-        }
-    */
-}
 }

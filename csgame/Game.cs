@@ -5,10 +5,12 @@ using System.Collections;
 
 public class Game : IScene
 {
+    LDTK ldtk;
+
     public Game(string mapName)
     {
         string mapStr = FS.ReadTextFile(mapName);
-        var ldtk = new LDTK(mapStr);
+        ldtk = new LDTK(mapStr);
         // FIXME: freefile?
     }
 
@@ -19,8 +21,13 @@ public class Game : IScene
     public void Draw()
     {
         DC.Clear(30, 30, 30, 255);
-        DC.Rect(200, 200, 20, 20, false);
-        DC.Rect(300, 300, 20, 20, true);
+
+        DC.SetColor(255, 255, 255, 255);
+        ldtk.Draw("BGTiles");
+        ldtk.Draw("BGWorld");
+        ldtk.Draw("BGDecoration");
+        ldtk.Draw("Collision");
+        DC.SetColor(255, 255, 255, 255);
         DC.Submit();
     }
 }

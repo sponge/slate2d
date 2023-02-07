@@ -10,7 +10,7 @@ enum Layer
     Foreground
 }
 
-class Entity
+public class Entity
 {
     protected string Type = "Default";
     public string Name = "";
@@ -87,18 +87,15 @@ class Entity
     // returns the tile id at the given coordinates
     uint TileAt(int x, int y)
     {
-        throw new NotImplementedException();
-        /*
-        const layer = World().map.layersByName.Collision;
-        const tx = Math.floor(x / layer.tileSize);
-        const ty = clamp(Math.floor(y / layer.tileSize), 0, layer.height);
+        var layer = Main.World().Map.LayersByName["Collision"];
+        var tx = Pos.X / layer.TileSize;
+        var ty = Math.Clamp(Pos.Y / layer.TileSize, 0, layer.Size.h);
 
-        return layer.tiles[ty * layer.width + tx];
-        */
+        return layer.Tiles[ty * layer.Size.w + tx];
     }
 
     // returns true/false if there is a collision at the specified coordinates.
-    // this only queries the world, but it will update this.collideEnt\\
+    // this only queries the world, but it will update this.collideEnt
     bool CollideAt(int x, int y, Dir dir)
     {
         throw new NotImplementedException();
@@ -385,7 +382,7 @@ class Entity
         */
     }
 
-    public uint Ticks { get => 0; /*this.runWhilePaused ? World().state.wallTicks : World().state.ticks;*/ }
+    public uint Ticks { get => 0; /*FIXME: this.runWhilePaused ? World().state.wallTicks : World().state.ticks;*/ }
 }
 
 

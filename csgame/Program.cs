@@ -1,3 +1,4 @@
+// NOTE: hot reload doesn't work in this file
 using Slate2D;
 
 SLT.Init(args);

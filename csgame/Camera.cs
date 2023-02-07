@@ -26,7 +26,7 @@ public class Camera
     // camera constraint
     CameraConstraint? con = null;
 
-    Camera(int w, int h)
+    public Camera(int w, int h)
     {
         this.w = w;
         this.h = h;

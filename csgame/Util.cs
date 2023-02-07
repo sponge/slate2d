@@ -11,7 +11,7 @@ public enum Dir
 	Left
 }
 
-enum Buttons
+public enum Buttons
 {
 	Up,
 	Down,
@@ -21,7 +21,7 @@ enum Buttons
 	Shoot
 }
 
-enum CollisionType
+public enum CollisionType
 {
 	Disabled,
 	Enabled,
@@ -33,7 +33,7 @@ class Phys
 {
 	// physics values
 	// most values from https://cdn.discordapp.com/attachments/191015116655951872/332350193540268033/smw_physics.png
-	public const int PMeterCapacity = 112;
+	public const byte PMeterCapacity = 112;
 	public const float friction = 0.0625f;
 	public const float accel = 0.09375f;
 	public const float skidAccel = 0.3125f;
@@ -43,9 +43,9 @@ class Phys
 	public const float heldGravity = 0.1875f;
 	public const float gravity = 0.375f;
 	public const float enemyGravity = 0.375f / 3f;
-	public const int earlyBounceFrames = 8;
-	public const int earlyJumpFrames = 6;
-	public const int lateJumpFrames = 6;
+	public const byte earlyBounceFrames = 8;
+	public const byte earlyJumpFrames = 6;
+	public const byte lateJumpFrames = 6;
 	public const float terminalVelocity = 4f;
 	public const float enemyJumpHeld = 6.5f;
 	public const float enemyJump = 5.5f;

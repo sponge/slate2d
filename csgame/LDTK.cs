@@ -1,6 +1,7 @@
 using Slate2D;
 using System.Globalization;
 using System.Text.Json.Nodes;
+using static Slate2D.Assets.AssetConfig;
 
 public record LDTKProperty
 {
@@ -18,7 +19,7 @@ public record class LDTKLayer
     public (int x, int y) Offset = (0, 0);
     public int[][] DrawTiles;
     public AssetHandle TilesetHnd;
-    public int[] Tiles;
+    public uint[] Tiles;
     public LDTKEntity[] Entities;
 }
 
@@ -130,7 +131,7 @@ public class LDTK
             }
             else
             {
-                lobj.TilesetHnd = Assets.Load(new Assets.AssetConfig.Sprite(
+                lobj.TilesetHnd = Assets.Load(new Sprite(
                     Name: layer["__tilesetRelPath"].GetValue<string>(),
                     Path: layer["__tilesetRelPath"].GetValue<string>(),
                     SpriteWidth: lobj.TileSize,
@@ -142,11 +143,11 @@ public class LDTK
                 if (layer["__type"].GetValue<string>() == "IntGrid")
                 {
                     var arr = layer["intGridCsv"].AsArray();
-                    lobj.Tiles = new int[arr.Count];
+                    lobj.Tiles = new uint[arr.Count];
                     int i = 0;
                     foreach (var tile in arr)
                     {
-                        lobj.Tiles[i++] = tile.GetValue<int>();
+                        lobj.Tiles[i++] = tile.GetValue<uint>();
                     }
                 }
 

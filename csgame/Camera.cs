@@ -33,14 +33,14 @@ public class Camera
     }
 
     // don't let the camera render beyond this box
-    void Constrain(int x, int y, int w, int h)
+    public void Constrain(int x, int y, int w, int h)
     {
         con = new CameraConstraint(x, y, w, h);
         Move(this.x, this.y);
     }
 
     // move the camera to this position
-    void Move(int x, int y)
+    public void Move(int x, int y)
     {
         this.x = x;
         this.y = y;
@@ -55,7 +55,7 @@ public class Camera
 
     // moves the camera based on a focus point and a window
     // camera won't move if you're within windowWidth px from the center
-    void Window(int mx, int my, int windowWidth, int windowHeight)
+    public void Window(int mx, int my, int windowWidth, int windowHeight)
     {
         var centerX = x + w / 2;
         var centerY = y + h / 2;
@@ -76,20 +76,20 @@ public class Camera
     }
 
     // centers the camera at a point
-    void Center(int mx, int my)
+    public void Center(int mx, int my)
     {
         Move(mx - w / 2, my - h / 2);
     }
 
     // set transform to draw from this camera's POV
     // don't move the camera while inside this!
-    void DrawStart()
+    public void DrawStart()
     {
         DC.Translate(-x, -y);
     }
 
     // move transform back to stop drawing from this camera's POV
-    void DrawEnd()
+    public void DrawEnd()
     {
         DC.Translate(x, y);
     }

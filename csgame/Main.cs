@@ -12,7 +12,7 @@ using Slate2D;
 
 public interface IScene
 {
-    void Update(double dt);
+    void Update(float dt);
     void Draw();
 }
 
@@ -20,7 +20,7 @@ public static class Main
 {
     static IScene? scene;
 
-    public static void SwitchLevel(int num)
+    public static void SwitchLevel(uint num)
     {
         scene = new Game($"maps/map{num}.ldtkl");
         GC.Collect();
@@ -34,7 +34,7 @@ public static class Main
 
     public static void Update(double dt)
     {
-        scene?.Update(dt);
+        scene?.Update((float)dt);
     }
 
     public static void Draw()
@@ -42,13 +42,16 @@ public static class Main
         scene?.Draw();
     }
 
-    public static Game World()
+    public static Game World
     {
-        if (scene?.GetType() != typeof(Game))
+        get
         {
-            throw new Exception("Current scene isn't game");
-        }
+            if (scene?.GetType() != typeof(Game))
+            {
+                throw new Exception("Current scene isn't game");
+            }
 
-        return scene as Game;
+            return (Game)scene;
+        }
     }
 }

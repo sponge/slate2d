@@ -1,6 +1,4 @@
 using Slate2D;
-using System.Reflection.Emit;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 enum Layer
 {
@@ -14,11 +12,11 @@ public class Entity
 {
     protected string Type = "Default";
     public string Name = "";
-    bool Destroyed = false;
-    (int X, int Y) Pos = (0, 0);
-    (int W, int H) Size = (0, 0);
-    (int X, int Y) Vel = (0, 0);
-    (int X, int Y) DrawOfs = (0, 0);
+    public bool Destroyed = false;
+    public (int X, int Y) Pos = (0, 0);
+    public (int W, int H) Size = (0, 0);
+    public (int X, int Y) Vel = (0, 0);
+    public (int X, int Y) DrawOfs = (0, 0);
     Layer Layer = Layer.Normal;
 
     (float X, float Y) Remainder = (0, 0);
@@ -29,14 +27,15 @@ public class Entity
     public CollisionType Collidable = CollisionType.Disabled;
     // whether this entity collides with the world, or moveSolid entities
     bool WorldCollide = true;
-    bool RunWhilePaused = false;
+    public bool RunWhilePaused = false;
 
     Entity? CollideEnt;
-    Tiles CollideType = Tiles.Empty;
+    Tile CollideTile = Tile.Empty;
     bool AnyInSlope = false;
 
     public Entity()
     {
+        // FIXME: construct entity with properties
         //Object.assign(this, args);
         //const key: keyof typeof CollisionType = args.properties?.CollisionType;
         //this.collidable = CollisionType[key] ?? CollisionType.Enabled;
@@ -87,7 +86,7 @@ public class Entity
     // returns the tile id at the given coordinates
     uint TileAt(int x, int y)
     {
-        var layer = Main.World().Map.LayersByName["Collision"];
+        var layer = Main.World.Map.LayersByName["Collision"];
         var tx = Pos.X / layer.TileSize;
         var ty = Math.Clamp(Pos.Y / layer.TileSize, 0, layer.Size.h);
 
@@ -98,107 +97,117 @@ public class Entity
     // this only queries the world, but it will update this.collideEnt
     bool CollideAt(int x, int y, Dir dir)
     {
-        throw new NotImplementedException();
-        /*
-        const corners: [number, number][] = [
-            [x, y],
-            [x + this.size[0] - 1, y],
-            [x, y + this.size[1] - 1],
-            [x + this.size[0] - 1, y + this.size[1] - 1]
-        ];
+        var corners = new (int X, int Y)[]
+        {
+            (x, y),
+            (x + Size.W - 1, y),
+            (x, y + Size.H - 1),
+            (x + Size.W - 1, y + Size.H - 1),
+        };
 
-        const bottomMiddle = [x + this.size[0] / 2, corners[2][1]];
-
-        const layer = World().map.layersByName.Collision;
-        const opposite = getOppositeDir(dir);
+        var layer = Main.World.Map.LayersByName["Collision"];
+        var opposite = Util.GetOppositeDir(dir);
 
         // iterate through all entities looking for a collision
-        this.collideEnt = undefined;
-        for (let other of World().state.entities) {
+        CollideEnt = null;
+        foreach (var other in Main.World.GameState.Entities)
+        {
             if (other == this) continue;
 
-            const intersects = rectIntersect(corners[0], this.size, other.pos, other.size);
+            var intersects = Util.RectIntersect(corners[0], Size, other.Pos, other.Size);
 
-            if (intersects) {
-            if (other.canCollide(this, opposite) == CollisionType.Disabled) continue;
-            if (this.canCollide(other, dir) == CollisionType.Disabled) continue;
+            if (intersects)
+            {
+                if (other.CanCollide(this, opposite) == CollisionType.Disabled) continue;
+                if (CanCollide(other, dir) == CollisionType.Disabled) continue;
 
-            // both sides need to be solid
-            if (this.canCollide(other, dir) == CollisionType.Enabled && other.canCollide(this, opposite) == CollisionType.Enabled) {
-                this.collideEnt = other;
-                return true;
-            }
-            // need to check both sides of platform collision otherwise you might fall through
-            else if (this.canCollide(other, dir) == CollisionType.Platform && dir == Dir.Up && other.max(1) >= y) {
-                this.collideEnt = other;
-                return true;
-            }
-            // original platform check
-            else if (other.canCollide(this, opposite) == CollisionType.Platform && dir == Dir.Down && corners[2][1] == other.pos[1]) {
-                this.collideEnt = other;
-                return true;
-            }
+                // both sides need to be solid
+                if (CanCollide(other, dir) == CollisionType.Enabled && other.CanCollide(this, opposite) == CollisionType.Enabled)
+                {
+                    CollideEnt = other;
+                    return true;
+                }
+                // need to check both sides of platform collision otherwise you might fall through
+                else if (CanCollide(other, dir) == CollisionType.Platform && dir == Dir.Up && other.Max.Y >= y)
+                {
+                    CollideEnt = other;
+                    return true;
+                }
+                // original platform check
+                else if (other.CanCollide(this, opposite) == CollisionType.Platform && dir == Dir.Down && corners[2].Y == other.Pos.Y)
+                {
+                    CollideEnt = other;
+                    return true;
+                }
             }
         }
 
         // check bottom middle point if its in a slope
-        const tx = Math.floor(bottomMiddle[0] / layer.tileSize);
-        const ty = clamp(Math.floor(bottomMiddle[1] / layer.tileSize), 0, layer.height);
-        const tid = layer.tiles[ty * layer.width + tx];
+        var tx = BottomMiddle.X / layer.TileSize;
+        var ty = Math.Clamp(BottomMiddle.Y / layer.TileSize, 0, layer.Size.h);
+        Tile tid = (Tile)layer.Tiles[ty * layer.Size.w + tx];
 
-        this.anyInSlope = false;
+        AnyInSlope = false;
 
-        if (this.worldCollide) {
+        if (WorldCollide)
+        {
             // check if we're in the solid part of the slope (always 45 degrees)
-            if (slopes.includes(tid)) {
-            const localX = bottomMiddle[0] % layer.tileSize;
-            const localY = bottomMiddle[1] % layer.tileSize;
-            const minY = tid == Tiles.SlopeR ? localX : layer.tileSize - localX;
-            this.collideTile = localY >= minY ? tid : Tiles.Empty;
-            this.anyInSlope = true;
-            return localY >= minY;
+            if (tid == Tile.SlopeL || tid == Tile.SlopeR)
+            {
+                var localX = BottomMiddle.X % layer.TileSize;
+                var localY = BottomMiddle.Y % layer.TileSize;
+                var minY = tid == Tile.SlopeR ? localX : layer.TileSize - localX;
+                CollideTile = localY >= minY ? tid : Tile.Empty;
+                AnyInSlope = true;
+                return localY > minY;
             }
 
             // check against tilemap
             // iterate through corners. note this will currently break if entities are > tileSize
-            for (let corner of corners) {
-            const tx = Math.floor(corner[0] / layer.tileSize);
-            const ty = clamp(Math.floor(corner[1] / layer.tileSize), 0, layer.height);
-            const tid = ty >= layer.height ? 0 : layer.tiles[ty * layer.width + tx];
-            //if there's a tile in the intgrid...
-            if (tx < 0 || tx >= layer.width || tid !== Tiles.Empty) {
-                if (tid == Tiles.Dirtback) {
-                continue;
-                }
+            foreach (var corner in corners)
+            {
+                tx = corner.X / layer.TileSize;
+                ty = Math.Clamp(corner.Y / layer.TileSize, 0, layer.Size.h);
+                tid = ty >= layer.Size.h ? Tile.Empty : (Tile)layer.Tiles[ty * layer.Size.w + tx];
 
-                // if it's a ground sloped tile, only bottom middle pixel should collide with it
-                if (slopes.includes(tid)) {
-                this.anyInSlope = true;
-                continue;
-                }
+                //if there's a tile in the intgrid...
+                if (tx < 0 || tx > layer.Size.w || tid != Tile.Empty)
+                {
+                    if (tid == Tile.Dirtback)
+                    {
+                        continue;
+                    }
 
-                // if it's a platform, check if dir is down, and only block if bottom of entity
-                // intersects with the first pixel of the platform block
-                if (tid == Tiles.Platform) {
-                if (dir == Dir.Down && corner[1] == corners[2][1] && corner[1] % layer.tileSize == 0) {
-                    this.collideTile = tid;
+                    // if it's a ground sloped tile, only bottom middle pixel should collide with it
+                    if (tid == Tile.SlopeL || tid == Tile.SlopeR)
+                    {
+                        AnyInSlope = true;
+                        continue;
+                    }
+
+                    // if it's a platform, check if dir is down, and only block if bottom of entity
+                    // intersects with the first pixel of the platform block
+                    if (tid == Tile.Platform)
+                    {
+                        if (dir == Dir.Down && corner.Y == corners[2].Y && corner.Y % layer.TileSize == 0)
+                        {
+                            CollideTile = tid;
+                            return true;
+                        }
+                        continue;
+                    }
+
+                    CollideTile = tid;
                     return true;
                 }
-                continue;
-                }
-
-                this.collideTile = tid;
-                return true;
-            }
             }
         }
 
-        this.collideTile = Tiles.Empty;
+        CollideTile = Tile.Empty;
         return false;
-        */
     }
 
-    private bool Move(int dim, int amt)
+    private bool Move(int dim, float amt)
     {
         ref var pos = ref (dim == 0 ? ref Pos.X : ref Pos.Y);
         ref var remainder = ref (dim == 0 ? ref Remainder.X : ref Remainder.Y);
@@ -215,20 +224,17 @@ public class Entity
         remainder -= move;
         var sign = Math.Sign(move);
 
-        throw new NotImplementedException();
+        var dir = dim == 0 ? (sign > 0 ? Dir.Right : Dir.Left) : (sign > 0 ? Dir.Down : Dir.Up);
+        var opposite = Util.GetOppositeDir(dir);
 
-        /*
-        const dir = dim == 0 ? (sign > 0 ? Dir.Right : Dir.Left) : (sign > 0 ? Dir.Down : Dir.Up);
-        let opposite = getOppositeDir(dir);
-
-        let fullMove = true;
+        var fullMove = true;
         while (move != 0)
         {
-            const check = this.pos[dim] + sign;
-            const collision = dim == 0 ? this.collideAt(check, this.pos[1], dir) : this.collideAt(this.pos[0], check, dir);
+            var check = pos + sign;
+            var collision = dim == 0 ? CollideAt(check, Pos.Y, dir) : CollideAt(Pos.X, check, dir);
             if (!collision)
             {
-                this.pos[dim] += sign;
+                pos += sign;
                 move -= sign;
             }
             else
@@ -236,157 +242,152 @@ public class Entity
                 // step up 1 pixel to check for slope
                 if (dim == 0)
                 {
-                    if (!this.collideAt(check, this.pos[1] - 1, Dir.Up))
+                    if (!CollideAt(check, Pos.Y - 1, Dir.Up))
                     {
-                        this.pos[0] += sign;
-                        this.pos[1] -= 1;
+                        Pos.X += sign;
+                        Pos.Y -= 1;
                         move -= sign;
                         continue;
                     }
                 }
 
-                if (this.collideEnt)
+                if (CollideEnt != null)
                 {
-                    this.collideEnt.collide(this, opposite);
+                    CollideEnt.Collide(this, opposite);
                 }
                 fullMove = false;
                 break;
             }
         }
 
-        for (let other of this.findTriggers()) other.collide(this, opposite);
+        foreach (var other in FindTriggers()) other.Collide(this, opposite);
 
         // kinda lame hack, call collide with a world entity so we don't need
         // duplicate code between world response and ent response
-        if (!fullMove) this.collide(this.collideEnt ?? worldEnt, dir);
+        if (!fullMove) Collide(CollideEnt ?? WorldEnt.Value, dir);
 
-        if (this.pos[1] > World().map.heightPx + 16)
+        if (Pos.Y > Main.World.Map.PxSize.h + 16)
         {
-            this.die();
+            Die();
         }
 
         return fullMove;
-        */
     }
 
-    public bool MoveX(int amt) { return Move(0, amt); }
-    public bool MoveY(int amt){ return Move(1, amt); }
+    public bool MoveX(float amt) { return Move(0, amt); }
+    public bool MoveY(float amt) { return Move(1, amt); }
 
     public IEnumerable<Entity> GetRidingEntities()
     {
-        throw new NotImplementedException();
-        // yield return
-        /*
-        return World().state.entities.filter(other =>
-            other.worldCollide &&
-            !entIntersect(this, other) &&
-            rectIntersect(this.pos, this.size, [other.pos[0], other.pos[1] + 1], other.size)
-        );
-        */
+        foreach (var other in Main.World.GameState.Entities)
+        {
+            if (other.WorldCollide &&
+                !Util.EntIntersect(this, other) &&
+                Util.RectIntersect(Pos, Size, (other.Pos.X, other.Pos.Y + 1), other.Size))
+            {
+                yield return other;
+            }
+        }
+
     }
 
     // move a solid object that is not constrained by world collision (movers)
     public void MoveSolid(int x, int y)
     {
-        throw new NotImplementedException();
-        /*
-        this.remainder[0] += x;
-        this.remainder[1] += y;
-
-        const entities = World().state.entities;
+        Remainder.X += x;
+        Remainder.Y += y;
 
         // disable collision temporarily
-        const currCollidable = this.collidable;
-        this.collidable = CollisionType.Disabled;
+        var currCollidable = Collidable;
+        Collidable = CollisionType.Disabled;
 
-        // not ideal but needs to be done before the move. need to figure out if passing in new arrays causes GC.
+        // not ideal but needs to be done before the move
         // riding is true if the other entity isn't intersecting them but one pixel down vertically does
-        const riding = this.getRidingEntities()
+        var riding = GetRidingEntities().ToList(); // FIXME: gc?
 
-        for (let dim = 0; dim < 2; dim++)
+        for (int dim = 0; dim < 2; dim++)
         {
-            const move = Math.floor(this.remainder[dim]);
-            this.remainder[dim] -= move;
+            ref var pos = ref (dim == 0 ? ref Pos.X : ref Pos.Y);
+            ref var remainder = ref (dim == 0 ? ref Remainder.X : ref Remainder.Y);
+            ref var size = ref (dim == 0 ? ref Size.W : ref Size.H);
 
-            this.pos[dim] += move;
+            var move = MathF.Floor(remainder);
+            remainder -= move;
+
+            pos += (int)move;
             if (move == 0)
             {
                 continue;
             }
 
-            for (let other of entities)
+            foreach (var other in Main.World.GameState.Entities)
             {
                 if (other == this) continue;
 
                 // if collision is enabled and the other entity intersects with the post move position, try and push them out of the way
-                const intersects = currCollidable == CollisionType.Enabled && other.worldCollide && entIntersect(this, other);
+                var intersects = currCollidable == CollisionType.Enabled && other.WorldCollide && Util.EntIntersect(this, other);
                 if (intersects)
                 {
+                    ref var oPos = ref (dim == 0 ? ref other.Pos.X : ref other.Pos.Y);
+                    ref var oSize = ref (dim == 0 ? ref other.Size.W : ref other.Size.H);
+
                     // find minimum amount of movement to resolve intersection.
-                    const amt = Math.sign(move) > 0 ? (this.pos[dim] + this.size[dim]) - other.pos[dim] : this.pos[dim] - (other.pos[dim] + other.size[dim]);
-                    if (!other.__move(dim, amt))
+                    var amt = MathF.Sign(move) > 0 ? (pos + size) - oPos : pos - (oPos + oSize);
+                    if (!other.Move(dim, amt))
                     {
-                        other.die();
+                        other.Die();
                     }
                 }
-                else if (riding.includes(other))
+                else if (riding.Contains(other))
                 {
-                    other.__move(dim, move);
+                    other.Move(dim, move);
                 }
             }
         }
 
-        this.collidable = currCollidable;
-        */
+        Collidable = currCollidable;
     }
 
     public IEnumerable<Entity> FindTriggers()
     {
-        throw new NotImplementedException();
-        /*
-        for (let other of World().state.entities)
+        foreach (var other in Main.World.GameState.Entities)
         {
             if (this == other) continue;
-            if (other.destroyed) continue;
-            if (other.canCollide(this, Dir.None) != CollisionType.Trigger) continue;
-            if (!entIntersect(this, other)) continue;
-            yield other;
+            if (other.Destroyed) continue;
+            if (other.CanCollide(this, Dir.None) != CollisionType.Trigger) continue;
+            if (!Util.EntIntersect(this, other)) continue;
+            yield return other;
         }
-        */
     }
 
-    CollisionType StandardEnemyCanCollide(Entity other, Dir dir)
+    public CollisionType StandardEnemyCanCollide(Entity other, Dir dir)
     {
-        throw new NotImplementedException();
-        //if (other instanceof Player && dir == Dir.Up) return CollisionType.Platform;
-        //else if (other instanceof Player) return CollisionType.Trigger;
-        //else return CollisionType.Enabled;
+        if (other is Player && dir == Dir.Up) return CollisionType.Platform;
+        else if (other is Player) return CollisionType.Trigger;
+        else return CollisionType.Enabled;
     }
 
     // FIXME: other.hurt shouldn't be in here maybe? also the die param is kinda smelly)
-    bool HandleEnemyStomp(Entity other, Dir dir, bool die = true)
+    public bool HandleEnemyStomp(Entity other, Dir dir, bool die = true)
     {
-        throw new NotImplementedException();
-        /*
-        if (other instanceof Player && dir == Dir.Up && other.max(1) <= this.min(1)) {
-            if (die) this.die();
-            other.stompEnemy();
+        if (other is Player && dir == Dir.Up && other.Max.Y <= Min.Y) {
+            if (die) Die();
+            ((Player)other).StompEnemy();
             return true;
         }
-        else if (other instanceof Player) {
-            other.hurt(1);
+        else if (other is Player) {
+            other.Hurt(1);
             return false;
         }
 
         return false;
-        */
     }
 
-    public uint Ticks { get => 0; /*FIXME: this.runWhilePaused ? World().state.wallTicks : World().state.ticks;*/ }
+    public uint Ticks { get => this.RunWhilePaused ? Main.World.GameState.WallTicks : Main.World.GameState.Ticks; }
 }
 
-
-class WorldEnt : Entity {
+class WorldEnt : Entity
+{
     public WorldEnt()
     {
         this.Type = "World";
@@ -397,5 +398,21 @@ class WorldEnt : Entity {
     public override void Die() { }
     public override void Draw() { }
 
-    static WorldEnt Val = new WorldEnt();
+    public static WorldEnt Value = new WorldEnt();
+}
+
+//[System.AttributeUsage(System.AttributeTargets.Class)]
+class Spawnable //: System.Attribute
+{
+    public static Dictionary<string, Type> EntityMaps = new Dictionary<string, Type>
+    {
+        { "Coin", typeof(Coin) },
+        { "Player", typeof(Player) },
+
+    };
+
+    //public Spawnable(string name)
+    //{
+    //    EntityMaps[name] = typeof(Entity);
+    //}
 }

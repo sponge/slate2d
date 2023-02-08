@@ -62,7 +62,7 @@ class Phys
 	};
 }
 
-enum Tiles
+enum Tile
 {
 	Empty,
 	Solid,
@@ -101,10 +101,10 @@ public static class Util
 			apos.Item2 < bpos.Item2 + bsize.Item2 && apos.Item2 + asize.Item2 > bpos.Item2;
 	}
 
-	// FIXME
-	// const entIntersect = (a: Entity, b: Entity) =>
-	//     rectIntersect(a.pos, a.size, b.pos, b.size);
-
+	public static bool EntIntersect(Entity a, Entity b)
+	{
+		return RectIntersect(a.Pos, a.Size, b.Pos, b.Size);
+	}
 
 	public static float Lerp(float a, float b, float t)
 	{

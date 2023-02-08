@@ -1,7 +1,4 @@
-﻿using ImGuiNET;
-using Slate2D;
-using System;
-using System.Collections;
+﻿using Slate2D;
 using System.Text.RegularExpressions;
 using static Slate2D.Assets.AssetConfig;
 
@@ -36,7 +33,7 @@ public class Game : IScene
     public LDTK Map;
     public Camera Camera;
     float Accumulator = 0;
-    // Player player;
+    Player Player;
     public GameState GameState;
     AssetHandle Canvas;
     AssetHandle DogSpr;
@@ -48,7 +45,6 @@ public class Game : IScene
 
     string MapName = "";
     int NextMap = 0;
-
 
     public Game(string mapName)
     {
@@ -74,7 +70,16 @@ public class Game : IScene
         // FIXME: freefile?
 
         var entLayer = Map.LayersByName["Entities"];
-        // FIXME: this.state.entities = entLayer.entities.map(ent => new EntityMappings[ent.type](ent));
+        foreach (var ent in entLayer.Entities)
+        {
+            // FIXME: spawn entitiew
+            //var props = ent.Properties;
+            //Type t;
+            //if (Spawnable.EntityMaps.TryGetValue(ent.Type, out t))
+            //{
+            //    var newEnt = new t(props);
+            //}
+        }
 
         var bgProp = this.Map.Background switch
         {
@@ -114,33 +119,83 @@ public class Game : IScene
             };
         }).ToList();
 
-        return;
-
         // FIXME
-/*
-        // setup player
-        this.player = this.state.entities.find(ent => ent instanceof Player) as Player;
-        if (startPos) {
-          this.player.pos = [...startPos];
-          this.player.pos[1] -= this.player.size[1];
-        }
+        /*
+                // setup player
+                this.player = this.state.entities.find(ent => ent instanceof Player) as Player;
+                if (startPos) {
+                  this.player.pos = [...startPos];
+                  this.player.pos[1] -= this.player.size[1];
+                }
 
-        // hack to draw the player at the end since i don't yet support draw order
-        this.state.entities.splice(this.state.entities.indexOf(this.player), 1);
-        this.state.entities.push(this.player);
+                // hack to draw the player at the end since i don't yet support draw order
+                this.state.entities.splice(this.state.entities.indexOf(this.player), 1);
+                this.state.entities.push(this.player);
 
-        this.state.maxCoins = this.state.currCoins + this.state.entities.filter(ent => ent.type == 'Coin').length;
+                this.state.maxCoins = this.state.currCoins + this.state.entities.filter(ent => ent.type == 'Coin').length;
 
-        // setup camera
-        this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
-        this.camera.window(this.player.pos[0], this.player.pos[1], 20, 20);
-*/
+                // setup camera
+                this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
+                this.camera.window(this.player.pos[0], this.player.pos[1], 20, 20);
+        */
     }
 
-
-
-    public void Update(double dt)
+    public void Update(float dt)
     {
+        Accumulator += dt;
+
+        // if we're running at ~58ish fps, pretend its a full frame
+        while (Accumulator > 0.0164)
+        {
+            // FIXME: reset accumulated prints
+            // clearPrintWin();
+            // setRetain(true);
+
+            // always step at the same speed and subtract a little extra in case we're at ~62ish fps
+            Accumulator = MathF.Max(0, Accumulator - 0.0175f);
+            if (!GameState.Paused)
+            {
+                GameState.T += 1 / 60;
+                GameState.Ticks += 1;
+            }
+
+            GameState.WallTicks += 1;
+
+            if (GameState.LevelComplete && GameState.Ticks > GameState.LevelCompleteTicks)
+            {
+                Main.SwitchLevel(GameState.NextMap);
+                return;
+            }
+
+            //run preupdate on all entities before updating
+            foreach (var ent in this.GameState.Entities) {
+                if (ent.Destroyed) continue;
+                if (GameState.Paused && !ent.RunWhilePaused) continue;
+                ent.PreUpdate(ent.RunWhilePaused ? GameState.WallTicks : GameState.Ticks, dt);
+            }
+
+            foreach (var ent in this.GameState.Entities)
+            {
+                if (ent.Destroyed) continue;
+                if (GameState.Paused && !ent.RunWhilePaused) continue;
+                ent.Update(ent.RunWhilePaused ? GameState.WallTicks : GameState.Ticks, dt);
+            }
+
+            // update camera to player
+            Camera.Window(Player.Pos.X, Player.Pos.Y, 20, 20);
+
+            // kill all entities that are disabled
+            for (int i = GameState.Entities.Count - 1; i >= 0; i--)
+            {
+                if (GameState.Entities[i].Destroyed)
+                {
+                    GameState.Entities.RemoveAt(i);
+                }
+            }
+        }
+
+        // SLT.printWin('frame', 'frame', true);
+        // FIXME:setRetain(false);
     }
 
     public void Draw()

@@ -1,4 +1,7 @@
 using Slate2D;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 public enum Layer
 {
@@ -414,18 +417,35 @@ class WorldEnt : Entity
     public static WorldEnt Value = new WorldEnt(new LDTKEntity());
 }
 
-//[System.AttributeUsage(System.AttributeTargets.Class)]
-class Spawnable //: System.Attribute
+[System.AttributeUsage(System.AttributeTargets.Class)]
+class Spawnable : System.Attribute
 {
-    public static Dictionary<string, Type> EntityMaps = new Dictionary<string, Type>
+    string Name;
+    public Spawnable(string name)
     {
-        { "Coin", typeof(Coin) },
-        { "Player", typeof(Player) },
+        Name = name;
+    }
 
-    };
+    public static Dictionary<string, Type> EntityMaps = new Dictionary<string, Type>();
 
-    //public Spawnable(string name)
-    //{
-    //    EntityMaps[name] = typeof(Entity);
-    //}
+    [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
+    public static void ConfigureSpawnables()
+    {
+        EntityMaps.Clear();
+
+        Assembly assembly = Assembly.GetAssembly(typeof(Entity));
+        if (assembly == null) return;
+
+        Type[] types = assembly.GetTypes();
+        foreach (Type type in types)
+        {
+            var attributes = type.GetCustomAttributes(typeof(Spawnable), false);
+            if (attributes?.Length > 0)
+            {
+                Spawnable attrib = (Spawnable)attributes[0];
+                EntityMaps[attrib.Name] = type;
+            }
+
+        }
+    }
 }

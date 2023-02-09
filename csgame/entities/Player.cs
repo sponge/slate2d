@@ -1,5 +1,6 @@
 using Slate2D;
 
+[Spawnable("Player")]
 class Player : Entity
 {
     public int Health = 3;

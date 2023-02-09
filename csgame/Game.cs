@@ -50,6 +50,8 @@ public class Game : IScene
 
     public Game(string mapName)
     {
+        Spawnable.ConfigureSpawnables();
+
         var windowRes = SLT.GetResolution();
         int scaleFactor = windowRes.w / 384;
         Res = (windowRes.w / scaleFactor, windowRes.h / scaleFactor);
@@ -310,4 +312,53 @@ public class Game : IScene
 
         DC.Submit();
     }
+/*
+    // spawn an entity into the map as active
+    spawnEntity(type: string)
+    {
+        const ent = new EntityMappings[type]({ });
+        this.state.entities.push(ent);
+        return ent;
+    }
+
+    // spawns a lil puff of smoke
+    spawnPuffParticle(x: number, y: number)
+    {
+        const puffEnt = new PuffParticle({ });
+        puffEnt.pos[0] = x;
+        puffEnt.pos[1] = y;
+        puffEnt.start = this.state.ticks;
+        this.state.entities.push(puffEnt);
+    }
+
+    // spawn a placeholder enemy that flings out of the screen
+    spawnDeathParticle(ent: Entity, frame: number)
+    {
+        this.spawnPuffParticle(ent.pos[0], ent.pos[1]);
+
+        const deathEnt = new SpinParticle({ });
+        deathEnt.pos = [...ent.pos];
+        deathEnt.sprite = ent.sprite;
+        deathEnt.frame = frame;
+        deathEnt.size = [...ent.size];
+        deathEnt.drawOfs = [...ent.drawOfs];
+        deathEnt.start = this.state.ticks;
+        deathEnt.vel[0] *= Math.sign(ent.center(0) - this.player.center(0));
+        this.state.entities.push(deathEnt);
+
+        return deathEnt;
+    }
+
+    completeLevel()
+    {
+        this.state.levelComplete = true;
+        this.state.levelCompleteTicks = this.state.ticks + 120;
+    }
+
+    failLevel()
+    {
+        Main.switchLevel(this.state.nextMap - 1, this.state.checkpointActive ? this.state.checkpointPos : undefined);
+    }
+
+*/
 }

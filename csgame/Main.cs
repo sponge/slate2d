@@ -1,8 +1,7 @@
 // skipped
-// assetlist
 // entmap - use decorators instead!
 // fsmentity
-// game - nontrivial
+// game - little bits
 // main - little bits
 // objectpool
 // printwin

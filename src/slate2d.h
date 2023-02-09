@@ -26,7 +26,7 @@ const char * __cdecl tempstr(const char *format, ...);
 typedef uint32_t AssetHandle;
 
 // returned if a given asset is not found
-#define INVALID_ASSET -1
+#define INVALID_ASSET 0
 
 // enum of valid assets to load in-game. ASSET_ANY and ASSET_MAX are not valid for
 // creating assets.

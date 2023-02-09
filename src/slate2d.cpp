@@ -642,7 +642,9 @@ SLT_API AssetHandle SLT_Asset_LoadShader(const char *name, bool isFile, const ch
 }
 
 SLT_API AssetHandle SLT_Asset_Find(const char* name) {
-	return Asset_Find(name);
+	AssetHandle hnd = Asset_Find(name);
+	if (hnd == INVALID_ASSET) Con_Printf("WARNING: Can't find asset name: %s\n", name);
+	return hnd;
 }
 
 SLT_API void SLT_Asset_ClearAll() {
@@ -654,6 +656,7 @@ SLT_API void SLT_Asset_LoadINI(const char* path) {
 }
 
 SLT_API void SLT_Asset_BMPFNT_Set(AssetHandle assetHandle, const char* glyphs, int glyphWidth, int charSpacing, int spaceWidth, int lineHeight) {
+	assert(assetHandle != INVALID_ASSET);
 	BMPFNT_Set(assetHandle, glyphs, glyphWidth, charSpacing, spaceWidth, lineHeight);
 }
 
@@ -666,10 +669,12 @@ SLT_API const char* SLT_Asset_BreakString(int width, const char* in) {
 }
 
 SLT_API const Image* SLT_Get_Img(AssetHandle id) {
+	assert(id != INVALID_ASSET);
 	return Get_Img(id);
 }
 
 SLT_API unsigned int SLT_Snd_Play(AssetHandle asset, float volume, float pan, uint8_t loop) {
+	assert(asset != INVALID_ASSET);
 	return Snd_Play(asset, volume, pan, loop > 0);
 }
 
@@ -765,6 +770,7 @@ SLT_API void DC_ResetScissor() {
 }
 
 SLT_API void DC_UseCanvas(AssetHandle canvasId) {
+	assert(canvasId != INVALID_ASSET);
 	GET_COMMAND(useCanvasCommand_t, RC_USE_CANVAS)
 	cmd->canvasId = canvasId;
 }
@@ -774,6 +780,7 @@ SLT_API void DC_ResetCanvas() {
 }
 
 SLT_API void DC_UseShader(AssetHandle shaderId) {
+	assert(shaderId != INVALID_ASSET);
 	GET_COMMAND(useShaderCommand_t, RC_USE_SHADER)
 	cmd->shaderId = shaderId;
 }
@@ -792,6 +799,7 @@ SLT_API void DC_DrawRect(float x, float y, float w, float h, uint8_t outline) {
 }
 
 SLT_API void DC_SetTextStyle(AssetHandle fntId, float size, float lineHeight, int align) {
+	assert(fntId != INVALID_ASSET);
 	GET_COMMAND(setTextStyleCommand_t, RC_SET_TEXT_STYLE)
 	cmd->fntId = fntId;
 	cmd->size = size;
@@ -811,7 +819,8 @@ SLT_API void DC_DrawText(float x, float y, float w, const char* text, int len) {
 	strncpy((char*)strStart, text, cmd->strSz - 1);
 }
 
-SLT_API void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h, float scale, uint8_t flipBits, float ox, float oy) {
+SLT_API void DC_DrawImage(AssetHandle imgId, float x, float y, float w, float h, float scale, uint8_t flipBits, float ox, float oy) {
+	assert(imgId != INVALID_ASSET);
 	GET_COMMAND(drawImageCommand_t, RC_DRAW_IMAGE)
 	cmd->x = x;
 	cmd->y = y;
@@ -824,7 +833,8 @@ SLT_API void DC_DrawImage(unsigned int imgId, float x, float y, float w, float h
 	cmd->imgId = imgId;
 }
 
-SLT_API void DC_DrawSprite(unsigned int spr, int id, float x, float y, float scale, uint8_t flipBits, int w, int h) {
+SLT_API void DC_DrawSprite(AssetHandle spr, int id, float x, float y, float scale, uint8_t flipBits, int w, int h) {
+	assert(spr != INVALID_ASSET);
 	GET_COMMAND(drawSpriteCommand_t, RC_DRAW_SPRITE);
 	cmd->spr = spr;
 	cmd->id = id;
@@ -863,7 +873,8 @@ SLT_API void DC_DrawTri(float x1, float y1, float x2, float y2, float x3, float 
 	cmd->y3 = y3;
 }
 
-SLT_API void DC_DrawTilemap(unsigned int sprId, int x, int y, int w, int h, int* tiles) {
+SLT_API void DC_DrawTilemap(AssetHandle sprId, int x, int y, int w, int h, int* tiles) {
+	assert(sprId != INVALID_ASSET);
  	GET_COMMAND(drawMapCommand_t, RC_DRAW_TILEMAP);
  	cmd->sprId = sprId;
 	cmd->x = x;

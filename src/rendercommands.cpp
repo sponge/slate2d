@@ -325,6 +325,9 @@ const void *RB_DrawSprite(const void *data) {
 	auto cmd = (const drawSpriteCommand_t *)data;
 
 	Asset *asset = Asset_Get(ASSET_SPRITE, cmd->spr);
+
+	assert(asset != nullptr);
+
 	SpriteAtlas *spr = (SpriteAtlas*)asset->resource;
 
 	if (cmd->id > spr->numSprites) {

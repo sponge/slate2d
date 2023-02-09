@@ -67,11 +67,15 @@ AssetHandle Asset_Find(const char *name) {
 }
 
 Asset* Asset_Get(AssetType_t type, AssetHandle id) {
-	if (id >= assets.length) {
+	if (id == INVALID_ASSET){
 		return nullptr;
 	}
 
-	Asset* asset = &assets.data[id];
+	if (id > assets.length) {
+		return nullptr;
+	}
+
+	Asset* asset = &assets.data[id - 1];
 	if (type != ASSET_ANY && type != asset->type) {
 		return nullptr;
 	}
@@ -102,7 +106,7 @@ AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *pa
 	}
 
 	Asset asset = {0};
-	asset.id = assets.length;
+	asset.id = assets.length + 1;
 	asset.type = assetType;
 	asset.flags = flags;
 	asset.path = strdup(path);
@@ -114,7 +118,7 @@ AssetHandle Asset_Create(AssetType_t assetType, const char *name, const char *pa
 }
 
 void Asset_Load(AssetHandle i) {
-	Asset &asset = assets.data[i];
+	Asset &asset = assets.data[i - 1];
 	if (asset.type == ASSET_ANY || asset.loaded) {
 		return;
 	}
@@ -136,7 +140,7 @@ void Asset_LoadAll() {
 }
 
 void Asset_Unload(AssetHandle i) {
-	Asset &asset = assets.data[i];
+	Asset &asset = assets.data[i - 1];
 	if (asset.type == ASSET_ANY || !asset.loaded) {
 		return;
 	}
@@ -225,7 +229,7 @@ void Asset_LoadINI(const char *path) {
 		AssetHandle hnd = Asset_Create(assetType, iter.section, assetPath, 0);
 
 		if (assetHandler[assetType].ParseINI != nullptr) {
-			assetHandler[assetType].ParseINI(assets.data[hnd], ini);
+			assetHandler[assetType].ParseINI(assets.data[hnd - 1], ini);
 		}
 	}
 

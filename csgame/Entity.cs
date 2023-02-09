@@ -1,6 +1,6 @@
 using Slate2D;
 
-enum Layer
+public enum Layer
 {
     Back,
     Background,
@@ -17,16 +17,16 @@ public class Entity
     public (int W, int H) Size = (0, 0);
     public (int X, int Y) Vel = (0, 0);
     public (int X, int Y) DrawOfs = (0, 0);
-    Layer Layer = Layer.Normal;
+    public Layer Layer = Layer.Normal;
 
-    (float X, float Y) Remainder = (0, 0);
-    AssetHandle Sprite = 0;
-    int Frame = 0;
-    byte FlipBits = 0;
+    public (float X, float Y) Remainder = (0, 0);
+    public AssetHandle Sprite = 0;
+    public int Frame = 0;
+    public byte FlipBits = 0;
     // default reaction if canCollide is not overridden
     public CollisionType Collidable = CollisionType.Enabled;
     // whether this entity collides with the world, or moveSolid entities
-    bool WorldCollide = true;
+    public bool WorldCollide = true;
     public bool RunWhilePaused = false;
 
     Entity? CollideEnt;

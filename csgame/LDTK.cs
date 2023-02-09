@@ -35,7 +35,7 @@ public class LDTK
 {
     public (int w, int h) PxSize = (0, 0);
     public string Background;
-    public (int r, int g, int b) BGColor = (0, 0, 0);
+    public (byte r, byte g, byte b) BGColor = (0, 0, 0);
     public Dictionary<string, LDTKProperty> Properties = new Dictionary<string, LDTKProperty>();
     public List<LDTKLayer> Layers = new List<LDTKLayer>();
     public Dictionary<string, LDTKLayer> LayersByName = new Dictionary<string, LDTKLayer>();
@@ -82,7 +82,7 @@ public class LDTK
         PxSize = (obj["pxWid"].GetValue<int>(), obj["pxHei"].GetValue<int>());
 
         int rgb = Int32.Parse(obj["__bgColor"].GetValue<string>().Replace("#", ""), NumberStyles.HexNumber);
-        BGColor = ((rgb >> 16) & 255, (rgb >> 8) & 255, rgb & 255);
+        BGColor = ((byte)((rgb >> 16) & 255), (byte)((rgb >> 8) & 255), (byte)(rgb & 255));
 
         // turn into a reasonable k/v object
         Properties = ParseProperties(obj["fieldInstances"]);

@@ -1,6 +1,3 @@
-using ImGuiNET;
-using Slate2D;
-
 // skipped
 // assetlist
 // entmap - use decorators instead!

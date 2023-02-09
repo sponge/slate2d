@@ -34,7 +34,7 @@ public class Game : IScene
     public Camera Camera;
     float Accumulator = 0;
     Player Player;
-    public GameState GameState;
+    public GameState GameState = new GameState();
     AssetHandle Canvas;
     AssetHandle DogSpr;
     AssetHandle HealthSpr;
@@ -72,13 +72,12 @@ public class Game : IScene
         var entLayer = Map.LayersByName["Entities"];
         foreach (var ent in entLayer.Entities)
         {
-            // FIXME: spawn entitiew
-            //var props = ent.Properties;
-            //Type t;
-            //if (Spawnable.EntityMaps.TryGetValue(ent.Type, out t))
-            //{
-            //    var newEnt = new t(props);
-            //}
+            Type t;
+            if (Spawnable.EntityMaps.TryGetValue(ent.Type, out t))
+            {
+                var newEnt = Activator.CreateInstance(t, ent);
+                if (newEnt != null) GameState.Entities.Add((Entity)newEnt);
+            }
         }
 
         var bgProp = this.Map.Background switch
@@ -119,25 +118,18 @@ public class Game : IScene
             };
         }).ToList();
 
-        // FIXME
-        /*
-                // setup player
-                this.player = this.state.entities.find(ent => ent instanceof Player) as Player;
-                if (startPos) {
-                  this.player.pos = [...startPos];
-                  this.player.pos[1] -= this.player.size[1];
-                }
+        // setup player
+        Player = (Player)GameState.Entities.First(ent => ent.Type == "Player");
 
-                // hack to draw the player at the end since i don't yet support draw order
-                this.state.entities.splice(this.state.entities.indexOf(this.player), 1);
-                this.state.entities.push(this.player);
+        // hack to draw the player at the end since i don't yet support draw order
+        GameState.Entities.Remove(Player);
+        GameState.Entities.Add(Player);
 
-                this.state.maxCoins = this.state.currCoins + this.state.entities.filter(ent => ent.type == 'Coin').length;
+        GameState.MaxCoins = GameState.CurrentCoins + (uint)GameState.Entities.Count(ent => ent.Type == "Coin");
 
-                // setup camera
-                this.camera.constrain(0, 0, this.map.widthPx, this.map.heightPx);
-                this.camera.window(this.player.pos[0], this.player.pos[1], 20, 20);
-        */
+        // setup camera
+        Camera.Constrain(0, 0, Map.PxSize.w, Map.PxSize.h);
+        Camera.Window(Player.Pos.X, Player.Pos.Y, 20, 20);
     }
 
     public void Update(float dt)

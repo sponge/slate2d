@@ -10,7 +10,7 @@ enum Layer
 
 public class Entity
 {
-    protected string Type = "Default";
+    public string Type = "Default";
     public string Name = "";
     public bool Destroyed = false;
     public (int X, int Y) Pos = (0, 0);
@@ -24,7 +24,7 @@ public class Entity
     int Frame = 0;
     byte FlipBits = 0;
     // default reaction if canCollide is not overridden
-    public CollisionType Collidable = CollisionType.Disabled;
+    public CollisionType Collidable = CollisionType.Enabled;
     // whether this entity collides with the world, or moveSolid entities
     bool WorldCollide = true;
     public bool RunWhilePaused = false;
@@ -33,12 +33,25 @@ public class Entity
     Tile CollideTile = Tile.Empty;
     bool AnyInSlope = false;
 
-    public Entity()
+    public Entity(LDTKEntity ent)
     {
-        // FIXME: construct entity with properties
-        //Object.assign(this, args);
-        //const key: keyof typeof CollisionType = args.properties?.CollisionType;
-        //this.collidable = CollisionType[key] ?? CollisionType.Enabled;
+        Size = ent.Size;
+        Pos = ent.Pos;
+        Type = ent.Type;
+
+        //var targetType = GetType();
+        //foreach (var property in ent.Properties)
+        //{
+        //    var targProp = targetType.GetProperty(property.Key);
+        //    if (targProp != null)
+        //    {
+        //        continue;
+        //        //targProp.SetValue(this, propertyGetValue(source));
+        //    }
+        //}
+
+        if (ent.Properties.ContainsKey("CollisionType"))
+            Collidable = (CollisionType)ent.Properties["CollisionType"].Num;
     }
 
     public override string ToString()
@@ -388,7 +401,7 @@ public class Entity
 
 class WorldEnt : Entity
 {
-    public WorldEnt()
+    public WorldEnt(LDTKEntity ent) : base(ent)
     {
         this.Type = "World";
         Collidable = CollisionType.Disabled;
@@ -398,7 +411,7 @@ class WorldEnt : Entity
     public override void Die() { }
     public override void Draw() { }
 
-    public static WorldEnt Value = new WorldEnt();
+    public static WorldEnt Value = new WorldEnt(new LDTKEntity());
 }
 
 //[System.AttributeUsage(System.AttributeTargets.Class)]

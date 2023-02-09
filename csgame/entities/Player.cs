@@ -2,6 +2,11 @@ using Slate2D;
 
 class Player : Entity
 {
+    public Player(LDTKEntity ent) : base(ent)
+    {
+    
+    }
+
     public void StompEnemy()
     {
         throw new NotImplementedException();

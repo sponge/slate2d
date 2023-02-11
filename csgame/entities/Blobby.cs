@@ -1,15 +1,5 @@
 using Slate2D;
 
-enum BlobbyFrames
-{
-    Idle1,
-    Idle2,
-    Sink1,
-    Sink2,
-    Sunk,
-    Pain
-}
-
 enum BlobbyStates
 {
     None,
@@ -22,35 +12,44 @@ enum BlobbyStates
 [Spawnable("Blobby")]
 class Blobby : FSMEntity<BlobbyStates>
 {
+    enum Frames
+    {
+        Idle1,
+        Idle2,
+        Sink1,
+        Sink2,
+        Sunk,
+        Pain
+    }
+
     public Blobby(LDTKEntity ent) : base(ent)
     {
         float LastVelX = -1.5f;
 
         Sprite = Assets.Find("blobby");
 
-        DefaultStateHandlers = new FSMState
-        {
-            Enter = () => FSMDefaultTransitionTo(BlobbyStates.Idle),
-            CanCollide = StandardEnemyCanCollide,
-            Collide = (Entity other, Dir dir) => HandlePlayerStomp(other, dir)
-        };
-
         Handlers = new()
         {
+            {None, new FSMState {
+                Enter = () => FSMDefaultTransitionTo(BlobbyStates.Idle),
+                CanCollide = StandardEnemyCanCollide,
+                Collide = (Entity other, Dir dir) => HandlePlayerStomp(other, dir)
+            }},
+
             {BlobbyStates.Idle, new FSMState {
                 Enter = () => FSMTransitionAtTime(BlobbyStates.Sink, 40),
-                Update = (uint ticks) => {Frame = (uint)(ticks % 40 <= 20 ? BlobbyFrames.Idle1 : BlobbyFrames.Idle2); },
+                Update = (uint ticks) => { Frame = (uint)(ticks % 40 <= 20 ? Frames.Idle1 : Frames.Idle2); },
             }},
 
             // FIXME: port over animation frame stuff
             {BlobbyStates.Sink, new FSMState {
                 Enter = () => FSMTransitionAtTime(BlobbyStates.Move, 20),
-                Update = (uint ticks) => {Frame = (uint)BlobbyFrames.Sink1; },
+                Update = (uint ticks) => { Frame = (uint)Frames.Sink1; },
             }},
 
             {BlobbyStates.Rise, new FSMState {
                 Enter = () => FSMTransitionAtTime(BlobbyStates.Idle, 20),
-                Update = (uint ticks) => {Frame = (uint)BlobbyFrames.Sink2; },
+                Update = (uint ticks) => { Frame = (uint)Frames.Sink2; },
             }},
 
             {BlobbyStates.Move, new FSMState {
@@ -58,7 +57,7 @@ class Blobby : FSMEntity<BlobbyStates>
                 {
                     FSMTransitionAtTime(BlobbyStates.Rise, 60);
                     Vel.X = LastVelX;
-                    Frame = (uint)BlobbyFrames.Sunk;
+                    Frame = (uint)Frames.Sunk;
                 },
                 Exit = () =>
                 {
@@ -86,7 +85,7 @@ class Blobby : FSMEntity<BlobbyStates>
     public override void Die()
     {
         base.Die();
-        Main.World.SpawnDeathParticle(this, (uint)BlobbyFrames.Pain);
+        Main.World.SpawnDeathParticle(this, (uint)Frames.Pain);
     }
 
     public override void Update(uint ticks, float dt)

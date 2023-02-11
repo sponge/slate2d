@@ -1,20 +1,17 @@
-using Slate2D;
-using System.Reflection;
-
-public class FSMState
-{
-    public Action? Enter;
-    public Action? Exit;
-    public Action<uint>? Update;
-    public Action? Draw;
-    public Func<Entity, Dir, CollisionType>? CanCollide;
-    public Action<Entity, Dir>? Collide;
-}
-
 public abstract class FSMEntity<TEnum> : Entity where TEnum : Enum
 {
+    public class FSMState
+    {
+        public Action? Enter;
+        public Action? Exit;
+        public Action<uint>? Update;
+        public Action? Draw;
+        public Func<Entity, Dir, CollisionType>? CanCollide;
+        public Action<Entity, Dir>? Collide;
+    }
+
     TEnum State = default;
-    public FSMState DefaultStateHandlers;
+    FSMState DefaultStateHandlers;
     FSMState StateHandlers;
     bool EnteringState = true;
     TEnum LastState = default;
@@ -30,6 +27,7 @@ public abstract class FSMEntity<TEnum> : Entity where TEnum : Enum
 
     public void FSMUpdate(uint ticks)
     {
+        DefaultStateHandlers = Handlers[default];
         Handlers.TryGetValue(State, out StateHandlers);
 
         if (NextStateTime > 0 && ticks >= NextStateTime)

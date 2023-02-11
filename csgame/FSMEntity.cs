@@ -26,11 +26,12 @@ public abstract class FSMEntity<TEnum> : Entity where TEnum : Enum
 
     public FSMEntity(LDTKEntity ent) : base(ent)
     {
-        Handlers.TryGetValue(State, out StateHandlers);
     }
 
     public void FSMUpdate(uint ticks)
     {
+        Handlers.TryGetValue(State, out StateHandlers);
+
         if (NextStateTime > 0 && ticks >= NextStateTime)
         {
             FSMTransitionTo(NextState);

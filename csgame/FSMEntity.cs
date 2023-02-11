@@ -10,15 +10,13 @@ public abstract class FSMEntity<TEnum> : Entity where TEnum : Enum
         public Action<Entity, Dir>? Collide;
     }
 
-    TEnum State = default;
-    FSMState DefaultStateHandlers;
-    FSMState StateHandlers;
+    TEnum? State = default;
+    FSMState? DefaultStateHandlers;
+    FSMState? StateHandlers;
     bool EnteringState = true;
-    TEnum LastState = default;
+    TEnum? LastState = default;
     uint StartStateTime = 0;
-    // for timed state transitions
-    TEnum NextState = default;
-    uint NextStateTime = 0;
+    (TEnum State, uint Time)? TimedChange; // for timed state transitions
     public virtual Dictionary<TEnum, FSMState> Handlers { get; protected set; }
 
     public FSMEntity(LDTKEntity ent) : base(ent)
@@ -30,12 +28,12 @@ public abstract class FSMEntity<TEnum> : Entity where TEnum : Enum
         DefaultStateHandlers = Handlers[default];
         Handlers.TryGetValue(State, out StateHandlers);
 
-        if (NextStateTime > 0 && ticks >= NextStateTime)
+        if (ticks >= TimedChange?.Time)
         {
-            FSMTransitionTo(NextState);
+            FSMTransitionTo(TimedChange.Value.State);
         }
 
-        if (!Enum.Equals(LastState, default(TEnum)))
+        if (!Equals(LastState, default(TEnum)))
         {
             if (Handlers.TryGetValue(LastState, out var LastStateHandlers))
                 (LastStateHandlers?.Exit ?? DefaultStateHandlers?.Exit)?.Invoke();
@@ -81,14 +79,15 @@ public abstract class FSMEntity<TEnum> : Entity where TEnum : Enum
         LastState = State;
         State = state;
         Handlers.TryGetValue(state, out StateHandlers);
-        NextState = default;
-        NextStateTime = 0;
+        TimedChange = null;
         EnteringState = true;
     }
 
+    // since default state is a fallback, but you don't want to have to define
+    // an Enter action for each state, use this to conditionally change the state
     public void FSMDefaultTransitionTo(TEnum state)
     {
-        if (Enum.Equals(State, default(TEnum)))
+        if (Equals(State, default(TEnum)))
         {
             FSMTransitionTo(state);
         }
@@ -96,7 +95,6 @@ public abstract class FSMEntity<TEnum> : Entity where TEnum : Enum
 
     public void FSMTransitionAtTime(TEnum state, uint wait)
     {
-        NextState = state;
-        NextStateTime = wait + Ticks;
+        TimedChange = (state, wait + Ticks);
     }
 }

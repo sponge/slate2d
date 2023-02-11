@@ -167,13 +167,10 @@ void ConH_Error(int level, const char *message) {
 	if (level == ERR_FATAL) {
 		__debugbreak();
 	}
-#else
-	if (level == ERR_FATAL) {
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Fatal Error", message, NULL);
-	}
 #endif
 
 	if (level == ERR_FATAL) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Fatal Error", message, NULL);
 		exit(1);
 	}
 	else {

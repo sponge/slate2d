@@ -28,7 +28,7 @@ public record class LDTKEntity
     public string Type = "";
     public (int w, int b) Size = (0, 0);
     public (int x, int y) Pos = (0, 0);
-    public Dictionary<string, LDTKProperty> Properties = new Dictionary<string, LDTKProperty>();
+    public Dictionary<string, LDTKProperty> Properties = new();
 }
 
 public class LDTK
@@ -36,9 +36,9 @@ public class LDTK
     public (int w, int h) PxSize = (0, 0);
     public string Background;
     public (byte r, byte g, byte b) BGColor = (0, 0, 0);
-    public Dictionary<string, LDTKProperty> Properties = new Dictionary<string, LDTKProperty>();
-    public List<LDTKLayer> Layers = new List<LDTKLayer>();
-    public Dictionary<string, LDTKLayer> LayersByName = new Dictionary<string, LDTKLayer>();
+    public Dictionary<string, LDTKProperty> Properties = new();
+    public List<LDTKLayer> Layers = new();
+    public Dictionary<string, LDTKLayer> LayersByName = new();
 
     private Dictionary<string, LDTKProperty> ParseProperties(JsonNode properties)
     {

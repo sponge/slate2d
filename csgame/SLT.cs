@@ -324,7 +324,7 @@ namespace Slate2D
         public static partial void Image(uint imgId, float x, float y, float w, float h, float scale, byte flipBits, float ox, float oy);
 
         [LibraryImport(LibName, EntryPoint = "DC_DrawSprite")]
-        public static partial void Sprite(uint spriteId, int id, float x, float y, float scale, byte flipBits, int w, int h);
+        public static partial void Sprite(uint spriteId, uint frame, float x, float y, float scale, byte flipBits, int w, int h);
 
         [LibraryImport(LibName, EntryPoint = "DC_DrawLine")]
         public static partial void Line(float x1, float y1, float x2, float y2);

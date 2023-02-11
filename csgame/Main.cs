@@ -1,10 +1,7 @@
 // skipped
-// entmap - use decorators instead!
 // fsmentity
-// game - little bits
 // main - little bits
 // objectpool
-// printwin
 
 public interface IScene
 {
@@ -16,8 +13,10 @@ public static class Main
 {
     static IScene? scene;
 
-    public static void SwitchLevel(uint num)
+    public static void SwitchLevel(uint num, (int X, int Y)? pos = null)
     {
+        if (pos != null) throw new NotImplementedException();
+
         scene = new Game($"maps/map{num}.ldtkl");
         GC.Collect();
     }

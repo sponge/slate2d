@@ -34,24 +34,24 @@ class Phys
 	// physics values
 	// most values from https://cdn.discordapp.com/attachments/191015116655951872/332350193540268033/smw_physics.png
 	public const byte PMeterCapacity = 112;
-	public const float friction = 0.0625f;
-	public const float accel = 0.09375f;
-	public const float skidAccel = 0.3125f;
-	public const float slideAccel = 0.09375f * 3f;
-	public const float runSpeed = 2.25f;
-	public const float maxSpeed = 3f;
-	public const float heldGravity = 0.1875f;
-	public const float gravity = 0.375f;
-	public const float enemyGravity = 0.375f / 3f;
-	public const byte earlyBounceFrames = 8;
-	public const byte earlyJumpFrames = 6;
-	public const byte lateJumpFrames = 6;
-	public const float terminalVelocity = 4f;
-	public const float enemyJumpHeld = 6.5f;
-	public const float enemyJump = 5.5f;
-	public const float springJumpHeld = 6.5f;
-	public const float springJump = 5.5f;
-	public readonly (float Speed, float Height)[] jumpHeights = {
+	public const float Friction = 0.0625f;
+	public const float Accel = 0.09375f;
+	public const float SkidAccel = 0.3125f;
+	public const float SlideAccel = 0.09375f * 3f;
+	public const float RunSpeed = 2.25f;
+	public const float MaxSpeed = 3f;
+	public const float HeldGravity = 0.1875f;
+	public const float Gravity = 0.375f;
+	public const float EnemyGravity = 0.375f / 3f;
+	public const byte EarlyBounceFrames = 8;
+	public const byte EarlyJumpFrames = 6;
+	public const byte LateJumpFrames = 6;
+	public const float TerminalVelocity = 4f;
+	public const float EnemyJumpHeld = 6.5f;
+	public const float EnemyJump = 5.5f;
+	public const float SpringJumpHeld = 6.5f;
+	public const float SpringJump = 5.5f;
+	public readonly (float Speed, float Height)[] JumpHeights = {
 		(3f, 5.75f),
 		(2.5f, 5.5625f),
 		(2f, 5.4375f),

@@ -18,13 +18,13 @@ public class Entity
     public bool Destroyed = false;
     public (int X, int Y) Pos = (0, 0);
     public (int W, int H) Size = (0, 0);
-    public (int X, int Y) Vel = (0, 0);
+    public (float X, float Y) Vel = (0, 0);
     public (int X, int Y) DrawOfs = (0, 0);
     public Layer Layer = Layer.Normal;
 
     public (float X, float Y) Remainder = (0, 0);
     public AssetHandle Sprite = 0;
-    public int Frame = 0;
+    public uint Frame = 0;
     public byte FlipBits = 0;
     // default reaction if canCollide is not overridden
     public CollisionType Collidable = CollisionType.Enabled;
@@ -35,6 +35,11 @@ public class Entity
     Entity? CollideEnt;
     Tile CollideTile = Tile.Empty;
     bool AnyInSlope = false;
+
+    public Entity()
+    {
+
+    }
 
     public Entity(LDTKEntity ent)
     {
@@ -85,7 +90,7 @@ public class Entity
     }
 
     // callback to determine what type of collision based on the entity
-    public CollisionType CanCollide(Entity other, Dir dir) { return Collidable; }
+    public virtual CollisionType CanCollide(Entity other, Dir dir) { return Collidable; }
     // callback when someone else touches this entity
     public virtual void Collide(Entity other, Dir dir) { }
     // callback when an entity is activated
@@ -111,7 +116,7 @@ public class Entity
 
     // returns true/false if there is a collision at the specified coordinates.
     // this only queries the world, but it will update this.collideEnt
-    bool CollideAt(int x, int y, Dir dir)
+    public bool CollideAt(int x, int y, Dir dir)
     {
         var corners = new (int X, int Y)[]
         {
@@ -384,7 +389,7 @@ public class Entity
     }
 
     // FIXME: other.hurt shouldn't be in here maybe? also the die param is kinda smelly)
-    public bool HandleEnemyStomp(Entity other, Dir dir, bool die = true)
+    public bool HandlePlayerStomp(Entity other, Dir dir, bool die = true)
     {
         if (other is Player && dir == Dir.Up && other.Max.Y <= Min.Y) {
             if (die) Die();
@@ -426,7 +431,12 @@ class Spawnable : System.Attribute
         Name = name;
     }
 
-    public static Dictionary<string, Type> EntityMaps = new Dictionary<string, Type>();
+    public static Dictionary<string, Type> EntityMaps = new()
+    {
+        { "Blobby", typeof(Blobby) },
+        { "Coin", typeof(Coin) },
+        { "Player", typeof(Player) },
+    };
 
     [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
     public static void ConfigureSpawnables()

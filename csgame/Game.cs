@@ -10,7 +10,7 @@ public record GameState
     public uint Ticks = 0;
     public bool Paused = false;
     public uint WallTicks = 0;
-    public List<Entity> Entities = new List<Entity>();
+    public List<Entity> Entities = new();
     public string MapName = "";
     public uint NextMap = 0;
     public uint CurrentCoins = 0;
@@ -42,15 +42,15 @@ public class Game : IScene
     AssetHandle HealthSpr;
     AssetHandle CoinSpr;
     AssetHandle BlueFont;
-    List<Background> Backgrounds = new List<Background>();
-    List<Background> Clouds = new List<Background>();
+    List<Background> Backgrounds = new();
+    List<Background> Clouds = new();
 
     string MapName = "";
     int NextMap = 0;
 
     public Game(string mapName)
     {
-        Spawnable.ConfigureSpawnables();
+        //Spawnable.ConfigureSpawnables();
 
         var windowRes = SLT.GetResolution();
         int scaleFactor = windowRes.w / 384;
@@ -76,8 +76,7 @@ public class Game : IScene
         var entLayer = Map.LayersByName["Entities"];
         foreach (var ent in entLayer.Entities)
         {
-            Type t;
-            if (Spawnable.EntityMaps.TryGetValue(ent.Type, out t))
+            if (Spawnable.EntityMaps.TryGetValue(ent.Type, out var t))
             {
                 var newEnt = Activator.CreateInstance(t, ent);
                 if (newEnt != null) GameState.Entities.Add((Entity)newEnt);
@@ -143,9 +142,8 @@ public class Game : IScene
         // if we're running at ~58ish fps, pretend its a full frame
         while (Accumulator > 0.0164)
         {
-            // FIXME: reset accumulated prints
-            // clearPrintWin();
-            // setRetain(true);
+            PrintWin.ClearPrintWin();
+            PrintWin.Retained = true;
 
             // always step at the same speed and subtract a little extra in case we're at ~62ish fps
             Accumulator = MathF.Max(0, Accumulator - 0.0175f);
@@ -188,10 +186,10 @@ public class Game : IScene
                     GameState.Entities.RemoveAt(i);
                 }
             }
+            PrintWin.Retained = false;
         }
 
-        // SLT.printWin('frame', 'frame', true);
-        // FIXME:setRetain(false);
+        PrintWin.DrawPrintWin();
     }
 
     public void Draw()
@@ -259,7 +257,7 @@ public class Game : IScene
             var x = (int)(t * 50f) % (res.W + 22) - 22;
             var y = (int)(Math.Sin(x / 50f) * 5 + (res.H * 0.8f));
             DC.SetColor(255, 255, 255, 255);
-            DC.Sprite(DogSpr, (int)(t * 12) % 6, x, y + camYoffset, 1, 0, 1, 1);
+            DC.Sprite(DogSpr, (uint)(t * 12) % 6, x, y + camYoffset, 1, 0, 1, 1);
         }
 
         // dim the background slightly
@@ -299,9 +297,8 @@ public class Game : IScene
         // health
         for (int i = 0; i < Player.MaxHealth; i++)
         {
-            DC.Sprite(HealthSpr, i + 1 <= Player.Health ? 0 : 1, 14 + i * 20, 7, 1, 0, 1, 1);
+            DC.Sprite(HealthSpr, i + 1 <= Player.Health ? 0u : 1, 14 + i * 20, 7, 1, 0, 1, 1);
         }
-
 
         // draw the canvas into the center of the window
         var screen = SLT.GetResolution();
@@ -312,53 +309,57 @@ public class Game : IScene
 
         DC.Submit();
     }
-/*
+
     // spawn an entity into the map as active
-    spawnEntity(type: string)
+    public Entity? spawnEntity(string type)
     {
-        const ent = new EntityMappings[type]({ });
-        this.state.entities.push(ent);
-        return ent;
+        if (Spawnable.EntityMaps.TryGetValue(type, out var t))
+        {
+            var newEnt = Activator.CreateInstance(t);
+            if (newEnt != null) GameState.Entities.Add((Entity)newEnt);
+                GameState.Entities.Add((Entity)newEnt);
+            return (Entity)newEnt;
+
+        }
+
+        return null;
     }
 
     // spawns a lil puff of smoke
-    spawnPuffParticle(x: number, y: number)
+    public void SpawnPuffParticle(int x, int y)
     {
-        const puffEnt = new PuffParticle({ });
-        puffEnt.pos[0] = x;
-        puffEnt.pos[1] = y;
-        puffEnt.start = this.state.ticks;
-        this.state.entities.push(puffEnt);
+        var puffEnt = new PuffParticle();
+        puffEnt.Pos = (x, y);
+        puffEnt.Start = GameState.Ticks;
+        GameState.Entities.Add(puffEnt);
     }
-
+ 
     // spawn a placeholder enemy that flings out of the screen
-    spawnDeathParticle(ent: Entity, frame: number)
+    public SpinParticle SpawnDeathParticle(Entity ent, uint frame)
     {
-        this.spawnPuffParticle(ent.pos[0], ent.pos[1]);
+        SpawnPuffParticle(ent.Pos.X, ent.Pos.Y);
 
-        const deathEnt = new SpinParticle({ });
-        deathEnt.pos = [...ent.pos];
-        deathEnt.sprite = ent.sprite;
-        deathEnt.frame = frame;
-        deathEnt.size = [...ent.size];
-        deathEnt.drawOfs = [...ent.drawOfs];
-        deathEnt.start = this.state.ticks;
-        deathEnt.vel[0] *= Math.sign(ent.center(0) - this.player.center(0));
-        this.state.entities.push(deathEnt);
+        var deathEnt = new SpinParticle();
+        deathEnt.Pos = ent.Pos;
+        deathEnt.Sprite = ent.Sprite;
+        deathEnt.Frame = frame;
+        deathEnt.Size = ent.Size;
+        deathEnt.DrawOfs = ent.DrawOfs;
+        deathEnt.Start = GameState.Ticks;
+        deathEnt.Vel.X *= Math.Sign(ent.Center.X - Player.Center.X);
+        GameState.Entities.Add(deathEnt);
 
         return deathEnt;
     }
 
-    completeLevel()
+    public void CompleteLevel()
     {
-        this.state.levelComplete = true;
-        this.state.levelCompleteTicks = this.state.ticks + 120;
+        GameState.LevelComplete = true;
+        GameState.LevelCompleteTicks = GameState.Ticks + 120;
     }
 
-    failLevel()
+    public void FailLevel()
     {
-        Main.switchLevel(this.state.nextMap - 1, this.state.checkpointActive ? this.state.checkpointPos : undefined);
+        Main.SwitchLevel(GameState.NextMap - 1, GameState.CheckpointActive ? GameState.CheckpointPos : null);
     }
-
-*/
 }

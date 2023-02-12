@@ -307,8 +307,6 @@ public class Game : IScene
         DC.ResetCanvas();
         DC.SetColor(255, 255, 255, 255);
         DC.Image(Canvas, (screen.w - (res.W * scale)) / 2, (screen.h - (res.H * scale)) / 2, res.W, res.H, scale, 0, 0, 0);
-
-        DC.Submit();
     }
 
     // spawn an entity into the map as active

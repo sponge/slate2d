@@ -1,8 +1,3 @@
-// skipped
-// fsmentity
-// main - little bits
-// objectpool
-
 public interface IScene
 {
     void Update(float dt);

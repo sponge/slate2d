@@ -51,7 +51,7 @@ class Phys
 	public const float EnemyJump = 5.5f;
 	public const float SpringJumpHeld = 6.5f;
 	public const float SpringJump = 5.5f;
-	public readonly (float Speed, float Height)[] JumpHeights = {
+	public static readonly (float Speed, float Height)[] JumpHeights = {
 		(3f, 5.75f),
 		(2.5f, 5.5625f),
 		(2f, 5.4375f),
@@ -62,7 +62,7 @@ class Phys
 	};
 }
 
-enum Tile
+public enum Tile
 {
 	Empty,
 	Solid,

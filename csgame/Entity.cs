@@ -32,9 +32,9 @@ public class Entity
     public bool WorldCollide = true;
     public bool RunWhilePaused = false;
 
-    Entity? CollideEnt;
-    Tile CollideTile = Tile.Empty;
-    protected bool AnyInSlope = false;
+    public Entity? CollideEnt;
+    public Tile CollideTile = Tile.Empty;
+    public bool AnyInSlope = false;
 
     public Entity()
     {
@@ -105,13 +105,13 @@ public class Entity
     public virtual void Die() { Destroyed = true; }
 
     // returns the tile id at the given coordinates
-    uint TileAt(int x, int y)
+    protected Tile TileAt(int x, int y)
     {
         var layer = Main.World.Map.LayersByName["Collision"];
         var tx = Pos.X / layer.TileSize;
         var ty = Math.Clamp(Pos.Y / layer.TileSize, 0, layer.Size.h);
 
-        return layer.Tiles[ty * layer.Size.w + tx];
+        return (Tile)layer.Tiles[ty * layer.Size.w + tx];
     }
 
     // returns true/false if there is a collision at the specified coordinates.

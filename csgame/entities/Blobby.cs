@@ -28,42 +28,7 @@ class Blobby : FSMEntity<States>
     public Blobby(LDTKEntity ent) : base(ent)
     {
         Sprite = Assets.Find("blobby");
-
-        //Handlers = new()
-        //{
-        //    [States.Default] = new FSMState
-        //    {
-        //        Enter = Default_Enter,
-        //        CanCollide = Default_CanCollide,
-        //        Collide = Default_Collide,
-        //    },
-
-        //    [States.Idle] = new FSMState
-        //    {
-        //        Enter = Idle_Enter,
-        //        Update = Idle_Update,
-        //    },
-
-        //    [States.Sink] = new FSMState
-        //    {
-        //        Enter = Sink_Enter,
-        //        Update = Sink_Update,
-        //    },
-
-        //    [States.Rise] = new FSMState
-        //    {
-        //        Enter = Rise_Enter,
-        //        Update = Rise_Update,
-        //    },
-
-        //    [States.Move] = new FSMState
-        //    {
-        //        Enter = Move_Enter,
-        //        Exit = Move_Exit,
-        //        CanCollide = Move_CanCollide,
-        //        Collide = Move_Collide,
-        //    },
-        //};
+        FSMTransitionTo(States.Idle);
     }
 
     public override void Die()
@@ -83,7 +48,6 @@ class Blobby : FSMEntity<States>
         MoveY(Vel.Y);
     }
 
-    void Default_Enter() => FSMDefaultTransitionTo(States.Idle);
     CollisionType Default_CanCollide(Entity other, Dir dir) => StandardEnemyCanCollide(other, dir);
     void Default_Collide(Entity other, Dir dir) => HandlePlayerStomp(other, dir);
 

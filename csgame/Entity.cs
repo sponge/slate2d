@@ -34,7 +34,7 @@ public class Entity
 
     Entity? CollideEnt;
     Tile CollideTile = Tile.Empty;
-    bool AnyInSlope = false;
+    protected bool AnyInSlope = false;
 
     public Entity()
     {

@@ -232,7 +232,6 @@ public class Game : IScene
 
         // parallax bgs
         float camY = 1 - Camera.y / (float)(Map.PxSize.h - res.H);
-        PW.Watch(camY);
         var camYoffset = camY * 50;
         for (int i = 0; i < Backgrounds.Count; i++)
         {

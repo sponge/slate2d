@@ -1,5 +1,4 @@
 using Slate2D;
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
@@ -183,7 +182,7 @@ public class Entity
                 var minY = tid == Tile.SlopeR ? localX : layer.TileSize - localX;
                 CollideTile = localY >= minY ? tid : Tile.Empty;
                 AnyInSlope = true;
-                return localY > minY;
+                return localY >= minY;
             }
 
             // check against tilemap
@@ -263,7 +262,7 @@ public class Entity
             }
             else
             {
-                // step up 1 pixel to check for slope
+                // if moving left/right, step up 1 pixel to check for moving up a slope
                 if (dim == 0)
                 {
                     if (!CollideAt(check, Pos.Y - 1, Dir.Up))
@@ -397,12 +396,14 @@ public class Entity
     // FIXME: other.hurt shouldn't be in here maybe? also the die param is kinda smelly)
     public bool HandlePlayerStomp(Entity other, Dir dir, bool die = true)
     {
-        if (other is Player && dir == Dir.Up && other.Max.Y <= Min.Y) {
+        if (other is Player && dir == Dir.Up && other.Max.Y <= Min.Y)
+        {
             if (die) Die();
             ((Player)other).StompEnemy();
             return true;
         }
-        else if (other is Player) {
+        else if (other is Player)
+        {
             other.Hurt(1);
             return false;
         }
@@ -437,7 +438,7 @@ class Spawnable : System.Attribute
         Name = name;
     }
 
-    public static Dictionary<string, Type> EntityMaps = new() {};
+    public static Dictionary<string, Type> EntityMaps = new() { };
 
     [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
     public static void ConfigureSpawnables()

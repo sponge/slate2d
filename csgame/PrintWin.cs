@@ -1,8 +1,10 @@
 using ImGuiNET;
+using System.Diagnostics;
 using System.Numerics;
 
-public class PrintWin
+public class PW
 {
+ 
     static private void Print(string title, object key, object value)
     {
         ImGui.SetNextWindowSize(new Vector2(250, 500), ImGuiCond.FirstUseEver);
@@ -33,6 +35,14 @@ public class PrintWin
     {
         if (Retained) Messages.Add((title, key, val));
         else Print(title, key, val);
+    }
+
+    static public void Watch(object val)
+    {
+        StackFrame callStack = new StackFrame(1, true);
+        var caller = $"{callStack.GetMethod()?.Name ?? "Unknown"}:{callStack.GetFileLineNumber()}";
+        if (Retained) Messages.Add(("Debug", caller, val));
+        else Print("Debug", caller, val);
     }
 
     static public void DrawPrintWin()

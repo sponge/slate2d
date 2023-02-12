@@ -140,8 +140,8 @@ public class Game : IScene
         // if we're running at ~58ish fps, pretend its a full frame
         while (Accumulator > 0.0164)
         {
-            PrintWin.ClearPrintWin();
-            PrintWin.Retained = true;
+            PW.ClearPrintWin();
+            PW.Retained = true;
 
             // always step at the same speed and subtract a little extra in case we're at ~62ish fps
             Accumulator = MathF.Max(0, Accumulator - 0.0175f);
@@ -160,14 +160,17 @@ public class Game : IScene
             }
 
             //run preupdate on all entities before updating
-            foreach (var ent in this.GameState.Entities) {
+            for (int i = 0; i < Main.World.GameState.Entities.Count; i++)
+            {
+                var ent = Main.World.GameState.Entities[i];
                 if (ent.Destroyed) continue;
                 if (GameState.Paused && !ent.RunWhilePaused) continue;
                 ent.PreUpdate(ent.RunWhilePaused ? GameState.WallTicks : GameState.Ticks, dt);
             }
 
-            foreach (var ent in this.GameState.Entities)
+            for (int i = 0; i < Main.World.GameState.Entities.Count; i++)
             {
+                var ent = Main.World.GameState.Entities[i];
                 if (ent.Destroyed) continue;
                 if (GameState.Paused && !ent.RunWhilePaused) continue;
                 ent.Update(ent.RunWhilePaused ? GameState.WallTicks : GameState.Ticks, dt);
@@ -184,10 +187,10 @@ public class Game : IScene
                     GameState.Entities.RemoveAt(i);
                 }
             }
-            PrintWin.Retained = false;
+            PW.Retained = false;
         }
 
-        PrintWin.DrawPrintWin();
+        PW.DrawPrintWin();
     }
 
     public void Draw()
@@ -228,7 +231,8 @@ public class Game : IScene
         }
 
         // parallax bgs
-        var camY = 1 - Camera.y / (Map.PxSize.h - res.H);
+        float camY = 1 - Camera.y / (float)(Map.PxSize.h - res.H);
+        PW.Watch(camY);
         var camYoffset = camY * 50;
         for (int i = 0; i < Backgrounds.Count; i++)
         {
@@ -236,7 +240,7 @@ public class Game : IScene
             
             var speed = (i + 1) * 0.25f;
             var x = (int)((bg.Pos.X - Camera.x) * speed) % bg.Size.W;
-            var y = bg.Pos.Y + camYoffset;
+            var y = (int)(bg.Pos.Y + camYoffset);
             var bgx = x;
             while (bgx > 0)
             {

@@ -126,6 +126,9 @@ public class Entity
             (x + Size.W - 1, y + Size.H - 1),
         };
 
+        // different bottommiddle than class property
+        (int X, int Y) bottomMiddle = (x + Size.W / 2, corners[2].Y);
+
         var layer = Main.World.Map.LayersByName["Collision"];
         var opposite = Util.GetOppositeDir(dir);
 
@@ -164,8 +167,8 @@ public class Entity
         }
 
         // check bottom middle point if its in a slope
-        var tx = BottomMiddle.X / layer.TileSize;
-        var ty = Math.Clamp(BottomMiddle.Y / layer.TileSize, 0, layer.Size.h);
+        var tx = bottomMiddle.X / layer.TileSize;
+        var ty = Math.Clamp(bottomMiddle.Y / layer.TileSize, 0, layer.Size.h);
         Tile tid = (Tile)layer.Tiles[ty * layer.Size.w + tx];
 
         AnyInSlope = false;
@@ -175,8 +178,8 @@ public class Entity
             // check if we're in the solid part of the slope (always 45 degrees)
             if (tid == Tile.SlopeL || tid == Tile.SlopeR)
             {
-                var localX = BottomMiddle.X % layer.TileSize;
-                var localY = BottomMiddle.Y % layer.TileSize;
+                var localX = bottomMiddle.X % layer.TileSize;
+                var localY = bottomMiddle.Y % layer.TileSize;
                 var minY = tid == Tile.SlopeR ? localX : layer.TileSize - localX;
                 CollideTile = localY >= minY ? tid : Tile.Empty;
                 AnyInSlope = true;
@@ -371,8 +374,11 @@ public class Entity
 
     public IEnumerable<Entity> FindTriggers()
     {
-        foreach (var other in Main.World.GameState.Entities)
+        // needs to be a for loop since may be modified during iteration
+        // (puffparticles and such)
+        for (int i = 0; i < Main.World.GameState.Entities.Count; i++)
         {
+            var other = Main.World.GameState.Entities[i];
             if (this == other) continue;
             if (other.Destroyed) continue;
             if (other.CanCollide(this, Dir.None) != CollisionType.Trigger) continue;

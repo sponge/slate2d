@@ -31,7 +31,7 @@ class Player : Entity
     {
         if (Stunned) return;
         Health -= amt;
-        if (Health < 0)
+        if (Health <= 0)
         {
             PMeter = 0;
             Die();
@@ -39,6 +39,7 @@ class Player : Entity
         else
         {
             Stunned = true;
+            StunTime = Ticks + 120;
         }
     }
 

@@ -50,7 +50,7 @@ public class Game : IScene
 
     public Game(string mapName)
     {
-        //Spawnable.ConfigureSpawnables();
+        Spawnable.ConfigureSpawnables();
 
         var windowRes = SLT.GetResolution();
         int scaleFactor = windowRes.w / 384;

@@ -1,8 +1,19 @@
+namespace Blobby;
 using Slate2D;
 
-enum BlobbyStates
+enum Frames
 {
-    None,
+    Idle1,
+    Idle2,
+    Sink1,
+    Sink2,
+    Sunk,
+    Pain
+}
+
+enum States
+{
+    Default,
     Idle,
     Sink,
     Rise,
@@ -10,76 +21,49 @@ enum BlobbyStates
 }
 
 [Spawnable("Blobby")]
-class Blobby : FSMEntity<BlobbyStates>
+class Blobby : FSMEntity<States>
 {
-    enum Frames
-    {
-        Idle1,
-        Idle2,
-        Sink1,
-        Sink2,
-        Sunk,
-        Pain
-    }
+    float LastVelX = -1.5f;
 
     public Blobby(LDTKEntity ent) : base(ent)
     {
-        float LastVelX = -1.5f;
-
         Sprite = Assets.Find("blobby");
 
-        Handlers = new()
-        {
-            {None, new FSMState {
-                Enter = () => FSMDefaultTransitionTo(BlobbyStates.Idle),
-                CanCollide = StandardEnemyCanCollide,
-                Collide = (Entity other, Dir dir) => HandlePlayerStomp(other, dir)
-            }},
+        //Handlers = new()
+        //{
+        //    [States.Default] = new FSMState
+        //    {
+        //        Enter = Default_Enter,
+        //        CanCollide = Default_CanCollide,
+        //        Collide = Default_Collide,
+        //    },
 
-            {BlobbyStates.Idle, new FSMState {
-                Enter = () => FSMTransitionAtTime(BlobbyStates.Sink, 40),
-                Update = (uint ticks) => { Frame = (uint)(ticks % 40 <= 20 ? Frames.Idle1 : Frames.Idle2); },
-            }},
+        //    [States.Idle] = new FSMState
+        //    {
+        //        Enter = Idle_Enter,
+        //        Update = Idle_Update,
+        //    },
 
-            // FIXME: port over animation frame stuff
-            {BlobbyStates.Sink, new FSMState {
-                Enter = () => FSMTransitionAtTime(BlobbyStates.Move, 20),
-                Update = (uint ticks) => { Frame = (uint)Frames.Sink1; },
-            }},
+        //    [States.Sink] = new FSMState
+        //    {
+        //        Enter = Sink_Enter,
+        //        Update = Sink_Update,
+        //    },
 
-            {BlobbyStates.Rise, new FSMState {
-                Enter = () => FSMTransitionAtTime(BlobbyStates.Idle, 20),
-                Update = (uint ticks) => { Frame = (uint)Frames.Sink2; },
-            }},
+        //    [States.Rise] = new FSMState
+        //    {
+        //        Enter = Rise_Enter,
+        //        Update = Rise_Update,
+        //    },
 
-            {BlobbyStates.Move, new FSMState {
-                Enter = () =>
-                {
-                    FSMTransitionAtTime(BlobbyStates.Rise, 60);
-                    Vel.X = LastVelX;
-                    Frame = (uint)Frames.Sunk;
-                },
-                Exit = () =>
-                {
-                    LastVelX = Vel.X;
-                    Vel.X = 0;
-                },
-                CanCollide = (Entity other, Dir dir) => other is Player ? CollisionType.Trigger : CollisionType.Enabled,
-                Collide = (Entity other, Dir dir) =>
-                {
-                    if (other is Player)
-                    {
-                        other.Hurt(1);
-                        return;
-                    }
-
-                    if (Vel.X < 0 && dir == Dir.Left) Vel.X *= -1;
-                    else if (Vel.X > 0 && dir == Dir.Right) Vel.X *= -1;
-
-                    if (dir == Dir.Up || dir == Dir.Down) Vel.Y = 0;
-                }
-            }},
-        };
+        //    [States.Move] = new FSMState
+        //    {
+        //        Enter = Move_Enter,
+        //        Exit = Move_Exit,
+        //        CanCollide = Move_CanCollide,
+        //        Collide = Move_Collide,
+        //    },
+        //};
     }
 
     public override void Die()
@@ -93,19 +77,50 @@ class Blobby : FSMEntity<BlobbyStates>
         var grounded = Vel.Y >= 0 && CollideAt(Pos.X, Pos.Y + 1, Dir.Down);
         Vel.Y = grounded ? 0 : Vel.Y + Phys.EnemyGravity;
 
-        FSMUpdate(ticks);
+        base.Update(ticks, dt);
 
         MoveX(Vel.X);
         MoveY(Vel.Y);
     }
 
-    public override CollisionType CanCollide(Entity other, Dir dir)
+    void Default_Enter() => FSMDefaultTransitionTo(States.Idle);
+    CollisionType Default_CanCollide(Entity other, Dir dir) => StandardEnemyCanCollide(other, dir);
+    void Default_Collide(Entity other, Dir dir) => HandlePlayerStomp(other, dir);
+
+    void Idle_Enter() => FSMTimer(States.Sink, 40);
+    void Idle_Update(uint ticks, float dt) => Frame = (uint)(ticks % 40 <= 20 ? Frames.Idle1 : Frames.Idle2);
+
+    // FIXME: port over animation frame stuff
+    void Sink_Enter() => FSMTimer(States.Move, 20);
+    void Sink_Update(uint ticks, float dt) => Frame = (uint)Frames.Sink1;
+
+    void Rise_Enter() => FSMTimer(States.Idle, 20);
+    void Rise_Update(uint ticks, float dt) => Frame = (uint)Frames.Sink2;
+
+    void Move_Enter()
     {
-        return FSMCanCollide(other, dir);
+        FSMTimer(States.Rise, 60);
+        Vel.X = LastVelX;
+        Frame = (uint)Frames.Sunk;
+    }
+    void Move_Exit()
+    {
+        LastVelX = Vel.X;
+        Vel.X = 0;
+    }
+    CollisionType Move_CanCollide(Entity other, Dir dir) => other is Player ? CollisionType.Trigger : CollisionType.Enabled;
+    void Move_Collide(Entity other, Dir dir)
+    {
+        if (other is Player)
+        {
+            other.Hurt(1);
+            return;
+        }
+
+        if (Vel.X < 0 && dir == Dir.Left) Vel.X *= -1;
+        else if (Vel.X > 0 && dir == Dir.Right) Vel.X *= -1;
+
+        if (dir == Dir.Up || dir == Dir.Down) Vel.Y = 0;
     }
 
-    public override void Collide(Entity other, Dir dir)
-    {
-        FSMCollide(other, dir);
-    }
 }

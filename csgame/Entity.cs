@@ -431,12 +431,7 @@ class Spawnable : System.Attribute
         Name = name;
     }
 
-    public static Dictionary<string, Type> EntityMaps = new()
-    {
-        { "Blobby", typeof(Blobby) },
-        { "Coin", typeof(Coin) },
-        { "Player", typeof(Player) },
-    };
+    public static Dictionary<string, Type> EntityMaps = new() {};
 
     [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
     public static void ConfigureSpawnables()

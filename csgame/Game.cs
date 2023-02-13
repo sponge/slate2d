@@ -51,8 +51,8 @@ public class Game : IScene
         Spawnable.ConfigureSpawnables();
 
         var windowRes = SLT.GetResolution();
-        int scaleFactor = windowRes.w / 384;
-        Res = (windowRes.w / scaleFactor, windowRes.h / scaleFactor);
+        int scaleFactor = windowRes.W / 384;
+        Res = (windowRes.W / scaleFactor, windowRes.H / scaleFactor);
         Camera = new Camera(Res.W, Res.H);
         Canvas = Assets.Load(new Canvas("canvas", Res.W, Res.H));
 
@@ -97,8 +97,8 @@ public class Game : IScene
             return new Background
             {
                 Id = id,
-                Size = (size.w, size.h),
-                Pos = (0, Res.H - size.h),
+                Size = (size.W, size.H),
+                Pos = (0, Res.H - size.H),
                 Random = bgProp.Random
             };
         }).ToList();
@@ -113,8 +113,8 @@ public class Game : IScene
             return new Background
             {
                 Id = id,
-                Size = (size.w, size.h),
-                Pos = (bgProp.Random ? rnd.Next(-300, 0) : 0, bgProp.Random ? rnd.Next(5, 120) : Res.H - size.h),
+                Size = (size.W, size.H),
+                Pos = (bgProp.Random ? rnd.Next(-300, 0) : 0, bgProp.Random ? rnd.Next(5, 120) : Res.H - size.H),
                 Random = bgProp.Random
             };
         }).ToList();
@@ -231,14 +231,14 @@ public class Game : IScene
         }
 
         // parallax bgs
-        float camY = 1 - Camera.y / (float)(Map.PxSize.h - res.H);
+        float camY = 1 - Camera.Y / (float)(Map.PxSize.h - res.H);
         var camYoffset = camY * 50;
         for (int i = 0; i < Backgrounds.Count; i++)
         {
             var bg = Backgrounds[i];
             
             var speed = (i + 1) * 0.25f;
-            var x = (int)((bg.Pos.X - Camera.x) * speed) % bg.Size.W;
+            var x = (int)((bg.Pos.X - Camera.X) * speed) % bg.Size.W;
             var y = (int)(bg.Pos.Y + camYoffset);
             var bgx = x;
             while (bgx > 0)
@@ -303,10 +303,10 @@ public class Game : IScene
 
         // draw the canvas into the center of the window
         var screen = SLT.GetResolution();
-        var scale = screen.h / res.H;
+        var scale = screen.H / res.H;
         DC.ResetCanvas();
         DC.SetColor(255, 255, 255, 255);
-        DC.Image(Canvas, (screen.w - (res.W * scale)) / 2, (screen.h - (res.H * scale)) / 2, res.W, res.H, scale, 0, 0, 0);
+        DC.Image(Canvas, (screen.W - (res.W * scale)) / 2, (screen.H - (res.H * scale)) / 2, res.W, res.H, scale, 0, 0, 0);
     }
 
     // spawn an entity into the map as active

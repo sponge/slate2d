@@ -108,9 +108,9 @@ public class Entity
     {
         var layer = Main.World.Map.LayersByName["Collision"];
         var tx = Pos.X / layer.TileSize;
-        var ty = Math.Clamp(Pos.Y / layer.TileSize, 0, layer.Size.h);
+        var ty = Math.Clamp(Pos.Y / layer.TileSize, 0, layer.Size.H);
 
-        return (Tile)layer.Tiles[ty * layer.Size.w + tx];
+        return (Tile)layer.Tiles[ty * layer.Size.W + tx];
     }
 
     // returns true/false if there is a collision at the specified coordinates.
@@ -167,8 +167,8 @@ public class Entity
 
         // check bottom middle point if its in a slope
         var tx = bottomMiddle.X / layer.TileSize;
-        var ty = Math.Clamp(bottomMiddle.Y / layer.TileSize, 0, layer.Size.h);
-        Tile tid = (Tile)layer.Tiles[ty * layer.Size.w + tx];
+        var ty = Math.Clamp(bottomMiddle.Y / layer.TileSize, 0, layer.Size.H);
+        Tile tid = (Tile)layer.Tiles[ty * layer.Size.W + tx];
 
         AnyInSlope = false;
 
@@ -190,11 +190,11 @@ public class Entity
             foreach (var corner in corners)
             {
                 tx = corner.X / layer.TileSize;
-                ty = Math.Clamp(corner.Y / layer.TileSize, 0, layer.Size.h);
-                tid = ty >= layer.Size.h ? Tile.Empty : (Tile)layer.Tiles[ty * layer.Size.w + tx];
+                ty = Math.Clamp(corner.Y / layer.TileSize, 0, layer.Size.H);
+                tid = ty >= layer.Size.H ? Tile.Empty : (Tile)layer.Tiles[ty * layer.Size.W + tx];
 
                 //if there's a tile in the intgrid...
-                if (tx < 0 || tx > layer.Size.w || tid != Tile.Empty)
+                if (tx < 0 || tx > layer.Size.W || tid != Tile.Empty)
                 {
                     if (tid == Tile.Dirtback)
                     {

@@ -14,9 +14,9 @@ public record LDTKProperty
 public record class LDTKLayer
 {
     public string Name = "";
-    public (int w, int h) Size = (0, 0);
+    public (int W, int H) Size = (0, 0);
     public int TileSize = 0;
-    public (int x, int y) Offset = (0, 0);
+    public (int X, int Y) Offset = (0, 0);
     public int[][] DrawTiles;
     public AssetHandle TilesetHnd;
     public uint[] Tiles;
@@ -164,7 +164,7 @@ public class LDTK
                 foreach (var t in tiles)
                 {
                     var px = t["px"].AsArray();
-                    var tileidx = (px[1].GetValue<int>() / lobj.TileSize) * lobj.Size.w + px[0].GetValue<int>() / lobj.TileSize;
+                    var tileidx = (px[1].GetValue<int>() / lobj.TileSize) * lobj.Size.W + px[0].GetValue<int>() / lobj.TileSize;
                     // look for an open space on existing layers
                     for (int i = 0; i < drawTiles.Count; i++)
                     {
@@ -201,7 +201,7 @@ public class LDTK
         var l = LayersByName[layerName];
         foreach (var tmap in l.DrawTiles)
         {
-            DC.Tilemap(l.TilesetHnd, l.Offset.x, l.Offset.y, l.Size.w, l.Size.h, tmap);
+            DC.Tilemap(l.TilesetHnd, l.Offset.X, l.Offset.Y, l.Size.W, l.Size.H, tmap);
         }
     }
 }

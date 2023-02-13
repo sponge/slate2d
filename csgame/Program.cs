@@ -32,7 +32,7 @@ while (true)
     var totalTime = Timer.End("total").ToString("0.000");
 
     var res = SLT.GetResolution();
-    ImGui.SetNextWindowPos(new Vector2(res.w - 200, 50));
+    ImGui.SetNextWindowPos(new Vector2(res.W - 200, 50));
     ImGui.SetNextWindowSize(new Vector2(200, 0));
     ImGui.Begin("##fps2", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoSavedSettings | ImGuiWindowFlags.NoInputs);
     ImGui.Text($"upd: {updTime} (5s: {Timer.Max("update").ToString("0.000")})");

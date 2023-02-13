@@ -2,54 +2,54 @@ using Slate2D;
 
 public struct CameraConstraint
 {
-    public int x, y, w, h;
+    public int X, Y, W, H;
 
     public CameraConstraint(int x, int y, int w, int h)
     {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
+        X = x;
+        Y = y;
+        W = w;
+        H = h;
     }
 };
 
 public class Camera
 {
     // camera coords
-    public int x { get; internal set; } = 0;
-    public int y { get; internal set; } = 0;
+    public int X { get; internal set; } = 0;
+    public int Y { get; internal set; } = 0;
 
     // size of viewport
-    public int w { get; } = 0;
-    public int h { get; } = 0;
+    public int W { get; } = 0;
+    public int H { get; } = 0;
 
     // camera constraint
     CameraConstraint? con = null;
 
     public Camera(int w, int h)
     {
-        this.w = w;
-        this.h = h;
+        W = w;
+        H = h;
     }
 
     // don't let the camera render beyond this box
     public void Constrain(int x, int y, int w, int h)
     {
         con = new CameraConstraint(x, y, w, h);
-        Move(this.x, this.y);
+        Move(X, Y);
     }
 
     // move the camera to this position
     public void Move(int x, int y)
     {
-        this.x = x;
-        this.y = y;
+        X = x;
+        Y = y;
 
         // clamp if out of bounds
         if (con is not null)
         {
-            this.x = Math.Clamp(x, con.Value.x, con.Value.x + con.Value.w - w);
-            this.y = Math.Clamp(y, con.Value.y, con.Value.y + con.Value.h - h);
+            X = Math.Clamp(x, con.Value.X, con.Value.X + con.Value.W - W);
+            Y = Math.Clamp(y, con.Value.Y, con.Value.Y + con.Value.H - H);
         }
     }
 
@@ -57,8 +57,8 @@ public class Camera
     // camera won't move if you're within windowWidth px from the center
     public void Window(int mx, int my, int windowWidth, int windowHeight)
     {
-        var centerX = x + w / 2;
-        var centerY = y + h / 2;
+        var centerX = X + W / 2;
+        var centerY = Y + H / 2;
 
         var deltaX = 0;
         if (Math.Abs(mx - centerX) > windowWidth)
@@ -72,25 +72,25 @@ public class Camera
             deltaY = my - centerY + (my > centerY ? -1 : 1) * windowHeight;
         }
 
-        Move(x + deltaX, y + deltaY);
+        Move(X + deltaX, Y + deltaY);
     }
 
     // centers the camera at a point
     public void Center(int mx, int my)
     {
-        Move(mx - w / 2, my - h / 2);
+        Move(mx - W / 2, my - H / 2);
     }
 
     // set transform to draw from this camera's POV
     // don't move the camera while inside this!
     public void DrawStart()
     {
-        DC.Translate(-x, -y);
+        DC.Translate(-X, -Y);
     }
 
     // move transform back to stop drawing from this camera's POV
     public void DrawEnd()
     {
-        DC.Translate(x, y);
+        DC.Translate(X, Y);
     }
 }

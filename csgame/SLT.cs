@@ -6,12 +6,12 @@ namespace Slate2D
 {
     public struct Position
     {
-        public int x, y;
+        public int X, Y;
     }
 
     public struct Dimensions
     {
-        public int w, h;
+        public int W, H;
     }
 
     public partial class SLT

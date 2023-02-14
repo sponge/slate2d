@@ -1,7 +1,7 @@
 using Slate2D;
 
-[Spawnable("Player")]
-class Player : Entity
+[Spawnable]
+public class Player : Entity
 {
     // entity state
     (int X, int Y) SpawnPos;

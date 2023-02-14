@@ -439,7 +439,7 @@ class WorldEnt : Entity
 class Spawnable : System.Attribute
 {
     string Name;
-    public Spawnable(string name)
+    public Spawnable(string name = null)
     {
         Name = name;
     }
@@ -461,7 +461,7 @@ class Spawnable : System.Attribute
             if (attributes?.Length > 0)
             {
                 Spawnable attrib = (Spawnable)attributes[0];
-                EntityMaps[attrib.Name] = type;
+                EntityMaps[attrib.Name ?? type.Name] = type;
             }
 
         }

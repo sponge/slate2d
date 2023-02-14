@@ -20,7 +20,7 @@ enum States
     Move
 }
 
-[Spawnable("Blobby")]
+[Spawnable]
 class Blobby : FSMEntity<States>
 {
     static Frames[] SinkAnim = new[] { Frames.Sink1, Frames.Sink2 };

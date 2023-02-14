@@ -414,7 +414,8 @@ public class Entity
     public uint Animate<TEnum>(TEnum[] animation, uint startTime, uint endTime) where TEnum : Enum
     {
         var v = Util.InvLerp<float>(startTime, endTime, Ticks);
-        return Convert.ToUInt32(animation[(int)(v * animation.Length)]);
+        var idx = v == 1f ? animation.Length - 1: (int)(v * animation.Length);
+        return Convert.ToUInt32(animation[idx]);
     }
 
     public uint Ticks { get => this.RunWhilePaused ? Main.World.GameState.WallTicks : Main.World.GameState.Ticks; }

@@ -114,6 +114,7 @@ public abstract class FSMEntity<TEnum> : Entity where TEnum : Enum
     {
         if (TimedChange == null) return Convert.ToUInt32(animation[0]);
         var v = Util.InvLerp<float>(StartStateTime, TimedChange.Value.Time, Ticks);
-        return Convert.ToUInt32(animation[(int)(v * animation.Length)]);
+        var idx = v == 1f ? animation.Length - 1 : (int)(v * animation.Length);
+        return Convert.ToUInt32(animation[idx]);
     }
 }

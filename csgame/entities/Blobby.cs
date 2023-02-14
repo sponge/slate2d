@@ -23,6 +23,9 @@ enum States
 [Spawnable("Blobby")]
 class Blobby : FSMEntity<States>
 {
+    static Frames[] SinkAnim = new[] { Frames.Sink1, Frames.Sink2 };
+    static Frames[] RiseAnim = new[] { Frames.Sink2, Frames.Sink1 };
+
     float LastVelX = -1.5f;
 
     public Blobby(LDTKEntity ent) : base(ent)
@@ -56,10 +59,10 @@ class Blobby : FSMEntity<States>
 
     // FIXME: port over animation frame stuff
     void Sink_Enter() => FSMTimer(States.Move, 20);
-    void Sink_Update(uint ticks, float dt) => Frame = (uint)Frames.Sink1;
+    void Sink_Update(uint ticks, float dt) => Frame = Animate(SinkAnim);
 
     void Rise_Enter() => FSMTimer(States.Idle, 20);
-    void Rise_Update(uint ticks, float dt) => Frame = (uint)Frames.Sink2;
+    void Rise_Update(uint ticks, float dt) => Frame = Animate(RiseAnim);
 
     void Move_Enter()
     {

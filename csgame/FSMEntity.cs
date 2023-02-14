@@ -109,4 +109,11 @@ public abstract class FSMEntity<TEnum> : Entity where TEnum : Enum
     {
         CurrentStateHandlers?.Collide?.Invoke(other, dir);
     }
+
+    public uint Animate<TFramesEnum>(TFramesEnum[] animation) where TFramesEnum : Enum
+    {
+        if (TimedChange == null) return Convert.ToUInt32(animation[0]);
+        var v = Util.InvLerp<float>(StartStateTime, TimedChange.Value.Time, Ticks);
+        return Convert.ToUInt32(animation[(int)(v * animation.Length)]);
+    }
 }

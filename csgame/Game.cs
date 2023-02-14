@@ -33,7 +33,7 @@ public class Game : IScene
     public LDTK Map;
     public Camera Camera;
     float Accumulator = 0;
-    Player Player;
+    public Player Player;
     public GameState GameState = new GameState();
     AssetHandle Canvas;
     AssetHandle DogSpr;

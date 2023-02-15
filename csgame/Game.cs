@@ -310,7 +310,7 @@ public class Game : IScene
     }
 
     // spawn an entity into the map as active
-    public Entity? spawnEntity(string type)
+    public Entity? SpawnEntity(string type)
     {
         if (Spawnable.EntityMaps.TryGetValue(type, out var t))
         {

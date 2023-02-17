@@ -102,7 +102,7 @@ public abstract class FSMEntity<TEnum> : Entity where TEnum : Enum
 
     public override CollisionType CanCollide(Entity other, Dir dir)
     {
-        return CurrentStateHandlers?.CanCollide?.Invoke(other, dir) ?? CollisionType.Enabled;
+        return CurrentStateHandlers?.CanCollide?.Invoke(other, dir) ?? Collidable;
     }
 
     public override void Collide(Entity other, Dir dir)

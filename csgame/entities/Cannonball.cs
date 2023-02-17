@@ -3,7 +3,7 @@ using Slate2D;
 [Spawnable]
 class Cannonball : Entity
 {
-    public Cannonball(LDTKEntity ent) : base(ent)
+    public Cannonball()
     {
         Type = "Cannonball";
         Sprite = Assets.Find("launcher");

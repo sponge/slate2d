@@ -25,6 +25,7 @@ class Daikon : FSMEntity<States>
         Sprite = Assets.Find("daikon");
         DrawOfs = (-2, -3);
         FSMTransitionTo(States.Wait);
+        Collidable = CollisionType.Disabled;
     }
 
     public override void Die()
@@ -49,7 +50,6 @@ class Daikon : FSMEntity<States>
             FSMTransitionTo(States.Pop);
         }
     }
-    CollisionType Wait_CanCollide(Entity other, Dir dir) => CollisionType.Disabled;
 
     void Pop_Enter()
     {

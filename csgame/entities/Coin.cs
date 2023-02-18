@@ -18,8 +18,5 @@ class Coin : Entity
         Main.World.GameState.CurrentCoins++;
     }
 
-    public override void Update(uint ticks, float dt)
-    {
-        Frame = ticks / 8 % 4;
-    }
+    public override void Update(uint ticks, float dt) => Frame = ticks / 8 % 4;
 }

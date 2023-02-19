@@ -35,10 +35,10 @@ while (true)
     ImGui.SetNextWindowPos(new Vector2(res.W - 200, 50));
     ImGui.SetNextWindowSize(new Vector2(200, 0));
     ImGui.Begin("##fps2", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoSavedSettings | ImGuiWindowFlags.NoInputs);
-    ImGui.Text($"upd: {updTime} (5s: {Timer.Max("update").ToString("0.000")})");
-    ImGui.Text($"drw: {drawTime} (5s: {Timer.Max("draw").ToString("0.000")})");
-    ImGui.Text($"sub: {submitTime} (5s: {Timer.Max("submit").ToString("0.000")})");
-    ImGui.Text($"sum: {totalTime} (5s: {Timer.Max("total").ToString("0.000")})");
+    ImGui.Text($"upd: {updTime}ms (5s: {Timer.Max("update").ToString("0.000")}ms)");
+    ImGui.Text($"drw: {drawTime}ms (5s: {Timer.Max("draw").ToString("0.000")}ms)");
+    ImGui.Text($"sub: {submitTime}ms (5s: {Timer.Max("submit").ToString("0.000")}ms)");
+    ImGui.Text($"sum: {totalTime}ms (5s: {Timer.Max("total").ToString("0.000")}ms)");
     ImGui.SetWindowPos(new Vector2(0, 0), ImGuiCond.Always);
     ImGui.End();
 

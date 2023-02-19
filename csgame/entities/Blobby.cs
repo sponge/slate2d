@@ -57,7 +57,6 @@ class Blobby : FSMEntity<States>
     void Idle_Enter() => FSMTimer(States.Sink, 40);
     void Idle_Update(uint ticks, float dt) => Frame = (uint)(ticks % 40 <= 20 ? Frames.Idle1 : Frames.Idle2);
 
-    // FIXME: port over animation frame stuff
     void Sink_Enter() => FSMTimer(States.Move, 20);
     void Sink_Update(uint ticks, float dt) => Frame = Animate(SinkAnim);
 

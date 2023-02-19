@@ -407,10 +407,10 @@ void main_loop()
                    nullptr,
                    ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings |
                      ImGuiWindowFlags_NoInputs);
-      ImGui::Text("upd: %0.2fms (5s: %0.2fms)", updTime, Timer_Max("update"));
-      ImGui::Text("drw: %0.2fms (5s: %0.2fms)", drawTime, Timer_Max("draw"));
-      ImGui::Text("sub: %0.2fms (5s: %0.2fms)", submitTime, Timer_Max("submit"));
-      ImGui::Text("sum: %0.2fms (5s: %0.2fms)", totalTime, Timer_Max("total"));
+      ImGui::Text("upd: %0.3fms (5s: %0.3fms)", updTime, Timer_Max("update"));
+      ImGui::Text("drw: %0.3fms (5s: %0.3fms)", drawTime, Timer_Max("draw"));
+      ImGui::Text("sub: %0.3fms (5s: %0.3fms)", submitTime, Timer_Max("submit"));
+      ImGui::Text("sum: %0.3fms (5s: %0.3fms)", totalTime, Timer_Max("total"));
 
       ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Always);
       ImGui::End();

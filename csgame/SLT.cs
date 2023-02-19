@@ -142,7 +142,7 @@ namespace Slate2D
         public float triggerLeft, triggerRight;
     }
 
-    public enum Buttons
+    public enum DefaultButtons
     {
         Up,
         Down,

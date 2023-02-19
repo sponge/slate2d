@@ -7,11 +7,11 @@ public class Player : Entity
     (int X, int Y) SpawnPos;
     bool Dead = false;
     uint DeadTime = 0;
-    bool DisableControls = false;
-    bool DisableMovement = false;
+    public bool DisableControls = false;
+    public bool DisableMovement = false;
     uint PMeter = 0;
     uint FallingFrames = 0;
-    bool JumpHeld = false;
+    public bool JumpHeld = false;
     uint JumpHeldFrames = 0;
     int Facing = 1;
     bool Stunned = false;

@@ -39,7 +39,7 @@ public class Game : IScene
     AssetHandle DogSpr;
     AssetHandle HealthSpr;
     AssetHandle CoinSpr;
-    AssetHandle BlueFont;
+    public AssetHandle BlueFont;
     List<Background> Backgrounds = new();
     List<Background> Clouds = new();
 

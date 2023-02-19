@@ -57,8 +57,9 @@ public class Entity
         //    }
         //}
 
-        if (ent.Properties.ContainsKey("CollisionType"))
-            Collidable = (CollisionType)ent.Properties["CollisionType"].Num;
+        var colTypeStr = ent.Properties.GetValueOrDefault("CollisionType", null)?.Str ?? "Enabled";
+        colTypeStr = colTypeStr.Length > 0 ? colTypeStr : "Enabled";
+        Collidable = (CollisionType)Enum.Parse(typeof(CollisionType), colTypeStr);
     }
 
     public override string ToString()
@@ -315,7 +316,7 @@ public class Entity
     }
 
     // move a solid object that is not constrained by world collision (movers)
-    public void MoveSolid(int x, int y)
+    public void MoveSolid(float x, float y)
     {
         Remainder.X += x;
         Remainder.Y += y;
@@ -343,8 +344,9 @@ public class Entity
                 continue;
             }
 
-            foreach (var other in Main.World.GameState.Entities)
+            for (int i = 0; i < Main.World.GameState.Entities.Count; i++)
             {
+                var other = Main.World.GameState.Entities[i];
                 if (other == this) continue;
 
                 // if collision is enabled and the other entity intersects with the post move position, try and push them out of the way

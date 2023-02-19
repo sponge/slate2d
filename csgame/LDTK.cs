@@ -6,6 +6,7 @@ using static Slate2D.Assets.AssetConfig;
 public record LDTKProperty
 {
     public float Num;
+    public int NumI;
     public string Str = "";
     public bool Bool;
     public (float x, float y) Point;
@@ -28,7 +29,7 @@ public record class LDTKEntity
     public string Type = "";
     public (int w, int b) Size = (0, 0);
     public (int x, int y) Pos = (0, 0);
-    public Dictionary<string, LDTKProperty> Properties = new();
+    public Dictionary<string, LDTKProperty?> Properties = new();
 }
 
 public class LDTK
@@ -36,7 +37,7 @@ public class LDTK
     public (int w, int h) PxSize = (0, 0);
     public string Background;
     public (byte r, byte g, byte b) BGColor = (0, 0, 0);
-    public Dictionary<string, LDTKProperty> Properties = new();
+    public Dictionary<string, LDTKProperty?> Properties = new();
     public List<LDTKLayer> Layers = new();
     public Dictionary<string, LDTKLayer> LayersByName = new();
 
@@ -49,20 +50,19 @@ public class LDTK
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             string key = node["__identifier"].GetValue<string>();
             JsonNode val = node["__value"];
+            string valType = node["__type"].GetValue<string>();
 
+            Console.WriteLine(valType);
             if (val == null) continue;
 
             dict[key] = new LDTKProperty
             {
-                Num = val.GetType() == typeof(float) ? val.GetValue<float>() : 0,
-                Str = val.GetType() == typeof(string) ? val.GetValue<string>() : "",
-                Bool = val.GetType() == typeof(bool) ? val.GetValue<bool>() : false,
+                Num = valType == "Float" ? val.GetValue<float>() : 0,
+                NumI = valType == "Int" ? val.GetValue<int>() : 0,
+                Str = valType == "String" || valType.StartsWith("LocalEnum") ? val.GetValue<string>() : "",
+                Bool = valType == "Bool" ? val.GetValue<bool>() : false,
+                Point = valType == "Point" ? (val["cx"].GetValue<float>(), val["cy"].GetValue<float>()) : (0, 0),
             };
-
-            if (node["__type"].GetValue<string>() == "Point")
-            {
-                dict[key].Point = (val["cx"].GetValue<float>(), val["cy"].GetValue<float>());
-            }
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 

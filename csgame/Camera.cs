@@ -48,8 +48,12 @@ public class Camera
         // clamp if out of bounds
         if (con is not null)
         {
-            X = Math.Clamp(x, con.Value.X, con.Value.X + con.Value.W - W);
-            Y = Math.Clamp(y, con.Value.Y, con.Value.Y + con.Value.H - H);
+            var x1 = con.Value.X;
+            var x2 = con.Value.X + con.Value.W - W;
+            X = x1 > x2 ? Math.Clamp(x, x2, x1) : Math.Clamp(x, x1, x2);
+            var y1 = con.Value.Y;
+            var y2 = con.Value.Y + con.Value.H - H;
+            Y = y1 > y2 ? Math.Clamp(y, y2, y1) : Math.Clamp(y, y1, y2);
         }
     }
 

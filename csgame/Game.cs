@@ -82,7 +82,7 @@ public class Game : IScene
         var bgProp = this.Map.Background switch
         {
             "grassland" => (Key: "grassland", NumBgs: 3, NumClouds: 3, Random: true),
-            "snowland" => (Key: "snowland", NumBgs: 4, NumClouds: 3, Random: false),
+            "snowland" => (Key: "snowland", NumBgs: 4, NumClouds: 1, Random: false),
             _ => (Key: "grassland", NumBgs: 3, NumClouds: 3, Random: true),
         };
 

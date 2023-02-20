@@ -157,6 +157,9 @@ SLT_API void SLT_Con_AddCommand(const char* name, conCmd_t cmd);
 SLT_API int SLT_FS_ReadFile(const char* path, void** buffer);
 SLT_API void* SLT_FS_ReadFile2(const char *path, long long int *outLen);
 
+// frees the buffer at the pointer, mostly exists for language bindings
+SLT_API void SLT_FS_FreeFile(void *buffer);
+
 // writes a file at path from the virtual filesystem. returns 0 on success, -1 on failure.
 SLT_API int SLT_FS_WriteFile(const char *filename, const void *data, int len);
 

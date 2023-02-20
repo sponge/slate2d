@@ -68,7 +68,6 @@ public class Game : IScene
 
         string mapStr = FS.ReadTextFile(MapName);
         Map = new LDTK(mapStr);
-        // FIXME: freefile?
 
         var entLayer = Map.LayersByName["Entities"];
         foreach (var ent in entLayer.Entities)

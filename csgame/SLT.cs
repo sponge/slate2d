@@ -94,6 +94,9 @@ namespace Slate2D
         [LibraryImport(LibName, EntryPoint = "SLT_FS_ReadFile2", StringMarshalling = StringMarshalling.Utf8)]
         private static partial IntPtr _ReadFile(string path, out int len);
 
+        [LibraryImport(LibName, EntryPoint = "SLT_FS_FreeFile")]
+        private static partial IntPtr _FreeFile(IntPtr buffer);
+
         public static byte[] ReadFile(string path)
         {
             int len;
@@ -106,6 +109,8 @@ namespace Slate2D
 
             byte[] bytes = new byte[len];
             Marshal.Copy(buf, bytes, 0, len);
+            _FreeFile(buf);
+
             return bytes;
         }
 

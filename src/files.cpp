@@ -193,6 +193,10 @@ void *FS_ReadFile2(const char *path, long long int *outLen) {
 	return buffer;
 }
 
+void FS_FreeFile(void *buffer) {
+	free(buffer);
+}
+
 const char *FS_FileExtension(const char *filename) {
     const char *dot = strrchr(filename, '.');
 	

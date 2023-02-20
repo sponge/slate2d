@@ -44,7 +44,6 @@ public class Game : IScene
     List<Background> Clouds = new();
 
     string MapName = "";
-    int NextMap = 0;
 
     public Game(string mapName)
     {
@@ -65,7 +64,7 @@ public class Game : IScene
         MapName = mapName ?? "maps/map1.ldtkl";
 
         var match = Regex.Match(MapName, @"map(\d+)", RegexOptions.Multiline);
-        NextMap = int.Parse(match.Groups[1].Value ?? "1") + 1;
+        GameState.NextMap = uint.Parse(match.Groups[1].Value ?? "1") + 1;
 
         string mapStr = FS.ReadTextFile(MapName);
         Map = new LDTK(mapStr);

@@ -10,9 +10,7 @@ public static class Main
 
     public static void SwitchLevel(uint num, (int X, int Y)? pos = null)
     {
-        if (pos != null) throw new NotImplementedException();
-
-        scene = new Game($"maps/map{num}.ldtkl");
+        scene = new Game($"maps/map{num}.ldtkl", pos);
         GC.Collect();
     }
 

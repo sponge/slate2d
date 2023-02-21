@@ -45,7 +45,7 @@ public class Game : IScene
 
     string MapName = "";
 
-    public Game(string mapName)
+    public Game(string mapName, (int X, int Y)? startPos = null)
     {
         Spawnable.ConfigureSpawnables();
 
@@ -119,6 +119,11 @@ public class Game : IScene
 
         // setup player
         Player = (Player)GameState.Entities.First(ent => ent.Type == "Player");
+        if (startPos != null)
+        {
+            Player.Pos = startPos.Value;
+            Player.Pos.Y -= Player.Size.H;
+        }
 
         // hack to draw the player at the end since i don't yet support draw order
         GameState.Entities.Remove(Player);

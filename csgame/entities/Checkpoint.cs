@@ -43,6 +43,7 @@ class Checkpoint : FSMEntity<States>
     void Idle_Collide(Entity other, Dir dir)
     {
         if (other is Player == false) return;
+        if (Activated) return;
 
         Activated = true;
         Main.World.GameState.CheckpointActive = true;

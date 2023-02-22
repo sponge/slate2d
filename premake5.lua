@@ -245,13 +245,15 @@ workspace "Slate2D"
       files { "libs/crunch/**.cpp", "libs/crunch/**.h", "libs/crunch/**.hpp" }
       warnings "Off"
 
-    project "quickjs"
-      kind "StaticLib"
-      cdialect "C11"
-      files { "libs/quickjs/**.c", "libs/quickjs/**.h" }
-      defines { "CONFIG_VERSION=\"2020-11-08\"" }
-      warnings "Off"
-      filter { "not system:windows" }
-        excludes "libs/quickjs/quickjs-debugger-transport-win.c"
-      filter { "system:windows" }
-        excludes "libs/quickjs/quickjs-debugger-transport-unix.c"
+    if not _OPTIONS['csgame'] then
+      project "quickjs"
+        kind "StaticLib"
+        cdialect "C11"
+        files { "libs/quickjs/**.c", "libs/quickjs/**.h" }
+        defines { "CONFIG_VERSION=\"2020-11-08\"" }
+        warnings "Off"
+        filter { "not system:windows" }
+          excludes "libs/quickjs/quickjs-debugger-transport-win.c"
+        filter { "system:windows" }
+          excludes "libs/quickjs/quickjs-debugger-transport-unix.c"
+    end

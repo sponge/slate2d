@@ -11,6 +11,17 @@
   ],
   "configurations": [
     {
+      "name": ".NET Core Launch (console)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "Build csgame",
+      "program": "${workspaceFolder}/build/bin/Debug/net7.0/csgame_standalone.dll",
+      "args": ["+set", "fs.basepath", "${workspaceRoot}"],
+      "cwd": "${workspaceFolder}",
+      "stopAtEntry": false,
+      "console": "internalConsole"
+    },
+    {
       "name": "Launch (Debug)",
       "type": "cppvsdbg",
       "request": "launch",

@@ -207,9 +207,20 @@
         "$tsc-watch"
       ],
       "isBackground": true,
-      "runOptions": {
-        "runOn": "folderOpen"
-      }
+    },
+    {
+      "label": "Build csgame",
+      "group": "build",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceRoot}/build/csgame_standalone.csproj"
+      ],
+      "problemMatcher": "$msCompile",
+      "dependsOn": [
+        "Build (Debug)"
+      ]
     }
   ]
 }

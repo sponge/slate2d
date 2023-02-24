@@ -25,7 +25,7 @@ end)
 function csgame()
   language "c#"
   kind "WindowedApp"
-  framework "net7.0"
+  dotnetframework "net7.0"
   files { "csgame/**.cs" }
   disablewarnings { "CS8625", "CS8600", "CS8604" } -- disable some warnings in imgui.net
 end

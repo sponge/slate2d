@@ -52,7 +52,6 @@ public class LDTK
             JsonNode val = node["__value"];
             string valType = node["__type"].GetValue<string>();
 
-            Console.WriteLine(valType);
             if (val == null) continue;
 
             dict[key] = new LDTKProperty

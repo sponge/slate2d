@@ -1,4 +1,7 @@
 require('vstudio')
+included = true
+require("csgame")
+
 
 premake.override(premake.vstudio.vc2010.elements, "globals", function(base, prg)
     local calls = base(prj)
@@ -7,28 +10,6 @@ premake.override(premake.vstudio.vc2010.elements, "globals", function(base, prg)
       premake.w('<ResolveNuGetPackages>false</ResolveNuGetPackages>')
     end)
     return calls
-end)
-
-premake.override(premake.vstudio.dotnetbase, "projectProperties", function(base, prj)
-  if prj.filename == 'csgame' then
-    premake.w('  <PropertyGroup>')
-    premake.w('    <ImplicitUsings>enable</ImplicitUsings>')
-    premake.w('    <Nullable>enable</Nullable>')
-    premake.w('    <PublishTrimmed>true</PublishTrimmed>')
-    premake.w('    <PublishRelease>true</PublishRelease>')
-    premake.w('    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>')
-    premake.w('    <Platforms>x86;x64</Platforms>')
-    -- premake.w('    <PublishAot>true</PublishAot>')
-    premake.w('  </PropertyGroup>')
-
-    premake.w('  <ItemGroup>')
-    premake.w('    <ContentWithTargetPath Include="../build/bin/x86_64_$(Configuration)/*.dll">')
-    premake.w('    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>')
-    premake.w('    <TargetPath>%%(Filename)%%(Extension)</TargetPath>')
-    premake.w('    </ContentWithTargetPath>')
-    premake.w('  </ItemGroup>')
-  end
-  base(prj)
 end)
 
 newoption {
@@ -187,12 +168,8 @@ workspace "Slate2D"
 
   if _OPTIONS['csgame'] then
     project "csgame"
-      language "c#"
-      kind "WindowedApp"
-      framework "net7.0"
       links "libslate2d"
-      files { "csgame/**.cs" }
-      disablewarnings { "CS8625", "CS8600", "CS8604" } -- disable some warnings in imgui.net
+      csgame()
   end
 
   group "libraries"
@@ -245,15 +222,13 @@ workspace "Slate2D"
       files { "libs/crunch/**.cpp", "libs/crunch/**.h", "libs/crunch/**.hpp" }
       warnings "Off"
 
-    if not _OPTIONS['csgame'] then
-      project "quickjs"
-        kind "StaticLib"
-        cdialect "C11"
-        files { "libs/quickjs/**.c", "libs/quickjs/**.h" }
-        defines { "CONFIG_VERSION=\"2020-11-08\"" }
-        warnings "Off"
-        filter { "not system:windows" }
-          excludes "libs/quickjs/quickjs-debugger-transport-win.c"
-        filter { "system:windows" }
-          excludes "libs/quickjs/quickjs-debugger-transport-unix.c"
-    end
+    project "quickjs"
+      kind "StaticLib"
+      cdialect "C11"
+      files { "libs/quickjs/**.c", "libs/quickjs/**.h" }
+      defines { "CONFIG_VERSION=\"2020-11-08\"" }
+      warnings "Off"
+      filter { "not system:windows" }
+        excludes "libs/quickjs/quickjs-debugger-transport-win.c"
+      filter { "system:windows" }
+        excludes "libs/quickjs/quickjs-debugger-transport-unix.c"

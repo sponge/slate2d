@@ -109,7 +109,9 @@ public class Entity
     {
         var layer = Main.World.Map.LayersByName["Collision"];
         var tx = Pos.X / layer.TileSize;
-        var ty = Math.Clamp(Pos.Y / layer.TileSize, 0, layer.Size.H);
+        var ty = Math.Clamp(Pos.Y / layer.TileSize, 0, layer.Size.H - 1);
+
+        if (Pos.X < 0 || tx > layer.Size.W) return Tile.Solid;
 
         return (Tile)layer.Tiles[ty * layer.Size.W + tx];
     }
@@ -132,8 +134,10 @@ public class Entity
         var layer = Main.World.Map.LayersByName["Collision"];
         var opposite = Util.GetOppositeDir(dir);
 
-        // iterate through all entities looking for a collision
         CollideEnt = null;
+        CollideTile = Tile.Empty;
+
+        // iterate through all entities looking for a collision
         foreach (var other in Main.World.GameState.Entities)
         {
             if (other == this) continue;
@@ -168,66 +172,73 @@ public class Entity
 
         // check bottom middle point if its in a slope
         var tx = bottomMiddle.X / layer.TileSize;
-        var ty = Math.Clamp(bottomMiddle.Y / layer.TileSize, 0, layer.Size.H);
+        var ty = Math.Clamp(bottomMiddle.Y / layer.TileSize, 0, layer.Size.H - 1);
         Tile tid = (Tile)layer.Tiles[ty * layer.Size.W + tx];
 
         AnyInSlope = false;
 
-        if (WorldCollide)
+        if (!WorldCollide)
         {
-            // check if we're in the solid part of the slope (always 45 degrees)
-            if (tid == Tile.SlopeL || tid == Tile.SlopeR)
+            return false;
+        }
+
+        // check if we're in the solid part of the slope (always 45 degrees)
+        if (tid == Tile.SlopeL || tid == Tile.SlopeR)
+        {
+            var localX = bottomMiddle.X % layer.TileSize;
+            var localY = bottomMiddle.Y % layer.TileSize;
+            var minY = tid == Tile.SlopeR ? localX : layer.TileSize - localX;
+            CollideTile = localY >= minY ? tid : Tile.Empty;
+            AnyInSlope = true;
+            return localY >= minY;
+        }
+
+        // check against tilemap
+        // iterate through corners. note this will currently break if entities are > tileSize
+        foreach (var corner in corners)
+        {
+            tx = corner.X / layer.TileSize;
+            ty = Math.Clamp(corner.Y / layer.TileSize, 0, layer.Size.H);
+            tid = ty >= layer.Size.H ? Tile.Empty : (Tile)layer.Tiles[ty * layer.Size.W + tx];
+
+            if (corner.X < 0 || tx >= layer.Size.W)
             {
-                var localX = bottomMiddle.X % layer.TileSize;
-                var localY = bottomMiddle.Y % layer.TileSize;
-                var minY = tid == Tile.SlopeR ? localX : layer.TileSize - localX;
-                CollideTile = localY >= minY ? tid : Tile.Empty;
-                AnyInSlope = true;
-                return localY >= minY;
+                CollideTile = Tile.Solid;
+                return true;
             }
 
-            // check against tilemap
-            // iterate through corners. note this will currently break if entities are > tileSize
-            foreach (var corner in corners)
+            //if there's a tile in the intgrid...
+            if (tx < 0 || tx > layer.Size.W || tid != Tile.Empty)
             {
-                tx = corner.X / layer.TileSize;
-                ty = Math.Clamp(corner.Y / layer.TileSize, 0, layer.Size.H);
-                tid = ty >= layer.Size.H ? Tile.Empty : (Tile)layer.Tiles[ty * layer.Size.W + tx];
-
-                //if there's a tile in the intgrid...
-                if (tx < 0 || tx > layer.Size.W || tid != Tile.Empty)
+                if (tid == Tile.Dirtback)
                 {
-                    if (tid == Tile.Dirtback)
-                    {
-                        continue;
-                    }
-
-                    // if it's a ground sloped tile, only bottom middle pixel should collide with it
-                    if (tid == Tile.SlopeL || tid == Tile.SlopeR)
-                    {
-                        AnyInSlope = true;
-                        continue;
-                    }
-
-                    // if it's a platform, check if dir is down, and only block if bottom of entity
-                    // intersects with the first pixel of the platform block
-                    if (tid == Tile.Platform)
-                    {
-                        if (dir == Dir.Down && corner.Y == corners[2].Y && corner.Y % layer.TileSize == 0)
-                        {
-                            CollideTile = tid;
-                            return true;
-                        }
-                        continue;
-                    }
-
-                    CollideTile = tid;
-                    return true;
+                    continue;
                 }
+
+                // if it's a ground sloped tile, only bottom middle pixel should collide with it
+                if (tid == Tile.SlopeL || tid == Tile.SlopeR)
+                {
+                    AnyInSlope = true;
+                    continue;
+                }
+
+                // if it's a platform, check if dir is down, and only block if bottom of entity
+                // intersects with the first pixel of the platform block
+                if (tid == Tile.Platform)
+                {
+                    if (dir == Dir.Down && corner.Y == corners[2].Y && corner.Y % layer.TileSize == 0)
+                    {
+                        CollideTile = tid;
+                        return true;
+                    }
+                    continue;
+                }
+
+                CollideTile = tid;
+                return true;
             }
         }
 
-        CollideTile = Tile.Empty;
         return false;
     }
 
@@ -416,7 +427,7 @@ public class Entity
     public uint Animate<TEnum>(TEnum[] animation, uint startTime, uint endTime) where TEnum : Enum
     {
         var v = Util.InvLerp<float>(startTime, endTime, Ticks);
-        var idx = v == 1f ? animation.Length - 1: (int)(v * animation.Length);
+        var idx = v == 1f ? animation.Length - 1 : (int)(v * animation.Length);
         return Convert.ToUInt32(animation[idx]);
     }
 

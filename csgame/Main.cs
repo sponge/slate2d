@@ -19,7 +19,7 @@ public static class Main
     public static void Startup()
     {
         Util.RegisterButtons();
-        SwitchLevel(1);
+        SwitchLevel(0);
 
         SLTCon.AddCommand("level", args =>
         {

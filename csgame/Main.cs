@@ -1,3 +1,5 @@
+using Slate2D;
+
 public interface IScene
 {
     void Update(float dt);
@@ -18,6 +20,11 @@ public static class Main
     {
         Util.RegisterButtons();
         SwitchLevel(1);
+
+        SLTCon.AddCommand("level", args =>
+        {
+            SwitchLevel(uint.Parse(args[1]));
+        });
     }
 
     public static void Update(double dt)

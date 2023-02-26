@@ -76,15 +76,34 @@ namespace Slate2D
         // SLT_API const conVar_t* SLT_Con_SetVar(const char* var_name, const char* value);
 
         [LibraryImport(LibName, EntryPoint = "SLT_Con_GetArgCount")]
-        public static partial int GetArgCount();
+        private static partial int _GetArgCount();
 
         [LibraryImport(LibName, EntryPoint = "SLT_Con_GetArg", StringMarshalling = StringMarshalling.Utf8)]
-        public static partial string GetArg(int arg);
+        private static partial IntPtr _GetArg(int arg); // FIXME: why does this have to be a intptr??
 
-        [LibraryImport(LibName, EntryPoint = "SLT_Con_GetArgs", StringMarshalling = StringMarshalling.Utf8)]
-        public static partial string GetArgs(int start);
+        [LibraryImport(LibName, EntryPoint = "SLT_Con_AddCommand", StringMarshalling = StringMarshalling.Utf8)]
+        public static partial void _AddCommand(string name, Action cmd);
 
-        // SLT_API void SLT_Con_AddCommand(const char* name, conCmd_t cmd);
+        // so GC doesn't collect callbacks, this is dumb but whatever
+        private static List<Action> _refs = new List<Action>();
+
+        public static void AddCommand(string name, Action<string[]> cmd)
+        {
+            var cb = () =>
+            {
+                var argc = _GetArgCount();
+                string[] arr = new string[argc];
+                for (var i = 0; i < argc; i++)
+                {
+                    IntPtr thing = _GetArg(i);
+                    arr[i] = Marshal.PtrToStringUTF8(thing) ?? "";
+                }
+                cmd.Invoke(arr);
+            };
+
+            _refs.Add(cb);
+            _AddCommand(name, cb);
+        }
     }
 
     public partial class FS

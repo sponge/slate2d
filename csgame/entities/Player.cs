@@ -217,7 +217,7 @@ public class Player : Entity
             CollideAt(Pos.X, Pos.Y + 1, Dir.Down);
             var velY = grounded && AnyInSlope ? 10 : Vel.Y;
             // this.moveY may alter our velocity, so double check vel before zeroing it out
-            if (!MoveY(velY) && Math.Sign(velY) == Math.Sign(Vel.Y))
+            if (velY != 0 && !MoveY(velY) && Math.Sign(velY) == Math.Sign(Vel.Y))
             {
                 Vel.Y = Remainder.Y = 0;
             }

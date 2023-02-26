@@ -242,13 +242,17 @@ public class Entity
         return false;
     }
 
-    private bool Move(int dim, float amt)
+    private bool Move(int dim, float amt, bool skipRemainder = false)
     {
         ref var pos = ref (dim == 0 ? ref Pos.X : ref Pos.Y);
         ref var remainder = ref (dim == 0 ? ref Remainder.X : ref Remainder.Y);
 
-        remainder += amt;
-        float move = MathF.Floor(remainder);
+        float move = amt;
+        if (!skipRemainder)
+        {
+            remainder += amt;
+            move = remainder > 0 ? MathF.Floor(remainder) : MathF.Ceiling(remainder);
+        }
 
         if (move == 0)
         {
@@ -256,7 +260,7 @@ public class Entity
             return true;
         }
 
-        remainder -= move;
+        if (!skipRemainder) remainder -= move;
         var sign = Math.Sign(move);
 
         var dir = dim == 0 ? (sign > 0 ? Dir.Right : Dir.Left) : (sign > 0 ? Dir.Down : Dir.Up);
@@ -369,14 +373,14 @@ public class Entity
 
                     // find minimum amount of movement to resolve intersection.
                     var amt = MathF.Sign(move) > 0 ? (pos + size) - oPos : pos - (oPos + oSize);
-                    if (!other.Move(dim, amt))
+                    if (!other.Move(dim, amt, true))
                     {
                         other.Die();
                     }
                 }
                 else if (riding.Contains(other))
                 {
-                    other.Move(dim, move);
+                    other.Move(dim, move, true);
                 }
             }
         }

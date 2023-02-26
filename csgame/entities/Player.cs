@@ -9,7 +9,7 @@ public class Player : Entity
     uint DeadTime = 0;
     public bool DisableControls = false;
     public bool DisableMovement = false;
-    uint PMeter = 0;
+    int PMeter = 0;
     uint FallingFrames = 0;
     public bool JumpHeld = false;
     uint JumpHeldFrames = 0;

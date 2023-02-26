@@ -121,9 +121,9 @@ namespace Slate2D
             int len;
             var buf = _ReadFile(path, out len);
 
-            if (len == -1)
+            if (len <= 0)
             {
-                return new byte[0];
+                throw new FileNotFoundException();
             }
 
             byte[] bytes = new byte[len];
@@ -138,7 +138,7 @@ namespace Slate2D
             var bytes = FS.ReadFile(path);
             if (bytes.Length == 0)
             {
-                return "";
+                throw new FileNotFoundException();
             }
                 
             return System.Text.Encoding.UTF8.GetString(bytes);

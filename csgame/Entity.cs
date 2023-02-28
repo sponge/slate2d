@@ -109,10 +109,10 @@ public class Entity
     protected Tile TileAt(int x, int y)
     {
         var layer = Main.World.Map.LayersByName["Collision"];
-        var tx = Pos.X / layer.TileSize;
-        var ty = Math.Clamp(Pos.Y / layer.TileSize, 0, layer.Size.H - 1);
+        var tx = x / layer.TileSize;
+        var ty = Math.Clamp(y / layer.TileSize, 0, layer.Size.H - 1);
 
-        if (Pos.X < 0 || tx > layer.Size.W) return Tile.Solid;
+        if (x < 0 || tx > layer.Size.W) return Tile.Solid;
 
         return (Tile)layer.Tiles[ty * layer.Size.W + tx];
     }

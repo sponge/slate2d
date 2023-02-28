@@ -140,9 +140,9 @@ public class Player : Entity
         // this tileAt is used because otherwise collideTile is one pixel below
         // your feet, which may be the tile underneath the slope
         Tile tid = TileAt(BottomMiddle.X, BottomMiddle.Y);
-        var canSlide = tid == Tile.SlopeL || tid == Tile.SlopeR;
+        var inSlope = tid == Tile.SlopeL || tid == Tile.SlopeR;
 
-        if (!JumpHeld && slidePress && canSlide)
+        if (!JumpHeld && slidePress && inSlope)
         {
             var slideDir = tid == Tile.SlopeL ? -1 : 1;
             Vel.X += slideDir * Phys.SlideAccel;
@@ -174,6 +174,12 @@ public class Player : Entity
             {
                 var height = GetJumpHeight(Vel.X);
                 Vel.Y = -height;
+
+                // bit of ramp jumping
+                var speedPct = Util.InvLerp(0, Phys.MaxSpeed, MathF.Abs(Vel.X));
+                if (inSlope && speedPct > 0.75f)
+                    Vel.Y *= 1.1f;
+
                 JumpHeld = true;
                 grounded = false;
                 // this.jumpHnd = SLT.sndPlay(this.jumpSound); // TODO: audio

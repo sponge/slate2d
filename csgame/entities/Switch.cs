@@ -9,7 +9,7 @@ class Switch : Entity
     {
         Collidable = CollisionType.Platform;
         Layer = Layer.Background;
-        Target = ent.Properties.GetValueOrDefault("Target")?.Str ?? "";
+        Target = ent.Properties.GetValueOrDefault("Target")?.EntRef ?? "";
     }
 
     public override void Draw()
@@ -25,7 +25,7 @@ class Switch : Entity
 
         foreach (var ent in Main.World.GameState.Entities)
         {
-            if (ent.Name == Target) ent.Activate(this);
+            if (ent.Id == Target) ent.Activate(this);
         }
 
         Destroyed = true;

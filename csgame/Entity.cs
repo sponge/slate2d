@@ -12,6 +12,7 @@ public enum Layer
 
 public class Entity
 {
+    public readonly string Id;
     public string Type = "Default";
     public string Name = "";
     public bool Awake = false;
@@ -38,11 +39,12 @@ public class Entity
 
     public Entity()
     {
-
+        Id = Guid.NewGuid().ToString();
     }
 
     public Entity(LDTKEntity ent)
     {
+        Id = ent.Iid;
         Size = ent.Size;
         Pos = ent.Pos;
         Type = ent.Type;

@@ -8,6 +8,7 @@ public record LDTKProperty
     public float Num;
     public int NumI;
     public string Str = "";
+    public string EntRef = "";
     public bool Bool;
     public (float x, float y) Point;
 }
@@ -26,6 +27,7 @@ public record class LDTKLayer
 
 public record class LDTKEntity
 {
+    public string Iid = "";
     public string Type = "";
     public (int w, int b) Size = (0, 0);
     public (int x, int y) Pos = (0, 0);
@@ -59,6 +61,7 @@ public class LDTK
                 Num = valType == "Float" ? val.GetValue<float>() : 0,
                 NumI = valType == "Int" ? val.GetValue<int>() : 0,
                 Str = valType == "String" || valType.StartsWith("LocalEnum") ? val.GetValue<string>() : "",
+                EntRef = valType == "EntityRef" ? val["entityIid"].GetValue<string>() : "",
                 Bool = valType == "Bool" ? val.GetValue<bool>() : false,
                 Point = valType == "Point" ? (val["cx"].GetValue<float>(), val["cy"].GetValue<float>()) : (0, 0),
             };
@@ -112,6 +115,7 @@ public class LDTK
                     var width = ent["width"].GetValue<int>();
                     var height = ent["height"].GetValue<int>();
 
+                    var iid = ent["iid"].GetValue<string>();
                     var type = ent["__identifier"].GetValue<string>();
                     var size = (width, height);
                     var pos = ((int)(px[0].GetValue<int>() - width * pivot[0].GetValue<float>()),
@@ -120,6 +124,7 @@ public class LDTK
 
                     lobj.Entities[i++] = new LDTKEntity
                     {
+                        Iid = iid,
                         Type = type,
                         Size = size,
                         Pos = pos,

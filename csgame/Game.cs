@@ -10,6 +10,7 @@ public record GameState
     public uint WallTicks = 0;
     public List<Entity> Entities = new();
     public string MapName = "";
+    public uint CurrentMap = 0;
     public uint NextMap = 0;
     public uint CurrentCoins = 0;
     public uint MaxCoins = 0;
@@ -64,7 +65,8 @@ public class Game : IScene
         MapName = mapName ?? "maps/map1.ldtkl";
 
         var match = Regex.Match(MapName, @"map(\d+)", RegexOptions.Multiline);
-        GameState.NextMap = uint.Parse(match.Groups[1].Value ?? "1") + 1;
+        GameState.CurrentMap = uint.Parse(match.Groups[1].Value ?? "1");
+        GameState.NextMap = GameState.CurrentMap + 1;
 
         string mapStr = FS.ReadTextFile(MapName);
         Map = new LDTK(mapStr);
@@ -273,12 +275,13 @@ public class Game : IScene
         Camera.DrawStart();
 
         // tilemap and entities
-        DC.SetColor(255, 255, 255, 255);
         foreach (var ent in GameState.Entities) if (ent.Layer == Layer.Back) ent.Draw();
+        DC.SetColor(255, 255, 255, 255);
         Map.Draw("BGTiles");
         Map.Draw("BGWorld");
         Map.Draw("BGDecoration");
         foreach (var ent in GameState.Entities) if (ent.Layer == Layer.Background) ent.Draw();
+        DC.SetColor(255, 255, 255, 255);
         Map.Draw("Collision");
         foreach (var ent in GameState.Entities) if (ent.Layer == Layer.Normal) ent.Draw();
         foreach (var ent in GameState.Entities) if (ent.Layer == Layer.Foreground) ent.Draw();

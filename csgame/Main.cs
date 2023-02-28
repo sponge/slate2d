@@ -21,9 +21,12 @@ public static class Main
         Util.RegisterButtons();
         SwitchLevel(0);
 
+
+
         SLTCon.AddCommand("level", args =>
         {
-            SwitchLevel(uint.Parse(args[1]));
+            uint level = args[1] == "restart" ? Main.World.GameState.CurrentMap : uint.Parse(args[1]);
+            SwitchLevel(level);
         });
     }
 

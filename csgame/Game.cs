@@ -164,12 +164,16 @@ public class Game : IScene
                 return;
             }
 
-            //run preupdate on all entities before updating
+            // run preupdate on all entities before updating
             for (int i = 0; i < Main.World.GameState.Entities.Count; i++)
             {
                 var ent = Main.World.GameState.Entities[i];
                 if (ent.Destroyed) continue;
                 if (GameState.Paused && !ent.RunWhilePaused) continue;
+
+                if (!ent.Awake && Camera.X + Camera.W + 32 >= ent.Pos.X) ent.Awake = true;
+                if (!ent.Awake) continue;
+
                 ent.PreUpdate(ent.RunWhilePaused ? GameState.WallTicks : GameState.Ticks, dt);
             }
 
@@ -178,6 +182,7 @@ public class Game : IScene
                 var ent = Main.World.GameState.Entities[i];
                 if (ent.Destroyed) continue;
                 if (GameState.Paused && !ent.RunWhilePaused) continue;
+                if (!ent.Awake) continue;
                 ent.Update(ent.RunWhilePaused ? GameState.WallTicks : GameState.Ticks, dt);
             }
 

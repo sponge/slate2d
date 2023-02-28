@@ -14,6 +14,7 @@ public class Entity
 {
     public string Type = "Default";
     public string Name = "";
+    public bool Awake = false;
     public bool Destroyed = false;
     public (int X, int Y) Pos = (0, 0);
     public (int W, int H) Size = (0, 0);

@@ -1,6 +1,6 @@
 using ImGuiNET;
-using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 public class PW
 {
@@ -37,12 +37,10 @@ public class PW
         else Print(title, key, val);
     }
 
-    static public void Watch(object val)
+    static public void Watch(object val, [CallerArgumentExpression("val")] string callerVal = "")
     {
-        StackFrame callStack = new StackFrame(1, true);
-        var caller = $"{callStack.GetMethod()?.Name ?? "Unknown"}:{callStack.GetFileLineNumber()}";
-        if (Retained) Messages.Add(("Debug", caller, val));
-        else Print("Debug", caller, val);
+        if (Retained) Messages.Add(("Debug", callerVal, val));
+        else Print("Debug", callerVal, val);
     }
 
     static public void DrawPrintWin()

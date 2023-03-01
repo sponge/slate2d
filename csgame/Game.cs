@@ -282,8 +282,8 @@ public class Game : IScene
         // tilemap and entities
         foreach (var ent in GameState.Entities) if (ent.Layer == Layer.Back) ent.Draw();
         DC.SetColor(255, 255, 255, 255);
-        Map.Draw("BGTiles");
         Map.Draw("BGWorld");
+        Map.Draw("BGTiles");
         Map.Draw("BGDecoration");
         foreach (var ent in GameState.Entities) if (ent.Layer == Layer.Background) ent.Draw();
         DC.SetColor(255, 255, 255, 255);

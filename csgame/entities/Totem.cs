@@ -37,6 +37,10 @@ class Totem : Entity
         var frames = Half ? HalfWalkAnim : WalkAnim;
         var animSpeed = Half ? 4 : 8;
         Frame = (uint)frames[Ticks / animSpeed % frames.Length];
+
+        if (TileAt(BottomMiddle.X + Math.Sign(Vel.X), BottomMiddle.Y + 1) == Tile.Empty)
+            Vel.X *= -1;
+
         MoveX(Vel.X);
         FlipBits = (byte)(Vel.X > 0 ? 1 : 0);
     }

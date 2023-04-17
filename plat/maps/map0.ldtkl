@@ -250,7 +250,7 @@
 						"entityIid": "b28e9fe0-9f30-11ed-89e1-393064e88b85",
 						"layerIid": "696f51c0-9f30-11ed-b590-b3c302c1d507",
 						"levelIid": "696edc90-9f30-11ed-b590-6ff9a9e5c6a9",
-						"worldIid": "0c3c0020-9f30-11ed-89e1-373c73a8a8b9"
+						"worldIid": "34ca0490-9f30-11ed-a721-3367dd15249a"
 					}, "__type": "EntityRef", "__tile": null, "defUid": 647, "realEditorValues": [{
 						"id": "V_String",
 						"params": ["b28e9fe0-9f30-11ed-89e1-393064e88b85"]

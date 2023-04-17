@@ -3,209 +3,186 @@ using System.Globalization;
 using System.Text.Json.Nodes;
 using static Slate2D.Assets.AssetConfig;
 
-public record LDTKProperty
-{
-    public float Num;
-    public int NumI;
-    public string Str = "";
-    public string EntRef = "";
-    public bool Bool;
-    public (float x, float y) Point;
+public record LDTKProperty {
+  public float Num;
+  public int NumI;
+  public string Str = "";
+  public string EntRef = "";
+  public bool Bool;
+  public (float x, float y) Point;
 }
 
-public record class LDTKLayer
-{
-    public string Name = "";
-    public (int W, int H) Size = (0, 0);
-    public int TileSize = 0;
-    public (int X, int Y) Offset = (0, 0);
-    public int[][] DrawTiles;
-    public AssetHandle TilesetHnd;
-    public uint[] Tiles;
-    public LDTKEntity[] Entities;
+public record class LDTKLayer {
+  public string Name = "";
+  public (int W, int H) Size = (0, 0);
+  public int TileSize = 0;
+  public (int X, int Y) Offset = (0, 0);
+  public int[][] DrawTiles;
+  public AssetHandle TilesetHnd;
+  public uint[] Tiles;
+  public LDTKEntity[] Entities;
 }
 
-public record class LDTKEntity
-{
-    public string Iid = "";
-    public string Type = "";
-    public (int w, int b) Size = (0, 0);
-    public (int x, int y) Pos = (0, 0);
-    public Dictionary<string, LDTKProperty?> Properties = new();
+public record class LDTKEntity {
+  public string Iid = "";
+  public string Type = "";
+  public (int w, int b) Size = (0, 0);
+  public (int x, int y) Pos = (0, 0);
+  public Dictionary<string, LDTKProperty?> Properties = new();
 }
 
-public class LDTK
-{
-    public (int w, int h) PxSize = (0, 0);
-    public string Background;
-    public (byte r, byte g, byte b) BGColor = (0, 0, 0);
-    public Dictionary<string, LDTKProperty?> Properties = new();
-    public List<LDTKLayer> Layers = new();
-    public Dictionary<string, LDTKLayer> LayersByName = new();
+public class LDTK {
+  public (int w, int h) PxSize = (0, 0);
+  public string Background;
+  public (byte r, byte g, byte b) BGColor = (0, 0, 0);
+  public Dictionary<string, LDTKProperty?> Properties = new();
+  public List<LDTKLayer> Layers = new();
+  public Dictionary<string, LDTKLayer> LayersByName = new();
 
-    private Dictionary<string, LDTKProperty> ParseProperties(JsonNode properties)
-    {
-        var dict = new Dictionary<string, LDTKProperty>();
+  private Dictionary<string, LDTKProperty> ParseProperties(JsonNode properties) {
+    var dict = new Dictionary<string, LDTKProperty>();
 
-        foreach (var node in properties.AsArray())
-        {
+    foreach (var node in properties.AsArray()) {
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-            string key = node["__identifier"].GetValue<string>();
-            JsonNode val = node["__value"];
-            string valType = node["__type"].GetValue<string>();
+      string key = node["__identifier"].GetValue<string>();
+      JsonNode val = node["__value"];
+      string valType = node["__type"].GetValue<string>();
 
-            if (val == null) continue;
+      if (val == null) continue;
 
-            dict[key] = new LDTKProperty
-            {
-                Num = valType == "Float" ? val.GetValue<float>() : 0,
-                NumI = valType == "Int" ? val.GetValue<int>() : 0,
-                Str = valType == "String" || valType.StartsWith("LocalEnum") ? val.GetValue<string>() : "",
-                EntRef = valType == "EntityRef" ? val["entityIid"].GetValue<string>() : "",
-                Bool = valType == "Bool" ? val.GetValue<bool>() : false,
-                Point = valType == "Point" ? (val["cx"].GetValue<float>(), val["cy"].GetValue<float>()) : (0, 0),
-            };
+      dict[key] = new LDTKProperty {
+        Num = valType == "Float" ? val.GetValue<float>() : 0,
+        NumI = valType == "Int" ? val.GetValue<int>() : 0,
+        Str = valType == "String" || valType.StartsWith("LocalEnum") ? val.GetValue<string>() : "",
+        EntRef = valType == "EntityRef" ? val["entityIid"].GetValue<string>() : "",
+        Bool = valType == "Bool" ? val.GetValue<bool>() : false,
+        Point = valType == "Point" ? (val["cx"].GetValue<float>(), val["cy"].GetValue<float>()) : (0, 0),
+      };
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
-        }
-
-        return dict;
     }
 
-    public LDTK(string jsonStr)
-    {
-        JsonNode obj = JsonNode.Parse(jsonStr);
+    return dict;
+  }
 
-        if (obj == null)
-        {
-            throw new InvalidDataException();
-        }
+  public LDTK(string jsonStr) {
+    JsonNode obj = JsonNode.Parse(jsonStr);
+
+    if (obj == null) {
+      throw new InvalidDataException();
+    }
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-        PxSize = (obj["pxWid"].GetValue<int>(), obj["pxHei"].GetValue<int>());
+    PxSize = (obj["pxWid"].GetValue<int>(), obj["pxHei"].GetValue<int>());
 
-        int rgb = Int32.Parse(obj["__bgColor"].GetValue<string>().Replace("#", ""), NumberStyles.HexNumber);
-        BGColor = ((byte)((rgb >> 16) & 255), (byte)((rgb >> 8) & 255), (byte)(rgb & 255));
+    int rgb = Int32.Parse(obj["__bgColor"].GetValue<string>().Replace("#", ""), NumberStyles.HexNumber);
+    BGColor = ((byte)((rgb >> 16) & 255), (byte)((rgb >> 8) & 255), (byte)(rgb & 255));
 
-        // turn into a reasonable k/v object
-        Properties = ParseProperties(obj["fieldInstances"]);
-        Background = Properties.ContainsKey("background") ? Properties["background"].Str : "grassland";
+    // turn into a reasonable k/v object
+    Properties = ParseProperties(obj["fieldInstances"]);
+    Background = Properties.ContainsKey("background") ? Properties["background"].Str : "grassland";
 
-        // parse each layer
-        foreach (var layer in obj["layerInstances"].AsArray())
+    // parse each layer
+    foreach (var layer in obj["layerInstances"].AsArray()) {
+      bool isEntityLayer = layer["__type"].GetValue<string>() == "Entities";
+      var lobj = new LDTKLayer {
+        Name = layer["__identifier"].GetValue<string>(),
+        Size = (layer["__cWid"].GetValue<int>(), layer["__cHei"].GetValue<int>()),
+        TileSize = layer["__gridSize"].GetValue<int>(),
+        Offset = (layer["__pxTotalOffsetX"].GetValue<int>(), layer["__pxTotalOffsetY"].GetValue<int>()),
+        Entities = isEntityLayer ? new LDTKEntity[layer["entityInstances"].AsArray().Count] : new LDTKEntity[0],
+      };
+
+      if (layer["__type"].GetValue<string>() == "Entities") {
+        var arr = layer["entityInstances"].AsArray();
+        lobj.Entities = new LDTKEntity[arr.Count];
+        int i = 0;
+        foreach (var ent in arr.AsArray()) {
+          var pivot = ent["__pivot"].AsArray();
+          var px = ent["px"].AsArray();
+          var width = ent["width"].GetValue<int>();
+          var height = ent["height"].GetValue<int>();
+
+          var iid = ent["iid"].GetValue<string>();
+          var type = ent["__identifier"].GetValue<string>();
+          var size = (width, height);
+          var pos = ((int)(px[0].GetValue<int>() - width * pivot[0].GetValue<float>()),
+                  (int)(px[1].GetValue<int>() - height * pivot[1].GetValue<float>()));
+          var props = ParseProperties(ent["fieldInstances"]);
+
+          lobj.Entities[i++] = new LDTKEntity {
+            Iid = iid,
+            Type = type,
+            Size = size,
+            Pos = pos,
+            Properties = props,
+          };
+          continue;
+        }
+      }
+      else {
+        lobj.TilesetHnd = Assets.Load(new Sprite(
+            Name: layer["__tilesetRelPath"].GetValue<string>(),
+            Path: layer["__tilesetRelPath"].GetValue<string>(),
+            SpriteWidth: lobj.TileSize,
+            SpriteHeight: lobj.TileSize,
+            MarginX: 0,
+            MarginY: 0
+        ));
+
+        if (layer["__type"].GetValue<string>() == "IntGrid") {
+          var arr = layer["intGridCsv"].AsArray();
+          lobj.Tiles = new uint[arr.Count];
+          int i = 0;
+          foreach (var tile in arr) {
+            lobj.Tiles[i++] = tile.GetValue<uint>();
+          }
+        }
+
+        // ldtk can stack tiles in the same layer
+        // handle this by making a new array when there's a stack
+        int sz = layer["__cWid"].GetValue<int>() * layer["__cHei"].GetValue<int>();
+        var drawTiles = new List<int[]>
         {
-            bool isEntityLayer = layer["__type"].GetValue<string>() == "Entities";
-            var lobj = new LDTKLayer
-            {
-                Name = layer["__identifier"].GetValue<string>(),
-                Size = (layer["__cWid"].GetValue<int>(), layer["__cHei"].GetValue<int>()),
-                TileSize = layer["__gridSize"].GetValue<int>(),
-                Offset = (layer["__pxTotalOffsetX"].GetValue<int>(), layer["__pxTotalOffsetY"].GetValue<int>()),
-                Entities = isEntityLayer ? new LDTKEntity[layer["entityInstances"].AsArray().Count] : new LDTKEntity[0],
-            };
-
-            if (layer["__type"].GetValue<string>() == "Entities")
-            {
-                var arr = layer["entityInstances"].AsArray();
-                lobj.Entities = new LDTKEntity[arr.Count];
-                int i = 0;
-                foreach (var ent in arr.AsArray())
-                {
-                    var pivot = ent["__pivot"].AsArray();
-                    var px = ent["px"].AsArray();
-                    var width = ent["width"].GetValue<int>();
-                    var height = ent["height"].GetValue<int>();
-
-                    var iid = ent["iid"].GetValue<string>();
-                    var type = ent["__identifier"].GetValue<string>();
-                    var size = (width, height);
-                    var pos = ((int)(px[0].GetValue<int>() - width * pivot[0].GetValue<float>()),
-                            (int)(px[1].GetValue<int>() - height * pivot[1].GetValue<float>()));
-                    var props = ParseProperties(ent["fieldInstances"]);
-
-                    lobj.Entities[i++] = new LDTKEntity
-                    {
-                        Iid = iid,
-                        Type = type,
-                        Size = size,
-                        Pos = pos,
-                        Properties = props,
-                    };
-                    continue;
-                }
-            }
-            else
-            {
-                lobj.TilesetHnd = Assets.Load(new Sprite(
-                    Name: layer["__tilesetRelPath"].GetValue<string>(),
-                    Path: layer["__tilesetRelPath"].GetValue<string>(),
-                    SpriteWidth: lobj.TileSize,
-                    SpriteHeight: lobj.TileSize,
-                    MarginX: 0,
-                    MarginY: 0
-                ));
-
-                if (layer["__type"].GetValue<string>() == "IntGrid")
-                {
-                    var arr = layer["intGridCsv"].AsArray();
-                    lobj.Tiles = new uint[arr.Count];
-                    int i = 0;
-                    foreach (var tile in arr)
-                    {
-                        lobj.Tiles[i++] = tile.GetValue<uint>();
-                    }
-                }
-
-                // ldtk can stack tiles in the same layer
-                // handle this by making a new array when there's a stack
-                int sz = layer["__cWid"].GetValue<int>() * layer["__cHei"].GetValue<int>();
-                var drawTiles = new List<int[]>
-                {
                     Enumerable.Repeat(-1, sz).ToArray()
                 };
 
-                JsonArray tiles = layer["__type"].GetValue<string>() == "Tiles" ? layer["gridTiles"].AsArray() : layer["autoLayerTiles"].AsArray();
+        JsonArray tiles = layer["__type"].GetValue<string>() == "Tiles" ? layer["gridTiles"].AsArray() : layer["autoLayerTiles"].AsArray();
 
-                foreach (var t in tiles)
-                {
-                    var px = t["px"].AsArray();
-                    var tileidx = (px[1].GetValue<int>() / lobj.TileSize) * lobj.Size.W + px[0].GetValue<int>() / lobj.TileSize;
-                    // look for an open space on existing layers
-                    for (int i = 0; i < drawTiles.Count; i++)
-                    {
-                        if (drawTiles[i][tileidx] == -1)
-                        {
-                            drawTiles[i][tileidx] = t["t"].GetValue<int>();
-                            break;
-                        }
-
-                        // we're out of space, add a new layer
-                        if (i + 1 == drawTiles.Count)
-                        {
-                            drawTiles.Add(Enumerable.Repeat(-1, sz).ToArray());
-                            drawTiles[i][tileidx] = t["t"].GetValue<int>();
-                            break;
-                        }
-                    }
-                }
-
-                lobj.DrawTiles = drawTiles.ToArray();
-
+        foreach (var t in tiles) {
+          var px = t["px"].AsArray();
+          var tileidx = (px[1].GetValue<int>() / lobj.TileSize) * lobj.Size.W + px[0].GetValue<int>() / lobj.TileSize;
+          // look for an open space on existing layers
+          for (int i = 0; i < drawTiles.Count; i++) {
+            if (drawTiles[i][tileidx] == -1) {
+              drawTiles[i][tileidx] = t["t"].GetValue<int>();
+              break;
             }
 
-            Layers.Add(lobj);
-            LayersByName[lobj.Name] = lobj;
+            // we're out of space, add a new layer
+            if (i + 1 == drawTiles.Count) {
+              drawTiles.Add(Enumerable.Repeat(-1, sz).ToArray());
+              drawTiles[i][tileidx] = t["t"].GetValue<int>();
+              break;
+            }
+          }
         }
 
-        Layers.Reverse();
+        lobj.DrawTiles = drawTiles.ToArray();
+
+      }
+
+      Layers.Add(lobj);
+      LayersByName[lobj.Name] = lobj;
+    }
+
+    Layers.Reverse();
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
-    }
+  }
 
-    public void Draw(string layerName)
-    {
-        var l = LayersByName[layerName];
-        foreach (var tmap in l.DrawTiles)
-        {
-            DC.Tilemap(l.TilesetHnd, l.Offset.X, l.Offset.Y, l.Size.W, l.Size.H, tmap);
-        }
+  public void Draw(string layerName) {
+    var l = LayersByName[layerName];
+    foreach (var tmap in l.DrawTiles) {
+      DC.Tilemap(l.TilesetHnd, l.Offset.X, l.Offset.Y, l.Size.W, l.Size.H, tmap);
     }
+  }
 }

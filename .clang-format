@@ -1,4 +1,4 @@
-BreakBeforeBraces: Stroustrup
+BreakBeforeBraces: Custom
 AllowShortIfStatementsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: false
 ColumnLimit: 120

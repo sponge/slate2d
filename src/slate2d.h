@@ -50,7 +50,7 @@ typedef struct {
 } Image;
 
 typedef struct {
-	int x, y;
+	float x, y;
 } MousePosition;
 
 typedef struct {

@@ -1,4 +1,4 @@
-#include <SDL/SDL.h>
+#include <SDL3/SDL.h>
 #include <imgui.h>
 #include <ctype.h>
 #include "console.h"
@@ -16,7 +16,7 @@ static inline void JoyEvent(int controller, int button, bool down, int64_t time)
 		Con_Printf("ignoring controller %i > MAX_CONTROLLERS\n", controller);
 	}
 
-	int keyId = CONTROLLER_KEY_START + (controller * SDL_CONTROLLER_BUTTON_MAX) + button;
+	int keyId = CONTROLLER_KEY_START + (controller * SDL_GAMEPAD_BUTTON_MAX) + button;
 
 	Con_HandleKeyPress(keyId, down, time);
 }
@@ -25,11 +25,11 @@ void ProcessInputEvent(SDL_Event ev) {
 	ImGuiIO &io = ImGui::GetIO();
 
 	switch (ev.type) {
-	case SDL_KEYUP:
+	case SDL_EVENT_KEY_UP :
 		Con_HandleKeyPress(ev.key.keysym.scancode, false, com_frameTime);
 		break;
 
-	case SDL_KEYDOWN:
+	case SDL_EVENT_KEY_DOWN :
 		if (io.WantCaptureKeyboard) {
 			break;
 		}
@@ -37,28 +37,32 @@ void ProcessInputEvent(SDL_Event ev) {
 		Con_HandleKeyPress(ev.key.keysym.scancode, true, com_frameTime);
 		break;
 
-	case SDL_CONTROLLERDEVICEADDED: {
-		if (ev.cdevice.which > MAX_CONTROLLERS) {
+	case SDL_EVENT_GAMEPAD_ADDED : {
+		if (ev.gdevice.which > MAX_CONTROLLERS) {
 			break;
 		}
 
-		SDL_GameController *controller = SDL_GameControllerOpen(ev.cdevice.which);
-		Con_Printf("Using controller at device index %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
+		SDL_Gamepad *controller = SDL_OpenGamepad(ev.gdevice.which);
+		Con_Printf("Using controller at device index %i: %s\n",
+			   ev.gdevice.which,
+			   SDL_GetGamepadName(controller));
 		break;
 	}
 
-	case SDL_CONTROLLERDEVICEREMOVED: {
-		SDL_GameController* controller = SDL_GameControllerFromInstanceID(ev.cdevice.which);
-		Con_Printf("Closing controller instance %i: %s\n", ev.cdevice.which, SDL_GameControllerName(controller));
-		SDL_GameControllerClose(controller);
+	case SDL_EVENT_GAMEPAD_REMOVED : {
+		SDL_Gamepad * controller = SDL_GetGamepadFromInstanceID(ev.gdevice.which);
+		Con_Printf("Closing controller instance %i: %s\n",
+			   ev.gdevice.which,
+			   SDL_GetGamepadName(controller));
+		SDL_CloseGamepad(controller);
 		break;
 	}
 
-	case SDL_MOUSEBUTTONUP:
+	case SDL_EVENT_MOUSE_BUTTON_UP :
 		Con_HandleKeyPress(SDL_NUM_SCANCODES + ev.button.button, false, com_frameTime);
 		break;
 
-	case SDL_MOUSEBUTTONDOWN:
+	case SDL_EVENT_MOUSE_BUTTON_DOWN :
 		if (io.WantCaptureKeyboard || io.WantCaptureMouse) {
 			break;
 		}
@@ -66,11 +70,11 @@ void ProcessInputEvent(SDL_Event ev) {
 		Con_HandleKeyPress(SDL_NUM_SCANCODES + ev.button.button, true, com_frameTime);
 		break;
 
-	case SDL_CONTROLLERBUTTONDOWN:
+	case SDL_EVENT_GAMEPAD_BUTTON_DOWN :
 		JoyEvent(ev.jbutton.which, ev.jbutton.button, true, com_frameTime);
 		break;
 
-	case SDL_CONTROLLERBUTTONUP:
+	case SDL_EVENT_GAMEPAD_BUTTON_UP :
 		JoyEvent(ev.jbutton.which, ev.jbutton.button, false, com_frameTime);
 		break;
 	}
@@ -131,13 +135,19 @@ MousePosition In_MousePosition() {
 
 AnalogAxes In_ControllerAnalog(int controllerNum) {
 	AnalogAxes axes;
-	SDL_GameController *controller = SDL_GameControllerFromInstanceID(controllerNum);
-	axes.leftX = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX) / 32768.0f;
-	axes.leftY = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) / 32768.0f;
-	axes.rightX = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_RIGHTX) / 32768.0f;
-	axes.rightY = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_RIGHTY) / 32768.0f;
-	axes.triggerLeft = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_TRIGGERLEFT) / 32768.0f;
-	axes.triggerRight = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_TRIGGERRIGHT) / 32768.0f;
+	SDL_Gamepad *controller = SDL_GetGamepadFromInstanceID(controllerNum);
+	axes.leftX = SDL_GetGamepadAxis(controller,
+					       SDL_GAMEPAD_AXIS_LEFTX) / 32768.0f;
+	axes.leftY = SDL_GetGamepadAxis(controller,
+					       SDL_GAMEPAD_AXIS_LEFTY) / 32768.0f;
+	axes.rightX = SDL_GetGamepadAxis(controller,
+						SDL_GAMEPAD_AXIS_RIGHTX) / 32768.0f;
+	axes.rightY = SDL_GetGamepadAxis(controller,
+						SDL_GAMEPAD_AXIS_RIGHTY) / 32768.0f;
+	axes.triggerLeft = SDL_GetGamepadAxis(controller,
+						     SDL_GAMEPAD_AXIS_LEFT_TRIGGER) / 32768.0f;
+	axes.triggerRight = SDL_GetGamepadAxis(controller,
+						      SDL_GAMEPAD_AXIS_RIGHT_TRIGGER) / 32768.0f;
 
 	axes.leftX = fabs(axes.leftX) < in_deadzone->value ? 0.0f : axes.leftX;
 	axes.leftY = fabs(axes.leftY) < in_deadzone->value ? 0.0f : axes.leftY;

@@ -84,14 +84,14 @@ workspace "Slate2D"
 
     -- link SDL bins in the source tree on windows
     filter "system:windows"
-      links { "SDL2", "opengl32" }
+      links { "SDL3", "opengl32" }
       defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE" }
 
     filter { "platforms:x86", "system:windows" }
       libdirs "libs/sdl/lib/Win32"
       -- need to copy x86 sdl runtime to output
       postbuildcommands {
-        '{COPY} "%{wks.location}../libs/sdl/lib/Win32/SDL2.dll" "%{cfg.targetdir}" ',
+        '{COPY} "%{wks.location}../libs/sdl/lib/Win32/SDL3.dll" "%{cfg.targetdir}" ',
         '{COPY} "%{wks.location}../libs/openmpt/Win32/*.dll" "%{cfg.targetdir}" '
       }
 
@@ -99,13 +99,13 @@ workspace "Slate2D"
       libdirs "libs/sdl/lib/x64"
       -- need to copy x64 sdl runtime to output
       postbuildcommands {
-        '{COPY} "%{wks.location}../libs/sdl/lib/x64/SDL2.dll" "%{cfg.targetdir}" ',
+        '{COPY} "%{wks.location}../libs/sdl/lib/x64/SDL3.dll" "%{cfg.targetdir}" ',
         '{COPY} "%{wks.location}../libs/openmpt/x64/*.dll" "%{cfg.targetdir}" '
       }
 
-    -- use SDL2 from homebrew
+    -- use SDL3 from homebrew
     filter "system:macosx"
-      links { "SDL2", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework", "OpenGL.framework" }
+      links { "SDL3", "CoreFoundation.framework", "IOKit.framework", "CoreServices.framework", "Cocoa.framework", "OpenGL.framework" }
       linkoptions "-stdlib=libc++"
 
     filter { "system:macosx", "platforms:arm64" }
@@ -126,7 +126,7 @@ workspace "Slate2D"
       }
       
     filter "system:linux"
-      links { "SDL2", "dl", "pthread", "GL" }
+      links { "SDL3", "dl", "pthread", "GL" }
 
     filter "options:static"
       kind "StaticLib"
@@ -143,7 +143,7 @@ workspace "Slate2D"
       externalincludedirs { "libs/quickjs", "libs/imgui" }
       targetdir "build/bin/%{cfg.architecture}_%{cfg.buildcfg}"
       debugargs { "+set", "fs.basepath", path.getabsolute(".")}
-      links { "imgui", "SDL2main", "libslate2d", "quickjs" }
+      links { "imgui", "libslate2d", "quickjs" }
 
       filter { "platforms:x86", "system:windows" }
         libdirs "libs/sdl/lib/Win32"
@@ -155,7 +155,7 @@ workspace "Slate2D"
         defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE" }
         links { "ws2_32" }
 
-      -- use SDL2 from homebrew
+      -- use SDL3 from homebrew
       filter { "system:macosx", "platforms:arm64" }
         linkoptions {"-stdlib=libc++", "-L /opt/homebrew/lib" }
 
@@ -200,12 +200,12 @@ workspace "Slate2D"
       targetname "soloud_static"
       warnings "Off"
       externalincludedirs "libs/sdl"
-      defines { "MODPLUG_STATIC", "WITH_OPENMPT", "WITH_SDL2_STATIC" }
+      defines { "MODPLUG_STATIC", "WITH_OPENMPT", "WITH_SDL3_STATIC" }
       files {
         "libs/soloud/src/audiosource/**.c*",
         "libs/soloud/src/filter/**.c*",
         "libs/soloud/src/core/**.c*",
-        "libs/soloud/src/backend/sdl2_static/**.c*"
+        "libs/soloud/src/backend/sdl3_static/**.c*"
       }
       includedirs {
         "libs/soloud/src/**",

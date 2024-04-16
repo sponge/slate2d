@@ -35,9 +35,9 @@
 
 #pragma clang diagnostic pop
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_opengl.h>
-#include <SDL/SDL_log.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_opengl.h>
+#include <SDL3/SDL_log.h>
 
 #include <imgui.h>
 #include "imgui_impl_sdl.h"
@@ -112,7 +112,7 @@ void Cmd_FrameAdvance_f(void) {
 void Cmd_Vid_Restart_f(void) {
 	SDL_SetWindowSize(window, vid_width->integer, vid_height->integer);
 	SDL_GL_SetSwapInterval(vid_swapinterval->integer);
-	SDL_SetWindowFullscreen(window, vid_fullscreen->integer == 2 ? SDL_WINDOW_FULLSCREEN : vid_fullscreen->integer == 1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+	SDL_SetWindowFullscreen(window, vid_fullscreen->boolean);
 }
 
 void Cmd_Exec_f() {
@@ -207,9 +207,9 @@ SLT_API double SLT_StartFrame() {
 		ImGui_ImplSDL2_ProcessEvent(&ev);
 
 		switch (ev.type) {
-		case SDL_QUIT:
+		case SDL_EVENT_QUIT :
 			return -1;
-		case SDL_KEYDOWN:
+		case SDL_EVENT_KEY_DOWN :
 			if (ev.key.keysym.sym == SDLK_BACKQUOTE) {
 				IMConsole()->consoleActive = !IMConsole()->consoleActive;
 				ImGui::SetWindowFocus(nullptr);
@@ -349,9 +349,7 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 		Con_Execute("exec autoexec.cfg\n");
 	}
 
-	SDL_SetMainReady();
-
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD) < 0) {
 		Con_Errorf(ERR_FATAL, "There was an error initing SDL2: %s", SDL_GetError());
 	}
 
@@ -365,15 +363,27 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 #endif
 
-	window = SDL_CreateWindow("Slate2D", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, vid_width->integer, vid_height->integer, SDL_WINDOW_OPENGL);
+    SDL_PropertiesID props = SDL_CreateProperties();
+	SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, "Slate2D");
+    SDL_WINDOWPOS_CENTERED_DISPLAY(0);
+	SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, vid_width->integer);
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, vid_height->integer);
+	SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_OPENGL_BOOLEAN, true);
+	window = SDL_CreateWindowWithProperties(props);
+	SDL_DestroyProperties(props);
 
 	if (window == NULL) {
 		Con_Errorf(ERR_FATAL, "There was an error creating the window: %s", SDL_GetError());
 	}
 
-	SDL_SetWindowFullscreen(window, vid_fullscreen->integer == 2 ? SDL_WINDOW_FULLSCREEN : vid_fullscreen->integer == 1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+	SDL_SetWindowFullscreen(window, vid_fullscreen->boolean);
 
 	context = SDL_GL_CreateContext(window);
+
+	if (!context) {
+		const char *err = SDL_GetError();
+		Con_Error(ERR_FATAL, "%s", err);
+	}
 
 #if !defined(__EMSCRIPTEN__) && !defined(MACOS)
 	if (!gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress)) {

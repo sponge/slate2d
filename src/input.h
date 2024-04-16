@@ -1,5 +1,5 @@
 #pragma once
-#include <SDL/SDL_events.h>
+#include <SDL3/SDL_events.h>
 #include "slate2d.h"
 
 void ProcessInputEvent(SDL_Event ev);

@@ -39,7 +39,7 @@ freely, subject to the following restrictions:
 #include <float.h>
 #endif
 
-#if !defined(WITH_SDL2) && !defined(WITH_SDL1) && !defined(WITH_PORTAUDIO) && \
+#if !defined(WITH_SDL3_STATIC) && !defined(WITH_SDL2) && !defined(WITH_SDL1) && !defined(WITH_PORTAUDIO) && \
    !defined(WITH_OPENAL) && !defined(WITH_XAUDIO2) && !defined(WITH_WINMM) && \
    !defined(WITH_WASAPI) && !defined(WITH_OSS) && !defined(WITH_SDL1_STATIC) && \
    !defined(WITH_SDL2_STATIC) && !defined(WITH_ALSA) && !defined(WITH_OPENSLES) && \
@@ -229,6 +229,20 @@ namespace SoLoud
 			if (ret != 0 && aBackend != Soloud::AUTO)
 				return ret;			
 		}
+#endif
+
+#if defined(WITH_SDL3_STATIC)
+    if (!inited && (aBackend == Soloud::SDL2 || aBackend == Soloud::AUTO)) {
+      if (aBufferSize == Soloud::AUTO) buffersize = 2048;
+
+      int ret = sdl3static_init(this, aFlags, samplerate, buffersize, aChannels);
+      if (ret == 0) {
+        inited = 1;
+        mBackendID = Soloud::SDL3;
+      }
+
+      if (ret != 0 && aBackend != Soloud::AUTO) return ret;
+    }
 #endif
 
 #if defined(WITH_SDL2_STATIC)

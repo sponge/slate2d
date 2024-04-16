@@ -1,3 +1,6 @@
+[*.{c,cpp,h,hpp]
+tab_width = 4
+indent_size = 4
 
 [*.{cs,vb}]
 #### Naming styles ####

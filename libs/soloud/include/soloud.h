@@ -171,6 +171,7 @@ namespace SoLoud
 			AUTO = 0,
 			SDL1,
 			SDL2,
+			SDL3,
 			PORTAUDIO,
 			WINMM,
 			XAUDIO2,

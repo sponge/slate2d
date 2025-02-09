@@ -226,7 +226,6 @@ workspace "Slate2D"
       kind "StaticLib"
       cdialect "C11"
       files { "libs/quickjs/**.c", "libs/quickjs/**.h" }
-      defines { "CONFIG_VERSION=\"2020-11-08\"" }
       warnings "Off"
       filter { "not system:windows" }
         excludes "libs/quickjs/quickjs-debugger-transport-win.c"

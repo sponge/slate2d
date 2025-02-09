@@ -9,6 +9,10 @@ extern "C" {
 
 const char * __cdecl tempstr(const char *format, ...);
 
+#ifndef countof
+#define countof(x) (sizeof(x) / sizeof((x)[0]))
+#endif
+
 // error levels, for SLT_Con_Error
 #ifndef ERR_NONE
 #define ERR_NONE 0

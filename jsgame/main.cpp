@@ -4,7 +4,7 @@
 #include <imgui.h>
 #include <string>
 extern "C" {
-#include <quickjs-debugger.h>
+//#include <quickjs-debugger.h>
 #include <quickjs-libc.h>
 #include <quickjs.h>
 }
@@ -468,7 +468,7 @@ int main(int argc, char *argv[])
   SLT_Con_AddCommand("js_debug", []() {
     if (instance) {
       const char *address = SLT_Con_GetArgs(1);
-      if (address != NULL) js_debugger_wait_connection(instance->ctx, address);
+      //if (address != NULL) js_debugger_wait_connection(instance->ctx, address);
     }
   });
 

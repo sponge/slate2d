@@ -41,6 +41,13 @@ JSModuleDef *physfs_module_loader(JSContext *ctx, const char *module_name, void 
   // give full filesystem paths that the debugger will use.
   const char *realdir = SLT_FS_RealDir(module_name);
   std::string fullpath = realdir == nullptr ? module_name : std::string(realdir) + "/" + std::string(module_name);
+#ifdef _WIN32
+  size_t pos = 0;
+  while ((pos = fullpath.find("/", pos)) != std::string::npos) {
+    fullpath.replace(pos, 1, "\\");
+    pos += 1;
+  }
+#endif
   JSValue func_val =
     JS_Eval(ctx, (char *)script, sz, fullpath.c_str(), JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY);
   free(script);

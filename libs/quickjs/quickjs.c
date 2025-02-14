@@ -55936,6 +55936,7 @@ JSDebuggerLocation js_debugger_current_location(JSContext *ctx, const uint8_t *c
 
     location.line = find_line_num(ctx, b, (cur_pc ? cur_pc : sf->cur_pc) - b->byte_code_buf - 1, &location.column);
     location.filename = b->filename;
+    location.column = 0; // FIXME: this is supported now, but causes breakpoints to fire multiple times
     return location;
 }
 
@@ -56092,12 +56093,16 @@ int js_debugger_check_breakpoint(JSContext *ctx, uint32_t current_dirty, const u
                     pc += (op / PC2LINE_RANGE);
                     new_line_num = line_num + (op % PC2LINE_RANGE) + PC2LINE_BASE;
                 }
+                ret = get_sleb128(&v, p, p_end);
+                if (ret < 0) goto fail;
+                p += ret;
                 line_num = new_line_num;
             }
 
-            if (line_num != last_line_num) {
+            // line changed or we hit the end
+            if (line_num != last_line_num || p >= p_end) {
                 // new line found, check if it is the one with breakpoint.
-                if (last_line_num == breakpoint_line && line_num > last_line_num)
+                if (last_line_num == breakpoint_line)
                     memset(b->debugger.breakpoints + line_pc, 1, pc - line_pc);
 
                 // update the line trackers

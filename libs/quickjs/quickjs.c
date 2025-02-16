@@ -14975,7 +14975,7 @@ const void * const * active_dispatch_table = caller_ctx->rt->debugger_info.trans
         int call_argc;
         JSValue *call_argv;
 
-        js_debugger_check(ctx, NULL);
+        js_debugger_check(ctx, pc);
 
         SWITCH(pc) {
         CASE(OP_push_i32):
@@ -55934,15 +55934,14 @@ JSDebuggerLocation js_debugger_current_location(JSContext *ctx, const uint8_t *c
     if (!b)
         return location;
 
-    if (cur_pc == NULL && sf->cur_pc == NULL) {
-        location.line = b->line_num;
-        location.filename = b->filename;
-        location.column = 0; // b->col_num;
+    if (cur_pc != b->byte_code_buf) {
+        location.line = find_line_num(ctx, b, cur_pc - b->byte_code_buf - 1, &location.column);
     } else {
-        location.line = find_line_num(ctx, b, (cur_pc ? cur_pc : sf->cur_pc) - b->byte_code_buf - 1, &location.column);
-        location.filename = b->filename;
-        location.column = 0; // FIXME: this is supported now, but causes breakpoints to fire multiple times
+        location.line = b->line_num;
     }
+    location.filename = b->filename;
+    location.column = 0; // FIXME: this is supported now, but causes breakpoints to fire multiple times
+ 
     return location;
 }
 
@@ -55991,8 +55990,10 @@ JSValue js_debugger_build_backtrace(JSContext *ctx, const uint8_t *cur_pc)
             const uint8_t *pc = sf != ctx->rt->current_stack_frame || !cur_pc ? sf->cur_pc : cur_pc;
             if (cur_pc == NULL && sf->cur_pc == NULL) {
                 line_num1 = b->line_num;
+            } else if (pc == b->byte_code_buf) {
+                line_num1 = b->line_num;
             } else {
-                line_num1 = find_line_num(ctx, b, pc - b->byte_code_buf - 1, &col);
+                line_num1 = find_line_num(ctx, b, pc - b->byte_code_buf, &col);
             }
             JS_SetPropertyStr(ctx, current_frame, "filename", JS_AtomToString(ctx, b->filename));
             if (line_num1 != -1)

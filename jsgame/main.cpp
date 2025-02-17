@@ -407,8 +407,9 @@ void main_loop()
 
     if (SLT_Con_GetVar("vid.showfps")->boolean) {
       int width;
-      Dimensions res = SLT_GetResolution();
-      ImGui::SetNextWindowPos(ImVec2(res.w - 200, 50));
+      auto vp = ImGui::GetMainViewport();
+      ImGui::SetNextWindowViewport(vp->ID);
+      ImGui::SetNextWindowPos(ImVec2(vp->Pos.x + vp->Size.x, vp->Pos.y + 50), 0, ImVec2(1, 0));
       ImGui::SetNextWindowSize(ImVec2(200, 0));
       ImGui::Begin("##fps2",
                    nullptr,

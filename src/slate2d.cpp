@@ -40,7 +40,7 @@
 #include <SDL/SDL_log.h>
 
 #include <imgui.h>
-#include "imgui_impl_sdl.h"
+#include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
 
 #include "files.h"
@@ -285,6 +285,12 @@ SLT_API void SLT_EndFrame() {
 		rlDrawRenderBatchActive();
 	}
 
+	SDL_Window *backup_current_window = SDL_GL_GetCurrentWindow();
+	SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+	ImGui::UpdatePlatformWindows();
+	ImGui::RenderPlatformWindowsDefault();
+	SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
+
 	SDL_GL_SwapWindow(window);
 
 	// OSes seem to not be able to sleep for shorter than a millisecond. so let's sleep until
@@ -454,6 +460,7 @@ SLT_API void SLT_Init(int argc, char* argv[]) {
 #ifndef __EMSCRIPTEN__	
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 #endif
 
 	// now that we've ran the user configs and initialized everything else, apply everything else on the

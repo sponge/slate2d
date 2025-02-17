@@ -83,7 +83,9 @@ void ConsoleUI::Draw(int width, int height) {
 	if (vid_showfps->integer || eng_pause->integer) {
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10, 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-		ImGui::SetNextWindowPos(ImVec2((float)width - 80, 0.0f));
+		auto vp = ImGui::GetMainViewport();
+		ImGui::SetNextWindowViewport(vp->ID);
+		ImGui::SetNextWindowPos(ImVec2(vp->Pos.x + vp->Size.x, vp->Pos.y), 0, ImVec2(1, 0));
 		ImGui::SetNextWindowSize(ImVec2(80, 0));
 		ImGui::Begin("##fps", 0, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoFocusOnAppearing);
 		if (vid_showfps->integer) {
@@ -148,7 +150,8 @@ void ConsoleUI::Draw(int width, int height) {
 	}
 
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
-	ImGuiListClipper clipper(Items.Size);
+	ImGuiListClipper clipper;
+	clipper.Begin(Items.Size);
 	while (clipper.Step()) {
 		for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
 		{

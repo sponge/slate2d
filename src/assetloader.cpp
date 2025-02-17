@@ -261,7 +261,7 @@ void Asset_DrawInspector() {
 		ImGui::SetColumnWidth(0, width);
 		ImGui::SetColumnWidth(1, window.x - width);
 
-		if (ImGui::ListBoxHeader("##Assets", ImVec2(-0.1, -0.1)))
+		if (ImGui::BeginListBox("##Assets", ImVec2(-0.1, -0.1)))
 		{
 			for (int i = 0; i < assets.length; i++) {
 				if (ImGui::Selectable(assets.data[i].name, i == currentItem)) {
@@ -269,7 +269,7 @@ void Asset_DrawInspector() {
 					currentItem = i;
 				}
 			}
-			ImGui::ListBoxFooter();
+			ImGui::EndListBox();
 		}
 
 		if (currentItem < 0) {

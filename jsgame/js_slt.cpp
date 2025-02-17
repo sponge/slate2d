@@ -17,7 +17,7 @@ static JSValue js_slt_printwin(JSContext *ctx, JSValueConst this_val, int argc, 
   SetNextWindowSize(ImVec2(250, 500), ImGuiCond_FirstUseEver);
   Begin(title, nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoFocusOnAppearing);
 
-  float width = GetWindowContentRegionWidth();
+  float width = GetWindowContentRegionMax().x;
   float keyWidth = CalcTextSize(key).x;
   float valWidth = CalcTextSize(value).x;
 

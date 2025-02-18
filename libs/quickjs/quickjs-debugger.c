@@ -398,7 +398,22 @@ static void js_process_breakpoints(JSDebuggerInfo *info, JSValue message) {
     info->breakpoints_dirty_counter++;
 
     JSValue path_property = JS_GetPropertyStr(ctx, message, "path");
-    const char *path = JS_ToCString(ctx, path_property);
+    const char *path_orig = JS_ToCString(ctx, path_property);
+    char *path;
+
+#ifdef _WIN32
+    // path separators need to be switched to / otherwise path normalization breaks
+    path = js_malloc(ctx, strlen(path_orig) + 1);
+    strncpy(path, path_orig, strlen(path_orig) + 1);
+    char *c = path;
+    while (*c) {
+      if (*c == '\\') *c = '/';
+      c++;
+    }
+#else
+    path = path_orig;
+#endif
+
     JSValue path_data = JS_GetPropertyStr(ctx, info->breakpoints, path);
 
     if (!JS_IsUndefined(path_data))
@@ -407,7 +422,10 @@ static void js_process_breakpoints(JSDebuggerInfo *info, JSValue message) {
     // this will get resolved into a pc array mirror when its detected as dirty.
     path_data = JS_NewObject(ctx);
     JS_SetPropertyStr(ctx, info->breakpoints, path, path_data);
-    JS_FreeCString(ctx, path);
+    JS_FreeCString(ctx, path_orig);
+#ifdef _WIN32
+    js_free(ctx, path);
+#endif
     JS_FreeValue(ctx, path_property);
 
     JSValue breakpoints = JS_GetPropertyStr(ctx, message, "breakpoints");

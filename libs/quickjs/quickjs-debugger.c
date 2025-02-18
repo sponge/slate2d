@@ -647,7 +647,7 @@ void js_debugger_check(JSContext* ctx, const uint8_t *cur_pc) {
     // and read it without blocking until all data is consumed.
     if (!info->is_paused) {
         // only peek at the stream every now and then.
-        if (info->peek_ticks++ < 10000 && !info->should_peek)
+        if (info->peek_ticks++ < 1000 && !info->should_peek)
             goto done;
 
         info->peek_ticks = 0;
